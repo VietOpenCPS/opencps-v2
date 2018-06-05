@@ -290,6 +290,9 @@
 				e.preventDefault();
 				var statusDossier = $("li.itemStatus.active").attr("dataPk");
 			    if (statusDossier !== undefined) {
+			    	if(statusDossier === "done"){
+			    		statusDossier = "done,cancelled,denied,ended"
+			    	}
 					dataSourceProfile.read({
 						"serviceInfo": $("#serviceInfo").val(),
 						"govAgencyCode": $("#govAgency").val(),
@@ -581,7 +584,7 @@
 		}
 
 		//Find by keyword from homepage
-		$( window ).load(function() {
+		/*$( window ).load(function() {
 		  	var url = new URL(window.location.href);
 			var keyword = url.searchParams.get("keyword");
 			console.log("keyword = " + keyword);
@@ -595,7 +598,7 @@
 					"status": ""
 				})
 			}
-		});
+		});*/
 	</script>
 		
 

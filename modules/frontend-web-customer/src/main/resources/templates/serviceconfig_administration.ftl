@@ -8,11 +8,11 @@
 <div class="panel">
 	<div class="panel-body PT0 PB0">
 		<div class="row">
-			<div id="listView">
+			<div id="serviceConfigsAdmin">
 			</div>
 		</div>
 	</div>
-	<script type="text/x-kendo-tmpl" id="templateAdmin">
+	<script type="text/x-kendo-template" id="templateAdmin">
 		#if(domains.length > 0) {#
 		<div class="accordion" id=#:'acc1'+govAgencyCode#>
 			<div class="accordion-group">
@@ -41,8 +41,6 @@
 												<a class="link-serviceInfo" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#" admt-pk="#domains[i].serviceConfigs.serviceConfigId#" href="\\#">
 													#:domains[i].serviceConfigs[j].serviceInfoName#
 												</a>
-
-
 											</div>
 											<div class="col-xs-12 col-sm-1 border-left ML100 center-all lh32 text-light-gray">
 												Mức #:domains[i].serviceConfigs[j].level#
@@ -52,6 +50,7 @@
 													<button class="btn dropdown-toggle btn-select-serviceConfig" type="button" data-toggle="dropdown" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#">Chọn
 														<span class="caret"></span>
 													</button>
+													
 													<ul id="dropdown-menu#:domains[i].serviceConfigs[j].serviceConfigId#" class="dropdown-menu" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#">
 														
 													</ul>
@@ -97,17 +96,12 @@
 				$(element).html("");
 				if(result.data){
 					var data = result.data;
-					for (var i = 0; i < data.length; i++) {
-						$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
+					if(result.data){
+						for (var i = 0; i < data.length; i++) {
+							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
+						}
 					}
 				}
-				/*$(".btn-choise-process").unbind().click(function(){
-					console.log("choise process");
-					var id = $(this).attr("data-pk");
-					var templateNo = $(this).attr("data-template");
-					fnGetParamAndCreateDossier(id,templateNo);
-
-				});*/
 			},
 			error : function(result){
 
@@ -140,6 +134,7 @@
 	};
 
 	var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+
 		$.ajax({
 			url : "${api.server}/dossiers",
 			dataType : "json",
@@ -178,7 +173,7 @@
 	$(document).ready(function(){
 
 		$(document).off("click",'.btn-select-serviceConfig, .link-serviceInfo');
-		$(document).on("click",'.btn-select-serviceConfig, .link-serviceInfo',function(){
+		$(document).on("click",'.btn-select-serviceConfig, .link-serviceInfo',function(event){
 			event.preventDefault();
 			var serviceConfigId = $(this).attr("data-pk");
 			$("#serviceConfigId").val(serviceConfigId);
@@ -219,7 +214,7 @@
 			}
 		});
 
-		$("#listView").kendoListView({
+		$("#serviceConfigsAdmin").kendoListView({
 			dataSource : dataSourceAdmin,
 			template: kendo.template($("#templateAdmin").html()),
 			autoBind : true,

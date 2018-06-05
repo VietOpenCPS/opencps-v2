@@ -580,10 +580,11 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("DuplicateStepNoException");
 			}
 
-			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, input.getStepCode(), input.getStepName(), id,
-					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
-					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
+			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, input.getStepCode(),
+					input.getStepName(), id, input.getSequenceNo(), input.getDossierStatus(),
+					input.getDossierSubStatus(), GetterUtil.getInteger(input.getDurationCount()),
+					input.getCustomProcessUrl(), input.getStepInstruction(), input.getBriefNote(),
+					GetterUtil.getBoolean(input.getEditable()), input.getLockState(), serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -643,10 +644,11 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("InvalidStepCode");
 			}
 			
-			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id, input.getSequenceNo(),
-					input.getDossierStatus(), input.getDossierSubStatus(),
+			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id,
+					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
 					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()), serviceContext);
+					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()),
+					input.getLockState(), serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -1195,7 +1197,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 	@Override
 	public Response cloneServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id) {
+			Locale locale, User user, ServiceContext serviceContext, long id, String processNo) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -1212,7 +1214,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			String results = "Clone done";
 
-			ServiceProcessLocalServiceUtil.cloneServiceProcess(id, groupId, serviceContext);
+			ServiceProcessLocalServiceUtil.cloneServiceProcess(id, groupId, processNo, serviceContext);
 
 			return Response.status(200).entity(results).build();
 

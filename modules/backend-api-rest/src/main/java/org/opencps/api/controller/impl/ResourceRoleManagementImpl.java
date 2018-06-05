@@ -72,7 +72,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			params.put(ResourceRoleTerm.CLASS_PK, String.valueOf(classPK));
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getResourceRoles(className, classPK, user.getUserId(), company.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext, query.isFull());

@@ -19,18 +19,22 @@
 
 				<#if sendReissue?has_content >
 				
-				<a class="" id="btn-sendReissue-dossier-header" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
+				<a class="" id="btn-sendReissue-dossier-header" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Yêu cầu cấp lại</a>
 
 				<#elseif resCancelling?has_content >
 
-				<a href="javascript:;" class="" id="btn-cancelling-header" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
+				<a href="javascript:;" class="" id="btn-cancelling-header" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Yêu cầu hủy</a>
 
 				<#elseif sendAdd?has_content >
 
-				<a class="" id="btn-sendadd-dossier-header" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+				<a class="" id="btn-sendadd-dossier-header" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Gửi bổ sung</a>
+
+				<#elseif dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting">
+				
+				<a class="" id="btn-submit-dossier-header" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</a>
 
 				<#else>
-
+				
 				</#if>
 			</div>
 		</div>
@@ -214,12 +218,21 @@
 									#}#
 								</span>
 
+								#
+									var lockState = fnCheckLockTemplate("${dossier.lockState}",id);
+								#
+
 								<div class="actions">
-									<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#>
-										<i class="fa fa-archive" aria-hidden="true"></i>
-									</a>
+									#if(!lockState){#
+										<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
+											<i class="fa fa-archive" aria-hidden="true"></i>
+										</a>
+									#}#
 									
-									#if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === "" || "${(sendAdd)!}" === "true"){#
+									<#-- #if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === "" || "${(sendAdd)!}" === "true"){#
+									
+									#}# -->
+									#if(!lockState){#
 									<label class="MB0 ML10 hover-pointer lbl-dossier-file" for="file#:id#" data-partno="#:id#" title="Tải file lên" >
 										<i class="fa fa-upload text-light-blue"></i>
 									</label>
@@ -230,26 +243,30 @@
 									<a href="javascript:;" class="dossier-component-profile" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 										<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 									</a>
-
+									
+									#if(!lockState){#
 									<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" fileTemplateNo="#:fileTemplateNo#" eForm="#:hasForm#">
 										<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 									</a>
+									#}#
 								</div>
 							</div>
 
 							#if(hasForm){
 							var dossierFile =  getReferentUidFile(${dossierId},id);
 							console.log(dossierFile);
-							var hiddenState = "pointer-events:none;";
-							if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){
-								hiddenState = "";
+
+							var hiddenState = "";
+
+							if(lockState){
+								hiddenState = "pointer-events:none;";
 							}
 
 							#
 
 							<div class="collapse" id="collapseDossierPart#:id#">
 								
-								#if("${(dossier.dossierStatus)!}" === "new" || "${(dossier.dossierStatus)!}" === "waiting" || "${(dossier.dossierStatus)!}" === ""){#
+								#if(!lockState){#
 								<div class="col-xs-12 col-sm-12 text-right">
 									<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 									type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
@@ -361,9 +378,9 @@
 					<div id="unpaid">
 						<div class="row MB10">
 							<div class="col-sm-12">
-								<button class="btn btn-sm btn-border-color MR10 text-light-blue" id="dossier-payment-online" data-bind="attr : {data-pk : referenceUid}">Thanh toán trực tuyến</button> 
-								<button class="btn btn-sm btn-border-color MR10 text-light-blue" data-bind="attr : {data-pk : referenceUid}" id="dossier-payment-confirm">Thông báo đã nộp chuyển khoản</button>
-								<button class="btn btn-sm btn-border-color text-light-blue" id="dossier-payment-viewpdf" data-bind="attr : {data-pk : referenceUid}">Xem phiếu thanh toán</button>
+								<button class="btn btn-sm btn-border-color MR10 text-light-blue" id="dossier-payment-online" data-bind="attr : {data-pk : referenceUidPayment}">Thanh toán trực tuyến</button> 
+								<button class="btn btn-sm btn-border-color MR10 text-light-blue" data-bind="attr : {data-pk : referenceUidPayment}" id="dossier-payment-confirm">Thông báo đã nộp chuyển khoản</button>
+								<button class="btn btn-sm btn-border-color text-light-blue" id="dossier-payment-viewpdf" data-bind="attr : {data-pk : referenceUidPayment}">Xem phiếu thanh toán</button>
 							</div>
 						</div>
 
@@ -529,7 +546,7 @@
 				for(var i = 0 ; i < dossier.length ; i++){
 				#
 				<p>
-					<a target="_blank" href="${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#" class="text-greyy text-hover-blue">
+					<a target="_blank" href="javascript:;" onclick="openFileNewtab('${api.server}/dossiers/${dossierId}/files/#:dossier[i].dossierFileId#');" class="text-greyy text-hover-blue">
 						<i aria-hidden="true" class="fa fa-download PR5"></i>
 						#:dossier[i].fileName#
 					</a> 
@@ -604,6 +621,7 @@
 
 </div>
 <div class="button-row MT20">
+
 	<button class="btn btn-active" id="btn-back-dossier" type="button"><i class="fa fa-reply" aria-hidden="true"></i> Quay lại</button>
 	<#if sendReissue?has_content >
 	
@@ -617,17 +635,328 @@
 
 	<a href="javascript:;" class="btn btn-active" id="btn-rescancelling-dossier" data-bind="value : cancellingDate"><i class="fa fa-paper-plane" ></i> Yêu cầu hủy</a>
 
-	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" &&            	dossier.submitting?has_content && dossier.submitting != true>
+	<#elseif dossier.submitting?has_content &&  dossier.submitting != true && dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting">
 
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : referenceUid" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-paper-plane" style="display: none;"></i> Nộp hồ sơ</button>
-
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : lockState" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang xử lý..."><i class="fa fa-paper-plane" ></i> Nộp hồ sơ</button>
+	
+	<#else>
+	
 	</#if>
+
+	
 </div>
 </div>
 
 <script type="text/javascript">
 
+
 	$("#btn-submit-dossier").button('loading');
+
+	var dataSourceDossierTemplate = new kendo.data.DataSource({
+		transport :{
+			read : function(options){
+				if(options.data.dossierTemplateNo){
+					$.ajax({
+						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+						dataType : "json",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						data : {
+
+						},
+						success : function(result){
+							options.success(result.dossierParts);
+							$("#dossierTemplateNo").val(result.templateNo);
+						},
+						error : function(result){
+							options.error(result);
+						}
+					});
+				}
+			}
+		},
+		schema : {
+			model : {
+				id : "partNo"
+			}
+		}
+	});
+
+	var fnLoadPayment = function(dossierId){
+
+		var resultModel = null;
+		if(dossierId){
+			$.ajax({
+				url : "${api.server}/dossiers/"+dossierId+"/payments",
+				dataType : "json",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				async : false,
+				data : {
+					paymentStatus : 0
+				},
+				success : function(result){
+					if(result.data){
+						resultModel = result.data[0];
+					}
+				},
+				error :  function(result){
+					$("#paymentDossier").remove();
+				}
+			});
+		}
+
+		return resultModel;
+	}
+
+	var printDetailDossier = function(dossierId){
+			if(dossierId){
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId,
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					success : function(result){
+						
+						dataSourceDossierTemplate.read({
+							dossierTemplateNo : result.dossierTemplateNo
+						});
+
+						var payment = fnLoadPayment(result.dossierId);
+						if(!payment){
+							$("#paymentDossier").remove();
+							$("#resultDossierNum").html("II");
+							$("#logDossierNum").html("III");
+						}else {
+							$("#resultDossierNum").html("III");
+							$("#logDossierNum").html("IV");
+						}
+
+						var viewModel = kendo.observable({
+							dossierId : result.dossierId,
+							lockState : function(e){
+								if(result.lockState){
+									if(result.lockState.startsWith("LOCK")){
+										if(result.lockState === "LOCK ALL"){
+											$("#btn-submit-dossier").remove();
+											$("#btn-delete-dossier").remove();
+											$("#btn-submit-dossier-header").remove();
+											$("#btn-delete-dossier-header").remove();
+										}else {
+											$("#btn-submit-dossier").show();
+											$("#btn-delete-dossier").show();
+											$("#btn-submit-dossier-header").show();
+											$("#btn-delete-dossier-header").show();
+										}
+									}else {
+										$("#btn-submit-dossier").show();
+										$("#btn-delete-dossier").show();
+										$("#btn-submit-dossier-header").show();
+										$("#btn-delete-dossier-header").show();
+									}
+
+								}else {
+									$("#btn-submit-dossier").show();
+									$("#btn-delete-dossier").show();
+									$("#btn-submit-dossier-header").show();
+									$("#btn-delete-dossier-header").show();
+								}
+
+								return "";
+							},
+							dossierIdCTN : function(e){
+								if(result.dossierIdCTN){
+									return result.dossierIdCTN;
+								}
+
+								return "";
+							},
+							serviceName : result.serviceName,
+							govAgencyName : result.govAgencyName,
+
+							actionNote1 : function(e){
+
+								if(result.actionNote){
+									$("#actionNote1").html('<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> <span>'+result.actionNote+'</span>');
+								}else {
+									$("#actionNote1").remove();
+								}
+
+								return;
+							},
+
+							applicantName : result.applicantName,
+							applicantNote : "",
+							address : result.address,
+							briefNote : function(e){
+								if(result.briefNote){
+									return result.briefNote;
+								}else {
+									return "";
+								}
+							},
+							submitDate : function(){
+								if(result.submitDate){
+									return result.submitDate;
+								}
+
+								return "";
+							},
+							cityCode : result.cityCode,
+							districtCode : result.districtCode,
+							wardCode : result.wardCode,
+							contactTelNo : result.contactTelNo,
+							contactEmail : result.contactEmail,
+							dossierNo : result.dossierNo,
+							dossierStatusText : result.dossierStatusText,
+							stepInstruction : result.stepInstruction,
+							dossierStatus : result.dossierStatus,
+							postalAddress : result.postalAddress,
+							postalCityName : result.postalCityName,
+							postalTelNo : result.postalTelNo,
+							dossierTemplateNo : result.dossierTemplateNo,
+							contactName: result.contactName,
+							cityName:result.cityName,
+							districtName:result.districtName,
+							wardName:result.wardName,
+							viaPostal : function(e){
+								
+								if(result.viaPostal === 0 || result.viaPostal === 1){
+									$("#postal").remove();
+								}
+							},
+							submissionNote : function(e){
+								if(result.submissionNote){
+									$("#guideDossier").show();
+									return result.submissionNote;
+								}else {
+									$("#guideDossier").hide();
+									return "";
+								}
+							},
+							paymentDossier : payment,
+							paymentFee : function(e){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').paymentFee){
+										return this.get('paymentDossier').paymentFee;
+									}
+								}
+								return "";
+							},
+							paymentAmount : function(e){
+								if(this.get('paymentDossier').paymentAmount){
+									var value = this.get('paymentDossier').paymentAmount;
+									var moneyCur = (value/1).toFixed(0).replace('.', ',');
+									return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+								}
+								return "";
+							},
+							paymentGovAgencyName : function(e){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').govAgencyName){
+										return this.get('paymentDossier').govAgencyName;
+									}
+								}
+								return "";
+							},
+							paymentBankInfo : function(e){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').bankInfo){
+										return this.get('paymentDossier').bankInfo;
+									}
+								}
+								return "";
+							},
+							paymentStatus : function(e){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').paymentStatus === 0){
+										$("#dossier-payment-confirm").prop("disabled",false);
+										return "Chờ nộp";
+									}else if(this.get('paymentDossier').paymentStatus === 1){
+										$("#dossier-payment-confirm").prop("disabled",true);
+										return "Báo đã nộp";
+									}else if(this.get('paymentDossier').paymentStatus === 2){
+										$("#dossier-payment-confirm").prop("disabled",false);
+										return "Hoàn thành";
+									}else {
+										$("#dossier-payment-confirm").prop("disabled",false);
+										return "Không hợp lệ";
+									}
+								}
+								return "";
+							},
+							paymentApproveDatetime : function(e){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').approveDatetime){
+										return this.get('paymentDossier').approveDatetime;
+									}
+								}
+								return "---";
+							},
+							paymentConfirmNote : function(e){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').confirmNote){
+										return this.get('paymentDossier').confirmNote;
+									}
+								}
+								return "";
+							},
+							referenceUidPayment : function(e){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').referenceUid){
+										return this.get('paymentDossier').referenceUid;
+									}
+								}
+								return "";
+							},
+							isPay : function(){
+								if(this.get('paymentDossier')){
+									if(this.get('paymentDossier').paymentStatus !== 2){
+										$("#unpaid").show();
+										$("#alreadyPaid").hide();
+									}
+								}
+							},
+							cancellingDate : function(){
+								if(result.cancellingDate){
+									$("#btn-rescancelling-dossier").hide();
+									$("#btn-cancelling-header").hide();
+								}
+
+								return "";
+							},
+							correctingDate : function(){
+								if(result.correctingDate){
+									$("#btn-sendReissue-dossier-header,#btn-sendReissue-dossier-footer").hide();
+								}
+								return "";
+							},
+							submitting : function(){
+								if(result.submitting){
+									return result.submitting;
+								}
+								return;
+							},
+							endorsementDate : function(){
+								if(result.endorsementDate){
+									$("#btn-sendadd-dossier-header,#btn-sendadd-dossier-footer").hide();
+								}
+
+								return "";
+							}
+
+						});
+
+						kendo.bind($("#detailDossier"), viewModel);
+
+						},
+						error : function(result){
+							$("#paymentDossier").html("");
+						}
+
+					});
+				}
+		}
 
 	var arrIsChangeForm = [];
 
@@ -660,6 +989,50 @@
 		}
 
 		return valid;
+	}
+
+	var fnCheckLockTemplate = function(lockState, item){
+		if(lockState.startsWith("LOCK")){
+
+			if(lockState === "LOCK INPUT"){
+				return true;
+			}else if(lockState === "LOCK ALL"){
+				return true;
+			}else if (lockState !== "LOCK ALL" && lockState !== "LOCK INPUT" && lockState !== "LOCK OUTPUT" )  {
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return true;
+						}
+					}
+				}
+			}
+
+		}else if(lockState.startsWith("UPDATE")){
+			if(lockState === "UPDATE INPUT"){
+				return false;
+			}
+
+			if(lockState === "UPDATE ALL"){
+				return false;
+			}
+
+			if (lockState !== "UPDATE ALL" && lockState !== "UPDATE INPUT" && lockState !== "UPDATE OUTPUT" ){
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	$(function(){
@@ -721,6 +1094,7 @@
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
 			var dossierTemplateNo = "${(dossier.dossierTemplateNo)!}";
+			var lockState = "${(dossier.lockState)!}";
 			
 			var url = "#/"+dossierId+"/files/"+dossierTemplateNo+"/"+partNo;
 
@@ -732,6 +1106,7 @@
 				window.open(url,"_blank");
 
 			}, function(){
+
 				window.open(url,"_blank","location=yes");
 			});
 
@@ -763,7 +1138,7 @@
 							$.ajax({
 								url : "${api.server}/dossiers/"+dossierId+"/files",
 								dataType : "json",
-								type : "GET",
+								type : "GET",	
 								headers : {"groupId": ${groupId}},
 								success : function(result) {
 									var data = result.data;
@@ -789,6 +1164,7 @@
 												}, "success");
 											}
 											$("#validPart"+dataPartNo).val("0");
+											
 										}else {
 											if(navigator.onLine){
 												notification.show({
@@ -796,8 +1172,6 @@
 												}, "error");
 											}
 										}
-
-										
 
 									}
 								},
@@ -932,8 +1306,6 @@
 			return result;
 		}
 
-
-
 		var indexDossiserLog = 0;
 		$("#listViewDossiserLog").kendoListView({
 			dataSource:dataSourceDossiserLog,
@@ -950,36 +1322,6 @@
 				return kendo.template($("#templateDossiserLog").html())(data);
 
 			},
-		});
-
-		var dataSourceDossierTemplate = new kendo.data.DataSource({
-			transport :{
-				read : function(options){
-					if(options.data.dossierTemplateNo){
-						$.ajax({
-							url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
-							dataType : "json",
-							type : "GET",
-							headers : {"groupId": ${groupId}},
-							data : {
-
-							},
-							success : function(result){
-								options.success(result.dossierParts);
-								$("#dossierTemplateNo").val(result.templateNo);
-							},
-							error : function(result){
-								options.error(result);
-							}
-						});
-					}
-				}
-			},
-			schema : {
-				model : {
-					id : "partNo"
-				}
-			}
 		});
 
 		var indexDossiserPart =0 ;
@@ -1004,246 +1346,13 @@
 				indexDossiserPart = 0;
 			var dossierParts = this.dataSource.view();
 			//kiem tra dossier status, neu status thuoc new thi cho phep upoad hoac sua file
-			fnCheckStatusAndHideUpload("${(dossier.dossierStatus)!}",dossierParts);
+			//fnCheckStatusAndHideUpload("${(dossier.dossierStatus)!}",dossierParts);
 
 			//gen number file cho icon thanh phan ho so
 			
 			funDossierFile("${dossierId}",funGenNumberFile);
 		}
 	});
-
-		var printDetailDossier = function(dossierId){
-			if(dossierId){
-				$.ajax({
-					url : "${api.server}/dossiers/"+dossierId,
-					dataType : "json",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					success : function(result){
-						
-						dataSourceDossierTemplate.read({
-							dossierTemplateNo : result.dossierTemplateNo
-						});
-
-						var payment = fnLoadPayment(result.dossierId);
-						if(!payment){
-							$("#paymentDossier").remove();
-							$("#resultDossierNum").html("II");
-							$("#logDossierNum").html("III");
-						}else {
-							$("#resultDossierNum").html("III");
-							$("#logDossierNum").html("IV");
-						}
-
-						var viewModel = kendo.observable({
-							referenceUid : function(e){
-								var submitting = result.submitting;
-								$.ajax({
-									url : "${api.server}/dossiers/"+result.referenceUid+"/dossierAction/pedding",
-									dataType : "text",
-									type : "GET",
-									headers : {"groupId": ${groupId}},
-									success : function(result){
-										if(result == "true" || submitting){
-											$(".uploadfile-form-repository").remove();
-											$(".lbl-dossier-file").remove();
-											$(".delete-dossier-file").remove();
-										}else {
-											$("#btn-submit-dossier").show();
-											$("#btn-delete-dossier").show();
-										}
-									},
-									error : function(result){
-
-									}
-								});
-							},
-							dossierIdCTN : function(e){
-								if(result.dossierIdCTN){
-									return result.dossierIdCTN;
-								}
-
-								return "";
-							},
-							serviceName : result.serviceName,
-							govAgencyName : result.govAgencyName,
-
-							actionNote1 : function(e){
-
-								if(result.actionNote){
-									$("#actionNote1").html('<i class="fa fa-bolt" aria-hidden="true" style="color: red;"></i> <span>'+result.actionNote+'</span>');
-								}else {
-									$("#actionNote1").remove();
-								}
-
-								return;
-							},
-
-							applicantName : result.applicantName,
-							applicantNote : "",
-							address : result.address,
-							briefNote : function(e){
-								if(result.briefNote){
-									return result.briefNote;
-								}else {
-									return "";
-								}
-							},
-							submitDate : function(){
-								if(result.submitDate){
-									return result.submitDate;
-								}
-
-								return "";
-							},
-							cityCode : result.cityCode,
-							districtCode : result.districtCode,
-							wardCode : result.wardCode,
-							contactTelNo : result.contactTelNo,
-							contactEmail : result.contactEmail,
-							dossierNo : result.dossierNo,
-							dossierStatusText : result.dossierStatusText,
-							stepInstruction : result.stepInstruction,
-							dossierStatus : result.dossierStatus,
-							postalAddress : result.postalAddress,
-							postalCityName : result.postalCityName,
-							postalTelNo : result.postalTelNo,
-							dossierTemplateNo : result.dossierTemplateNo,
-							contactName: result.contactName,
-							cityName:result.cityName,
-							districtName:result.districtName,
-							wardName:result.wardName,
-							viaPostal : function(e){
-								
-								if(result.viaPostal === 0 || result.viaPostal === 1){
-									$("#postal").remove();
-								}
-							},
-							submissionNote : function(e){
-								if(result.submissionNote){
-									$("#guideDossier").show();
-									return result.submissionNote;
-								}else {
-									$("#guideDossier").hide();
-									return "";
-								}
-							},
-							paymentDossier : payment,
-							paymentFee : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentFee){
-										return this.get('paymentDossier').paymentFee;
-									}
-								}
-								
-								return "";
-							},
-							paymentAmount : function(e){
-								if(this.get('paymentDossier').paymentAmount){
-									var value = this.get('paymentDossier').paymentAmount;
-									var moneyCur = (value/1).toFixed(0).replace('.', ',');
-									return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-								}
-								return "";
-							},
-							paymentGovAgencyName : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').govAgencyName){
-										return this.get('paymentDossier').govAgencyName;
-									}
-								}
-								return "";
-							},
-							paymentBankInfo : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').bankInfo){
-										return this.get('paymentDossier').bankInfo;
-									}
-								}
-								return "";
-							},
-							paymentStatus : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentStatus === 0){
-										$("#dossier-payment-confirm").prop("disabled",false);
-										return "Chờ nộp";
-									}else if(this.get('paymentDossier').paymentStatus === 1){
-										$("#dossier-payment-confirm").prop("disabled",true);
-										return "Báo đã nộp";
-									}else if(this.get('paymentDossier').paymentStatus === 2){
-										$("#dossier-payment-confirm").prop("disabled",false);
-										return "Hoàn thành";
-									}else {
-										$("#dossier-payment-confirm").prop("disabled",false);
-										return "Không hợp lệ";
-									}
-								}
-								return "";
-							},
-							paymentApproveDatetime : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').approveDatetime){
-										return this.get('paymentDossier').approveDatetime;
-									}
-								}
-								return "---";
-							},
-							paymentConfirmNote : function(e){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').confirmNote){
-										return this.get('paymentDossier').confirmNote;
-									}
-								}
-								return "";
-							},
-							isPay : function(){
-								if(this.get('paymentDossier')){
-									if(this.get('paymentDossier').paymentStatus !== 2){
-										$("#unpaid").show();
-										$("#alreadyPaid").hide();
-									}
-								}
-							},
-							cancellingDate : function(){
-								if(result.cancellingDate){
-									$("#btn-rescancelling-dossier").hide();
-									$("#btn-cancelling-header").hide();
-								}
-
-								return "";
-							},
-							correctingDate : function(){
-								if(result.correctingDate){
-									$("#btn-sendReissue-dossier-header,#btn-sendReissue-dossier-footer").hide();
-								}
-								return "";
-							},
-							submitting : function(){
-								if(result.submitting){
-									$("#btn-submit-dossier").hide();
-									
-								}
-								return;
-							},
-							endorsementDate : function(){
-								if(result.endorsementDate){
-									$("#btn-sendadd-dossier-header,#btn-sendadd-dossier-footer").hide();
-								}
-
-								return "";
-							}
-
-					});
-
-kendo.bind($("#detailDossier"), viewModel);
-},
-error : function(result){
-	$("#paymentDossier").html("");
-}
-
-});
-}
-}
 
 printDetailDossier(${dossierId});
 
@@ -1295,11 +1404,11 @@ var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
 }
 
 var fnCheckStatusAndHideUpload = function(dossierStatus, dossierParts){
-	if(dossierStatus !== "" && dossierStatus !== "new" && dossierStatus !== "waiting" && "${(sendAdd)!}" !== "true"){
+	/*if(dossierStatus !== "" && dossierStatus !== "new" && dossierStatus !== "waiting" && "${(sendAdd)!}" !== "true"){
 		$(".uploadfile-form-repository").remove();
 		$(".lbl-dossier-file").remove();
 		$(".delete-dossier-file").remove();
-	}
+	}*/
 
 	console.log("dossierParts=========",dossierParts);
 	var promise = new Promise(function(resolve, reject){
@@ -1338,33 +1447,6 @@ var fnCheckStatusAndHideUpload = function(dossierStatus, dossierParts){
 	});
 
 
-}
-
-var fnLoadPayment = function(dossierId){
-
-	var resultModel = null;
-	if(dossierId){
-		$.ajax({
-			url : "${api.server}/dossiers/"+dossierId+"/payments",
-			dataType : "json",
-			type : "GET",
-			headers : {"groupId": ${groupId}},
-			async : false,
-			data : {
-				paymentStatus : 0
-			},
-			success : function(result){
-				if(result.data){
-					resultModel = result.data[0];
-				}
-			},
-			error :  function(result){
-				$("#paymentDossier").remove();
-			}
-		});
-	}
-
-	return resultModel;
 }
 
 var removeDossierFile = function(dossierId, fileId){
@@ -1470,6 +1552,7 @@ var funGenNumberFile = function(arrCount){
 }
 });
 
+
 var getReferentUidFile = function(dossierId,dossierPartNo){
 	var dossierFile;
 	if(dossierId){
@@ -1487,7 +1570,6 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 								dossierFile = result.data[i];
 								return ;
 							}
-
 						}
 					}
 				}
@@ -1675,13 +1757,15 @@ var createActionDossier = function(dossierId, callBackSubmit){
 }
 
 var fnSubmitting2 = function(dossierId){
+	kendo.ui.progress($("#mainType2"), true);
+	$("#btn-sendadd-dossier-header,#btn-sendadd-dossier-footer").hide();
 	console.log("----------5" + "${(dossier.dossierStatus)!}");
 	var applicantNote = $("textarea#applicantNote").val();
-	if(applicantNote.trim() == ''){
+	/*if(applicantNote.trim() == ''){
 		alert('Bạn phải nhập ý kiến trước khi gửi.');
 		$("textarea#applicantNote").focus();
 		return;
-	}
+	}*/
 	console.log("run sendReissue!");
 
 	$.ajax({
@@ -1696,10 +1780,11 @@ var fnSubmitting2 = function(dossierId){
 		contentType: 'text/plain',
 		data : $("textarea#applicantNote").val(),
 		success : function(result){
+			kendo.ui.progress($("#mainType2"), false);
 			notification.show({
 				message: "Yêu cầu được thực hiện thành công!"
 			}, "success");
-
+			$("#btn-sendadd-dossier-header,#btn-sendadd-dossier-footer").hide();
 			try {
 				manageDossier.navigate("/"+statusRouteTem.status); 
 				$('html,body').scrollTop(0);
@@ -1708,9 +1793,11 @@ var fnSubmitting2 = function(dossierId){
 			}
 		},
 		error : function(result){
+			kendo.ui.progress($("#mainType2"), false);
 			notification.show({
 				message: "Thực hiện không thành công, xin vui lòng thử lại!"
 			}, "error");
+			$("#btn-sendadd-dossier-header,#btn-sendadd-dossier-footer").show();
 		}
 	});
 
@@ -1719,13 +1806,15 @@ var fnSubmitting2 = function(dossierId){
 
 
 var fnCorrecting = function(dossierId){
+	kendo.ui.progress($("#mainType2"), true);
+	$("#btn-sendReissue-dossier-header,#btn-sendReissue-dossier-footer").hide();
 	console.log("----------4" + "${(dossier.dossierStatus)!}");
 	var applicantNote = $("textarea#applicantNote").val();
-	if(applicantNote.trim() == ''){
+	/*if(applicantNote.trim() == ''){
 		alert('Bạn phải nhập ý kiến trước khi gửi.');
 		$("textarea#applicantNote").focus();
 		return;
-	}
+	}*/
 	console.log("run sendReissue!");
 
 	$.ajax({
@@ -1740,6 +1829,7 @@ var fnCorrecting = function(dossierId){
 		contentType: 'text/plain',
 		data : $("textarea#applicantNote").val(),
 		success : function(result){
+			kendo.ui.progress($("#mainType2"), false);
 			notification.show({
 				message: "Yêu cầu được thực hiện thành công!"
 			}, "success");
@@ -1755,6 +1845,8 @@ var fnCorrecting = function(dossierId){
 			}
 		},
 		error : function(result){
+			kendo.ui.progress($("#mainType2"), false);
+			$("#btn-sendReissue-dossier-header,#btn-sendReissue-dossier-footer").show();
 			notification.show({
 				message: "Thực hiện không thành công, xin vui lòng thử lại!"
 			}, "error");
@@ -1797,14 +1889,18 @@ $("#btn-rescancelling-dossier").click(function(){
 });
 
 var fnCancelling = function(dossierId){
+	kendo.ui.progress($("#mainType2"), true);
+	$("#btn-rescancelling-dossier,#btn-cancelling-header").hide();
 	console.log("-----------1" + "${(dossier.dossierStatus)!}");
 	if("${(dossier.dossierStatus)!}" !== "new" && "${(dossier.dossierStatus)!}" !== "null" && "${(dossier.dossierStatus)!}" !== "done"){
-		var applicantNote = $("textarea#applicantNote").val();
+
+		/*var applicantNote = $("textarea#applicantNote").val();
 		if(applicantNote.trim() == ''){
 			alert('Bạn phải nhập ý kiến trước khi gửi.');
 			$("textarea#applicantNote").focus();
 			return;
-		}
+		}*/
+
 		console.log("run rescancelling!");
 
 		$.ajax({
@@ -1819,7 +1915,7 @@ var fnCancelling = function(dossierId){
 			contentType: 'text/plain',
 			data : $("textarea#applicantNote").val(),
 			success : function(result){
-
+				kendo.ui.progress($("#mainType2"), false);
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công!"
 				}, "success");
@@ -1834,6 +1930,8 @@ var fnCancelling = function(dossierId){
 				}
 			},
 			error : function(result){
+				kendo.ui.progress($("#mainType2"), false);
+				$("#btn-rescancelling-dossier,#btn-cancelling-header").show();
 				notification.show({
 					message: "Thực hiện không thành công, xin vui lòng thử lại!"
 				}, "error");
@@ -1915,14 +2013,14 @@ $("#btn-sendReissue-dossier-header,#btn-sendReissue-dossier-footer").click(funct
 	
 });
 
-$("#btn-submit-dossier").click(function(){
+$("#btn-submit-dossier,#btn-submit-dossier-header").click(function(){
 
-	var cf = showAlert("Thông báo","Bạn phải nhập thông báo gửi bổ sung!","Thoát");
-	if($("textarea#applicantNote").val() === ""){
-		
+	
+	/*if($("textarea#applicantNote").val() === ""){
+		var cf = showAlert("Thông báo","Bạn phải nhập thông báo gửi bổ sung!","Thoát");
 		cf.open();
 		return false;
-	}
+	}*/
 
 	var validateDossierTemplate = fnCheckValidTemplate();
 
@@ -2009,6 +2107,10 @@ $("#btn-submit-dossier").click(function(){
 								}catch(e){
 
 								}
+
+								$("#lsDossierTemplPart").getKendoListView().refresh();
+
+								printDetailDossier(${dossierId});
 							},
 							error : function(result){
 								$("#btn-back-dossier").prop("disabled","");
@@ -2215,6 +2317,82 @@ $("#dossier-payment-viewpdf").click(function(){
 		});
 	}
 });
+
+function fileAttachmentUrl ( options) {
+
+  // Use XMLHttpRequest instead of Jquery $ajax
+  var xhttp = new XMLHttpRequest();
+  var a,filename;
+  var data = {};
+  
+  xhttp.onreadystatechange = function() {
+  	
+  	if (xhttp.readyState === 4 && xhttp.status === 200) {
+  		
+      // check for a filename
+      var disposition = xhttp.getResponseHeader('Content-Disposition');
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+      	var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      	var matches = filenameRegex.exec(disposition);
+      	if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+      }
+      
+      // Trick for making downloadable link
+      a = document.createElement('a');
+      a.href = window.URL.createObjectURL(xhttp.response);
+
+      var url = window.URL.createObjectURL(xhttp.response);
+      
+      //callback success
+      options.success({url : url, status : xhttp.status});
+  } else if (xhttp.readyState === 4 && xhttp.status !== 200) {
+  	options.error(xhttp.status);
+  }
+  
+};
+
+  // Post data to URL which handles post request
+  xhttp.open(options.method, options.url);
+  xhttp.setRequestHeader("Content-Type", "application/json");
+  
+  // others data header
+  if (options.hasOwnProperty("headers")){
+  	Object.keys( options.headers ).map(function(objectKey, index) {
+  		var value = options.headers[objectKey];
+  		xhttp.setRequestHeader(objectKey, value);
+  	});
+  }
+
+  // You should set responseType as blob for binary responses
+  if (options.hasOwnProperty("responseType")){
+  	xhttp.responseType = options.responseType;
+  } else {
+  	xhttp.responseType = 'blob';
+  }
+  
+  // Data to post
+  if (options.hasOwnProperty("data")){
+  	data = options.data;
+  }
+  
+  // excecute request
+  xhttp.send(data);
+  
+};
+
+function openFileNewtab(url){
+	var urlOut = "";
+	var urlReadFile = fileAttachmentUrl({
+		method : "GET",
+		url : url,
+		async : false,
+		success: function(options){
+			urlOut = options.url;
+			window.open(urlOut,"_blank");
+		},
+		error: function(){}
+	});
+}
 </script>
 
 <style type="text/css" media="screen">

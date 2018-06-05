@@ -97,8 +97,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
-			String govAgencyCode, String applicationIdNo, String applicationName, String subject,
-			String issueDate, String expireDate,String revalidate, String deliverableState,
+			String govAgencyCode, String govAgencyName, String applicationIdNo, String applicationName,
+			String subject, String issueDate, String expireDate, String revalidate, String deliverableState,
 			ServiceContext serviceContext) {
 		// TODO Add RegistrationForm
 		long userId = serviceContext.getUserId();
@@ -129,6 +129,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setDeliverableType(deliverableType);
 		object.setDeliverableCode(deliverableCode);
 		object.setGovAgencyCode(govAgencyCode);
+		object.setGovAgencyName(govAgencyName);
 		object.setApplicantIdNo(applicationIdNo);
 		object.setApplicantName(applicationName);
 		object.setSubject(subject);

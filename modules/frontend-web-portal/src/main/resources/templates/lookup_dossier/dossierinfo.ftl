@@ -4,14 +4,14 @@
 <!-- Template thông tin hồ sơ cơ bản -->
 <div class="panel panel-default MB15" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
-		<span class="text-bold text-light-blue">THÔNG TIN HỒ SƠ | </span> <span data-bind="text:applicantName"> </span>
+		<span class="text-bold text-light-blue">THÔNG TIN HỒ SƠ | </span> <span class="text-bold" data-bind="text:applicantName"> </span>
 	</div>
 	<div class="panel-body PL0">
 		<div class="col-sm-12 MB10">
             <span class="text-bold">Tên hồ sơ: </span> <span data-bind="text:serviceName"> </span>
         </div>
 		<div class="col-sm-12 MB10">
-            <span class="text-bold">Mã hồ sơ: </span> <span data-bind="text:dossierId"> </span>
+            <span class="text-bold">Mã hồ sơ: </span> <span data-bind="text:dossierIdCTN"> </span>
         </div>
         <div class="col-sm-12 MB10">
             <span class="text-bold">Mã tiếp nhận: </span> <span data-bind="text:dossierNo"> </span>
@@ -48,30 +48,30 @@
 <script>
 	var pullDataDetail= function(id){
         dossiersId = id;
-        $.ajax({
-            url : "${api.server}/dossiers/"+id,
-            dataType : "json",
-            type : "GET",
-            headers : {"groupId": ${groupId}},
-            success : function(result){
-                console.log(dossierId);
-                var viewModel = kendo.observable({
-                    dossierId: result.dossierId,
-	                applicantName: result.applicantName,
-                    serviceName: result.serviceName,
-                    dossierNo: result.dossierNo,
-                    govAgencyName: result.govAgencyName,
-                    submitDate: result.submitDate,
-                    dueDate: result.dueDate,
-                    dossierStatusText: result.dossierStatusText
-                });
-                kendo.bind($("#DossiersDetailInfo"), viewModel);
-                $(".panel").css("border-radius","0");
-            },
-            error : function(result){
+        // $.ajax({
+        //     url : "${api.server}/dossiers/"+id,
+        //     dataType : "json",
+        //     type : "GET",
+        //     headers : {"groupId": 55217},
+        //     success : function(result){
+        //         console.log(dossierId);
+        //         var viewModel = kendo.observable({
+        //             dossierId: result.dossierId,
+	       //          applicantName: result.applicantName,
+        //             serviceName: result.serviceName,
+        //             dossierNo: result.dossierNo,
+        //             govAgencyName: result.govAgencyName,
+        //             submitDate: result.submitDate,
+        //             dueDate: result.dueDate,
+        //             dossierStatusText: result.dossierStatusText
+        //         });
+        //         kendo.bind($("#DossiersDetailInfo"), viewModel);
+        //         $(".panel").css("border-radius","0");
+        //     },
+        //     error : function(result){
                 
-            }
-        });
+        //     }
+        // });
         //dataSource chi tiết thông tin hồ sơ
         var dataSourceDossierFileDetail = new kendo.data.DataSource({
             transport: {
@@ -80,7 +80,7 @@
                         url: "${api.server}/dossiers/"+id+"/files",
                         dataType: "json",
                         type: 'GET',
-                        headers : {"groupId": ${groupId}},
+                        headers : {"groupId": 55217},
                         data: {
                             password: options.data.password
                         },
@@ -105,11 +105,11 @@
             transport: {
                 read: function (options) {
                     $.ajax({
-                        // url: "${api.server}/dossiers/"+id+"/logs",
-                        url:"http://localhost:3000/logs",
+                        url: "${api.server}/dossiers/"+id+"/logs",
+                        // url:"http://localhost:3000/logs",
                         dataType: "json",
                         type: 'GET',
-                        headers : {"groupId": ${groupId}},
+                        headers : {"groupId": 55217},
                         data: {
                             password: options.data.password
                         },
@@ -126,6 +126,7 @@
                         },
                         error : function(result){
                             options.error(result);
+                            $("#DossierDetailLog").html("<span>Không có dữ liệu</span>")
                         }
                     })
                 }
@@ -156,6 +157,13 @@
         };
         $("#btn_dossierinfo_detail").click(
             function(){
+                if($("#input_dossier_detail").val().length === 0){
+                    console.log(Id);
+                    notification.show({
+                        message: "Bạn phải nhập mã bí mật"
+                    }, "error");
+                    return;
+                }
                 console.log(dossierId);
                 $("#detailView2").show();
                 evenDataDossierDetail()

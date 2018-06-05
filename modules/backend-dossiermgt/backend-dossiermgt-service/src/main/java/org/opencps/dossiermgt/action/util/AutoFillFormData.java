@@ -2,6 +2,7 @@ package org.opencps.dossiermgt.action.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,9 +39,9 @@ public class AutoFillFormData {
 		// TODO Auto-generated method stub
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
-			
+
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			
+
 			result = JSONFactoryUtil.createJSONObject(sampleData);
 
 			String _subjectName = StringPool.BLANK;
@@ -55,8 +56,7 @@ public class AutoFillFormData {
 			String _contactName = StringPool.BLANK;
 			String _contactTelNo = StringPool.BLANK;
 			String _contactEmail = StringPool.BLANK;
-			
-			
+
 			// TODO
 			String _dossierFileNo = StringPool.BLANK;
 			String _dossierFileDate = StringPool.BLANK;
@@ -71,93 +71,101 @@ public class AutoFillFormData {
 			String _applicantIdNo = StringPool.BLANK;
 			String _applicantIdDate = StringPool.BLANK;
 			String _curDate = StringPool.BLANK;
-			
+			String _representative = StringPool.BLANK;
+
 			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-			
+
 			_curDate = sfd.format(new Date());
-			
+
 			if (Validator.isNotNull(dossier)) {
-				_receiveDate = Validator.isNotNull(dossier.getReceiveDate())?dossier.getReceiveDate().toGMTString():StringPool.BLANK;
+				_receiveDate = Validator.isNotNull(dossier.getReceiveDate()) ? dossier.getReceiveDate().toGMTString()
+						: StringPool.BLANK;
 				_dossierNo = dossier.getDossierNo();
-			}
-			
-			// get data applicant or employee
-			ApplicantActions applicantActions = new ApplicantActionsImpl();
 
-			try {
-				
-				Registration registration = RegistrationLocalServiceUtil.getLastSubmittingByUser(dossier.getGroupId(), serviceContext.getUserId(), true);
-				
-				if (Validator.isNotNull(registration)) {
+				// get data applicant or employee
+				ApplicantActions applicantActions = new ApplicantActionsImpl();
 
-					JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
+				try {
 
-					_subjectName = applicantJSON.getString("applicantName");
-					_subjectId = applicantJSON.getString("applicantId");
-					_address = applicantJSON.getString("address");
-					_cityCode = applicantJSON.getString("cityCode");
-					_cityName = applicantJSON.getString("cityName");
-					_districtCode = applicantJSON.getString("districtCode");
-					_districtName = applicantJSON.getString("districtName");
-					_wardCode = applicantJSON.getString("wardCode");
-					_wardName = applicantJSON.getString("wardName");
-					_contactName = applicantJSON.getString("contactName");
-					_contactTelNo = applicantJSON.getString("contactTelNo");
-					_contactEmail = applicantJSON.getString("contactEmail");
-					_applicantName = applicantJSON.getString("applicantName");
-					_applicantIdType = applicantJSON.getString("applicantIdType");
-					_applicantIdNo = applicantJSON.getString("applicantIdNo");
-					_applicantIdDate = applicantJSON.getString("applicantIdDate");
+					Registration registration = RegistrationLocalServiceUtil
+							.getLastSubmittingByUser(dossier.getGroupId(), serviceContext.getUserId(), true);
 
-				} else {
-					String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
+					if (Validator.isNotNull(registration)) {
 
-					JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
+						JSONObject applicantJSON = JSONFactoryUtil
+								.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
 
-					_subjectName = applicantJSON.getString("applicantName");
-					_subjectId = applicantJSON.getString("applicantId");
-					_address = applicantJSON.getString("address");
-					_cityCode = applicantJSON.getString("cityCode");
-					_cityName = applicantJSON.getString("cityName");
-					_districtCode = applicantJSON.getString("districtCode");
-					_districtName = applicantJSON.getString("districtName");
-					_wardCode = applicantJSON.getString("wardCode");
-					_wardName = applicantJSON.getString("wardName");
-					_contactName = applicantJSON.getString("contactName");
-					_contactTelNo = applicantJSON.getString("contactTelNo");
-					_contactEmail = applicantJSON.getString("contactEmail");
-					_applicantName = applicantJSON.getString("applicantName");
-					_applicantIdType = applicantJSON.getString("applicantIdType");
-					_applicantIdNo = applicantJSON.getString("applicantIdNo");
-					_applicantIdDate = applicantJSON.getString("applicantIdDate");
+						_subjectName = applicantJSON.getString("applicantName");
+						_subjectId = applicantJSON.getString("applicantId");
+						_address = applicantJSON.getString("address");
+						_cityCode = applicantJSON.getString("cityCode");
+						_cityName = applicantJSON.getString("cityName");
+						_districtCode = applicantJSON.getString("districtCode");
+						_districtName = applicantJSON.getString("districtName");
+						_wardCode = applicantJSON.getString("wardCode");
+						_wardName = applicantJSON.getString("wardName");
+						_contactName = applicantJSON.getString("contactName");
+						_contactTelNo = applicantJSON.getString("contactTelNo");
+						_contactEmail = applicantJSON.getString("contactEmail");
+						_applicantName = applicantJSON.getString("applicantName");
+						_applicantIdType = applicantJSON.getString("applicantIdType");
+						_applicantIdNo = applicantJSON.getString("applicantIdNo");
+						_applicantIdDate = applicantJSON.getString("applicantIdDate");
+						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
 
+					} else {
+						String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
+
+						JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
+
+						_subjectName = applicantJSON.getString("applicantName");
+						_subjectId = applicantJSON.getString("applicantId");
+						_address = applicantJSON.getString("address");
+						_cityCode = applicantJSON.getString("cityCode");
+						_cityName = applicantJSON.getString("cityName");
+						_districtCode = applicantJSON.getString("districtCode");
+						_districtName = applicantJSON.getString("districtName");
+						_wardCode = applicantJSON.getString("wardCode");
+						_wardName = applicantJSON.getString("wardName");
+						_contactName = applicantJSON.getString("contactName");
+						_contactTelNo = applicantJSON.getString("contactTelNo");
+						_contactEmail = applicantJSON.getString("contactEmail");
+						_applicantName = applicantJSON.getString("applicantName");
+						_applicantIdType = applicantJSON.getString("applicantIdType");
+						_applicantIdNo = applicantJSON.getString("applicantIdNo");
+						_applicantIdDate = applicantJSON.getString("applicantIdDate");
+						_representative = applicantJSON.getString("representativeEnterprise");
+
+					}
+
+				} catch (PortalException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				
-			} catch (PortalException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			try {
-				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), serviceContext.getUserId());
-				
-				_log.info("GET EMPLOYEE ID ____" + serviceContext.getUserId());
-				
-				JSONObject employeeJSON = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
-				
-				_log.info("GET EMPLOYEE ____");
 
-				_log.info(employeeJSON);
-				
-				_employee_employeeNo = employeeJSON.getString("employeeNo");
-				_employee_fullName = employeeJSON.getString("fullName");
-				_employee_title = employeeJSON.getString("title");
-				
-			} catch (Exception e) {
-				_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
-				_log.error(e);
-			}
+				try {
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
+							serviceContext.getUserId());
 
+					// _log.info("GET EMPLOYEE ID ____" +
+					// serviceContext.getUserId());
+
+					JSONObject employeeJSON = JSONFactoryUtil
+							.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
+
+					// _log.info("GET EMPLOYEE ____");
+
+					// _log.info(employeeJSON);
+
+					_employee_employeeNo = employeeJSON.getString("employeeNo");
+					_employee_fullName = employeeJSON.getString("fullName");
+					_employee_title = employeeJSON.getString("title");
+
+				} catch (Exception e) {
+					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
+					_log.error(e);
+				}
+			}
 			// process sampleData
 			if (Validator.isNull(sampleData)) {
 				sampleData = "{}";
@@ -203,7 +211,7 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
 					} else if (value.equals("_employee_fullName")) {
 						jsonMap.put(entry.getKey(), _employee_fullName);
-					}else if (value.equals("_employee_title")) {
+					} else if (value.equals("_employee_title")) {
 						jsonMap.put(entry.getKey(), _employee_title);
 					} else if (value.equals("_applicantName")) {
 						jsonMap.put(entry.getKey(), _applicantName);
@@ -213,8 +221,10 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _applicantIdNo);
 					} else if (value.equals("_applicantIdDate")) {
 						jsonMap.put(entry.getKey(), _applicantIdDate);
-					}else if (value.equals("_curDate")) {
+					} else if (value.equals("_curDate")) {
 						jsonMap.put(entry.getKey(), _curDate);
+					} else if (value.equals("_representative")) {
+						jsonMap.put(entry.getKey(), _representative);
 					}
 
 				} else if (value.startsWith("_") && value.contains(":")) {
@@ -253,7 +263,7 @@ public class AutoFillFormData {
 							resultBinding += ", " + _employee_employeeNo;
 						} else if (value.equals("_employee_fullName")) {
 							resultBinding += ", " + _employee_fullName;
-						}else if (value.equals("_employee_title")) {
+						} else if (value.equals("_employee_title")) {
 							resultBinding += ", " + _employee_title;
 						} else if (value.equals("_applicantName")) {
 							resultBinding += ", " + _applicantName;
@@ -265,6 +275,8 @@ public class AutoFillFormData {
 							resultBinding += ", " + _applicantIdDate;
 						} else if (value.equals("_curDate")) {
 							resultBinding += ", " + _curDate;
+						} else if (value.equals("_representative")) {
+							resultBinding += ", " + _representative;
 						}
 					}
 
@@ -278,10 +290,13 @@ public class AutoFillFormData {
 					try {
 						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 								paper, false, new DossierFileComparator(false, "createDate", Date.class));
-						
-						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData()) && dossierFile.getFormData().trim().length() != 0) {
+
+						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
+								&& dossierFile.getFormData().trim().length() != 0) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
+							// _log.info("JSON other map: " +
+							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {
 								if (variable.contains(":")) {
@@ -290,7 +305,7 @@ public class AutoFillFormData {
 										myCHK += ", " + jsonOtherMap.get(string).toString();
 									}
 									myCHK = myCHK.replaceFirst(", ", "");
-								}else{
+								} else {
 									myCHK = jsonOtherMap.get(variable).toString();
 								}
 							} catch (Exception e) {
@@ -323,7 +338,7 @@ public class AutoFillFormData {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 		return result.toJSONString();
 	}
 
@@ -378,6 +393,6 @@ public class AutoFillFormData {
 		}
 		return list;
 	}
-	
+
 	private static final Log _log = LogFactoryUtil.getLog(AutoFillFormData.class);
 }

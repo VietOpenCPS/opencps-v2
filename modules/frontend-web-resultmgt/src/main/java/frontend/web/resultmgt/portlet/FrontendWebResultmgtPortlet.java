@@ -4,9 +4,11 @@ import frontend.web.resultmgt.constants.FrontendWebResultmgtPortletKeys;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -14,9 +16,11 @@ import java.io.IOException;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletMode;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -36,14 +40,30 @@ public class FrontendWebResultmgtPortlet extends FreeMarkerPortlet {
 	public void render(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+		String portletId = portletDisplay.getId();
 //		HttpServletRequest httpRequest = PortalUtil.getHttpServletRequest(renderRequest);
 
 		renderRequest.setAttribute("api", generateApiJsonObject(themeDisplay));
+		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
 		
 		String govAgencyCode =
 				ParamUtil.getString(renderRequest, "govAgencyCode");
+		// url
+		PortletURL resultmainlistURL = PortletURLFactoryUtil.create(
+			renderRequest, portletId, themeDisplay.getPlid(),
+			PortletRequest.RENDER_PHASE);
+	
+		resultmainlistURL.setPortletMode(PortletMode.VIEW);
+		resultmainlistURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		resultmainlistURL.setParameter(
+			"mvcPath", "/templates/result_mainlist.ftl");
+	
+		urlObject.put("result_mainlist", resultmainlistURL.toString());
 		
+		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("govAgencyCode", govAgencyCode);
+		
 		super.render(renderRequest, renderResponse);
 	}
 

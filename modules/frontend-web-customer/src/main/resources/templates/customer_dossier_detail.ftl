@@ -55,7 +55,7 @@
 						<div class="row MT5">
 							
 							<div class="col-sm-2 PT5 text-right">
-								Họ và tên
+								Họ và tên<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-10">
 								<div class="form-group"> 
@@ -66,16 +66,16 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Địa chỉ
+								Địa chỉ<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-10">
 								<div class="form-group"> 
-									<input type="text" class="form-control" data-bind="value: address" id="address" name="address"> 
+									<input type="text" class="form-control" data-bind="value: address" id="address" name="address" required="required" validationMessage="Bạn phải điền địa chỉ"> 
 								</div>
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Tỉnh/ Thành phố
+								Tỉnh/ Thành phố<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -86,7 +86,7 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Quận/ Huyện
+								Quận/ Huyện<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -97,7 +97,7 @@
 							</div>
 							
 							<div class="col-sm-2 PT5 text-right">
-								Xã/ Phường
+								Xã/ Phường<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PL0">
 								<div class="form-group"> 
@@ -108,7 +108,7 @@
 							</div>
 
 							<div class="col-sm-2 PT5 text-right">
-								Điện thoại
+								Điện thoại<span style="color: red;"> * </span>
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
@@ -122,7 +122,7 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail" required="required" validationMessage="Bạn phải điền email">
+									<input type="text" class="form-control" id="contactEmail" name="contactEmail" data-bind="value : contactEmail" required="required" validationMessage="Bạn phải điền email" readonly>
 									<span data-for="contactEmail" class="k-invalid-msg"></span> 
 								</div>
 							</div>
@@ -168,13 +168,13 @@
 							<i class="fa fa-upload text-light-blue"></i>
 						</label>
 						
-						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" hasform="#if(hasForm){# true #}#">
+						<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#" eForm="#if(hasForm){# true #}#">
 						
 						<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 							<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 						</a>
 
-						<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#">
+						<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" fileTemplateNo="#:fileTemplateNo#" eForm="#if(hasForm){# true #}#">
 							<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 						</a>
 					</div>
@@ -209,6 +209,9 @@
 				$("\\#formPartNo"+id).empty();
 
 				var alpaca = eval("(" + result + ")");
+
+				console.log("alpaca==================", alpaca);
+				<#-- var alpaca = result; -->
 				var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
 				
 				if(formdata.dinh_danh){
@@ -226,7 +229,11 @@
 				
 				alpaca.data = formdata; 
 
-			$("\\#formPartNo"+id).alpaca(alpaca);
+				setTimeout(function(){
+					$("\\#formPartNo"+id).alpaca(alpaca);
+				}, 1000);
+
+			
 			<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
 			type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
 
@@ -276,6 +283,7 @@
 
 <div class="button-row MT20">
 	<button class="btn btn-active" id="btn-submit-dossier">Lưu <i class="fa fa-save"></i></button>
+	<button class="btn btn-active" id="btn-next-step-dossier" type="button"><i class="fa fa-sign-in" aria-hidden="true"></i> Tiếp tục</button>
 	<#-- <button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	<button class="btn btn-active"><i class="fa fa-trash"></i> Xóa</button> -->
 	
@@ -302,7 +310,7 @@
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
-			var hasform = $(this).attr("hasform");
+			var hasform = $(this).attr("eForm");
 
 			console.log(partNo);
 			console.log(fileTemplateNo);
@@ -335,53 +343,71 @@
 		});
 
 		$(document).off("click",".delete-dossier-file");
-		$(document).on("click",".delete-dossier-file",function(event){
+		$(document).on("click",".delete-dossier-file",function(){
+			if(navigator.onLine){
+				var dossierId  = "${dossierId}";
+				var dataPartNo = $(this).attr("data-partno");
+				var eForm = $(this).attr("eForm");
+				var fileTemplateNo = $(this).attr("fileTemplateNo");
+				try{
+					$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
+				}catch (e){
 
-			var dossierId  = "${dossierId}";
-			var dataPartNo = $(this).attr("data-partno");
-			try{
-				$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
-			}catch (e){
-				
-			}
-			
-			console.log(dossierId);
-			console.log(dataPartNo);
-			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
-			if(cf){
-				if(dossierId && dataPartNo){
-					$.ajax({
-						url : "${api.server}/dossiers/"+dossierId+"/files",
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
-						success : function(result) {
-							var data = result.data;
-							if(data){
-								for (var i = 0; i < data.length; i++) {
-									if(dataPartNo === data[i].dossierPartNo){
-										removeDossierFile(dossierId, data[i].referenceUid);
+				}
+
+				console.log(dossierId);
+				console.log(dataPartNo);
+				var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
+				if(cf){
+					if(dossierId && dataPartNo){
+						if(eForm === "true"){
+
+							$.ajax({
+								url : "${api.server}/dossiers/"+dossierId+"/files",
+								dataType : "json",
+								type : "GET",
+								headers : {"groupId": ${groupId}},
+								success : function(result) {
+									var data = result.data;
+									if(data){
+										for (var i = 0; i < data.length; i++) {
+											if(dataPartNo === data[i].dossierPartNo){
+												removeDossierFile(dossierId, data[i].referenceUid);
+											}
+										}
+										$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+										$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+
+										if(navigator.onLine){
+											notification.show({
+												message: "Yêu cầu được thực hiện thành công"
+											}, "success");
+										}
 
 									}
+									$("#validPart"+dataPartNo).val("0");
+								},
+								error : function(result) {
+									if(navigator.onLine){
+										notification.show({
+											message: "Xẩy ra lỗi, vui lòng thử lại"
+										}, "error");
+									}
+									
 								}
-								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+							});
 
-								$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-								notification.show({
-									message: "Yêu cầu được thực hiện thành công"
-								}, "success");
-
-							}
-							$("#validPart"+dataPartNo).val("0");
-						},
-						error : function(result) {
-							notification.show({
-								message: "Xẩy ra lỗi, vui lòng thử lại"
-							}, "error");
+						}else {
+							removeDossierFileNotEform(dossierId,fileTemplateNo,dataPartNo);
 						}
-					});
+					}
 				}
+			}else {
+				alert("Không có kết nối internet, vui lòng kiểm tra kết nối của bạn!");
 			}
+
+			
 		});
 
 	$("#btn-view-extendguide").click(function(){
@@ -480,9 +506,15 @@
 		funSaveDossier();
 	});
 
+	$("#btn-next-step-dossier").click(function(){
+		funSaveDossier();
+		setTimeout(function(){ 
+			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
+		}, 1000);
+	});
+
 	funSaveDossier = function(){
 		//PUT dossier
-		
 		var validator = $("#detailDossier").kendoValidator().data("kendoValidator");
 		var validateDossierTemplate = fnCheckValidTemplate();
 
@@ -529,20 +561,18 @@
 				},
 				success :  function(result){                       
 					console.log("PUT Dossier success!");
-
-				//finish PUT dossier create action for dossier
-				createActionDossier(${dossierId});
-
-				manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
-
-			},
-			error:function(result){
-				console.error(result);
-				notification.show({
-					message: "Xảy ra lỗi, xin vui lòng thử lại"
-				}, "error");
-			}	
-		});
+					if(result.dossierStatus == ''){
+						createActionDossier(${dossierId});
+					}
+					
+				},
+				error:function(result){
+					console.error(result);
+					notification.show({
+						message: "Xảy ra lỗi, xin vui lòng thử lại"
+					}, "error");
+				}	
+			});
 		}else {
 			notification.show({
 				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
@@ -833,6 +863,43 @@
 
 			}
 		});
+	}
+
+	var removeDossierFileNotEform = function(dossierId,fileTemplateNo,partNo){
+		if(navigator.onLine){
+			var data = new FormData();
+			$.ajax({
+				url : "${api.server}/dossiers/"+dossierId+"/files/"+fileTemplateNo+"/all",
+				type : "DELETE",
+				dataType : "json",
+				processData: false,
+				contentType: false,
+				cache: false,
+				headers : {
+					"groupId": ${groupId},
+					"Accept" : "application/json"
+				},
+				data : data,
+				success : function(result) {
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+
+					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >0</span>');
+
+					$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",0);
+
+				},
+				error : function(result) {
+					if(navigator.onLine){
+						notification.show({
+							message: "Xẩy ra lỗi, vui lòng thử lại"
+						}, "error");
+					}
+				}
+			});
+		}
+		
 	}
 
 	/*function makeFileList() {

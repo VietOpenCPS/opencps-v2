@@ -272,13 +272,15 @@ public class RegistrationUtils {
 					for (RegistrationForm regForm : registrationFormList) {
 					JSONObject xuongSXJson = JSONFactoryUtil.createJSONObject();
 					String formData = regForm.getFormData();
+					long registrationFormId = regForm.getRegistrationFormId();
 					_log.info("formData: "+formData);
-						try {
-							JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
-							String xuongSX = formJson.getString("ten_xuong_san_xuat");
-							if (Validator.isNotNull(xuongSX)) {
-								xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
-								data.put(xuongSXJson);
+					try {
+						JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
+						String xuongSX = formJson.getString("ten_xuong_san_xuat");
+						if (Validator.isNotNull(xuongSX)) {
+							xuongSXJson.put("ten_xuong_san_xuat", xuongSX);
+							xuongSXJson.put("registrationFormId",registrationFormId);
+							data.put(xuongSXJson);
 							}
 						} catch (Exception e) {
 							// TODO: handle exception

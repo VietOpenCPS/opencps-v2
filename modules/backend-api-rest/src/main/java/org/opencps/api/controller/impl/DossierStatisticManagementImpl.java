@@ -95,13 +95,6 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 	}
 
 	@Override
-	public Response getDossierStatisticTodo(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Response getDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierStatisticSearchModel search) {
 		DossierStatisticAction actions = new DossierStatisticActionImpl();
@@ -133,8 +126,13 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
 		}
 	}
 

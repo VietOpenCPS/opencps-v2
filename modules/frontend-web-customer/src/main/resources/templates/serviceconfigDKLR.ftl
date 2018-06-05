@@ -498,7 +498,25 @@
 			}
 		})
 	};
+
+	
+
 	var createDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+		alert("aaaaaaaaaaaaaa  = " + "${(applicant.cityCode)!}");
+		if(!"${(applicant.cityCode)!}"){
+			
+			var cf = fnConfirm("Thông báo",
+			    "Bạn muốn nộp hồ sơ này", 
+			    "Nộp hồ sơ", "Hủy bỏ",
+			    function(){
+			    	window.location.href = "/profile";
+			    }, function(){
+			      	
+			    });
+
+				cf.open();
+				return;
+			}
 		$.ajax({
       url : "${api.server}/dossiers",
       dataType : "json",
@@ -525,6 +543,7 @@
         manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
       },
       error : function(result){
+
       }
     });
 	}

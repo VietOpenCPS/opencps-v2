@@ -14,11 +14,9 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
@@ -26,6 +24,9 @@ import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.persistence.ApplicantPersistence;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -47,13 +48,9 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -82,11 +79,12 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 	public static final String CLASS_NAME = Registration.class.getName();
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Registration insert(long groupId, long companyId, String applicantName, String applicantIdType, String applicantIdNo,
-			String applicantIdDate, String address, String cityCode, String cityName, String districtCode,
-			String districtName, String wardCode, String wardName, String contactName, String contactTelNo,
-			String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
-			String registrationClass, ServiceContext serviceContext) throws PortalException, SystemException {
+	public Registration insert(long groupId, long companyId, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
+			String registrationClass, String representativeEnterprise, ServiceContext serviceContext)
+			throws PortalException, SystemException {
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
@@ -128,6 +126,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setRegistrationClass(registrationClass);
 		model.setRegistrationState(registrationState);
 		model.setSubmitting(false);
+		model.setRepresentativeEnterprise(representativeEnterprise);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(
@@ -149,8 +148,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName,
-			int registrationState, String registrationClass, ServiceContext serviceContext)
-			throws PortalException, SystemException {
+			int registrationState, String registrationClass, String representativeEnterprise,
+			ServiceContext serviceContext) throws PortalException, SystemException {
 
 		Date now = new Date();
 
@@ -223,6 +222,9 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		}
 		if (Validator.isNotNull(registrationState)) {
 			model.setRegistrationState(registrationState);
+		}
+		if (Validator.isNotNull(representativeEnterprise)) {
+			model.setRepresentativeEnterprise(representativeEnterprise);
 		}
 
 		return registrationPersistence.update(model);
@@ -414,7 +416,8 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String govAgencyCode, String govAgencyName, int registrationState,
-			String registrationClass, ServiceContext serviceContext) throws PortalException, SystemException {
+			String registrationClass, String representativeEnterprise, ServiceContext serviceContext)
+			throws PortalException, SystemException {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -451,6 +454,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setGovAgencyName(govAgencyName);
 			registration.setRegistrationClass(registrationClass);
 			registration.setRegistrationState(registrationState);
+			registration.setRepresentativeEnterprise(representativeEnterprise);
 
 			registration = registrationPersistence.update(registration);
 		} else {
@@ -490,6 +494,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setGovAgencyName(govAgencyName);
 			registration.setRegistrationClass(registrationClass);
 			registration.setRegistrationState(registrationState);
+			registration.setRepresentativeEnterprise(representativeEnterprise);
 
 			registration.setUuid(uuid);
 

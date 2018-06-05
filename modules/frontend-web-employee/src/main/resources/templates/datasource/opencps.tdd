@@ -1,7 +1,10 @@
 {
+	
 	"api": {
-		"server": "http://localhost:8081/api/employee"
+		"server": "http://hanoi.fds.vn:2281/api"
 	},
+	groupId : 1,
+	dossierId : 2,
 	"employee":{
 		"api":{
 			"read": "dossiers"

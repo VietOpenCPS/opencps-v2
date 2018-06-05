@@ -35,6 +35,8 @@ public class DateTimeUtils {
 	
 	public static final String _VN_TIME_FORMAT_HOUR = "HH:mm";
 	
+	public static final String _NSW_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
 	public static String convertDateToString(Date date, String pattern) {
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 			pattern);

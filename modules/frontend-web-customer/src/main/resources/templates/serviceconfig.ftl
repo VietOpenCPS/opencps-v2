@@ -6,10 +6,10 @@
   <div class="">
     <div class="row row MT10 PL10 PR10">
       <div class="col-xs-12 col-sm-3">
-        <button id="btn_fillter_by_admintration" class="btn btn-active form-control">Tìm theo cơ quan <i class="fa fa-university ML5" aria-hidden="true"></i></button>
+        <button id="btn_fillter_by_admintration" type="button" class="btn btn-active form-control">Tìm theo cơ quan <i class="fa fa-university ML5" aria-hidden="true"></i></button>
       </div>
       <div class="col-xs-12 col-sm-3 PL0">
-        <button id="btn_fillter_by_domain" class="btn form-control">Tìm theo lĩnh vực <i class="fa fa-archive ML5" aria-hidden="true"></i></button>
+        <button id="btn_fillter_by_domain" type="button" class="btn form-control">Tìm theo lĩnh vực <i class="fa fa-archive ML5" aria-hidden="true"></i></button>
       </div>
       <div class="col-xs-12 col-sm-6 PL0">
        <div class="form-group">
@@ -26,7 +26,7 @@
 </div>
 
 
-<div id="serviceconfig_container">
+<div id="serviceconfig_container_create_dossier">
   <#include "serviceconfig_administration.ftl">
 </div>
 
@@ -67,15 +67,17 @@
 
   $(document).ready(function(){
 	
-	$('#choiseProcessForDossier').on('hidden.bs.modal', function(e) {
-		$(this).removeData();
-	}) ;
+  	$('#choiseProcessForDossier').on('hidden.bs.modal', function(e) {
+  		$(this).removeData();
+  	});
 	
     $('#btn_fillter_by_domain').click(function(){
+      console.log("domain click");
       manageDossier.navigate("/taohosomoi/doman");
     });
 
     $('#btn_fillter_by_admintration').click(function(){
+      console.log("admintration click");
       manageDossier.navigate("/taohosomoi/admin");
     });
 

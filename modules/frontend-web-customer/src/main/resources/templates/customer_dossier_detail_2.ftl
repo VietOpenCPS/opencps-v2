@@ -13,14 +13,16 @@
 			<div class="background-triangle-big">Tên thủ tục</div> 
 			<span class="text-bold" data-bind="text:serviceName"></span>
 			<div class="pull-right group-icons">
-				<a href="javascript:;" id="btn-submit-dossier-header">
-					<i class="fa fa-paper-plane" aria-hidden="true"></i> 
-					Nộp hồ sơ
-				</a> 
-				<a href="javascript:;" id="btn-delete-dossier-header">
-					<i class="fa fa-trash"></i>
-					Xóa
-				</a>
+				<#if dossier.dossierStatus?has_content && dossier.dossierStatus == "new" && dossier.submitting?has_content && dossier.submitting != true >
+					<a href="javascript:;" id="btn-submit-dossier-header" style="display: none;">
+						<i class="fa fa-paper-plane" aria-hidden="true"></i> 
+						Nộp hồ sơ
+					</a> 
+					<a href="javascript:;" id="btn-delete-dossier-header" style="display: none;">
+						<i class="fa fa-trash"></i>
+						Xóa
+					</a>
+				</#if>
 			</div>
 		</div>
 
@@ -61,7 +63,7 @@
 
 							<div class="row MT5">
 								<div class="col-sm-2">
-									<label>Họ và tên</label>
+									<label>Họ và tên<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="contactName" data-pk="1" data-type="text" data-toggle="#editContactName" data-original-title="Nhập họ và tên" tabindex="-1" class="" data-bind="text:contactName" required></span>
@@ -73,7 +75,7 @@
 
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Địa chỉ</label>
+									<label>Địa chỉ<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="address" data-pk="1" data-type="text" data-toggle="#editAddress" data-original-title="Nhập địa chỉ" tabindex="-1" class="" data-bind="text:address" required></span>
@@ -85,7 +87,7 @@
 
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Tỉnh/ Thành phố</label>
+									<label>Tỉnh/ Thành phố<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="city" data-pk="1" data-type="select" data-toggle="#editCity" data-original-title="Chọn tỉnh/ thành phố" tabindex="-1" class="" data-bind="text:cityName" required><#-- ${api.applicant.cityName} --></span>
@@ -96,7 +98,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Quận/ Huyện</label>
+									<label>Quận/ Huyện<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="district" data-pk="1" data-type="select" data-toggle="#editDistrict" data-original-title="Chọn quận/ huyện" tabindex="-1" class="" data-bind="text:districtName" required><#-- ${api.applicant.districtName} --></span>
@@ -107,7 +109,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Xã/ Phường</label>
+									<label>Xã/ Phường<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="wards" data-pk="1" data-type="select" data-toggle="#editWards" data-original-title="Chọn xã/ phường" tabindex="-1" class="" data-bind="text:wardName" required><#-- ${api.applicant.wardName} --></span>
@@ -119,7 +121,7 @@
 
 							<div class="row">
 								<div class="col-sm-2">
-									<label>Điện thoại</label>
+									<label>Điện thoại<span style="color: red;"> * </span></label>
 								</div>
 								<div class="col-sm-10">
 									<span id="contactTelNo" data-pk="1" data-type="text" data-toggle="#editContactTelNo" data-original-title="Nhập số điện thoại" tabindex="-1" class="" data-bind="text:contactTelNo" required></span>
@@ -161,33 +163,49 @@
 							<input type="hidden" id="validPart#:id#" name="validPart#:id#" class="validPart" value="0">
 							#}#
 						</span>
+						
+						#
+						var lockState = fnCheckLockTemplate("${dossier.lockState}",id);
+						#
 
 						<div class="actions">
-
+							
+							#if(!lockState){#	
 							<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 								<i class="fa fa-archive" aria-hidden="true"></i>
 							</a>
+							#}#
 
+							#if(!lockState){#
 							<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
 								<i class="fa fa-upload text-light-blue"></i>
 							</label>
+							#}#
 
 							<input type='file' id="file#:id#" name="file#:id#" class="hidden dossier-file" #if(multiple){# multiple #}# part-no="#:id#" file-template-no="#:fileTemplateNo#">
-
 
 							<a href="javascript:;" class="dossier-component-profile" data-toggle="tooltip" data-placement="top" title="Số tệp tin" data-partno="#:id#" data-number="#if(hasForm){# 1 #}else {# 0 #}#">
 								<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 							</a>
-
-							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#">
+							
+							#if(!lockState){#
+							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" eForm="#:hasForm#" fileTemplateNo="#:fileTemplateNo#">
 								<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 							</a>
+							#}#
 						</div>
 					</div>
 
-					#if(hasForm){
-					var dossierFile =  getReferentUidFile(${dossierId},id);
 					#
+						if(hasForm){
+						var dossierFile =  getReferentUidFile(${dossierId},id);
+						var hiddenState = "";
+
+						if(lockState){
+							hiddenState = "pointer-events:none;";
+						}
+					#
+
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 text-right">
 							<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
@@ -197,7 +215,7 @@
 					</div>
 
 					<div class="col-sm-12" #if(dossierFile.referenceUid){# style="height:450px; width:100%;overflow:auto;" #}#>
-						<form id="formPartNo#:id#">
+						<form id="formPartNo#:id#" style="#:hiddenState#">
 
 						</form>
 					</div>
@@ -205,33 +223,33 @@
 					
 
 					$.ajax({
-					url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
-					dataType : "text",
-					type : "GET",
-					headers : {"groupId": ${groupId}},
-					success : function(result){
-					$("\\#formPartNo"+id).empty();
-					var alpaca = eval("(" + result + ")");
-					var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
-					if(formdata){
-					$("\\#validPart"+id).val("1");
-				}
-				alpaca.data = formdata;
+						url : "${api.server}/dossiers/${dossierId}/files/"+dossierFile.referenceUid+"/formscript",
+						dataType : "text",
+						type : "GET",
+						headers : {"groupId": ${groupId}},
+						success : function(result){
+							$("\\#formPartNo"+id).empty();
+							var alpaca = eval("(" + result + ")");
+							var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+							if(formdata){
+								$("\\#validPart"+id).val("1");
+							}
+							alpaca.data = formdata;
 
-				$("\\#formPartNo"+id).alpaca(alpaca);
+							setTimeout(function(){
+								$("\\#formPartNo"+id).alpaca(alpaca);
+							},1000)
 
-				<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12 "><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
+						},
+						error : function(result){
 
-			},
-			error : function(result){
+						}
+					});
+				}#
 
-		}
-	});
-}#
-
-#}#
-</script>
-</div>
+			#}#
+		</script>
+	</div>
 </div>
 
 <div class="row-parts-content">
@@ -293,7 +311,7 @@
 			<label>Ghi chú</label>
 		</div>
 		<div class="col-sm-11">
-			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:applicantNote"></span>
+			<span id="applicantNote" data-pk="1" data-type="textarea" data-toggle="#editApplicantNote" data-original-title="Ghi chú" tabindex="-1" class="" data-bind="text:lastActionNote"></span>
 			<span class="pull-right">
 				<a href="javascript:;" id="editApplicantNote" style="float: right"><i class="fa fa-pencil"></i></a>
 			</span>
@@ -302,24 +320,23 @@
 	</div>
 </div>
 </div>
-
 <div class="button-row MT20">
 	<#if resCancelling?has_content >
 
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 
 	<#elseif sendAdd?has_content >
 
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" ><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 
-	<#else>
+	<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "new" &&            	dossier.submitting?has_content && dossier.submitting != true>
 
-	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : submitting"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
+	<button class="btn btn-active" id="btn-submit-dossier" data-bind="value : lockState" style="display: none;"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</button>
 	
 	</#if>
 
 	
-	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash"></i> Xóa</button>
+	<button class="btn btn-active" id="btn-delete-dossier" data-bind="attr : {data-pk : dossierId}"><i class="fa fa-trash" style="display: none;"></i> Xóa</button>
 </div>
 </div>
 
@@ -348,11 +365,56 @@
 				}
 			});
 
+
 		}catch(e){
 			valid = false;
 		}
 
 		return valid;
+	}
+
+	function fnCheckLockTemplate(lockState, item){
+		if(lockState.startsWith("LOCK")){
+
+			if(lockState === "LOCK INPUT"){
+				return true;
+			}else if(lockState === "LOCK ALL"){
+				return true;
+			}else if (lockState !== "LOCK ALL" && lockState !== "LOCK INPUT" && lockState !== "LOCK OUTPUT" )  {
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return true;
+						}
+					}
+				}
+			}
+
+		}else if(lockState.startsWith("UPDATE")){
+			if(lockState === "UPDATE INPUT"){
+				return false;
+			}
+
+			if(lockState === "UPDATE ALL"){
+				return false;
+			}
+
+			if (lockState !== "UPDATE ALL" && lockState !== "UPDATE INPUT" && lockState !== "UPDATE OUTPUT" ){
+				var partLocksStr = lockState.split(" ")[1];
+				if(partLocksStr){
+					var partLocks = partLocksStr.split(",");
+					for (var i = 0; i < partLocks.length; i++) {
+						if(partLocks[i] === item){
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 		//upload file click
@@ -392,60 +454,78 @@
 		});
 
 		$(document).off("click",".delete-dossier-file");
-		$(document).on("click",".delete-dossier-file",function(event){
-			var dossierId  = ${dossierId};
-			var dataPartNo = $(this).attr("data-partno");
-			try{
-				$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
-			}catch (e){
-				
-			}
-			console.log(dossierId);
-			console.log(dataPartNo);
-			var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
-			if(cf){
-				if(dossierId && dataPartNo){
-					$.ajax({
-						url : "${api.server}/dossiers/"+dossierId+"/files",
-						dataType : "json",
-						type : "GET",
-						headers : {"groupId": ${groupId}},
-						success : function(result) {
-							var data = result.data;
-							if(data){
-								var arrIsSuccess = new Array();
-								for (var i = 0; i < data.length; i++) {
-									if(dataPartNo === data[i].dossierPartNo){
-										var isSuccess = removeDossierFile(dossierId, data[i].referenceUid);
-										arrIsSuccess.push(isSuccess);
+		$(document).on("click",".delete-dossier-file",function(){
+			if(navigator.onLine){
+				var dossierId  = "${dossierId}";
+				var dataPartNo = $(this).attr("data-partno");
+				var eForm = $(this).attr("eForm");
+				var fileTemplateNo = $(this).attr("fileTemplateNo");
+				try{
+					$("#formPartNo"+dataPartNo).alpaca('get').setValue({});
+				}catch (e){
+					
+				}
+				console.log(dossierId);
+				console.log(dataPartNo);
+				var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
+				if(cf){
+					if(dossierId && dataPartNo){
+						if(eForm === "true"){
+							
+							$.ajax({
+								url : "${api.server}/dossiers/"+dossierId+"/files",
+								dataType : "json",
+								type : "GET",
+								headers : {"groupId": ${groupId}},
+								success : function(result) {
+									var data = result.data;
+									if(data){
+										var arrIsSuccess = new Array();
+										for (var i = 0; i < data.length; i++) {
+											var isSuccess = false;
+											if(dataPartNo === data[i].dossierPartNo){
+												isSuccess = removeDossierFile(dossierId, data[i].referenceUid);
+												arrIsSuccess.push(isSuccess);
+
+											}
+										}
+
+										if(jQuery.inArray( false, arrIsSuccess ) == -1){
+											$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
+
+											$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
+											if(navigator.onLine){
+												notification.show({
+													message: "Yêu cầu được thực hiện thành công"
+												}, "success");
+											}
+											$("#validPart"+dataPartNo).val("0");
+										}else {
+											if(navigator.onLine){
+												notification.show({
+													message: "Xẩy ra lỗi, vui lòng thử lại"
+												}, "error");
+											}
+										}
 
 									}
+								},
+								error : function(result) {
+									if(navigator.onLine){
+										notification.show({
+											message: "Xẩy ra lỗi, vui lòng thử lại"
+										}, "error");
+									}
 								}
-
-								if(jQuery.inArray( false, arrIsSuccess ) == -1){
-									$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").html('<span class="number-in-circle" >0</span>');
-
-									$(".dossier-component-profile").filter("[data-partno="+dataPartNo+"]").attr("data-number",0);
-									notification.show({
-										message: "Yêu cầu được thực hiện thành công"
-									}, "success");
-
-									$("#validPart"+dataPartNo).val("0");
-								}else {
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
-								}
-								
-							}
-						},
-						error : function(result) {
-							notification.show({
-								message: "Xẩy ra lỗi, vui lòng thử lại"
-							}, "error");
+							});
+							
+						}else {
+							removeDossierFileNotEform(dossierId,fileTemplateNo,dataPartNo);
 						}
-					});
+					}
 				}
+			}else{
+				alert("Không có kết nối internet, vui lòng kiểm tra kết nối của bạn!");
 			}
 		});
 
@@ -550,7 +630,7 @@
 
 		$("#btn-submit-dossier,#btn-submit-dossier-header").click(function(){
 			var cf = fnConfirm("Thông báo",
-				"Bạn muốn nộp hồ sơ này", 
+				"Bạn có chắc chắn muốn gửi hồ sơ trực tuyến",
 				"Nộp hồ sơ", "Hủy bỏ",
 				function(){
 
@@ -582,6 +662,19 @@
 				return ;
 			}
 
+			var valDistrict = $('#district').html();
+			var valWards = $('#wards').html();
+			var check = true;
+			if(valDistrict === "-" || valWards === "-"){
+				check = false;
+			}
+			if(!check){
+				notification.show({
+					message: "Vui lòng kiểm tra lại các thông tin bắt buộc của các thông tin chủ hồ sơ!"
+				}, "error");
+
+				return ;
+			}
 			console.log(validatePostal);
 			console.log(validateAplicantInfo);
 
@@ -673,7 +766,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -703,7 +796,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -733,7 +826,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -825,7 +918,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2  && value !== "-"){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -913,7 +1006,7 @@
 				};
 			},
 			validate: function(value) {
-				if (value.length < 1){
+				if (value.length < 2 && value !== "-"){
 					return 'Đây là trường bắt buộc';
 				}
 			},
@@ -1169,6 +1262,36 @@
 
 								return "";
 							},
+							lockState : function(e){
+								if(result.lockState){
+									if(result.lockState.startsWith("LOCK")){
+										if(result.lockState === "LOCK ALL"){
+											$("#btn-submit-dossier").remove();
+											$("#btn-delete-dossier").remove();
+											$("#btn-submit-dossier-header").remove();
+											$("#btn-delete-dossier-header").remove();
+										}else {
+											$("#btn-submit-dossier").show();
+											$("#btn-delete-dossier").show();
+											$("#btn-submit-dossier-header").show();
+											$("#btn-delete-dossier-header").show();
+										}
+									}else {
+										$("#btn-submit-dossier").show();
+										$("#btn-delete-dossier").show();
+										$("#btn-submit-dossier-header").show();
+										$("#btn-delete-dossier-header").show();
+									}
+
+								}else {
+									$("#btn-submit-dossier").show();
+									$("#btn-delete-dossier").show();
+									$("#btn-submit-dossier-header").show();
+									$("#btn-delete-dossier-header").show();
+								}
+
+								return "";
+							},
 							contactName : function(){
 								$('#contactName').editable("setValue",result.contactName); 
 								return result.contactName;
@@ -1203,12 +1326,12 @@
 
 								return "";
 							},
-							applicantNote : function(){
-								$('#applicantNote').editable("setValue",result.applicantNote);
-								if(!result.applicantNote){
-									return "Ghi chú người dùng";
-								}
-								return result.applicantNote;
+							lastActionNote : function(){
+								$('#applicantNote').editable("setValue",result.lastActionNote);
+								// if(!result.applicantNote){
+								// 	return "Ghi chú người dùng";
+								// }
+								return result.lastActionNote;
 							},
 							viaPostal : function(e){
 								console.log(result.viaPostal);
@@ -1327,6 +1450,43 @@
 				}	
 			});
 			return isSuccess;
+		}
+
+		var removeDossierFileNotEform = function(dossierId,fileTemplateNo,partNo){
+
+			if(navigator.onLine){
+				var data = new FormData();
+				$.ajax({
+					url : "${api.server}/dossiers/"+dossierId+"/files/"+fileTemplateNo+"/all",
+					type : "DELETE",
+					dataType : "json",
+					processData: false,
+					contentType: false,
+					cache: false,
+					headers : {
+						"groupId": ${groupId},
+						"Accept" : "application/json"
+					},
+					data : data,
+					success : function(result) {
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+						$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >0</span>');
+
+						$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",0);
+						$("#validPart"+partNo).val("0");
+					},
+					error : function(result) {
+						if(navigator.onLine){
+							notification.show({
+								message: "Xảy ra lỗi, xin vui lòng thử lại"
+							}, "error");
+						}
+					}
+				});
+			}
+
 		}
 
 		var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
@@ -1463,23 +1623,11 @@
 			return value;
 		}
 
-		$(function(){
-			manageDossier.route("/taohosomoi/nopthanhcong/(:dossierId)", function(dossierId){
-				$("#mainType1").hide();
-				$("#mainType2").show();
-				$("#mainType2").load("${ajax.submited_dossier_info}&${portletNamespace}dossierId="+dossierId,function(result){
-
-				});
-			});
-		});
-
 		window.onload = function(){
 			if($("#textDossierNote").text().length < 550){
 				$("#guide-toggle").remove();
 			}
 		}
-
-
 		var fnSaveForm = function(id, value){
 			var current = $("#btn-save-formalpaca"+id);
 			var referentUid = current.attr("referenceUid");

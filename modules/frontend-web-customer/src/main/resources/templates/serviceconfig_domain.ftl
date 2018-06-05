@@ -4,7 +4,7 @@
 <input type="hidden" name="serviceConfigId" id="serviceConfigId">
 <div class="row">
 	<div class="col-xs-12">
-		<div class="accordion" id="serviceConfigs">
+		<div class="accordion" id="serviceConfigsDomain">
 		</div>
 	</div>
 </div>
@@ -88,12 +88,89 @@
 			fnGetParamAndCreateDossier(id,templateNo);
 		}
 
-		$(document).off("click",".btn-select-serviceConfig, .link-govAgency");
-		$(document).on("click",".btn-select-serviceConfig, .link-govAgency",function(event){
-			event.preventDefault();
-			var serviceConfigId = $(this).attr("data-pk");
-			$("#serviceConfigId").val(serviceConfigId);
-		});
+		var fnGenServiceProcess = function(id,element){
+			console.log("pass");
+			console.log($(element));
+			$.ajax({
+				url : "${api.server}/serviceconfigs/"+id+"/processes",
+				dataType : "json",
+				type : "GET",
+				headers : {"groupId": ${groupId}},
+				success : function(result){
+					$(element).html("");
+					if(result.data){
+						var data = result.data;
+						if(result.data){
+
+							for (var i = 0; i < data.length; i++) {
+								$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
+							}
+						}
+					}
+				},
+				error : function(result){
+
+				}
+			});
+		};
+
+		var fnGetParamAndCreateDossier =  function(processOptionId, templateNo){
+			var serviceConfigId = $("#serviceConfigId").val();
+			if(templateNo && serviceConfigId){
+				var dossierTemplateNo = templateNo;
+
+				$.ajax({
+					url : "${api.server}/serviceconfigs/"+serviceConfigId,
+					dataType : "json",
+					type : "GET",
+					headers : {"groupId": ${groupId}},
+					success : function(result){
+						if(result){
+							fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode);
+						}
+					},
+					error : function(result){
+
+					}
+				});
+			} 
+		};
+
+		var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+
+			$.ajax({
+				url : "${api.server}/dossiers",
+				dataType : "json",
+				type : "POST",
+				data : {
+					referenceUid : "",
+					serviceCode : serviceCode,
+					govAgencyCode : govAgencyCode,
+					dossierTemplateNo : dossierTemplateNo,
+					applicantName : "${(applicant.applicantName)!}",
+					applicantIdType : "${(applicant.applicantIdType)!}",
+					applicantIdNo : "${(applicant.applicantIdNo)!}",
+					applicantIdDate : "01/01/2017 00:00:00",
+					address : "${(applicant.address)!}",
+					cityCode : "${(applicant.cityCode)!}",
+					districtCode : "${(applicant.districtCode)!}",
+					wardCode : "${(applicant.wardCode)!}",
+					contactName : "${(applicant.contactName)!}",
+					contactTelNo : "${(applicant.contactTelNo)!}",
+					contactEmail : "${(applicant.contactEmail)!}"
+				},
+				headers : {"groupId": ${groupId}},
+				success : function(result){
+					$("#choiseProcessForDossier").modal("hide");
+
+					manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
+
+				},
+				error : function(result){
+				}
+
+			});
+		};
 
 		dataSourceServiceConfigDomain = new kendo.data.DataSource({
 			transport : {
@@ -120,7 +197,7 @@
 			}
 		});
 
-		$("#serviceConfigs").kendoListView({
+		$("#serviceConfigsDomain").kendoListView({
 			dataSource : dataSourceServiceConfigDomain,
 			template : kendo.template($("#templateServiceConfigDomain").html()),
 			autoBind : true,
@@ -149,13 +226,6 @@
 							$(element).append('<li><span class="btn-choise-process hover-pointer" data-pk="'+data[i].processOptionId+'" data-template="'+data[i].templateNo+'" onclick="selectProcess(this);">'+data[i].optionName+'</span></li>');
 						}
 					}
-					/*$(".btn-choise-process").unbind().click(function(){
-						console.log("choise process");
-						var id = $(this).attr("data-pk");
-						var templateNo = $(this).attr("data-template");
-						fnGetParamAndCreateDossier(id,templateNo);
-	
-					});*/
 				},
 				error : function(result){
 	

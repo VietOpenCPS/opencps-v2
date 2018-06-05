@@ -101,7 +101,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			_log.info("EmployeeManagementImpl.getEmployees()"+params);
 			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
@@ -523,7 +523,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			params.put(EmployeeJobPosTerm.EMPLOYEE_ID, String.valueOf(id));
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					Boolean.getBoolean(query.getOrder())) };
+					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployeeJobpos(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -960,7 +960,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				params.put("userIdList", strUserIdList.toString());
 
 				Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-						Boolean.getBoolean(query.getOrder())) };
+						Boolean.valueOf(query.getOrder())) };
 
 				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 						query.getStart(), query.getEnd(), serviceContext);

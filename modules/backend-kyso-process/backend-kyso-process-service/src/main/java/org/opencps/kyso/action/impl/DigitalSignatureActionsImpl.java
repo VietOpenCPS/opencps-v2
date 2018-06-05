@@ -31,10 +31,10 @@ import vgca.svrsigner.ServerSigner;
 public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
 	private static Log _log = LogFactoryUtil.getLog(DigitalSignatureActionsImpl.class);
-	private static final String TYPE_KYSO = "1135, 1158, 1160";
-	private static final String TYPE_DONGDAU = "1137, 1160, 1162";
-	private static final String STEPCODE_KYSO = "300, 301";
-	private static final String STEPCODE_DONGDAU = "400";
+//	private static final String TYPE_KYSO = "1135, 1158, 1160, 1032";
+//	private static final String TYPE_DONGDAU = "1137, 1160, 1162";
+//	private static final String STEPCODE_KYSO = "300, 301, 105";
+//	private static final String STEPCODE_DONGDAU = "400";
 
 	@Override
 	public JSONObject createHashSignature(String email, long fileEntryId, String typeSignature, String postStepCode) {
@@ -161,13 +161,15 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //						new Rectangle(llx + 20, lly - 105,
 //								urx + 94, ury - 70), 1);
 //				inHash = signer.computeHash(new Rectangle(llx + 22, lly - 145, urx + 94, ury - 70), 1);
-				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
+//				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
 					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
-					_log.info("inHash_Kyso: "+inHash);
-				} else if (TYPE_DONGDAU.contains(typeSignature) && STEPCODE_DONGDAU.equals(postStepCode)) {
-					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 115, urx + 90, ury-95), 1);
-					_log.info("inHash_Dongdau: "+inHash);
-				}
+//				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
+//					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
+//					_log.info("inHash_Kyso: "+inHash);
+//				} else if (TYPE_DONGDAU.contains(typeSignature) && STEPCODE_DONGDAU.equals(postStepCode)) {
+//					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 115, urx + 90, ury-95), 1);
+//					_log.info("inHash_Dongdau: "+inHash);
+//				}
 //				inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
 				_log.info("********************************* llx " + llx);
 

@@ -39,10 +39,16 @@ public class DeliverableTypesUtils {
 		}
 		DeliverableTypeDetailModel model = new DeliverableTypeDetailModel();
 
+		model.setDeliverableTypeId(deliverableType.getDeliverableTypeId());
+		model.setCreateDate(APIDateTimeUtils.convertDateToString(deliverableType.getCreateDate(), APIDateTimeUtils._TIMESTAMP));
+		model.setModifiedDate(APIDateTimeUtils.convertDateToString(deliverableType.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
 		model.setDeliverableType(deliverableType.getTypeCode());
 		model.setDeliverableName(deliverableType.getTypeName());
 		model.setCodePattern(deliverableType.getCodePattern());
 		model.setCounter(Long.valueOf(deliverableType.getCounter()));
+		model.setFormScript(deliverableType.getFormScript());
+		model.setFormReport(deliverableType.getFormReport());
+		model.setMappingData(deliverableType.getMappingData());
 
 		return model;
 	}
@@ -65,6 +71,9 @@ public class DeliverableTypesUtils {
 				model.setDeliverableName(deliverableType.getTypeName());
 				model.setCodePattern(deliverableType.getCodePattern());
 				model.setCounter(counter);
+				model.setFormScript(deliverableType.getFormScript());
+				model.setFormReport(deliverableType.getFormReport());
+				model.setMappingData(deliverableType.getMappingData());
 
 				outputs.add(model);
 			}

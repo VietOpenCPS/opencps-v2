@@ -321,6 +321,7 @@
 
 		<column name="referenceUid" type="String" />
 		<column name="counter" type="int" />
+		<column name="dossierRegister" type="String"/>
 		<column name="serviceCode" type="String" />
 		<column name="serviceName" type="String" />
 		<column name="govAgencyCode" type="String" />
@@ -339,6 +340,18 @@
 		<column name="contactName" type="String" />
 		<column name="contactTelNo" type="String" />
 		<column name="contactEmail" type="String" />
+		<column name="delegateName" type="String" />
+		<column name="delegateIdNo" type="String" />
+		<column name="delegateTelNo" type="String" />
+		<column name="delegateEmail" type="String" />
+		<column name="delegateAddress" type="String" />
+		<column name="delegateCityCode" type="String" />
+		<column name="delegateCityName" type="String" />
+		<column name="delegateDistrictCode" type="String" />
+		<column name="delegateDistrictName" type="String" />
+		<column name="delegateWardCode" type="String" />
+		<column name="delegateWardName" type="String" />
+		
 		<column name="dossierTemplateNo" type="String" />
 		<column name="dossierTemplateName" type="String" />
 		<column name="dossierNote" type="String" />
@@ -350,6 +363,7 @@
 		<column name="submitDate" type="Date" />
 		<column name="receiveDate" type="Date" />
 		<column name="dueDate" type="Date" />
+		<column name="extendDate" type="Date"/>
 		<column name="releaseDate" type="Date" />
 		<column name="finishDate" type="Date" />
 		<column name="cancellingDate" type="Date" />
@@ -361,19 +375,25 @@
 		<column name="folderId" type="long" />
 		<column name="dossierActionId" type="long" />
 		<column name="viaPostal" type="int" />
+		<column name="postalServiceCode" type="String" />
+		<column name="postalServiceName" type="String" />
 		<column name="postalAddress" type="String" />
 		<column name="postalCityCode" type="String" />
 		<column name="postalCityName" type="String" />
+		<column name="postalDistrictCode" type="String" />
+		<column name="postalDistrictName" type="String" />
+		<column name="postalWardCode" type="String" />
+		<column name="postalWardName" type="String" />
 		<column name="postalTelNo" type="String" />
 		<column name="password" type="String" />
 		<column name="notification" type="boolean" />
 		<column name="online" type="boolean" />
+		<column name="original" type="boolean" />
 		<column name="serverNo" type="String" />
 		<column name="endorsementDate" type="Date" />
 		<column name="lockState" type="String" />
-
 		<!-- Order -->
-
+		
 		<!-- Finder methods -->
 		<finder return-type="Collection" name="G_UID">
 			<finder-column name="groupId" />
@@ -727,6 +747,8 @@
 		<column name="generatePassword" type="boolean" />
 		<column name="directNotification" type="boolean" />
 		<column name="serverNo" type="String" />
+		<column name="requestPayment" type="boolean"/>
+		<column name="paymentFee" type="String"/>
 
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId" />
@@ -1229,6 +1251,7 @@
 		<column name="registrationState" type="int" />
 		<column name="registrationClass" type="String" />
 		<column name="submitting" type="boolean" />
+		<column name="representativeEnterprise" type="String" />
 
 		<!-- Order -->
 
@@ -1328,7 +1351,7 @@
 		<column name="removed" type="boolean" />
 		<!-- Order -->
 		<order>
-			<order-column name="createDate" order-by="desc" />
+			<order-column name="createDate" order-by="asc" />
 		</order>
 
 		<!-- Filter -->
@@ -1528,20 +1551,24 @@
 		</finder>
 	</entity>
 
-<!-- 	<entity local-service="true" name="UserInfoLog" -->
-<!-- 		remote-service="false" table="opencps_userinfolog" uuid="true"> -->
+	<entity local-service="true" name="UserInfoLog"
+		remote-service="false" table="opencps_userinfolog" uuid="true">
 
-<!-- 		<column name="userLogId" type="long" primary="true" /> -->
+		<column name="userLogId" type="long" primary="true" />
 
  		<!-- Audit fields -->
-<!-- 		<column name="userId" type="long" /> -->
-<!-- 		<column name="createDate" type="Date" /> -->
-<!-- 		<column name="payload" type="String" /> -->
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="payload" type="String" />
 
-<!-- 		<order> -->
-<!-- 			<order-column name="createDate" order-by="desc" /> -->
-<!-- 		</order> -->
-<!-- 	</entity> -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
+
+		<finder return-type="Collection" name="F_USERID">
+			<finder-column name="userId"></finder-column>
+		</finder>
+	</entity>
 
 		<entity local-service="true" name="DossierMark" remote-service="false"
 		table="opencps_dossiermark" uuid="true">

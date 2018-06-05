@@ -190,7 +190,7 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
                       <#-- <li><a href="#:serviceUrl#">#:govAgencyName#</a></li> -->
-                      <li><a href="/web/guest/register1">#:govAgencyName#</a></li>
+                      <li><a href="/group/cong-tiep-nhan/quan-ly-ho-so\#/taohosomoi">#:govAgencyName#</a></li>
                   </ul>
                   </div>
                 #

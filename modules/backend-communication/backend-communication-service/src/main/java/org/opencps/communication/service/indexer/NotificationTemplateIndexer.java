@@ -77,12 +77,18 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 
 		document.addNumberSortable(NotificationTemplateTerm.GROUP_ID, notificationtemplates.getGroupId());
 		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(notificationtemplates.getCompanyId()));
-		document.addDateSortable(Field.MODIFIED_DATE, notificationtemplates.getModifiedDate());
+		if (Validator.isNotNull(notificationtemplates.getModifiedDate())) {
+			document.addDateSortable(Field.MODIFIED_DATE, notificationtemplates.getModifiedDate());			
+		}
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(notificationtemplates.getUserId()));
-		document.addKeywordSortable(Field.USER_NAME, String.valueOf(notificationtemplates.getUserName()));
+		if (Validator.isNotNull(notificationtemplates.getUserName())) {
+			document.addKeywordSortable(Field.USER_NAME, String.valueOf(notificationtemplates.getUserName()));			
+		}
 
+		if (Validator.isNotNull(notificationtemplates.getSendEmail())) {
 		document.addTextSortable(NotificationTemplateTerm.SEND_EMAIL,
-				String.valueOf(notificationtemplates.getSendEmail()));
+					String.valueOf(notificationtemplates.getSendEmail()));			
+		}
 		document.addTextSortable(NotificationTemplateTerm.NOTIFICATTION_TYPE,
 				notificationtemplates.getNotificationType());
 		document.addNumberSortable(NotificationTemplateTerm.GROUP_ID, notificationtemplates.getGroupId());

@@ -16,14 +16,12 @@
 					<v-icon class="mr-2">undo</v-icon>
 				Quay lại
 				</v-btn>
+				
                 <v-btn v-if="navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen</v-icon></v-btn>
 
                 <v-btn v-if="!navigationFilterview" v-on:click.native.prevent.stop="navigationFilterview = !navigationFilterview" flat icon class="mr-3 my-0 hidden-sm-and-down"><v-icon>fullscreen_exit</v-icon></v-btn>
-
 			</div>
-	
 		</div>
-	
 	</div>
 	
 	<v-expansion-panel expand class="my-0 opencps-dossier-info">
@@ -158,7 +156,7 @@
 			<v-expansion-panel expand class="my-0">
 				<v-expansion-panel-content v-bind:value="true">
 				<div slot="header" class="text-bold"> <span>I. </span>Tài liệu nộp</div>
-				<small slot="header" class="text-gray text-right mr-4"> Những thành phần hồ sơ có dấu ( <span style="color: red;"> * </span> ) là thành phần bắt buộc</small>
+				<!-- <small slot="header" class="text-gray text-right mr-4"> Những thành phần hồ sơ có dấu ( <span style="color: red;"> * </span> ) là thành phần bắt buộc</small> -->
 				<div class="opencps_list_border_style" jx-bind="listDocumentIn"></div>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
