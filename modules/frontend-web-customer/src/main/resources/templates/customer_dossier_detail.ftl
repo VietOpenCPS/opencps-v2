@@ -521,9 +521,7 @@
 
 	$("#btn-next-step-dossier").click(function(){
 		funSaveDossier();
-		setTimeout(function(){ 
-			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
-		}, 1000);
+		
 	});
 
 	funSaveDossier = function(){
@@ -613,6 +611,9 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
+					setTimeout(function(){ 
+						manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
+					}, 1000);
 				},
 				error : function(result){
 					notification.show({
