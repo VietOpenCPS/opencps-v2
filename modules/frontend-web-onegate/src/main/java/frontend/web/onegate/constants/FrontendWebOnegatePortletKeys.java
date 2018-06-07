@@ -5,6 +5,6 @@ package frontend.web.onegate.constants;
  */
 public class FrontendWebOnegatePortletKeys {
 
-	public static final String FrontendWebOnegate = "FrontendWebOnegate";
+	public static final String FrontEndOnegateNpm = "FrontEndOnegateNpm";
 
 }
