@@ -293,6 +293,10 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId) {
 		return employeePersistence.fetchByF_mappingUserId(groupId, mappingUserId);
 	}
+	
+	public Employee fetchByFB_MUID(long mappingUserId) {
+		return employeePersistence.fetchByFB_MUID(mappingUserId);
+	}
 
 	public void isExits(long groupId, String employeeNo, String email)
 			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException {

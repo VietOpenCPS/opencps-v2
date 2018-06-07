@@ -322,7 +322,7 @@
 								</div>
 								<div class="col-sm-4">
 									<div class="form-group">
-										<input type="password" class="form-control" id="new_password">
+										<input type="password" class="form-control" id="new_password" placeholder="Gồm các ký tự 0-9, a-z, ít nhất 6 ký tự">
 									</div>
 								</div>
 								<div class="col-sm-6">
@@ -364,19 +364,25 @@
 </div>
 
 <script type="text/javascript">
-
+	var resultRet = false;
 	var notification = $("#notification").kendoNotification().data("kendoNotification");
 
 	$('#btn-change-password-user').click(function(){
 		var validator = $("#fmChangePasswordUser").kendoValidator().data("kendoValidator");
 		var userId = $(this).attr("data-pk");
+		var regex = /^[A-Za-z\d]{6,}$/;
+		var type = "${userType}";
 
-		if (validator.validate()) {	
-			if ($("#new_password").val() != $("#retype_new_password").val()){
+		if (validator.validate()) {
+			if ($("#new_password").val().length < 6 && $("#retype_new_password").val().length < 6){
 				notification.show({
-							message: "Xác nhận mật khẩu mới không đúng!"
-						}, "error");
-			}else {
+					message: "Mật khẩu ít nhất 6 ký tự!"
+				}, "error");
+			} else if ($("#new_password").val() != $("#retype_new_password").val()){
+				notification.show({
+					message: "Xác nhận mật khẩu mới không đúng!"
+				}, "error");
+			} else if(type === "applicant"){
 				$.ajax({
 					url : "${api.server}/users/"+userId+"/changepass/application",
 					dataType : "json",
@@ -387,15 +393,49 @@
 						newPassword : $("#retype_new_password").val()
 					},
 					success : function(result){
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công"
-						}, "success");
-						$("#messagePassword").html('');
+						if(result){
+							notification.show({
+								message: "Đổi mật khẩu thực hiện thành công"
+							}, "success");
+							$("#messagePassword").html('');
+						}else{
+							notification.show({
+								message: "Mật khẩu hiện tại nhập không chính xác"
+							}, "error");
+							$("#messagePassword").html('');
+						}
 					},
 					error : function(xhr){
 						$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
 					}
 				});	
+			} else if(type === "employee"){
+				$.ajax({
+					url : "${api.server}/users/"+userId+"/changepass/employee",
+					dataType : "json",
+					type : "POST",
+					headers: {"groupId": ${groupId}},
+					data : {
+						oldPassword : $("#old_password").val(),
+						newPassword : $("#retype_new_password").val()
+					},
+					success : function(result){
+						if(result){
+							notification.show({
+								message: "Đổi mật khẩu thực hiện thành công"
+							}, "success");
+							$("#messagePassword").html('');
+						}else{
+							notification.show({
+								message: "Mật khẩu hiện tại nhập không chính xác"
+							}, "error");
+							$("#messagePassword").html('');
+						}
+					},
+					error : function(xhr){
+						$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
+					}
+				});
 			}
 		}
 		
@@ -431,23 +471,15 @@
 	});*/
 
 	function checkOldPassword(userId, oldPassword){
-		var result = false;
 		$.ajax({
-			url: "${api.server}" + "/checkOldPassword",
+			url: "${api.server}/users/"+userId+"/checkpass/"+oldPassword,
 			type: "GET",
 			dataType: "json",
 			headers: {"groupId": ${groupId}},
-			data: {
-				userId: userId,
-				oldPassword: oldPassword,
-			},
-			success: function(res) {
-				if (res.result == 'true'){
-					result = true;
-				}
+			success: function(result) {
+				resultRet = result;
 			}
 		});
-		return result;
 	};
 
 	function changePassword(oldPassword, newPassword, retypeNewPassword){
