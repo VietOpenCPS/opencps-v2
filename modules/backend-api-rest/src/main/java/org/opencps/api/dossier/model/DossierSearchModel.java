@@ -92,7 +92,8 @@ import javax.xml.bind.annotation.XmlType;
     "notState",
     "statusReg",
     "notStatusReg",
-    "keywordSearchLike"
+    "keywordSearchLike",
+    "online"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -168,8 +169,19 @@ public class DossierSearchModel {
     protected String notStatusReg;
     @QueryParam(value = "keywordSearchLike")
     protected String keywordSearchLike;
+    
+    @QueryParam(value = "online")
+    protected String online;
 
-    public String getKeywordSearchLike() {
+    public String getOnline() {
+		return online;
+	}
+
+	public void setOnline(String online) {
+		this.online = online;
+	}
+
+	public String getKeywordSearchLike() {
 		return keywordSearchLike;
 	}
 
