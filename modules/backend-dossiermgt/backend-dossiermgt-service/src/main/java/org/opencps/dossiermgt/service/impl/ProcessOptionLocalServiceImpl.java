@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
@@ -149,6 +150,10 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		processOptionPersistence.update(processOption);
 
 		return processOption;
+	}
+	
+	public List<ProcessOption> getByServiceProcessId(long serviceConfigId) throws PortalException {
+		return processOptionPersistence.findBySC_ID(serviceConfigId);
 	}
 
 	public static final String CLASS_NAME = ProcessOption.class.getName();
@@ -333,4 +338,6 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	private void validateRemove(long processOptionId) throws PortalException {
 		// TODO add more business logic here
 	}
+	
+	
 }
