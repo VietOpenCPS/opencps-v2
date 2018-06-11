@@ -1,4 +1,4 @@
-#Tue May 29 16:39:52 ICT 2018
+#Fri Jun 08 18:37:33 ICT 2018
 connection.arguments=
 containers=org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/
 connection.jvm.arguments=
@@ -8,5 +8,5 @@ natures=org.eclipse.jdt.core.javanature
 eclipse.preferences.version=1
 connection.java.home=null
 derived.resources=.gradle,build
-connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
 project.path=\:modules\:frontend-web-payment2
+connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)

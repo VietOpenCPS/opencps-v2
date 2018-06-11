@@ -10,6 +10,8 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.OneGateUtils;
+import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierOnegateInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -17,15 +19,22 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
+import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -153,7 +162,12 @@ public class OneGateControllerImpl implements OneGateController {
 					input.getPostalCityCode(), input.getPostalDistrictCode(), input.getPostalWardCode(),
 					input.getPostalTelNo(), serviceContext);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
+			DossierDetailModel result = null;
+			if (dossier != null ) {
+				result = OneGateUtils.mappingForGetDetail(dossier);
+			}
+			
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			_log.info(e);
@@ -199,6 +213,7 @@ public class OneGateControllerImpl implements OneGateController {
 		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		//DossierPermission dossierPermission = new DossierPermission();
+		long dActionId = GetterUtil.getLong(input.getDossierActionId());
 
 
 		_log.info("__INPUT_ONEGATE_UPDATE");
@@ -221,9 +236,15 @@ public class OneGateControllerImpl implements OneGateController {
 					input.getDelegateDistrictCode(), input.getDelegateWardCode(), input.getApplicantNote(),
 					StringPool.BLANK, input.getDossierNo(), input.getViaPostal(), input.getPostalServiceCode(),
 					input.getPostalServiceName(), input.getPostalAddress(), input.getPostalCityCode(),
-					input.getPostalDistrictCode(), input.getPostalWardCode(), input.getPostalTelNo(), serviceContext);
+					input.getPostalDistrictCode(), input.getPostalWardCode(), input.getPostalTelNo(), dActionId,
+					input.getPaymentFee(), input.getPaymentFeeNote(), serviceContext);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
+			DossierDetailModel result = null;
+			if (dossier != null ) {
+				result = OneGateUtils.mappingForGetDetail(dossier);
+			}
+			
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			_log.info(e);
@@ -246,11 +267,56 @@ public class OneGateControllerImpl implements OneGateController {
 
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
+			DossierDetailModel result = null;
+			if (dossier != null ) {
+				result = OneGateUtils.mappingForGetDetail(dossier);
+			}
+			
+			return Response.status(200).entity(result).build();
+//			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
 
 		} catch (Exception e) {
 			_log.info(e);
 			return _processException(e);
 		}
 	}
+
+	@Override
+	public Response getServiceProcess(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId, String serviceCode, String govAgencyCode,
+			String dossierTemplateNo, String dossierActionId) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long dActionId = GetterUtil.getLong(dossierActionId);
+		ServiceProcessActions actions = new ServiceProcessActionsImpl();
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+
+			ServiceProcess serviceProcess = actions.getServiceProcessByCode(groupId, serviceCode, govAgencyCode,
+					dossierTemplateNo);
+			if (serviceProcess != null) {
+				results.put("paymentFeeRequest", serviceProcess.getPaymentFee());
+			}
+			if (dActionId > 0) {
+				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dActionId);
+				ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(), dAction.getActionCode());
+				results.put("paymentFeeTotal", process.getPaymentFee());
+			} else {
+				results.put("paymentFeeTotal", 0);
+			}
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			return _processException(e);
+		}
+	}
+
 }
