@@ -172,10 +172,14 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Long notStatusRegNo = null;
+			
 			if (Validator.isNotNull(query.getNotStatusReg())) {
 				notStatusRegNo = Long.valueOf(query.getNotStatusReg());
 			}
-
+			
+			String online = query.getOnline();
+			
+			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
 			params.put(DossierTerm.AGENCY, agency);
@@ -1763,47 +1767,5 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
-	@Override
-	public Response createDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DossierOnegateInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		BackendAuth auth = new BackendAuthImpl();
-		DossierPermission dossierPermission = new DossierPermission();
-
-		DossierActions actions = new DossierActionsImpl();
-		
-		_log.info("__INPUT_ONEGATE");
-		_log.info(JSONFactoryUtil.looseSerialize(input));
-		_log.info("__XXXXXXXXXXXXX");
-
-		try {
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
-					input.getGovAgencyCode(), input.getDossierTemplateNo());
-			
-
-			Dossier dossier = actions.createDossier(groupId, input.getServiceCode(), input.getGovAgencyCode(),
-					input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
-					DateTimeUtils.convertDateTimeToString(input.getApplicantIdDate()), input.getAddress(), input.getCityCode(), input.getDistrictCode(),
-					input.getWardCode(), input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
-					input.isSameAsApplicant(), input.getDelegateName(), input.getDelegateIdNo(),
-					input.getDelegateTelNo(), input.getDelegateEmail(), input.getDelegateAddress(),
-					input.getDelegateCityCode(), input.getDelegateDistrictCode(), input.getDelegateWardCode(),
-					input.getApplicantNote(), StringPool.BLANK, input.getDossierNo(), input.getDossierTemplateNo(),
-					input.getViaPostal(), input.getPostalServiceCode(), input.getPostalServiceName(),
-					input.getPostalAddress(), input.getPostalCityCode(), input.getPostalDistrictCode(),
-					input.getPostalWardCode(), input.getPostalTelNo(), serviceContext);
-
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
-
-		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
-		}
-	}
 }

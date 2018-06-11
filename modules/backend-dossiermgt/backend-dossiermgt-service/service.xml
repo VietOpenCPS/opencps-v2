@@ -249,6 +249,10 @@
 			<finder-column name="serviceInfoId" />
 			<finder-column name="govAgencyCode" />
 		</finder>
+		
+		<finder return-type="Collection" name="G_">
+			<finder-column name="groupId"/>
+		</finder>
 
 	</entity>
 
