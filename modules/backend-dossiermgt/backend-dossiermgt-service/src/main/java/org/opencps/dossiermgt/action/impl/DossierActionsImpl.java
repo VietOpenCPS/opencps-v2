@@ -2193,14 +2193,14 @@ public class DossierActionsImpl implements DossierActions {
 		// TODO add more logic here
 		boolean isSync = false;
 
-//		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
-//			isSync = true;
-//		}
-
-		//Hot fix
-		if (action.getSyncActionCode().length() != 0) {
+		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
 			isSync = true;
 		}
+
+		//Hot fix
+//		if (action.getSyncActionCode().length() != 0) {
+//			isSync = true;
+//		}
 
 		//Hot fix
 		//if (action.getSyncActionCode().length() != 0) {

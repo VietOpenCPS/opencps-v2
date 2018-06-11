@@ -30,16 +30,21 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -62,11 +67,8 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.search.generic.StringQuery;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -275,7 +277,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-	private final String POSTAL_ADMINISTRATIVE_REGION = "POSTAL_ADMINISTRATIVE_REGION";
+	private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
 	private final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	private final int DUE_DATE_DEFAULT = 5;
 
@@ -297,7 +299,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			String applicantNote, String briefNote, String dossierNo, int viaPostal, String postalServiceCode,
 			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
-			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException {
+			String postalWardCode, String postalTelNo, long dossierActionId, String paymentFee, String paymentFeeNote,
+			ServiceContext context) throws PortalException {
 
 		Date now = new Date();
 
@@ -387,20 +390,20 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		// viaPortal: 0 disable, 1: unselected, 2: selected
 
-		if (viaPostal == 2) {
+		if (viaPostal == 1) {
 			dossier.setViaPostal(viaPostal);
 			dossier.setPostalServiceCode(postalServiceCode);
 			dossier.setPostalServiceName(postalServiceName);
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
 			dossier.setPostalCityName(
-					getDictItemName(dossier.getGroupId(), POSTAL_ADMINISTRATIVE_REGION, postalCityCode));
+					getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalCityCode));
 			dossier.setPostalDistrictCode(postalDistrictCode);
 			dossier.setPostalDistrictName(
-					getDictItemName(dossier.getGroupId(), POSTAL_ADMINISTRATIVE_REGION, postalDistrictCode));
+					getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalDistrictCode));
 			dossier.setPostalWardCode(postalWardCode);
 			dossier.setPostalWardName(
-					getDictItemName(dossier.getGroupId(), POSTAL_ADMINISTRATIVE_REGION, postalWardCode));
+					getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalWardCode));
 			dossier.setPostalTelNo(postalTelNo);
 		}
 
@@ -408,6 +411,29 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setPassword(password);
 		dossier.setOnline(false);
+
+		//LamTV_Process
+//		if (dossierActionId > 0) {
+//			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(),
+//					dAction.getActionCode());
+//			if (process != null) {
+//				process.setPaymentFee(paymentFee);
+//				ProcessActionLocalServiceUtil.updateProcessAction(process);
+//			}
+//		} else {
+		ServiceProcess serProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
+				dossier.getDossierTemplateNo());
+		if (serProcess != null) {
+			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(serProcess.getServiceProcessId(),
+					String.valueOf(10000));
+			if (process != null) {
+				process.setPaymentFee(paymentFee);
+				ProcessActionLocalServiceUtil.updateProcessAction(process);
+			}
+		}
+//		}
+		
 
 		dossierPersistence.update(dossier);
 
@@ -543,8 +569,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
 		
-		int durationCount = serviceProcess.getDurationCount();
-		int durationUnit = serviceProcess.getDurationUnit();
+		int durationCount = 0;
+		int durationUnit = 0;
+		if (serviceProcess != null ) {
+			durationCount = serviceProcess.getDurationCount();
+			durationUnit = serviceProcess.getDurationUnit();
+		}
+		
+		_log.info("durationCount: "+durationCount);
+		_log.info("durationUnit: "+durationUnit);
 		
 		int durationDays = 0;
 
@@ -573,18 +606,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		//dossier.setDossierNo(dossierNo);
 
 		// viaPortal: 0 disable, 1: unselected, 2: selected
-
-		if (viaPostal == 2) {
+//		if (viaPostal == 2) {
+		//LamTV_Hot fix
+		if (viaPostal == 1) {
 			dossier.setViaPostal(viaPostal);
 			dossier.setPostalServiceCode(postalServiceCode);
 			dossier.setPostalServiceName(postalServiceName);
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
-			dossier.setPostalCityName(getDictItemName(groupId, POSTAL_ADMINISTRATIVE_REGION, postalCityCode));
+			dossier.setPostalCityName(getDictItemName(groupId, ADMINISTRATIVE_REGION, postalCityCode));
 			dossier.setPostalDistrictCode(postalDistrictCode);
-			dossier.setPostalDistrictName(getDictItemName(groupId, POSTAL_ADMINISTRATIVE_REGION, postalDistrictCode));
+			dossier.setPostalDistrictName(getDictItemName(groupId, ADMINISTRATIVE_REGION, postalDistrictCode));
 			dossier.setPostalWardCode(postalWardCode);
-			dossier.setPostalWardName(getDictItemName(groupId, POSTAL_ADMINISTRATIVE_REGION, postalWardCode));
+			dossier.setPostalWardName(getDictItemName(groupId, ADMINISTRATIVE_REGION, postalWardCode));
 			dossier.setPostalTelNo(postalTelNo);
 		}
 
@@ -1614,7 +1648,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		_log.info("keywords Search: " + keywords);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String secetKey = GetterUtil.getString(params.get("secetKey"));
 
@@ -1655,7 +1688,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 		// _log.info("notStatusReg_REG Local Search: "+notStatusReg);
 		String keySearch = GetterUtil.getString(params.get(DossierTerm.KEYWORD_SEARCH_LIKE));
-		_log.info("keySearch Local Search: " + keySearch);
 		
 		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
 
@@ -1692,7 +1724,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID, DossierTerm.DOSSIER_ID_CTN,
 					DossierTerm.BRIEF_NOTE };
 
-			query.addTerms(subQuerieArr, keywords, true);
+			query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -2136,7 +2168,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// _log.info("statusReg: "+statusReg);
 		// _log.info("notStatusReg: "+notStatusReg);
 		String keySearch = GetterUtil.getString(params.get(DossierTerm.KEYWORD_SEARCH_LIKE));
-		_log.info("keySearch Local Search: " + keySearch);
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2164,7 +2195,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID, DossierTerm.DOSSIER_ID_CTN,
 					DossierTerm.BRIEF_NOTE };
 
-			query.addTerms(subQuerieArr, keywords, true);
+			query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

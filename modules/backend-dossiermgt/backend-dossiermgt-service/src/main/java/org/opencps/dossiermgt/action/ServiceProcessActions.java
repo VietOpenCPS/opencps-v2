@@ -77,4 +77,8 @@ public interface ServiceProcessActions {
 
 	public ProcessAction deleteProcessAction(long processActionId) throws PortalException;
 
+	//LamTV_Process payment fee
+	public ServiceProcess getServiceProcessByCode(long groupId, String serviceCode, String govAgencyCode,
+			String dossierTemplateNo) throws PortalException;
+
 }
