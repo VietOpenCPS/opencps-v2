@@ -302,14 +302,33 @@ public class OneGateControllerImpl implements OneGateController {
 					dossierTemplateNo);
 			if (serviceProcess != null) {
 				results.put("paymentFeeRequest", serviceProcess.getPaymentFee());
-			}
-			if (dActionId > 0) {
-				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dActionId);
-				ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(), dAction.getActionCode());
-				results.put("paymentFeeTotal", process.getPaymentFee());
+				ProcessAction process = ProcessActionLocalServiceUtil
+						.getByServiceProcess(serviceProcess.getServiceProcessId(), String.valueOf(10000));
+				if (process != null) {
+					results.put("paymentFeeTotal", process.getPaymentFee());
+				} else {
+					results.put("paymentFeeTotal", 0);
+				}
 			} else {
+				results.put("paymentFeeRequest", 0);
 				results.put("paymentFeeTotal", 0);
 			}
+//			if (dActionId > 0) {
+//				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dActionId);
+//				ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(), dAction.getActionCode());
+//				results.put("paymentFeeTotal", process.getPaymentFee());
+//			} else 
+//			if (serviceProcess != null) {
+//				ProcessAction process = ProcessActionLocalServiceUtil
+//						.getByServiceProcess(serviceProcess.getServiceProcessId(), String.valueOf(10000));
+//				if (process != null) {
+//					results.put("paymentFeeTotal", process.getPaymentFee());
+//				} else {
+//					results.put("paymentFeeTotal", 0);
+//				}
+//			} else {
+//				results.put("paymentFeeTotal", 0);
+//			}
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

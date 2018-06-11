@@ -413,26 +413,26 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setOnline(false);
 
 		//LamTV_Process
-		if (dossierActionId > 0) {
-			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(),
-					dAction.getActionCode());
+//		if (dossierActionId > 0) {
+//			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(),
+//					dAction.getActionCode());
+//			if (process != null) {
+//				process.setPaymentFee(paymentFee);
+//				ProcessActionLocalServiceUtil.updateProcessAction(process);
+//			}
+//		} else {
+		ServiceProcess serProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
+				dossier.getDossierTemplateNo());
+		if (serProcess != null) {
+			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(serProcess.getServiceProcessId(),
+					String.valueOf(10000));
 			if (process != null) {
 				process.setPaymentFee(paymentFee);
 				ProcessActionLocalServiceUtil.updateProcessAction(process);
 			}
-		} else {
-			ServiceProcess serProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
-					dossier.getDossierTemplateNo());
-			if (serProcess != null) {
-				ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(serProcess.getServiceProcessId(),
-						String.valueOf(10000));
-				if (process != null) {
-					process.setPaymentFee(paymentFee);
-					ProcessActionLocalServiceUtil.updateProcessAction(process);
-				}
-			}
 		}
+//		}
 		
 
 		dossierPersistence.update(dossier);
