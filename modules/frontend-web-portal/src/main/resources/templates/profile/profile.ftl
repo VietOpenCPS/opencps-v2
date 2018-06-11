@@ -18,7 +18,11 @@
 				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
 				<div class="text-center"><a id="change_avatar_profile" data-pk="${(applicantId)!}" href="#" class="text-light-gray">Thay đổi avatar</a></div>
 				<p class="name text-bold text-center" data-bind="text:applicantName" id="profileName"></p>
-				<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				<#if applicantIdType == 'business' >
+					<div>Mã số thuế: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				<#else>
+					<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				</#if>
 				<div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate" id="profileDate"></span></div>
 				<div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail" id="profileEmail"></span></div>
 			</#if>
@@ -526,9 +530,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length < 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success: function(response, newValue) {
 			$("#profileName").html(newValue);
@@ -553,9 +557,9 @@
 			};
 		},
 		validate: function(value) {
-		  // if (value.length < 1){
-		  //   return 'Đây là trường bắt buộc';
-		  // }
+		  if (value.length < 1){
+		    return 'Đây là trường bắt buộc';
+		  }
 		},
 		success: function(data) {
 
@@ -828,9 +832,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length < 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success : function(data){
 

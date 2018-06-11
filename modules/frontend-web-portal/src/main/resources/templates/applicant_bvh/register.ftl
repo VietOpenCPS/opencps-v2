@@ -177,7 +177,7 @@
          } else if (JSON.parse(result.responseText).description == 'DuplicateApplicantIdException'){
            notification.show({
             title: "Error",
-            message: "Số CMDN hoặc Mã số thuế đã tồn tại trong hệ thống."
+            message: "Số CMND hoặc Mã số thuế đã tồn tại trong hệ thống."
           }, "error");
          } else if (JSON.parse(result.responseText).description == 'DuplicateContactTelNoException'){
            notification.show({
