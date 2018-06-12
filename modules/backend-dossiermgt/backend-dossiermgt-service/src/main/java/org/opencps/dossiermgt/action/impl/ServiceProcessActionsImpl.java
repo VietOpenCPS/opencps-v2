@@ -242,6 +242,13 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 				assignUserId, requestPayment, paymentFee, createDossierFiles, returnDossierFiles, makeBriefNote,
 				syncActionCode, rollbackable, createDossierNo, eSignature,configNote, dossierTemplateNo, context);
 	}
+
+	@Override
+	public ServiceProcess getServiceProcessByCode(long groupId, String serviceCode, String govAgencyCode,
+			String dossierTemplateNo) throws PortalException {
+		return ServiceProcessLocalServiceUtil.getServiceByCode(groupId, serviceCode, govAgencyCode,
+				dossierTemplateNo);
+	}
 	
 	
 

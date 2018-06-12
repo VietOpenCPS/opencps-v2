@@ -31,15 +31,20 @@ import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.exception.DuplicateProcessNameException;
 import org.opencps.dossiermgt.exception.DuplicateProcessNoException;
 import org.opencps.dossiermgt.exception.HasChildrenException;
+import org.opencps.dossiermgt.exception.NoSuchServiceProcessException;
 import org.opencps.dossiermgt.exception.RequiredDossierNoPatternException;
 import org.opencps.dossiermgt.exception.RequiredDueDatePatternException;
 import org.opencps.dossiermgt.exception.RequiredProcessNameException;
 import org.opencps.dossiermgt.exception.RequiredProcessNoException;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.ServiceProcessLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
@@ -747,6 +752,29 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	
 	public List<ServiceProcess> getByServerNo(String serverNo) {
 		return serviceProcessPersistence.findBySVR_NO(serverNo);
+	}
+
+	//LamTV_Process
+	public ServiceProcess getServiceByCode(long groupId, String serviceCode, String govAgencyCode,
+			String dossierTemplateNo) throws PortalException {
+
+		ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+		if (option != null) {
+			long serviceProcessId = option.getServiceProcessId();
+
+			return serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
+		} else {
+			return null;
+		}
+	}
+
+	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
+			long groupId) throws PortalException {
+
+		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+
+		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
+				config.getServiceConfigId());
 	}
 
 	Log _log = LogFactoryUtil.getLog(ServiceProcessLocalServiceImpl.class);

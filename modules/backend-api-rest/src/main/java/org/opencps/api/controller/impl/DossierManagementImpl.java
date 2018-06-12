@@ -825,8 +825,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 				_log.info(JSONFactoryUtil.looseSerialize(input));
 
-				_log.info("Call in SynAction **********8 ===========");
+				_log.info("Call in SynAction **********8 ==========="+groupId + "|dossierId: "+id + "|dossier: "+dossier);
 
+				// LamTV_ Hot fix One Gate
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
 						input.getActionNote(), input.getAssignUserId(), 0l, subUsers, serviceContext);
