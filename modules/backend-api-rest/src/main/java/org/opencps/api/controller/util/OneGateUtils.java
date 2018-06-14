@@ -8,10 +8,16 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -127,6 +133,27 @@ public class OneGateUtils {
 		model.setPostalCityCode(input.getPostalCityCode());
 		model.setPostalCityName(input.getPostalCityName());
 		model.setPostalTelNo(input.getPostalTelNo());
+		
+		//Gte serviceProcess
+		
+		long groupId = input.getGroupId();
+		
+		int processBlock = 0;
+		int processUnit = 0;
+		
+		try {
+			ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, input.getServiceCode(), input.getGovAgencyCode());
+			
+			ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,input.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
+			
+			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+			
+			processBlock = serviceProcess.getDurationCount();
+			
+			processUnit = serviceProcess.getDurationUnit();
+			
+		} catch (Exception e) {
+		}
 
 		if (input.getDossierActionId() != 0) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(input.getDossierActionId());
@@ -220,6 +247,8 @@ public class OneGateUtils {
 	    model.setPostalWardName(input.getPostalWardName());
 	    model.setPostalServiceCode(input.getPostalServiceCode());
 	    model.setDossierTemplateName(input.getDossierTemplateName());
+	    model.setProcessBlock(processBlock);
+	    model.setProcessUnit(processUnit);
 
 		return model;
 	}

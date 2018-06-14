@@ -214,8 +214,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		
 		DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, referenceUid);
 		
-				
-	
 			// String dossierTemplateNo = StringPool.BLANK;
 	
 			String defaultData = StringPool.BLANK;
