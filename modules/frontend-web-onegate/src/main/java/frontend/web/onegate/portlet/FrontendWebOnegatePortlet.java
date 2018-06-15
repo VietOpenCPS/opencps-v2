@@ -6,9 +6,11 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Resource;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.LiferayPortletMode;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
@@ -61,6 +63,41 @@ public class FrontendWebOnegatePortlet extends FreeMarkerPortlet {
 		resourceUrl.setWindowState(LiferayWindowState.EXCLUSIVE);
 		
 		resourceUrl.setParameter("callResourceId", "renderURLInit");
+		
+		PortletURL renderUrl = PortletURLFactoryUtil.create(renderRequest, themeDisplay.getPortletDisplay().getId(),
+				themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+		renderUrl.setWindowState(LiferayWindowState.NORMAL);
+		renderUrl.setPortletMode(LiferayPortletMode.VIEW);
+		renderUrl.setParameter("renderId", "renderApi");
+		renderRequest.setAttribute("renderUrlByJavaAPI", renderUrl.toString());
+		System.out.println("renderUrlByJavaAPI.render()================" + renderUrl.toString());
+		
+		long groupId = themeDisplay.getScopeGroupId();
+		String portletNamespace = themeDisplay.getPortletDisplay().getNamespace();
+		String renderId = ParamUtil.getString(renderRequest, "renderId");
+		
+		if(renderId.equals("renderApi")){
+			User user = themeDisplay.getUser();
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByEmail(user.getEmailAddress());
+			JSONObject api = JSONFactoryUtil.createJSONObject();
+			
+			api.put("serviceInfoApi", "/o/rest/v2/serviceinfos");
+			api.put("serviceConfigApi", "/o/rest/v2/onegate/serviceconfigs/processes");
+			api.put("regionApi", "/o/rest/v2/dictcollections");
+			api.put("serviceOptionApi", "/o/rest/v2/serviceconfigs");
+			api.put("dossierApi", "/o/rest/v2/dossiers");
+			api.put("postDossierApi", "/o/rest/v2/onegate");
+			api.put("dossierTemplatesApi", "/o/rest/v2/dossiertemplates");
+			
+			//TODO
+			api.put("govAgency", "govAgency");
+			api.put("groupId", groupId);
+			api.put("user", user);
+			api.put("portletNamespace", portletNamespace);
+			
+			writeJSON(renderRequest, renderResponse, api);
+		}
+		
 		
 		ResourceURL url = renderResponse.createResourceURL();
 		System.out.println("FrontEndOnegateNpmPortlet.render()" + resourceUrl.toString());
