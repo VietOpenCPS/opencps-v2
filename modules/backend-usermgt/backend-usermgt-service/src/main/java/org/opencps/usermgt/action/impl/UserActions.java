@@ -354,7 +354,7 @@ public class UserActions implements UserInterface {
 					employee.getFullName(), employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(),
 					new Date(), null, serviceContext);
 
-		} catch (PortalException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -462,16 +462,16 @@ public class UserActions implements UserInterface {
 						}
 					}
 
-//					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
-//					_log.info("user.getScreenName(): "+user.getScreenName()+"|user.getEmailAddress(): "+user.getEmailAddress());
-//					payLoad.put("USERNAME", user.getScreenName());
-//					payLoad.put("USEREMAIL", user.getEmailAddress());
-//					payLoad.put("PASSWORD", newPassword);
+					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+					_log.info("user.getScreenName(): "+user.getScreenName()+"|user.getEmailAddress(): "+user.getEmailAddress());
+					payLoad.put("USERNAME", user.getScreenName());
+					payLoad.put("USEREMAIL", user.getEmailAddress());
+					payLoad.put("PASSWORD", newPassword);
 					_log.info("STRAT addNotificationQueue: ");
-//					NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
-//							User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
-//							user.getFullName(), user.getUserId(), employee.getEmail(), StringPool.BLANK, new Date(), null,
-//							serviceContext);
+					NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
+							User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
+							user.getFullName(), user.getUserId(), email, StringPool.BLANK, new Date(), null,
+							serviceContext);
 					_log.info("END addNotificationQueue: ");
 					flagNo = 2;
 				} else {

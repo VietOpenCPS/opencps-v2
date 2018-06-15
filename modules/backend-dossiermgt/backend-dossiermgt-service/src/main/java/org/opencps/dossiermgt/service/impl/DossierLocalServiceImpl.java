@@ -39,6 +39,7 @@ import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -422,17 +423,32 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				ProcessActionLocalServiceUtil.updateProcessAction(process);
 //			}
 //		} else {
-		ServiceProcess serProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
-				dossier.getDossierTemplateNo());
-		if (serProcess != null) {
-			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(serProcess.getServiceProcessId(),
-					String.valueOf(10000));
-			if (process != null) {
-				process.setPaymentFee(paymentFee);
-				ProcessActionLocalServiceUtil.updateProcessAction(process);
-			}
-		}
+//		ServiceProcess serProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
+//				dossier.getDossierTemplateNo());
+//		if (serProcess != null) {
+//			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(serProcess.getServiceProcessId(),
+//					String.valueOf(10000));
+//			if (process != null) {
+//				process.setPaymentFee(paymentFee);
+//				ProcessActionLocalServiceUtil.updateProcessAction(process);
+//			}
 //		}
+//		}
+		//LamTV_ Process Post payment
+		long userId = context.getUserId();
+		long groupId = dossier.getGroupId();
+		String referenceUid = StringPool.BLANK;
+		if (Validator.isNull(referenceUid)) {
+			referenceUid = PortalUUIDUtil.generate();
+		}
+		String govAgencyCode = dossier.getGovAgencyCode();
+		String govAgencyName = dossier.getGovAgencyName();
+		long paymentAmount = 0;
+		String epaymentProfile = StringPool.BLANK;
+		String bankInfo = StringPool.BLANK;
+		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId,
+				referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
+				paymentFeeNote, epaymentProfile, bankInfo, context);
 		
 
 		dossierPersistence.update(dossier);
@@ -581,10 +597,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		
 		int durationDays = 0;
 
-		if (durationCount == 0) {
+		if (durationUnit == 0) {
 			durationDays = durationCount;
 		} else {
-			durationDays = Math.round(durationUnit / 8);
+			durationDays = Math.round(durationCount / 8);
 		}
 
 		if (durationDays == 0) {
@@ -653,6 +669,26 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
 				dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
+
+		//LamTV_ Process Post payment
+//		String referenceUid = StringPool.BLANK;
+//		if (Validator.isNull(referenceUid)) {
+//			referenceUid = PortalUUIDUtil.generate();
+//		}
+//		String govAgencyCode = dossier.getGovAgencyCode();
+		String govAgencyName = dossier.getGovAgencyName();
+		String paymentNote = StringPool.BLANK;
+		String epaymentProfile = StringPool.BLANK;
+		String bankInfo = StringPool.BLANK;
+		String paymentFee = StringPool.BLANK;
+		long paymentAmount = 0;
+		if (serviceProcess != null) {
+			paymentFee = serviceProcess.getPaymentFee();
+			_log.info("paymentFee: "+paymentFee);
+		}
+		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid, govAgencyCode,
+				govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote, epaymentProfile,
+				bankInfo, context);
 
 		_log.info("SERVICEPROCESS"+ serviceProcess.getDossierNoPattern());
 		
