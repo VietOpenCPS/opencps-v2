@@ -96,32 +96,32 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
-			JSONObject results = JSONFactoryUtil.createJSONObject();
-//			DeliverableResultModel results = new DeliverableResultModel();
+//			JSONObject results = JSONFactoryUtil.createJSONObject();
+			DeliverableResultModel results = new DeliverableResultModel();
 			
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getListDeliverable(user.getUserId(), serviceContext.getCompanyId(), params,
 					sorts, search.getStart(), search.getEnd(), serviceContext);
 //			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
-//			results.setTotal(jsonData.getInt("total"));
-			results.put("total", jsonData.getInt("total"));
-//			results.getData()
-//					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
-			List<Document> docList =(List<Document>) jsonData.get("data");
+			results.setTotal(jsonData.getInt("total"));
+//			results.put("total", jsonData.getInt("total"));
+			results.getData()
+					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
+//			List<Document> docList =(List<Document>) jsonData.get("data");
+//
+//			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
+//			for (Document doc : docList) {
+//				String formData = doc.get(DeliverableTerm.FORM_DATA);
+//				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
+//				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+//				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
+////				_log.info("formData: "+formData);
+//				formDataArr.put(formJson);
+//			}
+//			results.put("data", formDataArr);
 
-			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
-			for (Document doc : docList) {
-				String formData = doc.get(DeliverableTerm.FORM_DATA);
-				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
-				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
-				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
-//				_log.info("formData: "+formData);
-				formDataArr.put(formJson);
-			}
-			results.put("data", formDataArr);
-
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
-//			return Response.status(200).entity(results).build();
+//			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}

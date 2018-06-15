@@ -124,7 +124,13 @@ public class DossierManagementImpl implements DossierManagement {
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+			// LamTV_Process search LIKE
+			String keywordSearch = query.getKeyword();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearch)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+			}
+			params.put(Field.KEYWORD_SEARCH, keySearch);
 
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
@@ -172,10 +178,14 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Long notStatusRegNo = null;
+			
 			if (Validator.isNotNull(query.getNotStatusReg())) {
 				notStatusRegNo = Long.valueOf(query.getNotStatusReg());
 			}
-
+			
+			String online = query.getOnline();
+			
+			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
 			params.put(DossierTerm.AGENCY, agency);
@@ -287,7 +297,13 @@ public class DossierManagementImpl implements DossierManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+			// LamTV_Process search LIKE
+			String keywordSearch = query.getKeyword();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearch)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+			}
+			params.put(Field.KEYWORD_SEARCH, keySearch);
 
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
@@ -328,12 +344,6 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			//Add keyword Search
-			String keywordSearchLike = query.getKeywordSearchLike();
-			String keySearch = StringPool.BLANK;
-			if (Validator.isNotNull(keywordSearchLike)) {
-				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearchLike);
-			}
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -359,7 +369,6 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
-			params.put(DossierTerm.KEYWORD_SEARCH_LIKE, keySearch);
 
 			// _log.info("4");
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -821,8 +830,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 				_log.info(JSONFactoryUtil.looseSerialize(input));
 
-				_log.info("Call in SynAction **********8 ===========");
+				_log.info("Call in SynAction **********8 ==========="+groupId + "|dossierId: "+id + "|dossier: "+dossier);
 
+				// LamTV_ Hot fix One Gate
 				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
 						input.getActionNote(), input.getAssignUserId(), 0l, subUsers, serviceContext);
@@ -1763,47 +1773,5 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
-	@Override
-	public Response createDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DossierOnegateInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		BackendAuth auth = new BackendAuthImpl();
-		DossierPermission dossierPermission = new DossierPermission();
-
-		DossierActions actions = new DossierActionsImpl();
-		
-		_log.info("__INPUT_ONEGATE");
-		_log.info(JSONFactoryUtil.looseSerialize(input));
-		_log.info("__XXXXXXXXXXXXX");
-
-		try {
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
-					input.getGovAgencyCode(), input.getDossierTemplateNo());
-			
-
-			Dossier dossier = actions.createDossier(groupId, input.getServiceCode(), input.getGovAgencyCode(),
-					input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(),
-					DateTimeUtils.convertDateTimeToString(input.getApplicantIdDate()), input.getAddress(), input.getCityCode(), input.getDistrictCode(),
-					input.getWardCode(), input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
-					input.isSameAsApplicant(), input.getDelegateName(), input.getDelegateIdNo(),
-					input.getDelegateTelNo(), input.getDelegateEmail(), input.getDelegateAddress(),
-					input.getDelegateCityCode(), input.getDelegateDistrictCode(), input.getDelegateWardCode(),
-					input.getApplicantNote(), StringPool.BLANK, input.getDossierNo(), input.getDossierTemplateNo(),
-					input.getViaPostal(), input.getPostalServiceCode(), input.getPostalServiceName(),
-					input.getPostalAddress(), input.getPostalCityCode(), input.getPostalDistrictCode(),
-					input.getPostalWardCode(), input.getPostalTelNo(), serviceContext);
-
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
-
-		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
-		}
-	}
 }
