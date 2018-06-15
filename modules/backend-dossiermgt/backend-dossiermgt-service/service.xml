@@ -655,7 +655,9 @@
 		<column name="invoiceFileEntryId" type="long" />
 
 		<!-- Order -->
-
+		<order by="desc">
+			<order-column name="createDate"></order-column>
+		</order>
 		<!-- Finder methods -->
 		<finder return-type="Collection" name="F_DUID">
 			<finder-column name="dossierId" />

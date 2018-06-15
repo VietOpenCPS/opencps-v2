@@ -466,8 +466,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
 			String processName, String description, int durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
-			boolean generatePassword, boolean directNotification, String serverNo, ServiceContext context)
-			throws PortalException {
+			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
+			ServiceContext context) throws PortalException {
 
 		Date now = new Date();
 
@@ -506,6 +506,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setGeneratePassword(generatePassword);
 			object.setDirectNotification(directNotification);
 			object.setServerNo(serverNo);
+			object.setPaymentFee(paymentFee);
 
 		} else {
 			object = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
@@ -529,6 +530,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setGeneratePassword(generatePassword);
 			object.setDirectNotification(directNotification);
 			object.setServerNo(serverNo);
+			object.setPaymentFee(paymentFee);
 		}
 
 		serviceProcessPersistence.update(object);

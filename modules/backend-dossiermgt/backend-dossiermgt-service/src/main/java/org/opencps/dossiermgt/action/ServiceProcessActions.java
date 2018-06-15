@@ -23,8 +23,8 @@ public interface ServiceProcessActions {
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
 			String processName, String description, int durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
-			boolean generatePassword, boolean directNotification, String serverNo, ServiceContext context)
-			throws PortalException;
+			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
+			ServiceContext context) throws PortalException;
 
 	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException;
 

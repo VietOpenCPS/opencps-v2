@@ -182,7 +182,9 @@ import javax.xml.bind.annotation.XmlType;
     "postalServiceCode",
     "dossierTemplateName",
     "processBlock",
-    "processUnit"
+    "processUnit",
+    "paymentFee",
+    "paymentNote"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -270,8 +272,26 @@ public class DossierDetailModel {
     protected String postalWardName;
     protected String postalServiceCode;
     protected String dossierTemplateName;
-   
-    public int getProcessBlock() {
+    protected String paymentFee;
+    protected String paymentNote;
+
+    public String getPaymentFee() {
+		return paymentFee;
+	}
+
+	public void setPaymentFee(String paymentFee) {
+		this.paymentFee = paymentFee;
+	}
+
+	public String getPaymentNote() {
+		return paymentNote;
+	}
+
+	public void setPaymentNote(String paymentNote) {
+		this.paymentNote = paymentNote;
+	}
+
+	public int getProcessBlock() {
 		return processBlock;
 	}
 
