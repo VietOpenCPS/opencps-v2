@@ -1,6 +1,7 @@
 package org.opencps.api.controller.util;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -8,12 +9,14 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -186,46 +189,6 @@ public class OneGateUtils {
 		} else {
 			model.setDossierActionId(0L);
 		}
-			// Check permission process dossier
-//			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
-//					input.getGroupId());
-//			String statusCode = input.getDossierStatus();
-//			String subStatusCode = input.getDossierSubStatus();
-//			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
-//				DictItem dictItem = null;
-//				if (Validator.isNotNull(subStatusCode)) {
-//					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
-//							dictCollection.getDictCollectionId(), input.getGroupId());
-//				} else {
-//					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
-//							dictCollection.getDictCollectionId(), input.getGroupId());
-//				}
-//				if (dictItem != null) {
-//					String metaData = dictItem.getMetaData();
-//					String specialStatus = StringPool.BLANK;
-//					if (Validator.isNotNull(metaData)) {
-//						try {
-//							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-//							specialStatus = metaJson.getString("specialStatus");
-//							
-//						} catch (Exception e) {
-//							// TODO: handle exception
-//						}
-//					}
-//					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-//			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
-//			if (dau != null) {
-//				model.setSpecialNo(dau.getModerator());
-//			} else {
-//				model.setSpecialNo(0);
-//			}
-//					} else {
-//						model.setSpecialNo(1);
-//					}
-//				}
-//			}
-//		}
-
 		model.setApplicantNote(input.getApplicantNote());
 		model.setNotification(Boolean.toString(input.getNotification()));
 		model.setOnline(Boolean.toString(input.getOnline()));
@@ -242,13 +205,28 @@ public class OneGateUtils {
 		model.setDelegateWardCode(input.getDelegateWardCode());
 		model.setDelegateWardName(input.getDelegateWardName());
 		model.setPostalDistrictCode(input.getPostalDistrictCode());
-	    model.setPostalDistrictName(input.getPostalDistrictName());
-	    model.setPostalWardCode(input.getPostalWardCode());
-	    model.setPostalWardName(input.getPostalWardName());
-	    model.setPostalServiceCode(input.getPostalServiceCode());
-	    model.setDossierTemplateName(input.getDossierTemplateName());
-	    model.setProcessBlock(processBlock);
-	    model.setProcessUnit(processUnit);
+		model.setPostalDistrictName(input.getPostalDistrictName());
+		model.setPostalWardCode(input.getPostalWardCode());
+		model.setPostalWardName(input.getPostalWardName());
+		model.setPostalServiceCode(input.getPostalServiceCode());
+		model.setDossierTemplateName(input.getDossierTemplateName());
+		model.setProcessBlock(processBlock);
+		model.setProcessUnit(processUnit);
+
+		// LamTV: Process payment Fee
+		long dossierId = input.getDossierId();
+		List<PaymentFile> paymentList = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+		PaymentFile payment = null;
+		if (paymentList != null && paymentList.size() > 0) {
+			payment = paymentList.get(0);
+		}
+		if (payment != null) {
+			model.setPaymentFee(payment.getPaymentFee());
+			model.setPaymentNote(payment.getPaymentNote());
+		} else {
+			model.setPaymentFee(StringPool.BLANK);
+			model.setPaymentNote(StringPool.BLANK);
+		}
 
 		return model;
 	}

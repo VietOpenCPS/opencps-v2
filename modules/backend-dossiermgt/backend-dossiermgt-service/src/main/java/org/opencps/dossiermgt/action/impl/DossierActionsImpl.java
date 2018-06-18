@@ -1690,38 +1690,36 @@ public class DossierActionsImpl implements DossierActions {
 				// TODO add SYNC for DossierFile and PaymentFile here
 
 				//TODO: process SyncDossierFile
-				processSyncDossierFile(dossierId, dossier.getReferenceUid(), processAction, groupId, userId, serviceProcess.getServerNo());
+//				processSyncDossierFile(dossierId, dossier.getReferenceUid(), processAction, groupId, userId, serviceProcess.getServerNo());
 				// SyncDossierFile
-				//List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
+				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
 
 				// check return file
-				//List<String> returnDossierFileTemplateNos = ListUtil
-				//		.toList(StringUtil.split(processAction.getReturnDossierFiles()));
+				List<String> returnDossierFileTemplateNos = ListUtil
+						.toList(StringUtil.split(processAction.getReturnDossierFiles()));
 
-				//_log.info("__return dossierFiles" + processAction.getReturnDossierFiles());
+				_log.info("__return dossierFiles" + processAction.getReturnDossierFiles());
 
-				//for (DossierFile dosserFile : lsDossierFile) {
+				for (DossierFile dosserFile : lsDossierFile) {
 
-				//	_log.info("&&&StartUpdateDossierFile" + new Date());
+					_log.info("&&&StartUpdateDossierFile" + new Date());
 
-				//	dosserFile.setIsNew(false);
+					dosserFile.setIsNew(false);
+					DossierFileLocalServiceUtil.updateDossierFile(dosserFile);
+					_log.info("&&&EndUpdateDossierFile" + new Date());
 
-				//	DossierFileLocalServiceUtil.updateDossierFile(dosserFile);
+					_log.info("__dossierPart" + processAction.getReturnDossierFiles());
+					_log.info("__dossierPart" + dosserFile.getFileTemplateNo());
 
-				//	_log.info("&&&EndUpdateDossierFile" + new Date());
+					if (returnDossierFileTemplateNos.contains(dosserFile.getFileTemplateNo())) {
+						_log.info("START SYNC DOSSIER FILE");
+						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId,
+								dossier.getReferenceUid(), false, 1, dosserFile.getDossierFileId(),
+								dosserFile.getReferenceUid(), serviceProcess.getServerNo());
 
-				//	_log.info("__dossierPart" + processAction.getReturnDossierFiles());
-				//	_log.info("__dossierPart" + dosserFile.getFileTemplateNo());
+					}
 
-				//	if (returnDossierFileTemplateNos.contains(dosserFile.getFileTemplateNo())) {
-				//		_log.info("START SYNC DOSSIER FILE");
-				//		DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId,
-				//				dossier.getReferenceUid(), false, 1, dosserFile.getDossierFileId(),
-				//				dosserFile.getReferenceUid(), serviceProcess.getServerNo());
-
-				//	}
-
-				//}
+				}
 
 			}
 
