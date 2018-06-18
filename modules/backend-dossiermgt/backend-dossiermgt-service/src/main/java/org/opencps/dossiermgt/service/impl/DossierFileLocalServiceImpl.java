@@ -202,19 +202,23 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			object.setIsNew(true);
 		}
 		
-//		String deliverableCode = PwdGenerator.getPassword(10);
+		String deliverableCode = PwdGenerator.getPassword(10);
 //		
 //		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
 //			object.setDeliverableCode(deliverableCode);
 //		}
-		String deliverableCode = StringPool.BLANK;
-		
-		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
-			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
-			
-			deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, serviceContext.getCompanyId(), deliverableType.getDeliverableTypeId());
+		//TODO: HOT FIX
+		if (Validator.isNotNull(dossierPart.getESign()) && dossierPart.getESign()) {
 			object.setDeliverableCode(deliverableCode);
 		}
+//		String deliverableCode = StringPool.BLANK;
+		
+//		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+//			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+//			
+//			deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, serviceContext.getCompanyId(), deliverableType.getDeliverableTypeId());
+//			object.setDeliverableCode(deliverableCode);
+//		}
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {
 			String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
