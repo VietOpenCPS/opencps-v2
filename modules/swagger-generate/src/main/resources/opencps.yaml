@@ -1,0 +1,216 @@
+swagger: '2.0'
+info:
+  description: OpenCPS là phần mềm lõi dịch vụ công trực tuyến nguồn mở đầu tiên và duy nhất tại Việt Nam tính đến thời điểm này.
+  version: 2.0.1
+  title: OpenCPS API
+  # put the contact info for your development or API team
+  contact:
+    email: opencps@lists.opencps.vn
+
+  license:
+    name: GNU Affero General Public License v3+.
+    url: http://www.gnu.org/licenses
+
+# tags are used for organizing operations
+tags:
+- name: ActionConfig
+  description: Định nghĩa các thao tác xử lý hồ sơ chuẩn trong hệ thống, dùng làm cơ sở để tạo ra cá dữ liệu DossierAction, DossierSync và DossierDocument
+
+paths:
+  /actionconfig:
+    post:
+      tags:
+      - ActionConfig
+      summary: Thêm định nghĩa thao tác xử lý hồ sơ
+      operationId: addActionConfig
+      description: Thêm định nghĩa thao tác xử lý hồ sơ
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của ActionConfig 
+        schema:
+          $ref: '#/definitions/ActionConfigItem'
+      responses:
+        200:
+          description: ActionConfig thêm mới thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: ActionConfig đã tồn tại trong hệ thống
+  /actionconfig/{actionCode}:
+    get:
+      tags:
+      - ActionConfig
+      summary: Lấy danh sách các định nghĩa thao tác theo actionCode
+      operationId: getActionConfigByCode
+      description: Lấy danh sách các định nghĩa thao tác theo actionCode
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: actionCode
+        in: path
+        description: actionCode của ActionConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy thao tác thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+    put:
+      tags:
+      - ActionConfig
+      summary: Cập nhật định nghĩa thao tác xử lý hồ sơ
+      operationId: updateActionConfig
+      description: Cập nhật định nghĩa thao tác xử lý hồ sơ
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: actionCode
+        in: path
+        description: actionCode của ActionConfig
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của ActionConfig 
+        schema:
+          $ref: '#/definitions/ActionConfigItem'
+      responses:
+        200:
+          description: ActionConfig cập nhật thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: ActionConfig đã tồn tại trong hệ thống
+    delete:
+      tags:
+      - ActionConfig
+      summary: Xoá định nghĩa thao tác xử lý hồ sơ
+      operationId: deleteActionConfig
+      description: Xoá định nghĩa thao tác xử lý hồ sơ
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: actionCode
+        in: path
+        description: actionCode của ActionConfig
+        required: true
+        type: string
+      responses:
+        400:
+          description: Tham số truyền vào không hợp lệ
+        404:
+          description: ActionConfig không tồn tại trong hệ thống
+  /actionconfig/_search:
+    get:
+      tags:
+      - ActionConfig
+      summary: Lấy danh sách các định nghĩa thao tác
+      operationId: getActionConfigs
+      description: Lấy danh sách các định nghĩa thao tác
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+definitions:
+  ActionConfigItem:
+    type: object
+    required:
+    - actionCode
+    properties:
+      actionCode:
+        type: string
+        example: "1100"
+      actionName:
+        type: string
+        example: "Nhận hồ sơ tại một cửa"
+      extraForm:
+        type: boolean
+        example: true
+      formScript:
+        type: string
+        example: '{"schema": {"title": "Example ?","type": "object","properties": {"name": {"type": "string","title": "Name"}}}}'
+      sampleData:
+        type: string
+        example: '{"name": "example"}'
+      insideProcess:
+        type: boolean
+        example: true
+      syncType:
+        type: integer
+        example: 0
+      pending:
+        type: boolean
+        example: true
+      notificationType:
+        type: string
+        example: "NTF-023"
+      createDocument:
+        type: boolean
+        example: true
+      documentName:
+        type: string
+        example: "Thông tin tài khoản"
+      documentScript:
+        type: string
+        example: "<jasper></jasper>"
+      documentCode:
+        type: string
+        example: "THONG_TIN_TAI_KHOAN"
+      sendDocument:
+        type: integer
+        example: 0
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /binhthgc/opencps/1.0.0
+schemes:
+ - https
+ - http

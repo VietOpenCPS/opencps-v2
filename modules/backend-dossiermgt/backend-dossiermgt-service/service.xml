@@ -1570,7 +1570,7 @@
 		</finder>
 	</entity>
 
-		<entity local-service="true" name="DossierMark" remote-service="false"
+	<entity local-service="true" name="DossierMark" remote-service="false"
 		table="opencps_dossiermark" uuid="true">
 
 		<column name="dossierMarkId" type="long" primary="true" />
@@ -1598,6 +1598,44 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 		</finder>
+	</entity>
+	
+	<entity local-service="true" name="ActionConfig" remote-service="false"
+		table="opencps_actionconfig" uuid="true">
+
+		<column name="actionConfigId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="actionCode" type="String" />
+		<column name="actionName" type="String" />
+		<column name="extraForm" type="boolean" />
+		<column name="formScript" type="String" />
+		<column name="sampleData" type="String" />
+		<column name="insideProcess" type="boolean" />
+		<column name="syncType" type="int" />
+		<column name="pending" type="boolean" />
+		<column name="notificationType" type="String" />
+		<column name="createDocument" type="boolean" />
+		<column name="documentName" type="String" />
+		<column name="documentScript" type="String" />
+		<column name="documentCode" type="String" />
+		<column name="sendDocument" type="int" />
+		
+        <order by="asc">
+            <order-column name="actionCode" order-by="asc" case-sensitive="true"></order-column>
+        </order>
+
+		<finder return-type="ActionConfig" name="F_BY_ActionCode">
+			<finder-column name="actionCode"></finder-column>
+		</finder>
+		
 	</entity>
 
 	<exceptions>
@@ -1657,6 +1695,8 @@
 		<exception>DossierPassword</exception>
 		<exception>DossierAccess</exception>
 		<exception>SeqOrder</exception>
+		
+		<exception>DuplicateActionCode</exception>
 
 	</exceptions>
 </service-builder>

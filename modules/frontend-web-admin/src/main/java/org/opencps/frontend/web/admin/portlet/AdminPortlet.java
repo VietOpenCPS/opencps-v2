@@ -78,6 +78,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.taglib.ui.JournalArticleTag;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
 import backend.auth.api.BackendAuthImpl;
@@ -105,7 +106,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 	public void render(
 		RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
-
+		
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
