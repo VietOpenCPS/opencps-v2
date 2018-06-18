@@ -1,0 +1,8 @@
+Bundle-Name: backend-api-rest-2
+Bundle-SymbolicName: backend.api.rest.v21
+Bundle-Version: 2.0.0
+Export-Package: \
+	org.toilelibre.libe.curl,\
+	io.swagger.api,\
+	io.swagger.model,\
+	javax.validation.constraints,\

@@ -1,0 +1,9 @@
+Bundle-Name: front-end-superadmin
+Bundle-SymbolicName: front.end.superadmin
+Bundle-Version: 1.0.0
+Export-Package: front.end.superadmin.constants
+Web-ContextPath:/front-end-superadmin
+
+-includeresource:\
+	@com.liferay.util.bridges-[0-9]*.jar!/com/liferay/util/bridges/freemarker/FreeMarkerPortlet.class,\
+	@com.liferay.util.taglib-[0-9]*.jar!/META-INF/*.tld
