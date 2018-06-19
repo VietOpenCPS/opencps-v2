@@ -849,6 +849,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
+				_log.info("option: " + option);
 
 				ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 						input.getActionCode(), option.getServiceProcessId());
@@ -955,7 +956,7 @@ public class DossierManagementImpl implements DossierManagement {
 	protected ProcessAction getProcessAction(long groupId, long dossierId, String refId, String actionCode,
 			long serviceProcessId) throws PortalException {
 
-		_log.debug("GET PROCESS ACTION____");
+		_log.info("GET PROCESS ACTION____");
 
 		ProcessAction action = null;
 

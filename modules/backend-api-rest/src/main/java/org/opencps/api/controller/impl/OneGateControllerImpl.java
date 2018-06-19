@@ -24,14 +24,12 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
@@ -49,6 +47,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class OneGateControllerImpl implements OneGateController {
 
@@ -132,6 +132,9 @@ public class OneGateControllerImpl implements OneGateController {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
+		
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		
 		DossierPermission dossierPermission = new DossierPermission();
 
 		DossierActions actions = new DossierActionsImpl();
@@ -141,8 +144,14 @@ public class OneGateControllerImpl implements OneGateController {
 		_log.info("__XXXXXXXXXXXXX");
 
 		try {
+			
+			
 
 			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
 
@@ -288,7 +297,7 @@ public class OneGateControllerImpl implements OneGateController {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long dActionId = GetterUtil.getLong(dossierActionId);
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
-
+	
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -336,6 +345,31 @@ public class OneGateControllerImpl implements OneGateController {
 			_log.info(e);
 			return _processException(e);
 		}
+	}
+
+	@Override
+	public Response getToken(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user) {
+		
+		try {
+			
+			String token = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
+			
+			_log.info("CHECK::TOKEN:::::" + token);
+			
+			if (Validator.isNull(token)) {
+				token = PortalUUIDUtil.generate();
+				
+				_log.info("GENERATE_TOKEN:::::" + token);
+
+				request.getSession().setAttribute(CSRF_TOKEN_FOR_SESSION_NAME, token);
+			}
+			return Response.status(200).entity(token).build();
+		} catch (Exception e) {
+			_log.info(e);
+			return _processException(e);
+		}
+
 	}
 
 }

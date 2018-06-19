@@ -48,95 +48,95 @@ public class ImageUtil {
 	 * @param url
 	 * @return
 	 */
-	public static String getSignatureImageBase64(String url) {
-
-		String base64 = StringPool.BLANK;
-
-		InputStream is = null;
-
-		ByteArrayOutputStream os = null;
-
-		try {
-
-			is = new URL(url).openStream();
-
-			os = new ByteArrayOutputStream();
-
-			byte[] buffer = new byte[1024];
-
-			byte[] imageBuff = null;
-
-			int length;
-
-			while ((length = is.read(buffer)) != -1)
-				os.write(buffer, 0, length); // copy streams
-
-			imageBuff = os.toByteArray();
-
-			base64 = Base64.encode(imageBuff);
-
-		} catch (Exception e) {
-			_log.error(e);
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-				if (os != null) {
-					os.close();
-				}
-			} catch (IOException e) {
-				_log.error(e);
-			}
-		}
-		return base64;
-	}
+//	public static String getSignatureImageBase64(String url) {
+//
+//		String base64 = StringPool.BLANK;
+//
+//		InputStream is = null;
+//
+//		ByteArrayOutputStream os = null;
+//
+//		try {
+//
+//			is = new URL(url).openStream();
+//
+//			os = new ByteArrayOutputStream();
+//
+//			byte[] buffer = new byte[1024];
+//
+//			byte[] imageBuff = null;
+//
+//			int length;
+//
+//			while ((length = is.read(buffer)) != -1)
+//				os.write(buffer, 0, length); // copy streams
+//
+//			imageBuff = os.toByteArray();
+//
+//			base64 = Base64.encode(imageBuff);
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		} finally {
+//			try {
+//				if (is != null) {
+//					is.close();
+//				}
+//				if (os != null) {
+//					os.close();
+//				}
+//			} catch (IOException e) {
+//				_log.error(e);
+//			}
+//		}
+//		return base64;
+//	}
 
 	/**
 	 * @param fullPath
 	 * @return
 	 */
-	public static String getSignatureImageBase64ByPath(String fullPath) {
-
-		String base64 = StringPool.BLANK;
-
-		InputStream is = null;
-
-		ByteArrayOutputStream os = null;
-
-		try {
-			is = new FileInputStream(new File(fullPath));
-			os = new ByteArrayOutputStream();
-
-			byte[] buffer = new byte[1024];
-
-			byte[] imageBuff = null;
-
-			int length;
-
-			while ((length = is.read(buffer)) != -1)
-				os.write(buffer, 0, length); // copy streams
-
-			imageBuff = os.toByteArray();
-
-			base64 = Base64.encode(imageBuff);
-
-		} catch (Exception e) {
-			_log.error(e);
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-				if (os != null) {
-					os.close();
-				}
-			} catch (IOException e) {
-				_log.error(e);
-			}
-		}
-		return base64;
-	}
+//	public static String getSignatureImageBase64ByPath(String fullPath) {
+//
+//		String base64 = StringPool.BLANK;
+//
+//		InputStream is = null;
+//
+//		ByteArrayOutputStream os = null;
+//
+//		try {
+//			is = new FileInputStream(new File(fullPath));
+//			os = new ByteArrayOutputStream();
+//
+//			byte[] buffer = new byte[1024];
+//
+//			byte[] imageBuff = null;
+//
+//			int length;
+//
+//			while ((length = is.read(buffer)) != -1)
+//				os.write(buffer, 0, length); // copy streams
+//
+//			imageBuff = os.toByteArray();
+//
+//			base64 = Base64.encode(imageBuff);
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		} finally {
+//			try {
+//				if (is != null) {
+//					is.close();
+//				}
+//				if (os != null) {
+//					os.close();
+//				}
+//			} catch (IOException e) {
+//				_log.error(e);
+//			}
+//		}
+//		return base64;
+//	}
 
 	/**
 	 * @param url
@@ -145,26 +145,26 @@ public class ImageUtil {
 	 * @throws URISyntaxException
 	 */
 
-	public static BufferedImage getImage(String url) throws IOException,
-			URISyntaxException {
-
-		InputStream is = null;
-		BufferedImage bimg = null;
-		try {
-
-			is = new URL(url).openStream();
-			bimg = ImageIO.read(is);
-		} catch (Exception e) {
-			_log.error(e);
-		} finally {
-			if (is != null) {
-				is.close();
-
-			}
-		}
-
-		return bimg;
-	}
+//	public static BufferedImage getImage(String url) throws IOException,
+//			URISyntaxException {
+//
+//		InputStream is = null;
+//		BufferedImage bimg = null;
+//		try {
+//
+//			is = new URL(url).openStream();
+//			bimg = ImageIO.read(is);
+//		} catch (Exception e) {
+//			_log.error(e);
+//		} finally {
+//			if (is != null) {
+//				is.close();
+//
+//			}
+//		}
+//
+//		return bimg;
+//	}
 
 	/**
 	 * @param fullPath
@@ -172,64 +172,64 @@ public class ImageUtil {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	public static BufferedImage getImageByPath(String fullPath)
-			throws IOException, URISyntaxException {
+//	public static BufferedImage getImageByPath(String fullPath)
+//			throws IOException, URISyntaxException {
+//
+//		InputStream is = null;
+//		BufferedImage bimg = null;
+//		try {
+//			is = new FileInputStream(new File(fullPath));
+//
+//			bimg = ImageIO.read(is);
+//		} catch (Exception e) {
+//			_log.error(e);
+//		} finally {
+//			if (is != null) {
+//				is.close();
+//
+//			}
+//		}
+//
+//		return bimg;
+//	}
 
-		InputStream is = null;
-		BufferedImage bimg = null;
-		try {
-			is = new FileInputStream(new File(fullPath));
+//	public static String saveAsImage(String strURL, String dest, String email,
+//			String ext, long fileId) throws IOException, PortalException,
+//			SystemException {
+//
+//		InputStream is = null;
+//		OutputStream os = null;
+//		String imagePath = StringPool.BLANK;
+//		try {
+//
+//			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileId);
+//			is = fileEntry.getContentStream();
+//			// image = ImageIO.read(is);
+//			imagePath = dest + email + "." + ext;
+//			// ImageIO.write(image, ext, new File(fileName));
+//
+//			os = new FileOutputStream(imagePath);
+//
+//			byte[] b = new byte[1024];
+//			int length;
+//
+//			while ((length = is.read(b)) != -1) {
+//				os.write(b, 0, length);
+//			}
+//
+//		} catch (IOException e) {
+//			_log.error(e);
+//		} finally {
+//			if (is != null) {
+//				is.close();
+//			}
+//			if (os != null) {
+//				os.close();
+//			}
+//		}
+//		return imagePath;
+//	}
 
-			bimg = ImageIO.read(is);
-		} catch (Exception e) {
-			_log.error(e);
-		} finally {
-			if (is != null) {
-				is.close();
-
-			}
-		}
-
-		return bimg;
-	}
-
-	public static String saveAsImage(String strURL, String dest, String email,
-			String ext, long fileId) throws IOException, PortalException,
-			SystemException {
-
-		InputStream is = null;
-		OutputStream os = null;
-		String imagePath = StringPool.BLANK;
-		try {
-
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileId);
-			is = fileEntry.getContentStream();
-			// image = ImageIO.read(is);
-			imagePath = dest + email + "." + ext;
-			// ImageIO.write(image, ext, new File(fileName));
-
-			os = new FileOutputStream(imagePath);
-
-			byte[] b = new byte[1024];
-			int length;
-
-			while ((length = is.read(b)) != -1) {
-				os.write(b, 0, length);
-			}
-
-		} catch (IOException e) {
-			_log.error(e);
-		} finally {
-			if (is != null) {
-				is.close();
-			}
-			if (os != null) {
-				os.close();
-			}
-		}
-		return imagePath;
-	}
-
-	private static Log _log = LogFactoryUtil.getLog(ImageUtil.class);
+//	private static Log _log = LogFactoryUtil.getLog(ImageUtil.class);
 
 }

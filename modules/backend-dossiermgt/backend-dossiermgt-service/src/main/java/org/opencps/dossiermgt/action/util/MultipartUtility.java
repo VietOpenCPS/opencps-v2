@@ -127,15 +127,26 @@ public class MultipartUtility {
 		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
 		writer.append(LINE_FEED);
 		writer.flush();
-
-		FileInputStream inputStream = new FileInputStream(uploadFile);
-		byte[] buffer = new byte[4096];
-		int bytesRead = -1;
-		while ((bytesRead = inputStream.read(buffer)) != -1) {
-			outputStream.write(buffer, 0, bytesRead);
+		FileInputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(uploadFile);
+			byte[] buffer = new byte[4096];
+			int bytesRead = -1;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, bytesRead);
+			}
+			outputStream.flush();
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally{
+			if (inputStream != null) {
+                try {
+                	inputStream.close();
+                } catch (IOException ex1) {
+                    //TODO:
+                }
+            }
 		}
-		outputStream.flush();
-		inputStream.close();
 
 		writer.append(LINE_FEED);
 		writer.flush();
@@ -184,4 +195,5 @@ public class MultipartUtility {
 
 		return response;
 	}
+
 }

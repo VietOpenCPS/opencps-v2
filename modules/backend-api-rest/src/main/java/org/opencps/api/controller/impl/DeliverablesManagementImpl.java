@@ -12,22 +12,31 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverablesManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DeliverableUtils;
+import org.opencps.api.controller.util.DossierUtils;
+import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
 import org.opencps.api.deliverable.model.DeliverableResultModel;
 import org.opencps.api.deliverable.model.DeliverableSearchModel;
 import org.opencps.api.deliverable.model.DeliverableUpdateModel;
+import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -563,4 +572,45 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Response getDossierIdByCode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Long id, String deliverableCode) {
+		_log.info("START*********1");
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.info("groupId: " + groupId);
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			_log.info("deliverableCode: " + deliverableCode);
+			DossierDetailModel dossierInfo = null;
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getByDeliverableCode(deliverableCode);
+			Dossier dossier = null;
+			if (dossierFile != null) {
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierFile.getDossierId());
+			}
+			if (dossier != null) {
+				dossierInfo = OneGateUtils.mappingForGetDetail(dossier);
+			}
+
+
+			return Response.status(200).entity(dossierInfo).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(500);
+			error.setDescription("not found!");
+
+			return Response.status(500).entity(error).build();
+		}
+	}
+
 }
