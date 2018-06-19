@@ -1,8 +1,8 @@
 package io.swagger.api.impl;
 
 import io.swagger.api.*;
-import io.swagger.model.ActionConfigItem;
-import io.swagger.model.ActionConfigItemResult;
+import io.swagger.model.StepConfigItem;
+import io.swagger.model.StepConfigItemResult;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,32 +17,32 @@ import org.apache.cxf.jaxrs.ext.multipart.*;
 
 import io.swagger.annotations.Api;
 
-public class ActionConfigApiServiceImpl implements ActionConfigApi {
-    public ActionConfigItem addActionConfig(ActionConfigItem body) {
+public class StepConfigApiServiceImpl implements StepConfigApi {
+    public StepConfigItem addStepConfig(StepConfigItem body) {
         // TODO: Implement...
         
         return null;
     }
     
-    public void deleteActionConfig(String id) {
+    public void deleteStepConfig(String id) {
         // TODO: Implement...
         
         
     }
     
-    public ActionConfigItem getActionConfigByCode(String id) {
-        // TODO: Implement...
-        
-        return null;
-    }
-    
-    public ActionConfigItemResult getActionConfigsElasticsearch(String q) {
+    public StepConfigItem getStepConfigByCode(String id) {
         // TODO: Implement...
         
         return null;
     }
     
-    public ActionConfigItem updateActionConfig(String id, ActionConfigItem body) {
+    public StepConfigItemResult getStepConfigsElasticsearch(String q) {
+        // TODO: Implement...
+        
+        return null;
+    }
+    
+    public StepConfigItem updateStepConfig(String id, StepConfigItem body) {
         // TODO: Implement...
         
         return null;

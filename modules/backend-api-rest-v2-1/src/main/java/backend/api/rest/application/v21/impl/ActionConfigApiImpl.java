@@ -1,8 +1,6 @@
 package backend.api.rest.application.v21.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -12,16 +10,17 @@ import org.opencps.dossiermgt.action.impl.ActionConfigActionsImpl;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
-import backend.api.rest.application.v21.parser.ActionConfigParsing;
+import backend.api.rest.application.v21.parser.OpenCPSAPIParsing;
 import io.swagger.api.ActionConfigApi;
 import io.swagger.model.ActionConfigItem;
+import io.swagger.model.ActionConfigItemResult;
 
 public class ActionConfigApiImpl implements ActionConfigApi {
 
@@ -34,91 +33,102 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 	@Context
 	HttpServletResponse response;
 
+	ServiceContext serviceContext = new ServiceContext();
+	
 	private ActionConfigActions action = new ActionConfigActionsImpl();
-	private ActionConfigParsing parsing = new ActionConfigParsing();
+	private OpenCPSAPIParsing parsing = new OpenCPSAPIParsing();
 
 	@Override
-	public ActionConfigItem addActionConfig(ActionConfigItem actionConfigItem) {
+	public ActionConfigItem addActionConfig(ActionConfigItem body) {
 
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		System.out.println("ActionConfigApiImpl.addActionConfig()" + actionConfigItem);
+		System.out.println("ActionConfigApiImpl.addActionConfig()" + body);
 		try {
-			ActionConfig ett = action.addActionConfig(userId, groupId, actionConfigItem.getActionCode(), actionConfigItem.getActionName(),
-					actionConfigItem.getExtraForm(), actionConfigItem.getFormScript(), actionConfigItem.getSampleData(),
-					actionConfigItem.getInsideProcess(), actionConfigItem.getSyncType(), actionConfigItem.getPending(),
-					actionConfigItem.getNotificationType(), actionConfigItem.getCreateDocument(),
-					actionConfigItem.getDocumentName(), actionConfigItem.getDocumentScript(),
-					actionConfigItem.getDocumentCode(), actionConfigItem.getSendDocument());
 			
-			actionConfigItem = parsing.getModel(ett);
+			serviceContext.setUserId(userId);
 			
+			ActionConfig ett = action.addActionConfig(userId, groupId, body.getActionCode(),
+					body.getActionName(), body.getExtraForm(), body.getFormScript(),
+					body.getSampleData(), body.getInsideProcess(),
+					body.getUserNote(), body.getSyncType(), body.getPending(),
+					body.getRollbackable(), body.getNotificationType(),
+					body.getDocumentType(), serviceContext);
+
+			body = parsing.getModel(ett);
+
 		} catch (PortalException e) {
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
+		} catch (AuthenticationException e) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
-		return actionConfigItem;
+		return body;
 	}
 
 	@Override
-	public void deleteActionConfig(String actionCode) {
+	public void deleteActionConfig(String actionConfigId) {
 		try {
+
+			long userId = user.getUserId();
 			
-			ActionConfig object = ActionConfigLocalServiceUtil.getByCode(actionCode);
+			serviceContext.setUserId(userId);
 			
-			action.deleteActionConfig(object.getActionConfigId());
-			
+			action.deleteActionConfig(Long.valueOf(actionConfigId), serviceContext);
+
 		} catch (PortalException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		} catch (AuthenticationException e) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
 
 	@Override
-	public List<ActionConfigItem> getActionConfigs(String q) {
-		// TODO Auto-generated method stub
-		List<ActionConfigItem> results = new ArrayList<>();
+	public ActionConfigItem updateActionConfig(String id, ActionConfigItem body) {
 
-		ActionConfigItem object = new ActionConfigItem();
-		
-		List<ActionConfig> actionConfigs = ActionConfigLocalServiceUtil.getActionConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		
-		for (ActionConfig ett : actionConfigs) {
-			results.add(parsing.getModel(ett));
-		}
-
-		return results;
-	}
-
-	@Override
-	public ActionConfigItem updateActionConfig(String actionCode, ActionConfigItem actionConfigItem) {
-		
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
+
+			System.out.println("StepConfigApiImpl.updateStepConfig()"+serviceContext);
 			
-			ActionConfig ett = action.updateActionConfig(actionCode, userId, groupId, actionConfigItem.getActionCode(), actionConfigItem.getActionName(),
-					actionConfigItem.getExtraForm(), actionConfigItem.getFormScript(), actionConfigItem.getSampleData(),
-					actionConfigItem.getInsideProcess(), actionConfigItem.getSyncType(), actionConfigItem.getPending(),
-					actionConfigItem.getNotificationType(), actionConfigItem.getCreateDocument(),
-					actionConfigItem.getDocumentName(), actionConfigItem.getDocumentScript(),
-					actionConfigItem.getDocumentCode(), actionConfigItem.getSendDocument());
+			serviceContext.setUserId(userId);
 			
-			actionConfigItem = parsing.getModel(ett);
-			
+			ActionConfig ett = action.updateActionConfig(Long.valueOf(id), userId, groupId, body.getActionCode(),
+					body.getActionName(), body.getExtraForm(), body.getFormScript(),
+					body.getSampleData(), body.getInsideProcess(),
+					body.getUserNote(), body.getSyncType(), body.getPending(),
+					body.getRollbackable(), body.getNotificationType(),
+					body.getDocumentType(), serviceContext);
+
+			body = parsing.getModel(ett);
+
 		} catch (PortalException e) {
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
+		} catch (AuthenticationException e) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
-		
-		return actionConfigItem;
+
+		return body;
 	}
 
 	@Override
 	public ActionConfigItem getActionConfigByCode(String actionCode) {
-		
+
 		ActionConfig ett = ActionConfigLocalServiceUtil.getByCode(actionCode);
+
+		if (Validator.isNull(ett)) {
+			ett = ActionConfigLocalServiceUtil.fetchActionConfig(Long.valueOf(actionCode));
+		}
 		
 		return parsing.getModel(ett);
+	}
+
+	@Override
+	public ActionConfigItemResult getActionConfigsElasticsearch(String q) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

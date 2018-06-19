@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement; 
 @XmlRootElement public class ActionConfigItem  {
   
+  @ApiModelProperty(example = "null", value = "")
+  private Long actionConfigId = null;
   @ApiModelProperty(example = "1100", required = true, value = "")
   private String actionCode = null;
   @ApiModelProperty(example = "Nhận hồ sơ tại một cửa", value = "")
@@ -30,18 +32,31 @@ import javax.xml.bind.annotation.XmlRootElement;
   private Integer syncType = null;
   @ApiModelProperty(example = "true", value = "")
   private Boolean pending = null;
-  @ApiModelProperty(example = "NTF-023", value = "")
-  private String notificationType = null;
   @ApiModelProperty(example = "true", value = "")
-  private Boolean createDocument = null;
-  @ApiModelProperty(example = "Thông tin tài khoản", value = "")
-  private String documentName = null;
-  @ApiModelProperty(example = "&lt;jasper&gt;&lt;/jasper&gt;", value = "")
-  private String documentScript = null;
-  @ApiModelProperty(example = "THONG_TIN_TAI_KHOAN", value = "")
-  private String documentCode = null;
+  private Boolean rollbackable = null;
+  @ApiModelProperty(example = "Mã tạo thông báo email/SMS request: gửi cán bộ một cửa inform: gửi người làm thủ tục", value = "")
+  private String notificationType = null;
+  @ApiModelProperty(example = "0001", value = "")
+  private String documentType = null;
   @ApiModelProperty(example = "0", value = "")
-  private Integer sendDocument = null;
+  private Integer userNote = null;
+
+ /**
+   * Get actionConfigId
+   * @return actionConfigId
+  **/
+  public Long getActionConfigId() {
+    return actionConfigId;
+  }
+
+  public void setActionConfigId(Long actionConfigId) {
+    this.actionConfigId = actionConfigId;
+  }
+
+  public ActionConfigItem actionConfigId(Long actionConfigId) {
+    this.actionConfigId = actionConfigId;
+    return this;
+  }
 
  /**
    * Get actionCode
@@ -181,6 +196,23 @@ import javax.xml.bind.annotation.XmlRootElement;
   }
 
  /**
+   * Get rollbackable
+   * @return rollbackable
+  **/
+  public Boolean getRollbackable() {
+    return rollbackable;
+  }
+
+  public void setRollbackable(Boolean rollbackable) {
+    this.rollbackable = rollbackable;
+  }
+
+  public ActionConfigItem rollbackable(Boolean rollbackable) {
+    this.rollbackable = rollbackable;
+    return this;
+  }
+
+ /**
    * Get notificationType
    * @return notificationType
   **/
@@ -198,87 +230,36 @@ import javax.xml.bind.annotation.XmlRootElement;
   }
 
  /**
-   * Get createDocument
-   * @return createDocument
+   * Get documentType
+   * @return documentType
   **/
-  public Boolean getCreateDocument() {
-    return createDocument;
+  public String getDocumentType() {
+    return documentType;
   }
 
-  public void setCreateDocument(Boolean createDocument) {
-    this.createDocument = createDocument;
+  public void setDocumentType(String documentType) {
+    this.documentType = documentType;
   }
 
-  public ActionConfigItem createDocument(Boolean createDocument) {
-    this.createDocument = createDocument;
+  public ActionConfigItem documentType(String documentType) {
+    this.documentType = documentType;
     return this;
   }
 
  /**
-   * Get documentName
-   * @return documentName
+   * Get userNote
+   * @return userNote
   **/
-  public String getDocumentName() {
-    return documentName;
+  public Integer getUserNote() {
+    return userNote;
   }
 
-  public void setDocumentName(String documentName) {
-    this.documentName = documentName;
+  public void setUserNote(Integer userNote) {
+    this.userNote = userNote;
   }
 
-  public ActionConfigItem documentName(String documentName) {
-    this.documentName = documentName;
-    return this;
-  }
-
- /**
-   * Get documentScript
-   * @return documentScript
-  **/
-  public String getDocumentScript() {
-    return documentScript;
-  }
-
-  public void setDocumentScript(String documentScript) {
-    this.documentScript = documentScript;
-  }
-
-  public ActionConfigItem documentScript(String documentScript) {
-    this.documentScript = documentScript;
-    return this;
-  }
-
- /**
-   * Get documentCode
-   * @return documentCode
-  **/
-  public String getDocumentCode() {
-    return documentCode;
-  }
-
-  public void setDocumentCode(String documentCode) {
-    this.documentCode = documentCode;
-  }
-
-  public ActionConfigItem documentCode(String documentCode) {
-    this.documentCode = documentCode;
-    return this;
-  }
-
- /**
-   * Get sendDocument
-   * @return sendDocument
-  **/
-  public Integer getSendDocument() {
-    return sendDocument;
-  }
-
-  public void setSendDocument(Integer sendDocument) {
-    this.sendDocument = sendDocument;
-  }
-
-  public ActionConfigItem sendDocument(Integer sendDocument) {
-    this.sendDocument = sendDocument;
+  public ActionConfigItem userNote(Integer userNote) {
+    this.userNote = userNote;
     return this;
   }
 
@@ -288,6 +269,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     StringBuilder sb = new StringBuilder();
     sb.append("class ActionConfigItem {\n");
     
+    sb.append("    actionConfigId: ").append(toIndentedString(actionConfigId)).append("\n");
     sb.append("    actionCode: ").append(toIndentedString(actionCode)).append("\n");
     sb.append("    actionName: ").append(toIndentedString(actionName)).append("\n");
     sb.append("    extraForm: ").append(toIndentedString(extraForm)).append("\n");
@@ -296,12 +278,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     sb.append("    insideProcess: ").append(toIndentedString(insideProcess)).append("\n");
     sb.append("    syncType: ").append(toIndentedString(syncType)).append("\n");
     sb.append("    pending: ").append(toIndentedString(pending)).append("\n");
+    sb.append("    rollbackable: ").append(toIndentedString(rollbackable)).append("\n");
     sb.append("    notificationType: ").append(toIndentedString(notificationType)).append("\n");
-    sb.append("    createDocument: ").append(toIndentedString(createDocument)).append("\n");
-    sb.append("    documentName: ").append(toIndentedString(documentName)).append("\n");
-    sb.append("    documentScript: ").append(toIndentedString(documentScript)).append("\n");
-    sb.append("    documentCode: ").append(toIndentedString(documentCode)).append("\n");
-    sb.append("    sendDocument: ").append(toIndentedString(sendDocument)).append("\n");
+    sb.append("    documentType: ").append(toIndentedString(documentType)).append("\n");
+    sb.append("    userNote: ").append(toIndentedString(userNote)).append("\n");
     sb.append("}");
     return sb.toString();
   }

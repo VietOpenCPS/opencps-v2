@@ -8,9 +8,9 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.ActionConfigTerm;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.constants.StepConfigTerm;
+import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -29,8 +29,8 @@ import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
-	public static final String CLASS_NAME = ActionConfig.class.getName();
+public class StepConfigIndexer extends BaseIndexer<StepConfig> {
+	public static final String CLASS_NAME = StepConfig.class.getName();
 
 	@Override
 	public String getClassName() {
@@ -38,12 +38,12 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 	}
 
 	@Override
-	protected void doDelete(ActionConfig object) throws Exception {
+	protected void doDelete(StepConfig object) throws Exception {
 		deleteDocument(object.getCompanyId(), object.getPrimaryKey());
 	}
 
 	@Override
-	protected Document doGetDocument(ActionConfig object) throws Exception {
+	protected Document doGetDocument(StepConfig object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 		
 		// Indexer of audit fields
@@ -56,16 +56,14 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
 
 		// Indexer of custom fields
-		document.addTextSortable(ActionConfigTerm.ACTION_CODE, object.getActionCode());
-		document.addTextSortable(ActionConfigTerm.ACTION_NAME, object.getActionName());
-		document.addNumberSortable(ActionConfigTerm.EXTRA_FORM, object.getExtraForm() ? 1:0);
-		document.addNumberSortable(ActionConfigTerm.INSIDE_PROCESS, object.getInsideProcess() ? 1:0);
-		document.addNumberSortable(ActionConfigTerm.USER_NOTE, object.getUserNote());
-		document.addNumberSortable(ActionConfigTerm.SYNC_TYPE, object.getSyncType());
-		document.addNumberSortable(ActionConfigTerm.PENDING, object.getPending() ? 1:0);
-		document.addNumberSortable(ActionConfigTerm.ROLL_BACKABLE, object.getRollbackable() ? 1:0);
-		document.addTextSortable(ActionConfigTerm.NOTIFICATION_TYPE, object.getNotificationType());
-		document.addTextSortable(ActionConfigTerm.DOCUMENT_TYPE, object.getDocumentType());
+		document.addTextSortable(StepConfigTerm.STEP_CODE, object.getStepCode());
+		document.addTextSortable(StepConfigTerm.STEP_NAME, object.getStepName());
+		document.addNumberSortable(StepConfigTerm.STEP_TYPE, object.getStepType());
+		document.addTextSortable(StepConfigTerm.DOSSIER_STATUS, object.getDossierStatus());
+		document.addTextSortable(StepConfigTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
+		document.addTextSortable(StepConfigTerm.MENU_GROUP, object.getMenuGroup());
+		document.addTextSortable(StepConfigTerm.MENU_STEP_NAME, object.getMenuStepName());
+		document.addTextSortable(StepConfigTerm.BUTTON_CONFIG, object.getButtonConfig());
 		
 		return document;
 	}
@@ -82,7 +80,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		ActionConfig object = ActionConfigLocalServiceUtil.fetchActionConfig(classPK);
+		StepConfig object = StepConfigLocalServiceUtil.fetchStepConfig(classPK);
 		doReindex(object);
 	}
 
@@ -93,7 +91,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 	}
 
 	@Override
-	protected void doReindex(ActionConfig object) throws Exception {
+	protected void doReindex(StepConfig object) throws Exception {
 		Document document = getDocument(object);
 		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), object.getCompanyId(), document,
 				isCommitImmediately());
@@ -101,15 +99,15 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 	}
 
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ActionConfigLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = StepConfigLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
 		indexableActionableDynamicQuery
-				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ActionConfig>() {
+				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<StepConfig>() {
 
 					@Override
-					public void performAction(ActionConfig object) {
+					public void performAction(StepConfig object) {
 						try {
 							Document document = getDocument(object);
 
@@ -127,7 +125,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 		indexableActionableDynamicQuery.performActions();
 	}
 
-	Log _log = LogFactoryUtil.getLog(ActionConfigIndexer.class);
+	Log _log = LogFactoryUtil.getLog(StepConfigIndexer.class);
 
 	protected List<Object[]> getKeyValues(String formData,
 			List<Object[]> keyValues) {

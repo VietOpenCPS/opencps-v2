@@ -15,9 +15,13 @@ info:
 tags:
 - name: ActionConfig
   description: Định nghĩa các thao tác xử lý hồ sơ chuẩn trong hệ thống, dùng làm cơ sở để tạo ra cá dữ liệu DossierAction, DossierSync và DossierDocument
-
+- name: MenuConfig
+  description: Định nghĩa các bước xử lý chuẩn dùng để hiển thị trên menu xử lý của chương trình
+- name: StepConfig
+  description: Định nghĩa các bước xử lý chuẩn dùng để hiển thị trên menu xử lý của chương trình
+  
 paths:
-  /actionconfig:
+  /actionconfigs:
     post:
       tags:
       - ActionConfig
@@ -47,11 +51,11 @@ paths:
           description: Tham số truyền vào không hợp lệ
         409:
           description: ActionConfig đã tồn tại trong hệ thống
-  /actionconfig/{actionCode}:
+  /actionconfigs/{id}:
     get:
       tags:
       - ActionConfig
-      summary: Lấy danh sách các định nghĩa thao tác theo actionCode
+      summary: Lấy danh sách các định nghĩa thao tác theo id Hoặc actionCode
       operationId: getActionConfigByCode
       description: Lấy danh sách các định nghĩa thao tác theo actionCode
       consumes:
@@ -63,9 +67,9 @@ paths:
       - application/xml
       - application/x-www-form-urlencoded
       parameters:
-      - name: actionCode
+      - name: id
         in: path
-        description: actionCode của ActionConfig
+        description: id hoặc actionCode của ActionConfig
         required: true
         type: string
       responses:
@@ -90,9 +94,9 @@ paths:
       - application/xml
       - application/x-www-form-urlencoded
       parameters:
-      - name: actionCode
+      - name: id
         in: path
-        description: actionCode của ActionConfig
+        description: id của ActionConfig
         required: true
         type: string
       - in: body
@@ -120,9 +124,9 @@ paths:
       - application/xml
       - application/x-www-form-urlencoded
       parameters:
-      - name: actionCode
+      - name: id
         in: path
-        description: actionCode của ActionConfig
+        description: id của ActionConfig
         required: true
         type: string
       responses:
@@ -130,12 +134,12 @@ paths:
           description: Tham số truyền vào không hợp lệ
         404:
           description: ActionConfig không tồn tại trong hệ thống
-  /actionconfig/_search:
+  /actionconfigs/_search:
     get:
       tags:
       - ActionConfig
       summary: Lấy danh sách các định nghĩa thao tác
-      operationId: getActionConfigs
+      operationId: getActionConfigsElasticsearch
       description: Lấy danh sách các định nghĩa thao tác
       consumes:
       - application/json
@@ -155,17 +159,369 @@ paths:
         200:
           description: Lấy danh sách thành công
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/ActionConfigItem'
+            $ref: '#/definitions/ActionConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /menuconfigs:
+    post:
+      tags:
+      - MenuConfig
+      summary: Thêm định nghĩa menu configs
+      operationId: addMenuConfig
+      description: Thêm định nghĩa menu configs
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của MenuConfig 
+        schema:
+          $ref: '#/definitions/MenuConfigItem'
+      responses:
+        200:
+          description: MenuConfig thêm mới thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: ActionConfig đã tồn tại trong hệ thống
+  /menuconfigs/{id}:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa cấu hình menu theo id hoặc group
+      operationId: getMenuConfigByCode
+      description: Lấy danh sách các định nghĩa cấu hình menu
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id hoặc group của MenuConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy menu thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+    put:
+      tags:
+      - MenuConfig
+      summary: Cập nhật định nghĩa menu
+      operationId: updateMenuConfig
+      description: Cập nhật định nghĩa menu
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của MenuConfig
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của MenuConfig 
+        schema:
+          $ref: '#/definitions/MenuConfigItem'
+      responses:
+        200:
+          description: MenuConfig cập nhật thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: MenuConfig đã tồn tại trong hệ thống
+    delete:
+      tags:
+      - MenuConfig
+      summary: Xoá định nghĩa menu
+      operationId: deleteMenuConfig
+      description: Xoá định nghĩa menu
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của MenuConfig
+        required: true
+        type: string
+      responses:
+        400:
+          description: Tham số truyền vào không hợp lệ
+        404:
+          description: MenuConfig không tồn tại trong hệ thống
+  /menuconfigs/todo:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa thao tác todo
+      operationId: getMenuConfigsTodo
+      description: Lấy danh sách các định nghĩa thao tác todo
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /menuconfigs/count:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa thao tác todo counter
+      operationId: getMenuConfigsCount
+      description: Lấy danh sách các định nghĩa thao tác todo counter
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/MenuConfigCountItemResults'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /menuconfigs/_search:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa thao tác
+      operationId: getMenuConfigsElasticsearch
+      description: Lấy danh sách các định nghĩa thao tác
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /stepconfigs:
+    post:
+      tags:
+      - StepConfig
+      summary: Thêm định nghĩa step configs
+      operationId: addStepConfig
+      description: Thêm định nghĩa step configs
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của StepConfig 
+        schema:
+          $ref: '#/definitions/StepConfigItem'
+      responses:
+        200:
+          description: StepConfig thêm mới thành công
+          schema:
+            $ref: '#/definitions/StepConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: StepConfig đã tồn tại trong hệ thống
+  /stepconfigs/{id}:
+    get:
+      tags:
+      - StepConfig
+      summary: Lấy danh sách các định nghĩa cấu hình step theo id hoặc group
+      operationId: getStepConfigByCode
+      description: Lấy danh sách các định nghĩa cấu hình step
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id hoặc group của StepConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy step thành công
+          schema:
+            $ref: '#/definitions/StepConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+    put:
+      tags:
+      - StepConfig
+      summary: Cập nhật định nghĩa step
+      operationId: updateStepConfig
+      description: Cập nhật định nghĩa step
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của StepConfig
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của StepConfig 
+        schema:
+          $ref: '#/definitions/StepConfigItem'
+      responses:
+        200:
+          description: StepConfig cập nhật thành công
+          schema:
+            $ref: '#/definitions/StepConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: StepConfig đã tồn tại trong hệ thống
+    delete:
+      tags:
+      - StepConfig
+      summary: Xoá định nghĩa step
+      operationId: deleteStepConfig
+      description: Xoá định nghĩa step
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của StepConfig
+        required: true
+        type: string
+      responses:
+        400:
+          description: Tham số truyền vào không hợp lệ
+        404:
+          description: StepConfig không tồn tại trong hệ thống
+  /stepconfigs/_search:
+    get:
+      tags:
+      - StepConfig
+      summary: Lấy danh sách các định nghĩa step
+      operationId: getStepConfigsElasticsearch
+      description: Lấy danh sách các định nghĩa step
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/StepConfigItemResult'
         400:
           description: Tham số truyền vào không hợp lệ
 definitions:
+  ActionConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/ActionConfigItem'
   ActionConfigItem:
     type: object
     required:
     - actionCode
     properties:
+      actionConfigId:
+        type: integer
+        format: int64
       actionCode:
         type: string
         example: "1100"
@@ -190,24 +546,150 @@ definitions:
       pending:
         type: boolean
         example: true
-      notificationType:
-        type: string
-        example: "NTF-023"
-      createDocument:
+      rollbackable:
         type: boolean
         example: true
-      documentName:
+      notificationType:
         type: string
-        example: "Thông tin tài khoản"
-      documentScript:
+        example: "Mã tạo thông báo email/SMS request: gửi cán bộ một cửa inform: gửi người làm thủ tục"
+      documentType:
         type: string
-        example: "<jasper></jasper>"
-      documentCode:
-        type: string
-        example: "THONG_TIN_TAI_KHOAN"
-      sendDocument:
+        example: "0001"
+      userNote:
         type: integer
         example: 0
+  StepConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/StepConfigItem'
+  StepConfigItem:
+    type: object
+    required:
+    - stepCode
+    properties:
+      stepConfigId:
+        type: integer
+        format: int64
+      createDate:
+        type: string
+        example: "2018-06-11T08:04:12.129Z"
+      stepCode:
+        type: string
+        example: "001"
+      stepName:
+        type: string
+        example: 'step name 001'
+      stepType:
+        type: integer
+        example: 0
+      dossierStatus:
+        type: string
+        example: 'dossierStatus 001'
+      dossierSubStatus:
+        type: string
+        example: 'dossierSubStatus 001'
+      menuGroup:
+        type: string
+        example: 'menuGroup 001'
+      menuStepName:
+        type: string
+        example: 'menuStepName 001'
+      buttonConfig:
+        type: string
+        example: "0001"
+  MenuConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigItem'
+  MenuConfigItem:
+    type: object
+    properties:
+      menuConfigId:
+        type: integer
+        format: int64
+      createDate:
+        type: string
+        example: "2018-06-11T08:04:12.129Z"
+      menuGroup:
+        type: string
+        example: "001"
+      menuName:
+        type: string
+        example: 'step name 001'
+      order:
+        type: integer
+        example: 0
+      menuType:
+        type: integer
+        example: 0
+      queryParams:
+        type: string
+        example: 'queryParams'
+      tableConfig:
+        type: string
+        example: 'tableConfig'
+      buttonConfig:
+        type: string
+        example: 'buttonConfig'
+      steps:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigStepsItem'
+  MenuConfigStepsItem:
+    type: object
+    properties:
+      stepCode:
+        type: string
+        example: ""
+      stepName:
+        type: string
+        example: "001"
+      menuStepName:
+        type: string
+        example: 'step name 001'
+  MenuConfigCountItemResults:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigCountItem'
+  MenuConfigCountItem:
+    type: object
+    properties:
+      menuGroup:
+        type: string
+        example: ""
+      menuName:
+        type: string
+        example: "001"
+      counter:
+        type: integer
+        format: int64
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
 basePath: /binhthgc/opencps/1.0.0
