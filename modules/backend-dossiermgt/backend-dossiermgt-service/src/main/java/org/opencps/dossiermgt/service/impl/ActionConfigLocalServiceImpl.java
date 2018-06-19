@@ -58,12 +58,12 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ActionConfig addActionConfig(long userId, long groupId, String actionCode, String actionName,
-			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer syncType,
-			Boolean pending, String notificationType, Boolean createDocument, String documentName,
-			String documentScript, String documentCode, Integer sendDocument) throws PortalException {
+			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
+			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType)
+			throws PortalException {
 
-		validate(actionCode);
-		
+		validate(actionCode, 0);
+
 		User user = userLocalService.getUser(userId);
 
 		Date now = new Date();
@@ -75,6 +75,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setGroupId(groupId);
 		actionConfig.setCompanyId(user.getCompanyId());
 		actionConfig.setUserId(user.getUserId());
+		
 		actionConfig.setCreateDate(now);
 		actionConfig.setModifiedDate(now);
 
@@ -84,29 +85,26 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setFormScript(formScript);
 		actionConfig.setSampleData(sampleData);
 		actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? extraForm : Boolean.FALSE);
+		actionConfig.setUserNote(Validator.isNotNull(userNote) ? userNote : 0);
 		actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);
 		actionConfig.setPending(Validator.isNotNull(pending) ? extraForm : Boolean.FALSE);
+		actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
 		actionConfig.setNotificationType(notificationType);
-		actionConfig.setCreateDocument(Validator.isNotNull(createDocument) ? extraForm : Boolean.FALSE);
-		actionConfig.setDocumentName(documentName);
-		actionConfig.setDocumentScript(documentScript);
-		actionConfig.setDocumentCode(documentCode);
-		actionConfig.setSendDocument(Validator.isNotNull(sendDocument) ? sendDocument : 0);
+		actionConfig.setDocumentType(documentType);
 
 		actionConfigPersistence.update(actionConfig);
-		
+
 		return actionConfig;
 
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ActionConfig updateActionConfig(long actionConfigId, long userId, long groupId, String actionCode, String actionName,
-			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer syncType,
-			Boolean pending, String notificationType, Boolean createDocument, String documentName,
-			String documentScript, String documentCode, Integer sendDocument) throws PortalException {
+			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
+			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType) throws PortalException {
 
-		validate(actionCode);
-		
+		validate(actionCode, actionConfigId);
+
 		User user = userLocalService.getUser(userId);
 
 		Date now = new Date();
@@ -143,24 +141,21 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		if (Validator.isNotNull(notificationType)) {
 			actionConfig.setNotificationType(notificationType);
 		}
-		if (Validator.isNotNull(createDocument)) {
-			actionConfig.setCreateDocument(createDocument);
+		if (Validator.isNotNull(userNote)) {
+			actionConfig.setUserNote(userNote);
 		}
-		if (Validator.isNotNull(documentName)) {
-			actionConfig.setDocumentName(documentName);
+		if (Validator.isNotNull(rollbackable)) {
+			actionConfig.setRollbackable(rollbackable);
 		}
-		if (Validator.isNotNull(documentScript)) {
-			actionConfig.setDocumentScript(documentScript);
+		if (Validator.isNotNull(notificationType)) {
+			actionConfig.setNotificationType(notificationType);
 		}
-		if (Validator.isNotNull(documentCode)) {
-			actionConfig.setDocumentCode(documentCode);
-		}
-		if (Validator.isNotNull(sendDocument)) {
-			actionConfig.setSendDocument(sendDocument);
+		if (Validator.isNotNull(documentType)) {
+			actionConfig.setDocumentType(documentType);
 		}
 
 		actionConfigPersistence.update(actionConfig);
-		
+
 		return actionConfig;
 
 	}
@@ -173,50 +168,40 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 		return actionConfig;
 	}
-	
+
 	public ActionConfig getByCode(String actionCode) {
-		
+
 		return actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
-		
+
 	}
 
 	public JSONObject getForm(String actionCode) {
-		
+
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		
+
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
-		
+
 		result.put(ActionConfigTerm.FORM_SCRIPT, actionConfig.getFormScript());
 		result.put(ActionConfigTerm.SAMPLE_DATA, actionConfig.getSampleData());
-		
+
 		return result;
-		
-	}
-	
-	public JSONObject getDocumentFile(String actionCode) {
-		
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-		
-		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
-		
-		result.put(ActionConfigTerm.DOCUMENT_NAME, actionConfig.getDocumentName());
-		result.put(ActionConfigTerm.DOCUMENT_CODE, actionConfig.getDocumentCode());
-		result.put(ActionConfigTerm.DOCUMENT_SCRIPT, actionConfig.getDocumentScript());
-		
-		return result;
-		
+
 	}
 
-	private void validate(String actionCode) throws PortalException {
+	private void validate(String actionCode, long actionConfigId) throws PortalException {
 
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
-		
+
 		if (Validator.isNull(actionCode)) {
 			throw new DuplicateActionCodeException("DuplicateActionCodeException");
 		}
-		
-		if (Validator.isNotNull(actionConfig)) {
+
+		if (Validator.isNotNull(actionConfig) && actionConfigId == 0) {
 			throw new DuplicateActionCodeException("DuplicateActionCodeException");
+		}
+		
+		if (Validator.isNotNull(actionConfig) && actionConfigId != actionConfig.getActionConfigId()) {
+			throw new DuplicateActionCodeException("DuplicateStepCodeException");
 		}
 
 	}

@@ -1619,14 +1619,12 @@
 		<column name="formScript" type="String" />
 		<column name="sampleData" type="String" />
 		<column name="insideProcess" type="boolean" />
+		<column name="userNote" type="int" />
 		<column name="syncType" type="int" />
 		<column name="pending" type="boolean" />
+		<column name="rollbackable" type="boolean" />
 		<column name="notificationType" type="String" />
-		<column name="createDocument" type="boolean" />
-		<column name="documentName" type="String" />
-		<column name="documentScript" type="String" />
-		<column name="documentCode" type="String" />
-		<column name="sendDocument" type="int" />
+		<column name="documentType" type="String" />
 		
         <order by="asc">
             <order-column name="actionCode" order-by="asc" case-sensitive="true"></order-column>
@@ -1637,7 +1635,70 @@
 		</finder>
 		
 	</entity>
+	
+	<entity local-service="true" name="StepConfig" remote-service="false"
+		table="opencps_stepconfig" uuid="true">
 
+		<column name="stepConfigId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="stepCode" type="String" />
+		<column name="stepName" type="String" />
+		<column name="stepType" type="int" />
+		<column name="dossierStatus" type="String" />
+		<column name="dossierSubStatus" type="String" />
+		<column name="menuGroup" type="String" />
+		<column name="menuStepName" type="String" />
+		<column name="buttonConfig" type="String" />
+		
+        <order by="asc">
+            <order-column name="stepCode" order-by="asc" case-sensitive="true"></order-column>
+        </order>
+
+		<finder return-type="StepConfig" name="F_BY_stepCode">
+			<finder-column name="stepCode"></finder-column>
+		</finder>
+		
+	</entity>
+	
+	<entity local-service="true" name="MenuConfig" remote-service="false"
+		table="opencps_menuconfig" uuid="true">
+
+		<column name="menuConfigId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="menuGroup" type="String" />
+		<column name="menuName" type="String" />
+		<column name="order" type="int" />
+		<column name="menuType" type="int" />
+		<column name="queryParams" type="String" />
+		<column name="tableConfig" type="String" />
+		<column name="buttonConfig" type="String" />
+		
+        <order by="asc">
+            <order-column name="order" order-by="asc" case-sensitive="true"></order-column>
+        </order>
+		
+		<finder return-type="MenuConfig" name="F_BY_menuGroup">
+			<finder-column name="menuGroup"></finder-column>
+		</finder>
+		
+	</entity>
+	
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

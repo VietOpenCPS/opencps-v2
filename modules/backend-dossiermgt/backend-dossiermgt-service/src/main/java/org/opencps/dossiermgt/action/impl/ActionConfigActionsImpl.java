@@ -1,5 +1,7 @@
 package org.opencps.dossiermgt.action.impl;
 
+import javax.naming.AuthenticationException;
+
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -7,7 +9,11 @@ import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import backend.auth.api.BackendAuthImpl;
 
 public class ActionConfigActionsImpl implements ActionConfigActions {
 
@@ -15,40 +21,62 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 
 	@Override
 	public ActionConfig addActionConfig(long userId, long groupId, String actionCode, String actionName,
-			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer syncType,
-			Boolean pending, String notificationType, Boolean createDocument, String documentName,
-			String documentScript, String documentCode, Integer sendDocument) throws PortalException {
+			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
+			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType,
+			ServiceContext serviceContext) throws PortalException, AuthenticationException {
 
-		ActionConfig object = null;
-		
-		if (Validator.isNotNull(actionCode)) {
-			object = ActionConfigLocalServiceUtil.addActionConfig(userId, groupId, actionCode, actionName,
-				extraForm, formScript, sampleData, insideProcess, syncType, pending, notificationType, createDocument,
-				documentName, documentScript, documentCode, sendDocument);
+		BackendAuthImpl authImpl = new BackendAuthImpl();
+
+		if (authImpl.hasResource(serviceContext, StringPool.BLANK, StringPool.BLANK)) {
+			ActionConfig object = null;
+
+			if (Validator.isNotNull(actionCode)) {
+				object = ActionConfigLocalServiceUtil.addActionConfig(userId, groupId, actionCode, actionName, extraForm,
+						formScript, sampleData, insideProcess, userNote, syncType, pending, rollbackable, notificationType,
+						documentType);
+			}
+			return object;
+		} else {
+			throw new AuthenticationException();
 		}
-		return object;
+		
 	}
 
 	@Override
-	public ActionConfig updateActionConfig(String actionCodePK, long userId, long groupId, String actionCode,
+	public ActionConfig updateActionConfig(Long actionConfigId, long userId, long groupId, String actionCode,
 			String actionName, Boolean extraForm, String formScript, String sampleData, Boolean insideProcess,
-			Integer syncType, Boolean pending, String notificationType, Boolean createDocument, String documentName,
-			String documentScript, String documentCode, Integer sendDocument) throws PortalException {
+			Integer userNote, Integer syncType, Boolean pending, Boolean rollbackable, String notificationType,
+			String documentType, ServiceContext serviceContext) throws PortalException, AuthenticationException {
 
-		ActionConfig object = ActionConfigLocalServiceUtil.getByCode(actionCodePK);
+		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		long actionConfigId = object.getActionConfigId();
+		if (authImpl.hasResource(serviceContext, StringPool.BLANK, StringPool.BLANK)) {
+			
+			ActionConfig object = ActionConfigLocalServiceUtil.getActionConfig(actionConfigId);
 
-		object = ActionConfigLocalServiceUtil.updateActionConfig(actionConfigId, userId, groupId, actionCode,
-				actionName, extraForm, formScript, sampleData, insideProcess, syncType, pending, notificationType,
-				createDocument, documentName, documentScript, documentCode, sendDocument);
+			object = ActionConfigLocalServiceUtil.updateActionConfig(object.getActionConfigId(), userId, groupId, actionCode,
+					actionName, extraForm, formScript, sampleData, insideProcess, userNote, syncType, pending,
+					rollbackable, notificationType, documentType);
 
-		return object;
+			return object;
+		} else {
+			throw new AuthenticationException();
+		}
+
 	}
 
 	@Override
-	public void deleteActionConfig(Long actionConfigId) throws PortalException {
-		ActionConfigLocalServiceUtil.deleteActionConfig(actionConfigId);
+	public void deleteActionConfig(Long actionConfigId, ServiceContext serviceContext)
+			throws PortalException, AuthenticationException {
+
+		BackendAuthImpl authImpl = new BackendAuthImpl();
+
+		if (authImpl.hasResource(serviceContext, StringPool.BLANK, StringPool.BLANK)) {
+			ActionConfigLocalServiceUtil.deleteActionConfig(actionConfigId);
+		} else {
+			throw new AuthenticationException();
+		}
+
 	}
 
 }

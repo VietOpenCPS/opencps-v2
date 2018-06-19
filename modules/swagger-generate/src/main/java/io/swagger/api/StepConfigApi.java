@@ -1,7 +1,7 @@
 package io.swagger.api;
 
-import io.swagger.model.ActionConfigItem;
-import io.swagger.model.ActionConfigItemResult;
+import io.swagger.model.StepConfigItem;
+import io.swagger.model.StepConfigItemResult;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,40 +19,40 @@ import javax.validation.constraints.*;
 
 @Path("/")
 @Api(value = "/", description = "")
-public interface ActionConfigApi  {
+public interface StepConfigApi  {
 
     @POST
-    @Path("/actionconfigs")
+    @Path("/stepconfigs")
     @Consumes({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
     @Produces({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
-    @ApiOperation(value = "Thêm định nghĩa thao tác xử lý hồ sơ", tags={ "ActionConfig",  })
-    public ActionConfigItem addActionConfig(ActionConfigItem body);
+    @ApiOperation(value = "Thêm định nghĩa step configs", tags={ "StepConfig",  })
+    public StepConfigItem addStepConfig(StepConfigItem body);
 
     @DELETE
-    @Path("/actionconfigs/{id}")
+    @Path("/stepconfigs/{id}")
     @Produces({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
-    @ApiOperation(value = "Xoá định nghĩa thao tác xử lý hồ sơ", tags={ "ActionConfig",  })
-    public void deleteActionConfig(@PathParam("id") String id);
+    @ApiOperation(value = "Xoá định nghĩa step", tags={ "StepConfig",  })
+    public void deleteStepConfig(@PathParam("id") String id);
 
     @GET
-    @Path("/actionconfigs/{id}")
+    @Path("/stepconfigs/{id}")
     @Consumes({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
     @Produces({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
-    @ApiOperation(value = "Lấy danh sách các định nghĩa thao tác theo id Hoặc actionCode", tags={ "ActionConfig",  })
-    public ActionConfigItem getActionConfigByCode(@PathParam("id") String id);
+    @ApiOperation(value = "Lấy danh sách các định nghĩa cấu hình step theo id hoặc group", tags={ "StepConfig",  })
+    public StepConfigItem getStepConfigByCode(@PathParam("id") String id);
 
     @GET
-    @Path("/actionconfigs/_search")
+    @Path("/stepconfigs/_search")
     @Consumes({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
     @Produces({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
-    @ApiOperation(value = "Lấy danh sách các định nghĩa thao tác", tags={ "ActionConfig",  })
-    public ActionConfigItemResult getActionConfigsElasticsearch(@QueryParam("q") String q);
+    @ApiOperation(value = "Lấy danh sách các định nghĩa step", tags={ "StepConfig",  })
+    public StepConfigItemResult getStepConfigsElasticsearch(@QueryParam("q") String q);
 
     @PUT
-    @Path("/actionconfigs/{id}")
+    @Path("/stepconfigs/{id}")
     @Consumes({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
     @Produces({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
-    @ApiOperation(value = "Cập nhật định nghĩa thao tác xử lý hồ sơ", tags={ "ActionConfig" })
-    public ActionConfigItem updateActionConfig(@PathParam("id") String id, ActionConfigItem body);
+    @ApiOperation(value = "Cập nhật định nghĩa step", tags={ "StepConfig" })
+    public StepConfigItem updateStepConfig(@PathParam("id") String id, StepConfigItem body);
 }
 

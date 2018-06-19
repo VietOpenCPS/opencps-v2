@@ -10,7 +10,11 @@ import javax.portlet.ResourceURL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.MenuConfig;
+import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -69,13 +73,46 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 				object.put("getActionConfigs", myReourceURL);
 				
-				object.put("restActionConfigs", "/o/rest/v2_1/actionconfig");
+				myReourceURL = resourceResponse.createResourceURL();
+				myReourceURL.setResourceID("getMenuConfigs");
+				
+				object.put("getMenuConfigs", myReourceURL);
+				
+				myReourceURL = resourceResponse.createResourceURL();
+				myReourceURL.setResourceID("getStepConfigs");
+				
+				object.put("getStepConfigs", myReourceURL);
+				
+				object.put("restActionConfigs", "/o/rest/v2_1/actionconfigs");
+				object.put("restMenuConfigs", "/o/rest/v2_1/menuconfigs");
+				object.put("restStepConfigs", "/o/rest/v2_1/stepconfigs");
+				
 				
 				writeJSON(resourceRequest, resourceResponse, object);
 
 			} else if (resourceID.equals("getActionConfigs")) {
 				
 				List<ActionConfig> actionConfigs = ActionConfigLocalServiceUtil.getActionConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				JSONObject object = JSONFactoryUtil.createJSONObject();
+				
+				object.put("total", actionConfigs.size());
+				object.put("data", JSONFactoryUtil.createJSONArray(JSONFactoryUtil.looseSerialize(actionConfigs)));
+				
+				writeJSON(resourceRequest, resourceResponse, object);
+				
+			} else if (resourceID.equals("getMenuConfigs")) {
+				
+				List<MenuConfig> actionConfigs = MenuConfigLocalServiceUtil.getMenuConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				JSONObject object = JSONFactoryUtil.createJSONObject();
+				
+				object.put("total", actionConfigs.size());
+				object.put("data", JSONFactoryUtil.createJSONArray(JSONFactoryUtil.looseSerialize(actionConfigs)));
+				
+				writeJSON(resourceRequest, resourceResponse, object);
+				
+			} else if (resourceID.equals("getStepConfigs")) {
+				
+				List<StepConfig> actionConfigs = StepConfigLocalServiceUtil.getStepConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				JSONObject object = JSONFactoryUtil.createJSONObject();
 				
 				object.put("total", actionConfigs.size());
