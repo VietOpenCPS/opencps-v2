@@ -186,8 +186,8 @@ public class DossierPaymentUtils {
 
 			// Create paymentfile sync
 			if (Validator.isNotNull(serverNo)) {
-				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
+//				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+//						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
 			}
 
 		} catch (PortalException e) {

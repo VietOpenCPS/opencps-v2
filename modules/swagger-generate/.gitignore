@@ -3,3 +3,6 @@ build/
 target/
 /.DS_Store
 /.classpath
+/src/main/java/io/swagger/api/
+/src/main/java/io/swagger/model/
+/src/test/java/io/swagger/api/

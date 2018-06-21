@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.liferay.portal.kernel.model.User;
 
 import backend.api.rest.application.v21.impl.ActionConfigApiImpl;
+import backend.api.rest.application.v21.impl.DocumentTypeApiImpl;
 import backend.api.rest.application.v21.impl.MenuConfigApiImpl;
 import backend.api.rest.application.v21.impl.StepConfigApiImpl;
 
@@ -60,6 +61,7 @@ public class BackendAPIRestApplicationV2 extends Application {
 		singletons.add(new ActionConfigApiImpl());
 		singletons.add(new MenuConfigApiImpl());
 		singletons.add(new StepConfigApiImpl());
+		singletons.add(new DocumentTypeApiImpl());
 		
 		return singletons;	
 	}
