@@ -26,7 +26,6 @@ import org.opencps.api.controller.impl.DossierActionManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
-import org.opencps.api.controller.impl.DossierSyncManagementImpl;
 import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
 import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.FileAttachManagementImpl;
@@ -78,7 +77,6 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DossierActionManagementImpl());
 		singletons.add(new DossierLogManagementImpl());
 		singletons.add(new ServerConfigManagementImpl());
-		singletons.add(new DossierSyncManagementImpl());
 
 		singletons.add(new DataManagementImpl());
 		singletons.add(new HolidayManagementImpl());
