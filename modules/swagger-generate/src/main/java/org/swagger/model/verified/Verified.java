@@ -22,6 +22,7 @@ public class Verified {
             while ((line = br.readLine()) != null) {
                 if (line.contains("public class") && !line.contains("@XmlRootElement"))
                     line = line.replace("public class", "import javax.xml.bind.annotation.XmlRootElement; \n@XmlRootElement public class");
+                	line = line.replace("javax.xml.datatype.XMLGregorianCalendar", "java.util.Date");
                 lines.add(line + "\n");
             }
             fr.close();
@@ -52,7 +53,7 @@ public class Verified {
     public static void main(String args[]) {
     	Verified verified = new Verified();
     	
-    	String folderStr = "/Users/binhth/Documents/opencps-v2/modules/swagger-generate/src/main/java/io/swagger/model";
+    	String folderStr = "/Users/GIAHUY/Documents/FDS_CODING/OPENCPSV2.1/opencps-v2/modules/swagger-generate/src/main/java/io/swagger/model";
     	File folder = new File(folderStr);
     	verified.listFilesForFolder(folder);
     }

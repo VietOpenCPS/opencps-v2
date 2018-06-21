@@ -1683,9 +1683,9 @@ public class DossierActionsImpl implements DossierActions {
 				// SyncAction
 				int method = 0;
 				_log.info("PROCESS update Dossier Sync:" + hasDossierSync);
-				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-						isCreateDossier, method, dossierAction.getPrimaryKey(), StringPool.BLANK,
-						serviceProcess.getServerNo());
+//				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+//						isCreateDossier, method, dossierAction.getPrimaryKey(), StringPool.BLANK,
+//						serviceProcess.getServerNo());
 
 				// TODO add SYNC for DossierFile and PaymentFile here
 
@@ -1975,8 +1975,8 @@ public class DossierActionsImpl implements DossierActions {
 				// Hard-code
 				_log.info("PROCESS PaymentFile START");
 				if (groupId != 55217) {
-					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-							false, 3, spf.getPrimaryKey(), spf.getReferenceUid(), serviceProcess.getServerNo());
+//					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+//							false, 3, spf.getPrimaryKey(), spf.getReferenceUid(), serviceProcess.getServerNo());
 				}
 
 			}
@@ -3046,8 +3046,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 					if (returnDossierFileTemplateNos.contains(fileTemplateNo)) {
 						_log.info("START SYNC DOSSIER FILE");
-						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, referenceUid, false,
-								1, dossierFile.getDossierFileId(), dossierFile.getReferenceUid(), serverNo);
+//						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, referenceUid, false,
+//								1, dossierFile.getDossierFileId(), dossierFile.getReferenceUid(), serverNo);
 
 					}
 				}
