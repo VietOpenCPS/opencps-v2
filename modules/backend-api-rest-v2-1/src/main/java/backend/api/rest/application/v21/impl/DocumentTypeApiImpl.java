@@ -10,6 +10,7 @@ import javax.ws.rs.core.HttpHeaders;
 
 import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
+import org.opencps.dossiermgt.action.util.DossierFileUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 
@@ -88,9 +89,12 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			JSONObject jsonData = actions.getDocumentTypeList(user.getUserId(), params, sorts, start, end,
 					serviceContext);
 			_log.info("groupId: "+groupId);
-			results.setTotal(jsonData.getInt("total"));
+			int total = jsonData.getInt("total");
+			results.setTotal(total);
+			if (jsonData != null && total > 0) {
+				results.setData(DocumentTypeParser.mappingDocumentResultModel((List<DocumentType>) jsonData.get("data")));
+			}
 			_log.info("groupId: "+groupId);
-			results.setData(DocumentTypeParser.mappingDocumentResultModel((List<DocumentType>) jsonData.get("data")));
 
 		} catch (Exception e) {
 			_log.info(e);
