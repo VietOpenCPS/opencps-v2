@@ -40,19 +40,19 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 		return result;
 	}
 	@Override
-	public JSONObject getDossierSyncById(long userId, Integer model, int actionCodeNo, Sort[] sorts, Integer start, Integer end,
+	public JSONObject getDossierSyncById(long userId, Long dossierId, Integer model, int actionCodeNo, Sort[] sorts, Integer start, Integer end,
 			ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 //		SearchContext searchContext = new SearchContext();
 
 		try {
-			List<DossierSync> docList = DossierSyncLocalServiceUtil.getDossierSyncByIdList(model, actionCodeNo, start, end);
+			List<DossierSync> docList = DossierSyncLocalServiceUtil.getDossierSyncByIdList(dossierId, model, actionCodeNo, start, end);
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
 			result.put("data", docList);
 			
-			long total = DossierSyncLocalServiceUtil.countDossierSyncByIdList(model, actionCodeNo);
+			long total = DossierSyncLocalServiceUtil.countDossierSyncByIdList(dossierId, model, actionCodeNo);
 			_log.info("total:"+total);
 			result.put("total", total);
 //			

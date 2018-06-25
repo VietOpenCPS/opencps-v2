@@ -95,11 +95,11 @@ public class DossierSyncFinderImpl extends DossierSyncFinderBaseImpl implements 
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DossierSync> findDossierSyncByIdList(Integer model, int actionCodeNo, Integer start, Integer limit) {
+	public List<DossierSync> findDossierSyncByIdList(Long dossierId, Integer model, int actionCodeNo, Integer start, Integer limit) {
 		Session session = null;
 		List<DossierSync> dossierSyncList = null;
 		
-		String hql = generateCustomSQL(model, actionCodeNo);
+		String hql = generateCustomSQL(dossierId, model, actionCodeNo);
 		_log.info("hql: "+ hql);
 		try {
 			session = openSession();
@@ -128,11 +128,11 @@ public class DossierSyncFinderImpl extends DossierSyncFinderBaseImpl implements 
 	}
 
 	@SuppressWarnings("unchecked")
-	public long countDossierSyncByIdList(Integer model, int actionCodeNo) {
+	public long countDossierSyncByIdList(Long dossierId, Integer model, int actionCodeNo) {
 		Session session = null;
 		long total = 0;
 		
-		String hql = generateCustomSQL(model, actionCodeNo);
+		String hql = generateCustomSQL(dossierId, model, actionCodeNo);
 		_log.info("hql: "+ hql);
 		try {
 			session = openSession();
@@ -178,14 +178,19 @@ public class DossierSyncFinderImpl extends DossierSyncFinderBaseImpl implements 
 		return sb.toString();
 	}
 
-	private static String generateCustomSQL(Integer model, int actionCodeNo) {
+	private static String generateCustomSQL(Long dossierId, Integer model, int actionCodeNo) {
 		StringBuilder sb = new StringBuilder();
-		if (Validator.isNotNull(model)) {
+		if (Validator.isNotNull(model) || Validator.isNotNull(dossierId)) {
 			sb.append("FROM DossierSync ds WHERE");
-			if (model == 0) {
-				sb.append(" cast(ds.actionCode as int) < :actionCodeNo");
+			if (dossierId > 0) {
+				sb.append(" ds.dossierId =:dossierId");
 			} else {
-				sb.append(" cast(ds.actionCode as int) >= :actionCodeNo ");
+				sb.append(" ds.dossierRefUid =:dossierId");
+			}
+			if (model == 0) {
+				sb.append(" AND cast(ds.actionCode as int) < :actionCodeNo");
+			} else {
+				sb.append(" AND cast(ds.actionCode as int) >= :actionCodeNo ");
 			}
 		} else {
 		sb.append("FROM DossierSync");

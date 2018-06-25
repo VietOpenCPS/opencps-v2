@@ -11,7 +11,7 @@ public interface DossierSyncActions {
 	public JSONObject getDossierSyncList(long userId, String action, int syncType, Sort[] sorts, Integer start,
 			Integer end, ServiceContext serviceContext);
 
-	public JSONObject getDossierSyncById(long userId, Integer model, int actionCodeNo, Sort[] sorts, Integer start, Integer end,
+	public JSONObject getDossierSyncById(long userId, Long dossierId, Integer model, int actionCodeNo, Sort[] sorts, Integer start, Integer end,
 			ServiceContext serviceContext);
 
 }

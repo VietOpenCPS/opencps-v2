@@ -1760,6 +1760,39 @@
         </order>
 	</entity>
 	
+	<entity local-service="true" name="DossierDocument" remote-service="false"
+		table="opencps_dossierdocument" uuid="true">
+
+		<column name="DossierDocumentId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="dossierId" type="long" />
+		<column name="dossierActionId" type="long" />
+		<column name="documentType" type="String" />
+		<column name="documentName" type="String" />
+		<column name="documentCode" type="String" />
+		<column name="documentFileId" type="long" />
+		<column name="docSync" type="int" />
+		
+        <order by="desc">
+            <order-column name="modifiedDate" order-by="desc" case-sensitive="true" />
+        </order>
+
+		<finder return-type="Collection" name="F_DOSSIERID">
+			<finder-column name="dossierId" />
+		</finder>
+<!-- 		<finder return-type="DossierDocument" name="F_DID_CODE"> -->
+<!-- 			<finder-column name="dossierId" /> -->
+<!-- 			<finder-column name="dossierId" /> -->
+<!-- 		</finder> -->
+	</entity>
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

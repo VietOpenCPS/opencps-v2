@@ -11,6 +11,7 @@ import javax.ws.rs.core.HttpHeaders;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
+import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.DossierSync;
 
 import com.liferay.portal.kernel.json.JSONObject;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.api.rest.application.v21.parser.DocumentTypeParser;
 import backend.api.rest.application.v21.parser.DossierSyncParser;
 import io.swagger.api.DossierSyncApi;
 import io.swagger.model.DossierSyncResultModel;
@@ -95,10 +97,12 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 //			_log.info("serviceContext: "+serviceContext.getCompanyId());
 			JSONObject jsonData = actions.getDossierSyncList(user.getUserId(), action, syncType, sorts, start, end,
 					serviceContext);
-			_log.info("groupId: "+groupId);
-			results.setTotal(jsonData.getInt("total"));
-			_log.info("groupId: "+groupId);
-			results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
+
+			int total = jsonData.getInt("total");
+			results.setTotal(total);
+			if (jsonData != null && total > 0) {
+				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
+			}
 
 		} catch (Exception e) {
 			_log.info(e);
@@ -159,12 +163,15 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 			// get JSON data deliverable
 			_log.info("groupId: "+groupId);
 //			_log.info("serviceContext: "+serviceContext.getCompanyId());
-			JSONObject jsonData = actions.getDossierSyncById(user.getUserId(), model, 8000, sorts, start, end,
+			JSONObject jsonData = actions.getDossierSyncById(user.getUserId(), dossierId, model, 8000, sorts, start, end,
 					serviceContext);
 			_log.info("groupId: "+groupId);
-			results.setTotal(jsonData.getInt("total"));
+			int total = jsonData.getInt("total");
+			results.setTotal(total);
+			if (jsonData != null && total > 0) {
+				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
+			}
 			_log.info("groupId: "+groupId);
-			results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
 
 		} catch (Exception e) {
 			_log.info(e);
