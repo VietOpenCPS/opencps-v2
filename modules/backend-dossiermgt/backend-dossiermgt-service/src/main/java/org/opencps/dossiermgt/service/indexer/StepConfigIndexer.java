@@ -45,7 +45,7 @@ public class StepConfigIndexer extends BaseIndexer<StepConfig> {
 	@Override
 	protected Document doGetDocument(StepConfig object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
-		
+		System.out.println("StepConfigIndexer.doGetDocument()"+object);
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());
