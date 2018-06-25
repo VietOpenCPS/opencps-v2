@@ -3,6 +3,9 @@ package backend.auth.api;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -125,12 +128,6 @@ public class BackendAuthImpl implements BackendAuth {
 		boolean isAuth = false;
 
 		if (Validator.isNotNull(security)) {
-			/*
-			 * Activity activity = null;//BackendUtils.getActivity(security); if
-			 * (Validator.isNotNull(activity)) { Participant participant =
-			 * BackendUtils.getParticipant(activity.getActivityId(), password);
-			 * if (Validator.isNotNull(participant)) { isAuth = true; } }
-			 */
 
 		}
 		else {
@@ -140,4 +137,20 @@ public class BackendAuthImpl implements BackendAuth {
 		return isAuth;
 	}
 
+	@Override
+	public boolean checkToken(HttpServletRequest request, HttpHeaders header) {
+		
+		String tokenFromSession = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
+		
+		_log.info("TOKEN***SESSION:"+tokenFromSession);
+		
+		String tokenFromRequest = header.getHeaderString(CPS_AUTH);
+		_log.info("TOKEN***REQUEST:"+tokenFromRequest);
+
+		if (tokenFromRequest.contentEquals(tokenFromSession)) {
+			return true;
+		}
+		
+		return false;
+	}
 }

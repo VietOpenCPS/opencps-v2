@@ -17,11 +17,17 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -132,66 +138,27 @@ public class DossierUtils {
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
 			model.setLockState(doc.get(DossierTerm.LOCK_STATE));
 			model.setStatusReg(doc.get(DossierTerm.STATUS_REG));
-
-			//TODO: Get info cert Number
-//			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil
-//					.getDossierFilesByDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-//			
-//			StringBuilder sb = new StringBuilder();
-//			String deliverableCode = StringPool.BLANK;
-//			if (dossierFileList != null && dossierFileList.size() > 0) {
-//				int length = dossierFileList.size();
-//				_log.info("Size dossier File: "+ length);
-//				int ii = 0;
-//				for (int i = 0; i < length; i++) {
-//					DossierFile dossierFile = dossierFileList.get(i);
-//					deliverableCode = dossierFile.getDeliverableCode();
-////					_log.info("deliverableCode: "+ deliverableCode);
-//					if (Validator.isNotNull(deliverableCode)) {
-////						_log.info("deliverableCode Check: "+ deliverableCode);
-//						ii += 1;
-//						if (ii == 1) {
-//							sb.append(StringPool.APOSTROPHE);
-//							sb.append(deliverableCode);
-//							sb.append(StringPool.APOSTROPHE);
-//						} else {
-//							sb.append(StringPool.COMMA);
-//							sb.append(StringPool.APOSTROPHE);
-//							sb.append(deliverableCode);
-//							sb.append(StringPool.APOSTROPHE);
-//						}
-//					}
-//				}
-////				_log.info("Str Dossier Id: "+ sb.toString());
-//			}
-
-//			DeliverableActions action = new DeliverableActionsImpl();
-//			if (Validator.isNotNull(sb.toString())) {
-//				List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), "2");
-//				
-//				if (deliverableList != null && deliverableList.size() > 0) {
-//	//				int lengthDeliver = deliverableList.size();
-//	//				_log.info("Size list deliverable: "+ lengthDeliver);
-//					String formData = StringPool.BLANK;
-//					List<CertNumberModel> certNumberList = new ArrayList<CertNumberModel>();
-//					for (Deliverable deliverable : deliverableList) {
-//						CertNumberModel certNumberDetail = new CertNumberModel();
-//						formData = deliverable.getFormData();
-//	//					_log.info("formData: "+ formData);
-//						try {
-//							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-//							String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-//							String certDate = String.valueOf(jsonData.get("ngay_ky_cc"));
-//							certNumberDetail.setCertNo(certNo);
-//							certNumberDetail.setCertDate(certDate);
-//							certNumberList.add(certNumberDetail);
-//						} catch (Exception e) {
-//							// TODO:
-//						}
-//					}
-//					model.getCertNumber().addAll(certNumberList);
-//				}
-//			}
+			
+			
+			int processBlock = 0;
+			int processUnit = 0;
+			
+			try {
+				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(GetterUtil.getLong(doc.get(DossierTerm.GROUP_ID)), doc.get(DossierTerm.SERVICE_CODE) ,doc.get(DossierTerm.GOV_AGENCY_CODE));
+				
+				ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(GetterUtil.getLong(doc.get(DossierTerm.GROUP_ID)), doc.get(DossierTerm.DOSSIER_TEMPLATE_NO), serviceConfig.getServiceConfigId());
+				
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+				
+				processBlock = serviceProcess.getDurationCount();
+				
+				processUnit = serviceProcess.getDurationUnit();
+				
+			} catch (Exception e) {
+			}
+			
+			model.setProcessBlock(processBlock);
+			model.setProcessUnit(processUnit);
 
 			ouputs.add(model);
 		}

@@ -198,4 +198,13 @@ public interface DeliverablesManagement {
 			@FormParam("applicantIdNo") String applicantIdNo, @FormParam("deliverableState") String deliverableState);
 	
 	/* Get list dataform by agencyNo and typeCode - END */
+	//LamTV_Add  API get dossierId
+	@GET
+	@Path("/deliverables/{id}/number/{deliverableCode}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDossierIdByCode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of Deliverable", required = true) @PathParam("id") Long id,
+			@PathParam("deliverableCode") String deliverableCode);
 }

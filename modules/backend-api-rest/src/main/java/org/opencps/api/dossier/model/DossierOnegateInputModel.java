@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 		"contactEmail", "isSameAsApplicant", "delegateName", "delegateIdNo", "delegateTelNo", "delegateEmail",
 		"delegateAddress", "delegateCityCode", "delegateDistrictCode", "delegateWardCode", "applicantNote", "briefNote",
 		"dossierNo", "dossierTemplateNo", "viaPostal", "postalServiceCode", "postalServiceName", "postalAddress",
-		"postalCityCode", "postalDistrictCode", "postalWardCode", "postalTelNo" })
+		"postalCityCode", "postalDistrictCode", "postalWardCode", "postalTelNo", "paymentFee", "paymentFeeNote", "dossierActionId" })
 
 @XmlRootElement(name = "DossierOneGateInputModel")
 public class DossierOnegateInputModel {
@@ -39,8 +39,31 @@ public class DossierOnegateInputModel {
 	private String applicantIdDate;
 	@FormParam(value = "address")
 	private String address;
+	@FormParam(value = "paymentFee")
+	private String paymentFee;
+	@FormParam(value = "paymentFeeNote")
+	private String paymentFeeNote;
+	@FormParam(value = "dossierActionId")
+	private String dossierActionId;
 	
-	
+	public String getDossierActionId() {
+		return dossierActionId;
+	}
+	public void setDossierActionId(String dossierActionId) {
+		this.dossierActionId = dossierActionId;
+	}
+	public String getPaymentFee() {
+		return paymentFee;
+	}
+	public void setPaymentFee(String paymentFee) {
+		this.paymentFee = paymentFee;
+	}
+	public String getPaymentFeeNote() {
+		return paymentFeeNote;
+	}
+	public void setPaymentFeeNote(String paymentFeeNote) {
+		this.paymentFeeNote = paymentFeeNote;
+	}
 	public String getServiceCode() {
 		return serviceCode;
 	}
