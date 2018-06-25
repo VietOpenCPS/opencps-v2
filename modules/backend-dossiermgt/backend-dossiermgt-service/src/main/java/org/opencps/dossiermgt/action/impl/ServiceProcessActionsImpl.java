@@ -57,12 +57,12 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
 			String processName, String description, int durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
-			boolean generatePassword, boolean directNotification, String serverNo, ServiceContext context)
-			throws PortalException {
+			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
+			ServiceContext context) throws PortalException {
 
 		return ServiceProcessLocalServiceUtil.updateServiceProcess(groupId, serviceProcessId, processNo, processName,
 				description, durationCount, durationUnit, counter, generateDossierNo, dossierNoPattern, generateDueDate,
-				dueDatePattern, generatePassword, directNotification, serverNo, context);
+				dueDatePattern, generatePassword, directNotification, serverNo, paymentFee, context);
 	}
 
 	@Override
@@ -241,6 +241,13 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 				preStepCode, postStepCode, autoEvent, preCondition, actionCode, actionName, allowAssignUser,
 				assignUserId, requestPayment, paymentFee, createDossierFiles, returnDossierFiles, makeBriefNote,
 				syncActionCode, rollbackable, createDossierNo, eSignature,configNote, dossierTemplateNo, context);
+	}
+
+	@Override
+	public ServiceProcess getServiceProcessByCode(long groupId, String serviceCode, String govAgencyCode,
+			String dossierTemplateNo) throws PortalException {
+		return ServiceProcessLocalServiceUtil.getServiceByCode(groupId, serviceCode, govAgencyCode,
+				dossierTemplateNo);
 	}
 	
 	

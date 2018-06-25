@@ -51,7 +51,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 	@Override
 	protected Document doGetDocument(Deliverable object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
-		
+
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());

@@ -175,7 +175,8 @@ import javax.xml.bind.annotation.XmlType;
     "endorsementDate",
     "lockState",
     "statusReg",
-    "step"
+    "processBlock",
+    "processUnit"
 })
 public class DossierDataModel {
 
@@ -253,15 +254,25 @@ public class DossierDataModel {
 	protected String endorsementDate;
 	protected String lockState;
 	protected String statusReg;
-	protected String step;
 
-	public String getStep() {
-		return step;
+	public int getProcessBlock() {
+		return processBlock;
 	}
 
-	public void setStep(String step) {
-		this.step = step;
+	public void setProcessBlock(int processBlock) {
+		this.processBlock = processBlock;
 	}
+
+	public int getProcessUnit() {
+		return processUnit;
+	}
+
+	public void setProcessUnit(int processUnit) {
+		this.processUnit = processUnit;
+	}
+
+	protected int processBlock;
+    protected int processUnit;
 
 	public String getStatusReg() {
 		return statusReg;
