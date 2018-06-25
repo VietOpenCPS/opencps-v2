@@ -1694,12 +1694,39 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+//		if (Validator.isNotNull(step)) {
+//			MultiMatchQuery query = new MultiMatchQuery(step);
+//
+//			query.addFields(DossierTerm.STEP);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+		//LamTV: Search follow step
 		if (Validator.isNotNull(step)) {
-			MultiMatchQuery query = new MultiMatchQuery(step);
 
-			query.addFields(DossierTerm.STEP);
+			String[] stepArr = StringUtil.split(step);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (stepArr != null && stepArr.length > 0) {
+
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				for (int i = 0; i < stepArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(stepArr[i]);
+
+					query.addField(DossierTerm.STEP);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(step);
+
+				query.addFields(DossierTerm.STEP);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(dossierNo)) {

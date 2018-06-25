@@ -194,29 +194,29 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(object.getDossierActionId());
 
 			if (dossierAction != null) {
-				if (Validator.isNotNull(dossierAction.getCreateDate())) {
-			document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
-							.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));					
-				}
-				if (Validator.isNotNull(dossierAction.getActionCode())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_CODE, dossierAction.getActionCode());					
-				}
-				if (Validator.isNotNull(dossierAction.getActionName())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_NAME, dossierAction.getActionName());					
-				}
-				if (Validator.isNotNull(dossierAction.getActionUser())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_USER, dossierAction.getActionUser());					
-				}
-				if (Validator.isNotNull(dossierAction.getActionNote())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());					
-				}
+//				if (Validator.isNotNull(dossierAction.getCreateDate())) {
+					document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
+							.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+//				}
+//				if (Validator.isNotNull(dossierAction.getActionCode())) {
+					document.addTextSortable(DossierTerm.LAST_ACTION_CODE, dossierAction.getActionCode());
+//				}
+//				if (Validator.isNotNull(dossierAction.getActionName())) {
+					document.addTextSortable(DossierTerm.LAST_ACTION_NAME, dossierAction.getActionName());
+//				}
+//				if (Validator.isNotNull(dossierAction.getActionUser())) {
+					document.addTextSortable(DossierTerm.LAST_ACTION_USER, dossierAction.getActionUser());
+//				}
+//				if (Validator.isNotNull(dossierAction.getActionNote())) {
+					document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());
+//				}
 
-				if (Validator.isNotNull(dossierAction.getStepCode())) {
-					document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());					
-				}
-				if (Validator.isNotNull(dossierAction.getStepName())) {
-					document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());					
-				}
+//				if (Validator.isNotNull(dossierAction.getStepCode())) {
+					document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
+//				}
+//				if (Validator.isNotNull(dossierAction.getStepName())) {
+					document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());
+//				}
 
 			if (dossierAction.getActionOverdue() != 0) {
 				document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.TRUE);
@@ -226,10 +226,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
 
-				if (Validator.isNotNull(stepDuedate)) {
-			document.addTextSortable(DossierTerm.STEP_DUE_DATE,
+//				if (Validator.isNotNull(stepDuedate)) {
+					document.addTextSortable(DossierTerm.STEP_DUE_DATE,
 							APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));									
-				}
+//				}
 			}
 		}
 
