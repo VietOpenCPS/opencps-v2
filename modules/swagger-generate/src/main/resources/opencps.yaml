@@ -665,6 +665,9 @@ definitions:
       menuStepName:
         type: string
         example: 'step name 001'
+      buttonConfig:
+        type: string
+        example: 'step name 001'
   MenuConfigCountItemResults:
     type: object
     required:
