@@ -40,20 +40,25 @@ public class Verified {
 
     public void listFilesForFolder(File folder) {
     	Verified verified = new Verified();
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry);
-            } else {
-                System.out.println(fileEntry.getAbsoluteFile());
-                verified.doIt(fileEntry.getAbsoluteFile().toString());
+    	if (folder != null) {
+            for (final File fileEntry : folder.listFiles()) {
+                if (fileEntry.isDirectory()) {
+                    listFilesForFolder(fileEntry);
+                } else {
+                    System.out.println(fileEntry.getAbsoluteFile());
+                    verified.doIt(fileEntry.getAbsoluteFile().toString());
+                }
             }
-        }
+    	}
     }
 
     public static void main(String args[]) {
     	Verified verified = new Verified();
+    	String userDir = System.getProperty("user.dir");
+    	System.out.println("Application plugin running in " + userDir);
     	
-    	String folderStr = "/Users/GIAHUY/Documents/FDS_CODING/OPENCPSV2.1/opencps-v2/modules/swagger-generate/src/main/java/io/swagger/model";
+    	String folderStr = userDir + "/src/main/java/io/swagger/model";
+    	System.out.println("Scanning folder: " + folderStr);
     	File folder = new File(folderStr);
     	verified.listFilesForFolder(folder);
     }

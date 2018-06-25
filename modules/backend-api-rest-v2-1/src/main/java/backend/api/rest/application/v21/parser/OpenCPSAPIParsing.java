@@ -19,9 +19,9 @@ import io.swagger.model.StepConfigItem;
 
 public class OpenCPSAPIParsing {
 	
-	private OpenCPSAPIParsing() {
-		
-	}
+//	private OpenCPSAPIParsing() {
+//		
+//	}
 	
 //	OpenCPSAPIParsing.getLocatorResponseToDealershipResponseConverter(locale).convert(ActionConfig);
 //
