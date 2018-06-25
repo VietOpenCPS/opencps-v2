@@ -1713,7 +1713,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				for (int i = 0; i < stepArr.length; i++) {
 					MultiMatchQuery query = new MultiMatchQuery(stepArr[i]);
 
-					query.addField(DossierTerm.STEP);
+					query.addField(DossierTerm.STEP_CODE);
 
 					subQuery.add(query, BooleanClauseOccur.SHOULD);
 				}
@@ -1723,7 +1723,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			} else {
 				MultiMatchQuery query = new MultiMatchQuery(step);
 
-				query.addFields(DossierTerm.STEP);
+				query.addFields(DossierTerm.STEP_CODE);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
@@ -2167,12 +2167,38 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+//		if (Validator.isNotNull(step)) {
+//			MultiMatchQuery query = new MultiMatchQuery(step);
+//
+//			query.addFields(DossierTerm.STEP_CODE);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
 		if (Validator.isNotNull(step)) {
-			MultiMatchQuery query = new MultiMatchQuery(step);
 
-			query.addFields(DossierTerm.STEP_CODE);
+			String[] stepArr = StringUtil.split(step);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (stepArr != null && stepArr.length > 0) {
+
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				for (int i = 0; i < stepArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(stepArr[i]);
+
+					query.addField(DossierTerm.STEP_CODE);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(step);
+
+				query.addFields(DossierTerm.STEP_CODE);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(dossierNo)) {

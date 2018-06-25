@@ -174,7 +174,8 @@ import javax.xml.bind.annotation.XmlType;
     "certDate",
     "endorsementDate",
     "lockState",
-    "statusReg"
+    "statusReg",
+    "step"
 })
 public class DossierDataModel {
 
@@ -252,6 +253,15 @@ public class DossierDataModel {
 	protected String endorsementDate;
 	protected String lockState;
 	protected String statusReg;
+	protected String step;
+
+	public String getStep() {
+		return step;
+	}
+
+	public void setStep(String step) {
+		this.step = step;
+	}
 
 	public String getStatusReg() {
 		return statusReg;
