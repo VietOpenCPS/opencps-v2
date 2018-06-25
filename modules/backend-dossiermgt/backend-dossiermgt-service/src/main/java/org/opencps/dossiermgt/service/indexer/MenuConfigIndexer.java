@@ -1,3 +1,4 @@
+
 package org.opencps.dossiermgt.service.indexer;
 
 import java.util.Iterator;
@@ -45,7 +46,6 @@ public class MenuConfigIndexer extends BaseIndexer<MenuConfig> {
 	@Override
 	protected Document doGetDocument(MenuConfig object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
-		
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());

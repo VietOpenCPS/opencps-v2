@@ -11,12 +11,17 @@ import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.api.rest.application.v21.elasticwrap.ElasticQueryWrapUtil;
 import backend.api.rest.application.v21.parser.OpenCPSAPIParsing;
 import io.swagger.api.MenuConfigApi;
 import io.swagger.model.MenuConfigCountItemResults;
@@ -28,6 +33,9 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 	@Context
 	private User user;
 
+	@Context
+	private Company company;
+	
 	@Context
 	private HttpHeaders header;
 
@@ -130,8 +138,23 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItemResult getMenuConfigsTodo(String q) {
-		// TODO Auto-generated method stub
-		return null;
+		MenuConfigItemResult body = new MenuConfigItemResult();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		try {
+			
+			JSONObject query = JSONFactoryUtil.createJSONObject(" { \"sort\" : [ { \"order_Number_sortable\" : \"asc\" }, \"_score\" ], \"from\" : 0, \"size\" : 10000, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(org.opencps.dossiermgt.model.MenuConfig or org.opencps.dossiermgt.model.StepConfig) AND groupId:"+groupId+")\" }}}");
+			
+			JSONObject data = ElasticQueryWrapUtil.query(query.toJSONString(), MenuConfig.class.getName(), company.getCompanyId());
+			
+			body = parsing.getModel(data);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return body;
 	}
 
 }

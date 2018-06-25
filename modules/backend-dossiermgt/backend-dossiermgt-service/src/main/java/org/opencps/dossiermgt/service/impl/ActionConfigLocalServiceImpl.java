@@ -114,43 +114,43 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setUserId(user.getUserId());
 		actionConfig.setModifiedDate(now);
 
-		if (Validator.isNotNull(actionCode)) {
+		if (actionCode != null) {
 			actionConfig.setActionCode(actionCode);
 		}
-		if (Validator.isNotNull(actionCode)) {
+		if (actionName != null) {
 			actionConfig.setActionName(actionName);
 		}
-		if (Validator.isNotNull(extraForm)) {
+		if (extraForm != null) {
 			actionConfig.setExtraForm(extraForm);
 		}
-		if (Validator.isNotNull(formScript)) {
+		if (formScript != null) {
 			actionConfig.setFormScript(formScript);
 		}
-		if (Validator.isNotNull(sampleData)) {
+		if (sampleData != null) {
 			actionConfig.setSampleData(sampleData);
 		}
-		if (Validator.isNotNull(insideProcess)) {
+		if (insideProcess != null) {
 			actionConfig.setInsideProcess(insideProcess);
 		}
-		if (Validator.isNotNull(syncType)) {
+		if (syncType != null) {
 			actionConfig.setSyncType(syncType);
 		}
-		if (Validator.isNotNull(pending)) {
+		if (pending != null) {
 			actionConfig.setPending(pending);
 		}
-		if (Validator.isNotNull(notificationType)) {
+		if (notificationType != null) {
 			actionConfig.setNotificationType(notificationType);
 		}
-		if (Validator.isNotNull(userNote)) {
+		if (userNote != null) {
 			actionConfig.setUserNote(userNote);
 		}
-		if (Validator.isNotNull(rollbackable)) {
+		if (rollbackable != null) {
 			actionConfig.setRollbackable(rollbackable);
 		}
-		if (Validator.isNotNull(notificationType)) {
+		if (notificationType != null) {
 			actionConfig.setNotificationType(notificationType);
 		}
-		if (Validator.isNotNull(documentType)) {
+		if (documentType != null) {
 			actionConfig.setDocumentType(documentType);
 		}
 
@@ -191,7 +191,6 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 	private void validate(String actionCode, long actionConfigId) throws PortalException {
 
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
-
 		if (Validator.isNull(actionCode)) {
 			throw new DuplicateActionCodeException("DuplicateActionCodeException");
 		}

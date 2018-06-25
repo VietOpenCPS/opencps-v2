@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
   private String stepName = null;
   @ApiModelProperty(example = "step name 001", value = "")
   private String menuStepName = null;
+  @ApiModelProperty(example = "step name 001", value = "")
+  private String buttonConfig = null;
 
  /**
    * Get stepCode
@@ -72,6 +74,23 @@ import javax.xml.bind.annotation.XmlRootElement;
     return this;
   }
 
+ /**
+   * Get buttonConfig
+   * @return buttonConfig
+  **/
+  public String getButtonConfig() {
+    return buttonConfig;
+  }
+
+  public void setButtonConfig(String buttonConfig) {
+    this.buttonConfig = buttonConfig;
+  }
+
+  public MenuConfigStepsItem buttonConfig(String buttonConfig) {
+    this.buttonConfig = buttonConfig;
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -81,6 +100,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     sb.append("    stepCode: ").append(toIndentedString(stepCode)).append("\n");
     sb.append("    stepName: ").append(toIndentedString(stepName)).append("\n");
     sb.append("    menuStepName: ").append(toIndentedString(menuStepName)).append("\n");
+    sb.append("    buttonConfig: ").append(toIndentedString(buttonConfig)).append("\n");
     sb.append("}");
     return sb.toString();
   }
