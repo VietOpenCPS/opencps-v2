@@ -173,9 +173,9 @@
 					</span>
 					
 					<div class="actions">
-						<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
+						<#-- <a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 							<i class="fa fa-archive" aria-hidden="true"></i>
-						</a>
+						</a> -->
 
 						<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
 							<i class="fa fa-upload text-light-blue"></i>
@@ -221,34 +221,32 @@
 				success : function(result){
 				$("\\#formPartNo"+id).empty();
 
-				var alpaca = eval("(" + result + ")");
+				try {
+					var alpaca = eval("(" + result + ")");
+					<#-- var alpaca = result; -->
+					var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
+					
+					<#-- if(formdata.dinh_danh){
+						var dinh_danh = formdata.dinh_danh;
+						if(dinh_danh.indexOf("Thành phố") !== -1){
+							
+							dinh_danh = dinh_danh.replace("Thành phố", "");
+							formdata.dinh_danh = dinh_danh;
+						}else if(dinh_danh.indexOf("Tỉnh") !== -1){
+							
+							dinh_danh = dinh_danh.replace("Tỉnh", "");
+							formdata.dinh_danh = dinh_danh;
+						}
+					} -->
+					
+					alpaca.data = formdata; 
 
-				console.log("alpaca==================", alpaca);
-				<#-- var alpaca = result; -->
-				var formdata = fnGetFormData(${dossierId},dossierFile.referenceUid);
-				
-				if(formdata.dinh_danh){
-					var dinh_danh = formdata.dinh_danh;
-					if(dinh_danh.indexOf("Thành phố") !== -1){
-						
-						dinh_danh = dinh_danh.replace("Thành phố", "");
-						formdata.dinh_danh = dinh_danh;
-					}else if(dinh_danh.indexOf("Tỉnh") !== -1){
-						
-						dinh_danh = dinh_danh.replace("Tỉnh", "");
-						formdata.dinh_danh = dinh_danh;
-					}
+					setTimeout(function(){
+						$("\\#formPartNo"+id).alpaca(alpaca);
+					}, 1000);
+				} catch (e) {
+					
 				}
-				
-				alpaca.data = formdata; 
-
-				setTimeout(function(){
-					$("\\#formPartNo"+id).alpaca(alpaca);
-				}, 1000);
-
-			
-			<#-- $("\\#formPartNo"+id).append('<div class="row"><div class="col-xs-12 col-sm-12"><button id="btn-save-formalpaca'+id+'" class="btn btn-active MB10 MT10 saveForm" 
-			type="button" data-pk="'+id+'" referentUid="'+referentUidFile+'">Ghi lại</button></div></div>'); -->
 
 		},
 		error : function(result){
@@ -270,8 +268,8 @@
 		</div>
 	</div>
 
-	<div class="checkbox ML15">
-		<input type="checkbox" id="viaPostal" name="viaPostal" data-bind="attr : {viaPostal : viaPostal}"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
+	<div class="ML15 MT15">
+		<input type="checkbox" id="viaPostal" name="viaPostal" data-bind="attr : {viaPostal : viaPostal}"> <label class="text-normal" for="viaPostal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
 	
 	<div class="row MB20">
@@ -318,17 +316,10 @@
 		//upload file click
 		$(document).off("change",".dossier-file");
 		$(document).on("change",".dossier-file",function(){
-			console.log("change");
-
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
 			var hasform = $(this).attr("eForm");
-
-			console.log(partNo);
-			console.log(fileTemplateNo);
-			console.log($(this)[0].files[0]);
-
 			funUploadFile($(this),partNo,dossierTemplateNo+"",fileTemplateNo,hasform);
 			
 		});
@@ -367,9 +358,6 @@
 				}catch (e){
 
 				}
-
-				console.log(dossierId);
-				console.log(dataPartNo);
 				var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
 				if(cf){
 					if(dossierId && dataPartNo){
@@ -403,9 +391,7 @@
 								},
 								error : function(result) {
 									if(navigator.onLine){
-										notification.show({
-											message: "Xẩy ra lỗi, vui lòng thử lại"
-										}, "error");
+										showMessageByAPICode (result.status)
 									}
 									
 								}
@@ -434,7 +420,6 @@
 	});
 
 	$(document).on("click",".dossier-online-form",function(event){
-		console.log("abcd");
 		$(this).unbind();
 		$("#showDossierOnlineForm").load("${ajax.customer_dossier_online_form_dialog}",function(result){
 			$(this).modal("show");
@@ -469,8 +454,15 @@
 
 						},
 						success : function(result){
-							options.success(result.dossierParts);
-							$("#dossierTemplateNo").val(result.templateNo);
+							if (result && result.dossierParts) {
+								options.success(result.dossierParts);
+								$("#dossierTemplateNo").val(result.templateNo);
+							} else {
+								options.success({
+									data: [],
+									total: 0
+								})
+							}
 						},
 						error : function(result){
 							options.error(result);
@@ -536,9 +528,6 @@
 
 			return ;
 		}
-
-		console.log("validPart-----------------------");
-		console.log(validateDossierTemplate);
 		if(validator.validate() && validateDossierTemplate ){
 			$.ajax({
 				url  : '${api.server}/dossiers/${dossierId}', 
@@ -571,23 +560,20 @@
 
 				},
 				success :  function(result){                       
-					console.log("PUT Dossier success!");
 					if(result.dossierStatus == ''){
 						createActionDossier(${dossierId});
 					}
 					
 				},
 				error:function(result){
-					console.error(result);
-					notification.show({
-						message: "Xảy ra lỗi, xin vui lòng thử lại"
-					}, "error");
+					showMessageByAPICode (result.status)
 				}	
 			});
 		}else {
-			notification.show({
-				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
-			}, "error");
+			showMessageByAPICode (400)
+			// notification.show({
+			// 	message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
+			// }, "error");
 		}
 
 	}
@@ -607,7 +593,6 @@
 					*/
 				},
 				success : function(result){
-					console.log("create acion dossier success!");
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
@@ -616,9 +601,10 @@
 					}, 1000);
 				},
 				error : function(result){
-					notification.show({
-						message: "Xảy ra lỗi, xin vui lòng thử lại"
-					}, "error");
+					showMessageByAPICode (result.status);
+					// notification.show({
+					// 	message: "Xảy ra lỗi, xin vui lòng thử lại"
+					// }, "error");
 				}
 			});
 		}
@@ -642,7 +628,14 @@
 							parent : 0
 						},
 						success : function(result){
-							options.success(result);
+							if (result.data) {
+								options.success(result);
+							} else {
+								options.success({
+									data: [],
+									total: 0
+								})
+							}
 						},
 						error : function(result){
 							options.error(result);
@@ -657,8 +650,6 @@
 		},
 		change : function(e){
 			var value = this.value();
-			console.log("change");
-			console.log(value);
 			if(value){
 				$("#districtCode").data("kendoComboBox").dataSource.read({
 					parent : value
@@ -683,22 +674,36 @@
 					if(options.data.parent){
 						parent = options.data.parent;
 					}
-
-					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						data : {
-							parent : parent
-						},
-						success : function(result){
-							options.success(result);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
+					if (parent && parent !== '-') {
+						$.ajax({
+							url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							data : {
+								parent : parent
+							},
+							success : function(result){
+								
+								if (result.data) {
+									options.success(result);
+								} else {
+									options.success({
+										data: [],
+										total: 0
+									})
+								}
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					} else {
+						options.success({
+							data: [],
+							total: 0
+						})
+					}
 				}
 			},
 			schema : {
@@ -730,21 +735,36 @@
 					if(options.data.parent){
 						parent = options.data.parent;
 					}
-					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						data : {
-							parent : parent
-						},
-						success : function(result){
-							options.success(result);
-						},
-						error : function(result){
-							options.error(result);
-						}
-					});
+					if (parent && parent !== '-') {
+						$.ajax({
+							url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+							dataType : "json",
+							type : "GET",
+							headers: {"groupId": ${groupId}},
+							data : {
+								parent : parent
+							},
+							success : function(result){
+								if (result.data) {
+									options.success(result);
+								} else {
+									options.success({
+										data: [],
+										total: 0
+									})
+								}
+								
+							},
+							error : function(result){
+								options.error(result);
+							}
+						});
+					} else {
+						options.success({
+							data: [],
+							total: 0
+						})
+					}
 				}
 			},
 			schema : {
@@ -773,7 +793,14 @@
 							parent : 0
 						},
 						success : function(result){
-							options.success(result);
+							if (result.data) {
+								options.success(result);
+							} else {
+								options.success({
+									data: [],
+									total: 0
+								});
+							}
 						},
 						error : function(result){
 							options.error(result);
@@ -806,8 +833,6 @@
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
-					console.log("load detail dossier!");
-					console.log(result);
 					dataSourceDossierTemplate.read({
 						dossierTemplateNo : result.dossierTemplateNo
 					});
@@ -906,9 +931,7 @@
 				},
 				error : function(result) {
 					if(navigator.onLine){
-						notification.show({
-							message: "Xẩy ra lỗi, vui lòng thử lại"
-						}, "error");
+						showMessageByAPICode (result.status)
 					}
 				}
 			});
@@ -937,7 +960,6 @@
 
 	var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo, hasForm){
 		var data = new FormData();
-		console.log(file);
 
 		data.append( 'displayName', $(file)[0].files[0].name);
 		data.append( 'file', $(file)[0].files[0]);
@@ -982,12 +1004,9 @@
 
 			},
 			error:function(result){
-				notification.show({
-					message: "Thực hiện không thành công, xin vui lòng thử lại"
-				}, "error");
+				showMessageByAPICode (result.status)
 			}
 		});
-		console.log("success!");
 	}
 
 	$("#viaPostal").change(function(){
@@ -1005,9 +1024,6 @@
 	$("#postalAddress").prop('disabled', true);
 	$("#postalCityCode").data("kendoComboBox").enable(false);
 	$("#postalTelNo").prop('disabled', true);
-
-
-
 });
 
 var getReferentUidFile = function(dossierId,dossierPartNo){
@@ -1038,7 +1054,6 @@ var getReferentUidFile = function(dossierId,dossierPartNo){
 			}
 		});
 	}
-	console.log(dossierFile);
 	return dossierFile;
 }
 
@@ -1075,12 +1090,10 @@ var fnGetFormData = function(dossierId,referentUid){
 }
 
 var fnCheckValidTemplate = function(){
-	console.log($(".validPart"));
 	var valid = true;
 	try {
 
 		$(".validPart").each(function(index){
-			console.log($(this).val());
 			if($(this).val() === "0"){
 				valid = false;
 			}
@@ -1102,7 +1115,6 @@ window.onload = function(){
 var fnSaveForm = function(id, value){
 	var current = $("#btn-save-formalpaca"+id);
 	var referentUid = current.attr("referenceUid");
-	console.log(referentUid);
 	if(referentUid){
 		$.ajax({
 			url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
@@ -1119,13 +1131,10 @@ var fnSaveForm = function(id, value){
 				notification.show({
 					message: "Yêu cầu được thực hiện thành công!"
 				}, "success");
-				console.log($("#validPart"+id));
 				$("#validPart"+id).val("1");
 			},
 			error : function(result){
-				notification.show({
-					message: "Thực hiện không thành công, xin vui lòng thử lại!"
-				}, "error");
+				showMessageByAPICode (result.status)
 			}
 		});
 	}
@@ -1135,9 +1144,6 @@ $(document).off("click",".saveFormAlpaca");
 $(document).on("click",".saveFormAlpaca",function(event){
 	var id = $(this).attr("data-pk");
 	var referentUidFile = $(this).attr("referenceUid");
-
-	console.log(id);
-	console.log("ccc");
 
 	var formType = $("#formPartNo"+id+" .formType").val();
 	var value ;
@@ -1151,9 +1157,6 @@ $(document).on("click",".saveFormAlpaca",function(event){
 			errorMessage = "notValid";
 
 		});
-		console.log(errorMessage);
-		console.log(referentUidFile);
-		console.log(value);
 
 		if(errorMessage === '' && referentUidFile){
 			$.ajax({
@@ -1171,14 +1174,11 @@ $(document).on("click",".saveFormAlpaca",function(event){
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công!"
 					}, "success");
-					console.log($("#validPart"+id));
 					$("#validPart"+id).val("1");
 
 				},
 				error : function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại!"
-					}, "error");
+					showMessageByAPICode (result.status)
 				}
 			});
 		}else {

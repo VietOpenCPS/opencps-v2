@@ -10,7 +10,7 @@
 
 		<div class="col-md-12 MT10 filterField">
 			<div class="form-group search-icon">
-                <input type="text" class="form-control" placeholder="Nhập từ khóa">
+                <input type="text" class="form-control" id="keywordSearch" placeholder="Nhập từ khóa" onchange="searchDeliverable()">
             </div>
 		</div>
 
@@ -83,4 +83,12 @@
 	});
 	
 	$('#test').click(function(){ openWindow(); return false; });
+
+	function searchDeliverable () {
+		var keywordSearch = $("#keywordSearch").val();
+		console.log(keywordSearch)
+		dataSource.read({
+			keyword: keywordSearch
+		})
+	}
 </script>

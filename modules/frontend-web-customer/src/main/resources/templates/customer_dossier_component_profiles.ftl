@@ -98,7 +98,6 @@
 				var cf = confirm("Bạn có muốn xóa tệp tin này!");
 				if(cf){
 					if (eForm == "false") {
-						console.log("eForm false");
 						if(navigator.onLine){
 							$.ajax({
 								url : "${api.server}/dossiers/${dossierId}/files/"+id,
@@ -128,7 +127,6 @@
 							});
 						}
 					}else {
-						console.log("eForm true");
 						if(navigator.onLine){
 							$.ajax({
 								url : "${api.server}/dossiers/${dossierId}/files/"+id+"/formdata",
@@ -160,8 +158,6 @@
 			}else {
 				alert("Không có kết nối internet, vui lòng kiểm tra kết nối của bạn!");
 			}
-
-			console.log(id);
 		});
 
 		var dataSourceDossierFile=new kendo.data.DataSource({
@@ -206,7 +202,6 @@
 			dataSource : dataSourceDossierFile,
 			template : kendo.template($("#templateDossierFiles").html()),
 			dataBound : function(e) {
-				console.log(e);
 				printDossierPartName();
 			},
 			change: function(){
@@ -220,7 +215,6 @@
 			$(this).addClass("text-light-blue");
 
 			var selected = $(this).attr("data-pk");
-			console.log(selected);
 			if(selected){
 				var url = "${api.server}/dossiers/${dossierId}/files/"+selected;
 				var urlOut = "cvb";
@@ -253,7 +247,6 @@
 				async : false,
 				success:function(result){
 					var data =  result.dossierParts;
-					console.log(data);
 					if (data) {
 						for(var i = 0; i<data.length; i++){
 

@@ -6,12 +6,18 @@
 <#assign isSignedIn = themeDisplay.isSignedIn() />
 
 <#assign userName = themeDisplay.getUser().getFirstName() />
+<#assign screenName = themeDisplay.getUser().getScreenName() />
 
 <#assign GetterUtil = objectUtil("com.liferay.portal.kernel.util.GetterUtil") />
 <#assign PortalUtil = objectUtil("com.liferay.portal.kernel.util.PortalUtil") />
 
 <#assign active_user_id = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("active_user_id")) />
 <#assign redirectURL = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("redirectURL")) />
+<#assign applicantId = (Request.applicantId)!>
+<#assign applicant = (Request.applicant)!>
+<#assign employee = (Request.employee)!>
+<#assign applicantIdType = (Request.applicantIdType)!>
+<#assign userType = (Request.userType)!>
 </#if>
 
 

@@ -218,13 +218,13 @@
 
 								<div class="actions">
 
-									#if(!lockState){#
+									<#-- #if(!lockState){#
 									<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#>
 										<i class="fa fa-archive" aria-hidden="true"></i>
 									</a>
-									#}#
+									#}# -->
 									
-									#if(!lockState){#
+									#if("${(dossier.dossierStatus)!}" == 'new' || "${(dossier.dossierStatus)!}" == 'waiting'){#
 									<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
 										<i class="fa fa-upload text-light-blue"></i>
 									</label>
@@ -239,7 +239,7 @@
 										<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 									</a>
 									
-									#if(!lockState){#
+									#if("${(dossier.dossierStatus)!}" == 'new' || "${(dossier.dossierStatus)!}" == 'waiting'){#
 									<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" fileTemplateNo="#:fileTemplateNo#" eForm="#:hasForm#">
 										<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 									</a>
@@ -250,11 +250,10 @@
 							#
 								if(hasForm){
 								var dossierFile =  getReferentUidFile(${dossierId},id);
-								console.log(dossierFile);
 
 								var hiddenState = "";
 
-								if(lockState){
+								if("${(dossier.dossierStatus)!}" !== 'new' || "${(dossier.dossierStatus)!}" !== 'waiting'){
 									hiddenState = "pointer-events:none;";
 								}
 
@@ -262,7 +261,7 @@
 
 						<div class="collapse" id="collapseDossierPart#:id#">
 
-							#if(!lockState){#
+							#if("${(dossier.dossierStatus)!}" == 'new' || "${(dossier.dossierStatus)!}" == 'waiting'){#
 							<div class="col-xs-12 col-sm-12 text-right">
 								<button id="btn-save-formalpaca#:id#" class="btn btn-active MB10 MT10 MR20 saveForm saveFormAlpaca" 
 								type="button" data-pk="#:id#" referenceUid="#:dossierFile.referenceUid#">Ghi lại</button>
@@ -494,7 +493,6 @@
 				dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
 
 			}catch(e){
-			console.log(e);
 		}
 		#
 		<tr>
@@ -615,12 +613,10 @@
 
 <script type="text/javascript">
 	var fnCheckValidTemplate = function(){
-		console.log($(".validPart"));
 		var valid = true;
 		try {
 
 			$(".validPart").each(function(index){
-				console.log($(this).val());
 				if($(this).val() === "0"){
 					valid = false;
 				}
@@ -678,7 +674,6 @@
 	}
 
 	var fnCancelling = function(dossierId){
-		console.log("-----------1" + "${(dossier.dossierStatus)!}");
 		if("${(dossier.dossierStatus)!}" !== "new" && "${(dossier.dossierStatus)!}" !== "null" && "${(dossier.dossierStatus)!}" !== "done"){
 			var applicantNote = $("textarea#applicantNote").val();
 			if(applicantNote.trim() == ''){
@@ -686,7 +681,6 @@
 				$("textarea#applicantNote").focus();
 				return;
 			}
-			console.log("run rescancelling!");
 
 			$.ajax({
 				url : "${api.server}/dossiers/"+dossierId+"/cancelling",
@@ -715,9 +709,7 @@
 					}
 				},
 				error : function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại!"
-					}, "error");
+					showMessageByAPICode (result.status)
 				}
 			});
 
@@ -832,9 +824,7 @@
 									}
 								},
 								error : function(result) {
-									notification.show({
-										message: "Xẩy ra lỗi, vui lòng thử lại"
-									}, "error");
+									showMessageByAPICode (result.status)
 								}
 							});
 
@@ -1296,22 +1286,11 @@ var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
 		success :  function(result){ 
 			kendo.ui.progress($("#mainType2"), false);
 
-			
-
-			console.log("fileLength=======",fileLength);
-
 			var currentFileNumber = $(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number");
-
-			console.log("currentFileNumber=======",currentFileNumber);
 
 			var totalFile = fileLength + parseInt(currentFileNumber, 0);
 
-			console.log("totalFile=======",totalFile);
-
 			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").html('<span class="number-in-circle" >'+totalFile+'</span>');
-
-			console.log("dossier-component-profile=======",$(".dossier-component-profile").filter("[data-partno="+partNo+"]"));
-
 
 			$(".dossier-component-profile").filter("[data-partno="+partNo+"]").attr("data-number",totalFile);
 
@@ -1327,9 +1306,7 @@ var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
 		error:function(result){
 			kendo.ui.progress($("#mainType2"), false);
 			
-			notification.show({
-				message: "Thêm không thành công do số biểu mẫu bị trùng."
-			}, "error");
+			showMessageByAPICode (result.status)
 
 			$(file).val("");
 		}
@@ -1417,9 +1394,7 @@ var removeDossierFileNotEform = function(dossierId,fileTemplateNo,partNo){
 			$("#validPart"+partNo).val("0");
 		},
 		error : function(result) {
-			notification.show({
-				message: "Xảy ra lỗi, xin vui lòng thử lại"
-			}, "error");
+			showMessageByAPICode (result.status)
 		}
 	});
 }
@@ -1556,9 +1531,7 @@ var fnSaveForm = function(id, value){
 				}
 			},
 			error : function(result){
-				notification.show({
-					message: "Thực hiện không thành công, xin vui lòng thử lại!"
-				}, "error");
+				showMessageByAPICode (result.status)
 			}
 		});
 	}
@@ -1615,9 +1588,7 @@ $(document).on("click",".saveFormAlpaca",function(event){
 					}
 				},
 				error : function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại!"
-					}, "error");
+					showMessageByAPICode (result.status)
 				}
 			});
 
@@ -1663,14 +1634,12 @@ $("#btn-sendadd-dossier-footer,#btn-sendadd-dossier-header").click(function(even
 
 
 var fnCorrecting = function(dossierId){
-	console.log("----------4" + "${(dossier.dossierStatus)!}");
 	var applicantNote = $("textarea#applicantNote").val();
 	if(applicantNote.trim() == ''){
 		alert('Bạn phải nhập ý kiến trước khi gửi.');
 		$("textarea#applicantNote").focus();
 		return;
 	}
-	console.log("run sendReissue!");
 	$.ajax({
 		url : "${api.server}/dossiers/"+dossierId+"/correcting",
 		dataType : "json",
@@ -1698,9 +1667,7 @@ var fnCorrecting = function(dossierId){
 			}
 		},
 		error : function(result){
-			notification.show({
-				message: "Thực hiện không thành công, xin vui lòng thử lại!"
-			}, "error");
+			showMessageByAPICode (result.status)
 		}
 	});
 
@@ -1710,7 +1677,6 @@ var fnCorrecting = function(dossierId){
 $("#btn-back-dossier").click(function(){
 	try{
 		var isChange = fnCheckIsChangeForm();
-		console.log("isChange");
 		if(isChange){
 			var cf = confirm("Bạn vừa thay đổi dữ liệu form bạn có muốn lưu lại!");
 			if(cf){
@@ -1743,8 +1709,6 @@ window.onload = function(){
 
 
 var fnSubmitting = function(dossierId){
-	console.log("----------4" + "${(dossier.dossierStatus)!}");
-	console.log("run senadd!");
 	var applicantNote = $("textarea#applicantNote").val();
 	if(applicantNote.trim() == ''){
 		alert('Bạn phải nhập ý kiến trước khi gửi.');
@@ -1824,9 +1788,7 @@ var fnSubmitting = function(dossierId){
 
 					},
 					error : function(result){
-						notification.show({
-							message: "Thực hiện không thành công, xin vui lòng thử lại!"
-						}, "error");
+						showMessageByAPICode (result.status)
 					}
 				});
 			},
@@ -1943,9 +1905,7 @@ $("#dossier-payment-confirm").click(function(){
 				$("#dossier-payment-confirm").prop("disabled",true);
 			},
 			error :  function(result){
-				notification.show({
-					message: "Thực hiện không thành công, xin vui lòng thử lại"
-				}, "error");
+				showMessageByAPICode (result.status)
 			}
 
 		});
@@ -1959,7 +1919,6 @@ $(document).on({
 	keyup: function () {
 		var partNo = $(this).parents(".formAlpacaDN").attr("data-pk");
 		var partName = $(this).parents(".formAlpacaDN").attr("data-partname");
-		console.log("keyup form partno ====",partNo);
 		if(partNo){
 			if(arrIsChangeForm){
 				for (var i = 0; i < arrIsChangeForm.length; i++) {
@@ -1981,7 +1940,6 @@ $(document).on({
 	change: function () {
 		var partNo = $(this).parents(".formAlpacaDN").attr("data-pk");
 		var partName = $(this).parents(".formAlpacaDN").attr("data-partname");
-		console.log("change form partno ====",partNo);
 		if(partNo){
 			if(arrIsChangeForm){
 				for (var i = 0; i < arrIsChangeForm.length; i++) {
@@ -2006,7 +1964,6 @@ window.onhashchange = function(event) {
 	if($(".saveFormAlpaca").length > 0){
 		try{
 			var isChange = fnCheckIsChangeForm();
-			console.log("isChange");
 			if(isChange){
 				var cf = confirm("Bạn vừa thay đổi dữ liệu trong "+isChange.partName+" bạn có muốn lưu lại!");
 				if(cf){

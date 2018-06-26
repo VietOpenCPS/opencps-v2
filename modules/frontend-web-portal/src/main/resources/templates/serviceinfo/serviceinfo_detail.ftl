@@ -171,8 +171,11 @@
 
     });
 
+    function redirectBack () {
+        window.history.back();
+    }
+
     var pullDataDetail= function(id){
-        console.log(id);
         $.ajax({
             url : "${api.server}/serviceinfos/"+id,
             dataType : "json",
@@ -180,44 +183,45 @@
             success : function(result){
                 var viewModel = kendo.observable({
                     maxLevel: function(){
-                        if(result.maxLevel == 1){
-                            $("#maxLevel").addClass("label label-dvc-lv1");
-                        }else if(result.maxLevel == 2){
-                            $("#maxLevel").addClass("label label-dvc-lv2");
-                        }else if(result.maxLevel == 3){
-                            $("#maxLevel").addClass("label label-dvc-lv3");
-                        }else {
-                            $("#maxLevel").addClass("label label-dvc-lv4");
-                        }
-                        if((typeof result.serviceConfigs !== 'undefined')){
-                            var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
+                        // if(result.maxLevel == 1){
+                        //     $("#maxLevel").addClass("label label-dvc-lv1");
+                        // }else if(result.maxLevel == 2){
+                        //     $("#maxLevel").addClass("label label-dvc-lv2");
+                        // }else if(result.maxLevel == 3){
+                        //     $("#maxLevel").addClass("label label-dvc-lv3");
+                        // }else {
+                        //     $("#maxLevel").addClass("label label-dvc-lv4");
+                        // }
+                        // if((typeof result.serviceConfigs !== 'undefined')){
+                        //     var submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
 
-                            if (result.serviceConfigs[1]) {
-                                console.log("ccc3333");
-                                for(var i=0; i<result.serviceConfigs.length;i++){
-                                    var item = result.serviceConfigs[i];
-                                    if(item.serviceLevel>=3){
-                                        submitDsier += '<li><a href="/web/cong-tiep-nhan/register">'+item.govAgencyName+'</a></li>';
-                                    }else{
-                                        submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+item.serviceInstruction+'>'+item.govAgencyName+'</a></li>';
-                                    }
-                                }
-                            }else{
-                                if(result.serviceConfigs.serviceLevel>=3){
-                                    // submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
-                                    submitDsier += '<li><a href="/web/cong-tiep-nhan/register">'+result.serviceConfigs.govAgencyName+'</a></li>';
-                                }else{
-                                    submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+result.serviceConfigs.serviceInstruction+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
-                                }
-                            }
-                            submitDsier += '</ul>';
-                            submitDsier += '<button class="btn ML5 btn-revert">Quay lại</button>';
-                            submitDsier += '</div>'
-                            $(".submitDossier").html(submitDsier);
+                        //     if (result.serviceConfigs[1]) {
+                        //         console.log("ccc3333");
+                        //         for(var i=0; i<result.serviceConfigs.length;i++){
+                        //             var item = result.serviceConfigs[i];
+                        //             if(item.serviceLevel>=3){
+                        //                 submitDsier += '<li><a href="/web/cong-tiep-nhan/register">'+item.govAgencyName+'</a></li>';
+                        //             }else{
+                        //                 submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+item.serviceInstruction+'>'+item.govAgencyName+'</a></li>';
+                        //             }
+                        //         }
+                        //     }else{
+                        //         if(result.serviceConfigs.serviceLevel>=3){
+                        //             // submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
+                        //             submitDsier += '<li><a href="/web/cong-tiep-nhan/register">'+result.serviceConfigs.govAgencyName+'</a></li>';
+                        //         }else{
+                        //             submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+result.serviceConfigs.serviceInstruction+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
+                        //         }
+                        //     }
+                        //     submitDsier += '</ul>';
+                        //     submitDsier += '<button class="btn ML5 btn-revert">Quay lại</button>';
+                        //     submitDsier += '</div>'
+                        //     $(".submitDossier").html(submitDsier);
                             
-                        }else {
-                            $(".submitDossier").html('<button class="btn ML5 btn-revert">Quay lại</button>');
-                        }
+                        // }else {
+                        //     $(".submitDossier").html('<button class="btn ML5 btn-revert">Quay lại</button>');
+                        // }
+                        $(".submitDossier").html('<button class="btn ML5 btn-revert" onclick="redirectBack()">Quay lại</button>');
                         return "Mức độ "+result.maxLevel;
                     },
                     fileTemplateDownLoad : function(e){

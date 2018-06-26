@@ -25,6 +25,17 @@
             $('#profileStatus li[dataPk='+id+']').addClass('active');
     	});
     });
+
+    resultRouter.route("/thong-tin-ho-so/(:id)", function(id) {
+        $("#result_right_content").load("${ajax.detail_dossier}&${portletNamespace}dossierId="+id,function(result){
+        });
+    });
+
+    resultRouter.route("/(:dossierId)/files/(:dossierTemplateNo)/(:partNo)", function(dossierId,dossierTemplateNo,partNo){
+        $(".mWrapper").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
+            
+        });
+    });
 </script>
 
 <script type="text/javascript">

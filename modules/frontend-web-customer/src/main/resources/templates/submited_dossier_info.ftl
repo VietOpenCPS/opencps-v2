@@ -49,9 +49,9 @@
           </div>
           <div class="col-sm-12 ML15">
             <span class="text-bold">Trụ sở <span data-bind="text:govAgencyName"></span> tại:</span> <br>
-            <p class="text-bold">Địa chỉ: </span data-bind="">Số 20, ngõ 2, Hoa Lư, Q. Hai Bà Trưng, TP. Hà Nội. <span></p>
+            <p class="text-bold">Địa chỉ: </span data-bind="">392 Nguyễn Tất Thành, Ph.Tân Dân, Thành phố Việt Trì, Phú Thọ. <span></p>
             <p class="text-bold">Số điện thoại: 
-            </span data-bind="">0243.9745845
+            </span data-bind="">0210.3811486 
             <span></p>
             </div>
           </div>
@@ -67,7 +67,7 @@
 
           <div class="row">
             <div class="col-xs-12 col-sm-12">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d658.4104238706212!2d105.84726679420625!3d21.01139691136932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab8bd0fca22d%3A0x53bef0efc1f88a95!2zTeG6oW5nIHRow7RuZyB0aW4gdsSDbiBow7NhIC0gQuG7mSBWxINuIGjDs2EgLSBUaOG7gyB0aGFvIHbDoCBEdSBs4buLY2g!5e0!3m2!1svi!2s!4v1520507161468" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3716.7619252244654!2d105.40411391435359!3d21.320421583134554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31348d53362f5091%3A0xb802b25b3c7385f9!2zMzkyIE5ndXnhu4VuIFThuqV0IFRow6BuaCwgUGguVMOibiBEw6JuLCBUaMOgbmggcGjhu5EgVmnhu4d0IFRyw6wsIFBow7ogVGjhu40sIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1529415850085" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
             </div>
           </div>
 
@@ -89,7 +89,6 @@
               type : "GET",
               headers : {"groupId": ${groupId}},
               success : function(result){
-                console.log("success");
                 var dossierTemplateParts = funGetDossierTemplate(result.dossierTemplateNo);
 
                 var viewModel = kendo.observable({
@@ -116,8 +115,6 @@
                   },
                   postalAddress : result.postalAddress,
                   viaPostal : function(e){
-                    console.log("viaPostal");
-                    console.log(result.viaPostal);
                     if(result.viaPostal < 2){
                       $("#viaPostal").remove();
                     }

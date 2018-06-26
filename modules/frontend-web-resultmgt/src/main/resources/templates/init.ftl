@@ -18,3 +18,7 @@
 <#assign currentURL = themeDisplay.getURLCurrent() />
 <#assign request = themeDisplay.getRequest() />
 <#assign portalURL = (themeDisplay.getPortalURL())!>
+<#assign portletNamespace = themeDisplay.getPortletDisplay().getNamespace() />
+<#assign dossier = (Request.dossier)!>
+<#assign dossierId = (Request.dossierId)!>
+<#assign dossierPartNo = (Request.dossierPartNo)!>
