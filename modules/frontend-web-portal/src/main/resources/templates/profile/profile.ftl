@@ -606,9 +606,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length < 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success: function(response, newValue) {
 			var arrDisplay = new Array();
@@ -641,10 +641,10 @@
 				async: false,
 				headers: {"groupId": ${groupId}},
 				data : {
-					districtCode: "-",
-					districtName: "-",
-					wardCode: "-",
-					wardName: "-",
+					districtCode: "",
+					districtName: "",
+					wardCode: "",
+					wardName: "",
 				},
 				success : function(result){
 					
@@ -721,9 +721,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length <= 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success : function(response, newValue){
 			var arrDisplay = new Array();
@@ -755,8 +755,8 @@
 				async: false,
 				headers: {"groupId": ${groupId}},
 				data : {
-					wardCode: "-",
-					wardName: "-",
+					wardCode: "",
+					wardName: "",
 				},
 				success : function(result){
 					
