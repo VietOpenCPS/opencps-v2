@@ -109,7 +109,6 @@
         }); 
 
       manageDossier.route("/taohosomoi/admin", function(){
-      	console.log("admin route=================");
         $("#mainType1").hide();
         $(".filterField").hide();
         $("#mainType2").show();
@@ -133,7 +132,6 @@
       });
       
       manageDossier.route("/taohosomoi/doman", function(){
-      	console.log("domain route==================");
         $("#mainType1").hide();
         $(".filterField").hide();
         $("#mainType2").show();

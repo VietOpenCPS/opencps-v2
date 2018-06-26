@@ -170,13 +170,13 @@
 
 						<div class="actions">
 							
-							#if(!lockState){#	
+							<#-- #if(!lockState){#	
 							<a href="javascript:;" class="text-light-blue uploadfile-form-repository" data-toggle="tooltip" data-placement="top" title="Tải giấy tờ từ kho lưu trữ" part-no="#:id#">
 								<i class="fa fa-archive" aria-hidden="true"></i>
 							</a>
-							#}#
+							#}# -->
 
-							#if(!lockState){#
+							#if("${(dossier.dossierStatus)!}" == 'new' || "${(dossier.dossierStatus)!}" == 'waiting'){#
 							<label class="MB0 ML10 hover-pointer" for="file#:id#" title="Tải file lên" >
 								<i class="fa fa-upload text-light-blue"></i>
 							</label>
@@ -188,7 +188,7 @@
 								<span class="number-in-circle" >#if(hasForm){# 1 #}else {# 0 #}#</span>
 							</a>
 							
-							#if(!lockState){#
+							#if("${(dossier.dossierStatus)!}" == 'new' || "${(dossier.dossierStatus)!}" == 'waiting'){#
 							<a href="javascript:;" class="text-light-gray delete-dossier-file" data-toggle="tooltip" data-placement="top" title="Xóa" data-partno="#:id#" eForm="#:hasForm#" fileTemplateNo="#:fileTemplateNo#">
 								<i class="fa fa-trash-o" aria-hidden="true"></i> Xóa
 							</a>
@@ -254,8 +254,8 @@
 
 <div class="row-parts-content">
 
-	<div class="checkbox ML15">
-		<input type="checkbox" data-bind="attr : {viaPostal: viaPostal}" name="viaPostal" id="viaPostal"> <label class="text-normal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
+	<div class="ML15">
+		<input type="checkbox" data-bind="attr : {viaPostal: viaPostal}" name="viaPostal" id="viaPostal"> <label class="text-normal" for="viaPostal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 	</div>
 
 	<div class="row" id="viaPostalContent">
@@ -354,12 +354,10 @@
 	
 
 	var fnCheckValidTemplate = function(){
-		console.log($(".validPart"));
 		var valid = true;
 		try {
 
 			$(".validPart").each(function(index){
-				console.log($(this).val());
 				if($(this).val() === "0"){
 					valid = false;
 				}
@@ -420,13 +418,9 @@
 		//upload file click
 		$(document).off("change",".dossier-file");
 		$(document).on("change",".dossier-file",function(){
-			console.log("change");
 			var partNo = $(this).attr("part-no");
 			var fileTemplateNo = $(this).attr("file-template-no");
 			var dossierTemplateNo = $("#dossierTemplateNo").val();
-			console.log(partNo);
-			console.log(fileTemplateNo);
-			console.log($(this)[0].files[0]);
 
 			funUploadFile($(this),partNo,dossierTemplateNo,fileTemplateNo);
 		});
@@ -465,8 +459,6 @@
 				}catch (e){
 					
 				}
-				console.log(dossierId);
-				console.log(dataPartNo);
 				var cf = confirm("Bạn có muốn xóa file toàn bộ file của thành phần này!");
 				if(cf){
 					if(dossierId && dataPartNo){
@@ -512,9 +504,7 @@
 								},
 								error : function(result) {
 									if(navigator.onLine){
-										notification.show({
-											message: "Xẩy ra lỗi, vui lòng thử lại"
-										}, "error");
+										showMessageByAPICode (result.status)
 									}
 								}
 							});
@@ -601,7 +591,6 @@
 		});
 
 		$(document).on("click",".dossier-online-form",function(event){
-			console.log("abcd");
 			$("#showDossierOnlineForm").load("${ajax.customer_dossier_online_form_dialog}",function(result){
 				$(this).modal("show");
 			});
@@ -675,8 +664,6 @@
 
 				return ;
 			}
-			console.log(validatePostal);
-			console.log(validateAplicantInfo);
 
 			if( jQuery.isEmptyObject(validateAplicantInfo) && jQuery.isEmptyObject(validatePostal) ){
 				$.ajax({
@@ -697,13 +684,9 @@
 						}, "success");      
 					},
 					error:function(result){
-						notification.show({
-							message: "Có lỗi sảy ra!"
-						}, "error");
+						showMessageByAPICode (result.status)
 					}
 				});
-
-				console.log("submit dossier success!");
 			}else {
 				notification.show({
 					message: "Vui lòng kiểm tra lại các thông tin bắt buộc!"
@@ -729,7 +712,6 @@
 
 					}
 				});
-				console.log("delete dossier success!");
 			}
 		}
 
@@ -832,25 +814,29 @@
 			},
 			success: function(response, newValue) {
 				var arrDisplay = new Array();
-				$.ajax({
-					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-					dataType : "json",
-					type : "GET",
-					async: false,
-					headers: {"groupId": ${groupId}},
-					data : {
-						parent : newValue
-					},
-					success : function(result){
-						var arrDataRes = result.data;
-						for (var i = 0; i < arrDataRes.length; i++) {
-							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-						}
-					},
-					error : function(xhr){
+				if (newValue && newValue !== '-') {
+					$.ajax({
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						dataType : "json",
+						type : "GET",
+						async: false,
+						headers: {"groupId": ${groupId}},
+						data : {
+							parent : newValue
+						},
+						success : function(result){
+							var arrDataRes = result.data;
+							if (arrDataRes) {
+								for (var i = 0; i < arrDataRes.length; i++) {
+									arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+								}
+							}
+						},
+						error : function(xhr){
 
-					}
-				});
+						}
+					});
+				}
 				$('#district').editable('option', 'source', arrDisplay);
 				$('#district').html("-");
 				$('#wards').html("-");
@@ -861,10 +847,10 @@
 					async: false,
 					headers: {"groupId": ${groupId}},
 					data : {
-						districtCode: "-",
-						districtName: "-",
-						wardCode: "-",
-						wardName: "-",
+						districtCode: "",
+						districtName: "",
+						wardCode: "",
+						wardName: "",
 					},
 					success : function(result){
 						
@@ -891,8 +877,10 @@
 					},
 					success : function(result){
 						var arrDataRes = result.data;
-						for (var i = 0; i < arrDataRes.length; i++) {
-							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						if (arrDataRes) {
+							for (var i = 0; i < arrDataRes.length; i++) {
+								arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+							}
 						}
 					},
 					error : function(xhr){
@@ -924,25 +912,29 @@
 			},
 			success : function(response, newValue){
 				var arrDisplay = new Array();
-				$.ajax({
-					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-					dataType : "json",
-					type : "GET",
-					async: false,
-					headers: {"groupId": ${groupId}},
-					data : {
-						parent : newValue
-					},
-					success : function(result){
-						var arrDataRes = result.data;
-						for (var i = 0; i < arrDataRes.length; i++) {
-							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-						}
-					},
-					error : function(xhr){
+				if (newValue && newValue !== '-') {
+					$.ajax({
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						dataType : "json",
+						type : "GET",
+						async: false,
+						headers: {"groupId": ${groupId}},
+						data : {
+							parent : newValue
+						},
+						success : function(result){
+							var arrDataRes = result.data;
+							if (arrDataRes) {
+								for (var i = 0; i < arrDataRes.length; i++) {
+									arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+								}
+							}
+						},
+						error : function(xhr){
 
-					}
-				});
+						}
+					});
+				}
 				$('#wards').editable('option', 'source', arrDisplay);
 				$('#wards').html("-");
 				$.ajax({
@@ -952,8 +944,8 @@
 					async: false,
 					headers: {"groupId": ${groupId}},
 					data : {
-						wardCode: "-",
-						wardName: "-",
+						wardCode: "",
+						wardName: ""
 					},
 					success : function(result){
 						
@@ -969,25 +961,29 @@
 			prepend: "",
 			source: function(){
 				var arrDisplay = new Array();
-				$.ajax({
-					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-					dataType : "json",
-					type : "GET",
-					async: false,
-					headers: {"groupId": ${groupId}},
-					data : {
-						parent : "${(dossier.cityCode)!}"
-					},
-					success : function(result){
-						var arrDataRes = result.data;
-						for (var i = 0; i < arrDataRes.length; i++) {
-							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-						}
-					},
-					error : function(xhr){
+				if ("${(dossier.cityCode)!}" && "${(dossier.cityCode)!}" !== '-') {
+					$.ajax({
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						dataType : "json",
+						type : "GET",
+						async: false,
+						headers: {"groupId": ${groupId}},
+						data : {
+							parent : "${(dossier.cityCode)!}"
+						},
+						success : function(result){
+							var arrDataRes = result.data;
+							if (arrDataRes) {
+								for (var i = 0; i < arrDataRes.length; i++) {
+									arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+								}
+							}
+						},
+						error : function(xhr){
 
-					}
-				});
+						}
+					});
+				}
 				return arrDisplay;
 			}
 		});
@@ -1019,25 +1015,30 @@
 			prepend: "",
 			source: function(){
 				var arrDisplay = new Array();
-				$.ajax({
-					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-					dataType : "json",
-					type : "GET",
-					async: false,
-					headers: {"groupId": ${groupId}},
-					data : {
-						parent : "${(dossier.districtCode)!}"
-					},
-					success : function(result){
-						var arrDataRes = result.data;
-						for (var i = 0; i < arrDataRes.length; i++) {
-							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-						}
-					},
-					error : function(xhr){
+				if ("${(dossier.districtCode)!}" && "${(dossier.districtCode)!}" !== '-') {
+					$.ajax({
+						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						dataType : "json",
+						type : "GET",
+						async: false,
+						headers: {"groupId": ${groupId}},
+						data : {
+							parent : "${(dossier.districtCode)!}"
+						},
+						success : function(result){
+							var arrDataRes = result.data;
+							if (arrDataRes) {
+								for (var i = 0; i < arrDataRes.length; i++) {
+									arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+								}
+							}
+						},
+						error : function(xhr){
 
-					}
-				});
+						}
+					});
+				}
+				
 				return arrDisplay;
 			}
 		});
@@ -1156,9 +1157,12 @@
 					},
 					success : function(result){
 						var arrDataRes = result.data;
-						for (var i = 0; i < arrDataRes.length; i++) {
-							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						if (arrDataRes) {
+							for (var i = 0; i < arrDataRes.length; i++) {
+								arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+							}
 						}
+						
 					},
 					error : function(xhr){
 
@@ -1241,8 +1245,6 @@
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
-						console.log("load detail dossier!");
-						console.log(result.dossierId);
 
 						dataSourceDossierTemplate.read({
 							dossierTemplateNo : result.dossierTemplateNo
@@ -1334,7 +1336,6 @@
 								return result.lastActionNote;
 							},
 							viaPostal : function(e){
-								console.log(result.viaPostal);
 
 								if(result.viaPostal < 2){
 									$("#viaPostalContent").hide();
@@ -1351,8 +1352,6 @@
 								return result.postalAddress;
 							},
 							postalCityName : function(){
-								console.log(result.postalCityCode);
-								console.log(result.postalCityName);
 								$('#postalCityCode').editable("setValue",result.postalCityCode);
 								return result.postalCityName;
 							},
@@ -1479,9 +1478,7 @@
 					},
 					error : function(result) {
 						if(navigator.onLine){
-							notification.show({
-								message: "Xảy ra lỗi, xin vui lòng thử lại"
-							}, "error");
+							showMessageByAPICode (result.status)
 						}
 					}
 				});
@@ -1491,7 +1488,6 @@
 
 		var funUploadFile = function(file, partNo , dossierTemplateNo , fileTemplateNo){
 			var data = new FormData();
-			console.log(file);
 
 			data.append( 'displayName', $(file)[0].files[0].name);
 			data.append( 'file', $(file)[0].files[0]);
@@ -1531,12 +1527,9 @@
 
 				},
 				error:function(result){
-					notification.show({
-						message: "Xảy ra lỗi, xin vui lòng thử lại"
-					}, "error");
+					showMessageByAPICode (result.status)
 				}
 			});
-			console.log("success!");
 		}
 
 		printDetailDossier(${dossierId});
@@ -1595,7 +1588,6 @@
 					}
 				});
 			}
-			console.log(dossierFile);
 
 			return dossierFile;
 		}
@@ -1631,7 +1623,6 @@
 		var fnSaveForm = function(id, value){
 			var current = $("#btn-save-formalpaca"+id);
 			var referentUid = current.attr("referenceUid");
-			console.log(referentUid);
 			if(referentUid){
 				$.ajax({
 					url : "${api.server}/dossiers/${dossierId}/files/"+referentUid+"/formdata",
@@ -1648,13 +1639,10 @@
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công!"
 						}, "success");
-						console.log($("#validPart"+id));
 						$("#validPart"+id).val("1");
 					},
 					error : function(result){
-						notification.show({
-							message: "Thực hiện không thành công, xin vui lòng thử lại!"
-						}, "error");
+						showMessageByAPICode (result.status)
 					}
 				});
 			}
@@ -1664,9 +1652,6 @@
 		$(document).on("click",".saveFormAlpaca",function(event){
 			var id = $(this).attr("data-pk");
 			var referentUidFile = $(this).attr("referenceUid");
-
-			console.log(id);
-			console.log("ccc");
 
 			var formType = $("#formPartNo"+id+" .formType").val();
 			var value ;
@@ -1680,9 +1665,6 @@
 					errorMessage = "notValid";
 
 				});
-				console.log(errorMessage);
-				console.log(referentUidFile);
-				console.log(value);
 
 				if(errorMessage === '' && referentUidFile){
 					$.ajax({
@@ -1700,14 +1682,11 @@
 							notification.show({
 								message: "Yêu cầu được thực hiện thành công!"
 							}, "success");
-							console.log($("#validPart"+id));
 							$("#validPart"+id).val("1");
 
 						},
 						error : function(result){
-							notification.show({
-								message: "Thực hiện không thành công, xin vui lòng thử lại!"
-							}, "error");
+							showMessageByAPICode (result.status)
 						}
 					});
 				}else {

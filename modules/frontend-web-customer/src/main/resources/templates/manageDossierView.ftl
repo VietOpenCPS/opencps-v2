@@ -11,7 +11,7 @@
 							<i class="fa fa-file-text"></i>
 						</div>
 						<span class="text-bold" id="statusName" style="text-transform:uppercase;"></span>
-						<div class="form-group search-icon pull-right MB0 MR10" style="margin-top:4px">
+						<div class="form-group search-icon pull-right MB0 MR10 MLA" style="margin-top:4px">
 							<input type="text" class="form-control" id="keyInput" placeholder="Nhập số hồ sơ, Mã tiếp nhận, Tên hồ sơ" data-bind="events: { keyup: filterKey}" style="width: 290px; height:30px">
 						</div>
 					</div>

@@ -297,8 +297,6 @@
 <script type="text/javascript">
 
 	var fnLoadPayment = function(dossierId){
-
-		console.log(dossierId);
 		var resultModel = null;
 		if(dossierId){
 			$.ajax({
@@ -335,9 +333,6 @@
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
-					console.log("load detail dossier!");
-					console.log(result.dossierId);
-
 					var payment = fnLoadPayment(result.dossierId);
 					
 
@@ -361,14 +356,12 @@
 						contactTelNo: result.contactTelNo,
 						contactEmail: result.contactEmail,
 						paymentFee : function(e){
-							console.log(this.get('paymentDossier'));
 							if(this.get('paymentDossier').paymentFee){
 								return this.get('paymentDossier').paymentFee;
 							}
 							return "";
 						},
 						referenceUid : function(e){
-							console.log(this.get('paymentDossier'));
 							if(this.get('paymentDossier').referenceUid){
 								return this.get('paymentDossier').referenceUid;
 							}

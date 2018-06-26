@@ -97,7 +97,6 @@
 
 		$(document).on("click",".btn-delete-file",function(event){
 			var id=$(this).attr("data-pk");
-			console.log(id);
 		});
 
 		var dataSourceDossierFileArchive=new kendo.data.DataSource({
@@ -142,8 +141,6 @@
 			selectable : "single",
 			change: onChange,
 			dataBound : function(e){
-				console.log("first");
-				console.log($(".dossierFileItem").first());
 				$(".dossierFileItem").first().addClass("text-light-blue");
 			}
 		});
@@ -154,7 +151,6 @@
 				
 				return data[$(item).index()].id;
 			});
-			console.log(selected);
 			if(selected){
 				var url = "${api.server}/dossiers/${dossierId}/files/"+selected;
 				var urlOut = "cvb";

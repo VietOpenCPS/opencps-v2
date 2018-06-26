@@ -37,10 +37,49 @@ html .portlet-boundary_FrontendWebDossierBvh_ .portlet-content {
     white-space: nowrap;
 }
 
+.table-landing table.datatable--select-all thead th:nth-child(1), 
+.table-landing table.datatable--select-all tbody td:nth-child(1){
+    min-width: 0px !important;
+    width: 3% !important;
+}
+.table-landing table.datatable--select-all thead th:nth-child(2), 
+.table-landing table.datatable--select-all tbody td:nth-child(2){
+    min-width: 0px !important;
+    width: 35% !important;
+}
+
+.table-landing table.datatable--select-all thead th:nth-child(3), 
+.table-landing table.datatable--select-all tbody td:nth-child(3){
+    min-width: 0px !important;
+    width: 15% !important;
+}
+
+.table-landing table.datatable--select-all thead th:nth-child(4), 
+.table-landing table.datatable--select-all tbody td:nth-child(4){
+    min-width: 0px !important;
+    width: 15% !important;
+}
+
+.table-landing table.datatable--select-all thead th:nth-child(5), 
+.table-landing table.datatable--select-all tbody td:nth-child(5){
+    min-width: 0px !important;
+    width: 15% !important;
+}
+
+.table-landing table.datatable--select-all thead th:nth-child(6), 
+.table-landing table.datatable--select-all tbody td:nth-child(6){
+    min-width: 0px !important;
+    width: auto !important;
+}
+
+.table-landing table.datatable--select-all tbody td:nth-child(5) a:hover {
+    color: #1976d2 !important;
+}
+
 table.table thead th {
     white-space: normal !important;
 }
-body .danhSachHoSoTable__class table.table th:nth-child(1) {
+/*body .danhSachHoSoTable__class table.table th:nth-child(1) {
   width: 40px;
 }
 body .danhSachHoSoTable__class table.table th:nth-child(2) {
@@ -72,7 +111,7 @@ body .danhSachHoSoTable__class table.table th:nth-child(7) {
 body .danhSachHoSoTable__class table.table th:nth-child(8) {
   width: 180px;
   padding-left: 8px;
-}
+}*/
 
 body .thongTinDoanhNghiepTable__class table.table th:nth-child(1) {
   width: 40px;

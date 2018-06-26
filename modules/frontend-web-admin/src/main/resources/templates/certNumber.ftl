@@ -125,7 +125,10 @@
 
 			return kendo.template($("#templateCertNumber").html())(data);
 		},
-		selectable : "single"
+		selectable : "single",
+		dataBound: function() {
+			
+		}
 	});
 
 	$("#pagerCertNumber").kendoPager({

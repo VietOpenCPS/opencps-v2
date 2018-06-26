@@ -72,12 +72,10 @@
   	});
 	
     $('#btn_fillter_by_domain').click(function(){
-      console.log("domain click");
       manageDossier.navigate("/taohosomoi/doman");
     });
 
     $('#btn_fillter_by_admintration').click(function(){
-      console.log("admintration click");
       manageDossier.navigate("/taohosomoi/admin");
     });
 
@@ -108,7 +106,8 @@
     dataSourceProcessServiceConfig = new kendo.data.DataSource({
       transport : {
         read : function(options){
-          $.ajax({
+          if (options.data.serviceConfigId) {
+           $.ajax({
             url : "${api.server}/serviceconfigs/"+options.data.serviceConfigId+"/processes",
             dataType : "json",
             type : "GET",
@@ -118,7 +117,6 @@
               if(result.data){
 
                 if (result.data.length === 1) {
-                  console.log(result.data[0].processOptionId);
                   fnGetParamAndCreateDossier(result.data[0].processOptionId);
                   
                 }else if (result.data.length > 1){
@@ -135,8 +133,11 @@
             error : function(result){
               options.error(result);
             }
-
           });
+         } else {
+
+         }
+         
         }
       },
       schema : {
@@ -172,7 +173,6 @@
     });
 
     $("#input_search").change(function(){
-      console.log("change");
       var input_Search = $('#input_search').val();
       if ($('#btn_fillter_by_admintration').hasClass('btn-active')){
         dataSourceAdmin.read({
