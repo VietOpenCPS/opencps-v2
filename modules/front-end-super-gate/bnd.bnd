@@ -1,0 +1,9 @@
+Bundle-Name: front-end-super-gate
+Bundle-SymbolicName: front.end.supergate
+Bundle-Version: 1.0.0
+Export-Package: org.opencps.portlet.constants
+Web-ContextPath:/front-end-super-gate
+
+-includeresource:\
+	@com.liferay.util.bridges-[0-9]*.jar!/com/liferay/util/bridges/freemarker/FreeMarkerPortlet.class,\
+	@com.liferay.util.taglib-[0-9]*.jar!/META-INF/*.tld
