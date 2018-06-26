@@ -131,6 +131,7 @@ public class FrontendWebOnegatePortlet extends FreeMarkerPortlet {
 				api.put("dossierApi", "/o/rest/v2/dossiers");
 				api.put("postDossierApi", "/o/rest/v2/onegate");
 				api.put("dossierTemplatesApi", "/o/rest/v2/dossiertemplates");
+				api.put("dossierlogsApi", "/o/rest/v2/dossierlogs");
 				
 				//TODO
 				api.put("govAgency", "govAgency");

@@ -21,6 +21,7 @@
 <!-- Template thông tin hồ sơ chi tiết -->
 <div id="detailView2">
 	<!--Render thông tin chi tiết DossierFiles-->
+	<input type="hidden" name="dossierIdSearchAvanced" id="dossierIdSearchAvanced" value="">
 	<div class="row">
 		<div class="panel panel-default MB0">
 			<div class="panel-heading"> 
@@ -29,7 +30,10 @@
 			<div class="panel-body P5 PL15">
 				<ul class="ul-default" id="DossierDetailFile"></ul>
 				<script type="text/x-kendo-template" id="tempDossierDetailFile">
-					<li><a href="${api.server}/dossiers/#:dossierId#/files/#:referenceUid#"> <span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span> </a></li>
+					#
+						var dossierIdHidden = $("\\#dossierIdSearchAvanced").val();
+					#
+					<li><a href="javascript:;" onclick=""> <span><i class="fa fa-download"></i></span> <span class="ML10">#:displayName#</span> </a></li>
 				</script>
 			</div>
 		</div>
@@ -46,27 +50,75 @@
 					<li class="clearfix eq-height-lg P0">
 						<div class="orderNo col-sm-0 text-center center-all row-blue P15"></div>
 						<div class="col-sm-12 M0 P5 PL10">
-							<span class="text-bold">#:author# </span><span class="text-light-gray">( #:payload.jobposTitle# ) </span><span class="text-light-blue">#:payload.briefNote#</span><br>
-							<span class="text-light-gray">#:createDate#</span><br>
-							<p class="MB5">#:content#</p>
 							#
-							$(payload.dossierFiles).each(function(index, file) {
-							if (file.fileType == "docx") {#
-							<p class="MB5"><img src="images/word.png" alt=""> <a class="text-hover-blue" href="${api.server}#:file.fileUrl#">#:file.displayName#</a></p>
-							#}
-							else if (file.fileType == "pdf") {#
-							<p class="MB5"><img src="images/pdf.png" alt=""> <a class="text-hover-blue" href="${api.server}#:file.fileUrl#">#:file.displayName#</a></p>
-							#}
-						})
-						# 
-					</div>
-				</li>
-			</script>
+							var jobposTitle = "";
+							var briefNote = "";
+							var dossier ;
+							try {
+
+								var payLoadObj = payload;
+
+								stepName = payLoadObj.hasOwnProperty("stepName")?payLoadObj.stepName : "";
+								dossier = payLoadObj.hasOwnProperty("files")?payLoadObj.files : "";
+
+							}catch(e){
+							}
+							#
+							<span class="text-bold">#:author# </span>
+							#if ( stepName!="" && stepName!=null ) {#
+								<span class="text-light-blue">(#:stepName#)</span> 
+							#}#
+							<p>
+								#if ( createDate!="" && createDate!=null ) {#
+								#= kendo.toString(kendo.parseDate(createDate, "yyyy-MM-ddTHH:mm:ss"), "HH:mm - dd/MM/yyyy")#
+								#}#
+							</p>
+
+							#if ( content!="" && content!=null ) {#
+
+								Ý kiến: #=content# <br>
+
+							#}#
+
+							#
+							if(dossier){
+								var dossierIdHidden = $("\\#dossierIdSearchAvanced").val();
+								for(var i = 0 ; i < dossier.length ; i++){
+							#
+								<p>
+									<a href="javascript:;" class="text-greyy text-hover-blue">
+										<i aria-hidden="true" class="fa fa-download PR5"></i>
+										#:dossier[i].fileName#
+									</a> 
+								</p>
+							#
+								}	 
+							}
+							#
+						</div>
+					</li>
+				</script>
+			</div>
 		</div>
 	</div>
 </div>
-</div>
 <script type="text/javascript">
+
+	function downloadResultFile (referenceUid) {
+		var dossierId = $("#dossierIdSearchAvanced").val();
+		if (dossierId && referenceUid) {
+			var url = "${api.server}/dossiers/" + dossierId + "/files/" + referenceUid;
+			window.open(url, '_blank');
+		}
+	}
+
+	function downloadLogFile (dossierFileId) {
+		var dossierId = $("#dossierIdSearchAvanced").val();
+		if (dossierId && dossierFileId) {
+			var url = "${api.server}/dossiers/" + dossierId + "/files/" + dossierFileId;
+			window.open(url, '_blank');
+		}
+	}
 
 	var dossierId;
 	$(function(){
@@ -95,6 +147,7 @@
 			        			$("#detailView").load("${ajax.dossierinfo}",
 			        				function(success){
 			        					dataItem = result.data[0];
+			        					$("#dossierIdSearchAvanced").val(dataItem.dossierId)
 			        					pullDataDetail(dataItem.dossierId);
 			        					var viewModel = kendo.observable({
 			        						dossierIdCTN: dataItem.dossierIdCTN,
@@ -104,7 +157,8 @@
 			        						govAgencyName: dataItem.govAgencyName,
 			        						submitDate: dataItem.submitDate,
 			        						dueDate: dataItem.dueDate,
-			        						dossierStatusText: dataItem.dossierStatusText
+			        						dossierStatusText: dataItem.dossierStatusText,
+			        						dossierId: dataItem.dossierId
 			        					});
 			        					kendo.bind($("#DossiersDetailInfo"), viewModel);
 			        					$(".panel").css("border-radius","0");
@@ -112,6 +166,10 @@
 			        				);
 			        			$("#detailView2").hide()
 			        		}else{
+			        			options.success({
+			        				data: [],
+			        				total: 0
+			        			});
 			        			$("#detailView").html("Hồ sơ với mã hồ sơ đã nhập không tồn tại trong hệ thống");
 			        		}
 			        	},
@@ -245,7 +303,6 @@
 		var loadDetail = function(){
 			$(".itemResult").click(function(){
 				dossierId = $(this).attr("data-pk");
-				console.log(dossierId);
 				$(".itemResult").css("pointer-events","auto");
 				$(".itemResult").removeClass("text-light-blue");
 				$(this).css("pointer-events","none");
@@ -253,7 +310,10 @@
 				$("#detailView").show();
 				$("#detailView").load("${ajax.dossierinfo}",
 					function(success){
-						pullDataDetail(dossierId)
+						if (dossierId) {
+							$("#dossierIdSearchAvanced").val(dossierId)
+							pullDataDetail(dossierId)
+						}
 					}
 				);
 				$("#detailView2").hide()

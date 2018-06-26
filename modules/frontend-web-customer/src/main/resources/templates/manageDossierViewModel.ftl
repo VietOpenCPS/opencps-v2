@@ -6,6 +6,57 @@
 	</div>
 	<script type="text/javascript">
 	// Source for panel list
+	function showMessageByAPICode (code) {
+		var message = '';
+		var status = '';
+		switch (code) {
+
+			case 200:
+			message = "Yêu cầu của bạn được xử lý thành công!";
+			status = "success";
+			break;
+
+			case 401:
+			message = "Yêu cầu của bạn xử lý thất bại, chưa đăng nhập vào hệ thống!!!";
+			status = "error";
+			break;
+
+			case 403:
+			message = "Yêu cầu của bạn xử lý thất bại, không có quyền thay đổi dữ liệu!!!";
+			status = "error";
+			break;
+
+			case 404:
+			message = "Yêu cầu của bạn xử lý thất bại, không tìm thấy tài nguyên!!!";
+			status = "error";
+			break;
+
+			case 405:
+			message = "Yêu cầu không được phép xử lý!!!";
+			status = "error";
+			break;
+
+			case 409:
+			message = "Yêu cầu của bạn xử lý thất bại, ";
+			status = "error";
+			break;
+
+			case 500:
+			message = "Yêu cầu của bạn xử lý thất bại, lỗi hệ thống";
+			status = "error";
+			break;
+
+			default:
+			message = "Lỗi kết nối!!!";
+			status = "error";
+			break;
+		}
+
+		notification.show({
+			message: message
+		}, status);
+
+	};
 		var dataGovAgency = new kendo.data.DataSource({
 			transport:{
 				read:{
@@ -101,7 +152,15 @@
 									value.count = index + 1;
 								});
 							};
-							options.success(result);
+
+							if (result.data) {
+								options.success(result);
+							} else {
+								options.success({
+									data: [],
+									total: 0
+								})
+							}
 							optBoxPageSize();
 							if (result.total!=0) {
 								dataSourceProfile.page(1);
@@ -146,12 +205,16 @@
 							sort: options.data.sort_modified
 						},
 						success:function(result){
-							options.success(result);
 							if(result.data){
 								$("#sideItemAdd").show();
 								$("#total_Additional_Requirement").text(dataAddRequest.total());
+								options.success(result);
 							}else {
 								$("#total_Additional_Requirement").text(0);
+								options.success({
+									total: 0,
+									data: []
+								})
 							};
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
@@ -186,12 +249,17 @@
 							sort: options.data.sort_modified
 						},
 						success:function(result){
-							options.success(result);
+							
 							if(result.data){
 								$("#sideItemPayment").show();
 								$("#total_Payment_Request").text(dataPayRequest.total());
+								options.success(result);
 							}else {
 								$("#total_Payment_Request").text(0);
+								options.success({
+									data: [],
+									total: 0
+								});
 							};
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
@@ -226,12 +294,16 @@
 							sort: options.data.sort_modified
 						},
 						success:function(result){
-							options.success(result);
 							if(result.data){
 								$("#sideItemResult").show();
 								$("#total_result").text(dataResult.total());
+								options.success(result);
 							}else {
 								$("#total_result").text(0);
+								options.success({
+									data: [],
+									total: 0
+								});
 							};
 							// Option kendo-page
 							$(".k-pager-first").css("display","none");
@@ -292,6 +364,8 @@
 			    if (statusDossier !== undefined) {
 			    	if(statusDossier === "done"){
 			    		statusDossier = "done,cancelled,denied,ended"
+			    	} else if(statusDossier === "receiving") {
+			    		statusDossier = "receiving,releasing,processing"
 			    	}
 					dataSourceProfile.read({
 						"serviceInfo": $("#serviceInfo").val(),

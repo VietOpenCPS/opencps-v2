@@ -36,13 +36,16 @@
 									<div class="accordion-inner P0">
 										# if(domains[i].serviceConfigs.length > 0) {#
 										# for (var j = 0; j < domains[i].serviceConfigs.length; j ++) {#
-										<div class="eq-height">
-											<div class="col-xs-12 col-sm-11 align-middle MR100">
+										<div class="eq-height border-bottom">
+											<div class="col-xs-12 col-sm-11 align-middle PT5 PB5">
 												<a class="link-serviceInfo" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#" admt-pk="#domains[i].serviceConfigs.serviceConfigId#" href="\\#">
-													#:domains[i].serviceConfigs[j].serviceInfoName#
+													#
+														var stt = j + 1;
+													#
+													<span class="text-bold">#:stt#.</span>&nbsp; #:domains[i].serviceConfigs[j].serviceInfoName#
 												</a>
 											</div>
-											<div class="col-xs-12 col-sm-1 border-left ML100 center-all lh32 text-light-gray">
+											<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
 												Mức #:domains[i].serviceConfigs[j].level#
 											</div>
 											<div class="col-xs-12 col-sm-1 border-left align-center P0">
@@ -78,15 +81,12 @@
 <script type = "text/javascript">
 
 	function selectProcess(element){
-		console.log("choise process");
 		var id = $(element).attr("data-pk");
 		var templateNo = $(element).attr("data-template");
 		fnGetParamAndCreateDossier(id,templateNo);
 	}
 
 	var fnGenServiceProcess = function(id,element){
-		console.log("pass");
-		console.log($(element));
 		$.ajax({
 			url : "${api.server}/serviceconfigs/"+id+"/processes",
 			dataType : "json",
@@ -222,7 +222,9 @@
 				/*fnGenEventChoiseServiceConfig();*/
 				$(".dropdown-menu").each(function(){
 					var id = $(this).attr("data-pk");
-					fnGenServiceProcess(id, $(this));
+					if (id) {
+						fnGenServiceProcess(id, $(this));
+					}
 				});
 				fnMapUrlGovAgencyCode();
 			}

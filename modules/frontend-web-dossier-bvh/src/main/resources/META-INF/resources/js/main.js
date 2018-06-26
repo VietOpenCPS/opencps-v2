@@ -42,7 +42,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				listgroupHoSoFilterselectedIndex: -1,
 				advancedFilterServiceInfo : {}, 
 				advancedFilterLoaiSanPham : {},
-				advancedFilterNhanHieu : {}
+				advancedFilterNhanHieu : {},
+				stateSearchKeyword: false,
+				stateFollow: true
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -66,31 +68,35 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								animation: 'fade'
 							})
 								.then((dialog) => {
-									console.log("Run delete");
-									// call API get file by dossierId
-
-									var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/resetformdata";
-									
-
-									axios.put(urlFiles, config).then(function (response) {
-										item.counter = 0;
-										console.log("----------------------------------------");
-                      					console.log("id----",item.partNo);
-										console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
-
-										$("#validCreateFile"+item.partNo).val("0");
-										
-									})
-									.catch(function (error) {
-										console.log(error);
-										
-									});
-									
+									if (item.eform) {
+										var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/resetformdata";
+										axios.put(urlFiles, config).then(function (response) {
+											item.counter = 0;
+											$("#validCreateFile"+item.partNo).val("0");
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thành công!";
+											vm.snackbardossierViewJX = true;
+										})
+										.catch(function (error) {
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thất bại!";
+											vm.snackbarerordossierViewJX = true;
+										});
+									} else {
+										var urlFiles = "/o/rest/v2/dossiers/" + vm.detailModel.dossierId + "/files/" + item.templateFileNo + "/all";
+										axios.delete(urlFiles, config).then(function (response) {
+											item.counter = 0;
+											$("#validCreateFile"+item.partNo).val("0");
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thành công!";
+											vm.snackbardossierViewJX = true;
+										})
+										.catch(function (error) {
+											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thất bại!";
+											vm.snackbarerordossierViewJX = true;
+										});
+									}
 									dialog.close();
 									return false; 
 								})
 								.catch((e) => {
-									console.log(e)
 								})
 						},
 						deleteDossierPDF: function(item, index) {
@@ -125,15 +131,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									dialog.close();
 								})
 								.catch((e) => {
-									console.log(e)
 								})
 						},
 						submitAlpacajsForm: function (item) {
 							var vm = this;
-							console.log("$('#alpacajs_form_'+item.partNo + ' .formType').val()============",$("#alpacajs_form_"+item.partNo + " .formType").val());
 							if( $("#alpacajs_form_"+item.partNo + " .formType").val() == null || 
 									$("#alpacajs_form_"+item.partNo + " .formType").val() == 'undefined' ) {
-								console.log("formtype 1");
 								vm.loadingAlpacajsForm = true;
 								
 								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
@@ -155,10 +158,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	                      				vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
 
-										console.log("----------------------------------------");
-                      					console.log("id----",item.partNo);
-										console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
-
 										$("#validCreateFile"+item.partNo).val("1");
 										try{
 											if(item.hasSubmit){
@@ -168,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												item.counter ++;
 												item.hasSubmit = true;
 											}
-											
 											
 										}catch(e){
 
@@ -182,7 +180,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								});
 							} else if( $("#alpacajs_form_"+item.partNo + " .formType").val() != null || 
 									$("#alpacajs_form_"+item.partNo + " .formType").val() === 'assign' ) {
-								console.log("formtype 2");
 								vm.loadingAlpacajsForm = true;
 								
 								var control = $("#alpacajs_form_"+item.partNo).alpaca("get");
@@ -207,10 +204,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										vm.snackbartextdossierViewJX = "Lưu form thành công!";
 	                      				vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
-
-										console.log("----------------------------------------");
-                      					console.log("id----",item.partNo);
-										console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
 										$("#validCreateFile"+item.partNo).val("1");
 
 										try{
@@ -246,11 +239,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
 						showAlpacaJSFORM: function (item) {
 							//alapcajs Form
-							console.log("item=========",item);
 							var alpacajsForm = document.getElementById("alpacajs_form_"+item.partNo);
-							console.log("alpacajsForm=========",alpacajsForm);
 							if (alpacajsForm.innerHTML == '' && item.eform) {
-								console.log(item);
 								var alapcaJS = eval('('+item.formScript+')');
 								alapcaJS['data'] = item.formData;
 								
@@ -280,13 +270,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
     	    							
     	                            })
     	                                .catch(function (error) {
-    	                                    console.log(error);
     	                                    
     	                                });
     							
                             })
                                 .catch(function (error) {
-                                    console.log(error);
 									vm.stepLoading = false;
 									
                                 });
@@ -295,7 +283,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
                         changeProcessStep: function (item){
                             var vm = this;
-                            console.log(item);
                             if(item.type === 1){
                             	vm.processActionNote = '';
 
@@ -350,7 +337,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             					vm.stepModel = item;
                             				})
                             				.catch(function (error) {
-                            					console.log(error);
                             					item.url = '';
                             					item.no_pdf = 'Tài liệu đính kèm không tồn tại!';
                             					vm.stepModel = item;
@@ -359,7 +345,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             			}
                             		}))
                             		.catch(function (error) {
-                            			console.log(error);
 
                             		});
                             }
@@ -369,9 +354,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         },
                         checkValidPart : function(actionCode){
                         	var isValid = true;
-                        	console.log("validCreatePart==========",$(".validCreatePart[actionCode="+actionCode+"]"));
+                        	
                         	$(".validCreatePart[actionCode="+actionCode+"]").each(function(){
-                        		console.log("validCreatePart=========",$(this).val());
                         		if($(this).val() === "0"){
                         			isValid = false;
 
@@ -381,14 +365,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
                         	return isValid;
                         },
 						postNextActions: function (item){
-							console.log(item);
                            var vm = this;
 							vm.actionsSubmitLoading = true;
 							var fileArr = item.createFiles;
 							var idArr = [];
 
 							var validCreateFile = vm.checkValidPart(item.actionCode);
-							console.log("validCreateFile========",validCreateFile);
 
 							if(!validCreateFile){
 								vm.snackbartextdossierViewJX = "Vui lòng tải file hoặc ghi lại Form trực tuyến( nếu có) trước khi thực hiện hành động này";
@@ -411,8 +393,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									}
 								}
 							}
-
-							console.log(idArr);
 
 							var url = '/o/rest/v2/dossiers/'+vm.detailModel.dossierId+'/actions';
 
@@ -513,7 +493,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 									var strIdArr = idArr.join(";");
 									var actionName = item.actionName;
-									console.log(strIdArr);
 									vm.kyDuyetYCGiamDinh(strIdArr,paramObj, actionName);
 								}
 							}
@@ -523,7 +502,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var vm = this;
 							var url = '/o/rest/v2/digitalSignature/'+vm.detailModel.dossierId+'/hashComputed';
-							console.log(vm.detailModel.dossierId);
 							
 							$.ajax({
 								type : 'POST',
@@ -539,17 +517,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									/*id : controlRequirementId*/
 								},
 								success : function(result) {
-									console.log(result);
 									/*var jsonData = JSON.parse(result);*/
 									var hashComputers = result.hashComputers;
 									var signFieldNames = result.signFieldNames;
 									var fileNames = result.fileNames;
 									var msgs = result.msg;
 									var fileEntryId = result.fileEntryId;
-									console.log("hashComputers: "+hashComputers);
-									console.log("signFieldNames: "+signFieldNames);
-									console.log("fileNames: "+fileNames);
-									console.log("msgs: "+msgs);			
 									vm.actionsSubmitLoading = false;
 									if(plugin().valid) {
 										
@@ -562,16 +535,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 												var sign = plugin().Signature;
 												var signFieldName = signFieldNames[i];
 												var fileName = fileNames[i];
-												console.log("sign: "+sign);
-												console.log("signFieldName: "+signFieldName);
-												console.log("fileName: "+fileName);
 												var msg = msgs[i];
 												if(msg == 'success') {
 													try {
 														vm.completeKyDuyetYCGiamDinh(sign, signFieldName, fileName, fileEntryId, paramObj, actionName);
 													}
 													catch(err) {
-														console.log(err);
 													}
 												}else{
 													alert(msg);
@@ -613,7 +582,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									fileEntryId: fileEntryId
 								},
 								success : function(result) {
-									console.log(result);
 									/*var jsonData = JSON.parse(result);*/
 									var msg = result.msg;
 									if(msg == 'success'){
@@ -681,10 +649,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
                                 vm.processSteps = $.merge( nextactions, plugins );
 								vm.stepLoading = false;
-								console.log(vm.processSteps);
                             }))
                                 .catch(function (error) {
-                                    console.log(error);
 									vm.stepLoading = false;
 									
                                 });
@@ -749,10 +715,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									vm.actionsSubmitLoading = false;
 									vm.snackbartextdossierViewJX = " Tải file thành công!";
                       				vm.snackbardossierViewJX = true;
-
-                      				console.log("----------------------------------------");
-                      				console.log("id----",item.partNo);
-									console.log("validCreateFile----",$("#validCreateFile"+item.partNo));
 
                       				$("#validCreateFile"+item.partNo).val("1");
 									//vm._initchangeProcessStep();
@@ -836,7 +798,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							vm.listgroupHoSoFilterselectedIndex = item.index - 1;
 							
-							console.log(item);
 							if ( item.id !== 'tra_cuu' ){
 								vm.stageFilterView = item.id;
 								vm.hoso_title_table = item.title;
@@ -850,6 +811,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 							} 
 							
+							vm.stateFollow = true;
 
 
 							if (item.id == 'tra_cuu_hoso') {
@@ -885,8 +847,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 									var indexTree = -1;
 									var index = 0;
-									console.log("listgroupHoSoFilterItems=======FISRT",vm.listgroupHoSoFilterItems);
-									console.log("serializable=======",serializable.data);
 									for (var key in serializable.data) {
 										for(var i in vm.listgroupHoSoFilterItems){
 											if ( serializable.data[key].level === 0) {
@@ -911,7 +871,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									}
 
 								}
-								console.log("listgroupHoSoFilterItems=======LAST",vm.listgroupHoSoFilterItems);
 
 							},
 							error : function(result){
@@ -923,6 +882,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						_initlistgroupHoSoFilter: function(){
 							var vm = this;
 							vm.stageFilterView = 'danh_sach';
+							vm.stateFollow = true;
 
 							vm.listgroupHoSoFilterItems = [];
 
@@ -974,7 +934,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 						})
 							.catch(function (error) {
-								console.log(error);
 								
 							});
 							return false; 
@@ -1001,11 +960,26 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								vm.hoso_title_table = item.title;
 							}
 							
-							if (item.id == 'tra_cuu_hoso') {
-								vm._initraCuuHoSoTable(false);
-								vm._initAdvanced_filter_serviceInfo();
-								vm._initAdvanced_filter_loaiSanPham();
-								vm._initAdvanced_filter_nhanHieu();
+							if (item.id == 'tat_ca_ho_so') {
+								// vm._initraCuuHoSoTable(false);
+								// vm._initAdvanced_filter_serviceInfo();
+								// vm._initAdvanced_filter_loaiSanPham();
+								// vm._initAdvanced_filter_nhanHieu();
+
+								vm.detailPage = false;
+								vm.detailRegistPage = false;
+								vm.listgroupHoSoFilterselected = item.id;
+								vm.danhSachHoSoTablepage = 1;
+
+								vm.listgroupHoSoFilterselectedIndex = item.index - 1;
+
+								vm.statusParamFilter = '';
+								vm.substatusParamFilter = '';
+								vm.stateFollow = false;
+
+								vm._inidanhSachHoSoTable(false);
+
+								vm.onScrollTop();
 								
 							} else if (item.id == 'tra_cuu_phuong_tien') {
 								// TODO vm._inidanhSachHoSoTable(false);
@@ -1019,13 +993,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
                             vm.listgroupTraCuuFilterItems = [
 								{
-									id: 'tra_cuu_hoso',
+									id: 'tat_ca_ho_so',
 									title: 'Tra cứu hồ sơ'
-								},
-								{
-									id: 'tra_cuu_thong_tin_doanh_nghiep',
-									title: 'Thông tin doanh nghiệp'
 								}
+								// {
+								// 	id: 'tra_cuu_thong_tin_doanh_nghiep',
+								// 	title: 'Thông tin doanh nghiệp'
+								// }
 							];
 							
 						}
@@ -1043,7 +1017,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'events': {
 						filterTraCuuHoSoKeywords: function (event) {
 							var vm = this;
-							if (event.keyCode === 13 || vm.keywordsSearchTraCuuHoSo.length > 3 || vm.keywordsSearchTraCuuHoSo.length === 0) {
+							if (event.keyCode === 13 || vm.keywordsSearchTraCuuHoSo.length > 3) {
+								vm.stateSearchKeyword = true;
+								vm._initraCuuHoSoTable(false);
+							} else {
+								vm.stateSearchKeyword = false;
 								vm._initraCuuHoSoTable(false);
 							}
 
@@ -1101,6 +1079,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						_filterDanhSachHoSoKeyup: function (event) {
 							var vm = this;
 							if (event.keyCode === 13 || vm.keywordsSearchDanhSachHoSo.length > 3 || vm.keywordsSearchDanhSachHoSo.length === 0) {
+								vm.danhSachHoSoTablepage = 1;
 								vm._inidanhSachHoSoTable(false);
 							}
 
@@ -1141,7 +1120,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
@@ -1339,7 +1317,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 							})
 								.catch(function (error) {
-									console.log(error);
 									vm.thongTinDoanhNghiepTableItems = [];
 									
 								});
@@ -1372,7 +1349,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
@@ -1391,7 +1367,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
@@ -1451,7 +1426,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									contentType: 'application/x-www-form-urlencoded; charset=utf-8',
 									success: function(data, textStatus, xhr) {
 										vm.detailRegistModel = data.data;
-										console.log(vm.detailRegistModel);
 									},
 									error: function(xhr, textStatus, errorThrown) {
 										vm.detailRegistModel = {};
@@ -1462,7 +1436,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								return false; 
 							})
 							.catch((e) => {
-								console.log(e)
 							})
 						},
 						registrationPheDuyet: function(registrationState) {
@@ -1498,7 +1471,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									contentType: 'application/x-www-form-urlencoded; charset=utf-8',
 									success: function(data, textStatus, xhr) {
 										vm.detailRegistModel = data;
-										console.log(vm.detailRegistModel);
 										vm.snackbartextdossierViewJX = "Yêu cầu xử lý thành công thành công!";
 										vm.snackbardossierViewJX = true;
 										
@@ -1514,7 +1486,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								return false; 
 							})
 							.catch((e) => {
-								console.log(e)
 							})
 						}
 					}
@@ -1723,38 +1694,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
 										}
 									});
-
-									/*var resData = serializable.data;
-									if(resData){
-										for (var i = 0; i < resData.length; i++) {
-											var deliverableId = resData[i].deliverableId;
-											console.log("deliverableId======",deliverableId);
-											if(deliverableId){
-												$.ajax({
-													url : "/o/rest/v2/deliverables/"+deliverableId+"/formdata",
-													dataType : "json",
-													type : "GET",
-													headers: {"groupId": themeDisplay.getScopeGroupId()},
-													async : false,
-													success : function(result){
-														$("#ma_ho_so"+deliverableId).html(result.ma_ho_so);
-														$("#so_ho_so"+deliverableId).html(result.so_ho_so);
-														$("#ngay_gui"+deliverableId).html(result.ngay_gui);
-														$("#ngay_tiep_nhan"+deliverableId).html(result.ngay_tiep_nhan);
-														$("#so_chung_chi"+deliverableId).html(result.so_chung_chi);
-														$("#ngay_ky_cc"+deliverableId).html(result.ngay_ky_cc);
-													},
-													error : function(result){
-
-													}
-												});
-											}
-
-										}
-									}*/
 								},
 								error : function(result){
-									console.log(result);
 									vm.traCuuHoSoTableItems = [];
 								}
 							});
@@ -1780,17 +1721,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 									axios.get(urlGetFile, config_blob).then(function (response) {
 										var url = window.URL.createObjectURL(response.data);
-										console.log("url===========>",url);
 										window.open(url , '_blank');
 									})
 									.catch(function (error) {
-										console.log(error);
 
 									});
 
 								})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 								
@@ -1822,13 +1760,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 								})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 
 							})
 							.catch(function (error) {
-								console.log(error);
 
 							});
 							
@@ -1855,8 +1791,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'name': 'danhSachHoSoTable',
 					'type': 'table',
 					'no_data_text': 'Không tìm thấy hồ sơ nào!',
-					'cssClass': 'danhSachHoSoTable__class',
-					'select_all': true,
+					'cssClass': 'table-landing table-bordered',
+					// 'select_all': true,
 					'item_key': 'dossierId',
 					'headers': 'headers',
 					'template': 'danh_sach_hoso_table_template',
@@ -1873,43 +1809,43 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							this.danhSachHoSoTableheaders = [
 								{
 									text: 'STT',
-									align: 'left',
+									align: 'center',
 									sortable: false,
 									value: 'stt'
 								},
 								{
-									text: 'Tên thủ tục. Tên doanh nghiệp',
-									align: 'left',
-									sortable: true,
-									value: 'applicantName'
-								},
-								{
-									text: 'Mã hồ sơ. Số hồ sơ',
-									align: 'left',
+									text: 'Mã hồ sơ',
+									align: 'center',
 									sortable: true,
 									value: 'dossierId'
 								},
 								{
-									text: 'Ngày gửi. Ngày tiếp nhận. Hạn xử lý',
-									align: 'left',
+									text: 'Tên doanh nghiệp',
+									align: 'center',
+									sortable: true,
+									value: 'applicantName'
+								},
+								{
+									text: 'Tên thủ tục',
+									align: 'center',
+									sortable: true,
+									value: 'applicantName'
+								},
+								{
+									text: 'Ngày gửi. Ngày tiếp nhận',
+									align: 'center',
 									sortable: true,
 									value: 'submitDate'
 								},
-								/*{
-									text: 'Số chứng chỉ. Ngày cấp',
-									align: 'left',
-									sortable: false,
-									value: 'action'
+								{
+									text: 'Ngày hẹn trả',
+									align: 'center',
+									sortable: true,
+									value: 'dueDate'
 								},
 								{
-									text: 'Nội dung',
-									align: 'left',
-									sortable: false,
-									value: 'action'
-								},*/
-								{
 									text: 'Ghi chú',
-									align: 'left',
+									align: 'center',
 									sortable: true,
 									value: 'lastActionNote'
 								}
@@ -1927,17 +1863,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								keyword: vm.keywordsSearch,
 								applicantName: vm.applicantNameFilter,
 								service: vm.serviceInfoFilter.serviceCode,
-								follow: true,
 								dossierNo: vm.dossierNoFilter,
-								start: vm.danhSachHoSoTablepage * 15 - 15,
-								end: vm.danhSachHoSoTablepage * 15,
 								status: statusParam,
+								follow: vm.stateFollow,
+								specialKey: !vm.stateFollow,
 								substatus: substatusParam,
 								sort: 'modified',
 								order: 'false'
 							};
 						
-							
+							if (!vm.stateSearchKeyword) {
+								paramsBuilder['start'] = vm.danhSachHoSoTablepage * 15 - 15;
+								paramsBuilder['end'] = vm.danhSachHoSoTablepage * 15;
+							};
 							
 							if ( vm.keywordFilter != null ) {
 								paramsBuilder['keyword'] = vm.keywordFilter;
@@ -1967,7 +1905,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 								
 								if (vm.listgroupHoSoFilterselectedIndex >= 0) {
-									console.log('reindex counting ...');
 									vm.listgroupHoSoFilterItems[vm.listgroupHoSoFilterselectedIndex]['count'] = serializable.total;
 								}
 								
@@ -1985,13 +1922,27 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										$( this ).html($( this ).attr('aria-label').substring(0, $( this ).attr('aria-label').indexOf(":")).replace(/\./g,"<br/>"));
 									}
 								});
-								console.log(vm.danhSachHoSoTableItems);
+								/*if (!response.data.data) {
+									vm.danhSachHoSoTableItems = [{
+										serviceName: 'ccccc',
+										applicantName: 'ccccc',
+										dossierNo: 'ccccc',
+										dossierIdCTN: 'ccccc',
+										submitDate: 'ccccc',
+										receiveDate: 'ccccc',
+										dueDate: 'ccccc',
+										lastActionNote: 'ccccc'
+									}]
+								}*/
+								
+							//$("div[jx-bind=danhSachHoSoTable]").find('table > thead > tr > th:nth-child(2)').html("Mã hồ sơ <br> Số hồ sơ");
+							$("div[jx-bind=danhSachHoSoTable]").find('table > thead > tr > th:nth-child(5)').html("Ngày gửi <br> Ngày tiếp nhận")
 							})
 								.catch(function (error) {
-									console.log(error);
 									vm.danhSachHoSoTableItems = [];
 									
 								});
+
 							return false; 
 						},
 						toDetailHoSo: function (item) {
@@ -2015,13 +1966,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
 						},
 						_paggingDanhSachHoSo: function() {
 							this._inidanhSachHoSoTable(false);
+							
 						},
 						_nextDanhSachHoSo: function() {
 							
@@ -2096,7 +2047,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								return Promise.reject();
 								
 							  })).catch(function (error) {
-									console.log(error);
 									
 								});
 							return false;
@@ -2140,7 +2090,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									
 								})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							}
@@ -2174,11 +2123,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							axios.get(url, config_blob).then(function (response) {
 								var url = window.URL.createObjectURL(response.data);
-								console.log(url);
 								window.open(url);
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
@@ -2238,7 +2185,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								return Promise.reject();
 								
 							  })).catch(function (error) {
-									console.log(error);
 									
 								});
 							return false;
@@ -2283,7 +2229,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								}
 							})
 							.catch(function (error) {
-								console.log(error);
 								
 							});
 							return false; 
@@ -2302,7 +2247,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								window.open(url);
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
@@ -2373,7 +2317,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"template": "popUpViewDossierFileTemplate",
 					"events": {
 						popUpViewDossierFileClose: function () {
-							console.log("close popup");
 							var iFrame = document.getElementById("dossierPDFView");
 							var dossierPDFViewNotFound = document.getElementById("dossierPDFViewNotFound");
 							iFrame.innerHTML = '';
@@ -2381,7 +2324,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							this.popupResultFile = false;
 						},
 						popUpViewDossierFileSave: function () {
-							console.log("save popup");
 							var vm = this;
 							var iFrame = document.getElementById("dossierPDFView");
 							iFrame.innerHTML = '';
@@ -2416,7 +2358,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								dossierPDFViewNotFound.innerHTML = '';
 							})
 								.catch(function (error) {
-									console.log(error);
 									dossierPDFViewNotFound.innerHTML = 'Tài liệu đính kèm không tồn tại!';
 									
 								});
@@ -2438,7 +2379,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								window.open(url);
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
@@ -2477,11 +2417,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							
 							axios.get(url, config_blob).then(function (response) {
 								var url = window.URL.createObjectURL(response.data);
-								console.log(url);
 								window.open(url);
 							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
 							return false; 
@@ -2511,10 +2449,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							axios.get(url, config).then(function (response) {
     								var serializable = response.data;
     								vm.advanced_filter_serviceInfoItems = serializable.data;
-    								console.log(vm.advanced_filter_serviceInfoItems);
     							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
                     	},
@@ -2567,10 +2503,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
     							axios.get(url, config).then(function (response) {
     								var serializable = response.data;
     								vm.advanced_filter_loaiSanPhamItems = serializable.data;
-    								console.log(vm.advanced_filter_loaiSanPhamItems);
     							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
                     		}
@@ -2608,7 +2542,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
     								vm.advanced_filter_nhanHieuItems = serializable.data;
     							})
 								.catch(function (error) {
-									console.log(error);
 									
 								});
                     		}

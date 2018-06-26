@@ -35,14 +35,17 @@
 								# for (var j = 0; j < govAgency.serviceConfigs.length; j++){
 								var serviceConfig = govAgency.serviceConfigs[j];
 								#
-								<div class="eq-height">
-									<div class="col-xs-12 col-sm-11 align-middle MR100">
+								<div class="eq-height border-bottom">
+									<div class="col-xs-12 col-sm-11 align-middle PT5 PB5">
 										<a class="link-govAgency" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:govAgency.govAgencyCode#" href="\\#">
-											#:serviceConfig.serviceName#
+											#
+											var stt = j + 1;
+											#
+											<span class="text-bold">#:stt#.</span>&nbsp;#:serviceConfig.serviceName#
 										</a>
 									</div>
 
-									<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray ML100">
+									<div class="col-xs-12 col-sm-1 border-left center-all lh32 text-light-gray">
 
 										Mức #:serviceConfig.level#
 
@@ -82,15 +85,12 @@
 	$(document).ready(function(){
 
 		function selectProcess(element){
-			console.log("choise process");
 			var id = $(element).attr("data-pk");
 			var templateNo = $(element).attr("data-template");
 			fnGetParamAndCreateDossier(id,templateNo);
 		}
 
 		var fnGenServiceProcess = function(id,element){
-			console.log("pass");
-			console.log($(element));
 			$.ajax({
 				url : "${api.server}/serviceconfigs/"+id+"/processes",
 				dataType : "json",
@@ -205,14 +205,14 @@
 				//fnGenEventChoiseServiceConfig();
 				$(".dropdown-menu").each(function(){
 					var id = $(this).attr("data-pk");
-					fnGenServiceProcess(id, $(this));
+					if (id) {
+						fnGenServiceProcess(id, $(this));
+					}
 				});
 			}
 		});
 		
 		var fnGenServiceProcess = function(id,element){
-			console.log("testtt");
-			console.log($(element));
 			$.ajax({
 				url : "${api.server}/serviceconfigs/"+id+"/processes",
 				dataType : "json",

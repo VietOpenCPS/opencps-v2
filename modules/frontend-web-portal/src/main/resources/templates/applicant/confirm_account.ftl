@@ -1,4 +1,4 @@
-<span class="red">(*)</span><#if (Request)??>
+<#if (Request)??>
 <#include "init.ftl">
 </#if>
 

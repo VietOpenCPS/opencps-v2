@@ -2,6 +2,7 @@
     <#include "init.ftl">
 </#if>
 <!-- Template thông tin hồ sơ cơ bản -->
+
 <div class="panel panel-default MB15" id="DossiersDetailInfo">
 	<div class="panel-heading"> 
 		<span class="text-bold text-light-blue">THÔNG TIN HỒ SƠ | </span> <span class="text-bold" data-bind="text:applicantName"> </span>
@@ -73,11 +74,28 @@
         //     }
         // });
         //dataSource chi tiết thông tin hồ sơ
+        var fnGetLogs = function(arrLogs){
+            
+            var arrLogsResult = new Array();
+            var count = 0;
+            var result = {};
+            if(arrLogs){
+                for (var i = 0; i < arrLogs.length; i++) {
+                    if(arrLogs[i].notificationType === 'PROCESS_TYPE'){
+                        arrLogsResult.push(arrLogs[i]);
+                        count++;
+                    }
+                }
+            }
+            result["data"] = arrLogsResult;
+            result["total"] = count;
+            return result;
+        }
         var dataSourceDossierFileDetail = new kendo.data.DataSource({
             transport: {
                 read: function (options) {
                     $.ajax({
-                        url: "${api.server}/dossiers/"+id+"/files",
+                        url: "${api.server}/dossiers/" + id + "/files",
                         dataType: "json",
                         type: 'GET',
                         headers : {"groupId": 55217},
@@ -85,8 +103,14 @@
                             password: options.data.password
                         },
                         success: function (result) {
-                            options.success(result);
-                            console.log(dossierId);
+                            if (result.data) {
+                                options.success(result);
+                            } else {
+                                options.success({
+                                    data: [],
+                                    total: 0
+                                });
+                            }
                             $(".panel").css("border-radius","0")
                         },
                         error : function(result){
@@ -105,7 +129,7 @@
             transport: {
                 read: function (options) {
                     $.ajax({
-                        url: "${api.server}/dossiers/"+id+"/logs",
+                        url: "${api.server}/dossierlogs/" + id + "/logs",
                         // url:"http://localhost:3000/logs",
                         dataType: "json",
                         type: 'GET',
@@ -114,8 +138,15 @@
                             password: options.data.password
                         },
                         success: function (result) {
-                            options.success(result);
-                            console.log(dossierId);
+                            if (result.data) {
+                                var arrLogsTmp = fnGetLogs(result.data);
+                                options.success(arrLogsTmp);
+                            } else {
+                                options.success({
+                                    data: [],
+                                    total: 0
+                                });
+                            }
                             $(".panel").css("border-radius","0");
                             $(".panel-heading").css("border","0");
                             var index = 0;
@@ -158,13 +189,11 @@
         $("#btn_dossierinfo_detail").click(
             function(){
                 if($("#input_dossier_detail").val().length === 0){
-                    console.log(Id);
                     notification.show({
                         message: "Bạn phải nhập mã bí mật"
                     }, "error");
                     return;
                 }
-                console.log(dossierId);
                 $("#detailView2").show();
                 evenDataDossierDetail()
             }

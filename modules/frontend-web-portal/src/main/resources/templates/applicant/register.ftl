@@ -76,7 +76,28 @@
 </div>
 
 <script type="text/javascript">
+
+  function getAuthen () {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/o/rest/v2/onegate/token',
+        dataType: 'json',
+        type: 'GET',
+        headers: {
+          "groupId": ${groupId}
+        },
+        success: function (result) {
+          resolve(result);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      })
+    })
+  }
+
   (function($){
+
     var validator = $("#fm").kendoValidator().data("kendoValidator");
    /* $("form").submit(function(event) {
        event.preventDefault();
@@ -112,12 +133,16 @@
        } else if (!$("#agreement").is(':checked')) {
         notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
       }else{
-        register();
+        getAuthen().then(function (result) {
+          register(result);
+        }).catch(function (error) {
+
+        })
       }
     }
   });
 
-     var register = function(){
+     var register = function(dataAuthen){
       var data = $('#fm').serialize();
       $.ajax({
         url: '${api.server}/applicants',
@@ -125,7 +150,8 @@
         data: data,
         dataType : "json",
         headers: {
-          "groupId": ${groupId}
+          "groupId": ${groupId},
+          'cps_auth': dataAuthen
         },
         success: function(result){
 
@@ -139,7 +165,7 @@
            title: "Success",
            message: "Đăng ký thành công."
          }, "success");
-
+          
           setTimeout(function(){
            window.location.href = "${portalURL}/confirm-account?active_user_id=" + result.applicantId;
          }, 2000);

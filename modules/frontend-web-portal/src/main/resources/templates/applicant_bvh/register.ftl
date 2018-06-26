@@ -3,10 +3,10 @@
 </#if>
 
 <div class="row row eq-height-lg" id="register_container">
-	<div class="col-xs-12 col-sm-8 align-middle-lg">
-		<div class="col-xs-12 bg-gif-register"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 box register-wrapper">
+  <div class="col-xs-12 col-sm-8 align-middle-lg">
+    <div class="col-xs-12 bg-gif-register"></div>
+  </div>
+  <div class="col-xs-12 col-sm-4 box register-wrapper">
    <form id="fm">
     <div class="row">
       <div class="box-title">
@@ -53,7 +53,7 @@
 <div class="row MT15">
  <div class="col-xs-12 col-sm-12">Mật khẩu <span class="red">(*)</span></div>
  <div class="col-xs-12 col-sm-12 MT5">
-  <input type="password" id="password" name="password" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Gồm các ký tự 0-9, a-z, ít nhất 6 ký tự"/>
+  <input type="password" id="password" name="password" class="form-control" required="required" data-checkpass-field="password" data-checkpass-msg='Mật khẩu gồm ít nhất 8 ký tự, có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt!' data-required-msg="Trường nhập yêu cầu bắt buộc" />
 </div>
 </div>
 <div class="row MT15">
@@ -65,7 +65,7 @@
 
 <div class="row MT15">
  <div class="col-xs-12 col-sm-12">
-   <div class="checkbox-inline"> <input type="checkbox" id="agreement" name="agreement"> <label class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> </div> <span><a href="javascript:;" id="viewRules" class="text-light-blue">Chi tiết</a></span>
+   <div class=""> <input type="checkbox" id="agreement" name="agreement"> <label for="agreement" class="text-normal">Tôi đồng ý với điều khoản sử dụng. </label> <span><a href="javascript:;" id="viewRules" class="text-light-blue">Chi tiết</a></span></div> 
  </div>
 </div>
 <div class="row MT15 MB15 text-center">
@@ -76,8 +76,13 @@
 </div>
 
 <script type="text/javascript">
-  (function($){
-    var validator = $("#fm").kendoValidator().data("kendoValidator");
+  var validator;
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+
+  })
+
+  $(function(){
    /* $("form").submit(function(event) {
        event.preventDefault();
        if (validator.validate()) {
@@ -90,6 +95,41 @@
          return true;
        }
      });*/
+     var getAuthen = function (callback) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: '/o/rest/v2/onegate/token',
+          dataType: 'json',
+          type: 'GET',
+          headers: {
+            "groupId": ${groupId}
+          },
+          success: function (result) {
+            resolve(result);
+            callback(result)
+          },
+          error: function (xhr) {
+            reject(xhr);
+          }
+        })
+      })
+    }
+     var container = $("#fm");
+     kendo.init(container);
+     container.kendoValidator({
+      rules: {
+        checkpass: function (input) {
+          if (input.is("[name=password]")) {
+            var str = $("#password").val();
+            var reg = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
+            if (!reg.test(str)) {      
+              return false;                              
+            }
+          }
+          return true;
+        }
+      }
+    })
 
     $("#applicantIdDate").kendoDatePicker({
       format: "dd/MM/yyyy",
@@ -104,26 +144,54 @@
 
      $("#btn-register").click(function(e){
       e.preventDefault();
-      var date_regex = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/;
-      var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if(validator.validate()){
-        if ($("#password").val().length < 6 || $("#repassword").val().length < 6){
-          notification.show({ message:"Mật khẩu gồm các ký tự 0-9, a-z, ít nhất 6 ký tự" }, "error");
-        } else if ($("#password").val() != $("#repassword").val()){
-          notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
-        } else if (!(date_regex.test($("#applicantIdDate").val()))) {
-          notification.show({ message: "Ngày cấp không đúng !!!"}, "error");
-        } else if (!(email_regex.test($("#contactEmail").val()))) {
-          notification.show({ message: "Email nhập không đúng!!!"}, "error");
-        } else if (!$("#agreement").is(':checked')) {
-          notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
-        } else {
-          register();
-        }
+      // var validator = $("#fm").kendoValidator().data("kendoValidator");
+      if(container.data('kendoValidator').validate()){
+        var str = $("#password").val();
+        var reg = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
+        if (!reg.test(str)){
+         notification.show({ message:"Mật khẩu gồm ít nhất 8 ký tự, có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt" }, "error");
+       } else if ($("#password").val() != $("#repassword").val()){
+         notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
+       } else if (!$("#agreement").is(':checked')) {
+        notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
+      }else{
+         $.ajax({
+          url: '/o/rest/v2/onegate/token',
+          dataType: 'text',
+          type: 'GET',
+          headers: {
+            "groupId": ${groupId}
+          },
+          success: function(result) {
+            console.log("result", result);
+            register(result)
+          },
+          error: function(xhr){
+
+          }
+        }) 
+// =======
+//       var date_regex = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/;
+//       var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+//       if(validator.validate()){
+//         if ($("#password").val().length < 6 || $("#repassword").val().length < 6){
+//           notification.show({ message:"Mật khẩu gồm các ký tự 0-9, a-z, ít nhất 6 ký tự" }, "error");
+//         } else if ($("#password").val() != $("#repassword").val()){
+//           notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
+//         } else if (!(date_regex.test($("#applicantIdDate").val()))) {
+//           notification.show({ message: "Ngày cấp không đúng !!!"}, "error");
+//         } else if (!(email_regex.test($("#contactEmail").val()))) {
+//           notification.show({ message: "Email nhập không đúng!!!"}, "error");
+//         } else if (!$("#agreement").is(':checked')) {
+//           notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
+//         } else {
+//           register();
+//         }
+// >>>>>>> origin/pre-develop
       }
     });
 
-     var register = function(){
+     var register = function(dataAuthen){
       //var data = $('#fm').serialize();
 
       var applicantIdType = "";
@@ -149,7 +217,8 @@
         data: data,
         dataType : "json",
         headers: {
-          "groupId": ${groupId}
+          "groupId": ${groupId},
+          'cps_auth': dataAuthen
         },
         success: function(result){
 
@@ -168,26 +237,45 @@
            window.location.href = "${portalURL}/confirm-account?active_user_id=" + result.applicantId;
          }, 2000);
         },
-        500: function(result) {
-          if (JSON.parse(result.responseText).description == 'DuplicateContactEmailException'){
-           notification.show({
-            title: "Error",
-            message: "Email bạn sử dụng đã tồn tại trong hệ thống."
-          }, "error");
-         } else if (JSON.parse(result.responseText).description == 'DuplicateApplicantIdException'){
-           notification.show({
+        400: function(result) {
+          notification.show({
             title: "Error",
             message: "Số CMND hoặc Mã số thuế đã tồn tại trong hệ thống."
           }, "error");
-         } else if (JSON.parse(result.responseText).description == 'DuplicateContactTelNoException'){
-           notification.show({
+        },
+        403: function(result) {
+          notification.show({
             title: "Error",
-            message: "Số điện thoại đã được sử dụng trong hệ thống."
+            message: "Có lỗi sảy ra, vui lòng thử lại!"
           }, "error");
-         } else {
-           notification.show({
+        },
+        500: function(result) {
+          try{
+            if (JSON.parse(result.responseText).description == 'DuplicateContactEmailException'){
+             notification.show({
+              title: "Error",
+              message: "Email bạn sử dụng đã tồn tại trong hệ thống."
+            }, "error");
+           } else if (JSON.parse(result.responseText).description == 'DuplicateApplicantIdException'){
+             notification.show({
+              title: "Error",
+              message: "Số CMDN đã tồn tại trong hệ thống."
+            }, "error");
+           } else if (JSON.parse(result.responseText).description == 'DuplicateContactTelNoException'){
+             notification.show({
+              title: "Error",
+              message: "Số điện thoại đã được sử dụng trong hệ thống."
+            }, "error");
+           } else {
+             notification.show({
+              title: "Error",
+              message: "Mật khẩu yếu!"
+            }, "error");
+           }
+         }catch (e) {
+          notification.show({
             title: "Error",
-            message: "Đăng ký không thành công. Vui lòng thử lại."
+            message: "Mật khẩu yếu!"
           }, "error");
          }
        }
@@ -235,7 +323,7 @@
 
   });
 
-})(jQuery);
+  });
 
 
 </script>
@@ -271,7 +359,6 @@
     }).data("kendoWindow").center().close();
   });
 </script>
-
 
 
 
