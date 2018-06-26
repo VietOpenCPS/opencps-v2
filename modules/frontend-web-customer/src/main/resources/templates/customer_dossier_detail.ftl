@@ -1,7 +1,20 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-
+<div class="steps align-space-between">
+  <div class="step align-middle-lg done">
+    <span>1</span>
+    <span>Lựa chọn Dịch vụ công</span>
+  </div>
+  <div class="step align-middle-lg done" id="step2">
+    <span>2</span>
+    <span>Chuẩn bị hồ sơ</span>
+  </div>
+  <div class="step align-middle-lg" id="step3">
+    <span>3</span>
+    <span>Nộp hồ sơ</span>
+  </div>
+</div>
 <div class="box" id="detailDossier">
 
 	<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
@@ -508,9 +521,7 @@
 
 	$("#btn-next-step-dossier").click(function(){
 		funSaveDossier();
-		setTimeout(function(){ 
-			manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
-		}, 1000);
+		
 	});
 
 	funSaveDossier = function(){
@@ -600,6 +611,9 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
+					setTimeout(function(){ 
+						manageDossier.navigate("/taohosomoi/nophoso/${dossierId}");
+					}, 1000);
 				},
 				error : function(result){
 					notification.show({

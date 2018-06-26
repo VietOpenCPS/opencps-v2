@@ -341,14 +341,14 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(user))
 			throw new DuplicateContactEmailException("DuplicateContactEmailException");
-
-/*		if (Validator.isNotNull(contactTelNo)) {
+		
+		if (Validator.isNotNull(contactTelNo)) {
 
 			applicant = fetchByTelNo(contactTelNo);
 
 			if (Validator.isNotNull(applicant))
 				throw new DuplicateContactTelNoException("DuplicateContactTelNoException");
-		}*/
+		}
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
