@@ -35,7 +35,7 @@ public class ServiceInfoPortlet extends FreeMarkerPortlet {
 	@Override
 	public void render(RenderRequest renderRequest, RenderResponse renderResponse)
 			throws IOException, PortletException {
-		renderRequest.setAttribute("api", "http://103.21.148.29/o/rest/v2");
+		renderRequest.setAttribute("api", "/o/rest/v2");
 		super.render(renderRequest, renderResponse);
 	}
 }

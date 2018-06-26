@@ -18,7 +18,11 @@
 				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded" style="width: 100%; height: auto;">
 				<div class="text-center"><a id="change_avatar_profile" data-pk="${(applicantId)!}" href="#" class="text-light-gray">Thay đổi avatar</a></div>
 				<p class="name text-bold text-center" data-bind="text:applicantName" id="profileName"></p>
-				<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				<#if applicantIdType == 'business' >
+					<div>Mã số thuế: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				<#else>
+					<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				</#if>
 				<div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate" id="profileDate"></span></div>
 				<div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail" id="profileEmail"></span></div>
 			</#if>
@@ -368,7 +372,7 @@
 </div>
 
 <script type="text/javascript">
-
+	var resultRet = false;
 	var notification = $("#notification").kendoNotification().data("kendoNotification");
 	var validator;
 	$(function ($) {
@@ -414,6 +418,21 @@
 			}else if(!reg.test(str)){
 				notification.show({ message:"Mật khẩu gồm ít nhất 8 ký tự, có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt" }, "error");
 			}else {
+				// =======
+				// 		var regex = /^[A-Za-z\d]{6,}$/;
+				// 		var type = "${userType}";
+
+				// 		if (validator.validate()) {
+				// 			if ($("#new_password").val().length < 6 && $("#retype_new_password").val().length < 6){
+				// 				notification.show({
+				// 					message: "Mật khẩu ít nhất 6 ký tự!"
+				// 				}, "error");
+				// 			} else if ($("#new_password").val() != $("#retype_new_password").val()){
+				// 				notification.show({
+				// 					message: "Xác nhận mật khẩu mới không đúng!"
+				// 				}, "error");
+				// 			} else if(type === "applicant"){
+				// >>>>>>> origin/pre-develop
 				$.ajax({
 					url : "${api.server}/users/"+userId+"/changepass",
 					dataType : "json",
@@ -436,6 +455,17 @@
 							notification.show({
 								message: "Yêu cầu được thực hiện thành công"
 							}, "success");
+							// =======
+							// 						if(result){
+							// 							notification.show({
+							// 								message: "Đổi mật khẩu thực hiện thành công"
+							// 							}, "success");
+							// 							$("#messagePassword").html('');
+							// 						}else{
+							// 							notification.show({
+							// 								message: "Mật khẩu hiện tại nhập không chính xác"
+							// 							}, "error");
+							// >>>>>>> origin/pre-develop
 							$("#messagePassword").html('');
 						}
 					},
@@ -443,6 +473,33 @@
 						$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
 					}
 				});	
+			} else if(type === "employee"){
+				$.ajax({
+					url : "${api.server}/users/"+userId+"/changepass/employee",
+					dataType : "json",
+					type : "POST",
+					headers: {"groupId": ${groupId}},
+					data : {
+						oldPassword : $("#old_password").val(),
+						newPassword : $("#retype_new_password").val()
+					},
+					success : function(result){
+						if(result){
+							notification.show({
+								message: "Đổi mật khẩu thực hiện thành công"
+							}, "success");
+							$("#messagePassword").html('');
+						}else{
+							notification.show({
+								message: "Mật khẩu hiện tại nhập không chính xác"
+							}, "error");
+							$("#messagePassword").html('');
+						}
+					},
+					error : function(xhr){
+						$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
+					}
+				});
 			}
 		}
 	});
@@ -477,23 +534,15 @@
 	});*/
 
 	function checkOldPassword(userId, oldPassword){
-		var result = false;
 		$.ajax({
-			url: "${api.server}" + "/checkOldPassword",
+			url: "${api.server}/users/"+userId+"/checkpass/"+oldPassword,
 			type: "GET",
 			dataType: "json",
 			headers: {"groupId": ${groupId}},
-			data: {
-				userId: userId,
-				oldPassword: oldPassword,
-			},
-			success: function(res) {
-				if (res.result == 'true'){
-					result = true;
-				}
+			success: function(result) {
+				resultRet = result;
 			}
 		});
-		return result;
 	};
 
 	function changePassword(oldPassword, newPassword, retypeNewPassword){
@@ -540,9 +589,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length < 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success: function(response, newValue) {
 			$("#profileName").html(newValue);
@@ -567,9 +616,9 @@
 			};
 		},
 		validate: function(value) {
-		  // if (value.length < 1){
-		  //   return 'Đây là trường bắt buộc';
-		  // }
+		  if (value.length < 1){
+		    return 'Đây là trường bắt buộc';
+		  }
 		},
 		success: function(data) {
 
@@ -857,9 +906,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length < 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success : function(data){
 

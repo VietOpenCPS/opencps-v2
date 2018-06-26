@@ -503,7 +503,9 @@ public class UserActions implements UserInterface {
 				
 				if (type == 1) {
 					//update application
-					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
+//					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
+					
+					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(id);
 				
 					email = employee.getEmail();
 				} else {

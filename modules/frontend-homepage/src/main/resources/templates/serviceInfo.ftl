@@ -44,10 +44,10 @@
 			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
-						<th class="text-center col-md-1">STT</th>
+						<th class="text-center col-xs-1">STT</th>
 						<th class="text-center col-xs-6">Thủ tục</th>
-						<th class="text-center col-xs-3">Lĩnh vực</th>
-						<th class="text-center col-xs-2">Đơn vị</th>
+						<th class="text-center col-xs-2">Lĩnh vực</th>
+						<th class="text-center col-xs-3">Đơn vị</th>
 					</tr>
 				</thead>
 				<tbody id="table-body">

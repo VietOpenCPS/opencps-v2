@@ -39,6 +39,7 @@
 			$("#profileStatus li").removeClass('active');
 			$("#profileStatus li>i").removeClass("fa fa-folder-open").addClass("fa fa-folder");
 			$(".itemStatus").css("pointer-events","auto");
+			$("#step2, #step3").removeClass("done");
 		});
 
 		/*manageDossier.route("/taohosomoi/(:id)", function(id){
@@ -58,6 +59,8 @@
 			$("#mainType2").show();
 			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
 			});
+			$("#step3").removeClass("done");
+			$("#step2").addClass("done");
 		});
 		
 		manageDossier.route("/taohosomoi/nophoso/(:dossierId)", function(dossierId){
@@ -66,6 +69,7 @@
 			$("#mainType2").load("${ajax.customer_dossier_detail_2}&${portletNamespace}dossierId="+dossierId,function(result){
 
 			});
+			$("#step2, #step3").addClass("done");
 		});
 
 		manageDossier.route("/(:id)", function(id) {
