@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									/*var jsonData = JSON.parse(result);*/
 									var msg = result.msg;
 									if(msg == 'success'){
-//										alert('ký số thành công!');
+										/*alert('ký số thành công!');*/
 										vm.snackbartextdossierViewJX = actionName + " thành công!";
 										vm.snackbardossierViewJX = true;
 										
@@ -2040,8 +2040,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					'events': {
 						_inilistDocumentIn: function (item) {
 							var vm = this;
-//							vm.listDocumentInItems = [];
-//							vm.listDocumentOutItems = [];
+							/*vm.listDocumentInItems = [];
+							vm.listDocumentOutItems = [];*/
 							
 							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
 							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";
@@ -2185,8 +2185,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						},
 						_inilistDocumentOut: function (item) {
 							var vm = this;
-//							vm.listDocumentInItems = [];
-//							vm.listDocumentOutItems = [];
+							/*vm.listDocumentInItems = [];
+							vm.listDocumentOutItems = [];*/
 							
 							var url = "/o/rest/v2/dossiertemplates/"+item.dossierTemplateNo;
 							var urlFiles = "/o/rest/v2/dossiers/"+item.dossierId+"/files";

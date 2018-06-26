@@ -42,28 +42,26 @@ public class FrontendWebResultmgtPortlet extends FreeMarkerPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 		String portletId = portletDisplay.getId();
-//		HttpServletRequest httpRequest = PortalUtil.getHttpServletRequest(renderRequest);
+		// HttpServletRequest httpRequest =
+		// PortalUtil.getHttpServletRequest(renderRequest);
 
 		renderRequest.setAttribute("api", generateApiJsonObject(themeDisplay));
 		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
-		
-		String govAgencyCode =
-				ParamUtil.getString(renderRequest, "govAgencyCode");
+
+		String govAgencyCode = ParamUtil.getString(renderRequest, "govAgencyCode");
 		// url
-		PortletURL resultmainlistURL = PortletURLFactoryUtil.create(
-			renderRequest, portletId, themeDisplay.getPlid(),
-			PortletRequest.RENDER_PHASE);
-	
+		PortletURL resultmainlistURL = PortletURLFactoryUtil.create(renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+
 		resultmainlistURL.setPortletMode(PortletMode.VIEW);
 		resultmainlistURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		resultmainlistURL.setParameter(
-			"mvcPath", "/templates/result_mainlist.ftl");
-	
+		resultmainlistURL.setParameter("mvcPath", "/templates/result_mainlist.ftl");
+
 		urlObject.put("result_mainlist", resultmainlistURL.toString());
-		
+
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("govAgencyCode", govAgencyCode);
-		
+
 		super.render(renderRequest, renderResponse);
 	}
 

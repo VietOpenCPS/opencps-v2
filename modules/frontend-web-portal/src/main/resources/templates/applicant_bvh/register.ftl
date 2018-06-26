@@ -91,7 +91,7 @@
        }
      });*/
 
-     $("#applicantIdDate").kendoDatePicker({
+    $("#applicantIdDate").kendoDatePicker({
       format: "dd/MM/yyyy",
       culture: "vi-VN"
     });
