@@ -26,6 +26,7 @@ import org.opencps.api.controller.impl.DossierActionManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
+import org.opencps.api.controller.impl.DossierStatisticManagementImpl;
 import org.opencps.api.controller.impl.DossierSyncManagementImpl;
 import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
 import org.opencps.api.controller.impl.EmployeeManagementImpl;
@@ -36,6 +37,7 @@ import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
 import org.opencps.api.controller.impl.NotificationTemplateImpl;
 import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
 import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
+import org.opencps.api.controller.impl.OneGateControllerImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
 import org.opencps.api.controller.impl.PaymentFileManagementImpl;
 import org.opencps.api.controller.impl.ProcessPluginManagementImpl;
@@ -53,7 +55,6 @@ import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
-import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -91,7 +92,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new JobposManagementImpl());
 		singletons.add(new UserManagementImpl());
 		singletons.add(new EmployeeManagementImpl());
-		singletons.add(new DossierStatisticImpl());
+		singletons.add(new DossierStatisticManagementImpl());
 		singletons.add(new FileAttachManagementImpl());
 		singletons.add(new StatisticManagementImpl());
 		singletons.add(new DeliverableTypesManagementImpl());
@@ -110,6 +111,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new UserInfoLogManagementImpl());
 		//
 		singletons.add(new CertNumberManagementImpl());
+		singletons.add(new OneGateControllerImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);

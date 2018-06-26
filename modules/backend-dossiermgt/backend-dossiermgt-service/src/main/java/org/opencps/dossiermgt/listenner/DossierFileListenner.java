@@ -74,17 +74,34 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(model.getGroupId(),
 					model.getDossierTemplateNo(), model.getDossierPartNo());
 
-			String deliverableType = dossierPart.getDeliverableType();
+			//TODO: HOT FIX
+			//LamTV: Process Deliverable PT
+			String deliverableType = StringPool.BLANK;
+			boolean eSign = false;
+			String partNo = StringPool.BLANK;
+			long partType = 0;
+			if (dossierPart != null) {
+				partNo = dossierPart.getPartNo();
+				partType = dossierPart.getPartType();
+//				deliverableType = dossierPart.getDeliverableType();
+				eSign = dossierPart.getESign();
+			}
+			_log.info("partNo: "+partNo+"| partType"+partType);
+//			String deliverableType = dossierPart.getDeliverableType();
 
 			String deliverableCode = model.getDeliverableCode();
 
 			if (Validator.isNotNull(deliverableCode)) {
-				//Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
+				Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
 
 				// Exist Deliverable checking
 
 				Deliverable dlv = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 
+				if (KEY_PARTNO.contains(partNo) && partType == 2) {
+					deliverableType = "GCN_" + partNo;
+				}
+				_log.info("deliverableType: "+deliverableType);
 				DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(),
 						deliverableType);
 
@@ -112,30 +129,38 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String issueDate = StringPool.BLANK;
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
-				String deliverableState = "2";
+				String deliverableState = "1";
 				String formData = StringPool.BLANK;
 
 				if (Validator.isNotNull(formDataContent)) {
 					subject = formDataContent.getString("subject");
-					issueDate = formDataContent.getString("issueDate");
+//					issueDate = formDataContent.getString("issueDate");
 					expireDate = formDataContent.getString("expireDate");
 					revalidate = formDataContent.getString("revalidate");
 
 					formData = formDataContent.toString();
 
 				}
+				//LamTV: Process issuing date
+//				Date now = new Date();
 
-				if (Validator.isNull(dlv)) {
+				if (Validator.isNull(dlv) && Validator.isNotNull(deliverableType)) {
 					// add deliverable
+					_log.info("Add deliverable");
 
-/*					dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType,
-							deliverableCode, dossier.getGovAgencyCode(), dossier.getApplicantIdNo(),
-							dossier.getApplicantName(), subject, issueDate, expireDate, revalidate, deliverableState,
-							serviceContext);
+//					dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType,
+//							deliverableCode, dossier.getGovAgencyCode(), dossier.getApplicantIdNo(),
+//							dossier.getApplicantName(), subject, issueDate, expireDate, revalidate, deliverableState,
+//							serviceContext);
 
-					DeliverableLocalServiceUtil.updateFormData(model.getGroupId(), dlv.getDeliverableId(), formData,
-							serviceContext);
-*/
+					dlv = DeliverableLocalServiceUtil.addDeliverable(model.getGroupId(), deliverableType,
+							deliverableCode, dossier.getGovAgencyCode(), dossier.getGovAgencyName(),
+							dossier.getApplicantIdNo(), dossier.getApplicantName(), subject, issueDate, expireDate,
+							revalidate, deliverableState, serviceContext);
+
+//					DeliverableLocalServiceUtil.updateFormData(model.getGroupId(), dlv.getDeliverableId(), formData,
+//							serviceContext);
+
 				}
 
 			}
@@ -466,7 +491,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				if (eSign) {
 					deliverableState = "0";
 				} else {
-					deliverableState = "2";
+					deliverableState = "1";
 				}
 
 				if (Validator.isNotNull(formDataContent)) {
@@ -584,4 +609,5 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	public static DossierFile modelBeforeUpdate;
 
 	private Log _log = LogFactoryUtil.getLog(DossierFileListenner.class.getName());
+	private static final String KEY_PARTNO = "DD02-KQ1,DD02-KQ2,DD04-KQ,DD11-KQ,DD12-KQ1,DD12-KQ2,DD03-KQ1,DD03-KQ2";
 }

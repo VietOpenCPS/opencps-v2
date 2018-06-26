@@ -13,14 +13,14 @@
         <b>ĐĂNG KÝ TÀI KHOẢN</b>
       </div>
     </div>
-     <input type="hidden" name="applicantIdType" value="business" >
-     <div class="row MT10 MB10">
+    <input type="hidden" name="applicantIdType" value="business" >
+    <div class="row MT10 MB10">
       <div class="col-xs-12 col-sm-12 text-center">
         <div class="radio-inline"> <input type="radio" id="rdBusiness" name="applicantIdType" value="business" checked> <label>Doanh nghiệp</label> </div>
         <div class="radio-inline"> <input type="radio" id="rdCitizen" name="applicantIdType" value="citizen"> <label>Công dân</label> </div>
-     </div>
-   </div>
-   <div class="row MT15">
+      </div>
+    </div>
+    <div class="row MT15">
      <div class="col-xs-12 col-sm-12" ><span id="lblApplicantName">Tên tổ chức</span> <span class="red">(*)</span></div>
      <div class="col-xs-12 col-sm-12 MT5">
       <input type="text" id="applicantName" name="applicantName" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Tên tổ chức"/>
@@ -104,18 +104,24 @@
 
      $("#btn-register").click(function(e){
       e.preventDefault();
+      var date_regex = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/;
+      var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if(validator.validate()){
         if ($("#password").val().length < 6 || $("#repassword").val().length < 6){
-         notification.show({ message:"Mật khẩu gồm các ký tự 0-9, a-z, ít nhất 6 ký tự" }, "error");
-       } else if ($("#password").val() != $("#repassword").val()){
-         notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
-       } else if (!$("#agreement").is(':checked')) {
-        notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
-      }else{
-        register();
+          notification.show({ message:"Mật khẩu gồm các ký tự 0-9, a-z, ít nhất 6 ký tự" }, "error");
+        } else if ($("#password").val() != $("#repassword").val()){
+          notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
+        } else if (!(date_regex.test($("#applicantIdDate").val()))) {
+          notification.show({ message: "Ngày cấp không đúng !!!"}, "error");
+        } else if (!(email_regex.test($("#contactEmail").val()))) {
+          notification.show({ message: "Email nhập không đúng!!!"}, "error");
+        } else if (!$("#agreement").is(':checked')) {
+          notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
+        } else {
+          register();
+        }
       }
-    }
-  });
+    });
 
      var register = function(){
       //var data = $('#fm').serialize();
@@ -171,7 +177,7 @@
          } else if (JSON.parse(result.responseText).description == 'DuplicateApplicantIdException'){
            notification.show({
             title: "Error",
-            message: "Số CMDN đã tồn tại trong hệ thống."
+            message: "Số CMND hoặc Mã số thuế đã tồn tại trong hệ thống."
           }, "error");
          } else if (JSON.parse(result.responseText).description == 'DuplicateContactTelNoException'){
            notification.show({
@@ -189,53 +195,53 @@
    });
     }
   // ++++++++++++++++++ fix 27/12 congtrinh0209>
-    $('input[type=radio][name=applicantIdType]').change(function() {
-      if (this.value == 'citizen') {
-        $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
-        $("#lblApplicantName").text("Họ và tên");
-        $("#lblApplicantIdNo").text("Số CMND/ Hộ chiếu");
-        $("#applicantName").attr("placeholder","Họ và tên");
-        $("#applicantIdNo").attr("placeholder","Số CMND/ Hộ chiếu");
-      }
-      else  {
-        $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
-        $("#lblApplicantName").text("Tên tổ chức");
-        $("#lblApplicantIdNo").text("Mã số thuế");
-        $("#applicantName").attr("placeholder","Tên tổ chức");
-        $("#applicantIdNo").attr("placeholder","Mã số thuế");
-      }
-    });
+  $('input[type=radio][name=applicantIdType]').change(function() {
+    if (this.value == 'citizen') {
+      $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
+      $("#lblApplicantName").text("Họ và tên");
+      $("#lblApplicantIdNo").text("Số CMND/ Hộ chiếu");
+      $("#applicantName").attr("placeholder","Họ và tên");
+      $("#applicantIdNo").attr("placeholder","Số CMND/ Hộ chiếu");
+    }
+    else  {
+      $(this).closest('form').find("input[type=text],input[type=password], textarea").val("");
+      $("#lblApplicantName").text("Tên tổ chức");
+      $("#lblApplicantIdNo").text("Mã số thuế");
+      $("#applicantName").attr("placeholder","Tên tổ chức");
+      $("#applicantIdNo").attr("placeholder","Mã số thuế");
+    }
+  });
   // +++++++++++++++++++++++++++
-    $("#applicantIdDate").focusout(function(){
-       setTimeout(function(){
-        if ($("#applicantIdDate").hasClass("k-invalid")){
-         $("#applicantIdDate").parent().addClass("MB25");
-        } else {
-           $("#applicantIdDate").parent().removeClass("MB25");
-        }
-      }, 100);
-    });
+  $("#applicantIdDate").focusout(function(){
+   setTimeout(function(){
+    if ($("#applicantIdDate").hasClass("k-invalid")){
+     $("#applicantIdDate").parent().addClass("MB25");
+   } else {
+     $("#applicantIdDate").parent().removeClass("MB25");
+   }
+ }, 100);
+ });
 
-    $("#agreement").click(function(){
-      if($(this).is(':checked')){
-        $("#btn-register").prop("disabled",false);
-      }else {
-        $("#btn-register").prop("disabled",true);
-      }
-    });
+  $("#agreement").click(function(){
+    if($(this).is(':checked')){
+      $("#btn-register").prop("disabled",false);
+    }else {
+      $("#btn-register").prop("disabled",true);
+    }
+  });
 
-    $("#viewRules").click(function(e){
-      e.preventDefault();
+  $("#viewRules").click(function(e){
+    e.preventDefault();
 
-    });
+  });
 
-  })(jQuery);
+})(jQuery);
 
 
 </script>
 <#-- Phần nội dung điều khoản sử dụng -->
 <div id="rules" style="background-color: #ffffff; color: black" class="MT20">
-   <div style="padding: 15px;"><ol> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Tổ chức, cá nhân có nhu cầu sử dụng dịch vụ công trực tuyến có quyền đề nghị cấp, sửa đổi, bổ sung thông tin tài&nbsp;khoản, tạm dừng, hủy tài khoản tại Cổng thông tin điện tử&nbsp;cung cấp dịch vụ&nbsp;công trực tuyến của Bộ Văn hóa, Thể thao và Du lịch. </span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Các Tổng cục, Cục, Vụ thực hiện TTHC trên môi trường mạng thông qua phần mềm Quản lý hồ sơ Một cửa có trách nhiệm gửi yêu cầu cấp phát, sửa đổi, bổ sung, tạm dừng, hủy tài khoản của Lãnh đạo, cán bộ thực hiện dịch vụ công trực tuyến đến Trung tâm Công nghệ thông tin.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Tổ chức, cá nhân đề nghị cấp, sửa đổi, bổ sung thông tin, tạm dừng, hủy tài khoản hoàn toàn chịu trách nhiệm về tính chính xác của thông tin cung cấp, thực hiện thay đổi mật khẩu ngay khi được cấp phát và chịu trách nhiệm quản lý thông tin tài khoản.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Trung tâm Công nghệ thông tin phối hợp với các cơ quan, đơn vị liên quan có trách nhiệm cấp, sửa đổi, bổ sung thông tin, tạm dừng, hủy tài khoản sử&nbsp;dụng hệ thống dịch vụ công trực tuyến. Trường hợp không đáp ứng yêu cầu phải nêu rõ lý do.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Trường hợp tổ chức, cá nhân đăng nhập vào hệ thống dịch vụ công trực tuyến quá 05 (năm) lần mà không thành công thì&nbsp;hệ thống dịch vụ công trực tuyến sẽ&nbsp;tự động tạm dừng tài khoản. Tổ chức, cá nhân liên hệ với Trung tâm Công nghệ thông tin để kích hoạt lại thông tin tài khoản.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Trường hợp phát hiện tổ&nbsp;chức, cá nhân trong quá trình thực hiện dịch vụ công trực tuyến có hành vi gây ảnh hưởng tới sự ổn định của hệ thống dịch vụ công trực tuyến, các Tổng cục, Cục, Vụ và cơ quan, đơn vị có liên quan thông báo cho Trung tâm Công nghệ thông tin tạm dừng tài&nbsp;khoản&nbsp;của tổ chức, cá nhân đó và nêu rõ lý do.</span></span></span></li> </ol></div>
+ <div style="padding: 15px;"><ol> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Tổ chức, cá nhân có nhu cầu sử dụng dịch vụ công trực tuyến có quyền đề nghị cấp, sửa đổi, bổ sung thông tin tài&nbsp;khoản, tạm dừng, hủy tài khoản tại Cổng thông tin điện tử&nbsp;cung cấp dịch vụ&nbsp;công trực tuyến của Bộ Văn hóa, Thể thao và Du lịch. </span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Các Tổng cục, Cục, Vụ thực hiện TTHC trên môi trường mạng thông qua phần mềm Quản lý hồ sơ Một cửa có trách nhiệm gửi yêu cầu cấp phát, sửa đổi, bổ sung, tạm dừng, hủy tài khoản của Lãnh đạo, cán bộ thực hiện dịch vụ công trực tuyến đến Trung tâm Công nghệ thông tin.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Tổ chức, cá nhân đề nghị cấp, sửa đổi, bổ sung thông tin, tạm dừng, hủy tài khoản hoàn toàn chịu trách nhiệm về tính chính xác của thông tin cung cấp, thực hiện thay đổi mật khẩu ngay khi được cấp phát và chịu trách nhiệm quản lý thông tin tài khoản.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Trung tâm Công nghệ thông tin phối hợp với các cơ quan, đơn vị liên quan có trách nhiệm cấp, sửa đổi, bổ sung thông tin, tạm dừng, hủy tài khoản sử&nbsp;dụng hệ thống dịch vụ công trực tuyến. Trường hợp không đáp ứng yêu cầu phải nêu rõ lý do.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Trường hợp tổ chức, cá nhân đăng nhập vào hệ thống dịch vụ công trực tuyến quá 05 (năm) lần mà không thành công thì&nbsp;hệ thống dịch vụ công trực tuyến sẽ&nbsp;tự động tạm dừng tài khoản. Tổ chức, cá nhân liên hệ với Trung tâm Công nghệ thông tin để kích hoạt lại thông tin tài khoản.</span></span></span></li> <li style="text-align:justify;background-image:initial;background-position:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;"><span style="color:black;"><span style="font-family:times new roman,serif;"><span style="font-size:12.0pt;">Trường hợp phát hiện tổ&nbsp;chức, cá nhân trong quá trình thực hiện dịch vụ công trực tuyến có hành vi gây ảnh hưởng tới sự ổn định của hệ thống dịch vụ công trực tuyến, các Tổng cục, Cục, Vụ và cơ quan, đơn vị có liên quan thông báo cho Trung tâm Công nghệ thông tin tạm dừng tài&nbsp;khoản&nbsp;của tổ chức, cá nhân đó và nêu rõ lý do.</span></span></span></li> </ol></div>
 
 </div>
 
@@ -245,23 +251,23 @@
   $(document).ready(function() {
     var viewRules = $("#rules");
     $("#viewRules").click(function() {
-        viewRules.data("kendoWindow").open();
-        $("div.k-widget.k-window").css({"background-color":"#14bef0","color":"#ffffff"})
+      viewRules.data("kendoWindow").open();
+      $("div.k-widget.k-window").css({"background-color":"#14bef0","color":"#ffffff"})
     });
     viewRules.kendoWindow({
-        title: "ĐIỀU KHOẢN SỬ DỤNG :",
-        width: "50%",
-        height: "500px",
-        visible: false,
-        actions: [
-          "Maximize",
-          "Close"
-        ],
-        modal: true,
-        position: {
-          top: "50px"
-        },
-        scrollable: true
+      title: "ĐIỀU KHOẢN SỬ DỤNG :",
+      width: "50%",
+      height: "500px",
+      visible: false,
+      actions: [
+      "Maximize",
+      "Close"
+      ],
+      modal: true,
+      position: {
+        top: "50px"
+      },
+      scrollable: true
     }).data("kendoWindow").center().close();
   });
 </script>

@@ -1,7 +1,20 @@
 <#if (Request)??>
 <#include "init.ftl">
 </#if>
-
+<div class="steps align-space-between">
+  <div class="step align-middle-lg done">
+    <span>1</span>
+    <span>Lựa chọn Dịch vụ công</span>
+  </div>
+  <div class="step align-middle-lg done" id="step2">
+    <span>2</span>
+    <span>Chuẩn bị hồ sơ</span>
+  </div>
+  <div class="step align-middle-lg done" id="step3">
+    <span>3</span>
+    <span>Nộp hồ sơ</span>
+  </div>
+</div>
 <div id="detailDossier">
 	
 	

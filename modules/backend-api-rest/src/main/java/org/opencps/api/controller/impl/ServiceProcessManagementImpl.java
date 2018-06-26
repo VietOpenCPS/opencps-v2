@@ -133,7 +133,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getCounter(), GetterUtil.getBoolean(input.getGenerateDossierNo()),
 					input.getDossierNoPattern(), GetterUtil.getBoolean(input.getGenerateDueDate()),
 					input.getDueDatePattern(), GetterUtil.getBoolean(input.getGeneratePassword()),
-					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), serviceContext);
+					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), input.getPaymentFee(),
+					serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 
@@ -225,7 +226,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getCounter(), GetterUtil.getBoolean(input.getGenerateDossierNo()),
 					input.getDossierNoPattern(), GetterUtil.getBoolean(input.getGenerateDueDate()),
 					input.getDueDatePattern(), GetterUtil.getBoolean(input.getGeneratePassword()),
-					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), serviceContext);
+					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), input.getPaymentFee(),
+					serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 

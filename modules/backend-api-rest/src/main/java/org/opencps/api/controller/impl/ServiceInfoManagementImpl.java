@@ -3,10 +3,8 @@ package org.opencps.api.controller.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,7 +58,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceInfoManagementImpl implements ServiceInfoManagement {
@@ -523,26 +520,26 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		return buf;
 	}
 
-	public static final String UPLOAD_FILE_SERVER = "/Users/khoavu/";
+//	public static final String UPLOAD_FILE_SERVER = "/Users/khoavu/";
 
-	private void writeToFileServer(InputStream inputStream, String fileName) {
-
-		OutputStream outputStream = null;
-		try {
-			outputStream = new FileOutputStream(new File(UPLOAD_FILE_SERVER + fileName));
-			int read = 0;
-			byte[] bytes = new byte[1024];
-			while ((read = inputStream.read(bytes)) != -1) {
-				outputStream.write(bytes, 0, read);
-			}
-			outputStream.flush();
-			outputStream.close();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
-			// release resource, if any
-		}
-	}
+//	private void writeToFileServer(InputStream inputStream, String fileName) {
+//
+//		OutputStream outputStream = null;
+//		try {
+//			outputStream = new FileOutputStream(new File(UPLOAD_FILE_SERVER + fileName));
+//			int read = 0;
+//			byte[] bytes = new byte[1024];
+//			while ((read = inputStream.read(bytes)) != -1) {
+//				outputStream.write(bytes, 0, read);
+//			}
+//			outputStream.flush();
+//			outputStream.close();
+//		} catch (IOException ioe) {
+//			ioe.printStackTrace();
+//		} finally {
+//			// release resource, if any
+//		}
+//	}
 
 	@Override
 	public Response downloadFileTemplateOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,

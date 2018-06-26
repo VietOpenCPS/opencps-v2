@@ -12,22 +12,31 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverablesManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DeliverableUtils;
+import org.opencps.api.controller.util.DossierUtils;
+import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
 import org.opencps.api.deliverable.model.DeliverableResultModel;
 import org.opencps.api.deliverable.model.DeliverableSearchModel;
 import org.opencps.api.deliverable.model.DeliverableUpdateModel;
+import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -96,32 +105,32 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			
 			DeliverableActions actions = new DeliverableActionsImpl();
-			JSONObject results = JSONFactoryUtil.createJSONObject();
-//			DeliverableResultModel results = new DeliverableResultModel();
+//			JSONObject results = JSONFactoryUtil.createJSONObject();
+			DeliverableResultModel results = new DeliverableResultModel();
 			
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getListDeliverable(user.getUserId(), serviceContext.getCompanyId(), params,
 					sorts, search.getStart(), search.getEnd(), serviceContext);
 //			JSONObject result = action.getListDeliverable(state, agency, type, applicant);
-//			results.setTotal(jsonData.getInt("total"));
-			results.put("total", jsonData.getInt("total"));
-//			results.getData()
-//					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
-			List<Document> docList =(List<Document>) jsonData.get("data");
+			results.setTotal(jsonData.getInt("total"));
+//			results.put("total", jsonData.getInt("total"));
+			results.getData()
+					.addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>) jsonData.get("data")));
+//			List<Document> docList =(List<Document>) jsonData.get("data");
+//
+//			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
+//			for (Document doc : docList) {
+//				String formData = doc.get(DeliverableTerm.FORM_DATA);
+//				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
+//				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+//				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
+////				_log.info("formData: "+formData);
+//				formDataArr.put(formJson);
+//			}
+//			results.put("data", formDataArr);
 
-			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
-			for (Document doc : docList) {
-				String formData = doc.get(DeliverableTerm.FORM_DATA);
-				JSONObject formJson = JSONFactoryUtil.createJSONObject(formData);
-				formJson.put("ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
-				formJson.put("deliverableCode", doc.get(DeliverableTerm.DELIVERABLE_CODE));
-//				_log.info("formData: "+formData);
-				formDataArr.put(formJson);
-			}
-			results.put("data", formDataArr);
-
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
-//			return Response.status(200).entity(results).build();
+//			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
@@ -563,4 +572,45 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Response getDossierIdByCode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Long id, String deliverableCode) {
+		_log.info("START*********1");
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.info("groupId: " + groupId);
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			_log.info("deliverableCode: " + deliverableCode);
+			DossierDetailModel dossierInfo = null;
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getByDeliverableCode(deliverableCode);
+			Dossier dossier = null;
+			if (dossierFile != null) {
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierFile.getDossierId());
+			}
+			if (dossier != null) {
+				dossierInfo = OneGateUtils.mappingForGetDetail(dossier);
+			}
+
+
+			return Response.status(200).entity(dossierInfo).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(500);
+			error.setDescription("not found!");
+
+			return Response.status(500).entity(error).build();
+		}
+	}
+
 }

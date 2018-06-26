@@ -71,6 +71,7 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 		document.addTextSortable(ServiceProcessTerm.DOSSIER_NO_PATTERN, object.getDossierNoPattern());
 		document.addTextSortable(ServiceProcessTerm.DUEDATE_PATTERN, object.getDueDatePattern());
 		document.addTextSortable(ServiceProcessTerm.SERVER_NO, object.getServerNo());
+		document.addTextSortable(ServiceProcessTerm.PAYMENT_FEE, object.getPaymentFee());
 		
 		ServerConfig server = ServerConfigLocalServiceUtil.getByCode(object.getServerNo());
 		
