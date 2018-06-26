@@ -150,7 +150,6 @@
             setValue(domainCombobox,domainId);
             domainCombobox.trigger("change");
             domainCombobox._isSelect = false;
-            console.log(domainCombobox);
             $("#service_info_list_view").getKendoListView().dataSource.read({
               "domain": domainId
             });
@@ -262,7 +261,6 @@
             // });
           }
         }catch(err){
-          console.log(err);
         }
 
       }
@@ -336,7 +334,6 @@
 
     $(document).on("click",".item-serviceinfo",function(event){
       var id=$(this).attr("data-pk");
-      console.log(id);
       /*$("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
         console.log(id);
         pullDataDetail(id);
@@ -351,7 +348,6 @@
       var index=tabstrip.select().index();
       var content=tabstrip.contentElement(index);
       var id = $(content).find('li.active').attr("dataPk");
-      console.log(id);
 
       $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
         if(index == 2){
@@ -385,7 +381,6 @@
 
     $(document).on("click",".showInstruction",function(event){
       var instructionContent=$(this).attr("serviceInstruction");
-      console.log(instructionContent);
       $("#modal-content-instruction").html(instructionContent);
       $("#instructionModal").modal("show");
     });

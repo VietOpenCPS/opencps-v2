@@ -132,7 +132,7 @@
             if(serviceLevel3.length > 0)
             {
               #
-                 <div class="dropdown">
+                 <#-- <div class="dropdown">
                     <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ
                       <span class="caret"></span>
                     </button>
@@ -154,7 +154,7 @@
                       }
                       #
                     </ul>
-                  </div>
+                  </div> -->
               #
             } else if(serviceLevel2.length > 0){
                 #
@@ -243,7 +243,15 @@
           level: options.data.level
         },
         success: function(result) {
-          options.success(result);
+          if (result.data) {
+            options.success(result);
+          } else {
+            options.success({
+              data: [],
+              total: 0
+            });
+          }
+          
           if(parseInt($("#slPageSize").val()) > parseInt(serviceInfoDataSource.total())){
             $("#numPerPage").text(serviceInfoDataSource.total());
             $("#totalItem").text(serviceInfoDataSource.total());
@@ -383,7 +391,6 @@ serverFiltering: false
         }
       },
       change : function(){
-        console.log("change");
       }
     });
 
@@ -443,8 +450,6 @@ serverFiltering: false
 
     function onSearchServiceInfo(){
       var level = ($("#levelSearch").val()=="") ? 0 : $("#levelSearch").val();
-      console.log($("#levelSearch").val());
-      console.log(level);
       serviceInfoDataSource.read({
         "administration": $("#administrationCodeSearch").val(),
         "domain": $("#domainCodeSearch").val(),
@@ -454,7 +459,6 @@ serverFiltering: false
     }
 
     $("#slPageSize").change(function(){
-      console.log($(this).val());
       if(parseInt($("#slPageSize").val()) > parseInt(serviceInfoDataSource.total())){
         $("#numPerPage").text(serviceInfoDataSource.total());
         $("#totalItem").text(serviceInfoDataSource.total());

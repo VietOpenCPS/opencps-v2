@@ -100,7 +100,6 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 		apiObject.put(
 			"portletNamespace",
 			themeDisplay.getPortletDisplay().getNamespace());
-
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);

@@ -6,7 +6,6 @@
 	var layout = new kendo.Layout("layoutTemplate");
 	var serviceInfoRouter = new kendo.Router();
     serviceInfoRouter.route("/", function(id) {
-        console.log(id);
         $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
             // if(!"${domain}"){
                 $("#administration > li:first-child").addClass("active");
@@ -20,7 +19,6 @@
     });
     serviceInfoRouter.route("/(:id)", function(id) {
     	$("#serviceinfo-right-content").load("${ajax.serviceinfo_detail}",function(result){
-            console.log(id);
     		pullDataDetail(id);
     	});
     });

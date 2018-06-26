@@ -7,15 +7,15 @@
 			
 			<#if userType?has_content && userType == "employee">
 				<input type="file" id="avatar_file_profile" accept="image/*"  onchange="profile_changeAvatarFileEntry(this)" style="display: none;" />
-				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
+				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded" style="width: 100%; height: auto;">
 				<div class="text-center"><a id="change_avatar_profile" data-pk="${(employee.employeeId)!}" href="#" class="text-light-gray">Thay đổi avatar</a></div>
 				<p class="name text-bold text-center" data-bind="text:fullnameEmployee" id="">${(employee.fullName)!}</p>
 				<div>Thư điện tử: <span class="text-bold" data-bind="text:emailEmployee" id="">${(employee.email)!}</span></div>
 				<div>Ngày sinh: <span class="text-bold" data-bind="text:birthdateEmployee" id="">${(employee.birthdate)!}</span></div>
 				<div>Số điện thoại: <span class="text-bold" data-bind="text:mobileEmployee" id="">${(employee.telNo)!}</span></div>
 			<#elseif userType?has_content && userType == "applicant">
-				<input type="file" id="avatar_file_profile" accept="image/*"  onchange="profile_changeAvatarFileEntry(this)" style="display: none;" />
-				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
+				<input type="file" id="avatar_file_profile" accept="image/*"  onchange="profile_changeAvatarFileEntry(this)" style="display: none;"/>
+				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded" style="width: 100%; height: auto;">
 				<div class="text-center"><a id="change_avatar_profile" data-pk="${(applicantId)!}" href="#" class="text-light-gray">Thay đổi avatar</a></div>
 				<p class="name text-bold text-center" data-bind="text:applicantName" id="profileName"></p>
 				<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
@@ -309,7 +309,8 @@
 								</div>
 								<div class="col-sm-4">
 									<div class="form-group">
-										<input type="password" class="form-control" id="old_password">
+										<input type="password" class="form-control" id="old_password" name="old_password" required="required" data-required-msg="Trường nhập yêu cầu bắt buộc">
+										<span data-for='old_password' class='k-invalid-msg'>
 									</div>
 								</div>
 								<div class="col-sm-6 MT5" id="messagePassword">
@@ -322,7 +323,8 @@
 								</div>
 								<div class="col-sm-4">
 									<div class="form-group">
-										<input type="password" class="form-control" id="new_password">
+										<input type="password" class="form-control" id="new_password" name="new_password" required="required" data-checkpass-field="new_password" data-checkpass-msg='Mật khẩu gồm ít nhất 8 ký tự, có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt!' data-required-msg="Trường nhập yêu cầu bắt buộc">
+										<span data-for='new_password' class='k-invalid-msg'>
 									</div>
 								</div>
 								<div class="col-sm-6">
@@ -335,10 +337,12 @@
 								</div>
 								<div class="col-sm-4">
 									<div class="form-group">
-										<input type="password" class="form-control" id="retype_new_password">
+										<input type="password" class="form-control" id="retype_new_password" name="retype_new_password" required="required" data-required-msg="Trường nhập yêu cầu bắt buộc" data-checkequal-field="retype_new_password" data-checkequal-msg='Nhập lại mật khẩu không đúng!'>
+										<span data-for='retype_new_password' class='k-invalid-msg'>
 									</div>
-									<div class="checkbox">
-										<input type="checkbox" id="show_password"> <label>Hiển thị mật khẩu</label>
+									<div class="">
+										<input type="checkbox" id="show_password">
+										 <label>Hiển thị mật khẩu</label>
 									</div>
 								</div>
 								<div class="col-sm-6">
@@ -366,19 +370,52 @@
 <script type="text/javascript">
 
 	var notification = $("#notification").kendoNotification().data("kendoNotification");
-
+	var validator;
+	$(function ($) {
+		//$('[data-toggle="tooltip"]').tooltip();
+		validator = $("#fmChangePasswordUser");
+		kendo.init(validator);
+		validator.kendoValidator({
+			rules: {
+				checkpass: function (input) {
+					if (input.is("[name=new_password]")) {
+						var str = $("#new_password").val();
+						var reg = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
+						if (!reg.test(str)) {      
+							return false;                              
+						}
+					}
+					return true;
+				},
+				checkequal: function(input) {
+					if (input.is("[name=retype_new_password]")) {
+						var retype_new_password = $("#retype_new_password").val();
+						var new_password = $("#new_password").val();
+						if (retype_new_password !== new_password) {      
+							return false;                              
+						}
+					}
+					return true;
+				}
+			}
+		});
+	})
+	
 	$('#btn-change-password-user').click(function(){
-		var validator = $("#fmChangePasswordUser").kendoValidator().data("kendoValidator");
+		// var validator = $("#fmChangePasswordUser").kendoValidator().data("kendoValidator");
 		var userId = $(this).attr("data-pk");
-
-		if (validator.validate()) {	
+		var str = $("#new_password").val();
+        var reg = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
+		if (validator.data('kendoValidator').validate()) {	
 			if ($("#new_password").val() != $("#retype_new_password").val()){
 				notification.show({
 							message: "Xác nhận mật khẩu mới không đúng!"
 						}, "error");
+			}else if(!reg.test(str)){
+				notification.show({ message:"Mật khẩu gồm ít nhất 8 ký tự, có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt" }, "error");
 			}else {
 				$.ajax({
-					url : "${api.server}/users/"+userId+"/changepass/application",
+					url : "${api.server}/users/"+userId+"/changepass",
 					dataType : "json",
 					type : "POST",
 					headers: {"groupId": ${groupId}},
@@ -387,10 +424,20 @@
 						newPassword : $("#retype_new_password").val()
 					},
 					success : function(result){
-						notification.show({
-							message: "Yêu cầu được thực hiện thành công"
-						}, "success");
-						$("#messagePassword").html('');
+						if (result == 0) {
+							notification.show({
+								message: "Mật khẩu hiện tại không chính xác"
+							}, "error");
+						}else if(result == 1) {
+							notification.show({
+								message: "Có lỗi sảy ra, vui lòng thử lại"
+							}, "error");
+						}else {
+							notification.show({
+								message: "Yêu cầu được thực hiện thành công"
+							}, "success");
+							$("#messagePassword").html('');
+						}
 					},
 					error : function(xhr){
 						$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
@@ -398,7 +445,6 @@
 				});	
 			}
 		}
-		
 	});
 
 	$("#show_password").click(function(){
@@ -554,9 +600,11 @@
 				},
 				success : function(result){
 					var items = result.data;
-					for (var i = 0; i < items.length; i++) {
-						if (items[i].itemCode == params.value){
-							cityName = items[i].itemName;
+					if (items) {
+						for (var i = 0; i < items.length; i++) {
+							if (items[i].itemCode == params.value){
+								cityName = items[i].itemName;
+							}
 						}
 					}
 				},
@@ -587,8 +635,10 @@
 				},
 				success : function(result){
 					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+					if (arrDataRes) {
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
 					}
 				},
 				error : function(xhr){
@@ -605,10 +655,10 @@
 				async: false,
 				headers: {"groupId": ${groupId}},
 				data : {
-					districtCode: "-",
-					districtName: "-",
-					wardCode: "-",
-					wardName: "-",
+					districtCode: "",
+					districtName: "",
+					wardCode: "",
+					wardName: "",
 				},
 				success : function(result){
 					
@@ -635,9 +685,12 @@
 				},
 				success : function(result){
 					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+					if (arrDataRes) {
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
 					}
+					
 				},
 				error : function(xhr){
 
@@ -669,9 +722,11 @@
 				},
 				success : function(result){
 					var items = result.data;
-					for (var i = 0; i < items.length; i++) {
-						if (items[i].itemCode == params.value){
-							districtName = items[i].itemName;
+					if (items) {
+						for (var i = 0; i < items.length; i++) {
+							if (items[i].itemCode == params.value){
+								districtName = items[i].itemName;
+							}
 						}
 					}
 				},
@@ -702,8 +757,10 @@
 				},
 				success : function(result){
 					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+					if (arrDataRes) {
+						for (var i = 0; i < arrDataRes.length; i++) {
+							arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+						}
 					}
 				},
 				error : function(xhr){
@@ -719,8 +776,8 @@
 				async: false,
 				headers: {"groupId": ${groupId}},
 				data : {
-					wardCode: "-",
-					wardName: "-",
+					wardCode: "",
+					wardName: "",
 				},
 				success : function(result){
 					
@@ -736,25 +793,29 @@
 		prepend: "",
 		source: function(){
 			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : "${(applicant.cityCode)!}"
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
+			if ("${(applicant.cityCode)!}" && "${(applicant.cityCode)!}" !== '-') {
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : "${(applicant.cityCode)!}"
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						if (arrDataRes) {
+							for (var i = 0; i < arrDataRes.length; i++) {
+								arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+							}
+						}
+					},
+					error : function(xhr){
 
-				}
-			});
+					}
+				});
+			}
 			return arrDisplay;
 		}
 	});
@@ -809,25 +870,30 @@
 		prepend: "",
 		source: function(){
 			var arrDisplay = new Array();
-			$.ajax({
-				url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
-				dataType : "json",
-				type : "GET",
-				async: false,
-				headers: {"groupId": ${groupId}},
-				data : {
-					parent : "${(applicant.districtCode)!}"
-				},
-				success : function(result){
-					var arrDataRes = result.data;
-					for (var i = 0; i < arrDataRes.length; i++) {
-						arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
-					}
-				},
-				error : function(xhr){
+			if ("${(applicant.districtCode)!}" && "${(applicant.districtCode)!}" !== '-') {
+				$.ajax({
+					url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+					dataType : "json",
+					type : "GET",
+					async: false,
+					headers: {"groupId": ${groupId}},
+					data : {
+						parent : "${(applicant.districtCode)!}"
+					},
+					success : function(result){
+						var arrDataRes = result.data;
+						if (arrDataRes) {
+							for (var i = 0; i < arrDataRes.length; i++) {
+								arrDisplay.push({ value: arrDataRes[i].itemCode, text : arrDataRes[i].itemName});
+							}
+						}
+					},
+					error : function(xhr){
 
-				}
-			});
+					}
+				});
+			}
+			
 			return arrDisplay;
 		}
 	});
@@ -1186,59 +1252,116 @@
 				})(img);
 				
 				reader.readAsDataURL(file);
-
-				// call ajax
-
-				// var fileName= file.name;
-				// var fileType= file.type;
-				// var fileSize= file.size;
-				// var className= "${(constants.className)!}";
-				// var classPK= $("#change_avatar_profile").attr("data-pk");
-				// var formData = new FormData();
-
-				// formData.append('file', file);
-				// formData.append('fileName', fileName);
-				// formData.append('fileType', fileType);
-				// formData.append('fileSize', fileSize);
-				// formData.append('className', className);
-				// formData.append('classPK', classPK);
-
-				// $.ajax({
-
-				// 	url: employeeUpdateBaseUrl + "/"+ classPK + "/photo" ,
-
-				// 	type: 'PUT',
-				// 	headers: {
-				// 		"groupId": ${groupId}
-				// 	},
-				// 	async: false,
-				// 	contentType: false,
-				// 	processData: false, 
-				// 	data: formData,
-				// 	success: function(result) {
-
-				// 		showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-
-				// 	},
-				// 	error: function(xhr, textStatus, errorThrown) {
-
-				// 		showMessageByAPICode(xhr.status);
-
-				// 	}
-
-				// });
 				
 			}
+
+			var data = new FormData();
+			data.append( 'fileName', $(fileInput)[0].files[0].name);
+			data.append( 'fileType', $(fileInput)[0].files[0].type);
+			data.append( 'fileSize', $(fileInput)[0].files[0].size);
+			data.append( 'file', $(fileInput)[0].files[0]);
+
+			$.ajax({
+				type : 'PUT', 
+				url  : '${api.server}/users/${userId}/photo', 
+				data : data,
+				processData: false,
+				contentType: false,
+				cache: false,
+				headers: {
+					groupId: ${groupId}
+				},
+				success :  function(result){ 
+					notification.show({
+						message: "Upload ảnh thành công!"
+					}, "success");
+				},
+				error:function(result){
+					notification.show({
+						message: "Yêu cầu không thành công, xin vui lòng thử lại."
+					}, "error");
+				}
+			});
 
 		}
 
 	}
 
-	// var applicantId = $("#change_avatar_profile").attr('data-pk');
+	window.onload = function(){
+		var urlReadFile = fileAttachmentUrl({
+			method : "GET",
+			url : "${api.server}/users/${userId}/photo",
+			async : false,
+			success: function(options){
+				var urlOut = options.url;
+				$('#profile_avatar_thumbnail').attr('src', urlOut);
 
-	// if (applicantId) {
- //        getImageBlob(employeeUpdateBaseUrl+"/"+employeeId+"/photo", $("#profile_avatar_thumbnail"));
-	// }
+			},
+			error: function(){}
+		});
+	}
+
+
+	function fileAttachmentUrl ( options) {
+
+		var xhttp = new XMLHttpRequest();
+		var a,filename;
+		var data = {};
+
+		xhttp.onreadystatechange = function() {
+
+			if (xhttp.readyState === 4 && xhttp.status === 200) {
+
+
+				var disposition = xhttp.getResponseHeader('Content-Disposition');
+				if (disposition && disposition.indexOf('attachment') !== -1) {
+					var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+					var matches = filenameRegex.exec(disposition);
+					if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+				}
+
+
+				a = document.createElement('a');
+				a.href = window.URL.createObjectURL(xhttp.response);
+
+				var url = window.URL.createObjectURL(xhttp.response);
+
+
+				options.success({url : url, status : xhttp.status});
+			} else if (xhttp.readyState === 4 && xhttp.status !== 200) {
+				options.error(xhttp.status);
+			}
+
+		};
+
+		xhttp.open(options.method, options.url);
+		xhttp.setRequestHeader("Content-Type", "application/json");
+		xhttp.setRequestHeader("groupId", "${groupId}");
+
+
+		if (options.hasOwnProperty("headers")){
+			Object.keys( options.headers ).map(function(objectKey, index) {
+				var value = options.headers[objectKey];
+				xhttp.setRequestHeader(objectKey, value);
+			});
+		}
+
+
+		if (options.hasOwnProperty("responseType")){
+			xhttp.responseType = options.responseType;
+		} else {
+			xhttp.responseType = 'blob';
+		}
+
+
+		if (options.hasOwnProperty("data")){
+			data = options.data;
+		}
+
+
+		xhttp.send(data);
+
+	};
 
 	console.log("${(applicantIdType)!}");
 </script>
