@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="VotingSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- param input search -->
+				<xsd:element name="keywords" type="xsd:string" />
+				<xsd:element name="sort" type="xsd:string" default="name"/>
+				<xsd:element name="order" type="xsd:boolean" default="false" />
+				<xsd:element name="start" type="xsd:int" default="-1" />
+				<xsd:element name="end" type="xsd:int" default="-1" />
+				<xsd:element name="className" type="xsd:string"/>
+				<xsd:element name="classPK" type="xsd:long" />
+				<xsd:element name="email" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="VotingInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="className" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="classPK" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="subject" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="choices" type="xsd:string"  minOccurs="0"/>
+				<xsd:element name="templateNo" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="commentable" type="xsd:string" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+
+	<xsd:element name="VotingResultInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="comment" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="selected" type="xsd:string"  minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+	
+	<xsd:element name="VotingModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="votingId" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="userId" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="userName" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="className" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="classPK" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="subject" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="templateNo" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="commentable" type="xsd:boolean" minOccurs="0" />
+				<xsd:element name="answersCount" type="xsd:long"  minOccurs="0" />
+				<!-- TODO: change to results -->
+				<xsd:element name="choices" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="answers" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="selected" type="xsd:int" minOccurs="0" />
+				
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="VotingDataModel">
+		<xsd:sequence>
+			<xsd:element name="votingId" type="xsd:long"  minOccurs="0" />
+			<xsd:element name="userId" type="xsd:long"  minOccurs="0" />
+			<xsd:element name="userName" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="className" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="classPK" type="xsd:long"  minOccurs="0" />
+			<xsd:element name="subject" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="templateNo" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="commentable" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="answersCount" type="xsd:long"  minOccurs="0" />
+			<!-- TODO: change to results -->
+			<xsd:element name="choices" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="answers" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="selected" type="xsd:int" minOccurs="0" />
+			
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="VotingResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" minOccurs="0" />
+				<xsd:element name="data" type="VotingDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="VotingResultModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="votingResultId" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="userId" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="userName" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="fullName" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="email" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="comment" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="selected" type="xsd:int"  minOccurs="0" />
+				<xsd:element name="currentUser" type="xsd:boolean" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="VotingResultDataModel">
+		<xsd:sequence>
+			<xsd:element name="votingResultId" type="xsd:long"  minOccurs="0" />
+			<xsd:element name="userId" type="xsd:long"  minOccurs="0" />
+			<xsd:element name="userName" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="fullName" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="email" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="comment" type="xsd:string"  minOccurs="0" />
+			<xsd:element name="selected" type="xsd:int"  minOccurs="0" />
+			<xsd:element name="currentUser" type="xsd:boolean" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="VotingResultResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" minOccurs="0" />
+				<xsd:element name="data" type="VotingResultDataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="VotingStatisticsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="templateNo" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="subject" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="choices" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="votingsCount" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="answersCount" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="usersCount" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="answers" type="xsd:string"  minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="VotingStatisticsResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" minOccurs="0" />
+				<xsd:element ref="VotingStatisticsModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="VotingTopModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="votingResultId" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="className" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="classPK" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="userId" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="fullName" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="email" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="votingId" type="xsd:long"  minOccurs="0" />
+				<xsd:element name="subject" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="choice" type="xsd:string"  minOccurs="0" />
+				<xsd:element name="comment" type="xsd:string"  minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="VotingTopResults">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:long" minOccurs="0" />
+				<xsd:element ref="VotingTopModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>
+

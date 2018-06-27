@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import backend.postal.api.rest.controller.impl.EInvoiceManagementImpl;
 import backend.postal.api.rest.controller.impl.EvaluationManagementImpl;
+import backend.postal.api.rest.controller.impl.VotingManagementImpl;
 
 /**
  * @author admin
@@ -31,6 +32,7 @@ public class BackendCmcApiRestApplication extends Application {
 		singletons.add(this);
 		singletons.add(new EvaluationManagementImpl());
 		singletons.add(new EInvoiceManagementImpl());
+		singletons.add(new VotingManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider1);

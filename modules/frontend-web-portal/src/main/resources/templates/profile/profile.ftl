@@ -667,9 +667,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length < 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success: function(response, newValue) {
 			var arrDisplay = new Array();
@@ -789,9 +789,9 @@
 			};
 		},
 		validate: function(value) {
-			// if (value.length < 1){
-			//   return 'Đây là trường bắt buộc';
-			// }
+			if (value.length <= 1){
+			  return 'Đây là trường bắt buộc';
+			}
 		},
 		success : function(response, newValue){
 			var arrDisplay = new Array();
