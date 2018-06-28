@@ -105,7 +105,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 					model.setUserId(user.getUserId());
 					model.setDossierActionId(dossierActionId);
 					model.setModerator(mod);
-					model.setAssigned(assigned);
+//					model.setAssigned(assigned);
 					model.setVisited(false);
 					// Add User
 					DossierActionUserLocalServiceUtil.addDossierActionUser(model);
@@ -118,7 +118,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 					if (dau != null) {
 						dau.setModerator(mod);
 						if (assigned) {
-							dau.setAssigned(assigned);
+//							dau.setAssigned(assigned);
 							
 						}
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
@@ -128,7 +128,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 						model.setUserId(user.getUserId());
 						model.setDossierActionId(dossierActionId);
 						model.setModerator(mod);
-						model.setAssigned(assigned);
+//						model.setAssigned(assigned);
 						model.setVisited(false);
 						// Add User
 						DossierActionUserLocalServiceUtil.addDossierActionUser(model);
@@ -155,7 +155,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		model.setUserId(assignUserId);
 		model.setDossierActionId(dossierActionId);
 		model.setModerator(1);
-		model.setAssigned(assigned);
+//		model.setAssigned(assigned);
 		model.setVisited(false);
 		// Add User
 		DossierActionUserLocalServiceUtil.addDossierActionUser(model);
@@ -177,7 +177,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setUserId(subUser.getLong("userId"));
 				model.setDossierActionId(dossierActionId);
 				model.setModerator(0);
-				model.setAssigned(assigned);
+//				model.setAssigned(assigned);
 				model.setVisited(true);
 				// Add User
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);

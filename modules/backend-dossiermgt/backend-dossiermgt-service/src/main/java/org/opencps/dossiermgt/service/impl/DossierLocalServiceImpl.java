@@ -27,6 +27,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -1701,17 +1702,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String dossierNo = GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
 		// Get by certificate number
 		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID_CTN);
-
-		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
-
+		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
-
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
-
-		// TODO
 		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 
 		String fromReceiveDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVEDATE));
@@ -1723,9 +1719,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toSubmitDate = GetterUtil.getString(params.get(DossierTerm.TO_SUBMIT_DATE));
 		String notState = GetterUtil.getString(params.get(DossierTerm.NOT_STATE));
 		Long statusReg = GetterUtil.getLong(params.get(DossierTerm.STATUS_REG));
-		// _log.info("STATUS_REG Local Search: "+statusReg);
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
+		String originality = GetterUtil.getString(params.get(DossierTerm.ORIGINALLITY));
+		String assigned = GetterUtil.getString(params.get(DossierTerm.ASSIGNED));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1746,429 +1743,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-		//LamTV: Process search LIKE
-		if (Validator.isNotNull(keywords)) {
-			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
-					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN, DossierTerm.BRIEF_NOTE };
-
-//			query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-			String[] keywordArr = keywords.split(StringPool.SPACE);
-			for (String fieldSearch : subQuerieArr) {
-			BooleanQuery query = new BooleanQueryImpl();
-				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
-				}
-				queryBool.add(query, BooleanClauseOccur.SHOULD);
-		}
+		//Search follow params default
+		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
+				template, booleanQuery);
+		// Search follow param input
+		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
+				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
+				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
+				assigned, booleanCommon);
 		
-			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
-//			query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//			TermQuery termQuery = TermQueryFactoryUtil.create(searchContext, Field.TITLE, "%"+keywords);
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//			for (String string : keyword) {
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//				query.addFields(
-//						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
-		}
-
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
-			query.addFields(Field.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner) && userId > 0) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
-
-			query.addField(DossierTerm.USER_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
-
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
-
-			query.addField(DossierTerm.ACTION_MAPPING_USERID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-		
-		if (Validator.isNotNull(online)) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
-
-			query.addField(DossierTerm.ONLINE);
-			
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-		}
-
-		if (Validator.isNotNull(state)) {
-			if (state.equals("cancelling")) {
-
-				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				MultiMatchQuery query1 = new MultiMatchQuery(String.valueOf(0));
-
-				query1.addField(DossierTerm.CANCELLING_DATE_TIMESTAMP);
-
-				MultiMatchQuery query2 = new MultiMatchQuery("cancelled");
-
-				query2.addField(DossierTerm.DOSSIER_STATUS);
-
-				subQuery.add(query1, BooleanClauseOccur.MUST_NOT);
-
-				subQuery.add(query2, BooleanClauseOccur.MUST_NOT);
-
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			}
-			if (state.equals("correcting")) {
-
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
-				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-			}
-			if (state.equals("endorsement")) {
-
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
-				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-			}
-		}
-
-		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
-
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(submitting));
-
-			query.addField(DossierTerm.SUBMITTING);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(status)) {
-
-			String[] lstStatus = StringUtil.split(status);
-
-			if (lstStatus != null && lstStatus.length > 0) {
-				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < lstStatus.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(lstStatus[i]);
-
-					query.addField(DossierTerm.DOSSIER_STATUS);
-
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(status);
-
-				query.addFields(DossierTerm.DOSSIER_STATUS);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-
-		}
-
-		if (Validator.isNotNull(subStatus)) {
-
-			String[] lstSubStatus = StringUtil.split(subStatus);
-
-			if (lstSubStatus != null && lstSubStatus.length > 0) {
-
-				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				for (int i = 0; i < lstSubStatus.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(lstSubStatus[i]);
-
-					query.addField(DossierTerm.DOSSIER_SUB_STATUS);
-
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(subStatus);
-
-				query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-		}
-
-		if (Validator.isNotNull(agency)) {
-			MultiMatchQuery query = new MultiMatchQuery(agency);
-
-			query.addFields(DossierTerm.GOV_AGENCY_CODE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(service)) {
-			MultiMatchQuery query = new MultiMatchQuery(service);
-
-			query.addFields(DossierTerm.SERVICE_CODE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(template)) {
-			MultiMatchQuery query = new MultiMatchQuery(template);
-
-			query.addFields(DossierTerm.DOSSIER_TEMPLATE_NO);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (year > 0) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
-
-			query.addFields(DossierTerm.YEAR_DOSSIER);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (month > 0) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
-
-			query.addFields(DossierTerm.MONTH_DOSSIER);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-//		if (Validator.isNotNull(step)) {
-//			MultiMatchQuery query = new MultiMatchQuery(step);
-//
-//			query.addFields(DossierTerm.STEP);
-//
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
-		//LamTV: Search follow step
-		if (Validator.isNotNull(step)) {
-
-			String[] stepArr = StringUtil.split(step);
-
-			if (stepArr != null && stepArr.length > 0) {
-
-				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				for (int i = 0; i < stepArr.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(stepArr[i]);
-
-					query.addField(DossierTerm.STEP_CODE);
-
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(step);
-
-				query.addFields(DossierTerm.STEP_CODE);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-		}
-
-		if (Validator.isNotNull(dossierNo)) {
-
-			String[] keyDossier = dossierNo.split(StringPool.SPACE);
-
-			for (String key : keyDossier) {
-
-				MultiMatchQuery query = new MultiMatchQuery(key);
-
-				query.addFields(new String[] { DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN" });
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
-		}
-
-		if (Validator.isNotNull(certificateNo)) {
-			MultiMatchQuery query = new MultiMatchQuery(certificateNo);
-
-			query.addFields(DossierTerm.DOSSIER_ID_CTN);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(strDossierActionId)) {
-			String[] sliptDossierActionId = StringUtil.split(strDossierActionId);
-			if (sliptDossierActionId != null && sliptDossierActionId.length > 0) {
-				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (String dossierActionId : sliptDossierActionId) {
-					if (Validator.isNotNull(dossierActionId)) {
-
-						MultiMatchQuery query = new MultiMatchQuery(dossierActionId);
-
-						query.addFields(DossierTerm.DOSSIER_ACTION_ID);
-						subQuery.add(query, BooleanClauseOccur.SHOULD);
-					}
-				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(strDossierActionId);
-
-				query.addFields(DossierTerm.DOSSIER_ACTION_ID);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-		}
-
-		String fromReceiveDateFilter = fromReceiveDate + "000000";
-		String toReceiveDateFilter = toReceiveDate + "235959";
-
-		if (Validator.isNotNull(fromReceiveDate)) {
-			if (Validator.isNotNull(toReceiveDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
-						fromReceiveDateFilter, toReceiveDateFilter, true, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
-						fromReceiveDateFilter, toReceiveDateFilter, true, false);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
-		} else {
-			if (Validator.isNotNull(toReceiveDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
-						fromReceiveDateFilter, toReceiveDateFilter, false, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
-		}
-
-		if (Validator.isNotNull(certNo)) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(certNo));
-
-			query.addField(DossierTerm.CERT_NO_SEARCH);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		String fromCertDateFilter = fromCertDate + "000000";
-		String toCertDateFilter = toCertDate + "235959";
-
-		if (Validator.isNotNull(fromCertDate)) {
-			if (Validator.isNotNull(toCertDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.CERT_DATE, fromCertDateFilter,
-						toCertDateFilter, true, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.CERT_DATE, fromCertDateFilter,
-						toCertDateFilter, true, false);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
-		} else {
-			if (Validator.isNotNull(toCertDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.CERT_DATE, fromCertDateFilter,
-						toCertDateFilter, false, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
-		}
-
-		String fromSubmitDateFilter = fromSubmitDate + "000000";
-		String toSubmitDateFilter = toSubmitDate + "235959";
-
-		if (Validator.isNotNull(fromSubmitDate)) {
-			if (Validator.isNotNull(toSubmitDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.SUBMIT_DATE,
-						fromSubmitDateFilter, toSubmitDateFilter, true, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.SUBMIT_DATE,
-						fromSubmitDateFilter, toSubmitDateFilter, true, false);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
-		} else {
-			if (Validator.isNotNull(toSubmitDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
-						fromSubmitDateFilter, toSubmitDateFilter, false, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
-		}
-
-		// TODO: Test API get dossier DN
-		// if (Validator.isNotNull(applicantIdNo)) {
-		//
-		// MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
-		//
-		// query.addField(DossierTerm.APPLICANT_ID_NO);
-		//
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		// }
-		if (Validator.isNotNull(notState)) {
-			// LamTV: Case not have flag cancel
-			if (notState.equals("cancelling")) {
-
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
-				query.addField(DossierTerm.CANCELLING_DATE_TIMESTAMP);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-			// LamTV: Case not have flag correct and endorsement
-			if (notState.contains("correcting")) {
-
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
-				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-			if (notState.contains("endorsement")) {
-
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
-				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-		}
-
-		if (Validator.isNotNull(statusReg)) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(statusReg));
-
-			query.addField(DossierTerm.STATUS_REG);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(notStatusReg)) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(notStatusReg));
-
-			query.addField(DossierTerm.STATUS_REG);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-		}
-
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
-		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+		return IndexSearcherHelperUtil.search(searchContext, booleanInput);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -2189,21 +1775,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// Get by certificate number
 		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID_CTN);
 		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
-
-		// TODO add more logic here
 		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
-		// String top = GetterUtil.getString(params.get(DossierTerm.TOP));
-
+		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
-
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
-		// TODO
-		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 
+		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 		String fromReceiveDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVEDATE));
 		String toReceiveDate = GetterUtil.getString(params.get(DossierTerm.TO_RECEIVEDATE));
 		String certNo = GetterUtil.getString(params.get(DossierTerm.CERT_NO));
@@ -2214,7 +1795,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String notState = GetterUtil.getString(params.get(DossierTerm.NOT_STATE));
 		Long statusReg = GetterUtil.getLong(params.get(DossierTerm.STATUS_REG));
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
-		// _log.info("statusReg: "+statusReg);
+		String originality = GetterUtil.getString(params.get(DossierTerm.ORIGINALLITY));
+		String assigned = GetterUtil.getString(params.get(DossierTerm.ASSIGNED));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2223,8 +1805,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
-		
-
 
 		BooleanQuery booleanQuery = null;
 
@@ -2234,7 +1814,23 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-		//LamTV: Process search LIKE
+		//Search follow params default
+		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
+				template, booleanQuery);
+		// Search follow param input
+		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
+				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
+				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
+				assigned, booleanCommon);
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanInput);
+	}
+
+	private BooleanQuery processSearchCommon(String keywords, String secetKey, String groupId, String owner,
+			long userId, String follow, String step, String template, BooleanQuery booleanQuery) throws ParseException {
+		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
@@ -2242,57 +1838,109 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
-			BooleanQuery query = new BooleanQueryImpl();
+				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
 					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
 							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
 			}
-			
 			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
 		if (!(Validator.isNotNull(secetKey) && secetKey.contentEquals("OPENCPSV2"))) {
 			if (Validator.isNotNull(groupId)) {
 				MultiMatchQuery query = new MultiMatchQuery(groupId);
-
 				query.addFields(Field.GROUP_ID);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
-
 		}
-		
-		if (Validator.isNotNull(online)) {
-			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
-
-			query.addField(DossierTerm.ONLINE);
-			
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-		}
-
 
 		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner) && userId > 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
-
 			query.addField(DossierTerm.USER_ID);
-
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
-
 			query.addField(DossierTerm.ACTION_MAPPING_USERID);
-
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(step)) {
+			String[] stepArr = StringUtil.split(step);
+
+			if (stepArr != null && stepArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < stepArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(stepArr[i]);
+					query.addField(DossierTerm.STEP_CODE);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(step);
+				query.addFields(DossierTerm.STEP_CODE);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		if (Validator.isNotNull(template)) {
+			MultiMatchQuery query = new MultiMatchQuery(template);
+			query.addFields(DossierTerm.DOSSIER_TEMPLATE_NO);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		return booleanQuery;
+	}
+
+	private BooleanQuery processSearchInput(String status, String subStatus, String state, String online,
+			String submitting, String agency, String service, int year, int month, String dossierNo,
+			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
+			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
+			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
+			BooleanQuery booleanQuery) throws ParseException {
+
+		if (Validator.isNotNull(status)) {
+			String[] lstStatus = StringUtil.split(status);
+
+			if (lstStatus != null && lstStatus.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstStatus[i]);
+					query.addField(DossierTerm.DOSSIER_STATUS);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(status);
+				query.addFields(DossierTerm.DOSSIER_STATUS);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		if (Validator.isNotNull(subStatus)) {
+			String[] lstSubStatus = StringUtil.split(subStatus);
+
+			if (lstSubStatus != null && lstSubStatus.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstSubStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstSubStatus[i]);
+					query.addField(DossierTerm.DOSSIER_SUB_STATUS);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(subStatus);
+				query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
 		if (Validator.isNotNull(state)) {
-			if (state.equals("cancelling")) {
+			if (state.equals(ConstantsTerm.CANCELLING)) {
 
 				BooleanQuery subQuery = new BooleanQueryImpl();
 
@@ -2300,7 +1948,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				query1.addField(DossierTerm.CANCELLING_DATE_TIMESTAMP);
 
-				MultiMatchQuery query2 = new MultiMatchQuery("cancelled");
+				MultiMatchQuery query2 = new MultiMatchQuery(ConstantsTerm.CANCELLED);
 
 				query2.addField(DossierTerm.DOSSIER_STATUS);
 
@@ -2310,22 +1958,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			}
-			if (state.equals("correcting")) {
+
+			if (state.equals(ConstantsTerm.CORRECTING)) {
 
 				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
 				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
-			if (state.equals("endorsement")) {
-
+			
+			if (state.equals(ConstantsTerm.ENDORSEMENT)) {
 				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
 				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
+		}
+
+		if (Validator.isNotNull(online)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
+			query.addField(DossierTerm.ONLINE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(submitting) && Boolean.parseBoolean(submitting)) {
@@ -2335,59 +1986,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.SUBMITTING);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(status)) {
-
-			String[] lstStatus = StringUtil.split(status);
-
-			if (lstStatus != null && lstStatus.length > 0) {
-				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < lstStatus.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(lstStatus[i]);
-
-					query.addField(DossierTerm.DOSSIER_STATUS);
-
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(status);
-
-				query.addFields(DossierTerm.DOSSIER_STATUS);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-
-		}
-
-		if (Validator.isNotNull(subStatus)) {
-
-			String[] lstSubStatus = StringUtil.split(subStatus);
-
-			if (lstSubStatus != null && lstSubStatus.length > 0) {
-
-				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				for (int i = 0; i < lstSubStatus.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(lstSubStatus[i]);
-
-					query.addField(DossierTerm.DOSSIER_SUB_STATUS);
-
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(subStatus);
-
-				query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
 		}
 
 		if (Validator.isNotNull(agency)) {
@@ -2402,14 +2000,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(service);
 
 			query.addFields(DossierTerm.SERVICE_CODE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(template)) {
-			MultiMatchQuery query = new MultiMatchQuery(template);
-
-			query.addFields(DossierTerm.DOSSIER_TEMPLATE_NO);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -2429,60 +2019,20 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-//		if (Validator.isNotNull(step)) {
-//			MultiMatchQuery query = new MultiMatchQuery(step);
-//
-//			query.addFields(DossierTerm.STEP_CODE);
-//
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
-		if (Validator.isNotNull(step)) {
-
-			String[] stepArr = StringUtil.split(step);
-
-			if (stepArr != null && stepArr.length > 0) {
-
-				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				for (int i = 0; i < stepArr.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(stepArr[i]);
-
-					query.addField(DossierTerm.STEP_CODE);
-
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(step);
-
-				query.addFields(DossierTerm.STEP_CODE);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-		}
 
 		if (Validator.isNotNull(dossierNo)) {
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
-
 			for (String key : keyDossier) {
-
 				MultiMatchQuery query = new MultiMatchQuery(key);
-
-				query.addFields(new String[] { DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN" });
-
+				query.addFields(new String[] { DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN });
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
 			}
 		}
 
 		if (Validator.isNotNull(certificateNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(certificateNo);
-
 			query.addFields(DossierTerm.DOSSIER_ID_CTN);
-
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
@@ -2509,8 +2059,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		String fromReceiveDateFilter = fromReceiveDate + "000000";
-		String toReceiveDateFilter = toReceiveDate + "235959";
+		String fromReceiveDateFilter = fromReceiveDate + ConstantsTerm.HOUR_START;
+		String toReceiveDateFilter = toReceiveDate + ConstantsTerm.HOUR_END;
 
 		if (Validator.isNotNull(fromReceiveDate)) {
 			if (Validator.isNotNull(toReceiveDate)) {
@@ -2535,14 +2085,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(certNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(certNo));
-
 			query.addField(DossierTerm.CERT_NO_SEARCH);
-
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String fromCertDateFilter = fromCertDate + "000000";
-		String toCertDateFilter = toCertDate + "235959";
+		String fromCertDateFilter = fromCertDate + ConstantsTerm.HOUR_START;
+		String toCertDateFilter = toCertDate + ConstantsTerm.HOUR_END;
 
 		if (Validator.isNotNull(fromCertDate)) {
 			if (Validator.isNotNull(toCertDate)) {
@@ -2565,8 +2113,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		String fromSubmitDateFilter = fromSubmitDate + "000000";
-		String toSubmitDateFilter = toSubmitDate + "235959";
+		String fromSubmitDateFilter = fromSubmitDate + ConstantsTerm.HOUR_START;
+		String toSubmitDateFilter = toSubmitDate + ConstantsTerm.HOUR_END;
 
 		if (Validator.isNotNull(fromSubmitDate)) {
 			if (Validator.isNotNull(toSubmitDate)) {
@@ -2589,40 +2137,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		// TODO: Test API get dossier DN
-		// if (Validator.isNotNull(applicantIdNo)) {
-		//
-		// MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
-		//
-		// query.addField(DossierTerm.APPLICANT_ID_NO);
-		//
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		// }
 		if (Validator.isNotNull(notState)) {
 			// LamTV: Case not have flag cancel
-			if (notState.equals("cancelling")) {
-
+			if (notState.equals(ConstantsTerm.CANCELLING)) {
 				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
 				query.addField(DossierTerm.CANCELLING_DATE_TIMESTAMP);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 			// LamTV: Case not have flag correct and endorsement
-			if (notState.contains("correcting")) {
-
+			if (notState.contains(ConstantsTerm.CORRECTING)) {
 				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
 				query.addField(DossierTerm.CORRECTING_DATE_TIMESTAMP);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
-			if (notState.contains("endorsement")) {
-
+			if (notState.contains(ConstantsTerm.ENDORSEMENT)) {
 				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-
 				query.addField(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP);
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 		}
@@ -2630,25 +2160,44 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// LamTV: Add process case abnormal
 		if (Validator.isNotNull(statusReg)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(statusReg));
-
 			query.addField(DossierTerm.STATUS_REG);
-
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(notStatusReg)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(notStatusReg));
-
 			query.addField(DossierTerm.STATUS_REG);
-
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 		}
 
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+		// LamTV: Process originality and assigned
+		if (Validator.isNotNull(originality)) {
+			String[] originalArr = StringUtil.split(originality);
 
-		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+			if (originalArr != null && originalArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < originalArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(originalArr[i]);
+					query.addField(DossierTerm.ORIGINALLITY);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(originality);
+				query.addFields(DossierTerm.ORIGINALLITY);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		if (Validator.isNotNull(assigned)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(assigned));
+			query.addField(DossierTerm.ASSIGNED);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+	
+		return booleanQuery;
 	}
-
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
 		String name = StringPool.BLANK;
 
@@ -2711,132 +2260,5 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public static final String CLASS_NAME = Dossier.class.getName();
 
-	// TODO: TEST
-	// public FullTextQuery
-	// getFullTextQueryForKeywordOnAllAnnotatedFields(String keyword) throws
-	// ParseException {
-	//
-	//// String[] indexedFields = findAllIndexedFields(entity);
-	// String[] indexedFields = new String[] { DossierTerm.DOSSIER_ID,
-	// DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"};
-	//
-	// final QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_35,
-	// indexedFields, analyzer);
-	// parser.setAllowLeadingWildcard(true);
-	//
-	// // Add wildcards when not already in search
-	// if (!(StringUtils.containsAny(keyword, new char[] { '*', '?', ':' }) ||
-	// keyword.startsWith("\"") && keyword.endsWith("\""))) {
-	// keyword = "*" + keyword + "*";
-	// }
-	//
-	// Query luceneQuery = parser.parse(keyword);
-	// FullTextQuery fullTextQuery = getFullTextQuery(luceneQuery);
-	// return fullTextQuery;
-	// }
-
-	/////////////
-
-	// private static List<BooleanQuery> LuceneSearchLike(String keywordsTest,
-	// SearchContext searchContext) {
-	// List<BooleanQuery> booleanQueries = new ArrayList<BooleanQuery>();
-	// BooleanQuery booleanQuerie =
-	// BooleanQueryFactoryUtil.create(searchContext);
-	//// Searcher searcher;
-	// if (Validator.isNotNull(keywordsTest)) {
-	// try {
-	//// searcher.searchUsingWildCardQuery(keywordsTest);
-	//// Query query = (Query) QueryParser.parse(keywordsTest);
-	// String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME,
-	// DossierTerm.SERVICE_NAME,
-	// DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID};
-	//
-	//
-	// //create a term to search file name
-	//// @SuppressWarnings("deprecation")
-	//// TermQuery term =
-	// TermQueryFactoryUtil.create(searchContext,DossierTerm.SERVICE_NAME,
-	// keywordsTest);
-	//
-	//// TermQuery term1 = new TermQueryImpl(DossierTerm.SERVICE_NAME,
-	// keywordsTest);
-	// //create the term query object
-	//// Query query = new WildcardQueryImpl(term1.getQueryTerm());
-	//// return queryParser.parse(searchQuery);
-	//// }
-	//
-	//// String strValueSearch =
-	// SpecialCharacterUtils.splitSpecial(keywordsTest.toString());
-	//// Query query1 = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
-	// "*"+keywordsTest+"*");
-	//
-	// // Search LIKE
-	// Map<String, Query> queryMap = query.addTerms(subQuerieArr, keywordsTest,
-	// true);
-	////
-	//// Iterator<Map.Entry<String, Query>> iterator =
-	// queryMap.entrySet().iterator();
-	//// while (iterator.hasNext()) {
-	//// Map.Entry<String, Query> entry = iterator.next();
-	//// _log.info("entryKey Local Search: "+entry.getKey());
-	//// _log.info("entry Local Search: "+entry.getValue());
-	//// BooleanQuery query11 = BooleanQueryFactoryUtil.create(searchContext);
-	//// query11.add(entry.getValue(), BooleanClauseOccur.SHOULD);
-	//
-	// booleanQuerie.add(query, BooleanClauseOccur.SHOULD);
-	// booleanQueries.add(booleanQuerie);
-	// } catch (Exception e) {
-	//
-	// }
-	// }
-
-	// return booleanQueries;
-	// }
-
-	// public static void main(String[] args){
-	// List<String> subQueries = new ArrayList<String>();
-	// SearchContext searchContext = new SearchContext();
-	// LuceneSearchLike("6842", searchContext);
-	// }
-
-	// String indexDir = "E:\\Lucene\\Index";
-	// String dataDir = "E:\\Lucene\\Data";
-	//// Searcher searcher;
-	//
-	// public static void main(String[] args) {
-	// LuceneTester tester;
-	// try {
-	// tester = new LuceneTester();
-	// tester.searchUsingWildCardQuery("record1*");
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// private void searchUsingWildCardQuery(String searchQuery)
-	// throws IOException, ParseException {
-	//// searcher = new Searcher(indexDir);
-	// long startTime = System.currentTimeMillis();
-	//
-	// //create a term to search file name
-	// Term term = new Term(LuceneConstants.FILE_NAME, searchQuery);
-	// //create the term query object
-	// Query query = new WildcardQuery(term);
-	// //do the search
-	// TopDocs hits = searcher.search(query);
-	// long endTime = System.currentTimeMillis();
-	//
-	// System.out.println(hits.totalHits +
-	// " documents found. Time :" + (endTime - startTime) + "ms");
-	//
-	// for(ScoreDoc scoreDoc : hits.scoreDocs) {
-	// Document doc = searcher.getDocument(scoreDoc);
-	// System.out.println("File: "+ doc.get(LuceneConstants.FILE_PATH));
-	// }
-	//
-	// searcher.close();
-	// }
 
 }

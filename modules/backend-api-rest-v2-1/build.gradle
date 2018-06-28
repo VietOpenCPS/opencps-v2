@@ -12,6 +12,7 @@ dependencies {
 	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: '3.0.3'
 	compile group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: '3.0.3'
 	compile group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: '3.0.3'
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
 
 	compileOnly project(":modules:swagger-generate")
 	

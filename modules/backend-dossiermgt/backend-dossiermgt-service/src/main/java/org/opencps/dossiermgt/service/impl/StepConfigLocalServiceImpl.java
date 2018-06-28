@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
 import org.opencps.dossiermgt.model.StepConfig;
@@ -104,28 +105,28 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 		object.setUserId(user.getUserId());
 		object.setModifiedDate(now);
 
-		if (stepCode != null) {
+		if (Validator.isNotNull(stepCode)) {
 			object.setStepCode(stepCode);
 		}
-		if (stepName != null) {
-			object.setStepName(stepName);
+		if (Validator.isNotNull(stepName)) {
+			object.setStepName(menuStepName);
 		}
-		if (stepType != null) {
+		if (Validator.isNotNull(stepType)) {
 			object.setStepType(stepType);
 		}
-		if (dossierStatus != null) {
+		if (Validator.isNotNull(dossierStatus)) {
 			object.setDossierStatus(dossierStatus);
 		}
-		if (dossierSubStatus != null) {
+		if (Validator.isNotNull(dossierSubStatus)) {
 			object.setDossierSubStatus(dossierSubStatus);
 		}
-		if (menuGroup != null) {
+		if (Validator.isNotNull(menuGroup)) {
 			object.setMenuGroup(menuGroup);
 		}
-		if (menuStepName != null) {
+		if (Validator.isNotNull(menuStepName)) {
 			object.setMenuStepName(menuStepName);
 		}
-		if (buttonConfig != null) {
+		if (Validator.isNotNull(buttonConfig)) {
 			object.setButtonConfig(buttonConfig);
 		}
 
@@ -166,5 +167,9 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			throw new DuplicateActionCodeException("DuplicateStepCodeException");
 		}
 
+	}
+
+	public List<StepConfig> getByStepType(int stepType) {
+		return stepConfigFinder.finByStepConfig(stepType);
 	}
 }
