@@ -267,7 +267,7 @@ public class DossierStatisticLocalServiceImpl extends DossierStatisticLocalServi
 		object.setGovAgencyName(govAgencyName);
 		object.setDomainCode(domainCode);
 		object.setDomainName(domainName);
-		object.setAdministrationLevel(administrationLevel);
+//		object.setAdministrationLevel(administrationLevel);
 		object.setReporting(reporting);
 		
 		return dossierStatisticPersistence.update(object);

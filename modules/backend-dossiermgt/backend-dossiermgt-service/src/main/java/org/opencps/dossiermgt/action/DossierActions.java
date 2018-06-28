@@ -103,4 +103,8 @@ public interface DossierActions {
 	public JSONObject getDossierCountTodoPermission(long userId, long companyId, long groupId,
 			LinkedHashMap<String, Object> params, Object object, ServiceContext serviceContext);
 
+	//LamTV: Process DossierTodo
+	public JSONObject getDossierProcessList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
+
 }

@@ -6,3 +6,5 @@ Export-Package: \
 	io.swagger.api,\
 	io.swagger.model,\
 	javax.validation.constraints,\
+	org.json.simple,\
+	org.json.simple.parser,\

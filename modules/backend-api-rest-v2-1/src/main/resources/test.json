@@ -1,0 +1,24 @@
+[{},
+{
+	"query": {
+		"match_all": {
+			
+		}
+	},
+	"from": 0,
+	"size": 2
+},
+{},
+{
+    "sort": [
+        {
+            "order_Number_sortable": "asc"
+        },
+        "_score"
+    ],
+    "query": {
+        "query_string": {
+            "query": "(entryClassName:org.opencps.dossiermgt.model.Dossier)"
+        }
+    }
+}]
