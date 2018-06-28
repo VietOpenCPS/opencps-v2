@@ -31,6 +31,66 @@ public class ElasticQueryWrapUtil {
 
 			ProcessBuilder pb = new ProcessBuilder(list);
 
+			System.out.println(pb.command());
+			for (String string : pb.command()) {
+				System.out.println("string: "+string);
+			}
+			String data = StringPool.BLANK;
+
+			try {
+
+				pb.redirectErrorStream();
+				process = pb.start();
+				BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+				String line = null;
+
+				while ((line = input.readLine()) != null) {
+					data += line;
+				}
+				process.destroy();
+
+			} catch (IOException e) {
+				process = null;
+				process.destroy();
+			} finally {
+				process.destroy();
+			}
+
+			result = JSONFactoryUtil.createJSONObject(data);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public static JSONObject queryMultiple(String q, String className, long conpanyId) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			Process process = null;
+
+			List<String> list = new ArrayList<String>();
+			list.add("curl");
+			list.add("-s");
+			list.add("-X");
+			list.add("GET");
+			list.add("http://localhost:9200/liferay-20116/LiferayDocumentType/_msearch");
+			list.add("-H");
+			list.add("'Content-Type: application/json'");
+			list.add("-d");
+			list.add(q);
+
+			ProcessBuilder pb = new ProcessBuilder(list);
+
+			System.out.println(pb.command());
+			for (String string : pb.command()) {
+				System.out.println("string: "+string);
+			}
 			String data = StringPool.BLANK;
 
 			try {

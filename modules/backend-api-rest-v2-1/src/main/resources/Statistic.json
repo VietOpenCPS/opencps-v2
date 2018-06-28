@@ -1,0 +1,13 @@
+{
+    "sort": [
+        {
+            "order_Number_sortable": "asc"
+        },
+        "_score"
+    ],
+    "query": {
+        "query_string": {
+            "query": "(entryClassName:org.opencps.dossiermgt.model.Dossier)"
+        }
+    }
+}

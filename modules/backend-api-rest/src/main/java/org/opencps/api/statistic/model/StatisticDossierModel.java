@@ -40,25 +40,52 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+	"stepCode",
+	"stepName",
     "dossierStatus",
     "dossierSubStatus",
-    "level",
-    "statusName",
-    "count"
+//    "level",
+//    "statusName",
+    "totalCount"
 })
 @XmlRootElement(name = "StatisticDossierModel")
 public class StatisticDossierModel {
 
+	@XmlElement(required = true)
+    protected String stepCode;
+    @XmlElement(required = true)
+    protected String stepName;
     @XmlElement(required = true)
     protected String dossierStatus;
     @XmlElement(required = true)
     protected String dossierSubStatus;
-    protected int level;
-    @XmlElement(required = true)
-    protected String statusName;
-    protected long count;
+    protected long totalCount;
 
-    /**
+    public String getStepCode() {
+		return stepCode;
+	}
+
+	public void setStepCode(String stepCode) {
+		this.stepCode = stepCode;
+	}
+
+	public String getStepName() {
+		return stepName;
+	}
+
+	public void setStepName(String stepName) {
+		this.stepName = stepName;
+	}
+
+	public long getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(long totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	/**
      * Gets the value of the dossierStatus property.
      * 
      * @return
@@ -104,62 +131,6 @@ public class StatisticDossierModel {
      */
     public void setDossierSubStatus(String value) {
         this.dossierSubStatus = value;
-    }
-
-    /**
-     * Gets the value of the level property.
-     * 
-     */
-    public int getLevel() {
-        return level;
-    }
-
-    /**
-     * Sets the value of the level property.
-     * 
-     */
-    public void setLevel(int value) {
-        this.level = value;
-    }
-
-    /**
-     * Gets the value of the statusName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getStatusName() {
-        return statusName;
-    }
-
-    /**
-     * Sets the value of the statusName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setStatusName(String value) {
-        this.statusName = value;
-    }
-
-    /**
-     * Gets the value of the count property.
-     * 
-     */
-    public long getCount() {
-        return count;
-    }
-
-    /**
-     * Sets the value of the count property.
-     * 
-     */
-    public void setCount(long value) {
-        this.count = value;
     }
 
 }

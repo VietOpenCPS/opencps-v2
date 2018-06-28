@@ -371,27 +371,35 @@ public class DossierActionsImpl implements DossierActions {
 
 	}
 
-	private boolean checkSpecialStatus(DictItem dictItem) {
-		boolean flag = false;
-		String metaData = dictItem.getMetaData();
-		String specialStatus = StringPool.BLANK;
-		if (Validator.isNotNull(metaData)) {
-			_log.info("metaData: " + metaData);
-			try {
-				JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-				specialStatus = metaJson.getString("specialStatus");
-				_log.info("specialStatus: " + specialStatus);
+	@Override
+	public JSONObject getDossierProcessList(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
+			ServiceContext serviceContext) {
 
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		Hits hits = null;
+
+		try {
+
+			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+
+			result.put("data", hits.toList());
+
+			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+			result.put("total", total);
+
+			return result;
+
+		} catch (Exception e) {
+			_log.error(e);
 		}
 
-		if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-			flag = true;
-		}
+		return result;
 
-		return flag;
 	}
 
 	@Override
@@ -2193,14 +2201,14 @@ public class DossierActionsImpl implements DossierActions {
 		// TODO add more logic here
 		boolean isSync = false;
 
-//		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
-//			isSync = true;
-//		}
-
-		//Hot fix
-		if (action.getSyncActionCode().length() != 0) {
+		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
 			isSync = true;
 		}
+
+		//Hot fix
+//		if (action.getSyncActionCode().length() != 0) {
+//			isSync = true;
+//		}
 
 		//Hot fix
 		//if (action.getSyncActionCode().length() != 0) {
@@ -3068,4 +3076,5 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 		_log.info("&&&EndUpdateDossierFile" + new Date());
 	}
+
 }

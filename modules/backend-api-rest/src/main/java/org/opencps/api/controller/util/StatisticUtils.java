@@ -23,11 +23,11 @@ public class StatisticUtils {
 				for (int i = 0; i < statistics.length(); i++) {
 					JSONObject statistic = statistics.getJSONObject(i);
 					StatisticDossierModel ett = new StatisticDossierModel();
-					ett.setCount(statistic.getLong("count"));
+					ett.setTotalCount(statistic.getLong("totalCount"));
 					ett.setDossierStatus(statistic.getString("dossierStatus"));
 					ett.setDossierSubStatus(statistic.getString("dossierSubStatus"));
-					ett.setLevel(statistic.getInt("level"));
-					ett.setStatusName(statistic.getString("statusName"));
+					ett.setStepCode(statistic.getString("stepCode"));
+					ett.setStepName(statistic.getString("stepName"));
 					results.add(ett);
 				}
 			}

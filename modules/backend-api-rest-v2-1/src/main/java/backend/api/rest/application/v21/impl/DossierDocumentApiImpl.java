@@ -1,6 +1,9 @@
 package backend.api.rest.application.v21.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +15,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.dossiermgt.action.DossierDocumentActions;
@@ -23,9 +29,12 @@ import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONSerializable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -188,4 +197,45 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 		return result;
 	}
 
+//	public static void main(String []args) {
+//		 JSONParser parser = new JSONParser();
+//		 try {
+//			 
+////			 InputStream is = 
+////		                JsonParser.class.getResourceAsStream("/Users/GIAHUY/Documents/FDS_CODING/OPENCPSV2.1/opencps-v2/modules/backend-api-rest-v2-1/src/main/resources/test.json");
+//			 
+////			 File f = new File("/Users/GIAHUY/Documents/FDS_CODING/OPENCPSV2.1/opencps-v2/modules/backend-api-rest-v2-1/src/main/resources/test.json");
+////			 InputStream is1 = new FileInputStream("/Users/GIAHUY/Documents/FDS_CODING/OPENCPSV2.1/opencps-v2/modules/backend-api-rest-v2-1/src/main/resources/test.json");
+////			 String jsonTxt1 = IOUtils.toString( is1 );
+////			 
+////			 JSONArray json = JSONFactoryUtil.createJSONArray( jsonTxt1 );
+////			 System.out.println(json);
+//			 
+//			 JSONArray a = (JSONArray) parser.parse(new FileReader("/Users/GIAHUY/Documents/FDS_CODING/OPENCPSV2.1/opencps-v2/modules/backend-api-rest-v2-1/src/main/resources/test.json"));
+//			 System.out.println(a.toJSONString());
+////			  for (Object o : a)
+////			  {
+////			    JSONObject person = (JSONObject) o;
+////
+////			    String name = (String) person.get("name");
+////			    System.out.println(name);
+////
+////			    String city = (String) person.get("city");
+////			    System.out.println(city);
+////
+////			    String job = (String) person.get("job");
+////			    System.out.println(job);
+////
+////			    JSONArray cars = (JSONArray) person.get("cars");
+////
+////			    for (Object c : cars)
+////			    {
+////			      System.out.println(c+"");
+////			    }
+////			  }
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//	}
 }
