@@ -321,7 +321,10 @@
 
 		<column name="referenceUid" type="String" />
 		<column name="counter" type="int" />
+		<column name="registerBookCode" type="String"/>
+		<column name="registerBookName" type="String"/>
 		<column name="dossierRegister" type="String"/>
+		<column name="processNo" type="String"/>
 		<column name="serviceCode" type="String" />
 		<column name="serviceName" type="String" />
 		<column name="govAgencyCode" type="String" />
@@ -392,6 +395,8 @@
 		<column name="serverNo" type="String" />
 		<column name="endorsementDate" type="Date" />
 		<column name="lockState" type="String" />
+		<column name="originality" type="int" />
+		<column name="originDossierId" type="int" />
 		<!-- Order -->
 		
 		<!-- Finder methods -->
