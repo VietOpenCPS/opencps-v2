@@ -11,7 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
-import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.DossierSync;
 
 import com.liferay.portal.kernel.json.JSONObject;
@@ -25,7 +24,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import backend.api.rest.application.v21.parser.DocumentTypeParser;
 import backend.api.rest.application.v21.parser.DossierSyncParser;
 import io.swagger.api.DossierSyncApi;
 import io.swagger.model.DossierSyncResultModel;

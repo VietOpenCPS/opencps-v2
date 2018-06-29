@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import io.swagger.model.DossierSyncModel;
 
+
 public class DossierSyncParser {
 
 	private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);

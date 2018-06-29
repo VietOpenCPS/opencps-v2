@@ -26,7 +26,7 @@ public interface DossierActions {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException;
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException;
 
 	public Dossier createDossier(long groupId,String serviceCode, String govAgencyCode, String applicantName,
 			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,

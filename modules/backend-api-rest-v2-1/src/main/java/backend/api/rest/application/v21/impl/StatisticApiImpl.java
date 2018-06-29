@@ -13,7 +13,6 @@ import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
@@ -28,7 +27,6 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import backend.api.rest.application.utils.ReadFileJSONUtils;
 import backend.api.rest.application.v21.elasticwrap.ElasticQueryWrapUtil;
 import io.swagger.api.DossierStatisticApi;
 import io.swagger.model.DossierStatisticResultModel;

@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import io.swagger.model.DossierStatisticModel;
 
+
 public class StatisticUtils {
 
 	static Log _log = LogFactoryUtil.getLog(StatisticUtils.class);

@@ -2299,7 +2299,7 @@ public class DossierActionsImpl implements DossierActions {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		Date appIdDate = null;
@@ -2319,7 +2319,7 @@ public class DossierActionsImpl implements DossierActions {
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
 					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-					postalCityName, postalTelNo, online, notification, applicantNote, context);
+					postalCityName, postalTelNo, online, notification, applicantNote, originality, context);
 
 		} catch (Exception e) {
 			_log.error(e);

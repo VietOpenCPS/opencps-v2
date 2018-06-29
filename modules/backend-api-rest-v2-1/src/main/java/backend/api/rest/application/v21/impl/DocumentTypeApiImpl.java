@@ -10,7 +10,6 @@ import javax.ws.rs.core.HttpHeaders;
 
 import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
-import org.opencps.dossiermgt.action.util.DossierFileUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 
@@ -29,6 +28,7 @@ import io.swagger.api.DocumentTypesApi;
 import io.swagger.model.DocumentTypeInputModel;
 import io.swagger.model.DocumentTypeModel;
 import io.swagger.model.DocumentTypeResultModel;
+
 
 public class DocumentTypeApiImpl implements DocumentTypesApi{
 

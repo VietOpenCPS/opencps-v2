@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.StringPool;
 
 import io.swagger.model.DossierDocumentModel;
 
+
 public class DossierDocumentParser {
 	private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);
 	public static List<DossierDocumentModel> mappingDocumentResultModel(List<DossierDocument> docList) {

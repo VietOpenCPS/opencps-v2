@@ -681,7 +681,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), password, 0, StringPool.BLANK,
 					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, online, process.getDirectNotification(),
-					input.getApplicantNote(), serviceContext);
+					input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
 
 			if (Validator.isNull(dossier)) {
 				throw new NotFoundException("Cant add DOSSIER");
@@ -813,7 +813,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), password, input.getViaPostal(),
 					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
-					true, input.getApplicantNote(), serviceContext);
+					true, input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 

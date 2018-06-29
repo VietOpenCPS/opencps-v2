@@ -113,4 +113,8 @@ public class DossierTerm {
 	public static final String ORIGINALLITY = "originality";
 	public static final String SECET_KEY = "secetKey";
 	public static final String ASSIGNED = "assigned";
+	
+	public static final int ORIGINALITY_DVCTT = 1;
+	public static final int ORIGINALITY_LIENTHONG = 2;
+	public static final int ORIGINALITY_MOTCUA = 3;
 }
