@@ -126,7 +126,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException {
 
 		Date now = new Date();
 
@@ -191,7 +191,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			dossier.setServerNo(getServerNo(groupId));
-
+			dossier.setOriginality(originality);
+			
 			dossierPersistence.update(dossier);
 
 			// create DossierFile if it is eForm
@@ -206,8 +207,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 					// TODO HotFix
 
-					if (groupId != 55301) {
-
+//					if (groupId != 55301) {
+					if (originality == DossierTerm.ORIGINALITY_DVCTT || originality == DossierTerm.ORIGINALITY_MOTCUA) {
 						dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
 								part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
 								null, StringPool.BLANK, StringPool.TRUE, context);
@@ -2258,6 +2259,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 
+	public List<Dossier> getDossierByG_NOTO_DS(int originality, String dossierStatus) {
+		return dossierPersistence.findByNOTO_DS(originality, dossierStatus);
+	}
+	
+	public void removeDossierByG_NOTO_DS(int originality, String dossierStatus) {
+		dossierPersistence.removeByNOTO_DS(originality, dossierStatus);
+	}
+	
 	public static final String CLASS_NAME = Dossier.class.getName();
 
 

@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import io.swagger.model.DocumentTypeModel;
 
+
 public class DocumentTypeParser {
 
 	private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);

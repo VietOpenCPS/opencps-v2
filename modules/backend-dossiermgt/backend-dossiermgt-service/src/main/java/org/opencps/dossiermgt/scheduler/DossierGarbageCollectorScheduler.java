@@ -1,5 +1,7 @@
 package org.opencps.dossiermgt.scheduler;
 
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -17,19 +19,23 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 
-//@Component(immediate = true, service = DossierSubmitScheduler.class)
-public class DossierSubmitScheduler extends BaseSchedulerEntryMessageListener {
+@Component(immediate = true, service = DossierGarbageCollectorScheduler.class)
+public class DossierGarbageCollectorScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("Invoke Submit****");
-
+		try {
+			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(0, DossierTerm.DOSSIER_STATUS_NEW);
+		}
+		catch (Exception e) {
+			
+		}
 	}
 	
 	@Activate
 	@Modified
 	protected void activate() {
-		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
+		schedulerEntryImpl.setTrigger(TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(),
+				1, TimeUnit.DAY));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
@@ -54,6 +60,5 @@ public class DossierSubmitScheduler extends BaseSchedulerEntryMessageListener {
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
-	private Log _log = LogFactoryUtil.getLog(DossierSubmitScheduler.class);
-	
+	private Log _log = LogFactoryUtil.getLog(DossierGarbageCollectorScheduler.class);	
 }

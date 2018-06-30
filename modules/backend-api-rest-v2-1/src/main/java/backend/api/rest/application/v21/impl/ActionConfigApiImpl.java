@@ -115,13 +115,11 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 
 	@Override
 	public ActionConfigItem getActionConfigByCode(String actionCode) {
-
 		ActionConfig ett = ActionConfigLocalServiceUtil.getByCode(actionCode);
 
 		if (Validator.isNull(ett)) {
 			ett = ActionConfigLocalServiceUtil.fetchActionConfig(Long.valueOf(actionCode));
 		}
-		
 		return parsing.getModel(ett);
 	}
 
