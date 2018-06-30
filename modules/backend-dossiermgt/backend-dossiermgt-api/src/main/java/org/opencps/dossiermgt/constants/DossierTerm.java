@@ -117,4 +117,6 @@ public class DossierTerm {
 	public static final int ORIGINALITY_DVCTT = 1;
 	public static final int ORIGINALITY_LIENTHONG = 2;
 	public static final int ORIGINALITY_MOTCUA = 3;
+	
+	public static final String DOSSIER_STATUS_NEW = "new";
 }

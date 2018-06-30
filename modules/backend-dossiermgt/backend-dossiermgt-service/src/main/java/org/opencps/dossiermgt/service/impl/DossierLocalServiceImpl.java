@@ -2259,6 +2259,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 
+	public List<Dossier> getDossierByG_NOTO_DS(int originality, String dossierStatus) {
+		return dossierPersistence.findByNOTO_DS(originality, dossierStatus);
+	}
+	
+	public void removeDossierByG_NOTO_DS(int originality, String dossierStatus) {
+		dossierPersistence.removeByNOTO_DS(originality, dossierStatus);
+	}
+	
 	public static final String CLASS_NAME = Dossier.class.getName();
 
 

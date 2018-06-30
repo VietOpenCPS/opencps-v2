@@ -22,6 +22,7 @@ public class Verified {
             while ((line = br.readLine()) != null) {
                 if (line.contains("public class") && !line.contains("@XmlRootElement"))
                     line = line.replace("public class", "import javax.xml.bind.annotation.XmlRootElement; \n@XmlRootElement public class");
+                	System.out.println("Replace gregorian");
                 	line = line.replace("javax.xml.datatype.XMLGregorianCalendar", "java.util.Date");
                 lines.add(line + "\n");
             }

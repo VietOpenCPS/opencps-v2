@@ -57,10 +57,15 @@ public class OpenCPSAPIParsing {
 //			  };
 //	}
 	public ActionConfigItem getModel(ActionConfig ett) {
-
-		ActionConfigItem object = JSONFactoryUtil.looseDeserialize(JSONFactoryUtil.looseSerialize(ett),
-				ActionConfigItem.class);
-
+		ActionConfigItem object = new ActionConfigItem();
+		
+		try {
+			object = JSONFactoryUtil.looseDeserialize(JSONFactoryUtil.looseSerialize(ett),
+					ActionConfigItem.class);
+		}
+		catch (Exception e) {
+//			e.printStackTrace();
+		}
 		return object;
 
 	}

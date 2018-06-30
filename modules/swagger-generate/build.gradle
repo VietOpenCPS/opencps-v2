@@ -59,6 +59,9 @@ repositories {
     }
 }
 
+apply plugin:'application'
+mainClassName = "org.swagger.model.verified.Verified"
+
 def swaggerSourceFile = 'src/main/resources/opencps.yaml'
 def swaggerTargetFolder = 'src/main/java'
 
@@ -76,9 +79,6 @@ task generateApi {
     new DefaultGenerator().opts(config.toClientOptInput()).generate()
   }
 }
-
-apply plugin:'application'
-mainClassName = "org.swagger.model.verified.Verified"
 
 sourceSets {
   generated {

@@ -434,6 +434,11 @@
 			<finder-column name="dossierId" />
 		</finder>
 
+		<finder return-type="Collection" name="NOTO_DS">
+			<finder-column name="originality" comparator="!="/>
+			<finder-column name="dossierStatus" />
+		</finder>
+
 		<!-- References -->
         <finder name="G_C_GAC_SC_DTNO_NOTDS" return-type="Collection">
             <finder-column name="groupId"></finder-column>
