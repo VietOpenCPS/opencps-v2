@@ -1,0 +1,103 @@
+import io.swagger.codegen.DefaultGenerator
+import io.swagger.codegen.config.CodegenConfigurator
+
+buildscript {
+  ext {
+    springBootVersion = '1.5.3.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    classpath('io.swagger:swagger-codegen:2.2.2')
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'idea'
+
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+configurations {
+  generatedCompile
+}
+
+dependencies {
+	generatedCompile 'org.springframework.boot:spring-boot-starter-data-rest'
+	generatedCompile 'io.springfox:springfox-swagger2:2.5.0'
+	generatedCompile 'io.springfox:springfox-swagger-ui:2.5.0'
+	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.0.1"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+	compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	compileOnly group: 'io.swagger', name: 'swagger-annotations', version: '1.5.18'
+	compileOnly group: 'io.swagger', name: 'swagger-jaxrs', version: '1.5.18'
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"	
+	compileOnly group: 'junit', name: 'junit', version: '4.12'
+	compileOnly group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-base', version: '2.2.3'
+	
+	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: '3.0.3'
+	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: '3.0.3'
+	compile group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: '3.0.3'
+	compile group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: '3.0.3'
+	compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.18'
+	
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.5'
+	compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.9.5'
+	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.9.5'
+	compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-base', version: '2.9.5'
+}
+repositories {
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+apply plugin:'application'
+mainClassName = "org.swagger.model.verified.Verified"
+
+def swaggerSourceFile = 'src/main/resources/opencps.yaml'
+def swaggerTargetFolder = 'src/main/java'
+
+task generateApi {
+  inputs.file("$projectDir/$swaggerSourceFile")
+  outputs.dir("$projectDir/$swaggerTargetFolder")
+  doLast{
+    def config = new CodegenConfigurator()
+    config.setInputSpec("file:///$projectDir/$swaggerSourceFile")
+    config.setOutputDir("$projectDir")
+    config.setLang('jaxrs-cxf')
+    config.setAdditionalProperties([
+        'sourceFolder'  : swaggerTargetFolder
+    ])
+    new DefaultGenerator().opts(config.toClientOptInput()).generate()
+  }
+}
+
+sourceSets {
+  generated {
+    compileClasspath = configurations.generatedCompile
+  }
+  main {
+    compileClasspath += generated.output
+    runtimeClasspath += generated.output
+  }
+  test {
+    compileClasspath += generated.output
+    runtimeClasspath += generated.output
+  }
+}
+
+bootRun {
+  classpath += sourceSets.generated.output
+}
+
+jar {
+  from sourceSets.generated.output
+}

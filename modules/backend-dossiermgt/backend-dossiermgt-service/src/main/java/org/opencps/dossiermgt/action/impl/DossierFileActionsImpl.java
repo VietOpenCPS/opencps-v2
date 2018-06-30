@@ -147,6 +147,7 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		InputStream inStream = null;
 		OutputStream outStream = null;
 
+		try {
 		File afile = new File(orgFileName);
 		File bfile = new File(targetFileName);
 		if (!bfile.exists()) {
@@ -157,16 +158,19 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 		byte[] buffer = new byte[1024];
 
-		int length;
+			int length = 0;
 		// copy the file content in bytes
 		while ((length = inStream.read(buffer)) > 0) {
 
 			outStream.write(buffer, 0, length);
 
 		}
-
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally{
 		inStream.close();
 		outStream.close();
+		}
 		_log.info("Create file " + targetFileName + " success");
 	}
 
@@ -184,26 +188,39 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		}
 		// now zip files one by one
 		// create ZipOutputStream to write to the zip file
+		try {
 		fos = new FileOutputStream(zipDirName);
 		zos = new ZipOutputStream(fos);
+			ZipEntry ze = null;
+			FileInputStream fis = null;
+			try {
 		for (String filePath : filesListInDir) {
-			System.out.println("Zipping " + filePath);
+//					System.out.println("Zipping " + filePath);
 			// for ZipEntry we need to keep only relative file path, so we
 			// used substring on absolute path
-			ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
+					ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
 			zos.putNextEntry(ze);
 			// read the file and write to ZipOutputStream
-			FileInputStream fis = new FileInputStream(filePath);
+					fis = new FileInputStream(filePath);
 			byte[] buffer = new byte[1024];
-			int len;
+					int len = 0;
 			while ((len = fis.read(buffer)) > 0) {
 				zos.write(buffer, 0, len);
 			}
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			} finally{
 			zos.closeEntry();
 			fis.close();
 		}
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally{
 		zos.close();
 		fos.close();
+		}
+		
 		_log.info("Zip file Successfull");
 
 	}
@@ -214,8 +231,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		
 		DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossierId, referenceUid);
 		
-				
-	
 			// String dossierTemplateNo = StringPool.BLANK;
 	
 			String defaultData = StringPool.BLANK;

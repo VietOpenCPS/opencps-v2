@@ -371,27 +371,35 @@ public class DossierActionsImpl implements DossierActions {
 
 	}
 
-	private boolean checkSpecialStatus(DictItem dictItem) {
-		boolean flag = false;
-		String metaData = dictItem.getMetaData();
-		String specialStatus = StringPool.BLANK;
-		if (Validator.isNotNull(metaData)) {
-			_log.info("metaData: " + metaData);
-			try {
-				JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-				specialStatus = metaJson.getString("specialStatus");
-				_log.info("specialStatus: " + specialStatus);
+	@Override
+	public JSONObject getDossierProcessList(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
+			ServiceContext serviceContext) {
 
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		Hits hits = null;
+
+		try {
+
+			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+
+			result.put("data", hits.toList());
+
+			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+			result.put("total", total);
+
+			return result;
+
+		} catch (Exception e) {
+			_log.error(e);
 		}
 
-		if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-			flag = true;
-		}
+		return result;
 
-		return flag;
 	}
 
 	@Override
@@ -1683,9 +1691,9 @@ public class DossierActionsImpl implements DossierActions {
 				// SyncAction
 				int method = 0;
 				_log.info("PROCESS update Dossier Sync:" + hasDossierSync);
-				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-						isCreateDossier, method, dossierAction.getPrimaryKey(), StringPool.BLANK,
-						serviceProcess.getServerNo());
+//				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+//						isCreateDossier, method, dossierAction.getPrimaryKey(), StringPool.BLANK,
+//						serviceProcess.getServerNo());
 
 				// TODO add SYNC for DossierFile and PaymentFile here
 
@@ -1975,8 +1983,8 @@ public class DossierActionsImpl implements DossierActions {
 				// Hard-code
 				_log.info("PROCESS PaymentFile START");
 				if (groupId != 55217) {
-					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-							false, 3, spf.getPrimaryKey(), spf.getReferenceUid(), serviceProcess.getServerNo());
+//					DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+//							false, 3, spf.getPrimaryKey(), spf.getReferenceUid(), serviceProcess.getServerNo());
 				}
 
 			}
@@ -2193,14 +2201,14 @@ public class DossierActionsImpl implements DossierActions {
 		// TODO add more logic here
 		boolean isSync = false;
 
-//		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
-//			isSync = true;
-//		}
-
-		//Hot fix
-		if (action.getSyncActionCode().length() != 0) {
+		if (dossier.getOnline() && action.getSyncActionCode().length() != 0) {
 			isSync = true;
 		}
+
+		//Hot fix
+//		if (action.getSyncActionCode().length() != 0) {
+//			isSync = true;
+//		}
 
 		//Hot fix
 		//if (action.getSyncActionCode().length() != 0) {
@@ -2291,7 +2299,7 @@ public class DossierActionsImpl implements DossierActions {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		Date appIdDate = null;
@@ -2311,7 +2319,7 @@ public class DossierActionsImpl implements DossierActions {
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
 					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-					postalCityName, postalTelNo, online, notification, applicantNote, context);
+					postalCityName, postalTelNo, online, notification, applicantNote, originality, context);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -3046,8 +3054,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 					if (returnDossierFileTemplateNos.contains(fileTemplateNo)) {
 						_log.info("START SYNC DOSSIER FILE");
-						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, referenceUid, false,
-								1, dossierFile.getDossierFileId(), dossierFile.getReferenceUid(), serverNo);
+//						DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, referenceUid, false,
+//								1, dossierFile.getDossierFileId(), dossierFile.getReferenceUid(), serverNo);
 
 					}
 				}
@@ -3068,4 +3076,5 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 		_log.info("&&&EndUpdateDossierFile" + new Date());
 	}
+
 }
