@@ -1,7 +1,6 @@
 package org.opencps.api.controller.impl;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,15 +18,9 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierActions;
-import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
-import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.StepConfig;
-import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -227,72 +220,6 @@ public class StatisticManagementImpl implements StatisticManagement {
 				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 
 			}
-		}
-	}
-
-	@Override
-	public Response getDossierTodoTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, StatisticDossierSearchModel query) {
-		BackendAuth auth = new BackendAuthImpl();
-		StatisticActions actions = new StatisticActionsImpl();
-
-		try {
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			long userId = user.getUserId();
-			int stepType = 0;
-
-			_log.info("START");
-			// Get info input
-//			long notStatusReg = query.getNotStatusReg();
-//			String status = query.getDossierStatus();
-//			String substatus = query.getDossierSubStatus();
-			List<StepConfig> stepList = StepConfigLocalServiceUtil.getByStepType(stepType);
-			_log.info("START");
-			JSONArray statistics = JSONFactoryUtil.createJSONArray();
-
-			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(Field.USER_ID, String.valueOf(userId));
-			params.put(DossierTerm.OWNER, String.valueOf(true));
-//			params.put(DossierTerm.NOT_STATUS_REG, notStatusReg);
-			int total = 0;
-			if (stepList != null && stepList.size() > 0) {
-				_log.info("length: "+stepList.size());
-				for (StepConfig step: stepList) {
-					params.put(DossierTerm.STATUS, step.getDossierStatus());
-					params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-					_log.info("START");
-					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
-							null, serviceContext);
-					_log.info("START");
-					JSONObject statistic = JSONFactoryUtil.createJSONObject();
-					statistic.put("stepCode", step.getStepCode());
-					statistic.put("stepName", step.getStepName());
-					statistic.put("dossierStatus", step.getDossierStatus());
-					statistic.put("dossierSubStatus", step.getDossierSubStatus());
-					statistic.put("totalCount", count);
-					total += count;
-					statistics.put(statistic);
-				}
-			}
-
-			StatisticDossierResults results = new StatisticDossierResults();
-
-			results.setTotal(total);
-			_log.info("total: "+total);
-			results.getStatisticDossierModel()
-					.addAll(StatisticUtils.mapperStatisticDossierList(statistics));
-
-			return Response.status(200).entity(results).build();
-
-		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
 		}
 	}
 }

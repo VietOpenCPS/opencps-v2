@@ -342,12 +342,10 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
-					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
-			int flagNo = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
+			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
 					serviceContext);
 
-			return Response.status(200).entity(String.valueOf(flagNo)).build();
+			return Response.status(200).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
 			_log.error("/ @GET: " + e);
@@ -871,8 +869,6 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
-					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 0,
 					serviceContext);
 

@@ -53,9 +53,6 @@ public class DossierMgtUtils {
 		
 		
 		for (String preCondition : preConditions) {
-			
-			preCondition.trim();
-			
 			switch (preCondition) {
 			case "payok":
 				result = result && checkPayOk(dossier);
@@ -88,13 +85,6 @@ public class DossierMgtUtils {
 			case "waiting":
 				result = result && checkWaiting(preCondition, dossier);
 				break;
-				
-			case "online=true":
-				result = result && checkDossierOnline(dossier);
-				break;
-			case "online=false":
-				result = result && checkDossierOnegate(dossier);
-				break;
 			default:
 				break;
 			}
@@ -102,21 +92,7 @@ public class DossierMgtUtils {
 
 		return result;
 	}
-	
-	private static boolean checkDossierOnline(Dossier dossier) {
-		if (dossier.getOnline()) 
-			return true;
-		else
-			return false;
-	}
 
-	private static boolean checkDossierOnegate(Dossier dossier) {
-		if (dossier.getOnline()) 
-			return false;
-		else
-			return true;
-	}
-	
 	private static boolean checkPayOk(Dossier dossier) {
 		boolean result = true;
 		PaymentFileActions actions = new PaymentFileActionsImpl();

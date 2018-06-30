@@ -55,7 +55,7 @@ public interface UserInterface {
 
 	public boolean getCheckpass(long groupId, long companyId, long id, String password, ServiceContext serviceContext);
 
-	public int addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
+	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
 			ServiceContext serviceContext);
 	
 	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword, int type,

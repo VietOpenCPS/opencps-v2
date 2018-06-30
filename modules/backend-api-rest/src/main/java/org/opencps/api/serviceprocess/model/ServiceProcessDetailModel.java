@@ -67,8 +67,7 @@ import javax.xml.bind.annotation.XmlType;
     "generatePassword",
     "directNotification",
     "serverNo",
-    "serverName",
-    "paymentFee"
+    "serverName"
 })
 @XmlRootElement(name = "ServiceProcessDetailModel")
 public class ServiceProcessDetailModel {
@@ -90,15 +89,6 @@ public class ServiceProcessDetailModel {
     protected String directNotification;
     protected String serverNo;
     protected String serverName;
-    protected String paymentFee;
-
-    public String getPaymentFee() {
-		return paymentFee;
-	}
-
-	public void setPaymentFee(String paymentFee) {
-		this.paymentFee = paymentFee;
-	}
 
     /**
      * Gets the value of the serviceProcessId property.

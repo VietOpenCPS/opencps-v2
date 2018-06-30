@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -47,8 +46,6 @@ import org.opencps.datamgt.model.impl.DictItemGroupModelImpl;
 import org.opencps.datamgt.service.persistence.DictItemGroupPersistence;
 
 import java.io.Serializable;
-
-import java.lang.reflect.Field;
 
 import java.sql.Timestamp;
 
@@ -3426,22 +3423,6 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 
 	public DictItemGroupPersistenceImpl() {
 		setModelClass(DictItemGroup.class);
-
-		try {
-			Field field = ReflectionUtil.getDeclaredField(BasePersistenceImpl.class,
-					"_dbColumnNames");
-
-			Map<String, String> dbColumnNames = new HashMap<String, String>();
-
-			dbColumnNames.put("uuid", "uuid_");
-
-			field.set(this, dbColumnNames);
-		}
-		catch (Exception e) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(e, e);
-			}
-		}
 	}
 
 	/**
@@ -3776,47 +3757,8 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
-		if (!DictItemGroupModelImpl.COLUMN_BITMASK_ENABLED) {
+		if (isNew || !DictItemGroupModelImpl.COLUMN_BITMASK_ENABLED) {
 			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-		}
-		else
-		 if (isNew) {
-			Object[] args = new Object[] { dictItemGroupModelImpl.getUuid() };
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-				args);
-
-			args = new Object[] {
-					dictItemGroupModelImpl.getUuid(),
-					dictItemGroupModelImpl.getCompanyId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-				args);
-
-			args = new Object[] {
-					dictItemGroupModelImpl.getGroupId(),
-					dictItemGroupModelImpl.getDictGroupId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DICTGROUPID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTGROUPID,
-				args);
-
-			args = new Object[] {
-					dictItemGroupModelImpl.getGroupId(),
-					dictItemGroupModelImpl.getDictItemId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DICTITEMID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTITEMID,
-				args);
-
-			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
-				FINDER_ARGS_EMPTY);
 		}
 
 		else {
@@ -4089,7 +4031,7 @@ public class DictItemGroupPersistenceImpl extends BasePersistenceImpl<DictItemGr
 		query.append(_SQL_SELECT_DICTITEMGROUP_WHERE_PKS_IN);
 
 		for (Serializable primaryKey : uncachedPrimaryKeys) {
-			query.append((long)primaryKey);
+			query.append(String.valueOf(primaryKey));
 
 			query.append(StringPool.COMMA);
 		}

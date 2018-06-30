@@ -82,7 +82,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-//@Component(immediate = true, service = DossierPullScheduler.class)
+@Component(immediate = true, service = DossierPullScheduler.class)
 public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 	private final String serectKey = "OPENCPSV2";
 	private static final int BUFFER_SIZE = 4096;

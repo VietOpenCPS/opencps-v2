@@ -34,7 +34,6 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.ServiceConfigLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
@@ -103,12 +102,6 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		serviceConfigPersistence.remove(config);
 
 		return config;
-	}
-
-	public List<ServiceConfig> getByGroupId(long groupId) throws PortalException, SystemException {
-		
-		return serviceConfigPersistence.findByG_(groupId);
-		
 	}
 
 	public ServiceConfig getBySICodeAndGAC(long groupId, String serviceInfoCode, String govAgencyCode)
@@ -188,7 +181,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			serviceConfig.setRegistration(registration);
 
 		}
-
+		
+		
 		serviceConfig.setServiceInfoId(serviceInfoId);
 
 		ServiceInfo si = serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
@@ -202,8 +196,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfig;
 	}
 
-	private void validate(long groupId, long serviceConfigId, long serviceInfoId, String govAgencyCode,
-			int serviceLevel, String serviceUrl, JSONObject objName) throws PortalException {
+	private void validate(long groupId, long serviceConfigId, long serviceInfoId, String govAgencyCode, int serviceLevel, String serviceUrl,
+			JSONObject objName) throws PortalException {
 
 		DictItem agc = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY, govAgencyCode,
 				groupId);
@@ -228,20 +222,22 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		} catch (Exception e) {
 			throw new RequiredServiceCodeException("RequiredServiceCodeException");
 		}
-
+		
 		ServiceConfig config = serviceConfigPersistence.fetchByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
 
+		
 		if (serviceConfigId == 0) {
 
 			if (Validator.isNotNull(config)) {
 				throw new HasExsistException("ServiceConfigHasExsist");
 			}
 		} else {
-
+			
 			if (Validator.isNotNull(config) && config.getPrimaryKey() != serviceConfigId) {
 				throw new HasExsistException("ServiceConfigHasExsist");
 			}
 		}
+		
 
 	}
 
@@ -278,8 +274,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(new String[] { ServiceConfigTerm.SERVICE_NAME, ServiceConfigTerm.GOVAGENCY_NAME,
-						ServiceConfigTerm.DOMAIN_NAME });
+				query.addFields(new String[]{ServiceConfigTerm.SERVICE_NAME, ServiceConfigTerm.GOVAGENCY_NAME, ServiceConfigTerm.DOMAIN_NAME});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -386,8 +381,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(new String[] { ServiceConfigTerm.SERVICE_NAME, ServiceConfigTerm.GOVAGENCY_NAME,
-						ServiceConfigTerm.DOMAIN_NAME });
+				query.addFields(new String[]{ServiceConfigTerm.SERVICE_NAME, ServiceConfigTerm.GOVAGENCY_NAME, ServiceConfigTerm.DOMAIN_NAME});
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 

@@ -109,14 +109,5 @@ public class DossierTerm {
 	public static final String STATUS_REG = "statusReg";
 	public static final String NOT_STATUS_REG = "notStatusReg";
 	public static final String LOCK_STATE = "lockState";
-	//LamTV: Add constants
-	public static final String ORIGINALLITY = "originality";
-	public static final String SECET_KEY = "secetKey";
-	public static final String ASSIGNED = "assigned";
-	
-	public static final int ORIGINALITY_DVCTT = 1;
-	public static final int ORIGINALITY_LIENTHONG = 2;
-	public static final int ORIGINALITY_MOTCUA = 3;
-	
-	public static final String DOSSIER_STATUS_NEW = "new";
+	public static final String KEYWORD_SEARCH_LIKE = "keywordSearchLike";
 }

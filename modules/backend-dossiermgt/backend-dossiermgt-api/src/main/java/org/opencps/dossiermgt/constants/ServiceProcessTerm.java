@@ -20,5 +20,4 @@ public class ServiceProcessTerm {
 	public static final String DIRECT_NOTIFICATION = "directNotification";
 	public static final String SERVER_NO = "serverNo";
 	public static final String SERVER_NAME = "serverName";
-	public static final String PAYMENT_FEE = "paymentFee";
 }

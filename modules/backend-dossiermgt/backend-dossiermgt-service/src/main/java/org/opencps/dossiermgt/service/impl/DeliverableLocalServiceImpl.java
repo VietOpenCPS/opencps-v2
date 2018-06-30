@@ -47,10 +47,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
-import com.liferay.portal.kernel.search.WildcardQuery;
-import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -136,11 +133,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setApplicantIdNo(applicationIdNo);
 		object.setApplicantName(applicationName);
 		object.setSubject(subject);
-		if (Validator.isNotNull(issueDate)) {
 		object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
-		} else {
-			object.setIssueDate(now);
-		}
 		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
 		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_PARTTERN));
 		object.setDeliverableState(String.valueOf(deliverableState));
@@ -208,40 +201,19 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			}
 		}
 
-//		if (Validator.isNotNull(keywords)) {
-//
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//
-//			for (String string : keyword) {
-//
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//
-//				query.addFields(DeliverableTerm.DELIVERABLE_NAME);
-//
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
-//		}
-		//LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
-			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
-					DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME };
 
-//			query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-			String[] keywordArr = keywords.split(StringPool.SPACE);
-			for (String fieldSearch : subQuerieArr) {
-				BooleanQuery query = new BooleanQueryImpl();
-				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
-				}
-				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(DeliverableTerm.DELIVERABLE_NAME);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
 			}
-			
-			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
 //		if (Validator.isNotNull(groupId)) {
@@ -374,41 +346,20 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			}
 		}
 
-//		if (Validator.isNotNull(keywords)) {
-//
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//
-//			for (String string : keyword) {
-//
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//
-//				query.addFields(DeliverableTerm.DELIVERABLE_NAME);
-//
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
-//		}
-
-		//LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
-			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
-					DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME };
 
-			String[] keywordArr = keywords.split(StringPool.SPACE);
-			for (String fieldSearch : subQuerieArr) {
-				BooleanQuery query = new BooleanQueryImpl();
-				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
-				}
-				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(DeliverableTerm.DELIVERABLE_NAME);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
 			}
-			
-			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
-
 
 //		if (Validator.isNotNull(groupId)) {
 //			MultiMatchQuery query = new MultiMatchQuery(groupId);

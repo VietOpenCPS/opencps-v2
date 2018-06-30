@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -47,8 +46,6 @@ import org.opencps.datamgt.model.impl.DictCollectionModelImpl;
 import org.opencps.datamgt.service.persistence.DictCollectionPersistence;
 
 import java.io.Serializable;
-
-import java.lang.reflect.Field;
 
 import java.sql.Timestamp;
 
@@ -2867,22 +2864,6 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 
 	public DictCollectionPersistenceImpl() {
 		setModelClass(DictCollection.class);
-
-		try {
-			Field field = ReflectionUtil.getDeclaredField(BasePersistenceImpl.class,
-					"_dbColumnNames");
-
-			Map<String, String> dbColumnNames = new HashMap<String, String>();
-
-			dbColumnNames.put("uuid", "uuid_");
-
-			field.set(this, dbColumnNames);
-		}
-		catch (Exception e) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(e, e);
-			}
-		}
 	}
 
 	/**
@@ -3214,36 +3195,8 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
-		if (!DictCollectionModelImpl.COLUMN_BITMASK_ENABLED) {
+		if (isNew || !DictCollectionModelImpl.COLUMN_BITMASK_ENABLED) {
 			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-		}
-		else
-		 if (isNew) {
-			Object[] args = new Object[] { dictCollectionModelImpl.getUuid() };
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-				args);
-
-			args = new Object[] {
-					dictCollectionModelImpl.getUuid(),
-					dictCollectionModelImpl.getCompanyId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-				args);
-
-			args = new Object[] { dictCollectionModelImpl.getGroupId() };
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DICTCOLLECTIONBYGROUP,
-				args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DICTCOLLECTIONBYGROUP,
-				args);
-
-			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
-				FINDER_ARGS_EMPTY);
 		}
 
 		else {
@@ -3493,7 +3446,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		query.append(_SQL_SELECT_DICTCOLLECTION_WHERE_PKS_IN);
 
 		for (Serializable primaryKey : uncachedPrimaryKeys) {
-			query.append((long)primaryKey);
+			query.append(String.valueOf(primaryKey));
 
 			query.append(StringPool.COMMA);
 		}

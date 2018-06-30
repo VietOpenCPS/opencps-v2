@@ -81,5 +81,4 @@ gradle-local.properties
 mt-dklr/**
 theme_nz/*
 modules/vr-business
-**/**/.settings
 gradle.properties

@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 
-//@Component(immediate = true, service = DossierSubmitScheduler.class)
+@Component(immediate = true, service = DossierSubmitScheduler.class)
 public class DossierSubmitScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {

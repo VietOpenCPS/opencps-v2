@@ -63,7 +63,6 @@ public class ServiceProcessUtils {
 			model.setDirectNotification(doc.get(ServiceProcessTerm.DIRECT_NOTIFICATION));
 			model.setServerNo(doc.get(ServiceProcessTerm.SERVER_NO));
 			model.setServerName(doc.get(ServiceProcessTerm.SERVER_NAME));
-			model.setPaymentFee(doc.get(ServiceProcessTerm.PAYMENT_FEE));
 
 			outputs.add(model);
 		}
@@ -114,7 +113,6 @@ public class ServiceProcessUtils {
 		output.setGeneratePassword(Boolean.toString(serviceProcess.getGeneratePassword()));
 		output.setDirectNotification(Boolean.toString(serviceProcess.getDirectNotification()));
 		output.setServerNo(serviceProcess.getServerNo());
-		output.setPaymentFee(serviceProcess.getPaymentFee());
 		
 		ServerConfig server = ServerConfigLocalServiceUtil.getByCode(serviceProcess.getServerNo());
 		

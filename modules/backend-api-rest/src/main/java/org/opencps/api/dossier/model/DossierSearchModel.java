@@ -92,10 +92,7 @@ import javax.xml.bind.annotation.XmlType;
     "notState",
     "statusReg",
     "notStatusReg",
-    "keywordSearchLike",
-    "online",
-    "specialKey",
-    "assigned"
+    "keywordSearchLike"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -171,36 +168,6 @@ public class DossierSearchModel {
     protected String notStatusReg;
     @QueryParam(value = "keywordSearchLike")
     protected String keywordSearchLike;
-    @QueryParam(value = "specialKey")
-    protected String specialKey;
-    @QueryParam(value = "online")
-    protected String online;
-    @QueryParam(value = "assigned")
-    protected Integer assigned;
-
-    public Integer getAssigned() {
-		return assigned;
-	}
-
-	public void setAssigned(Integer assigned) {
-		this.assigned = assigned;
-	}
-
-	public String getSpecialKey() {
-		return specialKey;
-	}
-
-	public void setSpecialKey(String specialKey) {
-		this.specialKey = specialKey;
-	}
-
-	public String getOnline() {
-		return online;
-	}
-
-	public void setOnline(String online) {
-		this.online = online;
-	}
 
     public String getKeywordSearchLike() {
 		return keywordSearchLike;

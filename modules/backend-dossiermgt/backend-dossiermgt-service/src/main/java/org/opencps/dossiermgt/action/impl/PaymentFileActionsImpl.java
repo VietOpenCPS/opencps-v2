@@ -242,9 +242,9 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 		// Add PaymentFileSync
 		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
 		// TODO review serverNo on this
-//		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(),
-//				dossier.getReferenceUid(), false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(),
-//				StringPool.BLANK);
+		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(),
+				dossier.getReferenceUid(), false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(),
+				StringPool.BLANK);
 		}
 
 		return paymentFile;

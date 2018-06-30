@@ -61,6 +61,7 @@ public class DossierStatisticIndexer extends BaseIndexer<DossierStatistic> {
 		document.addNumberSortable(DossierStatisticTerm.OVERDUE_COUNT, object.getOverdueCount());
 		document.addNumberSortable(DossierStatisticTerm.ONTIME_COUNT, object.getOntimeCount());
 		document.addNumberSortable(DossierStatisticTerm.OVERTIME_COUNT, object.getOvertimeCount());
+		document.addNumberSortable(DossierStatisticTerm.ADMINISTRATION_LEVEL, object.getAdministrationLevel());
 		// add text fields
 		document.addTextSortable(DossierStatisticTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
 		document.addTextSortable(DossierStatisticTerm.GOV_AGENCY_NAME, object.getGovAgencyName());

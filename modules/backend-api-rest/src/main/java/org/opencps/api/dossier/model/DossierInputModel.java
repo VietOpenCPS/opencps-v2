@@ -75,7 +75,6 @@ import javax.xml.bind.annotation.XmlType;
     "postalAddress",
     "postalCityCode",
     "postalTelNo",
-    "originality"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -125,8 +124,7 @@ public class DossierInputModel {
 	protected String postalCityCode;
 	@FormParam(value = "postalTelNo")
 	protected String postalTelNo;
-	@FormParam(value = "originality")
-	protected String originality;
+
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -584,27 +582,4 @@ public class DossierInputModel {
         this.online = value;
     }
 
-    /**
-     * Gets the value of the originality property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getOriginality() {
-        return online;
-    }
-
-    /**
-     * Sets the value of the originality property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setOriginality(String value) {
-        this.originality = value;
-    } 
 }

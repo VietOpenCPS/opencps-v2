@@ -589,9 +589,4 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	public ProcessAction getByNameActionNo(long serviceProcessId, String actionCode, String actionName) {
 		return processActionPersistence.fetchBySPID_AC_AN(serviceProcessId, actionCode, actionName);
 	}
-
-	//LamTV_process
-	public ProcessAction getByServiceProcess(long serviceProcessId, String actionCode) {
-		return processActionPersistence.fetchBySPID_AC(serviceProcessId, actionCode);
-	}
 }

@@ -58,18 +58,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		ApplicantModel result = new ApplicantModel();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
-		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
-
 
 		try {
 			String cityName = StringPool.BLANK;
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
-			
-			if (!auth2.checkToken(request, header)) {
-				throw new UnauthenticationException();
-			}
 			
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
