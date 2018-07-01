@@ -8,6 +8,8 @@
 
 package org.opencps.api.dossier.model;
 
+import java.util.List;
+
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,125 +44,61 @@ import javax.xml.bind.annotation.XmlType;
     "actionCode",
     "actionUser",
     "actionNote",
-    "assignUserId",
-    "isSynAction"
+    "payload",
+    "assignUsers"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
 
 	@FormParam(value = "actionCode")
-    protected String actionCode;
+	protected String actionCode;
 	@FormParam(value = "actionUser")
-    protected String actionUser;
+	protected String actionUser;
 	@FormParam(value = "actionNote")
-    protected String actionNote;
-	@FormParam(value = "assignUserId")
-    protected int assignUserId;
-	@FormParam(value = "isSynAction")
-    protected int isSynAction;
+	protected String actionNote;
+	@FormParam(value = "payload")
+	protected String payload;
+	@FormParam(value = "assignUsers")
+	protected String assignUsers;
 
-    public int getIsSynAction() {
-		return isSynAction;
+	public String getActionCode() {
+		return actionCode;
 	}
 
-	public void setIsSynAction(int isSynAction) {
-		this.isSynAction = isSynAction;
+	public void setActionCode(String value) {
+		this.actionCode = value;
 	}
 
-	/**
-     * Gets the value of the actionCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getActionCode() {
-        return actionCode;
-    }
+	public String getActionUser() {
+		return actionUser;
+	}
 
-    /**
-     * Sets the value of the actionCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setActionCode(String value) {
-        this.actionCode = value;
-    }
+	public void setActionUser(String value) {
+		this.actionUser = value;
+	}
 
-    /**
-     * Gets the value of the actionUser property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getActionUser() {
-        return actionUser;
-    }
+	public String getActionNote() {
+		return actionNote;
+	}
 
-    /**
-     * Sets the value of the actionUser property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setActionUser(String value) {
-        this.actionUser = value;
-    }
+	public void setActionNote(String value) {
+		this.actionNote = value;
+	}
 
-    /**
-     * Gets the value of the actionNote property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getActionNote() {
-        return actionNote;
-    }
+	public String getPayload() {
+		return payload;
+	}
 
-    /**
-     * Sets the value of the actionNote property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setActionNote(String value) {
-        this.actionNote = value;
-    }
+	public void setPayload(String payload) {
+		this.payload = payload;
+	}
 
-    /**
-     * Gets the value of the assignUserId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getAssignUserId() {
-        return assignUserId;
-    }
+	public String getAssignUsers() {
+		return assignUsers;
+	}
 
-    /**
-     * Sets the value of the assignUserId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setAssignUserId(Integer value) {
-        this.assignUserId = value;
-    }
+	public void setAssignUsers(String assignUsers) {
+		this.assignUsers = assignUsers;
+	}
 
 }

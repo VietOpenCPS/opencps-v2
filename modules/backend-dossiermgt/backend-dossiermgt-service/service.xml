@@ -1731,7 +1731,7 @@
 		<!-- Other fields -->
 		<column name="dossierId" type="long" />
 		<column name="dossierRefUid" type="String" />
-		<column name="syncRefUid" type="int" />
+		<column name="syncRefUid" type="String" />
 		<column name="dossierActionId" type="long" />
 		<column name="actionCode" type="String" />
 		<column name="actionName" type="String" />
