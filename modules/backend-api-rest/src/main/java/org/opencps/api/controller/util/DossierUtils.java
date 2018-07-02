@@ -7,6 +7,7 @@ import java.util.List;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierSearchDetailModel;
+import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -17,6 +18,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -24,11 +26,13 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -37,6 +41,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierUtils {
@@ -477,5 +482,71 @@ public class DossierUtils {
 		// TODO add logic here
 		// return true or false in String type
 		return StringPool.BLANK;
+	}
+
+	//LamTV: Process get dossier follow dossierId and groupId
+	public static Dossier getDossier(String id, long groupId) {
+		long dossierId = GetterUtil.getLong(id);
+		if (dossierId > 0) {
+			return DossierLocalServiceUtil.fetchDossier(dossierId);
+		} else {
+			return null;
+		}
+	}
+
+	//LamTV: Process get process option
+	public static ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
+			long groupId) throws PortalException {
+
+		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+		if (config != null) {
+			return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
+					config.getServiceConfigId());
+		} else {
+			return null;
+		}
+	}
+
+	//LamTV: Process get process action
+	public static ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+			long serviceProcessId) throws PortalException {
+
+		_log.info("GET PROCESS ACTION____");
+		ProcessAction action = null;
+
+		try {
+			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+					serviceProcessId);
+
+			String dossierStatus = dossier.getDossierStatus();
+			String dossierSubStatus = dossier.getDossierSubStatus();
+			String preStepCode = StringPool.BLANK;
+			for (ProcessAction act : actions) {
+
+				preStepCode = act.getPreStepCode();
+				_log.info("LamTV_preStepCode: "+preStepCode);
+
+				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+				_log.info("LamTV_ProcessStep: "+step);
+
+				if (Validator.isNull(step)) {
+					action = act;
+					break;
+				} else {
+					String stepStatus = step.getDossierStatus();
+					String stepSubStatus = step.getDossierSubStatus();
+					if (stepStatus.contentEquals(dossierStatus)
+							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)) {
+						action = act;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.info("NOT PROCESS ACTION");
+			_log.info(e);
+		}
+
+		return action;
 	}
 }

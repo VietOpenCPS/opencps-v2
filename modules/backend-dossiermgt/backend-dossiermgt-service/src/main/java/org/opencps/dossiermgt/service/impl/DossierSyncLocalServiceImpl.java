@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.DossierSync;
@@ -54,5 +55,45 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 
 	public long countDossierSyncByIdList(Long dossierId, Integer model, int actionCodeNo) {
 		return dossierSyncFinder.countDossierSyncByIdList(dossierId, model, actionCodeNo);
+	}
+
+	public DossierSync updateDossierSync(long groupId, long userId, long dossierId, String dossierReferenceUid, String syncRefUid,
+			long dossierActionId, String actionCode, String actionName, String  actionUser, String  actionNote,
+			int syncType, String  payload, String serverNo, int state) {
+
+		DossierSync dossierSync = null;
+
+//		dossierSync = dossierSyncPersistence.fetchByF_D_M_CPK_FR(dossierId, method, classPK, fileReferenceUid);
+//
+//		if (Validator.isNull(dossierSync)) {
+			long dossierSyncId = counterLocalService.increment(DossierSync.class.getName());
+
+			Date now = new Date();
+
+			dossierSync = dossierSyncPersistence.create(dossierSyncId);
+
+			dossierSync.setCreateDate(now);
+			dossierSync.setModifiedDate(now);
+			dossierSync.setGroupId(groupId);
+			dossierSync.setUserId(userId);
+
+			dossierSync.setDossierId(dossierId);
+			dossierSync.setDossierRefUid(dossierReferenceUid);
+			dossierSync.setSyncRefUid(syncRefUid);
+			dossierSync.setDossierActionId(dossierActionId);
+			dossierSync.setActionCode(actionCode);
+			dossierSync.setActionName(actionName);
+			dossierSync.setActionUser(actionUser);
+			dossierSync.setActionNote(actionNote);
+			dossierSync.setSyncType(syncType);
+			dossierSync.setPayload(payload);
+			dossierSync.setServerNo(serverNo);
+			dossierSync.setState(state);
+
+			dossierSyncPersistence.update(dossierSync);
+
+//		}
+
+		return dossierSync;
 	}
 }

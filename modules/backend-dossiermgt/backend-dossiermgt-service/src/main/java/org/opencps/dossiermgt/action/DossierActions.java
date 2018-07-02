@@ -2,9 +2,12 @@ package org.opencps.dossiermgt.action;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessOption;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -106,5 +109,9 @@ public interface DossierActions {
 	//LamTV: Process DossierTodo
 	public JSONObject getDossierProcessList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
+
+	public void doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
+			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, int syncType,
+			ServiceContext serviceContext) throws PortalException;
 
 }

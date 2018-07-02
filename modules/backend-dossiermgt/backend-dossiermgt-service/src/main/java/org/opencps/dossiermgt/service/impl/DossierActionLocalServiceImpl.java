@@ -159,6 +159,76 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return object;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId,
+			long serviceProcessId, long previousActionId, String actionCode, String actionUser, String actionName, String actionNote, int actionOverdue,
+			String stepCode, String stepName, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			ServiceContext context) throws PortalException {
+
+		DossierAction object = null;
+		long userId = 0l;
+		String fullName = StringPool.BLANK;
+		Date now = new Date();
+
+		if (context.getUserId() > 0) {
+			User userAction = userLocalService.getUser(context.getUserId());
+			userId = userAction.getUserId();
+			fullName = userAction.getFullName();
+		}
+
+		if (dossierActionId == 0) {
+			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+
+			object = dossierActionPersistence.create(dossierActionId);
+
+			// Add audit fields
+			object.setCompanyId(context.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userId);
+			object.setUserName(fullName);
+
+			object.setDossierId(dossierId);
+			object.setServiceProcessId(serviceProcessId);
+			object.setPreviousActionId(previousActionId);
+			object.setActionCode(actionCode);
+			object.setActionUser(actionUser);
+			object.setActionName(actionName);
+			object.setActionNote(actionNote);
+			object.setActionOverdue(actionOverdue);
+			object.setStepCode(stepCode);
+			object.setStepName(stepName);
+			object.setDueDate(dueDate);
+			object.setNextActionId(nextActionId);
+			object.setPayload(payload);
+			object.setStepInstruction(stepInstruction);
+
+			// Add DossierActionId to Dossier
+
+			// TODO add Indexer for Dossier after update DossierAction
+			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+			dossier.setDossierActionId(dossierActionId);
+			dossierPersistence.update(dossier);
+
+			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+
+			try {
+				indexer.reindex(dossier);
+			} catch (SearchException e) {
+				e.printStackTrace();
+			}
+			
+			
+		} else {
+
+		}
+
+		dossierActionPersistence.update(object);
+
+		return object;
+	}
+
 	@Indexable(type = IndexableType.DELETE)
 	public DossierAction removeAction(long actionId) throws PortalException {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
