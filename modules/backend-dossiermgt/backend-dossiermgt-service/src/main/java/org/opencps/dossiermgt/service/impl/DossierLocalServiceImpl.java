@@ -2259,6 +2259,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 
+	// TrungDK: Process
 	public List<Dossier> getDossierByG_NOTO_DS(int originality, String dossierStatus) {
 		return dossierPersistence.findByNOTO_DS(originality, dossierStatus);
 	}

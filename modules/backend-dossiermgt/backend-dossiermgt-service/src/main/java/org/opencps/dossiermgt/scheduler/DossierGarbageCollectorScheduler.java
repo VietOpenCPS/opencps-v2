@@ -30,7 +30,7 @@ public class DossierGarbageCollectorScheduler extends BaseSchedulerEntryMessageL
 			
 		}
 	}
-	
+	//TODO
 	@Activate
 	@Modified
 	protected void activate() {

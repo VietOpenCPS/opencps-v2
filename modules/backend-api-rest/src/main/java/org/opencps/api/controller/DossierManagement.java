@@ -264,7 +264,7 @@ public interface DossierManagement {
 
 	public Response doAction(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id, @BeanParam DoActionModel input, @FormParam("subUsers") String subUsers);
+			@PathParam("id") String id, @BeanParam DoActionModel input);
 
 	@GET
 	@Path("/{id}/contacts")
