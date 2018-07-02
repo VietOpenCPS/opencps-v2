@@ -1748,6 +1748,9 @@
         <order by="desc">
             <order-column name="modifiedDate" order-by="desc" case-sensitive="true" />
         </order>
+        <finder name="ST" return-type="Collection">
+            <finder-column name="state"></finder-column>
+        </finder>
 	</entity>
 	
 	<entity local-service="true" name="DossierDocument" remote-service="false"

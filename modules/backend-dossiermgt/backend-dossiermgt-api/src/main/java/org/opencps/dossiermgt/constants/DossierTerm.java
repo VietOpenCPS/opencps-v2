@@ -119,4 +119,8 @@ public class DossierTerm {
 	public static final int ORIGINALITY_MOTCUA = 3;
 	
 	public static final String DOSSIER_STATUS_NEW = "new";
+	
+	public static final String POSTAL_SERVICE_CODE = "postalServiceCode";
+	public static final String POSTAL_DISTRICT_CODE = "postalDistrictCode";
+	public static final String POSTAL_WARD_CODE = "postalWardCode";
 }

@@ -11,4 +11,10 @@ public class DossierSyncTerm {
 	public static final int STATE_ALREADY_SENT = 2;
 	public static final int STATE_RECEIVED_ACK = 3;
 	public static final int STATE_ACK_ERROR = 4;
+	
+	public static final int SYNCTYPE_REQUEST = 1;
+	public static final int SYNCTYPE_INFORM = 2;
+	
+	public static String SERVER_CONFIG_PROTOCOL_API = "API_SYNC";
+	public static String SERVER_CONFIG_PROTOCOL_MESSAGE = "MESSAGE_SYNC";	
 }
