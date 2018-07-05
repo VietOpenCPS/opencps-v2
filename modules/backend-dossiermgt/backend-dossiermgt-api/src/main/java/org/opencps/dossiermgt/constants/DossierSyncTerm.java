@@ -16,5 +16,9 @@ public class DossierSyncTerm {
 	public static final int SYNCTYPE_INFORM = 2;
 	
 	public static String SERVER_CONFIG_PROTOCOL_API = "API_SYNC";
-	public static String SERVER_CONFIG_PROTOCOL_MESSAGE = "MESSAGE_SYNC";	
+	public static String SERVER_CONFIG_PROTOCOL_MESSAGE = "MESSAGE_SYNC";
+	public static String SERVER_CONFIG_USERNAME = "username";
+	public static String SERVER_CONFIG_PASSWORD = "password";
+	public static String SERVER_CONFIG_URL = "url";
+	public static String SERVER_CONFIG_GROUP_ID = "groupId";
 }
