@@ -188,6 +188,78 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 	}
 
+	//LamTV_ Process Update DB ActionConfig
+	public void updateActionConfigDB(long userId, long groupId, String actionCode, String actionName, Boolean extraForm,
+			String sampleData, Boolean insideProcess, Integer syncType, Boolean rollbackable, String notificationType,
+			String documentType, String formConfig) {
+		try {
+			User user = userLocalService.getUser(userId);
+			Date now = new Date();
+			ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
+			if (actionConfig != null) {
+				actionConfig.setUserId(user.getUserId());
+				actionConfig.setModifiedDate(now);
+				actionConfig.setActionCode(actionCode);
+
+				if (actionName != null) {
+					actionConfig.setActionName(actionName);
+				}
+				if (extraForm != null) {
+					actionConfig.setExtraForm(extraForm);
+				}
+				if (formConfig != null) {
+					actionConfig.setFormScript(formConfig);
+				}
+				if (sampleData != null) {
+					actionConfig.setSampleData(sampleData);
+				}
+				if (insideProcess != null) {
+					actionConfig.setInsideProcess(insideProcess);
+				}
+				if (syncType != null) {
+					actionConfig.setSyncType(syncType);
+				}
+				if (notificationType != null) {
+					actionConfig.setNotificationType(notificationType);
+				}
+				if (rollbackable != null) {
+					actionConfig.setRollbackable(rollbackable);
+				}
+				if (notificationType != null) {
+					actionConfig.setNotificationType(notificationType);
+				}
+				if (documentType != null) {
+					actionConfig.setDocumentType(documentType);
+				}
+			} else {
+				long actionConfigId = counterLocalService.increment(ActionConfig.class.getName());
+
+				actionConfig = actionConfigPersistence.create(actionConfigId);
+
+				actionConfig.setGroupId(groupId);
+				actionConfig.setCompanyId(user.getCompanyId());
+				actionConfig.setUserId(user.getUserId());
+				actionConfig.setCreateDate(now);
+				actionConfig.setModifiedDate(now);
+
+				actionConfig.setActionCode(actionCode);
+				actionConfig.setActionName(actionName);
+				actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
+				actionConfig.setFormScript(formConfig);
+				actionConfig.setSampleData(sampleData);
+				actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? extraForm : Boolean.FALSE);
+				actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);
+				actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
+				actionConfig.setNotificationType(notificationType);
+				actionConfig.setDocumentType(documentType);
+			}
+			actionConfigPersistence.update(actionConfig);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	private void validate(String actionCode, long actionConfigId) throws PortalException {
 
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);

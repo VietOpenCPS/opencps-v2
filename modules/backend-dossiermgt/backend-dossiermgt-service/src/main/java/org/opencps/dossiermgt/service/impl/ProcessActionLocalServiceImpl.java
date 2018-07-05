@@ -87,7 +87,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
 			String dossierTemplateNo, ServiceContext context) throws PortalException {
@@ -179,7 +179,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, ServiceContext context)
 			throws PortalException {
@@ -265,7 +265,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, ServiceContext context) throws PortalException {
 
@@ -523,7 +523,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 	private void validateAdd(long groupId, long serviceProcessId, String preStepCode, String postStepCode,
 			String autoEvent, String preCondition, String actionCode, String actionName, boolean allowAssignUser,
-			long assignUserId, boolean requestPayment, String paymentFee, String createDossierFiles,
+			long assignUserId, Integer requestPayment, String paymentFee, String createDossierFiles,
 			String returnDossierFiles, String makeBriefNote, String syncActionCode, boolean rollbackable)
 			throws PortalException {
 
@@ -538,7 +538,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			throw new InvalidPostStepCodeException("InvalidPostStepCodeException");
 		}
 
-		if (requestPayment && Validator.isNull(paymentFee)) {
+		if (Validator.isNull(requestPayment) && requestPayment > 0 && Validator.isNull(paymentFee)) {
 			throw new RequiredPaymentFeeException("RequiredPaymentFeeException");
 		}
 
@@ -593,5 +593,74 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	//LamTV_process
 	public ProcessAction getByServiceProcess(long serviceProcessId, String actionCode) {
 		return processActionPersistence.fetchBySPID_AC(serviceProcessId, actionCode);
+	}
+
+	//LamTV_Process output ProcessAction to DB
+	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
+			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
+			boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
+			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
+			String createDossiers, ServiceContext serviceContext) throws PortalException {
+
+		Date now = new Date();
+		User userAction = userLocalService.getUser(userId);
+
+		ProcessAction object = processActionPersistence.fetchBySPID_AC(serviceProcessId, actionCode);
+
+		if (object == null) {
+
+			long processActionId = counterLocalService.increment(ProcessAction.class.getName());
+			object = processActionPersistence.create(processActionId);
+
+			// Add audit fields
+			object.setCompanyId(serviceContext.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			object.setServiceProcessId(serviceProcessId);
+			object.setPreStepCode(preStepCode);
+			object.setPostStepCode(postStepCode);
+			object.setAutoEvent(autoEvent);
+			object.setPreCondition(preCondition);
+			object.setActionCode(actionCode);
+			object.setActionName(actionName);
+			object.setAllowAssignUser(allowAssignUser);
+			object.setAssignUserId(assignUserId);
+			object.setRequestPayment(requestPayment);
+			object.setPaymentFee(paymentFee);
+			object.setCreateDossierFiles(createDossierFiles);
+			object.setReturnDossierFiles(returnDossierFiles);
+			object.setESignature(eSignature);
+			object.setSignatureType(signatureType);
+			object.setCreateDossiers(createDossiers);
+		} else {
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// object.setServiceProcessId(serviceProcessId);
+			object.setPreStepCode(preStepCode);
+			object.setPostStepCode(postStepCode);
+			object.setAutoEvent(autoEvent);
+			object.setPreCondition(preCondition);
+			object.setActionCode(actionCode);
+			object.setActionName(actionName);
+			object.setAllowAssignUser(allowAssignUser);
+			object.setAssignUserId(assignUserId);
+			object.setRequestPayment(requestPayment);
+			object.setPaymentFee(paymentFee);
+			object.setCreateDossierFiles(createDossierFiles);
+			object.setReturnDossierFiles(returnDossierFiles);
+			object.setESignature(eSignature);
+			object.setSignatureType(signatureType);
+			object.setCreateDossiers(createDossiers);
+		}
+
+		processActionPersistence.update(object);
+
 	}
 }

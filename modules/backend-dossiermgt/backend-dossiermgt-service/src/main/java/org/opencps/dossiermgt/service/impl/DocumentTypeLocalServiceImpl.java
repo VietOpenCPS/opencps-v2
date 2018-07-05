@@ -21,6 +21,7 @@ import org.opencps.dossiermgt.service.base.DocumentTypeLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * The implementation of the document type local service.
@@ -116,5 +117,56 @@ public class DocumentTypeLocalServiceImpl
 
 		return documentTypePersistence.update(docType);
 
+	}
+
+	public void updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass,
+			String documentName, String codePattern, Integer docSync, String documentScript) {
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+
+		DocumentType docType = documentTypePersistence.fetchByF_CODE(typeCode);
+		if (docType != null) {
+			//Audit field
+			docType.setUserId(auditUser.getUserId());
+			docType.setModifiedDate(now);
+
+			if (Validator.isNotNull(typeCode)) {
+				docType.setTypeCode(typeCode);
+			}
+			if (Validator.isNotNull(templateClass)) {
+				docType.setTemplateClass(templateClass);
+			}
+			if (Validator.isNotNull(documentName)) {
+				docType.setDocumentName(documentName);
+			}
+			if (Validator.isNotNull(codePattern)) {
+				docType.setCodePattern(codePattern);
+			}
+			if (Validator.isNotNull(documentScript)) {
+				docType.setDocumentScript(documentScript);
+			}
+			if (Validator.isNotNull(docSync)) {
+				docType.setDocSync(docSync);
+			}
+		} else {
+			long docTypeId = counterLocalService.increment(DocumentType.class.getName());
+			docType = documentTypePersistence.create(docTypeId);
+
+			//Audit field
+			docType.setGroupId(groupId);
+			docType.setUserId(auditUser.getUserId());
+			docType.setCreateDate(now);
+			docType.setModifiedDate(now);
+
+			docType.setTypeCode(typeCode);
+			docType.setTemplateClass(templateClass);
+			docType.setDocumentName(documentName);
+			docType.setCodePattern(codePattern);
+			docType.setDocumentScript(documentScript);
+			docType.setDocSync(docSync);
+		}
+
+		documentTypePersistence.update(docType);
 	}
 }

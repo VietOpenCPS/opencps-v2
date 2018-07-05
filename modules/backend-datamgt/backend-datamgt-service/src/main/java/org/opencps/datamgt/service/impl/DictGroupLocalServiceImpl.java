@@ -28,6 +28,7 @@ import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.exception.NoSuchDictGroupException;
 import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.impl.DictItemGroupImpl;
 import org.opencps.datamgt.service.base.DictGroupLocalServiceBaseImpl;
 
@@ -534,5 +535,5 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	public long countOlderThanDate(Date date, long groupId) {
 		return dictGroupPersistence.countByF_dictGroupNewerThan(date, groupId);
 	}
-	
+
 }

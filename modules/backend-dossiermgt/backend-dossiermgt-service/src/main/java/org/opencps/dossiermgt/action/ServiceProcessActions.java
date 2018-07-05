@@ -64,13 +64,13 @@ public interface ServiceProcessActions {
 	@Deprecated
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, ServiceContext context) throws PortalException;
 
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
 			String dossierTemplateNo, ServiceContext context) throws PortalException;
@@ -80,5 +80,27 @@ public interface ServiceProcessActions {
 	//LamTV_Process payment fee
 	public ServiceProcess getServiceProcessByCode(long groupId, String serviceCode, String govAgencyCode,
 			String dossierTemplateNo) throws PortalException;
+
+	//LamTV_Process output DB
+	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName, String description,
+			Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo, String serverName,
+			String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException;
+
+	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId, String roleName, boolean moderator,
+			String condition, ServiceContext serviceContext);
+
+	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
+			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
+			String instructionNote, String briefNote, String lockState, ServiceContext serviceContext)
+			throws PortalException;
+
+	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName, boolean moderator,
+			String condition, ServiceContext serviceContext);
+
+	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
+			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
+			boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
+			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
+			String createDossiers, ServiceContext serviceContext) throws PortalException;
 
 }

@@ -58,4 +58,12 @@ public interface DossierTemplateActions {
 
 	public String getSample(long groupId, long dossierTemplateId, String partNo) throws PortalException;
 
+	public void updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName, String description,
+			ServiceContext serviceContext) throws PortalException;
+
+	public void updateDossierPartDB(long userId, long groupId, String templateNo, String partNo, String partName, String partTip,
+			Integer partType, boolean multiple, String formScript, String formReport, boolean required, boolean esign,
+			String fileTemplateNo, String deliverableType, Integer deliverableAction, boolean eForm, String sampleData,
+			ServiceContext serviceContext) throws PortalException;
+
 }

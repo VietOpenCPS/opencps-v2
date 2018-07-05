@@ -576,6 +576,77 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 	}
 
+	//LamTV_ Process output DossierPart to DB
+	public void updateDossierPartDB(long userId, long groupId, String templateNo, String partNo, String partName,
+			String partTip, Integer partType, boolean multiple, String formScript, String formReport, boolean required,
+			boolean esign, String fileTemplateNo, String deliverableType, Integer deliverableAction, boolean eForm,
+			String sampleData, ServiceContext serviceContext) throws PortalException {
+
+		Date now = new Date();
+		User userAction = userLocalService.getUser(userId);
+
+		DossierPart object = dossierPartPersistence.fetchByTP_NO_PART(groupId, fileTemplateNo, partNo);
+
+		if (object == null) {
+
+			long dossierPartId = counterLocalService.increment(CLASS_NAME);
+			object = dossierPartPersistence.create(dossierPartId);
+
+			// Add audit fields
+			object.setCompanyId(serviceContext.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Add other fields
+
+			object.setTemplateNo(templateNo);
+			object.setPartNo(partNo);
+			object.setPartName(partName);
+			object.setPartName(partName);
+			object.setPartTip(partTip);
+			object.setPartType(partType);
+			object.setMultiple(multiple);
+			object.setFormScript(formScript);
+			object.setFormReport(formReport);
+			object.setSampleData(sampleData);
+			object.setRequired(required);
+			object.setFileTemplateNo(fileTemplateNo);
+			object.setESign(esign);
+			object.setDeliverableType(deliverableType);
+			object.setDeliverableAction(deliverableAction);
+			object.setSampleData(sampleData);
+			object.setEForm(eForm);
+		} else {
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Update other fields
+			object.setTemplateNo(templateNo);
+			object.setPartNo(partNo);
+			object.setPartName(partName);
+			object.setPartTip(partTip);
+			object.setPartType(partType);
+			object.setMultiple(multiple);
+			object.setFormScript(formScript);
+			object.setFormReport(formReport);
+			object.setSampleData(sampleData);
+			object.setRequired(required);
+			object.setFileTemplateNo(fileTemplateNo);
+			object.setESign(esign);
+			object.setDeliverableType(deliverableType);
+			object.setDeliverableAction(deliverableAction);
+			object.setSampleData(sampleData);
+			object.setEForm(eForm);
+
+		}
+		dossierPartPersistence.update(object);
+	}
+
 	public static final String CLASS_NAME = DossierPart.class.getName();
 
 }

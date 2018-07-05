@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -69,6 +68,13 @@ public class DocumentTypeActionsImpl implements DocumentTypeActions {
 			ServiceContext serviceContext) {
 		return DocumentTypeLocalServiceUtil.updateDocType(docId, userId, groupId, typeCode, templateClass, documentName,
 				codePattern, documentScript, docSync, serviceContext);
+	}
+	@Override
+	public void updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass,
+			String documentName, String codePattern, Integer docSync, String documentScript) {
+
+		DocumentTypeLocalServiceUtil.updateDocumentTypeDB(userId, groupId, typeCode, templateClass, documentName,
+				codePattern, docSync, documentScript);
 	}
 
 }

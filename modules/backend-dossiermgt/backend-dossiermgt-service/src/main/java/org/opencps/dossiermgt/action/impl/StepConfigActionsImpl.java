@@ -4,6 +4,7 @@ import javax.naming.AuthenticationException;
 
 import org.opencps.dossiermgt.action.StepConfigActions;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -72,6 +73,14 @@ public class StepConfigActionsImpl implements StepConfigActions {
 			throw new AuthenticationException();
 		}
 
+	}
+
+	@Override
+	public void updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
+			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig) {
+
+		StepConfigLocalServiceUtil.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType,
+				dossierStatus, dossierSubStatus, menuGroup, menuStepName, buttonConfig);
 	}
 
 }

@@ -23,6 +23,7 @@ import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.exception.SeqOrderException;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.base.ProcessOptionLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -333,6 +334,67 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			}
 		}
 		
+	}
+
+	//LamTV_ Process ouput ProcessOption to DB
+	public void updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
+			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
+			String templateName, String processNo, String processName, String registerBookCode,
+			ServiceContext context) {
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
+
+		DossierTemplate dossierTemp = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
+		ServiceProcess serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+		long dossierTemplateId = 0;
+		long serviceProcessId = 0;
+		if (serviceProcess != null) {
+			serviceProcessId = serviceProcess.getServiceProcessId();
+		}
+		ProcessOption processOption = null;
+		if (dossierTemp != null) {
+			dossierTemplateId = dossierTemp.getDossierTemplateId();
+			processOption = processOptionPersistence.fetchBySC_DT(serviceConfigId, dossierTemplateId);
+		}
+
+		if (processOption == null) {
+
+			long processOptionId = counterLocalService.increment(ProcessOption.class.getName());
+			processOption = processOptionPersistence.create(processOptionId);
+
+			processOption.setCreateDate(now);
+			processOption.setModifiedDate(now);
+			processOption.setCompanyId(context.getCompanyId());
+			processOption.setGroupId(groupId);
+			processOption.setUserId(context.getUserId());
+			processOption.setUserName(auditUser.getFullName());
+
+			processOption.setServiceConfigId(serviceConfigId);
+			processOption.setOptionOrder(seqOrder);
+			processOption.setAutoSelect(autoSelect);
+			processOption.setInstructionNote(instructionNote);
+			processOption.setSubmissionNote(submissionNote);
+			processOption.setDossierTemplateId(dossierTemplateId);
+			processOption.setServiceProcessId(serviceProcessId);
+			processOption.setOptionName(optionName);
+		} else {
+			processOption.setModifiedDate(now);
+			processOption.setUserId(context.getUserId());
+			processOption.setUserName(auditUser.getFullName());
+
+			processOption.setServiceConfigId(serviceConfigId);
+			processOption.setOptionOrder(seqOrder);
+			processOption.setAutoSelect(autoSelect);
+			processOption.setInstructionNote(instructionNote);
+			processOption.setSubmissionNote(submissionNote);
+			processOption.setDossierTemplateId(dossierTemplateId);
+			processOption.setServiceProcessId(serviceProcessId);
+			processOption.setOptionName(optionName);
+
+		}
+
+		processOptionPersistence.update(processOption);
 	}
 
 	private void validateRemove(long processOptionId) throws PortalException {

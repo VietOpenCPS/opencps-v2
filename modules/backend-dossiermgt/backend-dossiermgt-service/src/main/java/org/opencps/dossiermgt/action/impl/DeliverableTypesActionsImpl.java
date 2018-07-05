@@ -87,4 +87,12 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 
 		return DeliverableTypeLocalServiceUtil.updateMappingData(groupId, deliverableTypeId, mappingData, serviceContext);
 	}
+
+	@Override
+	public void updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
+			Integer docSync, String mappingData, String fieldConfigs, String formReport, String formScript) {
+
+		DeliverableTypeLocalServiceUtil.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern,
+				docSync, mappingData, fieldConfigs, formReport, formScript);
+	}
 }

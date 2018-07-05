@@ -770,6 +770,63 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		}
 	}
 
+	//LamTV_Process output ServiceProcess to DB
+	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
+			String description, Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
+			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException {
+
+		Date now = new Date();
+		User userAction = userLocalService.getUser(userId);
+
+		ServiceProcess object = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+
+		if (object == null) {
+			long serviceProcessId = counterLocalService.increment(ServiceProcess.class.getName());
+			object = serviceProcessPersistence.create(serviceProcessId);
+
+			// Add audit fields
+			object.setCompanyId(serviceContext.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Add other fields
+			object.setProcessNo(processNo);
+			object.setProcessName(processName);
+			object.setDescription(description);
+			object.setDurationCount(durationCount);
+			object.setDurationUnit(durationUnit);
+			object.setGeneratePassword(generatePassword);
+			object.setServerNo(serverNo);
+			object.setServerName(serverName);
+			object.setDossierNoPattern(dossierNoPattern);
+			object.setDueDatePattern(dueDatePattern);
+		} else {
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Add other fields
+			object.setProcessNo(processNo);
+			object.setProcessName(processName);
+			object.setDescription(description);
+			object.setDurationCount(durationCount);
+			object.setDurationUnit(durationUnit);
+			object.setGeneratePassword(generatePassword);
+			object.setServerNo(serverNo);
+			object.setServerName(serverName);
+			object.setDossierNoPattern(dossierNoPattern);
+			object.setDueDatePattern(dueDatePattern);
+		}
+
+		serviceProcessPersistence.update(object);
+
+		return object.getServiceProcessId();
+	}
+
 	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
 			long groupId) throws PortalException {
 

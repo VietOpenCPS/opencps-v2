@@ -317,7 +317,7 @@ public class ServiceProcessUtils {
 		}
 
 		model.setAssignUserName(assignName);
-		model.setRequestPayment(Boolean.toString(action.getRequestPayment()));
+		model.setRequestPayment(String.valueOf(action.getRequestPayment()));
 		model.setPaymentFee(action.getPaymentFee());
 		model.setMakeBriefNote(action.getMakeBriefNote());
 		model.setSyncActionCode(action.getSyncActionCode());

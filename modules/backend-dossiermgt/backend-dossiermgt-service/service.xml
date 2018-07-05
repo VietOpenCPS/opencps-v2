@@ -181,6 +181,7 @@
 		<column name="eSign" type="boolean" />
 		<column name="deliverableType" type="String"/>
 		<column name="deliverableAction" type="int"/>
+		<column name="eForm" type="boolean" />
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -763,6 +764,7 @@
 		<column name="generatePassword" type="boolean" />
 		<column name="directNotification" type="boolean" />
 		<column name="serverNo" type="String" />
+		<column name="serverName" type="String" />
 		<column name="requestPayment" type="boolean"/>
 		<column name="paymentFee" type="String"/>
 
@@ -799,7 +801,7 @@
 
 		<column name="serviceProcessId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
-
+		<column name="roleName" type="String" />
 		<column name="moderator" type="boolean" />
 		<column name="condition" type="String" />
 
@@ -834,6 +836,7 @@
 		<column name="editable" type="boolean" />
 		<column name="restrictDossier" type="String" />
 		<column name="lockState" type="String" />
+		<column name="groupName" type="String" />
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -889,7 +892,7 @@
 
 		<column name="processStepId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
-
+		<column name="roleName" type="String" />
 		<column name="moderator" type="boolean" />
 		<column name="condition" type="String" />
 
@@ -962,7 +965,7 @@
 		<column name="actionName" type="String" />
 		<column name="allowAssignUser" type="boolean" />
 		<column name="assignUserId" type="long" />
-		<column name="requestPayment" type="boolean" />
+		<column name="requestPayment" type="int" />
 		<column name="paymentFee" type="String" />
 		<column name="createDossierFiles" type="String" />
 		<column name="returnDossierFiles" type="String" />
@@ -973,6 +976,8 @@
 		<column name="eSignature" type="boolean"/>
 		<column name="configNote" type="String"/>
 		<column name="dossierTemplateNo" type="String"/>
+		<column name="signatureType" type="String"/>
+		<column name="createDossiers" type="String"/>
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -1398,6 +1403,8 @@
 		<column name="codePattern" type="String" />
 		<column name="counter" type="String" />
 		<column name="mappingData" type="String" />
+		<column name="docSync" type="int" />
+		<column name="fieldConfigs" type="String" />
 
 		<finder return-type="DeliverableType" name="G_DLT">
 			<finder-column name="groupId" />
