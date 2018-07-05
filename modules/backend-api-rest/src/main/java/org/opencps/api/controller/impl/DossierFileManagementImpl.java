@@ -1,10 +1,17 @@
 package org.opencps.api.controller.impl;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +21,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierFileUtils;
+import org.opencps.api.controller.util.ImportZipFileUtils;
+import org.opencps.api.controller.util.ReadXMLFileUtils;
 import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
@@ -812,6 +822,50 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		} catch (Exception e) {
 			return processException(e);
 		}	
+	}
+
+	@Override
+	public Response uploadFileEntry(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Attachment file) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		DataHandler dataHandle = file.getDataHandler();
+		InputStream fileInputStream = null;
+		try {
+			fileInputStream = dataHandle.getInputStream();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			_log.error(e1);
+		}
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions action = new DossierFileActionsImpl();
+
+			action.uploadFileEntry(dataHandle.getName(), dataHandle.getInputStream(), serviceContext);
+
+			DossierFileModel result = null;
+
+			//Process FILE
+			String fileName = dataHandle.getName();
+			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
+			_log.info("LamTV_pathFolder: "+pathFolder);
+			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
+			//TODO:Test multiple file
+			File fileList = new File(pathFolder);
+			_log.info("LamTV_fileList: "+fileList.getPath());
+			ReadXMLFileUtils.listFilesForParentFolder(fileList);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
+		}
 	}
 
 }

@@ -13,6 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -311,5 +313,25 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	public DossierFile getDossierFileByFileTemplateNo(long id, String fileTemplateNo) {
 
 		return DossierFileLocalServiceUtil.getByFileTemplateNo(id, fileTemplateNo);
+	}
+
+	@Override
+	public void uploadFileEntry(String name, InputStream inputStream, ServiceContext serviceContext) {
+		long userId = serviceContext.getUserId();
+
+//		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
+
+		long fileEntryId = 0;
+
+		try {
+//			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, dossierFile.getFileEntryId(),
+//					inputStream, sourceFileName, null, 0, serviceContext);
+//
+//			if (fileEntry != null) {
+//				fileEntryId = fileEntry.getFileEntryId();
+//			}
+		} catch (Exception e) {
+			throw new SystemException(e);
+		}
 	}
 }

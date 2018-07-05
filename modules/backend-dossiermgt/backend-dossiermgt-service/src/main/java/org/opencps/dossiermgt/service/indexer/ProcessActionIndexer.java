@@ -56,6 +56,7 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 		// add number fields
 		document.addNumberSortable(ProcessActionTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
 		document.addNumberSortable(ProcessActionTerm.ASSIGN_USER_ID, object.getAssignUserId());
+		document.addNumberSortable(ProcessActionTerm.REQUEST_PAYMENT, object.getRequestPayment());
 
 		// add text fields
 		document.addTextSortable(ProcessActionTerm.PRESTEP_CODE, object.getPreStepCode());
@@ -73,7 +74,6 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 		document.addTextSortable(ProcessActionTerm.MAKE_BRIEF_NOTE, object.getMakeBriefNote());
 
 		document.addTextSortable(ProcessActionTerm.ALLOW_ASSIGN_USER, Boolean.toString(object.getAllowAssignUser()));
-		document.addTextSortable(ProcessActionTerm.REQUEST_PAYMENT, Boolean.toString(object.getRequestPayment()));
 		document.addTextSortable(ProcessActionTerm.ROLLBACKABLE, Boolean.toString(object.getRollbackable()));
 
 		document.addTextSortable(ProcessActionTerm.CREATE_DOSSIER_NO, Boolean.toString(object.getCreateDossierNo()));

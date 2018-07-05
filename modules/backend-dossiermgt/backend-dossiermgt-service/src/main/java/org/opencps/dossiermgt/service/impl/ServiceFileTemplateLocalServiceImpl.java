@@ -168,7 +168,18 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 
 		return serviceFileTemplatePersistence.update(serviceFileTemplate);
 	}
-	
-	
+
+	public void updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
+			String fileName, long fileEntryId) {
+		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
+
+		ServiceFileTemplate object = serviceFileTemplatePersistence.create(fileTemplatePK);
+
+		object.setTemplateName(fileTemplateName);
+		object.setFileEntryId(fileEntryId);
+
+		serviceFileTemplatePersistence.update(object);
+	}
+
 	Log _log = LogFactoryUtil.getLog(ServiceFileTemplateLocalServiceImpl.class);
 }

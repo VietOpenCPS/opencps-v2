@@ -16,14 +16,17 @@ package org.opencps.dossiermgt.service.impl;
 
 import java.util.List;
 
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.base.ServiceProcessRoleLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -121,5 +124,26 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 		
 		return serviceProcessRole;
 
+	}
+
+	public void updateServiceProcessRoleDB(long groupId, long serviceProcessId, long roleId, String roleName, boolean moderator,
+			String condition, ServiceContext serviceContext) {
+
+		ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId, roleId);
+		ServiceProcessRole serviceProcessRole = serviceProcessRolePersistence.fetchByPrimaryKey(pk);
+
+		if (Validator.isNull(serviceProcessRole)) {
+			serviceProcessRole = serviceProcessRolePersistence.create(pk);
+
+			serviceProcessRole.setRoleName(roleName);
+			serviceProcessRole.setModerator(moderator);
+			serviceProcessRole.setCondition(condition);
+		} else {
+			serviceProcessRole.setRoleName(roleName);
+			serviceProcessRole.setModerator(moderator);
+			serviceProcessRole.setCondition(condition);
+		}
+
+		serviceProcessRolePersistence.update(serviceProcessRole);
 	}
 }

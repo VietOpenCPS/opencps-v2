@@ -5,6 +5,7 @@ import javax.naming.AuthenticationException;
 import org.opencps.dossiermgt.action.MenuConfigActions;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -70,6 +71,14 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 			throw new AuthenticationException();
 		}
 
+	}
+
+	@Override
+	public boolean updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
+
+		return MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
+				menuType, queryParams, tableConfig, buttonConfig);
 	}
 
 }

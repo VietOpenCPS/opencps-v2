@@ -117,4 +117,10 @@ public interface DictcollectionInterface {
 
 	public List<DictItemGroup> getListDictItemGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end, ServiceContext serviceContext);
 	public long countDictItemGroupsOlderThanDate(long userId, long companyId, long groupId, Date date, int start, int end, ServiceContext serviceContext);
+
+	public long updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
+			String collectionNameEN, String description) throws NoSuchUserException;
+
+//	public long updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
+//			String itemNameEN, String itemDescription, String parent, Integer level, Integer sibling, String metadata);
 }

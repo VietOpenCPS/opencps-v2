@@ -7,6 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.auth.api.exception.DataInUsedException;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.constants.DictCollectionTerm;
@@ -41,11 +45,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import org.opencps.auth.api.exception.DataInUsedException;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 
 public class DictCollectionActions implements DictcollectionInterface {
 
@@ -1180,5 +1179,21 @@ public class DictCollectionActions implements DictcollectionInterface {
 		}
 		return null;
 	}
+
+	@Override
+	public long updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
+			String collectionNameEN, String description) throws NoSuchUserException {
+
+		return DictCollectionLocalServiceUtil.updateDictCollectionDB(userId, groupId, collectionCode, collectionName,
+				collectionNameEN, description);
+	}
+
+//	@Override
+//	public long updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
+//			String itemNameEN, String itemDescription, String parent, Integer level, Integer sibling, String metadata) {
+//
+////		DictItemLocalServiceUtil.updateDictItemDB(userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
+////				itemDescription, parent, level, sibling, metadata);
+//	}
 
 }

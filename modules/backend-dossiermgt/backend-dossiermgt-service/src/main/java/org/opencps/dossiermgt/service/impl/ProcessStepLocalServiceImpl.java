@@ -376,4 +376,64 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	public List<ProcessStep> getProcessStepbyServiceProcessId(long serviceProcessId) {
 		return processStepPersistence.findByS_P_ID(serviceProcessId);
 	}
+
+	//LamTV_ Process output ProcessStep to DB
+	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
+			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
+			String instructionNote, String briefNote, String lockState, ServiceContext serviceContext)
+			throws PortalException {
+
+		Date now = new Date();
+		User userAction = userLocalService.getUser(userId);
+
+		ProcessStep object = processStepPersistence.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+
+		if (object == null) {
+
+			long processStepId = counterLocalService.increment(ProcessStep.class.getName());
+			object = processStepLocalService.createProcessStep(processStepId);
+
+			// Add audit fields
+			object.setCompanyId(serviceContext.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Add other fields
+			object.setServiceProcessId(serviceProcessId);
+			object.setStepCode(stepCode);
+			object.setStepName(stepName);
+			object.setSequenceNo(String.valueOf(sequenceNo));
+			object.setGroupName(groupName);
+			object.setDossierStatus(dossierStatus);
+			object.setDossierSubStatus(dossierSubStatus);
+			object.setDurationCount(durationCount);
+			object.setStepInstruction(instructionNote);
+			object.setBriefNote(briefNote);
+			object.setLockState(lockState);
+		} else {
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Add other fields
+			object.setStepCode(stepCode);
+			object.setStepName(stepName);
+			object.setSequenceNo(String.valueOf(sequenceNo));
+			object.setGroupName(groupName);
+			object.setDossierStatus(dossierStatus);
+			object.setDossierSubStatus(dossierSubStatus);
+			object.setDurationCount(durationCount);
+			object.setStepInstruction(instructionNote);
+			object.setBriefNote(briefNote);
+			object.setLockState(lockState);
+		}
+
+		processStepPersistence.update(object);
+		return object.getProcessStepId();
+	}
+
 }

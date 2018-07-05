@@ -24,6 +24,7 @@ import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
@@ -118,4 +119,24 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 
 	}
 
+	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName,
+			boolean moderator, String condition, ServiceContext serviceContext) {
+
+		ProcessStepRolePK pk = new ProcessStepRolePK(processStepId, roleId);
+		ProcessStepRole processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
+
+		if (Validator.isNull(processStepRole)) {
+			processStepRole = processStepRolePersistence.create(pk);
+
+			processStepRole.setRoleName(roleName);
+			processStepRole.setModerator(moderator);
+			processStepRole.setCondition(condition);
+		} else {
+			processStepRole.setRoleName(roleName);
+			processStepRole.setModerator(moderator);
+			processStepRole.setCondition(condition);
+		}
+
+		processStepRolePersistence.update(processStepRole);
+	}
 }

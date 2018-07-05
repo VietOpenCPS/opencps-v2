@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.dossiermgt.action.ServiceConfigActions;
+import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -114,5 +115,27 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 	}
 
 	Log _log = LogFactoryUtil.getLog(ServiceConfig.class);
+
+	@Override
+	public long updateServiceConfigDB(long userId, long groupId, long serviceInfoId, String govAgencyCode,
+			String govAgencyName, String serviceInstruction, Integer serviceLevel, String serviceUrl,
+			boolean forCitizen, boolean forBusiness, boolean postalService, boolean registration,
+			ServiceContext context) throws NoSuchServiceConfigException {
+		// TODO Auto-generated method stub
+		return ServiceConfigLocalServiceUtil.updateServiceConfigDB(userId, groupId, serviceInfoId, govAgencyCode,
+				govAgencyName, serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService,
+				registration, context);
+	}
+
+	@Override
+	public void updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
+			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
+			String templateName, String processNo, String processName, String registerBookCode,
+			ServiceContext context) {
+
+		ProcessOptionLocalServiceUtil.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
+				autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
+				registerBookCode, context);
+	}
 
 }

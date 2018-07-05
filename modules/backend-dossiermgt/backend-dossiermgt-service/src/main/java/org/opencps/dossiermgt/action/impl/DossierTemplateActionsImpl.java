@@ -211,4 +211,23 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 				deliverableType, deliverableAction, context);
 	}
 
+	@Override
+	public void updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
+			String description, ServiceContext serviceContext) throws PortalException {
+
+		DossierTemplateLocalServiceUtil.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description,
+				serviceContext);
+	}
+
+	@Override
+	public void updateDossierPartDB(long userId, long groupId, String templateNo, String partNo, String partName,
+			String partTip, Integer partType, boolean multiple, String formScript, String formReport, boolean required,
+			boolean esign, String fileTemplateNo, String deliverableType, Integer deliverableAction, boolean eForm,
+			String sampleData, ServiceContext serviceContext) throws PortalException {
+
+		DossierPartLocalServiceUtil.updateDossierPartDB(userId, groupId, templateNo, partNo, partName, partTip,
+				partType, multiple, formScript, formReport, required, esign, fileTemplateNo, deliverableType,
+				deliverableAction, eForm, sampleData, serviceContext);
+	}
+
 }

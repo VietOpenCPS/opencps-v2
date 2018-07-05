@@ -340,4 +340,24 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		return result;
 	}
+
+	@Override
+	public long updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
+			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
+			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
+			String domainCode, String domainName, Integer maxLevel) throws PortalException {
+
+		return ServiceInfoLocalServiceUtil.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText,
+				methodText, dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
+				administrationCode, administrationName, domainCode, domainName, maxLevel);
+	}
+
+	@Override
+	public void updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
+			String fileName, long fileEntryId) {
+
+		ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplateDB(serviceInfoId, fileTemplateNo, fileTemplateName,
+				fileName, fileEntryId);
+	}
+
 }

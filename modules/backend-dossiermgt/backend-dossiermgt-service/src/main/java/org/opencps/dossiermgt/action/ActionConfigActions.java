@@ -20,4 +20,8 @@ public interface ActionConfigActions {
 			String documentType, ServiceContext serviceContext) throws PortalException, AuthenticationException;
 
 	public void deleteActionConfig(Long actionConfigId, ServiceContext serviceContext) throws PortalException, AuthenticationException;
+
+	public void updateActionConfigDB(long userId, long groupId, String actionCode, String actionName, Boolean extraForm,
+			String sampleData, Boolean insideProcess, Integer syncType, Boolean rollbackable, String notificationType,
+			String documentType, String formConfig);
 }

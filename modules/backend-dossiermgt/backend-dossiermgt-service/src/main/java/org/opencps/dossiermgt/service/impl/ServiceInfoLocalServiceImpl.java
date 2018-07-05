@@ -459,5 +459,80 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
+	//LamTV_ Process output ServiceInfo
+	public long updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
+			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
+			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
+			String domainCode, String domainName, Integer maxLevel) throws PortalException {
+
+		User user = userLocalService.getUser(userId);
+		Date now = new Date();
+		valdiate(serviceCode, serviceName, administrationCode, domainCode, groupId);
+		ServiceInfo serviceInfo = serviceInfoPersistence.fetchBySC_GI(serviceCode, groupId);
+		if (serviceInfo != null) {
+			serviceInfo.setModifiedDate(now);
+			// Other field
+			serviceInfo.setServiceCode(serviceCode);
+			serviceInfo.setServiceName(serviceName);
+			serviceInfo.setProcessText(processText);
+			serviceInfo.setMethodText(methodText);
+			serviceInfo.setDossierText(dossierText);
+			serviceInfo.setConditionText(conditionText);
+			serviceInfo.setDurationText(durationText);
+			serviceInfo.setApplicantText(applicantText);
+			serviceInfo.setResultText(resultText);
+			serviceInfo.setRegularText(regularText);
+			serviceInfo.setFeeText(feeText);
+			serviceInfo.setAdministrationCode(administrationCode);
+			serviceInfo.setAdministrationName(administrationName);
+			serviceInfo.setDomainCode(domainCode);
+			serviceInfo.setDomainName(domainName);
+			serviceInfo.setMaxLevel(maxLevel);
+		} else {
+			long serviceInfoId = counterLocalService.increment(ServiceInfo.class.getName());
+
+			serviceInfo = serviceInfoPersistence.create(serviceInfoId);
+
+			serviceInfo.setGroupId(groupId);
+			serviceInfo.setCompanyId(user.getCompanyId());
+			serviceInfo.setUserId(user.getUserId());
+			serviceInfo.setUserName(user.getFullName());
+			serviceInfo.setCreateDate(now);
+			serviceInfo.setModifiedDate(now);
+
+			serviceInfo.setServiceCode(serviceCode);
+			serviceInfo.setServiceName(serviceName);
+			serviceInfo.setProcessText(processText);
+			serviceInfo.setMethodText(methodText);
+			serviceInfo.setDossierText(dossierText);
+			serviceInfo.setConditionText(conditionText);
+			serviceInfo.setDurationText(durationText);
+			serviceInfo.setApplicantText(applicantText);
+			serviceInfo.setResultText(resultText);
+			serviceInfo.setRegularText(regularText);
+			serviceInfo.setFeeText(feeText);
+			serviceInfo.setAdministrationCode(administrationCode);
+			serviceInfo.setAdministrationName(administrationName);
+			serviceInfo.setDomainCode(domainCode);
+			serviceInfo.setDomainName(domainName);
+			serviceInfo.setMaxLevel(maxLevel);
+		}
+
+
+		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
+				groupId);
+		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
+
+		if (Validator.isNotNull(adm)) {
+			serviceInfo.setAdministrationIndex(adm.getTreeIndex());
+		}
+		if (Validator.isNotNull(dom)) {
+			serviceInfo.setDomainIndex(dom.getTreeIndex());
+		}
+
+		serviceInfoPersistence.update(serviceInfo);
+		return serviceInfo.getServiceInfoId();
+
+	}
 	public static final String CLASS_NAME = ServiceInfo.class.getName();
 }
