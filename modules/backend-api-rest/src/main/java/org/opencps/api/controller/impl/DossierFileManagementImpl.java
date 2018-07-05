@@ -829,6 +829,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			User user, ServiceContext serviceContext, Attachment file) {
 		BackendAuth auth = new BackendAuthImpl();
 
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
 		DataHandler dataHandle = file.getDataHandler();
 		InputStream fileInputStream = null;
 		try {
@@ -858,7 +860,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			//TODO:Test multiple file
 			File fileList = new File(pathFolder);
 			_log.info("LamTV_fileList: "+fileList.getPath());
-			ReadXMLFileUtils.listFilesForParentFolder(fileList);
+			ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
 
 			return Response.status(200).entity(result).build();
 

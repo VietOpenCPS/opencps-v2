@@ -25,6 +25,7 @@ import org.opencps.api.v21.model.StepConfigList;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -63,20 +64,22 @@ public class ReadXMLFileUtils {
 
 
 	//LamTV_Process get list file of folder
-	public static void listFilesForParentFolder(File fileList) {
+	public static void listFilesForParentFolder(File fileList, long groupId, long userId,
+			ServiceContext serviceContext) {
 		try {
 			File[] files = fileList.listFiles();
 			String folderParentPath = fileList.getPath();
 			if (files != null && files.length > 0) {
 				for (File fileEntry : files) {
 					if (fileEntry.isDirectory()) {
-						listFilesForFolder(fileEntry, fileEntry.getPath(), folderParentPath);
+						listFilesForFolder(fileEntry, fileEntry.getPath(), folderParentPath, groupId, userId,
+								serviceContext);
 					} else {
 						String fileName = fileEntry.getName();
 						String subFileName = ImportZipFileUtils.getSubFileName(fileName);
 						if (Validator.isNotNull(subFileName)) {
 							String xmlString = convertFiletoString(fileEntry);
-							compareParentFile(folderParentPath, fileName, xmlString);
+							compareParentFile(folderParentPath, fileName, xmlString, groupId, userId, serviceContext);
 						}
 					}
 				}
@@ -86,23 +89,24 @@ public class ReadXMLFileUtils {
 		}
 	}
 
-	private static void listFilesForFolder(File fileEntry, String folderPath, String folderParentPath) {
+	private static void listFilesForFolder(File fileEntry, String folderPath, String folderParentPath, long groupId,
+			long userId, ServiceContext serviceContext) {
 		if (Validator.isNotNull(folderPath)) {
 			int index = folderPath.lastIndexOf(StringPool.FORWARD_SLASH);
 			String subFolder = folderPath.substring(index -1);
 			if (Validator.isNotNull(subFolder)) {
 				switch (subFolder) {
 				case ConstantUtils.SOURCE_DICTS:
-					processListFileDict(fileEntry);
+					processListFileDict(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICES:
-					processListFileService(fileEntry, folderParentPath);
+					processListFileService(fileEntry, folderParentPath, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_TEMPLATES:
-					processListFileTemplate(fileEntry, folderParentPath);
+					processListFileTemplate(fileEntry, folderParentPath, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_PROCESSES:
-					processListFileProcess(fileEntry);
+					processListFileProcess(fileEntry, groupId, userId, serviceContext);
 					break;
 				default:
 					break;
@@ -111,28 +115,29 @@ public class ReadXMLFileUtils {
 		}
 	}
 
-	private static void compareParentFile(String folderPath, String fileName, String xmlString) {
+	private static void compareParentFile(String folderPath, String fileName, String xmlString, long groupId,
+			long userId, ServiceContext serviceContext) {
 		if (Validator.isNotNull(fileName)) {
 			switch (fileName) {
 			case ConstantUtils.XML_ACTION_CONFIG:
 				ActionConfigList actList = convertXMLToActionConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdateActionConfig(actList, folderPath);
+				ProcessUpdateDBUtils.processUpdateActionConfig(actList, folderPath, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_STEP_CONFIG:
 				StepConfigList stepList = convertXMLToStepConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdateStepConfig(stepList);
+				ProcessUpdateDBUtils.processUpdateStepConfig(stepList, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_MENU_CONFIG:
 				MenuConfigList menuList = convertXMLToMenuConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdateMenuConfig(menuList);
+				ProcessUpdateDBUtils.processUpdateMenuConfig(menuList, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_DOCUMENT_TYPE:
 				DocumentTypeList docList = convertXMLToDocumentType(xmlString);
-				ProcessUpdateDBUtils.processUpdateDocumentType(docList, folderPath);
+				ProcessUpdateDBUtils.processUpdateDocumentType(docList, folderPath, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_DELIVERABLE_TYPE:
 				DeliverableTypeList deliTypeList = convertXMLToDeliverableType(xmlString);
-				ProcessUpdateDBUtils.processUpdateDeliverableType(deliTypeList, folderPath);
+				ProcessUpdateDBUtils.processUpdateDeliverableType(deliTypeList, folderPath, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_PAYMENT_CONFIG:
 				convertXMLToMenuConfig(xmlString);
@@ -150,7 +155,7 @@ public class ReadXMLFileUtils {
 	}
 
 	/** Process output object to DB - START */
-	private static void processListFileDict(File fileEntry) {
+	private static void processListFileDict(File fileEntry, long groupId, long userId, ServiceContext serviceContext) {
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
 			for (File file : files) {
@@ -161,38 +166,43 @@ public class ReadXMLFileUtils {
 		}
 	}
 
-	private static void processListFileService(File fileEntry, String folderParentPath) {
+	private static void processListFileService(File fileEntry, String folderParentPath, long groupId, long userId,
+			ServiceContext serviceContext) {
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
 			for (File file : files) {
 				String filePath = file.getPath();
 				String xmlString = convertFiletoString(file);
 				ServiceInfo service = convertXMLToServiceInfo(xmlString);
-				ProcessUpdateDBUtils.processUpdateServiceInfo(service, filePath, folderParentPath);
+				ProcessUpdateDBUtils.processUpdateServiceInfo(service, filePath, folderParentPath, groupId, userId,
+						serviceContext);
 			}
 		}
 	}
 
-	private static void processListFileTemplate(File fileEntry, String folderParentPath) {
+	private static void processListFileTemplate(File fileEntry, String folderParentPath, long groupId, long userId,
+			ServiceContext serviceContext) {
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
 			for (File file : files) {
 				String filePath = file.getPath();
 				String xmlString = convertFiletoString(file);
 				DossierTemplate template = convertXMLToDossierTemplate(xmlString);
-				ProcessUpdateDBUtils.processUpdateDossierTemplate(template, filePath, folderParentPath);
+				ProcessUpdateDBUtils.processUpdateDossierTemplate(template, filePath, folderParentPath, groupId, userId,
+						serviceContext);
 			}
 		}
 	}
 
-	private static void processListFileProcess(File fileEntry) {
+	private static void processListFileProcess(File fileEntry, long groupId, long userId,
+			ServiceContext serviceContext) {
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
 			for (File file : files) {
 				String filePath = file.getPath();
 				String xmlString = convertFiletoString(file);
 				ServiceProcess process = convertXMLToServiceProcess(xmlString);
-				ProcessUpdateDBUtils.processUpdateServiceProcess(process, filePath);
+				ProcessUpdateDBUtils.processUpdateServiceProcess(process, filePath, groupId, userId, serviceContext);
 			}
 		}
 	}
