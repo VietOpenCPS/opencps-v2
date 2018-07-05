@@ -5,12 +5,15 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.Validator;
+
+import backend.utils.APIDateTimeUtils;
 
 public class OpenCPSConverter {
 	public static Map<String, Object> convertHttpParams(DossierInputModel model) {
@@ -243,4 +246,30 @@ public class OpenCPSConverter {
 		
 		return model;
 	}		
+	
+	public static DossierInputModel convertDossierToInputModel(Dossier dossier) {
+		DossierInputModel model = new DossierInputModel();
+		model.setReferenceUid(dossier.getReferenceUid());
+		model.setServiceCode(dossier.getServiceCode());
+		model.setGovAgencyCode(dossier.getGovAgencyCode());
+		model.setDossierTemplateNo(dossier.getDossierTemplateNo());
+		model.setApplicantName(dossier.getApplicantName());
+		model.setApplicantIdType(dossier.getApplicantIdType());
+		model.setApplicantIdNo(dossier.getApplicantIdNo());
+		model.setApplicantIdDate(APIDateTimeUtils.convertDateToString(dossier.getApplicantIdDate(), APIDateTimeUtils._TIMESTAMP));
+		model.setAddress(dossier.getAddress());
+		model.setCityCode(dossier.getCityCode());
+		model.setDistrictCode(dossier.getDistrictCode());
+		model.setWardCode(dossier.getWardCode());
+		model.setContactName(dossier.getContactName());
+		model.setContactTelNo(dossier.getContactTelNo());
+		model.setContactEmail(dossier.getContactEmail());
+		model.setDelegateName(dossier.getDelegateName());
+		model.setDelegateAddress(dossier.getDelegateAddress());
+		model.setDelegateCityCode(dossier.getDelegateCityCode());
+		model.setDelegateDistrictCode(dossier.getDelegateDistrictCode());
+		model.setDelegateWardCode(dossier.getDelegateWardCode());
+
+		return model;
+	}
 }

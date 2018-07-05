@@ -18,6 +18,14 @@
 				<xsd:element name="contactName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="contactTelNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateAddress" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateWardCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="password" type="xsd:string" minOccurs="0" />
 				<xsd:element name="online" type="xsd:string" minOccurs="0" />
 				<xsd:element name="notification" type="xsd:string" minOccurs="0" />
