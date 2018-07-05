@@ -290,14 +290,14 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	@Override
 	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
-			boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
+			boolean allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
 			String createDossiers, ServiceContext serviceContext) throws PortalException {
 
 		ProcessActionLocalServiceUtil.updateProcessActionDB(userId, groupId, serviceProcessId, actionCode, actionName,
-				preStepCode, postStepCode, autoEvent, preCondition, allowAssignUser, assignUserId, requestPayment,
-				paymentFee, createDossierFiles, returnDossierFiles, eSignature, signatureType, createDossiers,
-				serviceContext);
+				preStepCode, postStepCode, autoEvent, preCondition, allowAssignUser, assignUserId, assignUserName,
+				requestPayment, paymentFee, createDossierFiles, returnDossierFiles, eSignature, signatureType,
+				createDossiers, serviceContext);
 	}
 
 }
