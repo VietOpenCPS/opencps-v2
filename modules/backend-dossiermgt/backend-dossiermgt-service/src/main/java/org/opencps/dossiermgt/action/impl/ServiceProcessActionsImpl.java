@@ -211,7 +211,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	@Override
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, ServiceContext context) throws PortalException {
 
@@ -230,7 +230,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	@Override
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
+			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
 			String dossierTemplateNo, ServiceContext context) throws PortalException {
@@ -249,7 +249,55 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		return ServiceProcessLocalServiceUtil.getServiceByCode(groupId, serviceCode, govAgencyCode,
 				dossierTemplateNo);
 	}
-	
-	
+
+	@Override
+	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
+			String description, Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
+			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext)
+			throws PortalException {
+
+		 return ServiceProcessLocalServiceUtil.updateServiceProcessDB(userId, groupId, processNo, processName, description,
+				durationCount, durationUnit, generatePassword, serverNo, serverName, dossierNoPattern, dueDatePattern,
+				serviceContext);
+	}
+
+	@Override
+	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId, String roleName, boolean moderator,
+			String condition, ServiceContext serviceContext) {
+
+		ServiceProcessRoleLocalServiceUtil.updateServiceProcessRoleDB(groupId, serviceProcessId, roleId, roleName,
+				moderator, condition, serviceContext);
+	}
+
+	@Override
+	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
+			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
+			String instructionNote, String briefNote, String lockState, ServiceContext serviceContext)
+			throws PortalException {
+
+		return ProcessStepLocalServiceUtil.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode, stepName, sequenceNo, groupName,
+				dossierStatus, dossierSubStatus, durationCount, instructionNote, briefNote, lockState, serviceContext);
+	}
+
+	@Override
+	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName,
+			boolean moderator, String condition, ServiceContext serviceContext) {
+
+		ProcessStepRoleLocalServiceUtil.updateProcessStepRoleDB(userId, groupId, processStepId, roleId, roleName, moderator,
+				condition, serviceContext);
+	}
+
+	@Override
+	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
+			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
+			boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
+			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
+			String createDossiers, ServiceContext serviceContext) throws PortalException {
+
+		ProcessActionLocalServiceUtil.updateProcessActionDB(userId, groupId, serviceProcessId, actionCode, actionName,
+				preStepCode, postStepCode, autoEvent, preCondition, allowAssignUser, assignUserId, requestPayment,
+				paymentFee, createDossierFiles, returnDossierFiles, eSignature, signatureType, createDossiers,
+				serviceContext);
+	}
 
 }

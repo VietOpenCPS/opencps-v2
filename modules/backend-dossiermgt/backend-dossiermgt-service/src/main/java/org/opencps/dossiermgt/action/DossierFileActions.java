@@ -47,5 +47,7 @@ public interface DossierFileActions {
 	public DossierFile getDossierFileByDeliverableCode(long groupId, String deliverableCode);
 
 	public DossierFile getDossierFileByFileTemplateNo(long id, String fileTemplateNo);
+
+	public void uploadFileEntry(String name, InputStream inputStream, ServiceContext serviceContext);
 	
 }

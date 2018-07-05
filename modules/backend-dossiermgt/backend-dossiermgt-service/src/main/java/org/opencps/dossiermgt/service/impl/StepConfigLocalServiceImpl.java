@@ -172,4 +172,69 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	public List<StepConfig> getByStepType(int stepType) {
 		return stepConfigFinder.finByStepConfig(stepType);
 	}
+
+	public boolean updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
+			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig) {
+
+		try {
+			User user = userLocalService.getUser(userId);
+			Date now = new Date();
+
+			StepConfig object = stepConfigPersistence.fetchByF_BY_stepCode(stepCode);
+			if (object != null) {
+				object.setUserId(user.getUserId());
+				object.setModifiedDate(now);
+
+				if (Validator.isNotNull(stepCode)) {
+					object.setStepCode(stepCode);
+				}
+				if (Validator.isNotNull(stepName)) {
+					object.setStepName(menuStepName);
+				}
+				if (Validator.isNotNull(stepType)) {
+					object.setStepType(stepType);
+				}
+				if (Validator.isNotNull(dossierStatus)) {
+					object.setDossierStatus(dossierStatus);
+				}
+				if (Validator.isNotNull(dossierSubStatus)) {
+					object.setDossierSubStatus(dossierSubStatus);
+				}
+				if (Validator.isNotNull(menuGroup)) {
+					object.setMenuGroup(menuGroup);
+				}
+				if (Validator.isNotNull(menuStepName)) {
+					object.setMenuStepName(menuStepName);
+				}
+				if (Validator.isNotNull(buttonConfig)) {
+					object.setButtonConfig(buttonConfig);
+				}
+			} else {
+				long stepConfigId = counterLocalService.increment(StepConfig.class.getName());
+
+				object = stepConfigPersistence.create(stepConfigId);
+
+				object.setGroupId(groupId);
+				object.setCompanyId(user.getCompanyId());
+				object.setUserId(user.getUserId());
+				object.setCreateDate(now);
+				object.setModifiedDate(now);
+
+				object.setStepCode(stepCode);
+				object.setStepName(stepName);
+				object.setStepType(Validator.isNotNull(stepType) ? stepType : 0);
+				object.setDossierStatus(dossierStatus);
+				object.setDossierSubStatus(dossierSubStatus);
+				object.setMenuGroup(menuGroup);
+				object.setMenuStepName(menuStepName);
+				object.setButtonConfig(buttonConfig);
+			}
+
+			stepConfigPersistence.update(object);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

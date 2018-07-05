@@ -163,4 +163,67 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		}
 
 	}
+
+	//LamTV_ Process ouput MenuConfig to DB
+	public boolean updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
+
+		try {
+			User user = userLocalService.getUser(userId);
+			Date now = new Date();
+
+			MenuConfig object = menuConfigPersistence.fetchByF_BY_menuGroup(menuGroup);
+			if (object != null) {
+				object.setUserId(user.getUserId());
+				object.setModifiedDate(now);
+
+				if (menuGroup != null) {
+					object.setMenuGroup(menuGroup);
+				}
+				if (menuName != null) {
+					object.setMenuName(menuName);
+				}
+				if (order != null) {
+					object.setOrder(order);
+				}
+				if (menuType != null) {
+					object.setMenuType(menuType);
+				}
+				if (queryParams != null) {
+					object.setQueryParams(queryParams);
+				}
+				if (tableConfig != null) {
+					object.setTableConfig(tableConfig);
+				}
+				if (buttonConfig != null) {
+					object.setButtonConfig(buttonConfig);
+				}
+			} else {
+				long menuConfigId = counterLocalService.increment(MenuConfig.class.getName());
+				object = menuConfigPersistence.create(menuConfigId);
+
+				object.setGroupId(groupId);
+				object.setCompanyId(user.getCompanyId());
+				object.setUserId(user.getUserId());
+				object.setCreateDate(now);
+				object.setModifiedDate(now);
+
+				object.setMenuGroup(menuGroup);
+				object.setMenuName(menuName);
+				object.setOrder(Validator.isNotNull(order) ? order : 0);
+				object.setMenuType(Validator.isNotNull(menuType) ? menuType : 0);
+				object.setQueryParams(queryParams);
+				object.setMenuGroup(menuGroup);
+				object.setTableConfig(tableConfig);
+				object.setButtonConfig(buttonConfig);
+
+			}
+
+			menuConfigPersistence.update(object);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

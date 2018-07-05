@@ -59,4 +59,12 @@ public interface ServiceInfoActions {
 
 	public JSONObject getStatisticByLevel(ServiceContext context, long groupId) throws ParseException, SearchException;
 
+	public long updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
+			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
+			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
+			String domainCode, String domainName, Integer maxLevel) throws PortalException;
+
+	public void updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
+			String fileName, long fileEntryId);
+
 }

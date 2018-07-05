@@ -490,7 +490,7 @@ public class DossierUtils {
 		if (dossierId > 0) {
 			return DossierLocalServiceUtil.fetchDossier(dossierId);
 		} else {
-			return null;
+			return DossierLocalServiceUtil.getByRef(groupId, id);
 		}
 	}
 

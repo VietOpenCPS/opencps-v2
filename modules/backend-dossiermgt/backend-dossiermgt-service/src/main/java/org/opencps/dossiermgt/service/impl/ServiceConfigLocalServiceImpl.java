@@ -24,6 +24,7 @@ import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
+import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
 import org.opencps.dossiermgt.exception.ServiceLevelException;
@@ -462,6 +463,66 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	//LamTV_ Process output ServiceConfig to DB
+	public long updateServiceConfigDB(long userId, long groupId, long serviceInfoId, String govAgencyCode,
+			String govAgencyName, String serviceInstruction, Integer serviceLevel, String serviceUrl,
+			boolean forCitizen, boolean forBusiness, boolean postalService, boolean registration,
+			ServiceContext context) throws NoSuchServiceConfigException {
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+
+		ServiceConfig serviceConfig = serviceConfigPersistence.findByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
+
+		if (serviceConfig == null) {
+
+			long serviceConfigId = counterLocalService.increment(ServiceConfig.class.getName());
+			serviceConfig = serviceConfigPersistence.create(serviceConfigId);
+
+			serviceConfig.setCreateDate(now);
+			serviceConfig.setModifiedDate(now);
+			serviceConfig.setCompanyId(context.getCompanyId());
+			serviceConfig.setGroupId(groupId);
+			serviceConfig.setUserId(userId);
+			serviceConfig.setUserName(auditUser.getFullName());
+
+			serviceConfig.setGovAgencyCode(govAgencyCode);
+			serviceConfig.setGovAgencyName(govAgencyName);
+			serviceConfig.setServiceInstruction(serviceInstruction);
+			serviceConfig.setServiceLevel(serviceLevel);
+			serviceConfig.setServiceUrl(serviceUrl);
+			serviceConfig.setForBusiness(forBusiness);
+			serviceConfig.setForCitizen(forCitizen);
+			serviceConfig.setPostService(postalService);
+			serviceConfig.setRegistration(registration);
+			serviceConfig.setServiceInfoId(serviceInfoId);
+		} else {
+
+			serviceConfig.setUserId(userId);
+			serviceConfig.setUserName(auditUser.getFullName());
+			serviceConfig.setModifiedDate(now);
+
+			if (Validator.isNotNull(govAgencyCode)) {
+				serviceConfig.setGovAgencyCode(govAgencyCode);
+				serviceConfig.setGovAgencyName(govAgencyName);
+			}
+			if (Validator.isNotNull(serviceInstruction)) {
+				serviceConfig.setServiceInstruction(serviceInstruction);
+			}
+			serviceConfig.setServiceLevel(serviceLevel);
+			serviceConfig.setServiceUrl(serviceUrl);
+			serviceConfig.setForBusiness(forBusiness);
+			serviceConfig.setForCitizen(forCitizen);
+			serviceConfig.setPostService(postalService);
+			serviceConfig.setRegistration(registration);
+			serviceConfig.setServiceInfoId(serviceInfoId);
+		}
+
+		serviceConfigPersistence.update(serviceConfig);
+
+		return serviceConfig.getServiceConfigId();
 	}
 
 	public static final String CLASS_NAME = ServiceConfig.class.getName();

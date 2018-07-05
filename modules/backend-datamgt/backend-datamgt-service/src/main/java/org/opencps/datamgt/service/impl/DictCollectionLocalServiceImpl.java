@@ -567,4 +567,53 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	public long countOlderThanDate(Date date, long groupId) {
 		return dictCollectionPersistence.countByF_dictCollectionNewerThan(date, groupId);
 	}
+
+	//LamTV_ Process output DictCollection to DB
+	public long updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
+			String collectionNameEN, String description) throws NoSuchUserException {
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		DictCollection dictCollection = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode, groupId);
+		if (dictCollection != null) {
+			dictCollection.setModifiedDate(now);
+
+			// Other fields
+			if (Validator.isNotNull(collectionCode)) {
+				dictCollection.setCollectionCode(collectionCode);
+			}
+			if (Validator.isNotNull(collectionName)) {
+				dictCollection.setCollectionCode(collectionName);
+			}
+			if (Validator.isNotNull(collectionNameEN)) {
+				dictCollection.setCollectionCode(collectionNameEN);
+			}
+			if (Validator.isNotNull(description)) {
+				dictCollection.setCollectionCode(description);
+			}
+		} else {
+			long dictCollectionId = counterLocalService.increment(DictCollection.class.getName());
+
+			dictCollection = dictCollectionPersistence.create(dictCollectionId);
+
+			// Group instance
+			dictCollection.setGroupId(groupId);
+
+			// Audit fields
+			dictCollection.setCompanyId(user.getCompanyId());
+			dictCollection.setUserId(user.getUserId());
+			dictCollection.setUserName(user.getFullName());
+			dictCollection.setCreateDate(now);
+			dictCollection.setModifiedDate(now);
+
+			// Other fields
+			dictCollection.setCollectionCode(collectionCode);
+			dictCollection.setCollectionName(collectionName);
+			dictCollection.setCollectionNameEN(collectionNameEN);
+			dictCollection.setDescription(description);
+		}
+
+		dictCollectionPersistence.update(dictCollection);
+		return dictCollection.getDictCollectionId();
+	}
 }

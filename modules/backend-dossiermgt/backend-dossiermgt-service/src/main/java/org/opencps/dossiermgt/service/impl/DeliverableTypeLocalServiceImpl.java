@@ -220,6 +220,71 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	}
 
+	//LamTV_ Process output DeliverableType to DB
+	public void updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
+			Integer docSync, String mappingData, String fieldConfigs, String formReport, String formScript) {
+
+		Date now = new Date();
+		User userAction = userPersistence.fetchByPrimaryKey(userId);
+
+		DeliverableType object = deliverableTypePersistence.fetchByG_DLT(groupId, typeCode);
+
+		if (object == null) {
+			long deliverableTypeId = counterLocalService.increment(DeliverableType.class.getName());
+
+			object = deliverableTypePersistence.create(deliverableTypeId);
+
+			/// Add audit fields
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			// Add other fields
+			object.setDeliverableTypeId(deliverableTypeId);
+			object.setTypeCode(typeCode);
+			object.setTypeName(typeName);
+			object.setFormScript(formScript);
+			object.setFormReport(formReport);
+			object.setMappingData(mappingData);
+			object.setCodePattern(codePattern);
+			object.setDocSync(docSync);
+			object.setFieldConfigs(fieldConfigs);
+
+		} else {
+			object.setModifiedDate(now);
+
+			if (Validator.isNotNull(typeCode)) {
+				object.setTypeCode(typeCode);
+			}
+			if (Validator.isNotNull(typeName)) {
+				object.setTypeName(typeName);
+			}
+			if (Validator.isNotNull(formScript)) {
+				object.setFormScript(formScript);
+			}
+			if (Validator.isNotNull(formReport)) {
+				object.setFormReport(formReport);
+			}
+			if (Validator.isNotNull(mappingData)) {
+				object.setMappingData(mappingData);
+			}
+			if (Validator.isNotNull(codePattern)) {
+				object.setCodePattern(codePattern);
+			}
+			if (Validator.isNotNull(docSync)) {
+				object.setDocSync(docSync);
+			}
+			if (Validator.isNotNull(fieldConfigs)) {
+				object.setFieldConfigs(fieldConfigs);
+			}
+		}
+
+		deliverableTypePersistence.update(object);
+
+	}
+
 	private void validateRemoveDeliverableType(long groupId, String deliverableTypeId) {
 		// TODO Auto-generated method stub
 

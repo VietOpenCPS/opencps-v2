@@ -2,6 +2,7 @@ package org.opencps.dossiermgt.action;
 
 import java.util.LinkedHashMap;
 
+import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 
@@ -32,4 +33,12 @@ public interface ServiceConfigActions {
 			long serviceProcessId, ServiceContext context) throws PortalException;
 	
 	public ProcessOption removeProcessOption(long processOptionId) throws PortalException;
+
+	public long updateServiceConfigDB(long userId, long groupId, long serviceInfoId, String govAgencyCode, String govAgencyName,
+			String serviceInstruction, Integer serviceLevel, String serviceUrl, boolean forCitizen, boolean forBusiness,
+			boolean postalService, boolean registration, ServiceContext context) throws NoSuchServiceConfigException;
+
+	public void updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
+			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
+			String templateName, String processNo, String processName, String registerBookCode, ServiceContext context);
 }

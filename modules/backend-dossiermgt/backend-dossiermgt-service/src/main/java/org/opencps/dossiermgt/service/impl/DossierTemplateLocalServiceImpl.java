@@ -317,6 +317,45 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 	}
 
+	//LamTV_ Process output DossierTemplate to DB
+	public void updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
+			String description, ServiceContext serviceContext) throws PortalException {
+
+		Date now = new Date();
+		User userAction = userLocalService.getUser(userId);
+
+		DossierTemplate dossierTemplate = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
+		if (dossierTemplate == null) {
+
+			long dossierTemplateId = counterLocalService.increment(DossierTemplate.class.getName());
+			dossierTemplate = dossierTemplatePersistence.create(dossierTemplateId);
+
+			dossierTemplate.setGroupId(groupId);
+			dossierTemplate.setCompanyId(serviceContext.getCompanyId());
+			dossierTemplate.setCreateDate(now);
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			dossierTemplate.setTemplateName(templateName);
+			dossierTemplate.setTemplateNo(templateNo);
+			dossierTemplate.setDescription(description);
+		} else {
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			if (Validator.isNotNull(templateName))
+				dossierTemplate.setTemplateName(templateName);
+			if (Validator.isNotNull(templateNo))
+				dossierTemplate.setTemplateNo(templateNo);
+			if (Validator.isNotNull(description))
+				dossierTemplate.setDescription(description);
+		}
+
+		dossierTemplatePersistence.update(dossierTemplate);
+	}
+
 	private void validateRemove(long groupId, long dossierTemplateId) throws PortalException {
 
 		DossierTemplate dossierTemplate = dossierTemplatePersistence.fetchByPrimaryKey(dossierTemplateId);
