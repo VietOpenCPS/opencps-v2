@@ -39,7 +39,7 @@ public interface DossierActions {
 			String delegateWardCode, String applicantNote, String briefNote,
 			String dossierNo, String dossierTemplateNo, int viaPostal, String postalServiceCode,
 			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
-			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException;
+			String postalWardCode, String postalTelNo, int originality, ServiceContext context) throws PortalException;
 
 	public Dossier assignDossierToProcess(long dossierId, String dossierNote, String submissionNote, String briefNote,
 			String dossierNo, long folderId, long dossierActionId, String serverNo, ServiceContext context)

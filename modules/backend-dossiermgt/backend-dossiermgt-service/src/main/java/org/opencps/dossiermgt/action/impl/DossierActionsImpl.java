@@ -3135,13 +3135,13 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String delegateWardCode, String applicantNote, String briefNote,
 			String dossierNo, String dossierTemplateNo, int viaPostal, String postalServiceCode,
 			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
-			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException {
+			String postalWardCode, String postalTelNo, int originality, ServiceContext context) throws PortalException {
 
 		return DossierLocalServiceUtil.createDossier(groupId, serviceCode, govAgencyCode, applicantName,
 				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, districtCode, wardCode, contactName,
 				contactTelNo, contactEmail, isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo, delegateEmail,
 				delegateAddress, delegateCityCode, delegateDistrictCode, delegateWardCode, applicantNote, briefNote,
-				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress, postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, context);
+				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress, postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, originality, context);
 				
 	}
 

@@ -1,28 +1,24 @@
 package org.opencps.dossiermgt.rest.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.io.File;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import javax.ws.rs.HttpMethod;
+
+import org.opencps.dossiermgt.action.util.MultipartUtility;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
+import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
 
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 public class OpenCPSRestClient {
 	private String username;
@@ -84,62 +80,59 @@ public class OpenCPSRestClient {
 		}
 		this.groupId = groupId;
 	}
-		
+	
 	public DossierDetailModel postDossier(DossierInputModel model) {
 		DossierDetailModel result = null;
+		InvokeREST callRest = new InvokeREST();
+		HashMap<String, String> properties = new HashMap<String, String>();
+		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
+		ServiceContext context = new ServiceContext();
 		
-		try {
-			CredentialsProvider provider = new BasicCredentialsProvider();
-			UsernamePasswordCredentials credentials
-			 = new UsernamePasswordCredentials(username, password);
-			provider.setCredentials(AuthScope.ANY, credentials);
-			  
-			CloseableHttpClient httpClient = HttpClientBuilder.create()
-			  .setDefaultCredentialsProvider(provider)
-			  .build();
-			
-		    List<NameValuePair> params = OpenCPSConverter.convertHttpParams(model);
-		    
-			
-			HttpPost postRequest = new HttpPost(baseUrl + DOSSIERS_BASE_PATH);
-			postRequest.setHeader("groupId", String.valueOf(groupId));
-			postRequest.setHeader("Accept", "application/json");
-			
-			String base64String = username + ":" + password;
-			postRequest.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(base64String.getBytes()));
-			postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
- 
-			CloseableHttpResponse httpresponse = httpClient.execute(postRequest);
-						
-			if (httpresponse.getStatusLine().getStatusCode() >= 401) {
-				return result;
-			}			
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader((httpresponse.getEntity().getContent())));
-			String output = "";
-			
-			StringBuilder jsonString = new StringBuilder();
+		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
+				baseUrl, DOSSIERS_BASE_PATH, username,
+				password, properties, params, context);
 
-			while ((output = br.readLine()) != null) {
-				jsonString.append(output);
-			}
-			
-			JSONObject jsonObj = JSONFactoryUtil.createJSONObject(jsonString.toString());
-
-			result = OpenCPSConverter.convertDossierDetail(jsonObj);
-		} catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		}
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return result;		
+		result = OpenCPSConverter.convertDossierDetail(resultObj);
+		
+		return result;
 	}
 	
+	public DossierFileModel postDossierFile(File file, String dossierUnique, DossierFileModel model) {
+		DossierFileModel result = null;
+
+		try {
+
+			String authString = username + ":" + password;
+
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
+			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierUnique + "/files";
+
+			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
+
+			multipart.addFilePart("file", file);
+
+			if (!Validator.isNull(model.getDisplayName())) {
+				multipart.addFormField(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
+			}
+
+			List<String> res = multipart.finish();
+
+			StringBuilder sb = new StringBuilder();
+
+			for (String line : res) {
+				sb.append(line);
+			}
+
+			JSONObject jsonObj = JSONFactoryUtil.createJSONObject(sb.toString());
+			
+			result = OpenCPSConverter.convertDossierFile(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+		}
+
+		return result;
+		
+	}
 }
