@@ -978,6 +978,7 @@
 		<column name="dossierTemplateNo" type="String"/>
 		<column name="signatureType" type="String"/>
 		<column name="createDossiers" type="String"/>
+		<column name="assignUserName" type="String" />
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />

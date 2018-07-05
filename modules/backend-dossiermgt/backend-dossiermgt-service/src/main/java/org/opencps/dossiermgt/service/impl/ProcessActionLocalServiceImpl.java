@@ -598,7 +598,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	//LamTV_Process output ProcessAction to DB
 	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
-			boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
+			boolean allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
 			String createDossiers, ServiceContext serviceContext) throws PortalException {
 
@@ -629,6 +629,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setActionName(actionName);
 			object.setAllowAssignUser(allowAssignUser);
 			object.setAssignUserId(assignUserId);
+			object.setAssignUserName(assignUserName);
 			object.setRequestPayment(requestPayment);
 			object.setPaymentFee(paymentFee);
 			object.setCreateDossierFiles(createDossierFiles);
@@ -651,6 +652,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setActionName(actionName);
 			object.setAllowAssignUser(allowAssignUser);
 			object.setAssignUserId(assignUserId);
+			object.setAssignUserName(assignUserName);
 			object.setRequestPayment(requestPayment);
 			object.setPaymentFee(paymentFee);
 			object.setCreateDossierFiles(createDossierFiles);
@@ -659,7 +661,6 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setSignatureType(signatureType);
 			object.setCreateDossiers(createDossiers);
 		}
-
 		processActionPersistence.update(object);
 
 	}
