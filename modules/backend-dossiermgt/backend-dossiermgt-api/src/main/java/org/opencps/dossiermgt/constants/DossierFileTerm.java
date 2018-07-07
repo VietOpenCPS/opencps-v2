@@ -23,5 +23,6 @@ public class DossierFileTerm {
 	public static final String SIGN_INFO = "signInfo";
 	public static final String FORM_SCRIPT = "formScript";
 	public static final String FORM_REPORT = "formReport";
-
+	public static final String FILE_TYPE = "fileType";
+	public static final String IS_SYNC = "isSync";
 }

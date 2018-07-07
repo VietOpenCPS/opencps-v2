@@ -25,6 +25,7 @@ import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -1552,9 +1553,35 @@ public class DossierActionsImpl implements DossierActions {
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
 		if (syncType > 0) {
+			int state = DossierSyncTerm.STATE_NOT_SYNC;
+			if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+				if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
+					state = DossierSyncTerm.STATE_WAITING_SYNC;
+				}
+				else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM) {
+					state = DossierSyncTerm.STATE_NOT_SYNC;
+				}
+			}
+			else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA) {
+				state = DossierSyncTerm.STATE_NOT_SYNC;
+			}
+			else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+				if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
+					state = DossierSyncTerm.STATE_NOT_SYNC;
+				}
+				else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM) {
+					state = DossierSyncTerm.STATE_WAITING_SYNC;
+				}				
+			}
+			//If state = 1 set pending dossier
+			if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
+				dossierAction.setPending(true);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
+			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, payload, serviceProcess.getServerNo(), 0);
+					syncType, payload, serviceProcess.getServerNo(), state);
 		}
 		
 	}

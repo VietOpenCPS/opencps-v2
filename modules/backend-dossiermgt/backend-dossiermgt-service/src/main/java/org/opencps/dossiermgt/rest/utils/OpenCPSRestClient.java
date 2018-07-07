@@ -1,26 +1,25 @@
 package org.opencps.dossiermgt.rest.utils;
 
 import java.io.File;
-import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
-import org.opencps.dossiermgt.action.util.MultipartUtility;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class OpenCPSRestClient {
+	private Log _log = LogFactoryUtil.getLog(OpenCPSRestClient.class);
 	private String username;
 	private String password;
 	private long groupId;
@@ -88,8 +87,8 @@ public class OpenCPSRestClient {
 		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
 		ServiceContext context = new ServiceContext();
 		
-		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
-				baseUrl, DOSSIERS_BASE_PATH, username,
+		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
+				baseUrl,DOSSIERS_BASE_PATH, username,
 				password, properties, params, context);
 
 		result = OpenCPSConverter.convertDossierDetail(resultObj);
@@ -102,30 +101,15 @@ public class OpenCPSRestClient {
 
 		try {
 
-			String authString = username + ":" + password;
-
-			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
-
 			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierUnique + "/files";
-
-			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
-
-			multipart.addFilePart("file", file);
-
-			if (!Validator.isNull(model.getDisplayName())) {
-				multipart.addFormField(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
-			}
-
-			List<String> res = multipart.finish();
-
-			StringBuilder sb = new StringBuilder();
-
-			for (String line : res) {
-				sb.append(line);
-			}
-
-			JSONObject jsonObj = JSONFactoryUtil.createJSONObject(sb.toString());
+			InvokeREST callRest = new InvokeREST();
+			HashMap<String, String> properties = OpenCPSConverter.convertDossierFileHttpParams(model);
+			ServiceContext context = new ServiceContext();
 			
+			JSONObject jsonObj = callRest.callPostFileAPI(groupId, HttpMethod.POST, "application/json", 
+					 baseUrl, requestURL, username,
+					password, properties, file, context);
+			_log.info("Post dossier file: " + jsonObj);
 			result = OpenCPSConverter.convertDossierFile(jsonObj);
 			
 			return result;
@@ -134,5 +118,32 @@ public class OpenCPSRestClient {
 
 		return result;
 		
+	}
+	
+	public ExecuteOneAction postDossierAction(long dossierId, ExecuteOneAction model) {
+		ExecuteOneAction result = new ExecuteOneAction();
+
+		try {
+
+			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierId + "/actions";
+			
+			HashMap<String, String> properties = new HashMap<String, String>();
+			
+			Map<String, Object> params = OpenCPSConverter.convertExecuteActionHttpParams(model);
+			InvokeREST callRest = new InvokeREST();
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
+					baseUrl, requestURL, username,
+					password, properties, params, context);
+			
+			
+			result = OpenCPSConverter.convertProcessAction(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+		}
+		
+		return result;
 	}
 }

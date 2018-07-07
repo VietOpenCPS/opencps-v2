@@ -129,8 +129,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		
 		_log.info("****End validator file at:" + new Date());
 
+		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo + ", groupId: " + groupId);
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
-
+		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
 		long fileEntryId = 0;
 
 		try {
@@ -141,6 +142,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				fileEntryId = fileEntry.getFileEntryId();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new SystemException(e);
 		}
 		_log.info("****End uploadFile file at:" + new Date());

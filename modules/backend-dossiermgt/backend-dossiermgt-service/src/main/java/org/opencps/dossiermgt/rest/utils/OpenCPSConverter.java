@@ -9,8 +9,10 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.utils.APIDateTimeUtils;
@@ -271,5 +273,35 @@ public class OpenCPSConverter {
 		model.setDelegateWardCode(dossier.getDelegateWardCode());
 
 		return model;
+	}
+	
+	public static Map<String, Object> convertExecuteActionHttpParams(ExecuteOneAction model) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put(ExecuteOneActionTerm.ACTION_CODE, model.getActionCode());
+	    params.put(ExecuteOneActionTerm.ACTION_USER, model.getActionUser());
+	    params.put(ExecuteOneActionTerm.ACTION_NOTE, model.getActionNote());
+	    params.put(ExecuteOneActionTerm.ASSIGN_USERS, model.getAssignUserId());
+	    params.put(ExecuteOneActionTerm.PAYLOAD, StringPool.BLANK);
+	    
+	    return params;
+	}
+
+	public static ExecuteOneAction convertProcessAction(JSONObject jsonObj) {
+		ExecuteOneAction result = new ExecuteOneAction();
+		
+		return result;
+	}
+	
+	public static HashMap<String, String> convertDossierFileHttpParams(DossierFileModel model) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put(DossierFileTerm.REFERENCE_UID, StringPool.BLANK);
+		params.put(DossierFileTerm.DOSSIER_PART_NO, model.getDossierPartNo());
+		params.put(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
+		params.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());
+		params.put(DossierFileTerm.FILE_TEMPLATE_NO, model.getFileTemplateNo());
+		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
+		params.put(DossierFileTerm.FILE_TYPE, model.getFileType());
+		params.put(DossierFileTerm.IS_SYNC, "true");
+		return params;
 	}
 }

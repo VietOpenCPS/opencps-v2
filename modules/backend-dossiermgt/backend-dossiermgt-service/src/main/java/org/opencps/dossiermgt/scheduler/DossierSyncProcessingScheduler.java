@@ -6,6 +6,7 @@ import java.util.List;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.dossiermgt.processor.IMessageProcessor;
 import org.opencps.dossiermgt.processor.MessageProcessor;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -34,7 +35,13 @@ public class DossierSyncProcessingScheduler extends BaseSchedulerEntryMessageLis
 		
 		List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByState(DossierSyncTerm.STATE_WAITING_SYNC, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 		for (DossierSync ds : lstSyncs) {
-			MessageProcessor.getProcessor(ds).process();
+			IMessageProcessor processor = MessageProcessor.getProcessor(ds);
+			if (processor != null) {
+				processor.process();				
+			}
+			else {
+				_log.info("Do not config sync server");
+			}
 		}
 		
 		_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
