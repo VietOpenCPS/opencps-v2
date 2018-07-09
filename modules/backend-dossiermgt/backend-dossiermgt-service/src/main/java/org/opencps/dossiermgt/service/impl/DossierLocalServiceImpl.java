@@ -467,6 +467,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateWardCode, String applicantNote, String briefNote, String dossierNo, String dossierTemplateNo,
 			int viaPostal, String postalServiceCode, String postalServiceName, String postalAddress,
 			String postalCityCode, String postalDistrictCode, String postalWardCode, String postalTelNo,
+			int originality,
 			ServiceContext context) throws PortalException {
 
 		Date now = new Date();
@@ -518,7 +519,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setAddress(address);
 		dossier.setDossierTemplateNo(dossierTemplateNo);
 		dossier.setDossierTemplateName(dossierTemplateName);
-		
+		dossier.setOriginality(originality);
 		
 
 		if (Validator.isNotNull(cityCode)) {
@@ -722,7 +723,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, ServiceContext context) throws PortalException {
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException {
 
 		Date now = new Date();
 
@@ -787,7 +788,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			dossier.setServerNo(getServerNo(groupId));
-
+			dossier.setOriginality(originality);
+			
 			dossierPersistence.update(dossier);
 
 			// create DossierFile if it is eForm

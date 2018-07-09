@@ -349,4 +349,18 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 	}
 
+	@Override
+	public Response getActionDetail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String actionId) {
+		// TODO Auto-generated method stub
+		return Response.status(200).entity("action detail").build();
+	}
+
+	@Override
+	public Response getActionPayload(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String actionId) {
+		// TODO Auto-generated method stub
+		return Response.status(200).entity("action payload").build();
+	}
+
 }
