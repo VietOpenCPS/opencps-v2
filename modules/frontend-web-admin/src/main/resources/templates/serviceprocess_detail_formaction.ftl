@@ -156,6 +156,11 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
+						Chuỗi pattern tính phí
+					</div>
+				</div>			
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
 						<input class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee">
 					</div>
 				</div>

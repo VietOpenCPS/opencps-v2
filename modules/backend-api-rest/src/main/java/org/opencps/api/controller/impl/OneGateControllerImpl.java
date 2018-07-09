@@ -23,6 +23,7 @@ import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -169,7 +170,7 @@ public class OneGateControllerImpl implements OneGateController {
 					StringPool.BLANK, input.getDossierNo(), input.getDossierTemplateNo(), input.getViaPostal(),
 					input.getPostalServiceCode(), input.getPostalServiceName(), input.getPostalAddress(),
 					input.getPostalCityCode(), input.getPostalDistrictCode(), input.getPostalWardCode(),
-					input.getPostalTelNo(), serviceContext);
+					input.getPostalTelNo(), DossierTerm.ORIGINALITY_MOTCUA, serviceContext);
 
 			DossierDetailModel result = null;
 			if (dossier != null ) {

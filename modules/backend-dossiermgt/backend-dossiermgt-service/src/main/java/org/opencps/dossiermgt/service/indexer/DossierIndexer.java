@@ -169,7 +169,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.DOSSIER_ACTION_ID, object.getDossierActionId());
 			document.addNumberSortable(DossierTerm.VIA_POSTAL, object.getViaPostal());
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
-
+			document.addNumberSortable(DossierTerm.ORIGINALLITY, object.getOriginality());
+			
 			int yearDossier = 0;
 
 			int monthDossier = 0;

@@ -57,6 +57,14 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 		return dossierSyncFinder.countDossierSyncByIdList(dossierId, model, actionCodeNo);
 	}
 
+	public List<DossierSync> findAll(Integer start, Integer end) {
+		return dossierSyncPersistence.findAll(start, end);
+	}
+	
+	public List<DossierSync> findByState(Integer state, Integer start, Integer end) {
+		return dossierSyncPersistence.findByST(state, start, end);
+	}
+	
 	public DossierSync updateDossierSync(long groupId, long userId, long dossierId, String dossierReferenceUid, String syncRefUid,
 			long dossierActionId, String actionCode, String actionName, String  actionUser, String  actionNote,
 			int syncType, String  payload, String serverNo, int state) {

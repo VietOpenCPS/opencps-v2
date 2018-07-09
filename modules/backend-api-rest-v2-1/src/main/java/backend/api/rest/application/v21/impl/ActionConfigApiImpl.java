@@ -115,7 +115,8 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 
 	@Override
 	public ActionConfigItem getActionConfigByCode(String actionCode) {
-		ActionConfig ett = ActionConfigLocalServiceUtil.getByCode(actionCode);
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		ActionConfig ett = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 
 		if (Validator.isNull(ett)) {
 			ett = ActionConfigLocalServiceUtil.fetchActionConfig(Long.valueOf(actionCode));

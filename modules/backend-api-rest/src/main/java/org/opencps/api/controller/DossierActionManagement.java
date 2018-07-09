@@ -54,7 +54,37 @@ public interface DossierActionManagement {
 			@Context ServiceContext serviceContext, @BeanParam DossierActionSearchModel query,
 			@PathParam("id") String id);
 	
+
+	@GET
+	@Path("/{id}/nextactions/{actionId}")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get List Actions", response = ActionResultModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list action can be executed", response = ActionResultModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 	
+	public Response getActionDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@PathParam("id") String id, @PathParam("actionId") String actionId);
+	
+	@GET
+	@Path("/{id}/nextactions/{actionId}/payload")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get List Actions", response = ActionResultModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list action can be executed", response = ActionResultModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	
+	public Response getActionPayload(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@PathParam("id") String id, @PathParam("actionId") String actionId);
+
 	@GET
 	@Path("/{id}/actions")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)

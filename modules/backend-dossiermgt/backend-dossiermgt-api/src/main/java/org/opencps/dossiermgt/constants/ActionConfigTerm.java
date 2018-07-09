@@ -13,4 +13,6 @@ public class ActionConfigTerm {
 	public static final String ROLL_BACKABLE = "rollbackable";
 	public static final String NOTIFICATION_TYPE = "notificationType";
 	public static final String DOCUMENT_TYPE = "documentType";
+	
+	public static final String ACTION_CODE_1300 = "1300";
 }

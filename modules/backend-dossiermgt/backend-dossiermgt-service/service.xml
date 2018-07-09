@@ -1629,6 +1629,7 @@
         </order>
 
 		<finder return-type="ActionConfig" name="F_BY_ActionCode">
+			<finder-column name="groupId"></finder-column>
 			<finder-column name="actionCode"></finder-column>
 		</finder>
 		
@@ -1756,6 +1757,9 @@
         <order by="desc">
             <order-column name="modifiedDate" order-by="desc" case-sensitive="true" />
         </order>
+        <finder name="ST" return-type="Collection">
+            <finder-column name="state"></finder-column>
+        </finder>
 	</entity>
 	
 	<entity local-service="true" name="DossierDocument" remote-service="false"
