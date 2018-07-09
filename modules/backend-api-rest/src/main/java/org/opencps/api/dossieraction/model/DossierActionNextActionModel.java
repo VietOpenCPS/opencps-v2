@@ -72,7 +72,7 @@ public class DossierActionNextActionModel {
     protected String autoEvent;
     protected String preCondition;
     protected Boolean pending;
-    protected Boolean allowAssignUser;
+    protected Integer allowAssignUser;
     protected Long assignUserId;
     protected List<DossierActionNextActiontoUser> toUsers;
     protected List<DossierActionNextActioncreateFiles> createFiles;
@@ -288,7 +288,7 @@ public class DossierActionNextActionModel {
      *     {@link Long }
      *     
      */
-    public Boolean getAllowAssignUser() {
+    public Integer getAllowAssignUser() {
         return allowAssignUser;
     }
 
@@ -300,7 +300,7 @@ public class DossierActionNextActionModel {
      *     {@link Long }
      *     
      */
-    public void setAllowAssignUser(Boolean value) {
+    public void setAllowAssignUser(Integer value) {
         this.allowAssignUser = value;
     }
 

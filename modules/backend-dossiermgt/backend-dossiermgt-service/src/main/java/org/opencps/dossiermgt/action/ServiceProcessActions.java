@@ -64,13 +64,13 @@ public interface ServiceProcessActions {
 	@Deprecated
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
+			String actionName, int allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, ServiceContext context) throws PortalException;
 
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
-			String actionName, boolean allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
+			String actionName, int allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
 			String dossierTemplateNo, ServiceContext context) throws PortalException;
@@ -99,7 +99,7 @@ public interface ServiceProcessActions {
 
 	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
-			boolean allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,
+			int allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
 			String createDossiers, ServiceContext serviceContext) throws PortalException;
 

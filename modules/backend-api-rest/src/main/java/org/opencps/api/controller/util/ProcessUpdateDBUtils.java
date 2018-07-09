@@ -52,6 +52,7 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -567,7 +568,7 @@ public class ProcessUpdateDBUtils {
 			String postStepCode = StringPool.BLANK;
 			String autoEvent = StringPool.BLANK;
 			String preCondition = StringPool.BLANK;
-			boolean allowAssignUser = false;
+			int allowAssignUser = ProcessActionTerm.NOT_ASSIGNED;
 			long assignUserId = 0;
 			String assignUserName = StringPool.BLANK;
 			Integer requestPayment = 0;
@@ -584,7 +585,7 @@ public class ProcessUpdateDBUtils {
 				postStepCode = processAction.getPostStepCode();
 				autoEvent = processAction.getAutoEvent();
 				preCondition = processAction.getPreCondition();
-				allowAssignUser = processAction.isAllowAssignUser();
+				allowAssignUser = processAction.getAllowAssignUser();
 				assignUserId = processAction.getAssignUserId();
 				assignUserName = processAction.getAssignUserName();
 				requestPayment = processAction.getRequestPayment();

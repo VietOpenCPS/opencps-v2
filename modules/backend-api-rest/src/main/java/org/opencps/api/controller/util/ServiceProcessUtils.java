@@ -302,7 +302,7 @@ public class ServiceProcessUtils {
 		model.setPostStepCode(action.getPostStepCode());
 		model.setAutoEvent(action.getAutoEvent());
 		model.setPreCondition(action.getPreCondition());
-		model.setAllowAssignUser(Boolean.toString(action.getAllowAssignUser()));
+		model.setAllowAssignUser(String.valueOf(action.getAllowAssignUser()));
 		model.setAssignUserId(String.valueOf(action.getAssignUserId()));
 
 		String assignName = StringPool.BLANK;

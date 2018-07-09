@@ -1043,7 +1043,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 */
 			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
+					input.getActionName(), Integer.parseInt(input.getAllowAssignUser()),
 					GetterUtil.getLong(input.getAssignUserId()), Integer.parseInt(input.getRequestPayment()),
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
@@ -1099,7 +1099,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 */
 			ProcessAction processAction = actions.updateProcessAction(groupId, actionid, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
+					input.getActionName(), Integer.parseInt(input.getAllowAssignUser()),
 					GetterUtil.getLong(input.getAssignUserId()), Integer.parseInt(input.getRequestPayment()),
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),

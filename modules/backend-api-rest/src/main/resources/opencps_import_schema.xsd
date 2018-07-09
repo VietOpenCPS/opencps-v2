@@ -858,7 +858,7 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
-							<xsd:element name="allowAssignUser" type="xsd:boolean" />
+							<xsd:element name="allowAssignUser" type="xsd:int" />
 							<xsd:element name="assignUserId" type="xsd:int" />
 							<xsd:element name="assignUserName">
 								<xsd:simpleType>

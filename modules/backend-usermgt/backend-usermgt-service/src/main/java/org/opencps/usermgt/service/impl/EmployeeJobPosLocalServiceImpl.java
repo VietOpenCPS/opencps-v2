@@ -440,5 +440,9 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		return employeeJobPosPersistence.fetchByG_EmployeeId(groupId, employeeId);
 	}
 	
+	public List<EmployeeJobPos> getByJobPostId(long groupId, long jobPostId) {
+		return employeeJobPosPersistence.findByF_G_jobPostId(groupId, jobPostId);
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(EmployeeJobPosLocalServiceImpl.class.getName());
 }

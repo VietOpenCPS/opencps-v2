@@ -52,6 +52,7 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -62,6 +63,7 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -684,6 +686,10 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new NotFoundException("Cant add DOSSIER");
 			}
 
+			//Add to dossier user based on service process role
+			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
+			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
+			
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
@@ -993,7 +999,8 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
-
+		DossierAction dossierResult = null;
+		
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -1022,7 +1029,7 @@ public class DossierManagementImpl implements DossierManagement {
 								ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 										serviceProcessId);
 								if (proAction != null) {
-									actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
+									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
 											input.getActionUser(), input.getActionNote(), input.getPayload(),
 											input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(), serviceContext);
 								} else {
@@ -1030,7 +1037,7 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 							}
 						} else {
-							actions.doAction(groupId, userId, dossier, null, null,
+							dossierResult = actions.doAction(groupId, userId, dossier, null, null,
 									actionCode, input.getActionUser(),
 									input.getActionNote(), input.getPayload(), input.getAssignUsers(),
 									input.getPayment(),
@@ -1045,7 +1052,7 @@ public class DossierManagementImpl implements DossierManagement {
 							ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
-								actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
+								dossierResult = actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
 										input.getActionUser(), input.getActionNote(), input.getPayload(),
 										input.getAssignUsers(), 
 										input.getPayment(),
@@ -1069,8 +1076,12 @@ public class DossierManagementImpl implements DossierManagement {
 //					input.getActionNote(), input.getAssignUserId(), 0l, subUsers, serviceContext);
 
 //				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
-
-				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep("")).build();
+			if (dossierResult != null) {
+				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierResult)).build();				
+			}
+			else {
+				return Response.status(403).entity("{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
+			}
 //				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 //						dossier.getDossierTemplateNo(), groupId);
 
