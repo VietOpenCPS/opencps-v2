@@ -29,4 +29,5 @@ public class ProcessActionTerm {
 	public static final String ESIGNATURE = "eSignature";
 	public static final String CONFIG_NOTE = "configNote";
 
+	public static final int NOT_ASSIGNED = 0;
 }

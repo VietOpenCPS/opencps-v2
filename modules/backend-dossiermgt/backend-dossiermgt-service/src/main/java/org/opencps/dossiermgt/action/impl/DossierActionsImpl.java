@@ -27,6 +27,7 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
@@ -1454,7 +1455,7 @@ public class DossierActionsImpl implements DossierActions {
 	}
 
 	@Override
-	public void doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
+	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
@@ -1525,8 +1526,8 @@ public class DossierActionsImpl implements DossierActions {
 				// Add DossierActionUser
 				DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
-				boolean allowAssignUser = proAction.getAllowAssignUser();
-				if (allowAssignUser) {
+				int allowAssignUser = proAction.getAllowAssignUser();
+				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
 						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -1542,11 +1543,16 @@ public class DossierActionsImpl implements DossierActions {
 							proAction.getAssignUserId());
 				}
 
-				// update nextActionId
-				_log.info("prvAction:" + prvAction);
-				if (Validator.isNotNull(prvAction)) {
-					DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
-							dossierAction.getDossierActionId());
+				List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
+
+				for (PaymentFile pf : paymentFiles) {
+					if (pf.getIsNew()) {
+						syncPaymentFiles.add(pf);
+					}
+				}
+
+				for (PaymentFile spf : syncPaymentFiles) {
 				}
 		}
 		
@@ -1586,6 +1592,7 @@ public class DossierActionsImpl implements DossierActions {
 					syncType, payload, serviceProcess.getServerNo(), state);
 		}
 		
+		return dossierAction;
 	}
 
 	@Override

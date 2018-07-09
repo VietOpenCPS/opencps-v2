@@ -963,7 +963,7 @@
 		<column name="preCondition" type="String" />
 		<column name="actionCode" type="String" />
 		<column name="actionName" type="String" />
-		<column name="allowAssignUser" type="boolean" />
+		<column name="allowAssignUser" type="int" />
 		<column name="assignUserId" type="long" />
 		<column name="requestPayment" type="int" />
 		<column name="paymentFee" type="String" />

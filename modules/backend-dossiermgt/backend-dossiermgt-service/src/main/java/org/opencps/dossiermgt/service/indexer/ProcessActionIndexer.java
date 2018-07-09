@@ -73,7 +73,7 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 		document.addTextSortable(ProcessActionTerm.RETURN_DOSSIER_FILES, object.getReturnDossierFiles());
 		document.addTextSortable(ProcessActionTerm.MAKE_BRIEF_NOTE, object.getMakeBriefNote());
 
-		document.addTextSortable(ProcessActionTerm.ALLOW_ASSIGN_USER, Boolean.toString(object.getAllowAssignUser()));
+		document.addNumberSortable(ProcessActionTerm.ALLOW_ASSIGN_USER, object.getAllowAssignUser());
 		document.addTextSortable(ProcessActionTerm.ROLLBACKABLE, Boolean.toString(object.getRollbackable()));
 
 		document.addTextSortable(ProcessActionTerm.CREATE_DOSSIER_NO, Boolean.toString(object.getCreateDossierNo()));

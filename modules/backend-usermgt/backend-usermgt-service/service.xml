@@ -289,6 +289,10 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="employeeId"></finder-column>
 		</finder>
+        <finder name="F_G_jobPostId" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="jobPostId"></finder-column>
+        </finder>
 	</entity>
 	
 	<entity name="ResourceUser" uuid="true" local-service="true"
