@@ -67,8 +67,7 @@
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Bước thực hiện thao tác
-						
+						Bước thực hiện thao tác	
 					</div>
 				</div>
 				<div class="row MT5">
@@ -82,7 +81,6 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						Bước sau thực hiện thao tác
-						
 					</div>
 				</div>
 				<div class="row MT5">
@@ -96,12 +94,16 @@
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" id="allowAssignUser" name="allowAssignUser" data-bind="checked: allowAssignUser"> <label>Phân công người xử lý</label> </div>
+						<#-- <div class="checkbox"> <input type="checkbox" id="allowAssignUser" name="allowAssignUser" data-bind="checked: allowAssignUser"> <label>Phân công người xử lý</label> </div> -->
+						<label>Phân công người xử lý</label>
+						<select class="form-control" id="allowAssignUser" name="allowAssignUser" data-bind="value: allowAssignUser">
+							
+						</select>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId">
+						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId, visible: allowAssignUser">
 							<option></option>
 						</select>
 					</div>
@@ -146,21 +148,10 @@
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						Cấu hình thay đổi trạng thái thanh toán
-					</div>
-				</div>			
-				<div class="row MT5">
-					<div class="col-xs-12 col-sm-12">
+						<#-- <div class="checkbox"> <input type="checkbox" id="requestPayment" name="requestPayment" data-bind="checked:requestPayment"> <label>Yêu cầu thanh toán</label> </div> -->
+						<label>Yêu cầu thanh toán</label>
 						<select class="form-control" id="requestPayment" name="requestPayment" data-bind="value: requestPayment">
-							<option value="0">Không thay đổi trạng thái</option>
-							<option value="1">Yêu cầu nộp tiền tạm ứng</option>
-							<option value="2">Yêu cầu quyết toán phí</option>
-							<option value="3">Báo đã nộp phí trực tuyến</option>
-							<option value="4">Yêu cầu nộp lại phí trực tuyến</option>
-							<option value="5">Xác nhận hoàn thành thu phí</option>
 						</select>
-					
-						<!--<div class="checkbox"> <input type="checkbox" id="requestPayment" name="requestPayment" data-bind="checked:requestPayment"> <label>Yêu cầu thanh toán</label> </div>-->
 					</div>
 				</div>
 				<div class="row">
@@ -229,6 +220,70 @@
 	$("#autoEvent").kendoComboBox({
 		filter: "contains"
 	});
+
+	$("#allowAssignUser").kendoComboBox({
+		dataTextField: "name",
+		dataValueField: "value",
+		filter: "contains",
+		dataSource : [
+			{
+				value: 0,
+				name: 'Không phân công'
+			},
+			{
+				value: 1,
+				name: 'Chỉ phân công người thực hiện'
+			},
+			{
+				value: 2,
+				name: 'Phân công thực hiện và phối hợp'
+			},
+			{
+				value: 3,
+				name: 'Phân công thực hiện, phối hợp và theo dõi'
+			}
+		],
+		change: function(e) {
+			var value = this.value();
+		},
+		noDataTemplate: 'Không có dữ liệu'
+	})
+
+	$("#requestPayment").kendoComboBox({
+		dataTextField: "name",
+		dataValueField: "value",
+		filter: "contains",
+		dataSource : [
+			{
+				value: 0,
+				name: 'Không thay đổi trạng thái'
+			},
+			{
+				value: 1,
+				name: 'Yêu cầu nộp tiền tạm ứng'
+			},
+			{
+				value: 2,
+				name: 'Yêu cầu quyết toán phí'
+			},
+			{
+				value: 3,
+				name: 'Báo đã nộp phí trực tuyến'
+			},
+			{
+				value: 4,
+				name: 'Yêu cầu nộp lại phí trực tuyến'
+			},
+			{
+				value: 5,
+				name: 'Xác nhận hoàn thành thu phí'
+			}
+		],
+		change: function(e) {
+			var value = this.value();
+		},
+		noDataTemplate: 'Không có dữ liệu'
+	})
 
 	$("#assignUserId").kendoComboBox({
 		dataTextField: "fullName",
