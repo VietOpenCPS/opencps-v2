@@ -6,9 +6,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,8 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.dossier.model.ActionResultModel;
-import org.opencps.api.dossier.model.DossierDetailModel;
-import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionResultsModel;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
@@ -38,7 +34,8 @@ import io.swagger.annotations.ApiResponses;
 @Api(value="/dossiers" , tags="dossier")
 
 public interface DossierActionManagement {
-	
+
+	//LamTV_ Process NextAction
 	@GET
 	@Path("/{id}/nextactions")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -48,13 +45,42 @@ public interface DossierActionManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	
+
 	public Response getListActions(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierActionSearchModel query,
 			@PathParam("id") String id);
-	
-	
+
+	@GET
+	@Path("/{id}/nextactions/{actionId}")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get List Actions", response = ActionResultModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list action can be executed", response = ActionResultModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+
+	public Response getDetailNextActions(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam DossierActionSearchModel query,
+			@PathParam("id") String id, @PathParam("actionId") String actionId);
+
+	@GET
+	@Path("/{id}/nextactions/{actionId}/payload")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get List Actions", response = ActionResultModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list action can be executed", response = ActionResultModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+
+	public Response getPayloadNextActions(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam DossierActionSearchModel query,
+			@PathParam("id") String id, @PathParam("actionId") String actionId);
+
 	@GET
 	@Path("/{id}/actions")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)

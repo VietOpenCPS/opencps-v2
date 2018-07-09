@@ -82,7 +82,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setActionCode(actionCode);
 		actionConfig.setActionName(actionName);
 		actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
-		actionConfig.setFormScript(formScript);
+		actionConfig.setFormConfig(formScript);
 		actionConfig.setSampleData(sampleData);
 		actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? extraForm : Boolean.FALSE);
 		actionConfig.setUserNote(Validator.isNotNull(userNote) ? userNote : 0);
@@ -124,7 +124,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 			actionConfig.setExtraForm(extraForm);
 		}
 		if (formScript != null) {
-			actionConfig.setFormScript(formScript);
+			actionConfig.setFormConfig(formScript);
 		}
 		if (sampleData != null) {
 			actionConfig.setSampleData(sampleData);
@@ -181,7 +181,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
 
-		result.put(ActionConfigTerm.FORM_SCRIPT, actionConfig.getFormScript());
+		result.put(ActionConfigTerm.FORM_CONFIG, actionConfig.getFormConfig());
 		result.put(ActionConfigTerm.SAMPLE_DATA, actionConfig.getSampleData());
 
 		return result;
@@ -208,7 +208,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 					actionConfig.setExtraForm(extraForm);
 				}
 				if (formConfig != null) {
-					actionConfig.setFormScript(formConfig);
+					actionConfig.setFormConfig(formConfig);
 				}
 				if (sampleData != null) {
 					actionConfig.setSampleData(sampleData);
@@ -245,7 +245,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 				actionConfig.setActionCode(actionCode);
 				actionConfig.setActionName(actionName);
 				actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
-				actionConfig.setFormScript(formConfig);
+				actionConfig.setFormConfig(formConfig);
 				actionConfig.setSampleData(sampleData);
 				actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? extraForm : Boolean.FALSE);
 				actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);

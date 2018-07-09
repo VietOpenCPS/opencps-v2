@@ -45,7 +45,9 @@ import javax.xml.bind.annotation.XmlType;
     "actionUser",
     "actionNote",
     "payload",
-    "assignUsers"
+    "assignUsers",
+    "security",
+    "payment"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
@@ -60,6 +62,10 @@ public class DoActionModel {
 	protected String payload;
 	@FormParam(value = "assignUsers")
 	protected String assignUsers;
+	@FormParam(value = "security")
+	protected String security;
+	@FormParam(value = "payment")
+	protected String payment;
 
 	public String getActionCode() {
 		return actionCode;
@@ -99,6 +105,22 @@ public class DoActionModel {
 
 	public void setAssignUsers(String assignUsers) {
 		this.assignUsers = assignUsers;
+	}
+
+	public String getSecurity() {
+		return security;
+	}
+
+	public void setSecurity(String security) {
+		this.security = security;
+	}
+
+	public String getPayment() {
+		return payment;
+	}
+
+	public void setPayment(String payment) {
+		this.payment = payment;
 	}
 
 }

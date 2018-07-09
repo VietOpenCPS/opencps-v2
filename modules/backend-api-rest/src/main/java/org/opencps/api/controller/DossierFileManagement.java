@@ -444,10 +444,10 @@ public interface DossierFileManagement {
 
 	//LamTV_ Import XML
 	@POST
-	@Path("/testTest/files")
+	@Path("/import/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "addDossierFileByDossierId)", response = DossierFileModel.class)
+	@ApiOperation(value = "import file xml)", response = DossierFileModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileResultsModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),

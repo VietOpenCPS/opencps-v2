@@ -7,25 +7,38 @@ import java.util.Map;
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
+import org.opencps.api.dossieraction.model.DossierActionNextActionReturnFiles;
 import org.opencps.api.dossieraction.model.DossierActionNextActioncreateFiles;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
+import org.opencps.api.dossieraction.model.DossierActionPaymentModel;
+import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
+import org.opencps.api.dossieraction.model.DossierNextActionModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUtils {
 
+	private static Log _log = LogFactoryUtil.getLog(DossierActionUtils.class);
 	public static List<DossierActionNextActionModel> mappingToDoListActions(List<ProcessAction> lstProcessAction,
 			List<User> lstUser) {
 
@@ -150,6 +163,164 @@ public class DossierActionUtils {
 		}
 
 		return outputs;
+	}
+
+	//LamTV_Process mapping getNextAction
+	public static List<DossierNextActionModel> mappingToNextActions(JSONArray jsonData) {
+
+		List<DossierNextActionModel> outputs = new ArrayList<DossierNextActionModel>();
+
+		if (jsonData != null && jsonData.length() > 0) {
+			for (int i = 0; i < jsonData.length(); i++) {
+
+				JSONObject jsonObject = jsonData.getJSONObject(i);
+				DossierNextActionModel model = new DossierNextActionModel();
+
+				model.setProcessActionId(Long.valueOf(jsonObject.getString(ProcessActionTerm.PROCESS_ACTION_ID)));
+				model.setActionCode(jsonObject.getString(ProcessActionTerm.ACTION_CODE));
+				model.setActionName(jsonObject.getString(ProcessActionTerm.ACTION_NAME));
+				model.setPreStepCode(jsonObject.getString(ProcessActionTerm.PRESTEP_CODE));
+				model.setPostStepCode(jsonObject.getString(ProcessActionTerm.POSTSTEP_CODE));
+				model.setAutoEvent(jsonObject.getString(ProcessActionTerm.AUTO_EVENT));
+				model.setPreCondition(jsonObject.getString(ProcessActionTerm.PRE_CONDITION));
+				model.setEnable(Integer.valueOf(jsonObject.getString(ProcessActionTerm.ENABLE)));
+
+				outputs.add(model);
+			}
+		}
+
+		return outputs;
+	}
+
+	//LamTV_Mapping detail Next Action
+	@SuppressWarnings("unchecked")
+	public static DossierDetailNextActionModel mappingToDetailNextActions(JSONObject jsonData) throws PortalException {
+		DossierDetailNextActionModel model = null;
+		try{
+		
+
+		if (jsonData != null) {
+			model = new DossierDetailNextActionModel();
+
+			ProcessAction processAction = (ProcessAction) jsonData.get("processAction");
+			List<User> lstUser = (List<User>) jsonData.get("lstUser");
+			JSONArray createFiles = jsonData.getJSONArray("createFiles");
+			List<DossierFile> returnFiles = (List<DossierFile>) jsonData.get("returnFiles");
+
+			if (processAction != null) {
+				model.setProcessActionId(processAction.getProcessActionId());
+				model.setActionCode(processAction.getActionCode());
+				model.setActionName(processAction.getActionName());
+				model.setPreStepCode(processAction.getPreStepCode());
+				model.setPostStepCode(processAction.getPostStepCode());
+				model.setAutoEvent(processAction.getAutoEvent());
+				model.setPreCondition(processAction.getPreCondition());
+				model.setAllowAssignUser(processAction.getAllowAssignUser());
+				model.seteSignature(processAction.getESignature());
+				model.setSignatureType(processAction.getSignatureType());
+				model.setExtraForm(processAction.getExtraForm());
+				model.setUserNote(processAction.getUserNote());
+			}
+
+			JSONObject paymentFee = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
+			DossierActionPaymentModel payment = null;
+			if (paymentFee != null) {
+				payment = new DossierActionPaymentModel();
+				//
+				payment.setRequestPayment(paymentFee.getInt("requestPayment"));
+				payment.setAdvanceAmount(paymentFee.getLong("advanceAmount"));
+				payment.setFeeAmount(paymentFee.getLong("feeAmount"));
+				payment.setServiceAmount(paymentFee.getLong("serviceAmount"));
+				payment.setShipAmount(paymentFee.getLong("shipAmount"));
+				payment.setEditable(paymentFee.getBoolean("editable"));
+			}
+
+			List<DossierActionNextActiontoUser> outputUsers = null;
+			DossierActionNextActiontoUser modelUser = null;
+			if (lstUser != null && lstUser.size() > 0) {
+				outputUsers = new ArrayList<DossierActionNextActiontoUser>();
+				for (User user : lstUser) {
+					modelUser = new DossierActionNextActiontoUser();
+					Map<String, Object> attr = user.getModelAttributes();
+					long userId = GetterUtil.getLong(user.getUserId());
+
+					boolean moderator = false;
+					if (attr != null && attr.containsKey("moderator")) {
+						moderator = GetterUtil.getBoolean(attr.get("moderator"));
+					}
+
+					modelUser.setUserId(userId);
+					modelUser.setUserName(user.getFullName());
+					modelUser.setModerator(moderator);
+					outputUsers.add(modelUser);
+				}
+			}
+			model.getToUsers().addAll(outputUsers);
+
+			List<DossierActionNextActioncreateFiles> outputCreeateFiles = null;
+			if (createFiles != null && createFiles.length() > 0) {
+				outputCreeateFiles = new ArrayList<DossierActionNextActioncreateFiles>();
+				for (int j = 0; j < createFiles.length(); j++) {
+					JSONObject createFile = createFiles.getJSONObject(j);
+					DossierActionNextActioncreateFiles dossierActionNextActioncreateFile = new DossierActionNextActioncreateFiles();
+					dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong("dossierPartId"));
+					dossierActionNextActioncreateFile.setEform(createFile.getBoolean("eform"));
+					dossierActionNextActioncreateFile.setFormData(createFile.getString("formData"));
+					dossierActionNextActioncreateFile.setFormScript(createFile.getString("formScript"));
+					dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean("multiple"));
+					dossierActionNextActioncreateFile.setPartName(createFile.getString("partName"));
+					dossierActionNextActioncreateFile.setPartNo(createFile.getString("partNo"));
+					dossierActionNextActioncreateFile.setPartTip(createFile.getString("partTip"));
+					dossierActionNextActioncreateFile.setTemplateFileNo(createFile.getString(DossierFileTerm.FILE_TEMPLATE_NO));
+					dossierActionNextActioncreateFile.setReferenceUid(createFile.getString("referenceUid"));
+					dossierActionNextActioncreateFile.setCounter(createFile.getInt("counter"));
+					dossierActionNextActioncreateFile.setDossierFileId(createFile.getLong("dossierFileId"));
+					outputCreeateFiles.add(dossierActionNextActioncreateFile);
+				}
+				model.getCreateFiles().addAll(outputCreeateFiles);
+			}
+			
+
+				
+				List<DossierActionNextActionReturnFiles> outputReturnFiles = null;
+				if (returnFiles != null && returnFiles.size() > 0) {
+					outputReturnFiles = new ArrayList<DossierActionNextActionReturnFiles>();
+					for (DossierFile dossierFile: returnFiles) {
+						DossierActionNextActionReturnFiles dActionReturnFile = new DossierActionNextActionReturnFiles();
+
+					dActionReturnFile.setCreateDate(APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate(),
+							APIDateTimeUtils._TIMESTAMP));
+					dActionReturnFile.setModifiedDate(APIDateTimeUtils.convertDateToString(dossierFile.getModifiedDate(),
+							APIDateTimeUtils._TIMESTAMP));
+					dActionReturnFile.setReferenceUid(dossierFile.getReferenceUid());
+					dActionReturnFile.setDossierTemplateNo(dossierFile.getDossierTemplateNo());
+					dActionReturnFile.setDossierPartNo(dossierFile.getDossierPartNo());
+					dActionReturnFile.setFileTemplateNo(dossierFile.getFileTemplateNo());
+					dActionReturnFile.setDisplayName(dossierFile.getDisplayName());
+					dActionReturnFile.setDeliverableCode(dossierFile.getDeliverableCode());
+					dActionReturnFile.setSignInfo(dossierFile.getSignInfo());
+					dActionReturnFile.setSignCheck(dossierFile.getSignCheck());
+					//
+					long fileEntryId = dActionReturnFile.getFileEntryId();
+					if (fileEntryId > 0) {
+						FileEntry file = DLAppServiceUtil.getFileEntry(fileEntryId);
+						if (file != null) {
+							dActionReturnFile.setFileType(file.getMimeType());
+							dActionReturnFile.setFileSize(file.getSize());
+							dActionReturnFile.setVersion(file.getVersion());
+						}
+					}
+					outputReturnFiles.add(dActionReturnFile);
+
+					}
+					model.getReturnFiles().addAll(outputReturnFiles);
+				}
+		}
+		}catch (Exception e) {
+			_log.info(e);
+		}
+
+		return model;
 	}
 
 	public static List<org.opencps.api.dossieraction.model.DossierActionModel> mappingToDoListReadActionExecuted(
