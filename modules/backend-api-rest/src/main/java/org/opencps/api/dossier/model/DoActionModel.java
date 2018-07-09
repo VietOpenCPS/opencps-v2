@@ -33,7 +33,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="actionUser" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="actionNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="payload" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="security" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="assignUsers" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="payment" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
@@ -50,20 +49,23 @@ import javax.xml.bind.annotation.XmlType;
 	    "actionUser",
 	    "actionNote",
 	    "payload",
-	    "security",
 	    "assignUsers",
 	    "payment"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
-
+	@FormParam(value="actionCode")
     protected String actionCode;
+	@FormParam(value="actionUser")
     protected String actionUser;
+	@FormParam(value="actionNote")
     protected String actionNote;
+	@FormParam(value="payload")
     protected String payload;
-    protected String security;
-    protected String assignUsers;
+	@FormParam(value="assignUsers")
+	protected String assignUsers;
     @XmlElement(required = true)
+    @FormParam(value="payment")
     protected String payment;
 
     /**
@@ -160,30 +162,6 @@ public class DoActionModel {
      */
     public void setPayload(String value) {
         this.payload = value;
-    }
-
-    /**
-     * Gets the value of the security property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSecurity() {
-        return security;
-    }
-
-    /**
-     * Sets the value of the security property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSecurity(String value) {
-        this.security = value;
     }
 
     /**

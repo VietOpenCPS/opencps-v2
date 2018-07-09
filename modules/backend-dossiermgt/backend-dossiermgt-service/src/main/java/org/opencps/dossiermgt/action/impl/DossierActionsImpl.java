@@ -1543,11 +1543,16 @@ public class DossierActionsImpl implements DossierActions {
 							proAction.getAssignUserId());
 				}
 
-				// update nextActionId
-				_log.info("prvAction:" + prvAction);
-				if (Validator.isNotNull(prvAction)) {
-					DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
-							dossierAction.getDossierActionId());
+				List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
+
+				for (PaymentFile pf : paymentFiles) {
+					if (pf.getIsNew()) {
+						syncPaymentFiles.add(pf);
+					}
+				}
+
+				for (PaymentFile spf : syncPaymentFiles) {
 				}
 		}
 		
