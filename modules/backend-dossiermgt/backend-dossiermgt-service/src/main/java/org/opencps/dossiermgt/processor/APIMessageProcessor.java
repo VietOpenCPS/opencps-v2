@@ -15,6 +15,7 @@ import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -78,14 +79,89 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 	
 	@Override
 	public void processInform() {
-		String payload = dossierSync.getPayload();
-		if (Validator.isNotNull(payload)) {
-			
+		dossierSync.setState(DossierSyncTerm.STATE_ALREADY_SENT);
+		DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
+		if (syncInform()) {
+			dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
+			DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
+			dossierAction.setPending(false);
+			DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+		}
+		else {
+			int retry = dossierSync.getRetry();
+			retry++;
+			if (retry < DossierSyncTerm.MAX_RETRY) {
+				dossierSync.setRetry(retry);
+				DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);						
+			}
+			else {
+				dossierSync.setState(DossierSyncTerm.STATE_ACK_ERROR);
+			}
 		}
 	}
 	
 	private boolean syncInform() {
-		return true;
+		Dossier dossier = DossierLocalServiceUtil.getByRef(dossierSync.getGroupId(), dossierSync.getDossierRefUid());
+		if (dossier == null) {
+			return false;
+		}
+				
+		String payload = dossierSync.getPayload();
+		try {
+			JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
+			if (payloadObj.has(DossierSyncTerm.PAYLOAD_SYNC_FILES)) {
+				JSONArray fileArrs = payloadObj.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_FILES);
+				for (int i = 0; i < fileArrs.length(); i++) {
+					JSONObject fileObj = fileArrs.getJSONObject(i);
+					if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
+						DossierFile df = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossier.getDossierId(), fileObj.getString(DossierFileTerm.REFERENCE_UID));
+						if (df != null) {
+							if (df.getFileEntryId() > 0) {
+								FileEntry fileEntry;
+								try {
+									fileEntry = DLAppLocalServiceUtil.getFileEntry(df.getFileEntryId());
+									File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+											true);
+									DossierFileModel dfModel = new DossierFileModel();
+									dfModel.setReferenceUid(df.getReferenceUid());
+									dfModel.setDossierPartNo(df.getDossierPartNo());
+									dfModel.setDisplayName(df.getDisplayName());
+									dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
+									dfModel.setFileTemplateNo(df.getFileTemplateNo());
+									dfModel.setFormData(df.getFormData());
+									dfModel.setFileType(StringPool.BLANK);
+									
+									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
+									if (dfResult == null) {
+										return false;
+									}
+								} catch (PortalException e) {
+									e.printStackTrace();
+								}
+
+							}
+						}
+					}
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		ExecuteOneAction actionModel = new ExecuteOneAction();
+		actionModel.setActionCode(dossierSync.getActionCode());
+		actionModel.setActionUser(dossierSync.getActionUser());
+		actionModel.setPayload(dossierSync.getPayload());
+		
+		ExecuteOneAction actionResult = client.postDossierAction(dossier.getDossierId(), actionModel);
+		if (actionResult != null) {
+			return true;
+		}
+		else {
+			return false;
+		}		
 	}
 	
 	private boolean syncRequest() {
@@ -145,6 +221,17 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			return false;
 		}
 		
-		return true;
+		ExecuteOneAction actionModel = new ExecuteOneAction();
+		actionModel.setActionCode(dossierSync.getActionCode());
+		actionModel.setActionUser(dossierSync.getActionUser());
+		actionModel.setPayload(dossierSync.getPayload());
+		
+		ExecuteOneAction actionResult = client.postDossierAction(dossier.getDossierId(), actionModel);
+		if (actionResult != null) {
+			return true;
+		}
+		else {
+			return false;
+		}		
 	}
 }

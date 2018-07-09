@@ -1629,6 +1629,7 @@
         </order>
 
 		<finder return-type="ActionConfig" name="F_BY_ActionCode">
+			<finder-column name="groupId"></finder-column>
 			<finder-column name="actionCode"></finder-column>
 		</finder>
 		

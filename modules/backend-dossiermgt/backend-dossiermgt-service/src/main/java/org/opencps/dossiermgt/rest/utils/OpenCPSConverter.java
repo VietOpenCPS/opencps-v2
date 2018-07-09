@@ -11,6 +11,9 @@ import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -280,8 +283,14 @@ public class OpenCPSConverter {
 	    params.put(ExecuteOneActionTerm.ACTION_CODE, model.getActionCode());
 	    params.put(ExecuteOneActionTerm.ACTION_USER, model.getActionUser());
 	    params.put(ExecuteOneActionTerm.ACTION_NOTE, model.getActionNote());
-	    params.put(ExecuteOneActionTerm.ASSIGN_USERS, model.getAssignUserId());
-	    params.put(ExecuteOneActionTerm.PAYLOAD, StringPool.BLANK);
+	    JSONArray assignUserArrs = JSONFactoryUtil.createJSONArray();
+		try {
+			assignUserArrs = JSONFactoryUtil.createJSONArray(model.getAssignUsers());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	    params.put(ExecuteOneActionTerm.ASSIGN_USERS, assignUserArrs.toJSONString());
+	    params.put(ExecuteOneActionTerm.PAYLOAD, model.getPayload());
 	    
 	    return params;
 	}

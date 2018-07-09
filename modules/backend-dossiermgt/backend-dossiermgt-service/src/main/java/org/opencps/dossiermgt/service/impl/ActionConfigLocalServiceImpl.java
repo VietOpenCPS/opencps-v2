@@ -62,7 +62,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType)
 			throws PortalException {
 
-		validate(actionCode, 0);
+		validate(groupId, actionCode, 0);
 
 		User user = userLocalService.getUser(userId);
 
@@ -103,7 +103,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
 			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType) throws PortalException {
 
-		validate(actionCode, actionConfigId);
+		validate(groupId, actionCode, actionConfigId);
 
 		User user = userLocalService.getUser(userId);
 
@@ -169,17 +169,17 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		return actionConfig;
 	}
 
-	public ActionConfig getByCode(String actionCode) {
+	public ActionConfig getByCode(long groupId, String actionCode) {
 
-		return actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
+		return actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
 
 	}
 
-	public JSONObject getForm(String actionCode) {
+	public JSONObject getForm(long groupId, String actionCode) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
+		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
 
 		result.put(ActionConfigTerm.FORM_SCRIPT, actionConfig.getFormScript());
 		result.put(ActionConfigTerm.SAMPLE_DATA, actionConfig.getSampleData());
@@ -195,7 +195,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		try {
 			User user = userLocalService.getUser(userId);
 			Date now = new Date();
-			ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
+			ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
 			if (actionConfig != null) {
 				actionConfig.setUserId(user.getUserId());
 				actionConfig.setModifiedDate(now);
@@ -260,9 +260,9 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		
 	}
 	
-	private void validate(String actionCode, long actionConfigId) throws PortalException {
+	private void validate(long groupId, String actionCode, long actionConfigId) throws PortalException {
 
-		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(actionCode);
+		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
 		if (Validator.isNull(actionCode)) {
 			throw new DuplicateActionCodeException("DuplicateActionCodeException");
 		}

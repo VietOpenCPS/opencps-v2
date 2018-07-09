@@ -8,11 +8,13 @@
 
 package org.opencps.api.dossier.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -30,7 +32,10 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="actionCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="actionUser" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="actionNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="assignUserId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="payload" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="security" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="assignUsers" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="payment" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -41,64 +46,191 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "actionCode",
-    "actionUser",
-    "actionNote",
-    "payload",
-    "assignUsers"
+	    "actionCode",
+	    "actionUser",
+	    "actionNote",
+	    "payload",
+	    "security",
+	    "assignUsers",
+	    "payment"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
 
-	@FormParam(value = "actionCode")
-	protected String actionCode;
-	@FormParam(value = "actionUser")
-	protected String actionUser;
-	@FormParam(value = "actionNote")
-	protected String actionNote;
-	@FormParam(value = "payload")
-	protected String payload;
-	@FormParam(value = "assignUsers")
-	protected String assignUsers;
+    protected String actionCode;
+    protected String actionUser;
+    protected String actionNote;
+    protected String payload;
+    protected String security;
+    protected String assignUsers;
+    @XmlElement(required = true)
+    protected String payment;
 
-	public String getActionCode() {
-		return actionCode;
-	}
+    /**
+     * Gets the value of the actionCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getActionCode() {
+        return actionCode;
+    }
 
-	public void setActionCode(String value) {
-		this.actionCode = value;
-	}
+    /**
+     * Sets the value of the actionCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setActionCode(String value) {
+        this.actionCode = value;
+    }
 
-	public String getActionUser() {
-		return actionUser;
-	}
+    /**
+     * Gets the value of the actionUser property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getActionUser() {
+        return actionUser;
+    }
 
-	public void setActionUser(String value) {
-		this.actionUser = value;
-	}
+    /**
+     * Sets the value of the actionUser property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setActionUser(String value) {
+        this.actionUser = value;
+    }
 
-	public String getActionNote() {
-		return actionNote;
-	}
+    /**
+     * Gets the value of the actionNote property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getActionNote() {
+        return actionNote;
+    }
 
-	public void setActionNote(String value) {
-		this.actionNote = value;
-	}
+    /**
+     * Sets the value of the actionNote property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setActionNote(String value) {
+        this.actionNote = value;
+    }
 
-	public String getPayload() {
-		return payload;
-	}
+    /**
+     * Gets the value of the payload property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPayload() {
+        return payload;
+    }
 
-	public void setPayload(String payload) {
-		this.payload = payload;
-	}
+    /**
+     * Sets the value of the payload property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPayload(String value) {
+        this.payload = value;
+    }
 
-	public String getAssignUsers() {
-		return assignUsers;
-	}
+    /**
+     * Gets the value of the security property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSecurity() {
+        return security;
+    }
 
-	public void setAssignUsers(String assignUsers) {
-		this.assignUsers = assignUsers;
-	}
+    /**
+     * Sets the value of the security property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSecurity(String value) {
+        this.security = value;
+    }
 
+    /**
+     * Gets the value of the assignUsers property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getAssignUsers() {
+        return assignUsers;
+    }
+
+    /**
+     * Sets the value of the assignUsers property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setAssignUsers(String value) {
+        this.assignUsers = value;
+    }
+
+    /**
+     * Gets the value of the payment property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPayment() {
+        return payment;
+    }
+
+    /**
+     * Sets the value of the payment property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPayment(String value) {
+        this.payment = value;
+    }
 }

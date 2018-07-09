@@ -133,7 +133,7 @@ public class OpenCPSRestClient {
 			InvokeREST callRest = new InvokeREST();
 			ServiceContext context = new ServiceContext();
 			
-			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
+			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
 					baseUrl, requestURL, username,
 					password, properties, params, context);
 			

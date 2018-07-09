@@ -126,35 +126,11 @@
 					minOccurs="0" />
 				<xsd:element name="security" type="xsd:string"
 					minOccurs="0" />
-				<xsd:element ref="AssignUsers" minOccurs="0" maxOccurs="unbounded"></xsd:element>
-				<xsd:element ref="Payment"></xsd:element>
+				<xsd:element name="assignUsers" minOccurs="0" type="xsd:string"></xsd:element>
+				<xsd:element name="payment" type="xsd:string"></xsd:element>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="AssignUsers">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="userId" type="xsd:long"
-					minOccurs="0" />
-				<xsd:element name="assigned" type="xsd:long"
-					minOccurs="0" />
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-	<xsd:element name="Payment">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="advanceAmount" type="xsd:long"
-					minOccurs="0" />
-				<xsd:element name="feeAmount" type="xsd:long"
-					minOccurs="0" />
-				<xsd:element name="serviceAmount" type="xsd:long"
-					minOccurs="0" />
-				<xsd:element name="paymentAmount" type="xsd:long"
-					minOccurs="0" />
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>	
 	<xsd:complexType name="DossierFileModel">
 		<xsd:sequence>
 		

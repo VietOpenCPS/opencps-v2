@@ -1007,7 +1007,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (dossier != null) {
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
-					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(actionCode);
+					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
@@ -1024,7 +1024,7 @@ public class DossierManagementImpl implements DossierManagement {
 								if (proAction != null) {
 									actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
 											input.getActionUser(), input.getActionNote(), input.getPayload(),
-											input.getAssignUsers(), actConfig.getSyncType(), serviceContext);
+											input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(), serviceContext);
 								} else {
 									//TODO: Error
 								}
@@ -1033,6 +1033,7 @@ public class DossierManagementImpl implements DossierManagement {
 							actions.doAction(groupId, userId, dossier, null, null,
 									actionCode, input.getActionUser(),
 									input.getActionNote(), input.getPayload(), input.getAssignUsers(),
+									input.getPayment(),
 									actConfig.getSyncType(),
 									serviceContext);
 						}
@@ -1046,7 +1047,9 @@ public class DossierManagementImpl implements DossierManagement {
 							if (proAction != null) {
 								actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
 										input.getActionUser(), input.getActionNote(), input.getPayload(),
-										input.getAssignUsers(), 0, serviceContext);
+										input.getAssignUsers(), 
+										input.getPayment(),
+										0, serviceContext);
 							} else {
 								//TODO: Error
 							}

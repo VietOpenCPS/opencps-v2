@@ -146,10 +146,29 @@
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" id="requestPayment" name="requestPayment" data-bind="checked:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
+						Cấu hình thay đổi trạng thái thanh toán
+					</div>
+				</div>			
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" id="requestPayment" name="requestPayment" data-bind="value: requestPayment">
+							<option value="0">Không thay đổi trạng thái</option>
+							<option value="1">Yêu cầu nộp tiền tạm ứng</option>
+							<option value="2">Yêu cầu quyết toán phí</option>
+							<option value="3">Báo đã nộp phí trực tuyến</option>
+							<option value="4">Yêu cầu nộp lại phí trực tuyến</option>
+							<option value="5">Xác nhận hoàn thành thu phí</option>
+						</select>
+					
+						<!--<div class="checkbox"> <input type="checkbox" id="requestPayment" name="requestPayment" data-bind="checked:requestPayment"> <label>Yêu cầu thanh toán</label> </div>-->
 					</div>
 				</div>
 				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						Chuỗi pattern tính phí
+					</div>
+				</div>			
+				<div class="row MT5">
 					<div class="col-xs-12 col-sm-12">
 						<input class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee">
 					</div>

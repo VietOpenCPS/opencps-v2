@@ -111,7 +111,7 @@ public interface DossierActions {
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
 
 	public void doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
-			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, int syncType,
+			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, String payment, int syncType,
 			ServiceContext serviceContext) throws PortalException;
 
 }

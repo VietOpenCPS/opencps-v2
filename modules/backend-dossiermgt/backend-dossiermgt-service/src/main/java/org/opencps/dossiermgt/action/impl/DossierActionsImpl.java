@@ -1455,7 +1455,9 @@ public class DossierActionsImpl implements DossierActions {
 
 	@Override
 	public void doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
-			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, int syncType,
+			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
+			String payment,
+			int syncType,
 			ServiceContext context) throws PortalException {
 		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId);
 		context.setUserId(userId);
