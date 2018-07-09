@@ -130,7 +130,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+		_log.info("In dossier file create");
 		try {
 
 			if (!auth.isAuth(serviceContext)) {

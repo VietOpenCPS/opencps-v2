@@ -10,7 +10,6 @@ package org.opencps.api.dossier.model;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
-
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
@@ -59,7 +58,7 @@ public class ObjectFactory {
     public DossierDataModel createDossierDataModel() {
         return new DossierDataModel();
     }
-
+    
     /**
      * Create an instance of {@link DoActionModel }
      * 

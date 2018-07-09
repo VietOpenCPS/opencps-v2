@@ -27,6 +27,7 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -1749,7 +1750,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (dossierAction != null) {
 				String actionCode = dossierAction.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
-					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(actionCode);
+					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 					if (actConfig != null) {
 						boolean extraForm = actConfig.getExtraForm();
 						if (extraForm) {
@@ -2115,8 +2116,10 @@ public class DossierActionsImpl implements DossierActions {
 	}
 
 	@Override
-	public void doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
-			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, int syncType,
+	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
+			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
+			String payment,
+			int syncType,
 			ServiceContext context) throws PortalException {
 		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId);
 		context.setUserId(userId);
@@ -2184,8 +2187,8 @@ public class DossierActionsImpl implements DossierActions {
 				// Add DossierActionUser
 				DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
-				boolean allowAssignUser = proAction.getAllowAssignUser();
-				if (allowAssignUser) {
+				int allowAssignUser = proAction.getAllowAssignUser();
+				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
 						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -2201,11 +2204,16 @@ public class DossierActionsImpl implements DossierActions {
 							proAction.getAssignUserId());
 				}
 
-				// update nextActionId
-				_log.info("prvAction:" + prvAction);
-				if (Validator.isNotNull(prvAction)) {
-					DossierActionLocalServiceUtil.updateNextActionId(prvAction.getDossierActionId(),
-							dossierAction.getDossierActionId());
+				List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
+
+				for (PaymentFile pf : paymentFiles) {
+					if (pf.getIsNew()) {
+						syncPaymentFiles.add(pf);
+					}
+				}
+
+				for (PaymentFile spf : syncPaymentFiles) {
 				}
 		}
 		
@@ -2214,11 +2222,38 @@ public class DossierActionsImpl implements DossierActions {
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
 		if (syncType > 0) {
+			int state = DossierSyncTerm.STATE_NOT_SYNC;
+			if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+				if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
+					state = DossierSyncTerm.STATE_WAITING_SYNC;
+				}
+				else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM) {
+					state = DossierSyncTerm.STATE_NOT_SYNC;
+				}
+			}
+			else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA) {
+				state = DossierSyncTerm.STATE_NOT_SYNC;
+			}
+			else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+				if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
+					state = DossierSyncTerm.STATE_NOT_SYNC;
+				}
+				else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM) {
+					state = DossierSyncTerm.STATE_WAITING_SYNC;
+				}				
+			}
+			//If state = 1 set pending dossier
+			if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
+				dossierAction.setPending(true);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
+			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, payload, serviceProcess.getServerNo(), 0);
+					syncType, payload, serviceProcess.getServerNo(), state);
 		}
 		
+		return dossierAction;
 	}
 
 	@Override
@@ -3696,13 +3731,13 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String delegateWardCode, String applicantNote, String briefNote,
 			String dossierNo, String dossierTemplateNo, int viaPostal, String postalServiceCode,
 			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
-			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException {
+			String postalWardCode, String postalTelNo, int originality, ServiceContext context) throws PortalException {
 
 		return DossierLocalServiceUtil.createDossier(groupId, serviceCode, govAgencyCode, applicantName,
 				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, districtCode, wardCode, contactName,
 				contactTelNo, contactEmail, isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo, delegateEmail,
 				delegateAddress, delegateCityCode, delegateDistrictCode, delegateWardCode, applicantNote, briefNote,
-				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress, postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, context);
+				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress, postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, originality, context);
 				
 	}
 

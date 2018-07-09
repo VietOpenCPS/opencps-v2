@@ -34,8 +34,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(value="/dossiers" , tags="dossier")
 
 public interface DossierActionManagement {
-
-	//LamTV_ Process NextAction
+	
 	@GET
 	@Path("/{id}/nextactions")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -45,11 +44,12 @@ public interface DossierActionManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-
+	
 	public Response getListActions(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierActionSearchModel query,
 			@PathParam("id") String id);
+	
 
 	@GET
 	@Path("/{id}/nextactions/{actionId}")
@@ -60,12 +60,12 @@ public interface DossierActionManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-
-	public Response getDetailNextActions(@Context HttpServletRequest request, @Context HttpHeaders header,
+	
+	public Response getActionDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierActionSearchModel query,
 			@PathParam("id") String id, @PathParam("actionId") String actionId);
-
+	
 	@GET
 	@Path("/{id}/nextactions/{actionId}/payload")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -75,8 +75,8 @@ public interface DossierActionManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-
-	public Response getPayloadNextActions(@Context HttpServletRequest request, @Context HttpHeaders header,
+	
+	public Response getActionPayload(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierActionSearchModel query,
 			@PathParam("id") String id, @PathParam("actionId") String actionId);

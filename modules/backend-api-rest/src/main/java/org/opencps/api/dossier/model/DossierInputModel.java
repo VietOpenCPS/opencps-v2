@@ -593,7 +593,7 @@ public class DossierInputModel {
      *     
      */
     public String getOriginality() {
-        return online;
+        return originality;
     }
 
     /**

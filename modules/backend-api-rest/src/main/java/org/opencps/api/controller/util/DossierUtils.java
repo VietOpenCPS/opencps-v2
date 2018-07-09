@@ -18,19 +18,28 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -548,5 +557,26 @@ public class DossierUtils {
 		}
 
 		return action;
+	}
+	
+	public static void createDossierUsers(long groupId, Dossier dossier, ServiceProcess process, List<ServiceProcessRole> lstProcessRoles) {
+		for (ServiceProcessRole spr : lstProcessRoles) {
+			long roleId = spr.getRoleId();
+			int moderator = spr.getModerator() ? 1 : 0;
+			JobPos jp = JobPosLocalServiceUtil.fetchByF_mappingRoleId(groupId, roleId);
+			
+			if (jp != null) {
+				List<EmployeeJobPos> lstEJPs = EmployeeJobPosLocalServiceUtil.getByJobPostId(groupId, jp.getJobPosId());
+				List<Employee> lstEmployees = new ArrayList<>();
+				for (EmployeeJobPos ejp : lstEJPs) {
+					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(ejp.getEmployeeId());
+					lstEmployees.add(employee);					
+				}
+				
+				for (Employee e : lstEmployees) {
+					DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);
+				}
+			}
+		}
 	}
 }

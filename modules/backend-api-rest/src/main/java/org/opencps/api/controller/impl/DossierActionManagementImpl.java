@@ -107,7 +107,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 	}
 
 	@Override
-	public Response getDetailNextActions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+	public Response getActionDetail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierActionSearchModel query, String id, String actionId) {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -145,9 +145,8 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 	}
 
 	@Override
-	public Response getPayloadNextActions(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, DossierActionSearchModel query, String id,
-			String actionId) {
+	public Response getActionPayload(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierActionSearchModel query, String id, String actionId) {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long dossierId = GetterUtil.getLong(id);
@@ -352,6 +351,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		}
 
 	}
+
 
 	//LamTV_Process Exception
 	private Response processException(Exception e) {

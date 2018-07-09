@@ -75,7 +75,7 @@ public class DossierDetailNextActionModel {
 	protected String postStepCode;
 	protected String autoEvent;
 	protected String preCondition;
-	protected Boolean allowAssignUser;
+	protected Integer allowAssignUser;
 	protected Boolean eSignature;
 	protected String signatureType;
 	protected Boolean extraForm;
@@ -226,7 +226,7 @@ public class DossierDetailNextActionModel {
 	 * @return possible object is {@link Long }
 	 * 
 	 */
-	public Boolean getAllowAssignUser() {
+	public Integer getAllowAssignUser() {
 		return allowAssignUser;
 	}
 
@@ -237,7 +237,7 @@ public class DossierDetailNextActionModel {
 	 *            allowed object is {@link Long }
 	 * 
 	 */
-	public void setAllowAssignUser(Boolean value) {
+	public void setAllowAssignUser(Integer value) {
 		this.allowAssignUser = value;
 	}
 

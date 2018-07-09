@@ -14,6 +14,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 
 /**
@@ -24,6 +26,7 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
  *
  */
 public class MultipartUtility {
+	private Log _log = LogFactoryUtil.getLog(MultipartUtility.class);
 	private final String boundary;
 	private static final String LINE_FEED = "\r\n";
 	private HttpURLConnection httpConn;
@@ -181,6 +184,7 @@ public class MultipartUtility {
 
 		// checks server's status code first
 		int status = httpConn.getResponseCode();
+		_log.info("Status: " + status);
 		if (status == HttpURLConnection.HTTP_OK) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
 			String line = null;

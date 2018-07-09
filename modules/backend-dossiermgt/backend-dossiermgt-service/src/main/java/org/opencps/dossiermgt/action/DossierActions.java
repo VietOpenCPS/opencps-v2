@@ -39,7 +39,7 @@ public interface DossierActions {
 			String delegateWardCode, String applicantNote, String briefNote,
 			String dossierNo, String dossierTemplateNo, int viaPostal, String postalServiceCode,
 			String postalServiceName, String postalAddress, String postalCityCode, String postalDistrictCode,
-			String postalWardCode, String postalTelNo, ServiceContext context) throws PortalException;
+			String postalWardCode, String postalTelNo, int originality, ServiceContext context) throws PortalException;
 
 	public Dossier assignDossierToProcess(long dossierId, String dossierNote, String submissionNote, String briefNote,
 			String dossierNo, long folderId, long dossierActionId, String serverNo, ServiceContext context)
@@ -110,8 +110,8 @@ public interface DossierActions {
 	public JSONObject getDossierProcessList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
 
-	public void doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
-			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, int syncType,
+	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
+			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, String payment, int syncType,
 			ServiceContext serviceContext) throws PortalException;
 
 	public JSONArray getNextActionList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,

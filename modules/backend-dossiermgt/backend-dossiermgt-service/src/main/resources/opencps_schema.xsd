@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="DossierInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="address" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateAddress" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateWardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="password" type="xsd:string" minOccurs="0" />
+				<xsd:element name="online" type="xsd:string" minOccurs="0" />
+				<xsd:element name="notification" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="viaPostal" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalServiceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalAddress" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalWardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DossierDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dossierId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="userId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="userName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:int" minOccurs="0" />
+				<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="address" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="submissionNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="briefNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="submitting" type="xsd:string" minOccurs="0" />
+				<xsd:element name="submitDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="receiveDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dueDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="releaseDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="finishDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cancellingDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="correctingDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierStatusText" type="xsd:string" minOccurs="0" /> 
+				<xsd:element name="dossierSubStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierSubStatusText" type="xsd:string" minOccurs="0" />
+				<xsd:element name="viaPostal" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalAddress" type="xsd:string" minOccurs="0" /> 
+				<xsd:element name="postalCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalCityName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="permission" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lastActionDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lastActionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lastActionName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lastActionUser" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lastActionNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="stepInstruction" type="xsd:string" minOccurs="0" />
+				<xsd:element name="stepDuedate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="stepOverdue" type="xsd:string" minOccurs="0" />
+				<xsd:element name="visited" type="xsd:string" minOccurs="0" />
+				<xsd:element name="pending" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="notification" type="xsd:string" minOccurs="0" />
+				<xsd:element name="online" type="xsd:string" minOccurs="0" />
+				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
+				<xsd:element name="dossierActionId" type="xsd:int" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+	<xsd:element name="ExecuteOneAction">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="actionCode" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element name="actionUser" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element name="actionNote" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element name="payload" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element name="security" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element name="assignUsers" minOccurs="0" type="xsd:string"></xsd:element>
+				<xsd:element name="payment" type="xsd:string"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="DossierFileModel">
+		<xsd:sequence>
+		
+			<xsd:element name="dossierFileId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierPartNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierPartType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="fileTemplateNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="displayName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileType" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fileSize" type="xsd:long" minOccurs="0" />
+			<xsd:element name="fileVersion" type="xsd:string" minOccurs="0" />
+			<xsd:element name="isNew" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="signCheck" type="xsd:int" minOccurs="0" />
+			<xsd:element name="signInfo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="removed" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="eForm" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="formData" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formScript" type="xsd:string" minOccurs="0" />
+			<xsd:element name="formReport" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>	
+	
+	<xsd:element name="ProcessActionReturnModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="processActionId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postStepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="autoEvent" type="xsd:string" minOccurs="0" />
+				<xsd:element name="preCondition" type="xsd:string" minOccurs="0" />
+				<xsd:element name="allowAssignUser" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="assignUserName" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>						
+</xsd:schema>
