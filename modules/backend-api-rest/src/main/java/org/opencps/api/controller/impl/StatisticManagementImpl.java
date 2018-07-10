@@ -252,7 +252,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 //			long notStatusReg = query.getNotStatusReg();
 //			String status = query.getDossierStatus();
 //			String substatus = query.getDossierSubStatus();
-			List<StepConfig> stepList = StepConfigLocalServiceUtil.getByStepType(stepType);
+			List<StepConfig> stepList = StepConfigLocalServiceUtil.getByStepType(groupId, stepType);
 			_log.info("START");
 			JSONArray statistics = JSONFactoryUtil.createJSONArray();
 

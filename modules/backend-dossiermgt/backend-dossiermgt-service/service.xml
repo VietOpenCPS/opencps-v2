@@ -1626,6 +1626,8 @@
 		<column name="insideProcess" type="boolean" />
 		<column name="userNote" type="int" />
 		<column name="syncType" type="int" />
+		<column name="eventType" type="int" />
+		<column name="infoType" type="int" />
 		<column name="pending" type="boolean" />
 		<column name="rollbackable" type="boolean" />
 		<column name="notificationType" type="String" />
@@ -1669,7 +1671,12 @@
         </order>
 
 		<finder return-type="StepConfig" name="F_BY_stepCode">
-			<finder-column name="stepCode"></finder-column>
+			<finder-column name="groupId" />
+			<finder-column name="stepCode" />
+		</finder>
+		<finder return-type="StepConfig" name="F_GT_STEP">
+			<finder-column name="groupId" />
+			<finder-column name="stepCode" />
 		</finder>
 		
 	</entity>

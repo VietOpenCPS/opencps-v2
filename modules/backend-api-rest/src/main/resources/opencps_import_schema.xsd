@@ -22,6 +22,13 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="extraForm" type = "xsd:boolean" minOccurs="0"/>
+							<xsd:element name="formConfig">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 							<xsd:element name="sampleData">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
@@ -30,8 +37,10 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="insideProcess" type = "xsd:boolean" minOccurs="0"/>
+							<xsd:element name="userNote" type = "xsd:int" minOccurs="0"/>
 							<xsd:element name="syncType" type = "xsd:int" minOccurs="0"/>
-							<xsd:element name="pending" type = "xsd:boolean" minOccurs="0"/>
+							<xsd:element name="eventType" type = "xsd:int" minOccurs="0"/>
+							<xsd:element name="infoType" type = "xsd:int" minOccurs="0"/>
 							<xsd:element name="rollbackable" type = "xsd:boolean" minOccurs="0"/>
 							<xsd:element name="notificationType">
 								<xsd:simpleType>

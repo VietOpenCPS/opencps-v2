@@ -77,24 +77,28 @@ public class ProcessUpdateDBUtils {
 						String actionCode = actConfig.getActionCode();
 						String actionName = actConfig.getActionName();
 						Boolean extraForm = actConfig.isExtraForm();
+						String formConfig = actConfig.getFormConfig();
 						String sampleData = actConfig.getSampleData();
 						Boolean insideProcess = actConfig.isInsideProcess();
+						Integer userNote = actConfig.getUserNote();
 						Integer syncType = actConfig.getSyncType();
+						Integer eventType = actConfig.getEventType();
+						Integer infoType = actConfig.getInfoType();
 						Boolean rollbackable = actConfig.isRollbackable();
 						String notificationType = actConfig.getNotificationType();
-						String documentType = actConfig.getDocumentType();
 						if (Validator.isNotNull(actionCode)) {
-							String filePath = folderPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH + ConstantUtils.PREFIX_ACTIONCONFIG
-									+ actionCode + ConstantUtils.EXTENTION_JSON;
-							File jsonfile = new File(filePath);
-							String formConfig = StringPool.BLANK;
-							if (jsonfile.exists() && !jsonfile.isDirectory()) {
-								formConfig = ReadXMLFileUtils.convertFiletoString(jsonfile);
-							}
+//							String filePath = folderPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH + ConstantUtils.PREFIX_ACTIONCONFIG
+//									+ actionCode + ConstantUtils.EXTENTION_JSON;
+//							File jsonfile = new File(filePath);
+//							String formConfig = StringPool.BLANK;
+//							if (jsonfile.exists() && !jsonfile.isDirectory()) {
+//								formConfig = ReadXMLFileUtils.convertFiletoString(jsonfile);
+//							}
 							// Check record exits DB
 							ActionConfigActions actions = new ActionConfigActionsImpl();
-							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData, insideProcess,
-									syncType, rollbackable, notificationType, documentType, formConfig);
+							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
+									insideProcess, userNote, syncType, eventType, infoType, rollbackable,
+									notificationType, formConfig);
 						}
 					}
 				}
