@@ -20,6 +20,7 @@
 <#assign groupId = themeDisplay.getScopeGroupId() />
 <#assign userId = themeDisplay.getUserId() />
 <#assign currentURL = themeDisplay.getURLCurrent() />
+<#assign userName = themeDisplay.getUser().getScreenName() />
 <#assign request = themeDisplay.getRequest() />
 <#assign portalURL = (themeDisplay.getPortalURL())!>
 <#assign url = (Request.url)!>

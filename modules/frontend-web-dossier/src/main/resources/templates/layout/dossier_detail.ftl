@@ -319,12 +319,8 @@
                             </div>
                             <div :id="'alpacajs_form_'+item.partNo" class="expansion-panel__header"></div>
 							<input type="hidden" :id="'dossierFileId' + item.partNo" :value="item.dossierFileId" />
-							
                             </v-expansion-panel-content>
                         </v-expansion-panel>
-                        
-                        
-
                         <!-- <v-card-title primary-title class="mx-2 py-0">
                             <v-layout wrap> 
                             	<v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser">

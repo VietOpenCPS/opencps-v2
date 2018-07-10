@@ -208,11 +208,9 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 								}
 							});
 
-
 						},
 						deleteDossierPDF: function(item, index) {
 							var vm = this;
-
 							vm.$dialog.confirm('Bạn có muốn xóa tài liệu này!', {
 								html: true,
 								loader: true,
@@ -273,7 +271,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 										vm.snackbartextdossierViewJX = "Lưu form thành công!";
 										vm.snackbardossierViewJX = true;
 										vm.loadingAlpacajsForm = false;
-
 										try{
 											
 											if(item.hasSubmit){
@@ -283,7 +280,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 												item.counter ++;
 												item.hasSubmit = true;
 											}
-
 
 										}catch(e){
 
@@ -860,7 +856,6 @@ var funLoadVue = function(stateWindowParam, dossierIdParam, dossierPartNo, email
 										setTimeout(function(){ 
 											vm._initlistgroupHoSoFilter();
 										}, 1000);
-
 										vm.detailPage = false;
 										vm.actionsSubmitLoading = false;
 									} else if (msg == 'fileEntryId') {

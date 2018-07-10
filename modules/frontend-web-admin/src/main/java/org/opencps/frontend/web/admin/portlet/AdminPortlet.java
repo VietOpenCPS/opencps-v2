@@ -346,6 +346,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("api", apiObject);
 		renderRequest.setAttribute(
 			"applicantId", applicant == null ? "" : applicant.getApplicantId());
+		
 
 		// render from mobilink
 		renderFromMobilink(renderRequest, renderResponse);
