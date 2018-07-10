@@ -169,7 +169,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			if (docId > 0) {
 				docType = actions.getByDocId(docId);
 			} else {
-				docType = actions.getByTypeCode(id);
+				docType = actions.getByTypeCode(groupId, id);
 			}
 			if (docType != null) {
 				result = DocumentTypeParser.mappingDocumentTypeModel(docType);

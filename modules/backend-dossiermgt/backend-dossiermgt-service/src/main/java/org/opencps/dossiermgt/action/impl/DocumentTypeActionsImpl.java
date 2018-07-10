@@ -55,8 +55,8 @@ public class DocumentTypeActionsImpl implements DocumentTypeActions {
 		return DocumentTypeLocalServiceUtil.fetchDocumentType(docId);
 	}
 	@Override
-	public DocumentType getByTypeCode(String typeCode) {
-		return DocumentTypeLocalServiceUtil.getByTypeCode(typeCode);
+	public DocumentType getByTypeCode(long groupId, String typeCode) {
+		return DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
 	}
 	@Override
 	public DocumentType removeDocType(Long docId) throws PortalException {
