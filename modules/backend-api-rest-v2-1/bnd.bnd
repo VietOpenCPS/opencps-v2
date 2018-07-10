@@ -8,3 +8,4 @@ Export-Package: \
 	javax.validation.constraints,\
 	org.json.simple,\
 	org.json.simple.parser,\
+	io.swagger.annotations,\

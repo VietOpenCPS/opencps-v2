@@ -114,4 +114,15 @@ public interface DossierActions {
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, String payment, int syncType,
 			ServiceContext serviceContext) throws PortalException;
 
+	public JSONArray getNextActionList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
+
+	public JSONObject getDetailNextActions(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
+			ServiceContext serviceContext);
+
+	public JSONObject getPayloadNextActions(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
+			ServiceContext serviceContext);
+
 }

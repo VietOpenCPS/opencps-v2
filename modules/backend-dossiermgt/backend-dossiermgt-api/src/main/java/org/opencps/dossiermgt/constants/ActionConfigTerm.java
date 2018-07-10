@@ -4,7 +4,7 @@ public class ActionConfigTerm {
 	public static final String ACTION_CODE = "actionCode";
 	public static final String ACTION_NAME = "actionName";
 	public static final String EXTRA_FORM = "extraForm";
-	public static final String FORM_SCRIPT = "formScript";
+	public static final String FORM_CONFIG = "formConfig";
 	public static final String SAMPLE_DATA = "sampleData";
 	public static final String INSIDE_PROCESS = "insideProcess";
 	public static final String USER_NOTE = "userNote";

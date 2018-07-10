@@ -28,6 +28,7 @@ public class ProcessActionTerm {
 	public static final String CREATE_DOSSIER_NO = "createDossierNo";
 	public static final String ESIGNATURE = "eSignature";
 	public static final String CONFIG_NOTE = "configNote";
+	public static final String ENABLE = "enable";
 
 	public static final int NOT_ASSIGNED = 0;
 	public static final int ASSIGNED_TH = 1;

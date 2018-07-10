@@ -481,6 +481,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String step = query.getStep();
+			_log.info("step: "+step);
 			String agency = query.getAgency();
 			String service = query.getService();
 			String template = query.getTemplate();
@@ -542,7 +543,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 			// Add param original
-			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
+//			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

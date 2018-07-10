@@ -139,4 +139,8 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 
 		processStepRolePersistence.update(processStepRole);
 	}
+
+	public ProcessStepRole findByStepAndRole(long processStepId, long roleId) {
+		return processStepRolePersistence.fetchByF_STEP_ROLE(processStepId, roleId);
+	}
 }

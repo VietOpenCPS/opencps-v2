@@ -45,12 +45,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-	    "actionCode",
-	    "actionUser",
-	    "actionNote",
-	    "payload",
-	    "assignUsers",
-	    "payment"
+    "actionCode",
+    "actionUser",
+    "actionNote",
+    "payload",
+    "assignUsers",
+    "security",
+    "payment"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
@@ -64,9 +65,10 @@ public class DoActionModel {
     protected String payload;
 	@FormParam(value="assignUsers")
 	protected String assignUsers;
-    @XmlElement(required = true)
-    @FormParam(value="payment")
-    protected String payment;
+	@FormParam(value = "security")
+	protected String security;
+	@FormParam(value = "payment")
+	protected String payment;
 
     /**
      * Gets the value of the actionCode property.
@@ -188,27 +190,20 @@ public class DoActionModel {
         this.assignUsers = value;
     }
 
-    /**
-     * Gets the value of the payment property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPayment() {
-        return payment;
-    }
+	public String getSecurity() {
+		return security;
+	}
 
-    /**
-     * Sets the value of the payment property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPayment(String value) {
-        this.payment = value;
-    }
+	public void setSecurity(String security) {
+		this.security = security;
+	}
+
+	public String getPayment() {
+		return payment;
+	}
+
+	public void setPayment(String payment) {
+		this.payment = payment;
+	}
+
 }

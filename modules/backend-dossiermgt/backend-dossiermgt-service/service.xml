@@ -899,6 +899,10 @@
 		<finder return-type="Collection" name="P_S_ID">
 			<finder-column name="processStepId" />
 		</finder>
+		<finder return-type="ProcessStepRole" name="F_STEP_ROLE">
+			<finder-column name="processStepId" />
+			<finder-column name="roleId" />
+		</finder>
 
 	</entity>
 	
@@ -979,6 +983,8 @@
 		<column name="signatureType" type="String"/>
 		<column name="createDossiers" type="String"/>
 		<column name="assignUserName" type="String" />
+		<column name="extraForm" type="boolean" />
+		<column name="userNote" type="int" />
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -1614,7 +1620,7 @@
 		<column name="actionCode" type="String" />
 		<column name="actionName" type="String" />
 		<column name="extraForm" type="boolean" />
-		<column name="formScript" type="String" />
+		<column name="formConfig" type="String" />
 		<column name="sampleData" type="String" />
 		<column name="insideProcess" type="boolean" />
 		<column name="userNote" type="int" />
