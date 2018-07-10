@@ -58,7 +58,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig)
 			throws PortalException {
 
-		validate(stepCode, 0);
+		validate(groupId, stepCode, 0);
 
 		User user = userLocalService.getUser(userId);
 
@@ -94,7 +94,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			Integer stepType, String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName,
 			String buttonConfig) throws PortalException {
 
-		validate(stepCode, stepConfigId);
+		validate(groupId, stepCode, stepConfigId);
 
 		User user = userLocalService.getUser(userId);
 
@@ -145,15 +145,15 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 		return object;
 	}
 
-	public StepConfig getByCode(String stepCode) {
+	public StepConfig getByCode(long groupId, String stepCode) {
 
-		return stepConfigPersistence.fetchByF_BY_stepCode(stepCode);
+		return stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
 
 	}
 
-	private void validate(String stepCode, long stepConfigId) throws PortalException {
+	private void validate(long groupId, String stepCode, long stepConfigId) throws PortalException {
 
-		StepConfig stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(stepCode);
+		StepConfig stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
 
 		if (Validator.isNull(stepCode)) {
 			throw new DuplicateActionCodeException("DuplicateStepCodeException");
@@ -169,7 +169,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 
 	}
 
-	public List<StepConfig> getByStepType(int stepType) {
+	public List<StepConfig> getByStepType(long groupId, int stepType) {
 		return stepConfigFinder.finByStepConfig(stepType);
 	}
 
@@ -180,7 +180,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			User user = userLocalService.getUser(userId);
 			Date now = new Date();
 
-			StepConfig object = stepConfigPersistence.fetchByF_BY_stepCode(stepCode);
+			StepConfig object = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
 			if (object != null) {
 				object.setUserId(user.getUserId());
 				object.setModifiedDate(now);

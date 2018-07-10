@@ -117,6 +117,7 @@ public class ReadXMLFileUtils {
 
 	private static void compareParentFile(String folderPath, String fileName, String xmlString, long groupId,
 			long userId, ServiceContext serviceContext) {
+		try{
 		if (Validator.isNotNull(fileName)) {
 			switch (fileName) {
 			case ConstantUtils.XML_ACTION_CONFIG:
@@ -151,6 +152,9 @@ public class ReadXMLFileUtils {
 			default:
 				break;
 			}
+		}
+		}catch (Exception e) {
+			_log.error(e);
 		}
 	}
 
@@ -219,7 +223,7 @@ public class ReadXMLFileUtils {
 			ActionConfigList objectElement = (ActionConfigList) jaxbUnmarshaller.unmarshal(reader);
 			return objectElement;
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			_log.info(e);
 		}
 
 		return null;

@@ -19,7 +19,7 @@ public interface DocumentTypeActions {
 
 	public DocumentType getByDocId(Long docId);
 
-	public DocumentType getByTypeCode(String id);
+	public DocumentType getByTypeCode(long groupId, String id);
 
 	public DocumentType removeDocType(Long docId) throws PortalException;
 

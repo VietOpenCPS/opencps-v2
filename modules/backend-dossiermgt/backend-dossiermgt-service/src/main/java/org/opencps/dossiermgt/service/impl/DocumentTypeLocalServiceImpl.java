@@ -74,8 +74,8 @@ public class DocumentTypeLocalServiceImpl
 
 	}
 
-	public DocumentType getByTypeCode(String typeCode) {
-		return documentTypePersistence.fetchByF_CODE(typeCode);
+	public DocumentType getByTypeCode(long groupId, String typeCode) {
+		return documentTypePersistence.fetchByF_CODE(groupId, typeCode);
 	}
 
 	public DocumentType updateDocType(Long docId, long userId, long groupId, String typeCode, int templateClass,
@@ -125,7 +125,7 @@ public class DocumentTypeLocalServiceImpl
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 
-		DocumentType docType = documentTypePersistence.fetchByF_CODE(typeCode);
+		DocumentType docType = documentTypePersistence.fetchByF_CODE(groupId, typeCode);
 		if (docType != null) {
 			//Audit field
 			docType.setUserId(auditUser.getUserId());

@@ -81,7 +81,8 @@ public class StepConfigApiImpl implements StepConfigApi {
 
 	@Override
 	public StepConfigItem getStepConfigByCode(String id) {
-		StepConfig ett = StepConfigLocalServiceUtil.getByCode(id);
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		StepConfig ett = StepConfigLocalServiceUtil.getByCode(groupId, id);
 		
 		if (Validator.isNull(ett)) {
 			ett = StepConfigLocalServiceUtil.fetchStepConfig(Long.valueOf(id));
