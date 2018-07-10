@@ -87,58 +87,40 @@
 		var xhttp = new XMLHttpRequest();
 		var a,filename;
 		var data = {};
-
 		xhttp.onreadystatechange = function() {
 
 			if (xhttp.readyState === 4 && xhttp.status === 200) {
-
-
 				var disposition = xhttp.getResponseHeader('Content-Disposition');
 				if (disposition && disposition.indexOf('attachment') !== -1) {
 					var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
 					var matches = filenameRegex.exec(disposition);
 					if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
 				}
-
-
 				a = document.createElement('a');
 				a.href = window.URL.createObjectURL(xhttp.response);
-
 				var url = window.URL.createObjectURL(xhttp.response);
-
-
 				options.success({url : url, status : xhttp.status});
 			} else if (xhttp.readyState === 4 && xhttp.status !== 200) {
 				options.error(xhttp.status);
 			}
-
 		};
-
 		xhttp.open(options.method, options.url);
 		xhttp.setRequestHeader("Content-Type", "application/json");
 		xhttp.setRequestHeader("groupId", "${groupId}");
-
-
 		if (options.hasOwnProperty("headers")){
 			Object.keys( options.headers ).map(function(objectKey, index) {
 				var value = options.headers[objectKey];
 				xhttp.setRequestHeader(objectKey, value);
 			});
 		}
-
-
 		if (options.hasOwnProperty("responseType")){
 			xhttp.responseType = options.responseType;
 		} else {
 			xhttp.responseType = 'blob';
 		}
-
-
 		if (options.hasOwnProperty("data")){
 			data = options.data;
 		}
-
-
 		xhttp.send(data);
 
 	};

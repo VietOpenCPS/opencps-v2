@@ -332,7 +332,7 @@
 									</div>
 								</div>
 								<div class="col-sm-6">
-
+									
 								</div>
 							</div>
 							<div class="row">
@@ -350,7 +350,7 @@
 									</div>
 								</div>
 								<div class="col-sm-6">
-
+									
 								</div>
 							</div>
 							<div class="row">
@@ -418,88 +418,65 @@
 			}else if(!reg.test(str)){
 				notification.show({ message:"Mật khẩu gồm ít nhất 8 ký tự, có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt" }, "error");
 			}else {
-				// =======
-				// 		var regex = /^[A-Za-z\d]{6,}$/;
-				// 		var type = "${userType}";
-
-				// 		if (validator.validate()) {
-				// 			if ($("#new_password").val().length < 6 && $("#retype_new_password").val().length < 6){
-				// 				notification.show({
-				// 					message: "Mật khẩu ít nhất 6 ký tự!"
-				// 				}, "error");
-				// 			} else if ($("#new_password").val() != $("#retype_new_password").val()){
-				// 				notification.show({
-				// 					message: "Xác nhận mật khẩu mới không đúng!"
-				// 				}, "error");
-				// 			} else if(type === "applicant"){
-				// >>>>>>> origin/pre-develop
-				$.ajax({
-					url : "${api.server}/users/"+userId+"/changepass",
-					dataType : "json",
-					type : "POST",
-					headers: {"groupId": ${groupId}},
-					data : {
-						oldPassword : $("#old_password").val(),
-						newPassword : $("#retype_new_password").val()
-					},
-					success : function(result){
-						if (result == 0) {
-							notification.show({
-								message: "Mật khẩu hiện tại không chính xác"
-							}, "error");
-						}else if(result == 1) {
-							notification.show({
-								message: "Có lỗi sảy ra, vui lòng thử lại"
-							}, "error");
-						}else {
-							notification.show({
-								message: "Yêu cầu được thực hiện thành công"
-							}, "success");
-							// =======
-							// 						if(result){
-							// 							notification.show({
-							// 								message: "Đổi mật khẩu thực hiện thành công"
-							// 							}, "success");
-							// 							$("#messagePassword").html('');
-							// 						}else{
-							// 							notification.show({
-							// 								message: "Mật khẩu hiện tại nhập không chính xác"
-							// 							}, "error");
-							// >>>>>>> origin/pre-develop
-							$("#messagePassword").html('');
+				var type = "${(userType)!}";
+				if (type === 'applicant') {
+					$.ajax({
+						url : "${api.server}/users/"+userId+"/changepass",
+						dataType : "json",
+						type : "POST",
+						headers: {"groupId": ${groupId}},
+						data : {
+							oldPassword : $("#old_password").val(),
+							newPassword : $("#retype_new_password").val()
+						},
+						success : function(result){
+							if (result == 0) {
+								notification.show({
+									message: "Mật khẩu hiện tại không chính xác"
+								}, "error");
+							}else if(result == 1) {
+								notification.show({
+									message: "Có lỗi sảy ra, vui lòng thử lại"
+								}, "error");
+							}else {
+								notification.show({
+									message: "Yêu cầu được thực hiện thành công"
+								}, "success");
+								$("#messagePassword").html('');
+							}
+						},
+						error : function(xhr){
+							$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
 						}
-					},
-					error : function(xhr){
-						$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
-					}
-				});	
-			} else if(type === "employee"){
-				$.ajax({
-					url : "${api.server}/users/"+userId+"/changepass/employee",
-					dataType : "json",
-					type : "POST",
-					headers: {"groupId": ${groupId}},
-					data : {
-						oldPassword : $("#old_password").val(),
-						newPassword : $("#retype_new_password").val()
-					},
-					success : function(result){
-						if(result){
-							notification.show({
-								message: "Đổi mật khẩu thực hiện thành công"
-							}, "success");
-							$("#messagePassword").html('');
-						}else{
-							notification.show({
-								message: "Mật khẩu hiện tại nhập không chính xác"
-							}, "error");
-							$("#messagePassword").html('');
+					});	
+				} else if(type === "employee"){
+					$.ajax({
+						url : "${api.server}/users/"+userId+"/changepass/employee",
+						dataType : "json",
+						type : "POST",
+						headers: {"groupId": ${groupId}},
+						data : {
+							oldPassword : $("#old_password").val(),
+							newPassword : $("#retype_new_password").val()
+						},
+						success : function(result){
+							if(result){
+								notification.show({
+									message: "Đổi mật khẩu thực hiện thành công"
+								}, "success");
+								$("#messagePassword").html('');
+							}else{
+								notification.show({
+									message: "Mật khẩu hiện tại nhập không chính xác"
+								}, "error");
+								$("#messagePassword").html('');
+							}
+						},
+						error : function(xhr){
+							$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
 						}
-					},
-					error : function(xhr){
-						$("#messagePassword").html('<span class="red"><i class="fa fa-times" aria-hidden="true"></i> <span class="message">Mật khẩu hoặc tài khoản không đúng</span></span>');
-					}
-				});
+					});
+				}
 			}
 		}
 	});
@@ -1016,10 +993,6 @@
 		}
 	});
 
-
-	
-
-
 	$('#gender').editable({
 		url: updateProfileEmployeeURL,
 		emptytext : "",
@@ -1030,8 +1003,7 @@
 		},
 		params: function(params) {
 			return {
-				gender: params.value,
-				
+				gender: params.value
 			};
 		},
 		validate: function(value) {

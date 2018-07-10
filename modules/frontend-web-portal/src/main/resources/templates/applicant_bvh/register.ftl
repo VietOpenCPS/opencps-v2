@@ -41,7 +41,7 @@
 <div class="row MT15">
   <div class="col-xs-12 col-sm-12">Thư điện tử <span class="red">(*)</span></div>
   <div class="col-xs-12 col-sm-12 MT5">
-    <input type="text" id="contactEmail" name="contactEmail" class="form-control" required="required" validationMessage="Trường nhập yêu cầu bắt buộc" placeholder="Địa chỉ thư điện tử" />
+    <input type="text" id="contactEmail" name="contactEmail" class="form-control" data-checkemail-field="contactEmail" data-checkemail-msg='Định dạng email ko hợp lệ!' required="required" data-required-msg="Trường nhập yêu cầu bắt buộc" placeholder="Địa chỉ thư điện tử" />
   </div>
 </div>
 <div class="row MT15">
@@ -127,6 +127,16 @@
             }
           }
           return true;
+        },
+        checkemail: function (input) {
+          if (input.is("[name=contactEmail]")) {
+            var str = $("#contactEmail").val();
+            var reg = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+            if (!reg.test(str)) {     
+              return false;                              
+            }
+          }
+          return true;
         }
       }
     })
@@ -144,17 +154,16 @@
 
      $("#btn-register").click(function(e){
       e.preventDefault();
-      // var validator = $("#fm").kendoValidator().data("kendoValidator");
       if(container.data('kendoValidator').validate()){
         var str = $("#password").val();
         var reg = /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/;
         if (!reg.test(str)){
          notification.show({ message:"Mật khẩu gồm ít nhất 8 ký tự, có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 chữ số và 1 ký tự đặc biệt" }, "error");
-       } else if ($("#password").val() != $("#repassword").val()){
+        } else if ($("#password").val() != $("#repassword").val()){
          notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
-       } else if (!$("#agreement").is(':checked')) {
+        } else if (!$("#agreement").is(':checked')) {
         notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
-      }else{
+        }else{
          $.ajax({
           url: '/o/rest/v2/onegate/token',
           dataType: 'text',
@@ -170,24 +179,7 @@
 
           }
         }) 
-// =======
-//       var date_regex = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/;
-//       var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-//       if(validator.validate()){
-//         if ($("#password").val().length < 6 || $("#repassword").val().length < 6){
-//           notification.show({ message:"Mật khẩu gồm các ký tự 0-9, a-z, ít nhất 6 ký tự" }, "error");
-//         } else if ($("#password").val() != $("#repassword").val()){
-//           notification.show({ message: "Xác nhận mật khẩu mới không đúng"}, "error");
-//         } else if (!(date_regex.test($("#applicantIdDate").val()))) {
-//           notification.show({ message: "Ngày cấp không đúng !!!"}, "error");
-//         } else if (!(email_regex.test($("#contactEmail").val()))) {
-//           notification.show({ message: "Email nhập không đúng!!!"}, "error");
-//         } else if (!$("#agreement").is(':checked')) {
-//           notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
-//         } else {
-//           register();
-//         }
-// >>>>>>> origin/pre-develop
+       }
       }
     });
 
