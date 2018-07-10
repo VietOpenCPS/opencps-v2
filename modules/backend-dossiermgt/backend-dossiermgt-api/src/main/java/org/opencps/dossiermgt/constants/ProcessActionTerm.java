@@ -22,6 +22,7 @@ public class ProcessActionTerm {
 	public static final String PAYMENT_FEE = "paymentFee";
 	public static final String CREATE_DOSSIER_FILES = "createDossierFiles";
 	public static final String RETURN_DOSSIER_FILES = "returnDossierFiles";
+	public static final String CREATE_DOSSIERS = "createDossiers";
 	public static final String MAKE_BRIEF_NOTE = "makeBriefNote";
 	public static final String SYNC_ACTION_CODE = "syncActionCode";
 	public static final String ROLLBACKABLE = "rollbackable";
@@ -34,4 +35,6 @@ public class ProcessActionTerm {
 	public static final int ASSIGNED_TH = 1;
 	public static final int ASSIGNED_TH_PH = 2;
 	public static final int ASSIGNED_TH_PH_TD = 3;
+	
+	public static final String ACTION_CREATE_HSLT = "3200";
 }

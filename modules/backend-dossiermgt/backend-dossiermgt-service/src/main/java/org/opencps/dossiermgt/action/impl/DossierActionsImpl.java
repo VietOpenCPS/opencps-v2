@@ -32,6 +32,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
@@ -49,6 +50,7 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
@@ -2165,6 +2167,40 @@ public class DossierActionsImpl implements DossierActions {
 			_log.info("LamTV_NEXT_ACTION");
 
 			String actionName = proAction.getActionName();
+			if (ProcessActionTerm.ACTION_CREATE_HSLT.equals(actionCode)) {
+				//Create new HSLT
+				Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, UUID.randomUUID().toString(), 
+						dossier.getCounter(), dossier.getServiceCode(),
+						dossier.getServiceName(), proAction.getCreateDossiers(), dossier.getGovAgencyName(), dossier.getApplicantName(), 
+						dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
+						dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
+						dossier.getDistrictName(), dossier.getWardCode(), dossier.getWardName(), dossier.getContactName(),
+						dossier.getContactName(), dossier.getContactEmail(), dossier.getDossierTemplateNo(), 
+						dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
+						dossier.getPostalCityName(), dossier.getPostalTelNo(), 
+						dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_MOTCUA, context);
+
+				if (hsltDossier != null) {
+					//Set HSLT dossierId to origin dossier
+					hsltDossier.setOriginDossierId(dossierId);
+					DossierLocalServiceUtil.updateDossier(hsltDossier);
+					
+					JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);
+					hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_NEW,
+						jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW), StringPool.BLANK,
+						StringPool.BLANK, StringPool.BLANK, context);									
+				}
+				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_INTEROPERATING, StringPool.BLANK);
+				if (curStep != null) {
+					dossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(), hsltDossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
+							jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_INTEROPERATING), StringPool.BLANK,
+							StringPool.BLANK, curStep.getLockState(), context);									
+				}
+			}
+			else {
+				
+			}
+
 			if (curStep != null) {
 				String curStatus = curStep.getDossierStatus();
 				String curSubStatus = curStep.getDossierSubStatus();
@@ -2215,6 +2251,23 @@ public class DossierActionsImpl implements DossierActions {
 
 				for (PaymentFile spf : syncPaymentFiles) {
 				}
+				
+			//Get next step
+			ProcessStep nextStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+			if (nextStep != null) {
+			}
+			
+			//Check if generate dossier document
+			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+			if (ac != null) {
+				if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
+					if (Validator.isNotNull(ac.getDocumentType())) {
+						//Generate document
+						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, ac.getDocumentType());
+						
+					}					
+				}
+			}
 		}
 		
 		
