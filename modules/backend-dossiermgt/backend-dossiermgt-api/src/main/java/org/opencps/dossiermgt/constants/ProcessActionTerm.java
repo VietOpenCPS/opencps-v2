@@ -30,4 +30,7 @@ public class ProcessActionTerm {
 	public static final String CONFIG_NOTE = "configNote";
 
 	public static final int NOT_ASSIGNED = 0;
+	public static final int ASSIGNED_TH = 1;
+	public static final int ASSIGNED_TH_PH = 2;
+	public static final int ASSIGNED_TH_PH_TD = 3;
 }

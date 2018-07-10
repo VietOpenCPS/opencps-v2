@@ -1531,15 +1531,15 @@ public class DossierActionsImpl implements DossierActions {
 					if (Validator.isNotNull(assignUsers)) {
 						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
-						dossierActionUser.assignDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
+						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId(), subUsersArray);
 					} else {
 						_log.info("PROCESS subUsers == null");
-						dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
+						dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId());
 					}
 				} else {
-					dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
+					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
 				}
 
@@ -1729,10 +1729,10 @@ public class DossierActionsImpl implements DossierActions {
 
 			if (Validator.isNotNull(subUsers)) {
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
-				dossierActionUser.assignDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
+				dossierActionUser.assignDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId, subUsersArray);
 			} else {
-				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
+				dossierActionUser.initDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
 
@@ -1768,11 +1768,11 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(subUsers)) {
 				_log.info("PROCESS subUsers != null");
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
-				dossierActionUser.assignDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
+				dossierActionUser.assignDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId, subUsersArray);
 			} else {
 				_log.info("PROCESS subUsers == null");
-				dossierActionUser.initDossierActionUser(dossierAction.getDossierActionId(), userId, groupId,
+				dossierActionUser.initDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
 			//_log.info("UPDATE DOSSIER STATUS************");
