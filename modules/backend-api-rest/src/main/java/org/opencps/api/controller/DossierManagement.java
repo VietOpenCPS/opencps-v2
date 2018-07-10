@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -69,7 +68,7 @@ public interface DossierManagement {
 
 	//LamTV: Process API dossier/todo
 	@GET
-	@Path("/dossiers/todo")
+	@Path("/todo")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get a list of Dossiers", response = DossierResultsModel.class)
 	@ApiResponses(value = {
