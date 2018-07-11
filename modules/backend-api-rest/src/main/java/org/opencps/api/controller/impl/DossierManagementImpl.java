@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +40,7 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -687,6 +689,33 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new NotFoundException("Cant add DOSSIER");
 			}
 
+			int originality = Integer.parseInt(input.getOriginality());
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+				//Update submit date
+				Date now = new Date();
+				dossier.setSubmitDate(now);
+				int durationCount = 0;
+				int durationUnit = 0;
+				if (process != null ) {
+					durationCount = process.getDurationCount();
+					durationUnit = process.getDurationUnit();
+					int durationDays = 0;
+
+					if (durationUnit == 0) {
+						durationDays = durationCount;
+					} else {
+						durationDays = Math.round(durationCount / 8);
+					}
+					Date dueDate = null;
+					if (durationDays > 0) {
+						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
+					}
+
+					dossier.setDueDate(dueDate);
+				}
+				
+				DossierLocalServiceUtil.updateDossier(dossier);
+			}
 			//Add to dossier user based on service process role
 			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
