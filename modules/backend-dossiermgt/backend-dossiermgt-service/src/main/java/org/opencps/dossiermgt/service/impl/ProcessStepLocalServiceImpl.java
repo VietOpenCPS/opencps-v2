@@ -378,6 +378,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	}
 
 	//LamTV_ Process output ProcessStep to DB
+	@Indexable(type = IndexableType.REINDEX)
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
 			String instructionNote, String briefNote, String lockState, ServiceContext serviceContext)
