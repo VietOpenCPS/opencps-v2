@@ -466,6 +466,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	}
 
 	//LamTV_ Process output ServiceConfig to DB
+	@Indexable(type = IndexableType.REINDEX)
 	public long updateServiceConfigDB(long userId, long groupId, long serviceInfoId, String govAgencyCode,
 			String govAgencyName, String serviceInstruction, Integer serviceLevel, String serviceUrl,
 			boolean forCitizen, boolean forBusiness, boolean postalService, boolean registration,

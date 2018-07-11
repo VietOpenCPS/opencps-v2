@@ -771,6 +771,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	}
 
 	//LamTV_Process output ServiceProcess to DB
+	@Indexable(type = IndexableType.REINDEX)
 	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
 			String description, Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
 			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException {

@@ -596,6 +596,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	}
 
 	//LamTV_Process output ProcessAction to DB
+	@Indexable(type = IndexableType.REINDEX)
 	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
 			int allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,

@@ -20,10 +20,8 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -37,7 +35,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierDocumentManagementImpl implements DossierDocumentManagement {
@@ -59,13 +56,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
 			if (Validator.isNotNull(dossier)) {
-				String strDossier = JSONFactoryUtil.looseSerialize(dossier);
-				
+
 				long dossierActionId = dossier.getDossierActionId();
 
 				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
+				String documentScript = StringPool.BLANK;
 				if (docType != null) {
-					String documentScript = docType.getDocumentScript();
+					documentScript = docType.getDocumentScript();
 				}
 
 				if (dossierActionId != 0) {
@@ -75,8 +72,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					if (dAction != null) {
 						payload = dAction.getPayload();
 					}
+					JSONObject jsonData = null;
 					if (Validator.isNotNull(payload)) {
-						JSONObject jsonData = JSONFactoryUtil.createJSONObject(payload);
+						jsonData = JSONFactoryUtil.createJSONObject(payload);
 						jsonData = processMergeDossierFormData(dossier, jsonData);
 					}
 					
@@ -109,12 +107,12 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					//_log.info("Form data to preview: " + formData);
 					Message message = new Message();
 
-//					message.put("formReport", formReport);
+					message.put("formReport", documentScript);
 //
-//					message.put("formData", formData);
+					message.put("formData", jsonData.toJSONString());
 
-					message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
-					message.setResponseDestinationName("jasper/engine/preview/callback");
+//					message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
+//					message.setResponseDestinationName("jasper/engine/preview/callback");
 
 					try {
 						String previewResponse = (String) MessageBusUtil

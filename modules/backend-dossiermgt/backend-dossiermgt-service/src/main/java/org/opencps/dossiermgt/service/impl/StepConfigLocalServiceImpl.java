@@ -173,6 +173,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 		return stepConfigFinder.finByStepConfig(stepType);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public boolean updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
 			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig) {
 

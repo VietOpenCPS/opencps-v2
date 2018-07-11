@@ -20,6 +20,8 @@ import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.service.base.DocumentTypeLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -78,6 +80,7 @@ public class DocumentTypeLocalServiceImpl
 		return documentTypePersistence.fetchByF_CODE(groupId, typeCode);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public DocumentType updateDocType(Long docId, long userId, long groupId, String typeCode, int templateClass,
 			String documentName, String codePattern, String documentScript, int docSync,
 			ServiceContext serviceContext) {
@@ -119,6 +122,7 @@ public class DocumentTypeLocalServiceImpl
 
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public void updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass,
 			String documentName, String codePattern, Integer docSync, String documentScript) {
 
