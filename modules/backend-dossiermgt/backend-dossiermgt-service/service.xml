@@ -1144,6 +1144,10 @@
 		<finder return-type="Collection" name = "UID">
 			<finder-column name="userId" />
 		</finder>
+        <finder name="DID_SC" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="stepCode"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
