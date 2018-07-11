@@ -2,8 +2,10 @@ package org.opencps.api.controller.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -36,8 +38,7 @@ public class ReadXMLFileUtils {
 	public static String convertFiletoString(File fXmlFile) {
 		BufferedReader bufReader = null;
 		try {
-			Reader fileReader = new FileReader(fXmlFile);
-			bufReader = new BufferedReader(fileReader);
+			bufReader = new BufferedReader(new InputStreamReader(new FileInputStream(fXmlFile), "UTF8"));
 			StringBuilder sb = new StringBuilder();
 			String line = bufReader.readLine();
 			while (line != null) {
@@ -91,9 +92,12 @@ public class ReadXMLFileUtils {
 
 	private static void listFilesForFolder(File fileEntry, String folderPath, String folderParentPath, long groupId,
 			long userId, ServiceContext serviceContext) {
+		_log.info("folderPath: "+folderPath);
+		_log.info("folderParentPath: "+folderParentPath);
 		if (Validator.isNotNull(folderPath)) {
 			int index = folderPath.lastIndexOf(StringPool.FORWARD_SLASH);
-			String subFolder = folderPath.substring(index -1);
+			String subFolder = folderPath.substring(index);
+			_log.info("subFolder: "+subFolder);
 			if (Validator.isNotNull(subFolder)) {
 				switch (subFolder) {
 				case ConstantUtils.SOURCE_DICTS:
@@ -175,11 +179,15 @@ public class ReadXMLFileUtils {
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
 			for (File file : files) {
-				String filePath = file.getPath();
-				String xmlString = convertFiletoString(file);
-				ServiceInfo service = convertXMLToServiceInfo(xmlString);
-				ProcessUpdateDBUtils.processUpdateServiceInfo(service, filePath, folderParentPath, groupId, userId,
-						serviceContext);
+				String fileName = file.getName();
+				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+				if (Validator.isNotNull(subFileName)) {
+					String filePath = file.getPath();
+					String xmlString = convertFiletoString(file);
+					ServiceInfo service = convertXMLToServiceInfo(xmlString);
+					ProcessUpdateDBUtils.processUpdateServiceInfo(service, filePath, folderParentPath, groupId, userId,
+							serviceContext);
+				}
 			}
 		}
 	}
@@ -189,11 +197,15 @@ public class ReadXMLFileUtils {
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
 			for (File file : files) {
-				String filePath = file.getPath();
-				String xmlString = convertFiletoString(file);
-				DossierTemplate template = convertXMLToDossierTemplate(xmlString);
-				ProcessUpdateDBUtils.processUpdateDossierTemplate(template, filePath, folderParentPath, groupId, userId,
-						serviceContext);
+				String fileName = file.getName();
+				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+				if (Validator.isNotNull(subFileName)) {
+					String filePath = file.getPath();
+					String xmlString = convertFiletoString(file);
+					DossierTemplate template = convertXMLToDossierTemplate(xmlString);
+					ProcessUpdateDBUtils.processUpdateDossierTemplate(template, filePath, folderParentPath, groupId, userId,
+							serviceContext);
+				}
 			}
 		}
 	}
@@ -203,10 +215,14 @@ public class ReadXMLFileUtils {
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
 			for (File file : files) {
-				String filePath = file.getPath();
-				String xmlString = convertFiletoString(file);
-				ServiceProcess process = convertXMLToServiceProcess(xmlString);
-				ProcessUpdateDBUtils.processUpdateServiceProcess(process, filePath, groupId, userId, serviceContext);
+				String fileName = file.getName();
+				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+				if (Validator.isNotNull(subFileName)) {
+					String filePath = file.getPath();
+					String xmlString = convertFiletoString(file);
+					ServiceProcess process = convertXMLToServiceProcess(xmlString);
+					ProcessUpdateDBUtils.processUpdateServiceProcess(process, filePath, groupId, userId, serviceContext);
+				}
 			}
 		}
 	}

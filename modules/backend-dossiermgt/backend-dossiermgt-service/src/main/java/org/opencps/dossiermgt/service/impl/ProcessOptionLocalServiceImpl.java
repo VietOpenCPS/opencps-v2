@@ -337,6 +337,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	}
 
 	//LamTV_ Process ouput ProcessOption to DB
+	@Indexable(type = IndexableType.REINDEX)
 	public void updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
 			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
 			String templateName, String processNo, String processName, String registerBookCode,

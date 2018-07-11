@@ -460,6 +460,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	}
 
 	//LamTV_ Process output ServiceInfo
+	@Indexable(type = IndexableType.REINDEX)
 	public long updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
 			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
 			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
