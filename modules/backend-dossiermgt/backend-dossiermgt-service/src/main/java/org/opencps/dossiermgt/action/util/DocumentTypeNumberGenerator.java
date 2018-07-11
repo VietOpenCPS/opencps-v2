@@ -9,8 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.datamgt.utils.DateTimeUtils;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 
 import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
@@ -23,15 +23,15 @@ public class DocumentTypeNumberGenerator {
 		return UUID.randomUUID().toString();
 	}
 	
-	public static String generateDocumentTypeNumber(long groupId, long companyId, long deliverableTypeId)
+	public static String generateDocumentTypeNumber(long groupId, long companyId, long documentTypeId)
 			throws ParseException {
-		DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchDeliverableType(deliverableTypeId);
+		DocumentType documentType = DocumentTypeLocalServiceUtil.fetchDocumentType(documentTypeId);
 		String seriNumberPattern = null;		
 		
-		String deliverableNumber = StringPool.BLANK;
+		String documentTypeNumber = StringPool.BLANK;
 
-		if (deliverableType != null) {
-			seriNumberPattern = deliverableType.getCodePattern();
+		if (documentType != null) {
+			seriNumberPattern = documentType.getCodePattern();
 			String codePattern = "\\{(n+|N+)\\}";
 			String dayPattern = "\\{(d{2}|D{2})\\}";
 			String monthPattern = "\\{(m{2}|M{2})\\}";
@@ -56,7 +56,7 @@ public class DocumentTypeNumberGenerator {
 					String tmp = m.group(1);
 
 					if (r.toString().equals(codePattern)) {
-						String number = countByInit(pattern, Integer.valueOf(deliverableType.getCounter()));
+						String number = countByInit(pattern, 0L);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 						if (number.length() < tmp.length()) {
@@ -109,9 +109,9 @@ public class DocumentTypeNumberGenerator {
 				}
 			}
 
-			deliverableNumber = seriNumberPattern;
+			documentTypeNumber = seriNumberPattern;
 		}
-		return deliverableNumber;
+		return documentTypeNumber;
 	}	
 	
 	private static String countByInit(String pattern, long count) {
