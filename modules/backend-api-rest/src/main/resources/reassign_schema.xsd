@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="ReAssign">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="toUsers" type="ToUsers" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ToUsers">
+		<xsd:sequence>
+			<xsd:element type="xsd:long" name="userId"></xsd:element>
+			<xsd:element type="xsd:string" name="userName"></xsd:element>
+			<xsd:element type="xsd:boolean" name="moderator"></xsd:element>
+			<xsd:element type="xsd:int" name="assigned"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
