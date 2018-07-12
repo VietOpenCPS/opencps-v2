@@ -470,12 +470,12 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	public long updateServiceConfigDB(long userId, long groupId, long serviceInfoId, String govAgencyCode,
 			String govAgencyName, String serviceInstruction, Integer serviceLevel, String serviceUrl,
 			boolean forCitizen, boolean forBusiness, boolean postalService, boolean registration,
-			ServiceContext context) throws NoSuchServiceConfigException {
+			ServiceContext context) {
 
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 
-		ServiceConfig serviceConfig = serviceConfigPersistence.findByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
+		ServiceConfig serviceConfig = serviceConfigPersistence.fetchByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
 
 		if (serviceConfig == null) {
 

@@ -116,7 +116,7 @@ public class DossierDocumentLocalServiceImpl
 
 		return dossierDocumentPersistence.update(object);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId, 
 			String referenceUid,
@@ -186,4 +186,5 @@ public class DossierDocumentLocalServiceImpl
 
 		return dossierDocumentPersistence.update(object);
 	}	
+
 }
