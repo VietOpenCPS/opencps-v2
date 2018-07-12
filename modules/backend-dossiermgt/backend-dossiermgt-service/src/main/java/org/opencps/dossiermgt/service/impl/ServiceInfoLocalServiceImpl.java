@@ -468,7 +468,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
-		valdiate(serviceCode, serviceName, administrationCode, domainCode, groupId);
+//		valdiate(serviceCode, serviceName, administrationCode, domainCode, groupId);
 		ServiceInfo serviceInfo = serviceInfoPersistence.fetchBySC_GI(serviceCode, groupId);
 		if (serviceInfo != null) {
 			serviceInfo.setModifiedDate(now);
