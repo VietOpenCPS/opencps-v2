@@ -123,4 +123,6 @@ public class DossierTerm {
 	public static final String POSTAL_SERVICE_CODE = "postalServiceCode";
 	public static final String POSTAL_DISTRICT_CODE = "postalDistrictCode";
 	public static final String POSTAL_WARD_CODE = "postalWardCode";
+	
+	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
 }

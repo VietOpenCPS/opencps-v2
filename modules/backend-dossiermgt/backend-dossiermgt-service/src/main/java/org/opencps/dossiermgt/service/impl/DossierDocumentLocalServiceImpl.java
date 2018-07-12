@@ -19,11 +19,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.exception.NoSuchDossierDocumentException;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.base.DossierDocumentLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
@@ -56,6 +59,7 @@ public class DossierDocumentLocalServiceImpl
 		return dossierDocumentPersistence.countByF_DOSSIERID(dossierId);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId, long dossierActionId, String documentType,
 			String documentName, String documentCode, String sourceFileName, long fileSize, InputStream inputStream, String fileType,
 			ServiceContext serviceContext) {
@@ -112,5 +116,75 @@ public class DossierDocumentLocalServiceImpl
 
 		return dossierDocumentPersistence.update(object);
 	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierDocument addDossierDoc(long groupId, Long dossierId, 
+			String referenceUid,
+			long dossierActionId, String documentType,
+			String documentName, String documentCode,
+			long documentFileId,
+			int docSync,
+			ServiceContext serviceContext) {
+		long userId = serviceContext.getUserId();
+		
+		Date now = new Date();
+
+		long dossierDocId = counterLocalService.increment(DossierDocument.class.getName());
+
+		DossierDocument object = dossierDocumentPersistence.create(dossierDocId);
+
+		// Add audit fields
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(userId);
+
+		// Add other fields
+		object.setDossierId(dossierId);
+		object.setReferenceUid(referenceUid);
+		object.setDossierActionId(dossierActionId);
+		object.setDocumentType(documentType);
+		object.setDocumentName(documentName);
+		object.setDocumentCode(documentCode);
+		object.setDocumentFileId(documentFileId);
+		object.setDocSync(docSync);
+		//TODO: docSync
+
+		return dossierDocumentPersistence.update(object);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierDocument updateDossierDoc(long groupId, 
+			long dossierDocId,
+			Long dossierId, 
+			String referenceUid,
+			long dossierActionId, String documentType,
+			String documentName, String documentCode,
+			long documentFileId,
+			int docSync,
+			ServiceContext serviceContext) throws NoSuchDossierDocumentException {
+		long userId = serviceContext.getUserId();
+		
+		Date now = new Date();
+
+		DossierDocument object = dossierDocumentPersistence.findByPrimaryKey(dossierDocId);
+
+		// Add audit fields
+		object.setGroupId(groupId);
+		object.setModifiedDate(now);
+		object.setUserId(userId);
+
+		// Add other fields
+		object.setDossierId(dossierId);
+		object.setReferenceUid(referenceUid);
+		object.setDossierActionId(dossierActionId);
+		object.setDocumentType(documentType);
+		object.setDocumentName(documentName);
+		object.setDocumentCode(documentCode);
+		object.setDocumentFileId(documentFileId);
+		object.setDocSync(docSync);
+
+		return dossierDocumentPersistence.update(object);
+	}	
 
 }

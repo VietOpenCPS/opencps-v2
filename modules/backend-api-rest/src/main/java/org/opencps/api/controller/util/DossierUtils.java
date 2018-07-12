@@ -34,6 +34,7 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -574,7 +575,19 @@ public class DossierUtils {
 				}
 				
 				for (Employee e : lstEmployees) {
-					DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);
+					DossierUserPK pk = new DossierUserPK();
+					pk.setDossierId(dossier.getDossierId());
+					pk.setUserId(e.getMappingUserId());
+					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
+					if (ds == null) {
+						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);						
+					}
+					else {
+						if (moderator == 1 && ds.getModerator() == 0) {
+							ds.setModerator(1);
+							DossierUserLocalServiceUtil.updateDossierUser(ds);
+						}
+					}
 				}
 			}
 		}

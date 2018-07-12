@@ -1,5 +1,7 @@
 package org.opencps.api.controller.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +25,8 @@ import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
+import org.opencps.api.reassign.model.ReAssign;
+import org.opencps.api.reassign.model.ToUsers;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
@@ -33,14 +37,17 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.DossierActionUser;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -55,6 +62,7 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
@@ -77,6 +85,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -687,6 +696,33 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new NotFoundException("Cant add DOSSIER");
 			}
 
+			int originality = Integer.parseInt(input.getOriginality());
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+				//Update submit date
+				Date now = new Date();
+				dossier.setSubmitDate(now);
+				int durationCount = 0;
+				int durationUnit = 0;
+				if (process != null ) {
+					durationCount = process.getDurationCount();
+					durationUnit = process.getDurationUnit();
+					int durationDays = 0;
+
+					if (durationUnit == 0) {
+						durationDays = durationCount;
+					} else {
+						durationDays = Math.round(durationCount / 8);
+					}
+					Date dueDate = null;
+					if (durationDays > 0) {
+						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
+					}
+
+					dossier.setDueDate(dueDate);
+				}
+				
+				DossierLocalServiceUtil.updateDossier(dossier);
+			}
 			//Add to dossier user based on service process role
 			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
@@ -1930,6 +1966,80 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info(e);
 			return processException(e);
 		}
+	}
+
+	@Override
+	public Response getReassignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, long dossierId, ServiceContext serviceContext) {
+		ReAssign reAssign = new ReAssign();
+
+		List<ToUsers> lstUsers = new ArrayList<>();
+		
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		if (dossier != null) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			if (dossierAction != null) {
+				String stepCode = dossierAction.getStepCode();
+				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierAction.getDossierActionId(), stepCode);
+				for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
+					ToUsers toUsers = new ToUsers();
+					toUsers.setAssigned(dau.getAssigned());
+					toUsers.setUserId(dau.getUserId());
+					User u = UserLocalServiceUtil.fetchUser(toUsers.getUserId());
+					toUsers.setModerator(dau.getModerator() == 1 ? true : false);
+					toUsers.setUserName(u.getFullName());
+					lstUsers.add(toUsers);
+				}
+			}
+		}
+		
+		reAssign.getToUsers().addAll(lstUsers);
+		
+		return Response.status(200).entity(reAssign).build();
+	}
+
+	@Override
+	public Response updateReassignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long dossierId, ReAssign reAssignNew) {
+		ReAssign reAssign = new ReAssign();
+
+		List<ToUsers> lstUsers = new ArrayList<>();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		if (dossier != null) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			if (dossierAction != null) {
+				String stepCode = dossierAction.getStepCode();
+				DossierActionUserLocalServiceUtil.deleteByDossierAndStepCode(dossierId, stepCode);
+				for (ToUsers tu : reAssignNew.getToUsers()) {
+					try {
+						DossierActionUserLocalServiceUtil.addDossierActionUser(tu.getUserId(), groupId, dossier.getDossierActionId(), dossierId, stepCode, (tu.getAssigned() != ProcessActionTerm.NOT_ASSIGNED ? 1 : 0), tu.getAssigned(), true);
+					} catch (PortalException e) {
+						e.printStackTrace();
+					}
+				}
+				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierAction.getDossierActionId(), stepCode);
+				for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
+					ToUsers tu = new ToUsers();
+					tu.setAssigned(dau.getAssigned());
+					tu.setUserId(dau.getUserId());
+					User u = UserLocalServiceUtil.fetchUser(tu.getUserId());
+					tu.setModerator(dau.getModerator() == 1 ? true : false);
+					tu.setUserName(u.getFullName());
+					lstUsers.add(tu);
+				}
+			}
+		}
+		
+		reAssign.getToUsers().addAll(lstUsers);
+		return Response.status(200).entity(reAssign).build();
+	}
+
+	@Override
+	public Response getActions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		return Response.status(200).entity(null).build();
 	}
 
 

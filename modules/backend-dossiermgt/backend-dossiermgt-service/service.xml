@@ -401,7 +401,7 @@
 		<column name="endorsementDate" type="Date" />
 		<column name="lockState" type="String" />
 		<column name="originality" type="int" />
-		<column name="originDossierId" type="int" />
+		<column name="originDossierId" type="long" />
 		<!-- Order -->
 		
 		<!-- Finder methods -->
@@ -837,6 +837,7 @@
 		<column name="restrictDossier" type="String" />
 		<column name="lockState" type="String" />
 		<column name="groupName" type="String" />
+		<column name="roleAsStep" type="String" />
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -1143,6 +1144,10 @@
 		<finder return-type="Collection" name = "UID">
 			<finder-column name="userId" />
 		</finder>
+        <finder name="DID_SC" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="stepCode"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
@@ -1789,6 +1794,7 @@
 
 		<!-- Other fields -->
 		<column name="dossierId" type="long" />
+		<column name="referenceUid" type="String" />
 		<column name="dossierActionId" type="long" />
 		<column name="documentType" type="String" />
 		<column name="documentName" type="String" />
