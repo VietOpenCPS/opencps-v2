@@ -2042,5 +2042,32 @@ public class DossierManagementImpl implements DossierManagement {
 		return Response.status(200).entity(null).build();
 	}
 
+	@Override
+	public Response rollback(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		Dossier dossier = null;
+		try {
+			long dossierId = Integer.parseInt(id);
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		}
+		catch (NumberFormatException nfe) {
+			
+		}
+		if (dossier == null) {
+			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+		}
+		if (dossier != null) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			if (dossierAction != null && dossierAction.isRollbackable()) {
+				
+			}
+			return Response.status(200).entity(null).build();			
+		}
+		else {
+			return Response.status(404).entity(null).build();			
+		}
+	}
+
 
 }

@@ -5,8 +5,10 @@ import java.util.Date;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 
@@ -132,6 +134,28 @@ public class Engine implements MessageListener {
 			    }
 			}
 			else if (className.equals(Deliverable.class.getName())) {
+				
+			}
+			else if (className.equals(DossierDocument.class.getName())) {
+				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
+				
+    			ServiceContext serviceContext = new ServiceContext();
+    			serviceContext.setUserId(dossierDocument.getUserId());
+    
+    			long fileEntryId = 0;
+    
+    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, dossierDocument.getGroupId(), file, filePath,
+    					serviceContext);
+    
+    			fileEntryId = fileEntry.getFileEntryId();
+    
+    			dossierDocument.setDocumentFileId(fileEntryId);
+    
+    			DossierDocumentLocalServiceUtil.updateDossierDocument(dossierDocument);
+    
+    			Indexer<DossierDocument> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierDocument.class);
+    
+    			indexer.reindex(dossierDocument);
 				
 			}
 

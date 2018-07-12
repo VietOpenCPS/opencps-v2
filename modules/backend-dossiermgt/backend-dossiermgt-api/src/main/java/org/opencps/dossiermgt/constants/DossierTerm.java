@@ -117,12 +117,17 @@ public class DossierTerm {
 	public static final int ORIGINALITY_DVCTT = 1;
 	public static final int ORIGINALITY_LIENTHONG = 2;
 	public static final int ORIGINALITY_MOTCUA = 3;
-	
-	public static final String DOSSIER_STATUS_NEW = "new";
-	
+		
 	public static final String POSTAL_SERVICE_CODE = "postalServiceCode";
 	public static final String POSTAL_DISTRICT_CODE = "postalDistrictCode";
 	public static final String POSTAL_WARD_CODE = "postalWardCode";
 	
 	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
+	public static final String DOSSIER_STATUS_NEW = "new";
+	public static final String DOSSIER_STATUS_PROCESSING = "processing";
+	public static final String DOSSIER_STATUS_RELEASING = "releasing";
+	public static final String DOSSIER_STATUS_DENIED = "denied";
+	public static final String DOSSIER_STATUS_UNRESOLVED = "unresolved";
+	public static final String DOSSIER_STATUS_CANCELLED = "cancelled";
+	public static final String DOSSIER_STATUS_DONE = "done";
 }

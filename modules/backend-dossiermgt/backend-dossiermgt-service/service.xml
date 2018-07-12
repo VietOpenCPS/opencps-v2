@@ -368,6 +368,7 @@
 		<column name="briefNote" type="String" />
 		<column name="dossierNo" type="String" />
 		<column name="submitting" type="boolean" />
+		<column name="processDate" type="Date" />
 		<column name="submitDate" type="Date" />
 		<column name="receiveDate" type="Date" />
 		<column name="dueDate" type="Date" />
