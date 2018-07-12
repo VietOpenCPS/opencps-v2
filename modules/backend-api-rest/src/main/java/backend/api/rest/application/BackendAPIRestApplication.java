@@ -23,6 +23,7 @@ import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesLogManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesManagementImpl;
 import org.opencps.api.controller.impl.DossierActionManagementImpl;
+import org.opencps.api.controller.impl.DossierDocumentManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
@@ -110,6 +111,7 @@ public class BackendAPIRestApplication extends Application {
 		//
 		singletons.add(new CertNumberManagementImpl());
 		singletons.add(new OneGateControllerImpl());
+		singletons.add(new DossierDocumentManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);

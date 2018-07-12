@@ -1797,7 +1797,7 @@
 		<column name="docSync" type="int" />
 		
         <order by="desc">
-            <order-column name="modifiedDate" order-by="desc" case-sensitive="true" />
+            <order-column name="createDate" order-by="desc" case-sensitive="true" />
         </order>
 
 		<finder return-type="Collection" name="F_DOSSIERID">

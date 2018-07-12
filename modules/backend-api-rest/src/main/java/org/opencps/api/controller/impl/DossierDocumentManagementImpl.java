@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierDocumentManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierUtils;
+import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -20,9 +22,14 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -32,6 +39,7 @@ import com.liferay.portal.kernel.messaging.MessageBusException;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -77,56 +85,17 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
 						jsonData = processMergeDossierFormData(dossier, jsonData);
 					}
-					
 
-					// String formReport = plugin.getPluginForm();
-//					String formCode = plugin.getSampleData();
-
-//					String pluginForm = plugin.getPluginForm();
-
-//					String[] splipPluginForms = StringUtil.split(pluginForm, StringPool.AT);
-
-//					boolean original = false;
-
-//					if (splipPluginForms.length == 3 && splipPluginForms[2].contentEquals("original")) {
-//						original = true;
-//					}
-
-//					boolean autoRun = plugin.getAutoRun();
-
-//					String formData = StringPool.BLANK;
-//					String formReport = StringPool.BLANK;
-
-//					if (formCode.startsWith("#")) {
-//						formData = _getFormData(groupId, formCode, dossier.getDossierId(), autoRun,
-//								dossier.getDossierTemplateNo(), original, serviceContext);
-//
-//						formReport = _getFormScript(formCode, dossier.getDossierId());
-//					}
-
-					//_log.info("Form data to preview: " + formData);
 					Message message = new Message();
-
 					message.put("formReport", documentScript);
-//
 					message.put("formData", jsonData.toJSONString());
-
-//					message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
-//					message.setResponseDestinationName("jasper/engine/preview/callback");
 
 					try {
 						String previewResponse = (String) MessageBusUtil
 								.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
 
-						// JSONObject jsonObject =
-						// JSONFactoryUtil.createJSONObject();
-
 						if (Validator.isNotNull(previewResponse)) {
-							// jsonObject =
-							// JSONFactoryUtil.createJSONObject(previewResponse);
 						}
-
-						// String fileDes = jsonObject.getString("fileDes");
 
 						File file = new File(previewResponse);
 
@@ -159,9 +128,142 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	}
 
 	@Override
-	public Response getPreviewHtml(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, long pluginid) {
-		// TODO Auto-generated method stub
+	public Response printDossierDocument(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+
+		// TODO: check user is loged or password for access dossier file
+		BackendAuth auth = new BackendAuthImpl();
+		long dossierId = GetterUtil.getLong(id);
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			List<DossierDocument> dossierDocList = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, 0, 5);
+			DossierDocument dossierDoc = null;
+			if (dossierDocList  != null && dossierDocList.size() > 0) {
+				dossierDoc = dossierDocList.get(0);
+				if (dossierDoc != null) {
+					long docFileId = dossierDoc.getDocumentFileId();
+					if (docFileId > 0) {
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(docFileId);
+
+						File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(),
+								fileEntry.getVersion(), true);
+
+						ResponseBuilder responseBuilder = Response.ok((Object) file);
+	
+						responseBuilder.header("Content-Disposition",
+								"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+						responseBuilder.header("Content-Type", fileEntry.getMimeType());
+	
+						return responseBuilder.build();
+					}
+				}
+			}
+		} catch (Exception e) {
+			return processException(e);
+		}
+		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+	}
+
+	@Override
+	public Response previewDossierDocumentList(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String typeCode, DossierDocumentInputModel input) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			String serviceCode = input.getServiceCode();
+			String govAgencyCode = input.getGovAgencyCode();
+			String strDossiers = input.getDossiers();
+			JSONArray  dossierIdArr = null;
+			if (Validator.isNotNull(strDossiers)) {
+				dossierIdArr = JSONFactoryUtil.createJSONArray(strDossiers);
+			}
+			if (dossierIdArr != null && dossierIdArr.length() > 0) {
+				int length = dossierIdArr.length();
+				JSONObject jsonDossier = null;
+				Dossier dossier = null;
+				String dossierId = StringPool.BLANK;
+				for (int i = 0; i < length; i++) {
+					jsonDossier = (JSONObject) dossierIdArr.get(i);
+					dossierId = jsonDossier.getString(DossierTerm.DOSSIER_ID);
+					if (Validator.isNotNull(dossierId) ) {
+						dossier = DossierUtils.getDossier(dossierId, groupId);
+						if (Validator.isNotNull(dossier)) {
+
+							long dossierActionId = dossier.getDossierActionId();
+
+							DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
+							String documentScript = StringPool.BLANK;
+							if (docType != null) {
+								documentScript = docType.getDocumentScript();
+							}
+
+							if (dossierActionId != 0) {
+
+								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+								String payload = StringPool.BLANK;
+								if (dAction != null) {
+									payload = dAction.getPayload();
+								}
+								JSONObject jsonData = null;
+								if (Validator.isNotNull(payload)) {
+									jsonData = JSONFactoryUtil.createJSONObject(payload);
+									jsonData = processMergeDossierFormData(dossier, jsonData);
+								}
+
+								Message message = new Message();
+								message.put("formReport", documentScript);
+								message.put("formData", jsonData.toJSONString());
+
+								try {
+									String previewResponse = (String) MessageBusUtil
+											.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+
+									if (Validator.isNotNull(previewResponse)) {
+									}
+
+									File file = new File(previewResponse);
+
+									ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+									responseBuilder.header("Content-Disposition",
+											"attachment; filename=\"" + file.getName() + "\"");
+									responseBuilder.header("Content-Type", "application/pdf");
+
+									return responseBuilder.build();
+
+								} catch (MessageBusException e) {
+									throw new Exception("Preview rendering not avariable");
+								}
+
+							} else {
+								throw new Exception("The dossier wasn't on process");
+							}
+
+						} else {
+							throw new Exception("Cant get dossier with id_" + dossierId);
+						}
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
+
+		}
+
 		return null;
 	}
 
@@ -211,4 +313,5 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 		return jsonData;
 	}
+
 }
