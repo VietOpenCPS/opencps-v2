@@ -174,5 +174,20 @@ public interface ApplicantManagement {
 	public Response activateApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("code") String code);
+	
+	@POST
+	@Path("/{id}/activate")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Active applicant without activateCode", response = JSONObject.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the profile of applicant", response = JSONObject.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response activeApplicantWithoutCode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
 
 }

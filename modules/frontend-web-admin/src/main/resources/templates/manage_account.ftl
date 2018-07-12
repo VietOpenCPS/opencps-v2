@@ -331,13 +331,10 @@
 		var that = this;
 		var id = $(this).attr("data-pk");
 		$.ajax({
-			url : "${api.server}/applicants/"+id+"/lock",
+			url : "${api.server}/applicants/"+id+"/activate",
 			dataType : "json",
 			type : "POST",
 			headers: {"groupId": ${groupId}},
-			data : {
-				locked : false
-			},
 			success : function(result){
 				var item = dataSourceCitizen.get(id);
 				if(result){

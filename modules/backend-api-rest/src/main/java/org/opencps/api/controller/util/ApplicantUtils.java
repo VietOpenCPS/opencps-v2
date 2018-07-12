@@ -114,9 +114,15 @@ public class ApplicantUtils {
 			}
 
 			if (Validator.isNotNull(user)) {
+				Boolean locking = null;
 				mappingUser.setUserId(Long.toString(mappingUserId));
 				mappingUser.setScreenName(user.getScreenName());
-				mappingUser.setLocking(user.getLockout());
+				if(user.getStatus() == 0){
+					locking = false;
+				} else {
+					locking = true;
+				}
+				mappingUser.setLocking(locking);
 			}
 
 			model.setMappingUser(mappingUser);
