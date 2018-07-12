@@ -1291,6 +1291,30 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateProcessDate(long groupId, long id, String refId, Date date, ServiceContext context)
+			throws PortalException {
+
+		Date now = new Date();
+
+		Dossier dossier = null;
+
+		if (id != 0) {
+			dossier = dossierPersistence.fetchByPrimaryKey(id);
+		} else {
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
+		}
+
+		dossier.setModifiedDate(now);
+
+		dossier.setProcessDate(date);
+
+		dossierPersistence.update(dossier);
+
+		return dossier;
+
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateSubmittingDate(long groupId, long id, String refId, Date date, ServiceContext context)
 			throws PortalException {
 

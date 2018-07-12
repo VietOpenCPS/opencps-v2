@@ -37,6 +37,7 @@ import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -81,6 +82,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -2196,7 +2199,9 @@ public class DossierActionsImpl implements DossierActions {
 				if (curStep != null) {
 					dossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(), hsltDossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
 							jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_INTEROPERATING), StringPool.BLANK,
-							StringPool.BLANK, curStep.getLockState(), context);									
+							StringPool.BLANK, curStep.getLockState(), context);		
+					
+					
 				}
 			}
 			else {
@@ -2219,6 +2224,9 @@ public class DossierActionsImpl implements DossierActions {
 				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
 						jsonDataStatusText.getString(curStatus), curSubStatus,
 						jsonDataStatusText.getString(curSubStatus), curStep.getLockState(), context);
+				
+				//Update dossier processing date
+				updateProcessingDate(dossier, curStatus, curSubStatus, context);
 			}
 				// update reference dossier
 				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
@@ -2262,14 +2270,28 @@ public class DossierActionsImpl implements DossierActions {
 			//Check if generate dossier document
 			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 			if (ac != null) {
+				//Only create dossier document if 2 && 3
 				if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
-					if (Validator.isNotNull(ac.getDocumentType())) {
+					if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
 						//Generate document
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, ac.getDocumentType());
 						String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
 						
-						DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
+						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
 					
+						//Generate PDF
+						String formData = dossierAction.getPayload();
+						Message message = new Message();
+
+						JSONObject msgData = JSONFactoryUtil.createJSONObject();
+						msgData.put("className", DossierDocument.class.getName());
+						msgData.put("classPK", dossierDocument.getDossierDocumentId());
+						msgData.put("jrxmlTemplate", dt.getDocumentScript());
+						msgData.put("formData", formData);
+						msgData.put("userId", userId);
+
+						message.put("msgToEngine", msgData);
+						MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 						
 					}					
 				}
@@ -2315,6 +2337,43 @@ public class DossierActionsImpl implements DossierActions {
 		return dossierAction;
 	}
 
+	private void updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, ServiceContext context) {
+		Date now = new Date();
+
+		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
+			try {
+				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+			} catch (PortalException e) {
+				e.printStackTrace();
+			}
+		}
+		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+			if (Validator.isNull(dossier.getReleaseDate())) {
+				try {
+					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				} catch (PortalException e) {
+					e.printStackTrace();
+				}				
+			}
+		}
+		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+			if (Validator.isNull(dossier.getFinishDate())) {
+				try {
+					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				} catch (PortalException e) {
+					e.printStackTrace();
+				}				
+			}
+		}
+	}
+	
 	@Override
 	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode,
 			long processActionId, String actionUser, String actionNote, long assignUserId, long userId,
