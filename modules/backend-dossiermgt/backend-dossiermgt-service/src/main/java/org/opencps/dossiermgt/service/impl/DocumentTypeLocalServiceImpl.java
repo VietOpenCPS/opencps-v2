@@ -123,7 +123,7 @@ public class DocumentTypeLocalServiceImpl
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public void updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass,
+	public DocumentType updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass,
 			String documentName, String codePattern, Integer docSync, String documentScript) {
 
 		Date now = new Date();
@@ -171,6 +171,6 @@ public class DocumentTypeLocalServiceImpl
 			docType.setDocSync(docSync);
 		}
 
-		documentTypePersistence.update(docType);
+		return documentTypePersistence.update(docType);
 	}
 }

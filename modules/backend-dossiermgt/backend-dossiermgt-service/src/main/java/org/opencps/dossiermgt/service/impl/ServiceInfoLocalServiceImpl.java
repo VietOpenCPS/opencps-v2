@@ -461,7 +461,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 	//LamTV_ Process output ServiceInfo
 	@Indexable(type = IndexableType.REINDEX)
-	public long updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
+	public ServiceInfo updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
 			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
 			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
 			String domainCode, String domainName, Integer maxLevel) throws PortalException {
@@ -531,8 +531,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			serviceInfo.setDomainIndex(dom.getTreeIndex());
 		}
 
-		serviceInfoPersistence.update(serviceInfo);
-		return serviceInfo.getServiceInfoId();
+		return serviceInfoPersistence.update(serviceInfo);
 
 	}
 	public static final String CLASS_NAME = ServiceInfo.class.getName();

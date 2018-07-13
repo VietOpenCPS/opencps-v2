@@ -221,7 +221,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 
 	//LamTV_ Process output DeliverableType to DB
-	public void updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
+	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
 			Integer docSync, String mappingData, String fieldConfigs, String formReport, String formScript) {
 
 		Date now = new Date();
@@ -281,7 +281,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			}
 		}
 
-		deliverableTypePersistence.update(object);
+		return deliverableTypePersistence.update(object);
 
 	}
 

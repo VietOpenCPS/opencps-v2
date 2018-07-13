@@ -70,10 +70,10 @@ public class DocumentTypeActionsImpl implements DocumentTypeActions {
 				codePattern, documentScript, docSync, serviceContext);
 	}
 	@Override
-	public void updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass,
+	public DocumentType updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass,
 			String documentName, String codePattern, Integer docSync, String documentScript) {
 
-		DocumentTypeLocalServiceUtil.updateDocumentTypeDB(userId, groupId, typeCode, templateClass, documentName,
+		 return DocumentTypeLocalServiceUtil.updateDocumentTypeDB(userId, groupId, typeCode, templateClass, documentName,
 				codePattern, docSync, documentScript);
 	}
 

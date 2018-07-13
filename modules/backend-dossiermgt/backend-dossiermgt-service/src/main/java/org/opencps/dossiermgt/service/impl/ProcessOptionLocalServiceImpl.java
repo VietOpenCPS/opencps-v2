@@ -338,7 +338,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 	//LamTV_ Process ouput ProcessOption to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public void updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
+	public ProcessOption updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
 			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
 			String templateName, String processNo, String processName, String registerBookCode,
 			ServiceContext context) {
@@ -346,11 +346,15 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
+		DossierTemplate dossierTemp = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
 		ServiceProcess serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 		long dossierTemplateId = 0;
 		long serviceProcessId = 0;
 		if (serviceProcess != null) {
 			serviceProcessId = serviceProcess.getServiceProcessId();
+		}
+		if (dossierTemp != null) {
+			dossierTemplateId = dossierTemp.getDossierTemplateId();
 		}
 
 		long processOptionId = counterLocalService.increment(ProcessOption.class.getName());
@@ -372,7 +376,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		processOption.setServiceProcessId(serviceProcessId);
 		processOption.setOptionName(optionName);
 
-		processOptionPersistence.update(processOption);
+		return processOptionPersistence.update(processOption);
 	}
 
 	private void validateRemove(long processOptionId) throws PortalException {
