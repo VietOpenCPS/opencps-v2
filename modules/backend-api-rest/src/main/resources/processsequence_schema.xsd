@@ -40,4 +40,38 @@
 			<xsd:element name="data" type="ProcessSequenceModel" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
+	<xsd:complexType name="ProcessSequenceOutputModel">
+		<xsd:sequence>
+			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceRole" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="ProcessSequenceResultModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ProcessSequenceOutputModel" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>	
+	</xsd:element>
+	<xsd:complexType name="ProcessSequenceInputModel">
+		<xsd:sequence>
+			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceRole" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="ProcessSequenceOneOutputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="sequenceName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="sequenceRole" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>	
+	</xsd:element>
 </xsd:schema>

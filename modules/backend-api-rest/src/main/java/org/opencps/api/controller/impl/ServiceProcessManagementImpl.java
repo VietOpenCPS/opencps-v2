@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -11,7 +12,11 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ServiceProcessManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.ProcessSequenceUtils;
 import org.opencps.api.controller.util.ServiceProcessUtils;
+import org.opencps.api.processsequence.model.ProcessSequenceInputModel;
+import org.opencps.api.processsequence.model.ProcessSequenceOutputModel;
+import org.opencps.api.processsequence.model.ProcessSequenceResultModel;
 import org.opencps.api.serviceprocess.model.ProcessActionInputModel;
 import org.opencps.api.serviceprocess.model.ProcessActionResultsModel;
 import org.opencps.api.serviceprocess.model.ProcessActionReturnModel;
@@ -36,10 +41,12 @@ import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.exception.DuplicateStepNoException;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
@@ -1230,6 +1237,117 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(404).entity(error).build();
 		}
 
+	}
+
+	@Override
+	public Response getProcessSequences(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
+			List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, id);
+			ProcessSequenceResultModel result = new ProcessSequenceResultModel();
+			result.setTotal(lstSequences.size());
+			List<ProcessSequenceOutputModel> lstModels = new ArrayList<>();
+			for (ProcessSequence ps : lstSequences) {
+				ProcessSequenceOutputModel model = new ProcessSequenceOutputModel();
+				model.setSequenceName(ps.getSequenceName());
+				model.setDurationCount(ps.getDurationCount());
+				model.setSequenceNo(ps.getSequenceNo());
+				model.setSequenceRole(ps.getSequenceRole());
+				
+				lstModels.add(model);
+			}
+			
+			result.getData().addAll(lstModels);
+			
+			return Response.status(200).entity(result).build();
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("Content not found!");
+			error.setCode(404);
+			error.setDescription(e.getMessage());
+
+			return Response.status(404).entity(error).build();
+		}	
+	}
+
+	@Override
+	public Response addProcessSequence(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, ProcessSequenceInputModel input) {
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
+			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(id);
+			
+			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.addProcessSequence(serviceContext.getUserId(), groupId, serviceProcess.getServiceProcessId(), input.getSequenceNo(), input.getSequenceName(), input.getDurationCount());
+			
+			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("Content not found!");
+			error.setCode(404);
+			error.setDescription(e.getMessage());
+
+			return Response.status(404).entity(error).build();
+		}	
+	}
+
+	@Override
+	public Response updateProcessSequence(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String sequenceNo,
+			ProcessSequenceInputModel input) {
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
+			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.fetchProcessSequence(id);
+			
+			if (processSequence != null) {
+				processSequence = ProcessSequenceLocalServiceUtil.updateProcessSequence(serviceContext.getUserId(), groupId, processSequence.getServiceProcessId(), processSequence.getProcessSequenceId(), sequenceNo, input.getSequenceName(), input.getDurationCount());				
+			}
+						
+			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("Content not found!");
+			error.setCode(404);
+			error.setDescription(e.getMessage());
+
+			return Response.status(404).entity(error).build();
+		}	
 	}
 
 }
