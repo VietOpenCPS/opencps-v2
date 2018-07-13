@@ -18,10 +18,15 @@ import org.opencps.api.dossieraction.model.DossierActionResultsModel;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
 import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
 import org.opencps.api.dossieraction.model.DossierNextActionResultsModel;
+import org.opencps.api.processsequence.model.ActionModel;
+import org.opencps.api.processsequence.model.DossierActionResult21Model;
+import org.opencps.api.processsequence.model.ProcessSequenceModel;
+import org.opencps.api.processsequence.model.StepModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
@@ -31,8 +36,19 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.ProcessSequence;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -187,23 +203,83 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			Locale locale, User user, ServiceContext serviceContext, DossierActionSearchModel query, String id) {
 
 		DossierActions actions = new DossierActionsImpl();
-		DossierActionResultsModel result = new DossierActionResultsModel();
+		DossierActionResult21Model result = new DossierActionResult21Model();
 
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long dossierId = GetterUtil.getLong(id);
-
-			JSONObject jsonData = null;
-
-			jsonData = (JSONObject) actions.getDossierActions(dossierId, groupId, query.isOwner(), query.getStart(),
-					query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
-			List<Document> documents = (List<Document>) jsonData.get("data");
-			result.setTotal(jsonData.getInt("total"));
-			result.getData().addAll(DossierActionUtils.mappingToDoListReadActionExecuted(documents));
-
-			return Response.status(200).entity(result).build();
-
+			Dossier dossier = null;
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			
+			if (dossier != null) {
+				String processNo = dossier.getProcessNo();
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, processNo);
+				if (serviceProcess != null) {
+					result.setProcessNo(processNo);
+					result.setDurationCount(serviceProcess.getDurationCount());
+					result.setDurationUnit(serviceProcess.getDurationUnit());
+					
+					List<ProcessSequenceModel> datas = new ArrayList<>();
+					
+					List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.findByG_SN(groupId, serviceProcess.getProcessNo());
+					for (ProcessSequence ps : lstSequences) {
+						ProcessSequenceModel psModel = new ProcessSequenceModel();
+						psModel.setSequenceNo(ps.getSequenceNo());
+						psModel.setSequenceName(ps.getSequenceName());
+						psModel.setDurationCount(ps.getDurationCount());
+						
+						List<StepModel> lstStepModels = new ArrayList<>();
+						
+						List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.findByG_SP_SNO(groupId, serviceProcess.getServiceProcessId(), ps.getSequenceNo());
+						
+						for (ProcessStep processStep : lstSteps) {
+							StepModel sm = new StepModel();
+							sm.setFromStepCode(processStep.getStepCode());
+							sm.setFromStepName(processStep.getStepName());
+							sm.setDurationCount(processStep.getDurationCount());
+							sm.setGroupName(processStep.getGroupName());
+							
+							lstSteps.add(processStep);
+							
+							List<DossierActionUser> lstAUs = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), processStep.getStepCode());
+							
+							for (DossierActionUser dau : lstAUs) {
+								ActionModel am = new ActionModel();
+								DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dau.getDossierActionId());
+								
+								am.setActionCode(da.getActionCode());
+								am.setActionName(da.getActionName());
+								am.setActionNote(da.getActionNote());
+								am.setUserId(da.getUserId());
+								am.setCreateDate(DateTimeUtils.convertDateToString(da.getCreateDate(), DateTimeUtils._TIMESTAMP));
+								am.setActionUser(da.getActionUser());
+								am.setActionOverdue(da.getActionOverdue());
+								am.setPayload(da.getPayload());
+								am.setStepCode(da.getStepCode());
+								am.setStepName(da.getStepName());
+								am.setState(0);
+							}
+							
+							List<ActionModel> lstActions = new ArrayList<>();
+							
+							sm.getActions().addAll(lstActions);
+						}
+						
+						psModel.getSteps().addAll(lstStepModels);
+						
+						datas.add(psModel);
+					}
+					result.getData().addAll(datas);
+				}
+				return Response.status(200).entity(result).build();				
+			}
+			else {
+				return Response.status(403).entity(null).build();	
+			}
 		} catch (Exception e) {
 			_log.info(e);
 			return processException(e);

@@ -2,6 +2,7 @@ package org.opencps.dossiermgt.action.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +11,10 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -76,6 +81,7 @@ import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -2298,7 +2304,10 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 		
-		
+		//Create notification
+		ActionConfig actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+		createNotificationQueue(userId, groupId, dossier, actionConfig, context);
+				
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
@@ -2337,6 +2346,72 @@ public class DossierActionsImpl implements DossierActions {
 		return dossierAction;
 	}
 
+	private void createNotificationQueue(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+		if (Validator.isNotNull(actionConfig.getNotificationType())) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			User u = UserLocalServiceUtil.fetchUser(userId);
+			
+			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			Date now = new Date();
+	        Calendar cal = Calendar.getInstance();
+	        cal.setTime(now);
+	        cal.add(Calendar.DATE, 5);
+	        
+			Date expired = cal.getTime();
+			if (notiTemplate != null) {
+				if (actionConfig.getDocumentType().startsWith("APLC")) {
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+						try {
+							NotificationQueueLocalServiceUtil.addNotificationQueue(
+									userId, groupId, 
+									actionConfig.getNotificationType(), 
+									Dossier.class.getName(), 
+									String.valueOf(dossier.getDossierId()), 
+									dossierAction.getPayload(), 
+									u.getFullName(), 
+									dossier.getApplicantName(), 
+									0L, 
+									dossier.getContactEmail(), 
+									dossier.getContactTelNo(), 
+									now, 
+									expired, 
+									context);
+						} catch (NoSuchUserException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				else if (actionConfig.getDocumentType().startsWith("EMPL")) {
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+						try {
+							NotificationQueueLocalServiceUtil.addNotificationQueue(
+									userId, groupId, 
+									actionConfig.getNotificationType(), 
+									Dossier.class.getName(), 
+									String.valueOf(dossier.getDossierId()), 
+									dossierAction.getPayload(), 
+									u.getFullName(), 
+									dossier.getApplicantName(), 
+									0L, 
+									dossier.getContactEmail(), 
+									dossier.getContactTelNo(), 
+									now, 
+									expired, 
+									context);
+						} catch (NoSuchUserException e) {
+							e.printStackTrace();
+						}
+					}					
+				}
+				else if (actionConfig.getDocumentType().startsWith("USER")) {
+					
+				}
+			}
+		}		
+	}
+	
 	private void updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, ServiceContext context) {
 		Date now = new Date();
 

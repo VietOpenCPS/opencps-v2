@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="ActionModel">
+		<xsd:sequence>
+			<xsd:element name="userId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionUser" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionNote" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionOverdue" type="xsd:int" minOccurs="0" />
+			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
+			<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="state" type="xsd:int" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="StepModel">
+		<xsd:sequence>
+			<xsd:element name="fromStepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fromStepName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="groupName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:int" minOccurs="0" />
+			<xsd:element name="actions" type="ActionModel" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProcessSequenceModel">
+		<xsd:sequence>
+			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
+			<xsd:element name="steps" type="StepModel" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DossierActionResult21Model">
+		<xsd:sequence>
+			<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:int" minOccurs="0" />
+			<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+			<xsd:element name="data" type="ProcessSequenceModel" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

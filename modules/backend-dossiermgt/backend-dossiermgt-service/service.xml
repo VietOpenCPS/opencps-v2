@@ -860,6 +860,11 @@
 			<finder-column name="dossierSubStatus"/>
 			<finder-column name="groupId"/>
 		</finder>
+        <finder name="G_SP_SNO" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serviceProcessId"></finder-column>
+            <finder-column name="sequenceNo"></finder-column>
+        </finder>
 
 	</entity>
 	
@@ -907,6 +912,31 @@
 		</finder>
 
 	</entity>
+	
+	<entity local-service="true" name="ProcessSequence" remote-service="false"
+		table="opencps_processsequence" uuid="true">
+		
+		<column name="processSequenceId" type="long" primary="true" />
+		
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="sequenceNo" type="String" />
+		<column name="sequenceName" type="String" />
+		<column name="durationCount" type="double" />
+		
+		<order by="desc">
+			<order-column name="modifiedDate" order-by="desc" />
+		</order>
+        <finder name="G_SN" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="sequenceNo"></finder-column>
+        </finder>		
+	</entity>	
 	
 	<entity local-service="true" name="DossierRequestUD"
 		remote-service="false" table="opencps_dossierrequests" uuid="true">
