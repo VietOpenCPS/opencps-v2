@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.processor;
 
 import java.io.File;
+import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -183,6 +184,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
 			if (payloadObj.has(DossierSyncTerm.PAYLOAD_SYNC_FILES)) {
 				JSONArray fileArrs = payloadObj.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_FILES);
+				
+				List<DossierFileModel> lstFiles = client.getAllFilesByDossier(dossier.getReferenceUid());
+				
+				for (DossierFileModel df : lstFiles) {
+					
+				}
+				
 				for (int i = 0; i < fileArrs.length(); i++) {
 					JSONObject fileObj = fileArrs.getJSONObject(i);
 					if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
