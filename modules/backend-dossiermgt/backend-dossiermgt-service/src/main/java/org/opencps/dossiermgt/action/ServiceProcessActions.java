@@ -103,4 +103,20 @@ public interface ServiceProcessActions {
 			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
 			String createDossiers, ServiceContext serviceContext) throws PortalException;
 
+	public boolean deleteAllProcessAction(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext);
+
+	public boolean deleteAllProcessRole(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext);
+
+	public boolean deleteAllProcessStep(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext);
+
+	public boolean deleteAllProcessSequence(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext);
+
+	public void updateProcessSequenceDB(long userId, long groupId, long serviceProcessId, String sequenceNo,
+			String sequenceName, String sequenceRole, Integer durationCount, ServiceContext serviceContext)
+			throws PortalException;
+
 }

@@ -716,6 +716,7 @@
 				</xsd:element>
 				<xsd:element ref="steps" />
 				<xsd:element ref="actions" />
+				<xsd:element ref="sequences" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -913,6 +914,41 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+		<xsd:element name="sequences">
+		<xsd:complexType>
+			<xsd:sequence >
+				<xsd:element name="ProcessSequence" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence >
+							<xsd:element name="sequenceNo">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="sequenceName">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="sequenceRole">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="durationCount" type="xsd:int" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
