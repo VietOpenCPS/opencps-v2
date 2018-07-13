@@ -8,27 +8,25 @@
 
 package org.opencps.api.processsequence.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ProcessSequenceModel complex type.
+ * <p>Java class for ProcessSequenceOutputModel complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessSequenceModel">
+ * &lt;complexType name="ProcessSequenceOutputModel">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="sequenceNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="sequenceName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="sequenceRole" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0"/>
- *         &lt;element name="steps" type="{}StepModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,18 +36,18 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProcessSequenceModel", propOrder = {
+@XmlType(name = "ProcessSequenceOutputModel", propOrder = {
     "sequenceNo",
     "sequenceName",
-    "durationCount",
-    "steps"
+    "sequenceRole",
+    "durationCount"
 })
-public class ProcessSequenceModel {
+public class ProcessSequenceOutputModel {
 
     protected String sequenceNo;
     protected String sequenceName;
+    protected String sequenceRole;
     protected Double durationCount;
-    protected List<StepModel> steps;
 
     /**
      * Gets the value of the sequenceNo property.
@@ -100,6 +98,30 @@ public class ProcessSequenceModel {
     }
 
     /**
+     * Gets the value of the sequenceRole property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSequenceRole() {
+        return sequenceRole;
+    }
+
+    /**
+     * Sets the value of the sequenceRole property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSequenceRole(String value) {
+        this.sequenceRole = value;
+    }
+
+    /**
      * Gets the value of the durationCount property.
      * 
      * @return
@@ -121,35 +143,6 @@ public class ProcessSequenceModel {
      */
     public void setDurationCount(Double value) {
         this.durationCount = value;
-    }
-
-    /**
-     * Gets the value of the steps property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the steps property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getSteps().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link StepModel }
-     * 
-     * 
-     */
-    public List<StepModel> getSteps() {
-        if (steps == null) {
-            steps = new ArrayList<StepModel>();
-        }
-        return this.steps;
     }
 
 }

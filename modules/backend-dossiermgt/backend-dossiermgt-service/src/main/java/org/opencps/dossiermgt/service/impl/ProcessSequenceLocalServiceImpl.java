@@ -55,6 +55,7 @@ public class ProcessSequenceLocalServiceImpl
 	
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessSequence addProcessSequence(long userId, long groupId, 
+			long serviceProcessId,
 			String sequenceNo, String sequenceName, double durationCount) throws PortalException {
 		User user = userLocalService.getUser(userId);
 		
@@ -63,6 +64,7 @@ public class ProcessSequenceLocalServiceImpl
 		
 		Date now = new Date();
 		
+		processSequence.setServiceProcessId(serviceProcessId);
 		processSequence.setCreateDate(now);
 		processSequence.setModifiedDate(now);
 		
@@ -78,6 +80,7 @@ public class ProcessSequenceLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessSequence updateProcessSequence(long userId, long groupId, 
 			long processSequenceId,
+			long serviceProcessId,
 			String sequenceNo, String sequenceName, double durationCount) throws PortalException {
 		User user = userLocalService.getUser(userId);
 		
@@ -88,6 +91,7 @@ public class ProcessSequenceLocalServiceImpl
 		processSequence.setCreateDate(now);
 		processSequence.setModifiedDate(now);
 		
+		processSequence.setServiceProcessId(serviceProcessId);
 		processSequence.setUserId(user.getUserId());
 		processSequence.setGroupId(groupId);
 		processSequence.setSequenceNo(sequenceNo);
