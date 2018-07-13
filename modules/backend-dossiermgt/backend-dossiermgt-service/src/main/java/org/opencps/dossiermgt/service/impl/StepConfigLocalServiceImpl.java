@@ -174,7 +174,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public boolean updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
+	public StepConfig updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
 			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig) {
 
 		try {
@@ -199,11 +199,10 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			object.setMenuStepName(menuStepName);
 			object.setButtonConfig(buttonConfig);
 
-			stepConfigPersistence.update(object);
-			return true;
+			return stepConfigPersistence.update(object);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 }

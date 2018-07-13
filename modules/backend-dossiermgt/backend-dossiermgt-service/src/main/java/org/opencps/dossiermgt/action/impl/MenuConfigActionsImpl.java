@@ -75,7 +75,7 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 	}
 
 	@Override
-	public boolean updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
+	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
 			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
 
 		return MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,

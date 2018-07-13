@@ -539,8 +539,11 @@ public class ProcessUpdateDBUtils {
 	//LamTV_Process DossierPart to DB
 	private static void processDossierPart(long userId, long groupId, Parts parts, DossierTemplateActions actionTemp,
 			String folderParentPath, String templateNo, ServiceContext serviceContext) throws PortalException {
+		// Delete all ServiceFileTemplate with serviceInfoId
+		boolean flagPart = actionTemp.deleteAllDossierPart(userId, groupId, templateNo, serviceContext);
+		// Add list file serviceFileTemplate
 		List<DossierPart> dossierPartList = parts.getDossierPart();
-		if (dossierPartList != null && dossierPartList.size() > 0) {
+		if (dossierPartList != null && dossierPartList.size() > 0 && flagPart) {
 			String partNo = StringPool.BLANK;
 			String partName = StringPool.BLANK;
 			String partTip = StringPool.BLANK;

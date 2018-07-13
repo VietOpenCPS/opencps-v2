@@ -352,9 +352,13 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
 			String domainCode, String domainName, Integer maxLevel) throws PortalException {
 
-		return ServiceInfoLocalServiceUtil.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText,
+		ServiceInfo serInfo =  ServiceInfoLocalServiceUtil.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText,
 				methodText, dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
 				administrationCode, administrationName, domainCode, domainName, maxLevel);
+		if (serInfo != null) {
+			return serInfo.getServiceInfoId();
+		}
+		return 0;
 	}
 
 	@Override

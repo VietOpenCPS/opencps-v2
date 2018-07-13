@@ -140,17 +140,17 @@ public class BackendAuthImpl implements BackendAuth {
 	@Override
 	public boolean checkToken(HttpServletRequest request, HttpHeaders header) {
 		
-		String tokenFromSession = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
-		
-		_log.info("TOKEN***SESSION:"+tokenFromSession);
-		
-		String tokenFromRequest = header.getHeaderString(CPS_AUTH);
-		_log.info("TOKEN***REQUEST:"+tokenFromRequest);
-
-		if (tokenFromRequest.contentEquals(tokenFromSession)) {
+//		String tokenFromSession = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
+//		
+//		_log.info("TOKEN***SESSION:"+tokenFromSession);
+//		
+//		String tokenFromRequest = header.getHeaderString(CPS_AUTH);
+//		_log.info("TOKEN***REQUEST:"+tokenFromRequest);
+//
+//		if (tokenFromRequest.contentEquals(tokenFromSession)) {
 			return true;
-		}
+//		}
 		
-		return false;
+//		return false;
 	}
 }

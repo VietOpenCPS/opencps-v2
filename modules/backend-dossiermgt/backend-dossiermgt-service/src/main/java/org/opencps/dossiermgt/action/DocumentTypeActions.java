@@ -27,7 +27,7 @@ public interface DocumentTypeActions {
 			String documentName, String codePattern, String documentScript, Integer docSync,
 			ServiceContext serviceContext);
 
-	public void updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass, String documentName,
+	public DocumentType updateDocumentTypeDB(long userId, long groupId, String typeCode, Integer templateClass, String documentName,
 			String codePattern, Integer docSync, String documentScript);
 
 }

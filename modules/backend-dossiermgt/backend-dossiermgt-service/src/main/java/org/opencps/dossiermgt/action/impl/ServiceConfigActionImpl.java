@@ -122,9 +122,13 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 			boolean forCitizen, boolean forBusiness, boolean postalService, boolean registration,
 			ServiceContext context) throws NoSuchServiceConfigException {
 		// TODO Auto-generated method stub
-		return ServiceConfigLocalServiceUtil.updateServiceConfigDB(userId, groupId, serviceInfoId, govAgencyCode,
+		ServiceConfig config = ServiceConfigLocalServiceUtil.updateServiceConfigDB(userId, groupId, serviceInfoId, govAgencyCode,
 				govAgencyName, serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService,
 				registration, context);
+		if (config != null) {
+			return config.getServiceConfigId();
+		}
+		return 0;
 	}
 
 	@Override
