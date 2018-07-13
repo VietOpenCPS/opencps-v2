@@ -318,7 +318,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 	}
 
 	//LamTV_ Process output DossierTemplate to DB
-	public void updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
+	public DossierTemplate updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
 			String description, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
@@ -353,7 +353,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 				dossierTemplate.setDescription(description);
 		}
 
-		dossierTemplatePersistence.update(dossierTemplate);
+		return dossierTemplatePersistence.update(dossierTemplate);
 	}
 
 	private void validateRemove(long groupId, long dossierTemplateId) throws PortalException {

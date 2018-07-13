@@ -89,10 +89,10 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 	}
 
 	@Override
-	public void updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
+	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
 			Integer docSync, String mappingData, String fieldConfigs, String formReport, String formScript) {
 
-		DeliverableTypeLocalServiceUtil.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern,
+		return DeliverableTypeLocalServiceUtil.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern,
 				docSync, mappingData, fieldConfigs, formReport, formScript);
 	}
 }

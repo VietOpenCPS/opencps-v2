@@ -172,7 +172,7 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public void updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
+	public ServiceFileTemplate updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
 			String fileName, long fileEntryId) {
 		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
 
@@ -181,7 +181,7 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 		object.setTemplateName(fileTemplateName);
 		object.setFileEntryId(fileEntryId);
 
-		serviceFileTemplatePersistence.update(object);
+		return serviceFileTemplatePersistence.update(object);
 	}
 
 	Log _log = LogFactoryUtil.getLog(ServiceFileTemplateLocalServiceImpl.class);

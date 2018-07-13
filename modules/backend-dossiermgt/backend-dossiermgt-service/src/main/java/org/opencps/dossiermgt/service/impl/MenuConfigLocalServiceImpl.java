@@ -166,7 +166,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 
 	//LamTV_ Process ouput MenuConfig to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public boolean updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
+	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
 			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
 
 		try {
@@ -191,11 +191,10 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			object.setTableConfig(tableConfig);
 			object.setButtonConfig(buttonConfig);
 
-			menuConfigPersistence.update(object);
-			return true;
+			return menuConfigPersistence.update(object);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 }

@@ -66,4 +66,6 @@ public interface DossierTemplateActions {
 			String fileTemplateNo, String deliverableType, Integer deliverableAction, boolean eForm, String sampleData,
 			ServiceContext serviceContext) throws PortalException;
 
+	public boolean deleteAllDossierPart(long userId, long groupId, String templateNo, ServiceContext serviceContext);
+
 }

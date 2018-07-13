@@ -7,8 +7,10 @@ import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -228,6 +230,24 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		DossierPartLocalServiceUtil.updateDossierPartDB(userId, groupId, templateNo, partNo, partName, partTip,
 				partType, multiple, formScript, formReport, required, esign, fileTemplateNo, deliverableType,
 				deliverableAction, eForm, sampleData, serviceContext);
+	}
+
+	@Override
+	public boolean deleteAllDossierPart(long userId, long groupId, String templateNo, ServiceContext serviceContext) {
+		boolean flag = false;
+		try {
+			List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, templateNo);
+			if (partList != null && partList.size() > 0) {
+				for (DossierPart part : partList) {
+					DossierPartLocalServiceUtil.deleteDossierPart(part);
+					flag = true;
+				}
+			}
+		}catch (Exception e) {
+			return false;
+		}
+
+		return flag;
 	}
 
 }
