@@ -22,4 +22,6 @@ public interface MenuConfigActions {
 
 	public boolean updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order, Integer menuType,
 			String queryParams, String tableConfig, String buttonConfig);
+
+	public boolean deleteAllMenuConfig(long groupId, long userId, ServiceContext serviceContext);
 }

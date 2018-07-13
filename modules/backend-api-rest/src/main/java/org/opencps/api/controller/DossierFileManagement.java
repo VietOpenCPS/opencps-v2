@@ -58,40 +58,6 @@ public interface DossierFileManagement {
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 
-	/*
-	 * @GET
-	 * 
-	 * @Path("/{referenceUid}/files")
-	 * 
-	 * @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-	 * MediaType.APPLICATION_FORM_URLENCODED })
-	 * 
-	 * @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-	 * MediaType.APPLICATION_FORM_URLENCODED })
-	 * 
-	 * @ApiOperation(value = "getDossierFilesByDossierReferenceUid", response =
-	 * DossierFileResultsModel.class)
-	 * 
-	 * @ApiResponses(value = {
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_OK, message =
-	 * "Returns a list", response = DossierFileResultsModel.class),
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message =
-	 * "Not found", response = ExceptionModel.class),
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message =
-	 * "Access denied", response = ExceptionModel.class) }) public Response
-	 * getDossierFilesByDossierReferenceUid(@Context HttpServletRequest
-	 * request, @Context HttpHeaders header,
-	 * 
-	 * @Context Company company, @Context Locale locale, @Context User user,
-	 * 
-	 * @Context ServiceContext serviceContext,
-	 * 
-	 * @ApiParam(value = "reference of dossierfile", required =
-	 * true) @PathParam("referenceUid") String referenceUid);
-	 */
 	@POST
 	@Path("/{id}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -116,61 +82,6 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("isSync") String isSync,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("formData") @Nullable String formData);
 
-	/*
-	 * @POST
-	 * 
-	 * @Path("/{referenceUid}/files")
-	 * 
-	 * @Consumes(MediaType.MULTIPART_FORM_DATA)
-	 * 
-	 * @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	 * 
-	 * @ApiOperation(value = "addDossierFileByDossierReferenceUid)", response =
-	 * DossierFileModel.class)
-	 * 
-	 * @ApiResponses(value = {
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_OK, message =
-	 * "Returns the DossierFileModel was updated", response =
-	 * DossierFileResultsModel.class),
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message =
-	 * "Unauthorized", response = ExceptionModel.class),
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message =
-	 * "Not found", response = ExceptionModel.class),
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message =
-	 * "Access denied", response = ExceptionModel.class) }) public Response
-	 * addDossierFileByDossierReferenceUid(@Context HttpServletRequest
-	 * request, @Context HttpHeaders header,
-	 * 
-	 * @Context Company company, @Context Locale locale, @Context User user,
-	 * 
-	 * @Context ServiceContext serviceContext,
-	 * 
-	 * @ApiParam(value = "Attachment files", required = true) @Multipart("file")
-	 * Attachment file,
-	 * 
-	 * @ApiParam(value = "referenceUid of dossier", required =
-	 * true) @PathParam("referenceUid") String dosserReferenceUid,
-	 * 
-	 * @ApiParam(value = "Metadata of DossierFile", required =
-	 * true) @Multipart("referenceUid") String referenceUid,
-	 * 
-	 * @ApiParam(value =
-	 * "Metadata of DossierFile") @Multipart("dossierTemplateNo") String
-	 * dossierTemplateNo,
-	 * 
-	 * @ApiParam(value = "Metadata of DossierFile") @Multipart("dossierPartNo")
-	 * String dossierPartNo,
-	 * 
-	 * @ApiParam(value = "Metadata of DossierFile") @Multipart("fileTemplateNo")
-	 * String fileTemplateNo,
-	 * 
-	 * @ApiParam(value = "Metadata of DossierFile") @Multipart("displayName")
-	 * String displayName);
-	 */
 	@POST
 	@Path("/{id}/files/copyfile")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -219,46 +130,6 @@ public interface DossierFileManagement {
 			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 
-	/*
-	 * @GET
-	 * 
-	 * @Path("/{dossierReferenceUid}/files/{referenceUid}")
-	 * 
-	 * @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-	 * MediaType.APPLICATION_FORM_URLENCODED })
-	 * 
-	 * @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-	 * MediaType.APPLICATION_FORM_URLENCODED })
-	 * 
-	 * @ApiOperation(value = "getDossierFilesByDossierReferenceUid", response =
-	 * DossierFileResultsModel.class)
-	 * 
-	 * @ApiResponses(value = {
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_OK, message =
-	 * "downloadByDossierReferenceUid_ReferenceUid"),
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message =
-	 * "Not found", response = ExceptionModel.class),
-	 * 
-	 * @ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message =
-	 * "Access denied", response = ExceptionModel.class) }) public Response
-	 * downloadByDossierReferenceUid_ReferenceUid(@Context HttpServletRequest
-	 * request, @Context HttpHeaders header,
-	 * 
-	 * @Context Company company, @Context Locale locale, @Context User user,
-	 * 
-	 * @Context ServiceContext serviceContext,
-	 * 
-	 * @ApiParam(value = "referenceUid of dossier", required =
-	 * true) @PathParam("dossierReferenceUid") String dossierReferenceUid,
-	 * 
-	 * @ApiParam(value = "referenceUid of dossierfile", required =
-	 * true) @PathParam("referenceUid") String referenceUid,
-	 * 
-	 * @ApiParam(value = "password for access dossier file", required =
-	 * false) @PathParam("password") String password);
-	 */
 	@POST
 	@Path("/{id}/files/{referenceUid}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)

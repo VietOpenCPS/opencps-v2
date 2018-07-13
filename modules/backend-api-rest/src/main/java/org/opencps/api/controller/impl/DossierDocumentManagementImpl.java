@@ -26,6 +26,7 @@ import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -189,30 +190,34 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			if (Validator.isNotNull(strDossiers)) {
 				dossierIdArr = JSONFactoryUtil.createJSONArray(strDossiers);
 			}
+
+			JSONArray formDataArr = null;
+			JSONArray formReportArr = null;
 			if (dossierIdArr != null && dossierIdArr.length() > 0) {
 				int length = dossierIdArr.length();
 				JSONObject jsonDossier = null;
 				Dossier dossier = null;
-				String dossierId = StringPool.BLANK;
+				long dossierId = 0;
+				formDataArr = JSONFactoryUtil.createJSONArray();
+				formReportArr = JSONFactoryUtil.createJSONArray();
 				for (int i = 0; i < length; i++) {
 					jsonDossier = (JSONObject) dossierIdArr.get(i);
-					dossierId = jsonDossier.getString(DossierTerm.DOSSIER_ID);
+					dossierId = Long.valueOf(jsonDossier.getString(DossierTerm.DOSSIER_ID));
 					if (Validator.isNotNull(dossierId) ) {
-						dossier = DossierUtils.getDossier(dossierId, groupId);
+//						dossier = DossierLocalServiceUtil.getByIdAndGovService(groupId, serviceCode, govAgencyCode, dossierId);
 						if (Validator.isNotNull(dossier)) {
-
 							long dossierActionId = dossier.getDossierActionId();
 
 							DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
 							String documentScript = StringPool.BLANK;
 							if (docType != null) {
 								documentScript = docType.getDocumentScript();
+								formReportArr.put(documentScript);
 							}
 
+							String payload = StringPool.BLANK;
 							if (dossierActionId != 0) {
-
 								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-								String payload = StringPool.BLANK;
 								if (dAction != null) {
 									payload = dAction.getPayload();
 								}
@@ -220,41 +225,36 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								if (Validator.isNotNull(payload)) {
 									jsonData = JSONFactoryUtil.createJSONObject(payload);
 									jsonData = processMergeDossierFormData(dossier, jsonData);
+									formDataArr.put(jsonData);
 								}
-
-								Message message = new Message();
-								message.put("formReport", documentScript);
-								message.put("formData", jsonData.toJSONString());
-
-								try {
-									String previewResponse = (String) MessageBusUtil
-											.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
-
-									if (Validator.isNotNull(previewResponse)) {
-									}
-
-									File file = new File(previewResponse);
-
-									ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-									responseBuilder.header("Content-Disposition",
-											"attachment; filename=\"" + file.getName() + "\"");
-									responseBuilder.header("Content-Type", "application/pdf");
-
-									return responseBuilder.build();
-
-								} catch (MessageBusException e) {
-									throw new Exception("Preview rendering not avariable");
-								}
-
-							} else {
-								throw new Exception("The dossier wasn't on process");
 							}
-
-						} else {
-							throw new Exception("Cant get dossier with id_" + dossierId);
 						}
 					}
+				}
+
+				Message message = new Message();
+				message.put("formReport", formReportArr.toJSONString());
+				message.put("formData", formDataArr.toJSONString());
+
+				try {
+					String previewResponse = (String) MessageBusUtil
+							.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+
+					if (Validator.isNotNull(previewResponse)) {
+					}
+
+					File file = new File(previewResponse);
+
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+					responseBuilder.header("Content-Disposition",
+							"attachment; filename=\"" + file.getName() + "\"");
+					responseBuilder.header("Content-Type", "application/pdf");
+
+					return responseBuilder.build();
+
+				} catch (MessageBusException e) {
+					throw new Exception("Preview rendering not avariable");
 				}
 			}
 
@@ -264,7 +264,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 		}
 
-		return null;
+		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
 	private Response processException(Exception e) {

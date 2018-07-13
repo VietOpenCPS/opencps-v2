@@ -1,17 +1,12 @@
 package org.opencps.api.controller.impl;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +50,6 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierFileManagementImpl implements DossierFileManagement {
@@ -68,7 +62,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		DossierFileResultsModel results = new DossierFileResultsModel();
 
-		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -89,38 +82,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
-	/*
-	 * @Override public Response
-	 * getDossierFilesByDossierReferenceUid(HttpServletRequest request,
-	 * HttpHeaders header, Company company, Locale locale, User user,
-	 * ServiceContext serviceContext, String referenceUid) {
-	 * DossierFileResultsModel results = new DossierFileResultsModel();
-	 * 
-	 * // TODO: check user is loged or password for access dossier file
-	 * BackendAuth auth = new BackendAuthImpl();
-	 * 
-	 * long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-	 * 
-	 * try {
-	 * 
-	 * if (!auth.isAuth(serviceContext)) { throw new
-	 * UnauthenticationException(); }
-	 * 
-	 * Dossier dossier = DossierLocalServiceUtil.getByRef(groupId,
-	 * referenceUid);
-	 * 
-	 * List<DossierFile> dossierFiles =
-	 * DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.
-	 * getDossierId());
-	 * 
-	 * results.setTotal(dossierFiles.size());
-	 * results.getData().addAll(DossierFileUtils.mappingToDossierFileData(
-	 * dossierFiles));
-	 * 
-	 * return Response.status(200).entity(results).build();
-	 * 
-	 * } catch (Exception e) { return processException(e); } }
-	 */
 	@Override
 	public Response addDossierFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String referenceUid,
@@ -188,44 +149,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
-	/*
-	 * @Override public Response
-	 * addDossierFileByDossierReferenceUid(HttpServletRequest request,
-	 * HttpHeaders header, Company company, Locale locale, User user,
-	 * ServiceContext serviceContext, Attachment file, String
-	 * dosserReferenceUid, String referenceUid, String dossierTemplateNo, String
-	 * dossierPartNo, String fileTemplateNo, String displayName) {
-	 * 
-	 * BackendAuth auth = new BackendAuthImpl();
-	 * 
-	 * long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-	 * 
-	 * try {
-	 * 
-	 * if (!auth.isAuth(serviceContext)) { throw new
-	 * UnauthenticationException(); }
-	 * 
-	 * Dossier dossier = DossierLocalServiceUtil.getByRef(groupId,
-	 * referenceUid);
-	 * 
-	 * DataHandler dataHandler = file.getDataHandler();
-	 * 
-	 * DossierFileActions action = new DossierFileActionsImpl();
-	 * 
-	 * DossierFile dossierFile = action.addDossierFile(groupId,
-	 * dossier.getDossierId(), referenceUid, dossierTemplateNo, dossierPartNo,
-	 * fileTemplateNo, displayName, dataHandler.getName(), 0,
-	 * dataHandler.getInputStream(), serviceContext);
-	 * 
-	 * DossierFileModel result =
-	 * DossierFileUtils.mappingToDossierFileModel(dossierFile);
-	 * 
-	 * return Response.status(200).entity(result).build();
-	 * 
-	 * } catch (Exception e) { return processException(e); } }
-	 */
-	
-	
 	@Override
 	public Response cloneDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, DossierFileCopyInputModel input) {
@@ -259,7 +182,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response downloadByDossierId_ReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String password) {
 
-		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -270,7 +192,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(id, referenceUid);
 			
-			// TODO download file with dossierFileID
+			// download file with dossierFileID
 			if (Validator.isNull(dossierFile) && Validator.isNumber(referenceUid)) {
 				dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(referenceUid));
 			}
@@ -297,48 +219,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
-	/*
-	 * @Override public Response
-	 * downloadByDossierReferenceUid_ReferenceUid(HttpServletRequest request,
-	 * HttpHeaders header, Company company, Locale locale, User user,
-	 * ServiceContext serviceContext, String dossierReferenceUid, String
-	 * referenceUid, String password) {
-	 * 
-	 * // TODO: check user is loged or password for access dossier file
-	 * BackendAuth auth = new BackendAuthImpl();
-	 * 
-	 * long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-	 * 
-	 * try {
-	 * 
-	 * if (!auth.isAuth(serviceContext)) { throw new
-	 * UnauthenticationException(); }
-	 * 
-	 * Dossier dossier = DossierLocalServiceUtil.getByRef(groupId,
-	 * dossierReferenceUid);
-	 * 
-	 * DossierFile dossierFile =
-	 * DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossier.
-	 * getDossierId(), referenceUid);
-	 * 
-	 * if(dossierFile.getFileEntryId() > 0) { FileEntry fileEntry =
-	 * DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-	 * 
-	 * File file =
-	 * DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(),
-	 * fileEntry.getVersion(), true);
-	 * 
-	 * ResponseBuilder responseBuilder = Response.ok((Object) file);
-	 * 
-	 * responseBuilder.header("Content-Disposition", "attachment; filename=\"" +
-	 * fileEntry.getFileName() + "\""); responseBuilder.header("Content-Type",
-	 * fileEntry.getMimeType());
-	 * 
-	 * return responseBuilder.build(); } else { return
-	 * Response.status(HttpURLConnection.HTTP_NO_CONTENT).build(); }
-	 * 
-	 * } catch (Exception e) { return processException(e); } }
-	 */
 	@Override
 	public Response updateDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String referenceUid, Attachment file) {
@@ -467,6 +347,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierFiles(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierFileSearchModel query) {
@@ -507,7 +388,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			User user, ServiceContext serviceContext, long id, String password) {
 		String pathName = "";
 		String realPath = "";
-		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
 		DossierFileActions action = new DossierFileActionsImpl();
 
@@ -731,7 +611,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id) {
 		DossierFileResultsModel results = new DossierFileResultsModel();
 
-		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -781,8 +660,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response downloadByPublicUser(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String referenceUid, String password) {
-		// TODO Auto-generated method stub
-		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -797,7 +674,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(id, referenceUid);
 			
-			// TODO download file with dossierFileID
+			//download file with dossierFileID
 			if (Validator.isNull(dossierFile) && Validator.isNumber(referenceUid)) {
 				dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(referenceUid));
 			}
@@ -857,7 +734,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
 			_log.info("LamTV_pathFolder: "+pathFolder);
 			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
-			//TODO:Test multiple file
 			File fileList = new File(pathFolder);
 			_log.info("LamTV_fileList: "+fileList.getPath());
 			ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
