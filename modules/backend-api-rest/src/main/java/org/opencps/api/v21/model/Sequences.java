@@ -27,32 +27,33 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="fileTemplate" maxOccurs="unbounded">
+ *         &lt;element name="ProcessSequence" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="filename">
+ *                   &lt;element name="sequenceNo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="fileTemplateNo">
+ *                   &lt;element name="sequenceName">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="templateName">
+ *                   &lt;element name="sequenceRole">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
+ *                   &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -68,41 +69,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "fileTemplate"
+    "processSequence"
 })
-@XmlRootElement(name = "fileTemplates")
-public class FileTemplates {
+@XmlRootElement(name = "sequences")
+public class Sequences {
 
-    @XmlElement(required = true)
-    protected List<FileTemplates.FileTemplate> fileTemplate;
+    @XmlElement(name = "ProcessSequence", required = true)
+    protected List<Sequences.ProcessSequence> processSequence;
 
     /**
-     * Gets the value of the fileTemplate property.
+     * Gets the value of the processSequence property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the fileTemplate property.
+     * This is why there is not a <CODE>set</CODE> method for the processSequence property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFileTemplate().add(newItem);
+     *    getProcessSequence().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FileTemplates.FileTemplate }
+     * {@link Sequences.ProcessSequence }
      * 
      * 
      */
-    public List<FileTemplates.FileTemplate> getFileTemplate() {
-        if (fileTemplate == null) {
-            fileTemplate = new ArrayList<FileTemplates.FileTemplate>();
+    public List<Sequences.ProcessSequence> getProcessSequence() {
+        if (processSequence == null) {
+            processSequence = new ArrayList<Sequences.ProcessSequence>();
         }
-        return this.fileTemplate;
+        return this.processSequence;
     }
 
 
@@ -116,27 +117,28 @@ public class FileTemplates {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="filename">
+     *         &lt;element name="sequenceNo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="fileTemplateNo">
+     *         &lt;element name="sequenceName">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="templateName">
+     *         &lt;element name="sequenceRole">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
+     *         &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}int"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -147,89 +149,107 @@ public class FileTemplates {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "filename",
-        "fileTemplateNo",
-        "templateName"
+        "sequenceNo",
+        "sequenceName",
+        "sequenceRole",
+        "durationCount"
     })
-    public static class FileTemplate {
+    public static class ProcessSequence {
 
         @XmlElement(required = true)
-        protected String filename;
+        protected String sequenceNo;
         @XmlElement(required = true)
-        protected String fileTemplateNo;
+        protected String sequenceName;
         @XmlElement(required = true)
-        protected String templateName;
+        protected String sequenceRole;
+        protected int durationCount;
 
         /**
-         * Gets the value of the filename property.
+         * Gets the value of the sequenceNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getFilename() {
-            return filename;
+        public String getSequenceNo() {
+            return sequenceNo;
         }
 
         /**
-         * Sets the value of the filename property.
+         * Sets the value of the sequenceNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setFilename(String value) {
-            this.filename = value;
+        public void setSequenceNo(String value) {
+            this.sequenceNo = value;
         }
 
         /**
-         * Gets the value of the fileTemplateNo property.
+         * Gets the value of the sequenceName property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getFileTemplateNo() {
-            return fileTemplateNo;
+        public String getSequenceName() {
+            return sequenceName;
         }
 
         /**
-         * Sets the value of the fileTemplateNo property.
+         * Sets the value of the sequenceName property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setFileTemplateNo(String value) {
-            this.fileTemplateNo = value;
+        public void setSequenceName(String value) {
+            this.sequenceName = value;
         }
 
         /**
-         * Gets the value of the templateName property.
+         * Gets the value of the sequenceRole property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getTemplateName() {
-            return templateName;
+        public String getSequenceRole() {
+            return sequenceRole;
         }
 
         /**
-         * Sets the value of the templateName property.
+         * Sets the value of the sequenceRole property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setTemplateName(String value) {
-            this.templateName = value;
+        public void setSequenceRole(String value) {
+            this.sequenceRole = value;
+        }
+
+        /**
+         * Gets the value of the durationCount property.
+         * 
+         */
+        public int getDurationCount() {
+            return durationCount;
+        }
+
+        /**
+         * Sets the value of the durationCount property.
+         * 
+         */
+        public void setDurationCount(int value) {
+            this.durationCount = value;
         }
 
     }
