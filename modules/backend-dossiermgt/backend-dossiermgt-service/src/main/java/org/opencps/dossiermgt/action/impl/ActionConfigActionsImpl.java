@@ -1,10 +1,14 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.util.List;
+
 import javax.naming.AuthenticationException;
 
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -87,6 +91,19 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 		ActionConfigLocalServiceUtil.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm,
 				sampleData, insideProcess, userNote, syncType, eventType, infoType, rollbackable, notificationType,
 				formConfig);
+	}
+
+	@Override
+	public boolean deleteAllActionConfig(long groupId, long userId, ServiceContext serviceContext) {
+		boolean flag = false;
+		List<ActionConfig> actList = ActionConfigLocalServiceUtil.getActionConfigs(-1, -1);
+		if (actList != null && actList.size() > 0) {
+			for (ActionConfig act : actList) {
+				ActionConfigLocalServiceUtil.deleteActionConfig(act);
+				flag = true;
+			}
+		}
+		return flag;
 	}
 
 }

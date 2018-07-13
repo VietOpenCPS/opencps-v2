@@ -2272,5 +2272,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	public static final String CLASS_NAME = Dossier.class.getName();
 
+	//LamTV: Process get Dossier by dossierId, govAgency, serviceProcess
+	public Dossier getByIdAndGovService(long groupId, String serviceCode, String govAgencyCode, long dossierId) {
+
+		return dossierPersistence.fetchByF_GID_GOV_DID(groupId, govAgencyCode, serviceCode, dossierId);
+	}
 
 }

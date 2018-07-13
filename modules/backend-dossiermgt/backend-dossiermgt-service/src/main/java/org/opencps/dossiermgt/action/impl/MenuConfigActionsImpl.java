@@ -1,11 +1,12 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.util.List;
+
 import javax.naming.AuthenticationException;
 
 import org.opencps.dossiermgt.action.MenuConfigActions;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -79,6 +80,20 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 
 		return MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
 				menuType, queryParams, tableConfig, buttonConfig);
+	}
+
+	//LamTV_ Process all list MenuConfig
+	@Override
+	public boolean deleteAllMenuConfig(long groupId, long userId, ServiceContext serviceContext) {
+		boolean flag = false;
+		List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getMenuConfigs(-1, -1);
+		if (menuList != null && menuList.size() > 0) {
+			for (MenuConfig menuConfig : menuList) {
+				MenuConfigLocalServiceUtil.deleteMenuConfig(menuConfig);
+				flag = true;
+			}
+		}
+		return flag;
 	}
 
 }

@@ -169,7 +169,7 @@ public class ReadXMLFileUtils {
 			for (File file : files) {
 				String xmlString = convertFiletoString(file);
 				DictCollection dicts = convertXMLToDictCollection(xmlString);
-				ProcessUpdateDBUtils.processUpdateDictCollection(dicts);
+				ProcessUpdateDBUtils.processUpdateDictCollection(dicts, groupId, userId, serviceContext);
 			}
 		}
 	}

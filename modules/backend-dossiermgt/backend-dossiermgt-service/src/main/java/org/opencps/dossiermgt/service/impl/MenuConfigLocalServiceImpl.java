@@ -173,52 +173,23 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			User user = userLocalService.getUser(userId);
 			Date now = new Date();
 
-			MenuConfig object = menuConfigPersistence.fetchByF_BY_menuGroup(menuGroup);
-			if (object != null) {
-				object.setUserId(user.getUserId());
-				object.setModifiedDate(now);
+			long menuConfigId = counterLocalService.increment(MenuConfig.class.getName());
+			MenuConfig object = menuConfigPersistence.create(menuConfigId);
 
-				if (menuGroup != null) {
-					object.setMenuGroup(menuGroup);
-				}
-				if (menuName != null) {
-					object.setMenuName(menuName);
-				}
-				if (order != null) {
-					object.setOrder(order);
-				}
-				if (menuType != null) {
-					object.setMenuType(menuType);
-				}
-				if (queryParams != null) {
-					object.setQueryParams(queryParams);
-				}
-				if (tableConfig != null) {
-					object.setTableConfig(tableConfig);
-				}
-				if (buttonConfig != null) {
-					object.setButtonConfig(buttonConfig);
-				}
-			} else {
-				long menuConfigId = counterLocalService.increment(MenuConfig.class.getName());
-				object = menuConfigPersistence.create(menuConfigId);
+			object.setGroupId(groupId);
+			object.setCompanyId(user.getCompanyId());
+			object.setUserId(user.getUserId());
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
 
-				object.setGroupId(groupId);
-				object.setCompanyId(user.getCompanyId());
-				object.setUserId(user.getUserId());
-				object.setCreateDate(now);
-				object.setModifiedDate(now);
-
-				object.setMenuGroup(menuGroup);
-				object.setMenuName(menuName);
-				object.setOrder(Validator.isNotNull(order) ? order : 0);
-				object.setMenuType(Validator.isNotNull(menuType) ? menuType : 0);
-				object.setQueryParams(queryParams);
-				object.setMenuGroup(menuGroup);
-				object.setTableConfig(tableConfig);
-				object.setButtonConfig(buttonConfig);
-
-			}
+			object.setMenuGroup(menuGroup);
+			object.setMenuName(menuName);
+			object.setOrder(Validator.isNotNull(order) ? order : 0);
+			object.setMenuType(Validator.isNotNull(menuType) ? menuType : 0);
+			object.setQueryParams(queryParams);
+			object.setMenuGroup(menuGroup);
+			object.setTableConfig(tableConfig);
+			object.setButtonConfig(buttonConfig);
 
 			menuConfigPersistence.update(object);
 			return true;

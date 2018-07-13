@@ -18,6 +18,8 @@ import org.opencps.api.v21.model.DocumentTypeList.DocumentType;
 import org.opencps.api.v21.model.DossierTemplate;
 import org.opencps.api.v21.model.FileTemplates;
 import org.opencps.api.v21.model.FileTemplates.FileTemplate;
+import org.opencps.api.v21.model.Items;
+import org.opencps.api.v21.model.Items.DictItem;
 import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.MenuConfigList.MenuConfig;
 import org.opencps.api.v21.model.Parts;
@@ -33,6 +35,8 @@ import org.opencps.api.v21.model.StepConfigList.StepConfig;
 import org.opencps.api.v21.model.Steps;
 import org.opencps.api.v21.model.Steps.ProcessStep;
 import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
+import org.opencps.datamgt.action.DictcollectionInterface;
+import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
@@ -70,7 +74,11 @@ public class ProcessUpdateDBUtils {
 	public static void processUpdateActionConfig(ActionConfigList actList, String folderPath, long groupId,
 			long userId, ServiceContext serviceContext) {
 		try {
-			if (actList != null) {
+			ActionConfigActions actions = new ActionConfigActionsImpl();
+			//Delete all table ActionConfig
+			boolean flagAct = actions.deleteAllActionConfig(groupId, userId, serviceContext);
+			//Update table ActionConfig
+			if (actList != null && flagAct) {
 				List<ActionConfig> actConfigList = actList.getActionConfig();
 				if (actConfigList != null && actConfigList.size() > 0) {
 					for (ActionConfig actConfig : actConfigList) {
@@ -95,7 +103,6 @@ public class ProcessUpdateDBUtils {
 //								formConfig = ReadXMLFileUtils.convertFiletoString(jsonfile);
 //							}
 							// Check record exits DB
-							ActionConfigActions actions = new ActionConfigActionsImpl();
 							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
 									insideProcess, userNote, syncType, eventType, infoType, rollbackable,
 									notificationType, formConfig);
@@ -112,7 +119,11 @@ public class ProcessUpdateDBUtils {
 	public static void processUpdateStepConfig(StepConfigList stepList, long groupId,
 			long userId, ServiceContext serviceContext) {
 		try {
-			if (stepList != null) {
+			StepConfigActions actions = new StepConfigActionsImpl();
+			//Delete all record StepConfig
+			boolean flagStep = actions.deleteAllStepConfig(groupId, userId, serviceContext);
+			//Insert StepConfig
+			if (stepList != null && flagStep) {
 				List<StepConfig> stepConfigList = stepList.getStepConfig();
 				if (stepConfigList != null && stepConfigList.size() > 0) {
 					for (StepConfig stepConfig : stepConfigList) {
@@ -126,7 +137,6 @@ public class ProcessUpdateDBUtils {
 						String buttonConfig = stepConfig.getButtonConfig();
 						if (Validator.isNotNull(stepCode)) {
 							// Check record exits DB
-							StepConfigActions actions = new StepConfigActionsImpl();
 							actions.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType, dossierStatus, dossierSubStatus,
 									menuGroup, menuStepName, buttonConfig);
 						}
@@ -142,7 +152,11 @@ public class ProcessUpdateDBUtils {
 	public static void processUpdateMenuConfig(MenuConfigList menuList, long groupId,
 			long userId, ServiceContext serviceContext) {
 		try {
-			if (menuList != null) {
+			MenuConfigActions actions = new MenuConfigActionsImpl();
+			//Delete all table ActionConfig
+			boolean flagMenu = actions.deleteAllMenuConfig(groupId, userId, serviceContext);
+			//Update table ActionConfig
+			if (menuList != null && flagMenu) {
 				List<MenuConfig> menuConfigList = menuList.getMenuConfig();
 				if (menuConfigList != null && menuConfigList.size() > 0) {
 					for (MenuConfig menuConfig : menuConfigList) {
@@ -155,7 +169,6 @@ public class ProcessUpdateDBUtils {
 						String buttonConfig = menuConfig.getButtonConfig();
 						if (Validator.isNotNull(menuGroup)) {
 							// Check record exits DB
-							MenuConfigActions actions = new MenuConfigActionsImpl();
 							actions.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order, menuType, queryParams,
 									tableConfig, buttonConfig);
 						}
@@ -244,18 +257,20 @@ public class ProcessUpdateDBUtils {
 	}
 
 	//LamTV_Update Dictcollection to DB
-	public static void processUpdateDictCollection(DictCollection dicts) {
-//		try {
-//			if (dicts != null) {
-//				String collectionCode = dicts.getCollectionCode();
-//				String collectionName = dicts.getCollectionName();
-//				String collectionNameEN = dicts.getCollectionNameEN();
-//				String description = dicts.getDescription();
-//				DictcollectionInterface actionCollection = new DictCollectionActions();
-//				long dictCollectionId = actionCollection.updateDictCollectionDB(20164l, 55301l, collectionCode,
-//						collectionName, collectionNameEN, description);
-//				processUpdateDictItem(dictCollectionId, dicts, actionCollection);
-//				
+	public static void processUpdateDictCollection(DictCollection dicts, long groupId, long userId, ServiceContext serviceContext) {
+		try {
+			if (dicts != null) {
+				String collectionCode = dicts.getCollectionCode();
+				String collectionName = dicts.getCollectionName();
+				String collectionNameEN = dicts.getCollectionNameEN();
+				String description = dicts.getDescription();
+				DictcollectionInterface actionCollection = new DictCollectionActions();
+				long dictCollectionId = actionCollection.updateDictCollectionDB(userId, groupId, collectionCode,
+						collectionName, collectionNameEN, description);
+				if (dictCollectionId > 0) {
+					processUpdateDictItem(userId, groupId, dictCollectionId, dicts, actionCollection);
+				}
+				
 //				if (deliverableTypeList != null && deliverableTypeList.size() > 0) {
 //					for (DeliverableType deliType : deliverableTypeList) {
 //						String typeCode = deliType.getTypeCode();
@@ -286,10 +301,10 @@ public class ProcessUpdateDBUtils {
 //						}
 //					}
 //				}
-//			}
-//		} catch (Exception e) {
-//			_log.error(e);
-//		}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
 	}
 
 	//LamTV_ Process service to DB
@@ -692,38 +707,35 @@ public class ProcessUpdateDBUtils {
 	}
 
 	//LamTV_ Process DictItem
-//	private static void processUpdateDictItem(long dictCollectionId, DictCollection dicts, DictcollectionInterface actionCollection) {
-//		if (dictCollectionId > 0) {
-//			Items itemList = dicts.getItems();
-//			if (itemList != null) {
-//				List<DictItem> dictItemList = itemList.getDictItem();
-//				if (dictItemList != null && dictItemList.size() > 0) {
-//					String itemCode = StringPool.BLANK;
-//					String itemName = StringPool.BLANK;
-//					String itemNameEN = StringPool.BLANK;
-//					String itemDescription = StringPool.BLANK;
-//					String parent = StringPool.BLANK;
-//					Integer level = 0;
-//					Integer sibling = 0;
-//					String metadata = StringPool.BLANK;
-//					for (DictItem dictItem : dictItemList) {
-//						itemCode = dictItem.getItemCode();
-//						itemName = dictItem.getItemName();
-//						itemNameEN = dictItem.getItemNameEN();
-//						itemDescription = dictItem.getItemDescription();
-//						parent = dictItem.getParent();
-//						level = dictItem.getLevel();
-//						sibling = dictItem.getSibling();
-//						metadata = dictItem.getMetadata();
-//						//
-////						long dictItemId = actionCollection.getDictItemByItemCode(dictCollectionId, parent, 55301l);
-////						long dictItemId = actionCollection.updateDictItemDB(20164l, 55301l, dictCollectionId, itemCode, itemName, itemNameEN, itemDescription, parent,
-////									level, sibling, metadata);
-//					}
-//				}
-//			}
-//		}
-		
-//	}
+	private static void processUpdateDictItem(long userId, long groupId, long dictCollectionId, DictCollection dicts, DictcollectionInterface actionCollection) {
+		Items itemList = dicts.getItems();
+		if (itemList != null) {
+			List<DictItem> dictItemList = itemList.getDictItem();
+			if (dictItemList != null && dictItemList.size() > 0) {
+				String itemCode = StringPool.BLANK;
+				String itemName = StringPool.BLANK;
+				String itemNameEN = StringPool.BLANK;
+				String itemDescription = StringPool.BLANK;
+				String parent = StringPool.BLANK;
+				Integer level = 0;
+				Integer sibling = 0;
+				String metadata = StringPool.BLANK;
+				for (DictItem dictItem : dictItemList) {
+					itemCode = dictItem.getItemCode();
+					itemName = dictItem.getItemName();
+					itemNameEN = dictItem.getItemNameEN();
+					itemDescription = dictItem.getItemDescription();
+					parent = dictItem.getParent();
+					level = dictItem.getLevel();
+					sibling = dictItem.getSibling();
+					metadata = dictItem.getMetadata();
+					//
+					long dictItemParentId = actionCollection.getDictItemByItemCode(dictCollectionId, parent, groupId);
+					actionCollection.updateDictItemDB(userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
+							itemDescription, dictItemParentId, level, sibling, metadata);
+				}
+			}
+		}
+	}
 
 }

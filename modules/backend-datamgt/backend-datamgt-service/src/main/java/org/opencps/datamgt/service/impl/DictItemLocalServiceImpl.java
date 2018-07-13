@@ -799,62 +799,59 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		return dictItemPersistence.countByF_dictItemNewerThan(date, groupId);
 	}
 
-//	public DictItem updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
-//			String itemNameEN, String itemDescription, String parent, Integer level, Integer sibling, String metadata) {
-//	
-//		Date now = new Date();
-//		User user = userPersistence.findByPrimaryKey(userId);
-//		DictItem dictItemParent = dictItemPersistence.fetchByIC_DCI(parent, dictCollectionId);
-//		String sibling = StringPool.BLANK;
-//		if (dictItemParent != null) {
-//			long parentItemId = dictItemParent.getDictItemId();
-//			sibling = getSibling(groupId, dictCollectionId, parentItemId, sibling, level);
-//			String treeIndex = getTreeIndex(dictItemId, parentItemId, sibling);
-//		}
-//
-//		DictItem dictItem = dictItemPersistence.fetchByIC_DCI(itemCode, dictCollectionId);
-//		if (dictItem != null) {
-//			
-//		} else {
-//			long dictItemId = counterLocalService.increment(DictItem.class.getName());
-//			dictItem = dictItemPersistence.create(dictItemId);
-//		}
-//
-//		
-//
-//
-//		// Group instance
-//		dictItem.setGroupId(groupId);
-//
-//		// Audit fields
-//		dictItem.setUuid(serviceContext.getUuid());
-//		dictItem.setCompanyId(user.getCompanyId());
-//		dictItem.setUserId(user.getUserId());
-//		dictItem.setUserName(user.getFullName());
-//		dictItem.setCreateDate(serviceContext.getCreateDate(now));
-//		dictItem.setModifiedDate(serviceContext.getCreateDate(now));
-//
-//		// Other fields
-//		dictItem.setDictCollectionId(dictCollectionId);
-//		itemCode = itemCode;
-//		dictItem.setItemCode(itemCode);
-//		dictItem.setItemName(itemName);
-//		dictItem.setItemNameEN(itemNameEN);
-//		dictItem.setItemDescription(itemDescription);
-//		dictItem.setParentItemId(parentItemId);
-//		dictItem.setSibling(Validator.isNotNull(sibling) ? sibling : String.valueOf(1));
-//		dictItem.setTreeIndex(treeIndex);
-//		dictItem.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
-//		dictItem.setMetaData(metaData);
-//
-//		// referent dictcollection
-//		BaseModel<?> baseModel = DictCollectionLocalServiceUtil.fetchDictCollection(dictCollectionId);
-//
-//		dictItem.setExpandoBridgeAttributes(baseModel);
-//
-//		dictItemPersistence.update(dictItem);
-//		return null;
-//	}
+	public void updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
+			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling, String metadata) {
+
+		try{
+			Date now = new Date();
+			User user = userPersistence.findByPrimaryKey(userId);
+	//		DictItem dictItemParent = dictItemPersistence.fetchByIC_DCI(parent, dictCollectionId);
+	//		String sibling = StringPool.BLANK;
+	//		if (dictItemParent != null) {
+	//			long parentItemId = dictItemParent.getDictItemId();
+	//			sibling = getSibling(groupId, dictCollectionId, parentItemId, sibling, level);
+	//			String treeIndex = getTreeIndex(dictItemId, parentItemId, sibling);
+	//		}
+	
+			DictItem dictItem = dictItemPersistence.fetchByIC_DCI(itemCode, dictCollectionId);
+			if (dictItem == null) {
+				long dictItemId = counterLocalService.increment(DictItem.class.getName());
+				dictItem = dictItemPersistence.create(dictItemId);
+			}
+	
+			// Group instance
+			dictItem.setGroupId(groupId);
+	
+			// Audit fields
+	//		dictItem.setUuid(serviceContext.getUuid());
+			dictItem.setCompanyId(user.getCompanyId());
+			dictItem.setUserId(user.getUserId());
+			dictItem.setUserName(user.getFullName());
+			dictItem.setCreateDate(now);
+			dictItem.setModifiedDate(now);
+	
+			// Other fields
+			dictItem.setDictCollectionId(dictCollectionId);
+			dictItem.setItemCode(itemCode);
+			dictItem.setItemName(itemName);
+			dictItem.setItemNameEN(itemNameEN);
+			dictItem.setItemDescription(itemDescription);
+			dictItem.setParentItemId(dictItemParentId);
+			dictItem.setSibling(String.valueOf(sibling));
+	//		dictItem.setTreeIndex(treeIndex);
+			dictItem.setLevel(level);
+			dictItem.setMetaData(metadata);
+	
+			// referent dictcollection
+	//		BaseModel<?> baseModel = DictCollectionLocalServiceUtil.fetchDictCollection(dictCollectionId);
+	//
+	//		dictItem.setExpandoBridgeAttributes(baseModel);
+	
+			dictItemPersistence.update(dictItem);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DictItemLocalServiceImpl.class);
 }

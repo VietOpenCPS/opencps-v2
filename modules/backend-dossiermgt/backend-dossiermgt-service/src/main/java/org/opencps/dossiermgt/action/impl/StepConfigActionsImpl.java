@@ -1,8 +1,11 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.util.List;
+
 import javax.naming.AuthenticationException;
 
 import org.opencps.dossiermgt.action.StepConfigActions;
+import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
@@ -81,6 +84,19 @@ public class StepConfigActionsImpl implements StepConfigActions {
 
 		StepConfigLocalServiceUtil.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType,
 				dossierStatus, dossierSubStatus, menuGroup, menuStepName, buttonConfig);
+	}
+
+	@Override
+	public boolean deleteAllStepConfig(long groupId, long userId, ServiceContext serviceContext) {
+		boolean flag = false;
+		List<StepConfig> stepList = StepConfigLocalServiceUtil.getStepConfigs(-1, -1);
+		if (stepList != null && stepList.size() > 0) {
+			for (StepConfig step : stepList) {
+				StepConfigLocalServiceUtil.deleteStepConfig(step);
+				flag = true;
+			}
+		}
+		return flag;
 	}
 
 }

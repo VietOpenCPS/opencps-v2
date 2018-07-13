@@ -1188,12 +1188,22 @@ public class DictCollectionActions implements DictcollectionInterface {
 				collectionNameEN, description);
 	}
 
-//	@Override
-//	public long updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
-//			String itemNameEN, String itemDescription, String parent, Integer level, Integer sibling, String metadata) {
-//
-////		DictItemLocalServiceUtil.updateDictItemDB(userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
-////				itemDescription, parent, level, sibling, metadata);
-//	}
+	@Override
+	public long getDictItemByItemCode(long dictCollectionId, String parent, long groupId) {
+
+		DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(parent, dictCollectionId, groupId);
+		if (dictItem != null) {
+			return dictItem.getDictItemId();
+		}
+		return 0;
+	}
+
+	@Override
+	public void updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
+			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling, String metadata) {
+
+		DictItemLocalServiceUtil.updateDictItemDB(userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
+				itemDescription, dictItemParentId, level, sibling, metadata);
+	}
 
 }
