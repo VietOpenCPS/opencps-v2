@@ -381,7 +381,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
-			String instructionNote, String briefNote, String lockState, ServiceContext serviceContext)
+			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
 			throws PortalException {
 
 		Date now = new Date();
@@ -413,7 +413,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			object.setDurationCount(durationCount);
 			object.setStepInstruction(instructionNote);
 			object.setBriefNote(briefNote);
-			object.setLockState(lockState);
+			object.setRoleAsStep(roleAsStep);
 		} else {
 			// Add audit fields
 			object.setModifiedDate(now);
@@ -430,7 +430,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			object.setDurationCount(durationCount);
 			object.setStepInstruction(instructionNote);
 			object.setBriefNote(briefNote);
-			object.setLockState(lockState);
+			object.setRoleAsStep(roleAsStep);
 		}
 
 		processStepPersistence.update(object);
