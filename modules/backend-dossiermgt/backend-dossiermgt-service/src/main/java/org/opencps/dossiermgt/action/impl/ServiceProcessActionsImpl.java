@@ -274,11 +274,12 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	@Override
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
-			String instructionNote, String briefNote, String lockState, ServiceContext serviceContext)
+			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
 			throws PortalException {
 
-		return ProcessStepLocalServiceUtil.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode, stepName, sequenceNo, groupName,
-				dossierStatus, dossierSubStatus, durationCount, instructionNote, briefNote, lockState, serviceContext);
+		return ProcessStepLocalServiceUtil.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode, stepName,
+				sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount, instructionNote, briefNote,
+				roleAsStep, serviceContext);
 	}
 
 	@Override

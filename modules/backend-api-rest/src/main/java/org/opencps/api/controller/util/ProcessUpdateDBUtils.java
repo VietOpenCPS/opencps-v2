@@ -677,10 +677,10 @@ public class ProcessUpdateDBUtils {
 			String groupName = StringPool.BLANK;
 			String dossierStatus = StringPool.BLANK;
 			String dossierSubStatus = StringPool.BLANK;
-			Integer durationCount1 = 0;
+			Integer durationCount = 0;
 			String instructionNote = StringPool.BLANK;
 			String briefNote = StringPool.BLANK;
-			String lockState = StringPool.BLANK;
+			String roleAsStep = StringPool.BLANK;
 			for (ProcessStep step : proStepList) {
 				stepCode = step.getStepCode();
 				stepName = step.getStepName();
@@ -688,14 +688,14 @@ public class ProcessUpdateDBUtils {
 				groupName = step.getGroupName();
 				dossierStatus = step.getDossierStatus();
 				dossierSubStatus = step.getDossierSubStatus();
-				durationCount1 = step.getDurationCount();
+				durationCount = step.getDurationCount();
 				instructionNote = step.getInstructionNote();
 				briefNote = step.getBriefNote();
-				lockState = step.getLockState();
+				roleAsStep = step.getRoleAsStep();
 				//
-				long processStepId = actionService.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode, stepName,
-						sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount1,
-						instructionNote, briefNote, lockState, serviceContext);
+				long processStepId = actionService.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode,
+						stepName, sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount,
+						instructionNote, briefNote, roleAsStep, serviceContext);
 				//
 				org.opencps.api.v21.model.Steps.ProcessStep.Roles stepRoles = step.getRoles();
 				if (stepRoles != null) {
