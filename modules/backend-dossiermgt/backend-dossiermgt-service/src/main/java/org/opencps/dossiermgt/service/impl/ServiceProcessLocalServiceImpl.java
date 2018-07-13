@@ -837,5 +837,9 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 				config.getServiceConfigId());
 	}
 
+	public ServiceProcess getByG_PNO(long groupId, String processNo) {
+		return serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+	}
+	
 	Log _log = LogFactoryUtil.getLog(ServiceProcessLocalServiceImpl.class);
 }

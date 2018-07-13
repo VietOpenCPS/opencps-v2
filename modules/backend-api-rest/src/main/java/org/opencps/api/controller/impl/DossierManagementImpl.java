@@ -2037,12 +2037,6 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
-	public Response getActions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
-		return Response.status(200).entity(null).build();
-	}
-
-	@Override
 	public Response rollback(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, String id) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));

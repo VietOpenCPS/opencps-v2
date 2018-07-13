@@ -437,4 +437,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		return object.getProcessStepId();
 	}
 
+	public List<ProcessStep> findByG_SP_SNO(long groupId, long serviceProcessId, String sequenceNo) {
+		return processStepPersistence.findByG_SP_SNO(groupId, serviceProcessId, sequenceNo);
+	}
 }
