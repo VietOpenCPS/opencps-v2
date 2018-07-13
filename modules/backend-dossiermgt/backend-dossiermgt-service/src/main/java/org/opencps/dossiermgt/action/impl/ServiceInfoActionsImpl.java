@@ -13,11 +13,16 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -358,6 +363,64 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplateDB(serviceInfoId, fileTemplateNo, fileTemplateName,
 				fileName, fileEntryId);
+	}
+
+	@Override
+	public boolean deleteAllFileTemplate(long userId, long groupId, long serviceInfoId, ServiceContext serviceContext) {
+		boolean flag = false;
+		List<ServiceFileTemplate> fileTemplateList = ServiceFileTemplateLocalServiceUtil.getByServiceInfoId(serviceInfoId);
+		if (fileTemplateList != null && fileTemplateList.size() > 0) {
+			long fileEntryId = 0;
+			for (ServiceFileTemplate serviceFileTemplate : fileTemplateList) {
+				fileEntryId = serviceFileTemplate.getFileEntryId();
+				if (fileEntryId > 0) {
+					try {
+						DLAppLocalServiceUtil.deleteFileEntry(fileEntryId);
+					} catch (PortalException e) {
+						return false;
+					}
+				}
+				ServiceFileTemplateLocalServiceUtil.deleteServiceFileTemplate(serviceFileTemplate);
+				flag = true;
+			}
+		}
+
+		return flag;
+	}
+
+	@Override
+	public boolean deleteAllServiceConfig(long userId, long groupId, long serviceInfoId,
+			ServiceContext serviceContext) {
+		boolean flag = false;
+		try {
+			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId, serviceInfoId);
+			if (configList != null && configList.size() > 0) {
+				long serviceConfigId = 0;
+				for (ServiceConfig config : configList) {
+					serviceConfigId = config.getServiceConfigId();
+					if (serviceConfigId > 0) {
+						List<ProcessOption> optionList = ProcessOptionLocalServiceUtil
+								.getByServiceProcessId(serviceConfigId);
+						if (optionList != null && optionList.size() > 0) {
+							for (ProcessOption processOption : optionList) {
+								ProcessOptionLocalServiceUtil.deleteProcessOption(processOption);
+								flag = true;
+							}
+						}
+					}
+					if (flag) {
+						ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.deleteServiceConfig(config);
+						if (serviceConfig == null) {
+							flag = false;
+						}
+					}
+				}
+			}
+		}catch (Exception e) {
+			return false;
+		}
+
+		return flag;
 	}
 
 }

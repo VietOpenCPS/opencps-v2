@@ -26,6 +26,8 @@ import org.opencps.api.v21.model.Parts;
 import org.opencps.api.v21.model.Parts.DossierPart;
 import org.opencps.api.v21.model.Processes;
 import org.opencps.api.v21.model.Processes.ProcessOption;
+import org.opencps.api.v21.model.Sequences;
+import org.opencps.api.v21.model.Sequences.ProcessSequence;
 import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.ServiceProcess.Roles;
@@ -406,6 +408,11 @@ public class ProcessUpdateDBUtils {
 				if (actions != null) {
 					processProcessAction(userId, groupId, serviceProcessId, actions, actionService, serviceContext);
 				}
+				// Process processsequence
+				Sequences sequences = process.getSequences();
+				if (sequences != null) {
+					processProcessSequence(userId, groupId, serviceProcessId, sequences, actionService, serviceContext);
+				}
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -415,8 +422,11 @@ public class ProcessUpdateDBUtils {
 	//LamTV_ Process output ServiceFileTemplate to DB
 	private static void processFileTemplate(long userId, long groupId, long serviceInfoId, FileTemplates fileTemplate,
 			String folderParentPath, ServiceInfoActions actionService, ServiceContext serviceContext) {
+		// Delete all ServiceFileTemplate with serviceInfoId
+		boolean flagTemplate = actionService.deleteAllFileTemplate(userId, groupId, serviceInfoId, serviceContext);
+		// Add list file serviceFileTemplate
 		List<FileTemplate> fileTempList = fileTemplate.getFileTemplate();
-		if (fileTempList != null && fileTempList.size() > 0) {
+		if (fileTempList != null && fileTempList.size() > 0 && flagTemplate) {
 			String fileTemplateNo = StringPool.BLANK;
 			String fileTemplateName = StringPool.BLANK;
 			String fileName = StringPool.BLANK;
@@ -448,8 +458,11 @@ public class ProcessUpdateDBUtils {
 	//LamTV_Process output ServiceConfig to DB
 	private static void processServiceConfig(long userId, long groupId, long serviceInfoId, Configs configs,
 			ServiceInfoActions actionService, ServiceContext serviceContext) throws NoSuchServiceConfigException {
+		// Delete all ServiceFileTemplate with serviceInfoId
+		boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, serviceContext);
+		// Add list file serviceFileTemplate
 		List<ServiceConfig> configList = configs.getServiceConfig();
-		if (configList != null && configList.size() > 0) {
+		if (configList != null && configList.size() > 0 && flagConfig) {
 			String govAgencyCode = StringPool.BLANK;
 			String govAgencyName = StringPool.BLANK;
 			String serviceInstruction = StringPool.BLANK;
@@ -579,8 +592,11 @@ public class ProcessUpdateDBUtils {
 	//LamTV_Process output ProcessAction to DB
 	private static void processProcessAction(long userId, long groupId, long serviceProcessId, Actions actions,
 			ServiceProcessActions actionService, ServiceContext serviceContext) throws PortalException {
+		// Delete all ServiceFileTemplate with serviceInfoId
+		boolean flagProAction = actionService.deleteAllProcessAction(userId, groupId, serviceProcessId, serviceContext);
+		// Add list file serviceFileTemplate
 		List<ProcessAction> processActionList = actions.getProcessAction();
-		if (processActionList != null && processActionList.size() > 0) {
+		if (processActionList != null && processActionList.size() > 0 && flagProAction) {
 			String actionCode = StringPool.BLANK;
 			String actionName = StringPool.BLANK;
 			String preStepCode = StringPool.BLANK;
@@ -626,8 +642,11 @@ public class ProcessUpdateDBUtils {
 	//LamTV_Process output ProcessRole to DB
 	private static void processProcessRole(long userId, long groupId, long serviceProcessId, Roles processRoles,
 			ServiceProcessActions actionService, ServiceContext serviceContext) {
+		// Delete all ServiceFileTemplate with serviceInfoId
+		boolean flagProRole = actionService.deleteAllProcessRole(userId, groupId, serviceProcessId, serviceContext);
+		// Add list file serviceFileTemplate
 		List<ProcessRole> processRoleList = processRoles.getProcessRole();
-		if (processRoleList != null && processRoleList.size() > 0) {
+		if (processRoleList != null && processRoleList.size() > 0 && flagProRole) {
 			long roleId = 0;
 			String roleName = StringPool.BLANK;
 			boolean moderator = false;
@@ -638,7 +657,7 @@ public class ProcessUpdateDBUtils {
 				moderator = processRole.isModerator();
 				condition = processRole.getCondition();
 				//
-				actionService.updateServiceProcessRoleDB(20164l, 55301l, serviceProcessId, roleId, roleName,
+				actionService.updateServiceProcessRoleDB(userId, groupId, serviceProcessId, roleId, roleName,
 						moderator, condition, serviceContext);
 			}
 		}
@@ -647,8 +666,11 @@ public class ProcessUpdateDBUtils {
 	//LamTV_ Process output ProcessStep to DB
 	private static void processProcessStep(long userId, long groupId, long serviceProcessId, Steps steps,
 			ServiceProcessActions actionService, ServiceContext serviceContext) throws PortalException {
+		// Delete all ServiceFileTemplate with serviceInfoId
+		boolean flagStep = actionService.deleteAllProcessStep(userId, groupId, serviceProcessId, serviceContext);
+		// Add list file serviceFileTemplate
 		List<ProcessStep> proStepList = steps.getProcessStep();
-		if (proStepList != null && proStepList.size() > 0) {
+		if (proStepList != null && proStepList.size() > 0 && flagStep) {
 			String stepCode = StringPool.BLANK;
 			String stepName = StringPool.BLANK;
 			Integer sequenceNo = 0;
@@ -680,6 +702,31 @@ public class ProcessUpdateDBUtils {
 					processStepRole(userId, groupId, processStepId, stepRoles, actionService,
 							serviceContext);
 				}
+			}
+		}
+	}
+
+	//LamTV_ Process output ProcessSequence to DB
+	private static void processProcessSequence(long userId, long groupId, long serviceProcessId, Sequences sequences,
+			ServiceProcessActions actionService, ServiceContext serviceContext) throws PortalException {
+		// Delete all ServiceFileTemplate with serviceInfoId
+		boolean flagSequence = actionService.deleteAllProcessSequence(userId, groupId, serviceProcessId, serviceContext);
+		// Add list file serviceFileTemplate
+		List<ProcessSequence> sequenceList = sequences.getProcessSequence();
+		if (sequenceList != null && sequenceList.size() > 0 && flagSequence) {
+			String sequenceNo = StringPool.BLANK;
+			String sequenceName = StringPool.BLANK;
+			String sequenceRole = StringPool.BLANK;
+			Integer durationCount = 0;
+			for (ProcessSequence sequence : sequenceList) {
+				sequenceNo = sequence.getSequenceNo();
+				sequenceName = sequence.getSequenceName();
+				sequenceRole = sequence.getSequenceRole();
+				durationCount = sequence.getDurationCount();
+				//
+				actionService.updateProcessSequenceDB(userId, groupId, serviceProcessId, sequenceNo, sequenceName,
+						sequenceRole, durationCount, serviceContext);
+				//
 			}
 		}
 	}

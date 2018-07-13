@@ -250,9 +250,14 @@
 			<finder-column name="serviceInfoId" />
 			<finder-column name="govAgencyCode" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="G_">
 			<finder-column name="groupId"/>
+		</finder>
+
+		<finder return-type="Collection" name="F_GID_SID">
+			<finder-column name="groupId" />
+			<finder-column name="serviceInfoId" />
 		</finder>
 
 	</entity>
@@ -932,8 +937,10 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 		
+		<column name="serviceProcessId" type="long" />
 		<column name="sequenceNo" type="String" />
 		<column name="sequenceName" type="String" />
+		<column name="sequenceRole" type="String" />
 		<column name="durationCount" type="double" />
 		
 		<order by="desc">
@@ -942,7 +949,11 @@
         <finder name="G_SN" return-type="Collection">
             <finder-column name="groupId"></finder-column>
             <finder-column name="sequenceNo"></finder-column>
-        </finder>		
+        </finder>
+        <finder name="F_GID_SID" return-type="Collection">
+            <finder-column name="groupId" />
+            <finder-column name="serviceProcessId" />
+        </finder>
 	</entity>	
 	
 	<entity local-service="true" name="DossierRequestUD"

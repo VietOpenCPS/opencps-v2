@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
  * The implementation of the process sequence local service.
@@ -99,5 +100,34 @@ public class ProcessSequenceLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessSequence deleteProcessSequence(long processSequenceId) throws NoSuchProcessSequenceException {
 		return processSequencePersistence.remove(processSequenceId);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public void updateProcessSequenceDB(long userId, long groupId, long serviceProcessId, String sequenceNo,
+			String sequenceName, String sequenceRole, Integer durationCount, ServiceContext serviceContext)
+			throws PortalException {
+		User user = userLocalService.getUser(userId);
+		
+		long processSequenceId = counterLocalService.increment();
+		ProcessSequence processSequence = processSequencePersistence.create(processSequenceId);
+		
+		Date now = new Date();
+		
+		processSequence.setCreateDate(now);
+		processSequence.setModifiedDate(now);
+		
+		processSequence.setUserId(user.getUserId());
+		processSequence.setGroupId(groupId);
+		processSequence.setServiceProcessId(serviceProcessId);
+		processSequence.setSequenceNo(sequenceNo);
+		processSequence.setSequenceName(sequenceName);
+		processSequence.setSequenceRole(sequenceRole);
+		processSequence.setDurationCount(durationCount);
+		
+		processSequencePersistence.update(processSequence);
+	}
+
+	public List<ProcessSequence> getByServiceProcess(long groupId, long serviceProcessId) {
+		return processSequencePersistence.findByF_GID_SID(groupId, serviceProcessId);
 	}
 }

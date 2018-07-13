@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -298,6 +300,107 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 				preStepCode, postStepCode, autoEvent, preCondition, allowAssignUser, assignUserId, assignUserName,
 				requestPayment, paymentFee, createDossierFiles, returnDossierFiles, eSignature, signatureType,
 				createDossiers, serviceContext);
+	}
+
+	@Override
+	public boolean deleteAllProcessAction(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) {
+		boolean flag = false;
+		try {
+			List<ProcessAction> actList = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcessId);
+			if (actList != null && actList.size() > 0) {
+				for (ProcessAction act : actList) {
+					ProcessActionLocalServiceUtil.deleteProcessAction(act);
+					flag = true;
+				}
+			}
+		}catch (Exception e) {
+			return false;
+		}
+
+		return flag;
+	}
+
+	@Override
+	public boolean deleteAllProcessRole(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) {
+		boolean flag = false;
+		try {
+			List<ServiceProcessRole> roleList = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
+			if (roleList != null && roleList.size() > 0) {
+				for (ServiceProcessRole role : roleList) {
+					ServiceProcessRoleLocalServiceUtil.deleteServiceProcessRole(role);
+					flag = true;
+				}
+			}
+		}catch (Exception e) {
+			return false;
+		}
+
+		return flag;
+	}
+
+	@Override
+	public boolean deleteAllProcessStep(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) {
+		boolean flag = false;
+		try {
+			List<ProcessStep> stepList = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
+			if (stepList != null && stepList.size() > 0) {
+				long stepId = 0;
+				for (ProcessStep step : stepList) {
+					stepId = step.getProcessStepId();
+					if (stepId > 0) {
+						List<ProcessStepRole> stepRoleList = ProcessStepRoleLocalServiceUtil
+								.findByP_S_ID(stepId);
+						if (stepRoleList != null && stepRoleList.size() > 0) {
+							for (ProcessStepRole stepRole : stepRoleList) {
+								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(stepRole);
+								flag = true;
+							}
+						}
+					}
+					if (flag) {
+						ProcessStep processStep = ProcessStepLocalServiceUtil.deleteProcessStep(step);
+						if (processStep == null) {
+							flag = false;
+						}
+					}
+				}
+			}
+		}catch (Exception e) {
+			return false;
+		}
+
+		return flag;
+	}
+
+	@Override
+	public boolean deleteAllProcessSequence(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) {
+		boolean flag = false;
+		try {
+			List<ProcessSequence> seqList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcessId);
+			if (seqList != null && seqList.size() > 0) {
+				for (ProcessSequence seq : seqList) {
+					ProcessSequenceLocalServiceUtil.deleteProcessSequence(seq);
+					flag = true;
+				}
+			}
+		}catch (Exception e) {
+			return false;
+		}
+
+		return flag;
+	}
+
+	@Override
+	public void updateProcessSequenceDB(long userId, long groupId, long serviceProcessId, String sequenceNo,
+			String sequenceName, String sequenceRole, Integer durationCount, ServiceContext serviceContext)
+			throws PortalException {
+
+		ProcessSequenceLocalServiceUtil.updateProcessSequenceDB(userId, groupId, serviceProcessId, sequenceNo,
+				sequenceName, sequenceRole, durationCount, serviceContext);
 	}
 
 }

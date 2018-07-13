@@ -346,54 +346,31 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
-		DossierTemplate dossierTemp = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
 		ServiceProcess serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 		long dossierTemplateId = 0;
 		long serviceProcessId = 0;
 		if (serviceProcess != null) {
 			serviceProcessId = serviceProcess.getServiceProcessId();
 		}
-		ProcessOption processOption = null;
-		if (dossierTemp != null) {
-			dossierTemplateId = dossierTemp.getDossierTemplateId();
-			processOption = processOptionPersistence.fetchBySC_DT(serviceConfigId, dossierTemplateId);
-		}
 
-		if (processOption == null) {
+		long processOptionId = counterLocalService.increment(ProcessOption.class.getName());
+		ProcessOption processOption = processOptionPersistence.create(processOptionId);
 
-			long processOptionId = counterLocalService.increment(ProcessOption.class.getName());
-			processOption = processOptionPersistence.create(processOptionId);
+		processOption.setCreateDate(now);
+		processOption.setModifiedDate(now);
+		processOption.setCompanyId(context.getCompanyId());
+		processOption.setGroupId(groupId);
+		processOption.setUserId(context.getUserId());
+		processOption.setUserName(auditUser.getFullName());
 
-			processOption.setCreateDate(now);
-			processOption.setModifiedDate(now);
-			processOption.setCompanyId(context.getCompanyId());
-			processOption.setGroupId(groupId);
-			processOption.setUserId(context.getUserId());
-			processOption.setUserName(auditUser.getFullName());
-
-			processOption.setServiceConfigId(serviceConfigId);
-			processOption.setOptionOrder(seqOrder);
-			processOption.setAutoSelect(autoSelect);
-			processOption.setInstructionNote(instructionNote);
-			processOption.setSubmissionNote(submissionNote);
-			processOption.setDossierTemplateId(dossierTemplateId);
-			processOption.setServiceProcessId(serviceProcessId);
-			processOption.setOptionName(optionName);
-		} else {
-			processOption.setModifiedDate(now);
-			processOption.setUserId(context.getUserId());
-			processOption.setUserName(auditUser.getFullName());
-
-			processOption.setServiceConfigId(serviceConfigId);
-			processOption.setOptionOrder(seqOrder);
-			processOption.setAutoSelect(autoSelect);
-			processOption.setInstructionNote(instructionNote);
-			processOption.setSubmissionNote(submissionNote);
-			processOption.setDossierTemplateId(dossierTemplateId);
-			processOption.setServiceProcessId(serviceProcessId);
-			processOption.setOptionName(optionName);
-
-		}
+		processOption.setServiceConfigId(serviceConfigId);
+		processOption.setOptionOrder(seqOrder);
+		processOption.setAutoSelect(autoSelect);
+		processOption.setInstructionNote(instructionNote);
+		processOption.setSubmissionNote(submissionNote);
+		processOption.setDossierTemplateId(dossierTemplateId);
+		processOption.setServiceProcessId(serviceProcessId);
+		processOption.setOptionName(optionName);
 
 		processOptionPersistence.update(processOption);
 	}

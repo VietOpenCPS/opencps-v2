@@ -67,4 +67,8 @@ public interface ServiceInfoActions {
 	public void updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
 			String fileName, long fileEntryId);
 
+	public boolean deleteAllFileTemplate(long userId, long groupId, long serviceInfoId, ServiceContext serviceContext);
+
+	public boolean deleteAllServiceConfig(long userId, long groupId, long serviceInfoId, ServiceContext serviceContext);
+
 }
