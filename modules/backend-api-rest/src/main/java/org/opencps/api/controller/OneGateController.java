@@ -71,10 +71,10 @@ public interface OneGateController {
 			@QueryParam("dossierTemplateNo") String dossierTemplateNo,
 			@QueryParam("dossierActionId") String dossierActionId);
 
-	@GET
-	@Path("/token")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getToken(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user);
+//	@GET
+//	@Path("/token")
+//	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//	public Response getToken(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+//			@Context Locale locale, @Context User user);
 }

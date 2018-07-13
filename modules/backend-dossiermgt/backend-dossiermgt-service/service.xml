@@ -451,6 +451,13 @@
             <finder-column name="dossierStatus" comparator="!="></finder-column>
         </finder>
 
+		<finder name="F_GID_GOV_DID" return-type="Dossier">
+			<finder-column name="groupId" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="serviceCode" />
+			<finder-column name="dossierId" />
+		</finder>
+
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

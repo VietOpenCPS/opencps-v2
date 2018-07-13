@@ -152,9 +152,9 @@ public class OneGateControllerImpl implements OneGateController {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth2.checkToken(request, header)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth2.checkToken(request, header)) {
+//				throw new UnauthenticationException();
+//			}
 
 			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 					input.getGovAgencyCode(), input.getDossierTemplateNo());
@@ -348,29 +348,29 @@ public class OneGateControllerImpl implements OneGateController {
 		}
 	}
 
-	@Override
-	public Response getToken(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user) {
-		
-		try {
-			
-			String token = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
-			
-			_log.info("CHECK::TOKEN:::::" + token);
-			
-			if (Validator.isNull(token)) {
-				token = PortalUUIDUtil.generate();
-				
-				_log.info("GENERATE_TOKEN:::::" + token);
-
-				request.getSession().setAttribute(CSRF_TOKEN_FOR_SESSION_NAME, token);
-			}
-			return Response.status(200).entity(token).build();
-		} catch (Exception e) {
-			_log.info(e);
-			return _processException(e);
-		}
-
-	}
+//	@Override
+//	public Response getToken(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+//			User user) {
+//		
+//		try {
+//			
+//			String token = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
+//			
+//			_log.info("CHECK::TOKEN:::::" + token);
+//			
+//			if (Validator.isNull(token)) {
+//				token = PortalUUIDUtil.generate();
+//				
+//				_log.info("GENERATE_TOKEN:::::" + token);
+//
+//				request.getSession().setAttribute(CSRF_TOKEN_FOR_SESSION_NAME, token);
+//			}
+//			return Response.status(200).entity(token).build();
+//		} catch (Exception e) {
+//			_log.info(e);
+//			return _processException(e);
+//		}
+//
+//	}
 
 }

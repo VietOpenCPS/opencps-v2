@@ -181,55 +181,23 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			User user = userLocalService.getUser(userId);
 			Date now = new Date();
 
-			StepConfig object = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
-			if (object != null) {
-				object.setUserId(user.getUserId());
-				object.setModifiedDate(now);
+			long stepConfigId = counterLocalService.increment(StepConfig.class.getName());
+			StepConfig object = stepConfigPersistence.create(stepConfigId);
 
-				if (Validator.isNotNull(stepCode)) {
-					object.setStepCode(stepCode);
-				}
-				if (Validator.isNotNull(stepName)) {
-					object.setStepName(menuStepName);
-				}
-				if (Validator.isNotNull(stepType)) {
-					object.setStepType(stepType);
-				}
-				if (Validator.isNotNull(dossierStatus)) {
-					object.setDossierStatus(dossierStatus);
-				}
-				if (Validator.isNotNull(dossierSubStatus)) {
-					object.setDossierSubStatus(dossierSubStatus);
-				}
-				if (Validator.isNotNull(menuGroup)) {
-					object.setMenuGroup(menuGroup);
-				}
-				if (Validator.isNotNull(menuStepName)) {
-					object.setMenuStepName(menuStepName);
-				}
-				if (Validator.isNotNull(buttonConfig)) {
-					object.setButtonConfig(buttonConfig);
-				}
-			} else {
-				long stepConfigId = counterLocalService.increment(StepConfig.class.getName());
+			object.setGroupId(groupId);
+			object.setCompanyId(user.getCompanyId());
+			object.setUserId(user.getUserId());
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
 
-				object = stepConfigPersistence.create(stepConfigId);
-
-				object.setGroupId(groupId);
-				object.setCompanyId(user.getCompanyId());
-				object.setUserId(user.getUserId());
-				object.setCreateDate(now);
-				object.setModifiedDate(now);
-
-				object.setStepCode(stepCode);
-				object.setStepName(stepName);
-				object.setStepType(Validator.isNotNull(stepType) ? stepType : 0);
-				object.setDossierStatus(dossierStatus);
-				object.setDossierSubStatus(dossierSubStatus);
-				object.setMenuGroup(menuGroup);
-				object.setMenuStepName(menuStepName);
-				object.setButtonConfig(buttonConfig);
-			}
+			object.setStepCode(stepCode);
+			object.setStepName(stepName);
+			object.setStepType(Validator.isNotNull(stepType) ? stepType : 0);
+			object.setDossierStatus(dossierStatus);
+			object.setDossierSubStatus(dossierSubStatus);
+			object.setMenuGroup(menuGroup);
+			object.setMenuStepName(menuStepName);
+			object.setButtonConfig(buttonConfig);
 
 			stepConfigPersistence.update(object);
 			return true;
