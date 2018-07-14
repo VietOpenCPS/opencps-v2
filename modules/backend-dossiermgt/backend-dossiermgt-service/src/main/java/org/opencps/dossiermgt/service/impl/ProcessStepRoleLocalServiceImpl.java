@@ -119,7 +119,7 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 
 	}
 
-	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName,
+	public ProcessStepRole updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName,
 			boolean moderator, String condition, ServiceContext serviceContext) {
 
 		ProcessStepRolePK pk = new ProcessStepRolePK(processStepId, roleId);
@@ -137,7 +137,7 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 			processStepRole.setCondition(condition);
 		}
 
-		processStepRolePersistence.update(processStepRole);
+		return processStepRolePersistence.update(processStepRole);
 	}
 
 	public ProcessStepRole findByStepAndRole(long processStepId, long roleId) {
