@@ -191,6 +191,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				dossierIdArr = JSONFactoryUtil.createJSONArray(strDossiers);
 			}
 
+			_log.info("START");
 			JSONArray formDataArr = null;
 			JSONArray formReportArr = null;
 			if (dossierIdArr != null && dossierIdArr.length() > 0) {
@@ -199,42 +200,43 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				Dossier dossier = null;
 				long dossierId = 0;
 				formDataArr = JSONFactoryUtil.createJSONArray();
-				formReportArr = JSONFactoryUtil.createJSONArray();
+				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
+				String documentScript = StringPool.BLANK;
+				_log.info("typeCode: "+typeCode);
+				_log.info("docType: "+docType);
+				if (docType != null) {
+					documentScript = docType.getDocumentScript();
+				}
 				for (int i = 0; i < length; i++) {
-					jsonDossier = (JSONObject) dossierIdArr.get(i);
+					jsonDossier = dossierIdArr.getJSONObject(i);
 					dossierId = Long.valueOf(jsonDossier.getString(DossierTerm.DOSSIER_ID));
 					if (Validator.isNotNull(dossierId) ) {
-//						dossier = DossierLocalServiceUtil.getByIdAndGovService(groupId, serviceCode, govAgencyCode, dossierId);
+						dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 						if (Validator.isNotNull(dossier)) {
 							long dossierActionId = dossier.getDossierActionId();
-
-							DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
-							String documentScript = StringPool.BLANK;
-							if (docType != null) {
-								documentScript = docType.getDocumentScript();
-								formReportArr.put(documentScript);
-							}
-
+							_log.info("formReportArr: "+formReportArr);
 							String payload = StringPool.BLANK;
 							if (dossierActionId != 0) {
 								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 								if (dAction != null) {
 									payload = dAction.getPayload();
 								}
-								JSONObject jsonData = null;
-								if (Validator.isNotNull(payload)) {
-									jsonData = JSONFactoryUtil.createJSONObject(payload);
-									jsonData = processMergeDossierFormData(dossier, jsonData);
-									formDataArr.put(jsonData);
-								}
 							}
+							JSONObject jsonData = null;
+							jsonData = JSONFactoryUtil.createJSONObject(payload);
+							jsonData = processMergeDossierFormData(dossier, jsonData);
+							formDataArr.put(jsonData);
+							_log.info("jsonData: "+jsonData);
+							_log.info("formDataArr: "+formDataArr);
+							_log.info("payload: "+payload);
 						}
 					}
 				}
 
 				Message message = new Message();
-				message.put("formReport", formReportArr.toJSONString());
+				message.put("formReport", documentScript);
 				message.put("formData", formDataArr.toJSONString());
+				message.put("className", DossierDocument.class.getName());
 
 				try {
 					String previewResponse = (String) MessageBusUtil
