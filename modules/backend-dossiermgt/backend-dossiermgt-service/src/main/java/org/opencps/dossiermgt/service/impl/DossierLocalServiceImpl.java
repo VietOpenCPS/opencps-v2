@@ -2320,4 +2320,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.fetchByF_GID_GOV_DID(groupId, govAgencyCode, serviceCode, dossierId);
 	}
 
+	public List<Dossier> getByNotO_DS_SC_GC(long groupId, int originality, String dossierStatus, String serviceCode, String govAgencyCode) {
+		return dossierPersistence.findByG_NOTO_DS_SC_GC(groupId, originality, dossierStatus, serviceCode, govAgencyCode);
+	}
 }

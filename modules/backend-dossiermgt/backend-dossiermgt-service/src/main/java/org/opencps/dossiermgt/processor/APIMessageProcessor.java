@@ -1,12 +1,14 @@
 package org.opencps.dossiermgt.processor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -186,10 +188,23 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				JSONArray fileArrs = payloadObj.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_FILES);
 				
 				List<DossierFileModel> lstFiles = client.getAllFilesByDossier(dossier.getReferenceUid());
+				List<String> lstRefs = new ArrayList<>();
 				
-				for (DossierFileModel df : lstFiles) {
-					
+				for (int i = 0; i < fileArrs.length(); i++) {
+					JSONObject fileObj = fileArrs.getJSONObject(i);
+					if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
+						lstRefs.add(fileObj.getString(DossierFileTerm.REFERENCE_UID));
+					}
 				}
+
+				for (DossierFileModel df : lstFiles) {
+					if (df.getDossierPartType() == DossierPartTerm.DOSSIER_PART_TYPE_INPUT
+							&& !lstRefs.contains(df.getReferenceUid())) {
+						//Remove file from server
+						
+					}
+				}
+				
 				
 				for (int i = 0; i < fileArrs.length(); i++) {
 					JSONObject fileObj = fileArrs.getJSONObject(i);
