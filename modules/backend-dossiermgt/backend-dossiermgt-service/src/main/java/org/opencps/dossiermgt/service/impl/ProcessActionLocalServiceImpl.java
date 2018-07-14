@@ -597,7 +597,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 	//LamTV_Process output ProcessAction to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
+	public ProcessAction updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
 			int allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
@@ -606,63 +606,36 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
 
-		ProcessAction object = processActionPersistence.fetchBySPID_AC(serviceProcessId, actionCode);
+		long processActionId = counterLocalService.increment(ProcessAction.class.getName());
+		ProcessAction object = processActionPersistence.create(processActionId);
 
-		if (object == null) {
+		// Add audit fields
+		object.setCompanyId(serviceContext.getCompanyId());
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(userAction.getUserId());
+		object.setUserName(userAction.getFullName());
 
-			long processActionId = counterLocalService.increment(ProcessAction.class.getName());
-			object = processActionPersistence.create(processActionId);
+		object.setServiceProcessId(serviceProcessId);
+		object.setPreStepCode(preStepCode);
+		object.setPostStepCode(postStepCode);
+		object.setAutoEvent(autoEvent);
+		object.setPreCondition(preCondition);
+		object.setActionCode(actionCode);
+		object.setActionName(actionName);
+		object.setAllowAssignUser(allowAssignUser);
+		object.setAssignUserId(assignUserId);
+		object.setAssignUserName(assignUserName);
+		object.setRequestPayment(requestPayment);
+		object.setPaymentFee(paymentFee);
+		object.setCreateDossierFiles(createDossierFiles);
+		object.setReturnDossierFiles(returnDossierFiles);
+		object.setESignature(eSignature);
+		object.setSignatureType(signatureType);
+		object.setCreateDossiers(createDossiers);
 
-			// Add audit fields
-			object.setCompanyId(serviceContext.getCompanyId());
-			object.setGroupId(groupId);
-			object.setCreateDate(now);
-			object.setModifiedDate(now);
-			object.setUserId(userAction.getUserId());
-			object.setUserName(userAction.getFullName());
-
-			object.setServiceProcessId(serviceProcessId);
-			object.setPreStepCode(preStepCode);
-			object.setPostStepCode(postStepCode);
-			object.setAutoEvent(autoEvent);
-			object.setPreCondition(preCondition);
-			object.setActionCode(actionCode);
-			object.setActionName(actionName);
-			object.setAllowAssignUser(allowAssignUser);
-			object.setAssignUserId(assignUserId);
-			object.setAssignUserName(assignUserName);
-			object.setRequestPayment(requestPayment);
-			object.setPaymentFee(paymentFee);
-			object.setCreateDossierFiles(createDossierFiles);
-			object.setReturnDossierFiles(returnDossierFiles);
-			object.setESignature(eSignature);
-			object.setSignatureType(signatureType);
-			object.setCreateDossiers(createDossiers);
-		} else {
-			// Add audit fields
-			object.setModifiedDate(now);
-			object.setUserId(userAction.getUserId());
-			object.setUserName(userAction.getFullName());
-
-			// object.setServiceProcessId(serviceProcessId);
-			object.setPreStepCode(preStepCode);
-			object.setPostStepCode(postStepCode);
-			object.setAutoEvent(autoEvent);
-			object.setPreCondition(preCondition);
-			object.setActionCode(actionCode);
-			object.setActionName(actionName);
-			object.setAllowAssignUser(allowAssignUser);
-			object.setAssignUserId(assignUserId);
-			object.setAssignUserName(assignUserName);
-			object.setRequestPayment(requestPayment);
-			object.setPaymentFee(paymentFee);
-			object.setCreateDossierFiles(createDossierFiles);
-			object.setReturnDossierFiles(returnDossierFiles);
-			object.setESignature(eSignature);
-			object.setSignatureType(signatureType);
-			object.setCreateDossiers(createDossiers);
-		}
-		processActionPersistence.update(object);
+		return processActionPersistence.update(object);
 
 	}
 }

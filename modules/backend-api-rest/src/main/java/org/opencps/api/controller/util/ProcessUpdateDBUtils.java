@@ -671,6 +671,7 @@ public class ProcessUpdateDBUtils {
 			ServiceProcessActions actionService, ServiceContext serviceContext) throws PortalException {
 		// Delete all ServiceFileTemplate with serviceInfoId
 		boolean flagStep = actionService.deleteAllProcessStep(userId, groupId, serviceProcessId, serviceContext);
+		_log.info("START STEP: "+flagStep);
 		// Add list file serviceFileTemplate
 		List<ProcessStep> proStepList = steps.getProcessStep();
 		if (proStepList != null && proStepList.size() > 0 && flagStep) {

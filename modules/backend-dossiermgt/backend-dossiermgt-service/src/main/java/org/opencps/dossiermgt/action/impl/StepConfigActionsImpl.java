@@ -93,6 +93,8 @@ public class StepConfigActionsImpl implements StepConfigActions {
 				StepConfigLocalServiceUtil.deleteStepConfig(step);
 				flag = true;
 			}
+		} else {
+			flag = true;
 		}
 		return flag;
 	}

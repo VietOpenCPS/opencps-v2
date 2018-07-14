@@ -277,9 +277,13 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
 			throws PortalException {
 
-		return ProcessStepLocalServiceUtil.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode, stepName,
+		ProcessStep processStep = ProcessStepLocalServiceUtil.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode, stepName,
 				sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount, instructionNote, briefNote,
 				roleAsStep, serviceContext);
+		if (processStep != null) {
+			return processStep.getProcessStepId();
+		}
+		return 0;
 	}
 
 	@Override
@@ -314,6 +318,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 					ProcessActionLocalServiceUtil.deleteProcessAction(act);
 					flag = true;
 				}
+			} else {
+				flag = true;
 			}
 		}catch (Exception e) {
 			return false;
@@ -333,6 +339,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 					ServiceProcessRoleLocalServiceUtil.deleteServiceProcessRole(role);
 					flag = true;
 				}
+			} else {
+				flag = true;
 			}
 		}catch (Exception e) {
 			return false;
@@ -359,6 +367,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(stepRole);
 								flag = true;
 							}
+						} else {
+							flag = true;
 						}
 					}
 					if (flag) {
@@ -387,6 +397,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 					ProcessSequenceLocalServiceUtil.deleteProcessSequence(seq);
 					flag = true;
 				}
+			} else {
+				flag = true;
 			}
 		}catch (Exception e) {
 			return false;

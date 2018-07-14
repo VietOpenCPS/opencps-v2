@@ -102,6 +102,8 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 				ActionConfigLocalServiceUtil.deleteActionConfig(act);
 				flag = true;
 			}
+		} else {
+			flag = true;
 		}
 		return flag;
 	}

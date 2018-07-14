@@ -410,6 +410,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 								ProcessOptionLocalServiceUtil.deleteProcessOption(processOption);
 								flag = true;
 							}
+						} else {
+							flag = true;
 						}
 					}
 					if (flag) {
