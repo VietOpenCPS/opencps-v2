@@ -11,12 +11,16 @@ import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
@@ -88,51 +92,88 @@ public class DossierActionUserImpl implements DossierActionUser {
 		// Get List ProcessStepRole
 		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
 		ProcessStepRole processStepRole = null;
-		for (int i = 0; i < listProcessStepRole.size(); i++) {
-			processStepRole = listProcessStepRole.get(i);
-			long roleId = processStepRole.getRoleId();
-			boolean moderator = processStepRole.getModerator();
-			int mod = 0;
-			if (moderator) {
-				mod = 1;
-			}
-//			_log.info("3");
-//			_log.info("roleId: "+roleId);
-			// Get list user
-			List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
-			for (int j = 0; j < users.size(); j++) {
-				_log.info("UserID: "+i+ users.get(i).getUserId());
-			}
-			if (i == 0) {
-				for (User user : users) {
-//					_log.info("user: "+user.getUserId());
-					addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false);					
+		if (listProcessStepRole.size() != 0) {
+			for (int i = 0; i < listProcessStepRole.size(); i++) {
+				processStepRole = listProcessStepRole.get(i);
+				long roleId = processStepRole.getRoleId();
+				boolean moderator = processStepRole.getModerator();
+				int mod = 0;
+				if (moderator) {
+					mod = 1;
 				}
-			} else {
+//				_log.info("3");
+//				_log.info("roleId: "+roleId);
+				// Get list user
+				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
+				for (int j = 0; j < users.size(); j++) {
+					_log.info("UserID: "+i+ users.get(i).getUserId());
+				}
+				if (i == 0) {
+					for (User user : users) {
+//						_log.info("user: "+user.getUserId());
+						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false);					
+					}
+				} else {
+					for (User user : users) {
+//						_log.info("user: "+user.getUserId());
+						int assigned = user.getUserId() == assignUserId ? processAction.getAllowAssignUser() : ProcessActionTerm.NOT_ASSIGNED;
+						org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, user.getUserId());
+						if (dau != null) {
+							dau.setModerator(mod);
+							if (assigned != ProcessActionTerm.NOT_ASSIGNED) {
+//								dau.setAssigned(assigned);
+								
+							}
+							DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+						} else {						
+							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false);					
+						}
+//						model.setModerator(mod);
+//						model.setAssigned(assigned);
+//						model.setVisited(false);
+						// Add User
+//						DossierActionUserLocalServiceUtil.addDossierActionUser(model);
+					}
+				}
+				
+			}			
+		}
+		else {
+			//Get role from service process
+			initDossierActionUserByServiceProcessRole(dossier, allowAssignUser, dossierActionId, userId, groupId, assignUserId);
+		}
+//		_log.info("END ROLES");
+	}
+	
+	private void initDossierActionUserByServiceProcessRole(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId) {
+		try {
+			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
+			List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
+			for (ServiceProcessRole spr : listSprs) {
+				int mod = 0;
+				boolean moderator = spr.getModerator();
+				
+				if (moderator) {
+					mod = 1;
+				}
+				List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 				for (User user : users) {
-//					_log.info("user: "+user.getUserId());
-					int assigned = user.getUserId() == assignUserId ? processAction.getAllowAssignUser() : ProcessActionTerm.NOT_ASSIGNED;
+					int assigned = user.getUserId() == assignUserId ? allowAssignUser : ProcessActionTerm.NOT_ASSIGNED;
 					org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, user.getUserId());
 					if (dau != null) {
 						dau.setModerator(mod);
 						if (assigned != ProcessActionTerm.NOT_ASSIGNED) {
-//							dau.setAssigned(assigned);
-							
+								
 						}
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 					} else {						
-						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false);					
+						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierActionId, mod, false);					
 					}
-//					model.setModerator(mod);
-//					model.setAssigned(assigned);
-//					model.setVisited(false);
-					// Add User
-//					DossierActionUserLocalServiceUtil.addDossierActionUser(model);
-				}
+				}				
 			}
-			
-		}
-//		_log.info("END ROLES");
+		} catch (PortalException e) {
+			e.printStackTrace();
+		}		
 	}
 	
 	@Override
