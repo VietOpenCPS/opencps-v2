@@ -688,7 +688,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
-					0, DossierTerm.DOSSIER_STATUS_NEW, input.getServiceCode(), input.getGovAgencyCode());
+					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
 			Dossier dossier = null;
 			
 			if (oldDossiers.size() > 0) {
@@ -1069,9 +1069,11 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id);
 
 			if (dossier != null) {
+				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+					_log.info("Action config: " + actConfig);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
@@ -1081,10 +1083,12 @@ public class DossierManagementImpl implements DossierManagement {
 							
 							ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode,
 									dossierTempNo, groupId);
+							_log.info("Option: " + option);
 							if (option != null) {
 								long serviceProcessId = option.getServiceProcessId();
 								ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 										serviceProcessId);
+								_log.info("Process action: " + proAction);
 								if (proAction != null) {
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
 											input.getActionUser(), input.getActionNote(), input.getPayload(),
@@ -1137,7 +1141,7 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierResult)).build();				
 			}
 			else {
-				return Response.status(403).entity("{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
+				return Response.status(405).entity("{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
 			}
 //				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 //						dossier.getDossierTemplateNo(), groupId);
