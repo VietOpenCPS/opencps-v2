@@ -2267,7 +2267,9 @@ public class DossierActionsImpl implements DossierActions {
 
 				for (PaymentFile spf : syncPaymentFiles) {
 				}
-				
+			
+			//Update dossier document and dossier sync
+			
 			//Get next step
 			ProcessStep nextStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			if (nextStep != null) {
@@ -2284,7 +2286,7 @@ public class DossierActionsImpl implements DossierActions {
 						String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
 						
 						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
-					
+											
 						//Generate PDF
 						String formData = dossierAction.getPayload();
 						Message message = new Message();
@@ -2337,15 +2339,20 @@ public class DossierActionsImpl implements DossierActions {
 				dossierAction.setPending(true);
 				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
 			}
+			else {
+				dossierAction.setPending(false);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);				
+			}
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
 					syncType, payload, serviceProcess.getServerNo(), state);
+			
 		}
 		
 		return dossierAction;
 	}
-
+	
 	private void createNotificationQueue(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
 		if (Validator.isNotNull(actionConfig.getNotificationType())) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
