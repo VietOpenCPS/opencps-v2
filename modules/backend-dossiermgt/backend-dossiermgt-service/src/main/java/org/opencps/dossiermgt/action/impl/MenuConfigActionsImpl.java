@@ -92,6 +92,8 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 				MenuConfigLocalServiceUtil.deleteMenuConfig(menuConfig);
 				flag = true;
 			}
+		} else {
+			flag = true;
 		}
 		return flag;
 	}

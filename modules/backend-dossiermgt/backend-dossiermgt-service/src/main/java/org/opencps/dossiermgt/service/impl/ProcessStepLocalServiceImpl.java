@@ -379,7 +379,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 	//LamTV_ Process output ProcessStep to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
+	public ProcessStep updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
 			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
 			throws PortalException {
@@ -387,54 +387,31 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
 
-		ProcessStep object = processStepPersistence.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+		long processStepId = counterLocalService.increment(ProcessStep.class.getName());
+		ProcessStep object = processStepLocalService.createProcessStep(processStepId);
 
-		if (object == null) {
+		// Add audit fields
+		object.setCompanyId(serviceContext.getCompanyId());
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(userAction.getUserId());
+		object.setUserName(userAction.getFullName());
 
-			long processStepId = counterLocalService.increment(ProcessStep.class.getName());
-			object = processStepLocalService.createProcessStep(processStepId);
+		// Add other fields
+		object.setServiceProcessId(serviceProcessId);
+		object.setStepCode(stepCode);
+		object.setStepName(stepName);
+		object.setSequenceNo(String.valueOf(sequenceNo));
+		object.setGroupName(groupName);
+		object.setDossierStatus(dossierStatus);
+		object.setDossierSubStatus(dossierSubStatus);
+		object.setDurationCount(durationCount);
+		object.setStepInstruction(instructionNote);
+		object.setBriefNote(briefNote);
+		object.setRoleAsStep(roleAsStep);
 
-			// Add audit fields
-			object.setCompanyId(serviceContext.getCompanyId());
-			object.setGroupId(groupId);
-			object.setCreateDate(now);
-			object.setModifiedDate(now);
-			object.setUserId(userAction.getUserId());
-			object.setUserName(userAction.getFullName());
-
-			// Add other fields
-			object.setServiceProcessId(serviceProcessId);
-			object.setStepCode(stepCode);
-			object.setStepName(stepName);
-			object.setSequenceNo(String.valueOf(sequenceNo));
-			object.setGroupName(groupName);
-			object.setDossierStatus(dossierStatus);
-			object.setDossierSubStatus(dossierSubStatus);
-			object.setDurationCount(durationCount);
-			object.setStepInstruction(instructionNote);
-			object.setBriefNote(briefNote);
-			object.setRoleAsStep(roleAsStep);
-		} else {
-			// Add audit fields
-			object.setModifiedDate(now);
-			object.setUserId(userAction.getUserId());
-			object.setUserName(userAction.getFullName());
-
-			// Add other fields
-			object.setStepCode(stepCode);
-			object.setStepName(stepName);
-			object.setSequenceNo(String.valueOf(sequenceNo));
-			object.setGroupName(groupName);
-			object.setDossierStatus(dossierStatus);
-			object.setDossierSubStatus(dossierSubStatus);
-			object.setDurationCount(durationCount);
-			object.setStepInstruction(instructionNote);
-			object.setBriefNote(briefNote);
-			object.setRoleAsStep(roleAsStep);
-		}
-
-		processStepPersistence.update(object);
-		return object.getProcessStepId();
+		return processStepPersistence.update(object);
 	}
 
 	public List<ProcessStep> findByG_SP_SNO(long groupId, long serviceProcessId, String sequenceNo) {
