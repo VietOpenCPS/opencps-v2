@@ -36,5 +36,11 @@ public class ProcessActionTerm {
 	public static final int ASSIGNED_TH_PH = 2;
 	public static final int ASSIGNED_TH_PH_TD = 3;
 	
+	public static final int REQUEST_PAYMENT_1 = 1;
+	public static final int REQUEST_PAYMENT_2 = 2;
+	public static final int REQUEST_PAYMENT_3 = 3;
+	public static final int REQUEST_PAYMENT_4 = 4;
+	public static final int REQUEST_PAYMENT_5 = 5;
+	
 	public static final String ACTION_CREATE_HSLT = "3200";
 }

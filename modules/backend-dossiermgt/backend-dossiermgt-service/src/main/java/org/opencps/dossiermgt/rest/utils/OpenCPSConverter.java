@@ -5,11 +5,13 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -313,4 +315,81 @@ public class OpenCPSConverter {
 		params.put(DossierFileTerm.IS_SYNC, "true");
 		return params;
 	}
+	
+	public static Map<String, Object> convertPaymentFileInputHttpParams(PaymentFileInputModel model) {
+	    Map<String, Object> params = new HashMap<>();
+	    
+	    if (Validator.isNotNull(model.getReferenceUid())) {
+		    params.put(PaymentFileTerm.REFERENCE_UID, model.getReferenceUid());	    	
+	    }
+	    if (Validator.isNotNull(model.getGovAgencyCode())) {
+		    params.put(PaymentFileTerm.GOV_AGENCY_CODE, model.getGovAgencyCode());	    	
+	    }
+	    if (Validator.isNotNull(model.getGovAgencyName())) {
+		    params.put(PaymentFileTerm.GOV_AGENCY_NAME, model.getGovAgencyName());	    	
+	    }
+	    if (Validator.isNotNull(model.getApplicantName())) {
+		    params.put(PaymentFileTerm.APPLICANT_NAME, model.getApplicantName());	    	
+	    }
+	    if (Validator.isNotNull(model.getApplicantIdNo())) {
+	    	params.put(PaymentFileTerm.APPLICANT_ID_NO, model.getApplicantIdNo());
+	    }
+	    if (Validator.isNotNull(model.getPaymentFee())) {
+	    	params.put(PaymentFileTerm.PAYMENT_FEE, model.getPaymentFee());
+	    }
+	    if (Validator.isNotNull(model.getPaymentAmount())) {
+	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, model.getPaymentAmount());
+	    }
+	    if (Validator.isNotNull(model.getPaymentNote())) {
+	    	params.put(PaymentFileTerm.PAYMENT_NOTE, model.getPaymentNote());
+	    }
+	    if (Validator.isNotNull(model.getEpaymentProfile())) {
+	    	params.put(PaymentFileTerm.EPAYMENT_PROFILE, model.getEpaymentProfile());
+	    }
+	    if (Validator.isNotNull(model.getBankInfo())) {
+	    	params.put(PaymentFileTerm.BANK_INFO, model.getBankInfo());
+	    }
+	    
+	    return params;
+	}	
+	
+	public static PaymentFileInputModel convertPaymentFile(JSONObject jsonObj) {
+		PaymentFileInputModel result = new PaymentFileInputModel();
+		if (jsonObj.has(PaymentFileTerm.REFERENCE_UID)) {
+			result.setReferenceUid(jsonObj.getString(PaymentFileTerm.REFERENCE_UID));
+		}
+		if (jsonObj.has(PaymentFileTerm.GOV_AGENCY_CODE)) {
+			result.setGovAgencyCode(jsonObj.getString(PaymentFileTerm.GOV_AGENCY_CODE));
+		}
+		if (jsonObj.has(PaymentFileTerm.GOV_AGENCY_NAME)) {
+			result.setGovAgencyName(jsonObj.getString(PaymentFileTerm.GOV_AGENCY_NAME));
+		}
+		if (jsonObj.has(PaymentFileTerm.GOV_AGENCY_NAME)) {
+			result.setGovAgencyName(jsonObj.getString(PaymentFileTerm.GOV_AGENCY_NAME));
+		}
+		if (jsonObj.has(PaymentFileTerm.APPLICANT_NAME)) {
+			result.setApplicantName(jsonObj.getString(PaymentFileTerm.GOV_AGENCY_NAME));
+		}
+		if (jsonObj.has(PaymentFileTerm.APPLICANT_ID_NO)) {
+			result.setApplicantIdNo(jsonObj.getString(PaymentFileTerm.APPLICANT_ID_NO));
+		}
+		if (jsonObj.has(PaymentFileTerm.PAYMENT_FEE)) {
+			result.setPaymentFee(jsonObj.getString(PaymentFileTerm.PAYMENT_FEE));
+		}
+		if (jsonObj.has(PaymentFileTerm.PAYMENT_AMOUNT)) {
+			result.setPaymentAmount(jsonObj.getString(PaymentFileTerm.PAYMENT_AMOUNT));
+		}
+		if (jsonObj.has(PaymentFileTerm.PAYMENT_NOTE)) {
+			result.setPaymentNote(jsonObj.getString(PaymentFileTerm.PAYMENT_NOTE));
+		}
+		if (jsonObj.has(PaymentFileTerm.EPAYMENT_PROFILE)) {
+			result.setEpaymentProfile(jsonObj.getString(PaymentFileTerm.EPAYMENT_PROFILE));
+		}
+		if (jsonObj.has(PaymentFileTerm.BANK_INFO)) {
+			result.setBankInfo(jsonObj.getString(PaymentFileTerm.BANK_INFO));
+		}
+		
+		return result;
+	}
+	
 }

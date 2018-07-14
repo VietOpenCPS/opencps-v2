@@ -15,6 +15,7 @@ import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
@@ -202,4 +203,32 @@ public class OpenCPSRestClient {
 		
 		return lstDossierFiles;
 	}	
+	
+	public PaymentFileInputModel postPaymentFiles(String id, PaymentFileInputModel model) {
+		PaymentFileInputModel result = new PaymentFileInputModel();
+
+		try {
+
+			String requestURL = DOSSIERS_BASE_PATH + "/" + id + "/payment";
+			
+			HashMap<String, String> properties = new HashMap<String, String>();
+			
+			Map<String, Object> params = OpenCPSConverter.convertPaymentFileInputHttpParams(model);
+			InvokeREST callRest = new InvokeREST();
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
+					baseUrl, requestURL, username,
+					password, properties, params, context);
+			
+			
+			result = OpenCPSConverter.convertPaymentFile(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+		}
+		
+		return result;
+	}
+	
 }
