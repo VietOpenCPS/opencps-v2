@@ -200,7 +200,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				Dossier dossier = null;
 				long dossierId = 0;
 				formDataArr = JSONFactoryUtil.createJSONArray();
-				formReportArr = JSONFactoryUtil.createJSONArray();
+				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
+				String documentScript = StringPool.BLANK;
+				_log.info("typeCode: "+typeCode);
+				_log.info("docType: "+docType);
+				if (docType != null) {
+					documentScript = docType.getDocumentScript();
+				}
 				for (int i = 0; i < length; i++) {
 					jsonDossier = dossierIdArr.getJSONObject(i);
 					dossierId = Long.valueOf(jsonDossier.getString(DossierTerm.DOSSIER_ID));
@@ -208,14 +214,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 						if (Validator.isNotNull(dossier)) {
 							long dossierActionId = dossier.getDossierActionId();
-
-							DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
-							String documentScript = StringPool.BLANK;
-							if (docType != null) {
-								documentScript = docType.getDocumentScript();
-								formReportArr.put(documentScript);
-							}
-
+							_log.info("formReportArr: "+formReportArr);
 							String payload = StringPool.BLANK;
 							if (dossierActionId != 0) {
 								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
@@ -235,7 +234,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				}
 
 				Message message = new Message();
-				message.put("formReport", formReportArr.toJSONString());
+				message.put("formReport", documentScript);
 				message.put("formData", formDataArr.toJSONString());
 				message.put("className", DossierDocument.class.getName());
 

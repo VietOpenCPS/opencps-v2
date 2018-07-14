@@ -62,7 +62,7 @@ public interface DossierDocumentManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") String id);
 
 	@POST
-	@Path("/preview/{typecode}")
+	@Path("/preview/{typeCode}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get a formdata of Plugin", response = DossierResultsModel.class)
