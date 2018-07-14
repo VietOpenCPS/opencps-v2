@@ -1170,7 +1170,7 @@
 		<finder return-type="Collection" name="DID">
 			<finder-column name="dossierId" />
 		</finder>
-		<finder return-type="DossierActionUser" name = "DID_UID">
+		<finder return-type="DossierUser" name = "DID_UID">
 			<finder-column name="dossierId" />
 			<finder-column name="userId" />
 		</finder>
