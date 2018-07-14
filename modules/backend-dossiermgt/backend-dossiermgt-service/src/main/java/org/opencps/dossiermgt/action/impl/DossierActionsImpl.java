@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
@@ -95,6 +94,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
@@ -2349,6 +2350,11 @@ public class DossierActionsImpl implements DossierActions {
 					syncType, payload, serviceProcess.getServerNo(), state);
 			
 		}
+				
+		//Reindex dossier
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+		indexer.reindex(dossier);
 		
 		return dossierAction;
 	}

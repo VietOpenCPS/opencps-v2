@@ -14,6 +14,9 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.util.List;
+
+import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.service.base.DossierUserLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
@@ -52,5 +55,39 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 		object.setVisited(visited);
 		
 		return dossierUserPersistence.update(object);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierUser updateDossierUser(long dossierId, long userId, int moderator, boolean visited) throws NoSuchDossierUserException {
+		DossierUserPK pk = new DossierUserPK();
+		pk.setUserId(userId);
+		pk.setDossierId(dossierId);
+		DossierUser object = dossierUserPersistence.findByPrimaryKey(pk);
+		
+		object.setModerator(moderator);
+		object.setVisited(visited);
+		
+		return dossierUserPersistence.update(object);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierUser deleteDossierUser(long dossierId, long userId) throws NoSuchDossierUserException {
+		DossierUserPK pk = new DossierUserPK();
+		pk.setUserId(userId);
+		pk.setDossierId(dossierId);
+		
+		return dossierUserPersistence.remove(pk);
+	}
+	
+	public DossierUser getByDossierUser(long dossierId, long userId) {
+		DossierUserPK pk = new DossierUserPK();
+		pk.setUserId(userId);
+		pk.setDossierId(dossierId);
+		
+		return dossierUserPersistence.fetchByPrimaryKey(pk);		
+	}
+	
+	public List<DossierUser> findByDID(long dossierId) {
+		return dossierUserPersistence.findByDID(dossierId);
 	}
 }
