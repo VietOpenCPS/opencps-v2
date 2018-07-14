@@ -59,32 +59,9 @@ public class EnginePreview implements MessageListener {
 		String formReport = message.getString("formReport");
 		
 		String formData = message.getString("formData");
+		String className = message.getString("className");
 		_log.info("Object or array: " + isJsonObject(formData));
-		
-		if (isJsonObject(formData)) {
-		try {
-			//create file
-			JRReportUtil.createReportFile(formReport,
-					formData, null, file.getCanonicalPath());
-			
-			Message responseMessage = MessageBusUtil.createResponseMessage(message);
-			
-			//JSONObject payload = JSONFactoryUtil.createJSONObject();
-			
-			//payload.put("status", "DONE");
-			//.put("", value)
-
-			responseMessage.setPayload(file.getCanonicalPath());
-			responseMessage.put("fileDes", file.getCanonicalPath());
-			
-			MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
-
-		} catch (Exception e) {
-			_log.error("Generate file exception.........");
-			}			
-		}
-		else {
-			_log.info("JSON Array generate list of deliverable");
+		if ("org.opencps.dossiermgt.model.DossierDocument".equals(className)) {
 			try {
 				//create file
 				JRReportUtil.createReportFile(formReport,
@@ -96,15 +73,61 @@ public class EnginePreview implements MessageListener {
 				
 				//payload.put("status", "DONE");
 				//.put("", value)
-
+	
 				responseMessage.setPayload(file.getCanonicalPath());
 				responseMessage.put("fileDes", file.getCanonicalPath());
-		
+				
 				MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
-
+	
 			} catch (Exception e) {
 				_log.error("Generate file exception.........");
-			}			
+				}
+		} else {
+			if (isJsonObject(formData)) {
+			try {
+				//create file
+				JRReportUtil.createReportFile(formReport,
+						formData, null, file.getCanonicalPath());
+				
+				Message responseMessage = MessageBusUtil.createResponseMessage(message);
+				
+				//JSONObject payload = JSONFactoryUtil.createJSONObject();
+				
+				//payload.put("status", "DONE");
+				//.put("", value)
+	
+				responseMessage.setPayload(file.getCanonicalPath());
+				responseMessage.put("fileDes", file.getCanonicalPath());
+				
+				MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
+	
+			} catch (Exception e) {
+				_log.error("Generate file exception.........");
+				}			
+			}
+			else {
+				_log.info("JSON Array generate list of deliverable");
+				try {
+					//create file
+					JRReportUtil.createReportFile(formReport,
+							formData, null, file.getCanonicalPath());
+					
+					Message responseMessage = MessageBusUtil.createResponseMessage(message);
+					
+					//JSONObject payload = JSONFactoryUtil.createJSONObject();
+					
+					//payload.put("status", "DONE");
+					//.put("", value)
+	
+					responseMessage.setPayload(file.getCanonicalPath());
+					responseMessage.put("fileDes", file.getCanonicalPath());
+			
+					MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
+	
+				} catch (Exception e) {
+					_log.error("Generate file exception.........");
+				}			
+			}
 		}
 	}
 
