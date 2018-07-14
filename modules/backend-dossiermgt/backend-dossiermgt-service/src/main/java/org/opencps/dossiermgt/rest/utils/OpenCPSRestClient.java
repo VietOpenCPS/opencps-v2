@@ -1,22 +1,32 @@
 package org.opencps.dossiermgt.rest.utils;
 
 import java.io.File;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 public class OpenCPSRestClient {
 	private Log _log = LogFactoryUtil.getLog(OpenCPSRestClient.class);
@@ -146,4 +156,50 @@ public class OpenCPSRestClient {
 		
 		return result;
 	}
+	
+	public List<DossierFileModel> getAllFilesByDossier(String id) {
+		List<DossierFileModel> lstDossierFiles = new ArrayList<>();
+		
+		try {
+
+			InvokeREST rest = new InvokeREST();
+
+			HashMap<String, String> properties = new HashMap<String, String>();
+			properties.put("Content-Type", "application/x-www-form-urlencoded");
+
+			String path = DOSSIERS_BASE_PATH + "/" + id + "/all/files";
+
+			ServiceContext serviceContext = new ServiceContext();
+
+			JSONObject resDossierFile = rest.callAPI(groupId, HttpMethods.GET, "application/json",
+					baseUrl, path, username,
+					password, properties, serviceContext);
+
+			if (GetterUtil.getInteger(resDossierFile.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
+				throw new RuntimeException(
+						"Failed : HTTP error code : " + resDossierFile.get(RESTFulConfiguration.STATUS));
+			} else {
+
+				JSONObject jsData = JSONFactoryUtil
+						.createJSONObject(resDossierFile.getString(RESTFulConfiguration.MESSAGE));
+
+				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject object = array.getJSONObject(i);
+					
+					DossierFileModel fileModel = new DossierFileModel();
+					fileModel.setReferenceUid(object.getString(DossierFileTerm.REFERENCE_UID));
+					
+					lstDossierFiles.add(fileModel);
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return lstDossierFiles;
+	}	
 }

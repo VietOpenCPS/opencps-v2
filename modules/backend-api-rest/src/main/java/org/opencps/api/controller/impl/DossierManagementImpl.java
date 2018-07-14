@@ -683,14 +683,23 @@ public class DossierManagementImpl implements DossierManagement {
 				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
 			}
 
-			Dossier dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(),
-					serviceName, input.getGovAgencyCode(), govAgencyName, input.getApplicantName(),
-					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
-					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
-					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
-					input.getContactEmail(), input.getDossierTemplateNo(), password, 0, StringPool.BLANK,
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, online, process.getDirectNotification(),
-					input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
+			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
+					0, DossierTerm.DOSSIER_STATUS_NEW, input.getServiceCode(), input.getGovAgencyCode());
+			Dossier dossier = null;
+			
+			if (oldDossiers.size() > 0) {
+				dossier = oldDossiers.get(0);
+			}
+			else {
+				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(),
+						serviceName, input.getGovAgencyCode(), govAgencyName, input.getApplicantName(),
+						input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
+						input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
+						input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
+						input.getContactEmail(), input.getDossierTemplateNo(), password, 0, StringPool.BLANK,
+						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, online, process.getDirectNotification(),
+						input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);				
+			}
 
 			if (Validator.isNull(dossier)) {
 				throw new NotFoundException("Cant add DOSSIER");

@@ -21,5 +21,8 @@ public class DossierPartTerm {
 	public static final String TEMPLATE_ID = "templateId";
 	public static final String DELIVERABLE_TYPE = "deliverableType";
 	public static final String DELIVERABLE_ACTION = "deliverableAction";
+	
+	public static final int DOSSIER_PART_TYPE_INPUT = 1;
+	public static final int DOSSIER_PART_TYPE_OUTPUT = 2;
 
 }

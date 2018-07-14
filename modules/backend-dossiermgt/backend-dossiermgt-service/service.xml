@@ -462,6 +462,13 @@
 			<finder-column name="serviceCode" />
 			<finder-column name="dossierId" />
 		</finder>
+        <finder name="G_NOTO_DS_SC_GC" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="originality" comparator="!="></finder-column>
+            <finder-column name="dossierStatus"></finder-column>
+            <finder-column name="serviceCode"></finder-column>
+            <finder-column name="govAgencyCode"></finder-column>
+        </finder>
 
 	</entity>
 
