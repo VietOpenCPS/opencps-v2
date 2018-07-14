@@ -2153,6 +2153,7 @@ public class DossierActionsImpl implements DossierActions {
 		long dossierId = dossier.getDossierId();
 		ServiceProcess serviceProcess = null;
 		if (option != null && proAction != null) {
+			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
@@ -2172,6 +2173,7 @@ public class DossierActionsImpl implements DossierActions {
 			String postStepCode = proAction.getPostStepCode();
 
 			ProcessStep curStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+			_log.info("Current step: " + curStep);
 			
 			int actionOverdue = getActionDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
@@ -2305,6 +2307,9 @@ public class DossierActionsImpl implements DossierActions {
 					}					
 				}
 			}
+		}
+		else {
+			
 		}
 		
 		//Create notification

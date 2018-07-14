@@ -18,13 +18,14 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 @Component(immediate = true, service = DossierGarbageCollectorScheduler.class)
 public class DossierGarbageCollectorScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		try {
-			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(0, DossierTerm.DOSSIER_STATUS_NEW);
+			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(0, StringPool.BLANK);
 		}
 		catch (Exception e) {
 			
