@@ -173,4 +173,21 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>						
+
+	<xsd:element name="PaymentFileInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentFee" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentAmount" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="epaymentProfile" type="xsd:string" minOccurs="0" />
+				<xsd:element name="bankInfo" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>						
 </xsd:schema>

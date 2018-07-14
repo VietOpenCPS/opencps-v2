@@ -11,20 +11,24 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -37,7 +41,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 public class APIMessageProcessor extends BaseMessageProcessor {
 	private Log _log = LogFactoryUtil.getLog(APIMessageProcessor.class);
@@ -238,10 +241,29 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						}
 					}
 				}
-			}
+			}			
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return false;
+		}		
+		//Process action
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
+		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
+		if (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
+				|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment()) {
+			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+			pfiModel.setApplicantName(dossier.getApplicantName());
+			pfiModel.setBankInfo(StringPool.BLANK);
+			pfiModel.setEpaymentProfile(StringPool.BLANK);
+			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+			pfiModel.setPaymentAmount(processAction.getPaymentFee());
+			pfiModel.setPaymentFee(processAction.getPaymentFee());
+			pfiModel.setPaymentNote(StringPool.BLANK);
+			pfiModel.setReferenceUid(StringPool.BLANK);
+			
+			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 		}
 		
 		ExecuteOneAction actionModel = new ExecuteOneAction();
