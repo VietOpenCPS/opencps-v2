@@ -1,5 +1,11 @@
 package org.opencps.portlet.portlet;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
@@ -10,11 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.opencps.portlet.constants.OneGatePortletKeys;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -69,6 +77,24 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 				object.put("counterMenuStep", "/o/rest/v2/statistics/dossiers/todo");
 				object.put("getListThuTucHanhChinh", "/o/rest/v2/onegate/serviceconfigs/processes");
 				
+				object.put("serviceInfoApi", "/o/rest/v2/serviceinfos");
+				object.put("serviceConfigApi", "/o/rest/v2/onegate/serviceconfigs/processes");
+				object.put("regionApi", "/o/rest/v2/dictcollections");
+				object.put("postDossierApi", "/o/rest/v2/dossiers");
+				object.put("dossierTemplatesApi", "/o/rest/v2/dossiertemplates");
+				object.put("applicantApi", "/o/rest/v2/applicant");
+				object.put("dossierlogsApi", "/o/rest/v2/dossierlogs");
+				object.put("dossierApi", "/o/rest/v2/dossiers");
+				
+				object.put("getNextAction", "/o/rest/v2/dossiers");
+				object.put("getServiceConfigs", "/o/rest/v2/serviceconfigs");
+				
+				String token = pullToken(themeDisplay);
+
+				requestOrg.getSession().setAttribute("CSRF_TOKEN_FOR_SESSION_NAME", token);
+				
+				object.put("cps_auth", token);
+				
 				writeJSON(resourceRequest, resourceResponse, object);
 
 			} else {
@@ -81,5 +107,46 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 			throw new PortletException((Throwable) e);
 
 		}
+	}
+	public static String pullToken(ThemeDisplay themeDisplay) {
+
+		String result = StringPool.BLANK;
+
+		Process process = null;
+
+		List<String> list = new ArrayList<String>();
+		list.add("curl");
+		list.add("-s");
+		list.add("-X");
+		list.add("GET");
+		list.add(themeDisplay.getPortalURL() + "/o/rest/v2/onegate/token");
+
+		ProcessBuilder pb = new ProcessBuilder(list);
+
+		String data = StringPool.BLANK;
+
+		try {
+
+			pb.redirectErrorStream();
+			process = pb.start();
+			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+			String line = null;
+
+			while ((line = input.readLine()) != null) {
+				data += line;
+			}
+			process.destroy();
+
+		} catch (IOException e) {
+			process = null;
+			process.destroy();
+		} finally {
+			process.destroy();
+		}
+
+		result = data;
+
+		return result;
 	}
 }
