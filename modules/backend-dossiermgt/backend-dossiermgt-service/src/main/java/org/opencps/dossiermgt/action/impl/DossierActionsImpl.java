@@ -2436,7 +2436,7 @@ public class DossierActionsImpl implements DossierActions {
 		Date now = new Date();
 
 		if (Validator.isNull(dossier.getReceiveDate())
-				&& (curStatus.contentEquals(DossierStatusConstants.PROCESSING))) {
+				&& Validator.isNotNull(dossier.getDossierNo())) {
 			try {
 				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), new Date(), context);
 			} catch (PortalException e) {
