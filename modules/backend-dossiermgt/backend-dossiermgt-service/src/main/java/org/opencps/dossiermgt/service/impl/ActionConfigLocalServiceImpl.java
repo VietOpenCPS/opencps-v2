@@ -210,7 +210,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 			actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
 			actionConfig.setFormConfig(formConfig);
 			actionConfig.setSampleData(sampleData);
-			actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? extraForm : Boolean.FALSE);
+			actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? insideProcess : Boolean.FALSE);
 			actionConfig.setUserNote(Validator.isNotNull(userNote) ? userNote : 0);
 			actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);
 			actionConfig.setEventType(Validator.isNotNull(eventType) ? eventType : 0);

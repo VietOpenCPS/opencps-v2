@@ -1041,7 +1041,7 @@
 		<column name="createDossiers" type="String"/>
 		<column name="assignUserName" type="String" />
 		<column name="extraForm" type="boolean" />
-		<column name="userNote" type="int" />
+<!-- 		<column name="userNote" type="int" /> -->
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -1737,6 +1737,9 @@
 		<finder return-type="StepConfig" name="F_GT_STEP">
 			<finder-column name="groupId" />
 			<finder-column name="stepCode" />
+		</finder>
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId" />
 		</finder>
 		
 	</entity>

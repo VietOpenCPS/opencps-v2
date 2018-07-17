@@ -671,7 +671,6 @@ public class ProcessUpdateDBUtils {
 			ServiceProcessActions actionService, ServiceContext serviceContext) throws PortalException {
 		// Delete all ServiceFileTemplate with serviceInfoId
 		boolean flagStep = actionService.deleteAllProcessStep(userId, groupId, serviceProcessId, serviceContext);
-		_log.info("START STEP: "+flagStep);
 		// Add list file serviceFileTemplate
 		List<ProcessStep> proStepList = steps.getProcessStep();
 		if (proStepList != null && proStepList.size() > 0 && flagStep) {
@@ -758,11 +757,15 @@ public class ProcessUpdateDBUtils {
 	}
 
 	//LamTV_ Process DictItem
-	private static void processUpdateDictItem(long userId, long groupId, long dictCollectionId, DictCollection dicts, DictcollectionInterface actionCollection) {
+	private static void processUpdateDictItem(long userId, long groupId, long dictCollectionId, DictCollection dicts,
+			DictcollectionInterface actionCollection) {
 		Items itemList = dicts.getItems();
 		if (itemList != null) {
+			// Delete all DictItem with dictCollectionId
+			boolean flagItem = actionCollection.deleteAllDictItem(userId, groupId, dictCollectionId);
+			// Add list file serviceFileTemplate
 			List<DictItem> dictItemList = itemList.getDictItem();
-			if (dictItemList != null && dictItemList.size() > 0) {
+			if (dictItemList != null && dictItemList.size() > 0 && flagItem) {
 				String itemCode = StringPool.BLANK;
 				String itemName = StringPool.BLANK;
 				String itemNameEN = StringPool.BLANK;
