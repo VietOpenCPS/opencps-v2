@@ -4112,4 +4112,25 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return createFile;
 	}
 
+	//LamTV_Process update Dossier
+	@Override
+	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			ServiceContext serviceContext) {
+
+		try {
+			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType,
+					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
+					wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+					postalCityCode, postalCityName, postalTelNo, applicantNote, serviceContext);
+
+		} catch (Exception e) {
+			_log.error(e);
+			return null;
+		}
+	}
+
 }
