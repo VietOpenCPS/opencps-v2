@@ -2243,6 +2243,7 @@ public class DossierActionsImpl implements DossierActions {
 				DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
 				int allowAssignUser = proAction.getAllowAssignUser();
+				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
 						_log.info("LamTV_PROCESS assignUsers != null");
@@ -2250,11 +2251,12 @@ public class DossierActionsImpl implements DossierActions {
 						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId(), subUsersArray);
 					} else {
-						_log.info("PROCESS subUsers == null");
+						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId());
 					}
 				} else {
+					_log.info("PROCESS subUsers == null");
 					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
 				}

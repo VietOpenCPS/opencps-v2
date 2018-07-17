@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -24,7 +25,6 @@ import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
-import org.opencps.api.processsequence.model.DossierActionResult21Model;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
 import org.opencps.exception.model.ExceptionModel;
@@ -436,7 +436,7 @@ public interface DossierManagement {
 
 	public Response updateReassignUsers(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long dossierId, @BeanParam ReAssign reAssign);
+			@Context ServiceContext serviceContext, @PathParam("id") long dossierId, @FormParam("toUsers") String toUsers);
 	
 	@POST
 	@Path("/{id}/rollback")

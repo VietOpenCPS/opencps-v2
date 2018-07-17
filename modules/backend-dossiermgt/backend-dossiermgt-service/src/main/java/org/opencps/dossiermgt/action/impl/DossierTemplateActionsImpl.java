@@ -234,7 +234,7 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 	@Override
 	public boolean deleteAllDossierPart(long userId, long groupId, String templateNo, ServiceContext serviceContext) {
-		boolean flag = false;
+		boolean flag = true;
 		try {
 			List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, templateNo);
 			if (partList != null && partList.size() > 0) {
@@ -242,6 +242,8 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 					DossierPartLocalServiceUtil.deleteDossierPart(part);
 					flag = true;
 				}
+			} else {
+				flag = true;
 			}
 		}catch (Exception e) {
 			return false;

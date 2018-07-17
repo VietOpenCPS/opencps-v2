@@ -1184,8 +1184,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 	public long updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
 			String collectionNameEN, String description) throws NoSuchUserException {
 
-		return DictCollectionLocalServiceUtil.updateDictCollectionDB(userId, groupId, collectionCode, collectionName,
+		DictCollection dict = DictCollectionLocalServiceUtil.updateDictCollectionDB(userId, groupId, collectionCode, collectionName,
 				collectionNameEN, description);
+		if (dict != null) {
+			return dict.getDictCollectionId();
+		}
+		return 0;
 	}
 
 	@Override
@@ -1204,6 +1208,26 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		DictItemLocalServiceUtil.updateDictItemDB(userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
 				itemDescription, dictItemParentId, level, sibling, metadata);
+	}
+
+	@Override
+	public boolean deleteAllDictItem(long userId, long groupId, long dictCollectionId) {
+		boolean flag = false;
+		try {
+			List<DictItem> itemList = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollectionId);
+			if (itemList != null && itemList.size() > 0) {
+				for (DictItem item : itemList) {
+					DictItemLocalServiceUtil.deleteDictItem(item);
+					flag = true;
+				}
+			} else {
+				flag = true;
+			}
+		}catch (Exception e) {
+			return false;
+		}
+
+		return flag;
 	}
 
 }
