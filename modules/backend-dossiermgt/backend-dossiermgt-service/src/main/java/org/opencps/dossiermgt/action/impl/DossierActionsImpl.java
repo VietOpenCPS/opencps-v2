@@ -2261,14 +2261,14 @@ public class DossierActionsImpl implements DossierActions {
 							proAction.getAssignUserId());
 				}
 
-				List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
 
-				for (PaymentFile pf : paymentFiles) {
-					if (pf.getIsNew()) {
-						syncPaymentFiles.add(pf);
-					}
-				}
+//				for (PaymentFile pf : paymentFiles) {
+//					if (pf.getIsNew()) {
+//						syncPaymentFiles.add(pf);
+//					}
+//				}
 
 				for (PaymentFile spf : syncPaymentFiles) {
 				}
@@ -2989,14 +2989,14 @@ public class DossierActionsImpl implements DossierActions {
 
 			// Add PaymentSync
 
-			List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 			List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
 
-			for (PaymentFile pf : paymentFiles) {
-				if (pf.getIsNew()) {
-					syncPaymentFiles.add(pf);
-				}
-			}
+//			for (PaymentFile pf : paymentFiles) {
+//				if (pf.getIsNew()) {
+//					syncPaymentFiles.add(pf);
+//				}
+//			}
 
 			for (PaymentFile spf : syncPaymentFiles) {
 				// Hard-code
