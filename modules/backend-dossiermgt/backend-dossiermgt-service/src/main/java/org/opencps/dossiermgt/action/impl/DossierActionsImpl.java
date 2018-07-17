@@ -117,6 +117,7 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String AUTO_EVENT_SUBMIT = "submit";
 	public static final String AUTO_EVENT_TIMMER = "timer";
 	public static final String AUTO_EVENT_LISTENER = "listener";
+	public static final String AUTO_EVENT_SPECIAL = "special";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
 
@@ -4026,7 +4027,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		int enable = 1;
 		boolean flagAutoEvent = true;
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
-				|| AUTO_EVENT_LISTENER.equals(autoEvent)) {
+				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
 			flagAutoEvent = false;
 		}
 		boolean checkPreCondition = false;
