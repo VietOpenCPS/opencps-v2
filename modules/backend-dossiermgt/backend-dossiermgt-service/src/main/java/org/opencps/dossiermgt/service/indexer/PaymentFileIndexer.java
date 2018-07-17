@@ -65,16 +65,16 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 		document.addNumberSortable(PaymentFileTerm.PAYMENT_AMOUNT, object.getPaymentAmount());
 		document.addNumberSortable(PaymentFileTerm.PAYMENT_STATUS, object.getPaymentStatus());
 		document.addNumberSortable(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID, object.getConfirmFileEntryId());
-		document.addNumberSortable(PaymentFileTerm.INVOICE_FILE_ENTRY_ID, object.getInvoiceFileEntryId());
+//		document.addNumberSortable(PaymentFileTerm.INVOICE_FILE_ENTRY_ID, object.getInvoiceFileEntryId());
 		
 		document.addDateSortable(PaymentFileTerm.APPROVE_DATETIME, object.getApproveDatetime());
 		document.addDateSortable(PaymentFileTerm.CONFIRM_DATETIME, object.getConfirmDatetime());
 
 		// add text fields
 		document.addTextSortable(PaymentFileTerm.REFERENCE_UID, object.getReferenceUid());
-		document.addTextSortable(PaymentFileTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
-		document.addTextSortable(PaymentFileTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
-		document.addTextSortable(PaymentFileTerm.IS_NEW, Boolean.toString(object.getIsNew()));
+//		document.addTextSortable(PaymentFileTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
+//		document.addTextSortable(PaymentFileTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
+//		document.addTextSortable(PaymentFileTerm.IS_NEW, Boolean.toString(object.getIsNew()));
 		document.addTextSortable(PaymentFileTerm.PAYMENT_FEE, object.getPaymentFee());
 		document.addTextSortable(PaymentFileTerm.PAYMENT_NOTE, object.getPaymentNote());
 		document.addTextSortable(PaymentFileTerm.EPAYMENT_PROFILE, object.getEpaymentProfile());
