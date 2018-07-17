@@ -1255,26 +1255,13 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
 				try {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-					int enable = 0;
+					//GS.AnhTT_Process
+					int enable = 2;
 					if (dActionUser != null) {
 						int assign = dActionUser.getAssigned();
-						switch(assign){
-							case 1:
-								enable = 1;
-								break;
-							case 2:
-								enable = 1;
-								break;
-							case 3:
-								enable = 2;
-								break;
-							default:
-								break;
-						}
+						if (assign==1 && !pending) enable = 1;
 					}
-					if (enable == 1 && pending) {
-						enable = 2;
-					}
+					
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
 					_log.info("processActionList: "+processActionList.size());
@@ -1299,13 +1286,11 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-							if (enable == 1) {
-								int enableButton = processCheckEnable(preCondition, autoEvent, dossier);
-								data.put(ProcessActionTerm.ENABLE, enableButton);
-							} else {
+							if (processCheckEnable(preCondition, autoEvent, dossier) == 1)
 								data.put(ProcessActionTerm.ENABLE, enable);
-							}
-	
+							else
+								data.put(ProcessActionTerm.ENABLE, 0);
+							
 							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
 							data.put(ProcessActionTerm.ACTION_NAME, actionName);
