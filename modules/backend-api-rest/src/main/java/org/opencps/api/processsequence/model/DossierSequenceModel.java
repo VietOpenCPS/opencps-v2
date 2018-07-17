@@ -8,19 +8,20 @@
 
 package org.opencps.api.processsequence.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for DossierSequenceModel complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
+ * &lt;complexType name="DossierSequenceModel">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -28,6 +29,9 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="sequenceName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="sequenceRole" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0"/>
+ *         &lt;element name="assignUsers" type="{}AssignUserModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="startDate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="actions" type="{}ActionModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,19 +41,24 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "DossierSequenceModel", propOrder = {
     "sequenceNo",
     "sequenceName",
     "sequenceRole",
-    "durationCount"
+    "durationCount",
+    "assignUsers",
+    "startDate",
+    "actions"
 })
-@XmlRootElement(name = "ProcessSequenceOneOutputModel")
-public class ProcessSequenceOneOutputModel {
+public class DossierSequenceModel {
 
     protected String sequenceNo;
     protected String sequenceName;
     protected String sequenceRole;
     protected Double durationCount;
+    protected List<AssignUserModel> assignUsers;
+    protected String startDate;
+    protected List<ActionModel> actions;
 
     /**
      * Gets the value of the sequenceNo property.
@@ -145,6 +154,88 @@ public class ProcessSequenceOneOutputModel {
      */
     public void setDurationCount(Double value) {
         this.durationCount = value;
+    }
+
+    /**
+     * Gets the value of the assignUsers property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the assignUsers property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getAssignUsers().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link AssignUserModel }
+     * 
+     * 
+     */
+    public List<AssignUserModel> getAssignUsers() {
+        if (assignUsers == null) {
+            assignUsers = new ArrayList<AssignUserModel>();
+        }
+        return this.assignUsers;
+    }
+
+    /**
+     * Gets the value of the startDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getStartDate() {
+        return startDate;
+    }
+
+    /**
+     * Sets the value of the startDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setStartDate(String value) {
+        this.startDate = value;
+    }
+
+    /**
+     * Gets the value of the actions property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the actions property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getActions().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link ActionModel }
+     * 
+     * 
+     */
+    public List<ActionModel> getActions() {
+        if (actions == null) {
+            actions = new ArrayList<ActionModel>();
+        }
+        return this.actions;
     }
 
 }

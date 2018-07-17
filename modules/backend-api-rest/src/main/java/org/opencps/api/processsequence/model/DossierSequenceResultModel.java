@@ -12,24 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for StepModel complex type.
+ * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="StepModel">
+ * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="fromStepCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="fromStepName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="groupName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="processNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="actions" type="{}ActionModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="durationUnit" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="data" type="{}DossierSequenceModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,91 +40,44 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StepModel", propOrder = {
-    "fromStepCode",
-    "fromStepName",
-    "groupName",
+@XmlType(name = "", propOrder = {
+    "processNo",
     "durationCount",
-    "actions"
+    "durationUnit",
+    "total",
+    "data"
 })
-public class StepModel {
+@XmlRootElement(name = "DossierSequenceResultModel")
+public class DossierSequenceResultModel {
 
-    protected String fromStepCode;
-    protected String fromStepName;
-    protected String groupName;
+    protected String processNo;
     protected Integer durationCount;
-    protected List<ActionModel> actions;
+    protected Integer durationUnit;
+    protected Integer total;
+    protected List<DossierSequenceModel> data;
 
     /**
-     * Gets the value of the fromStepCode property.
+     * Gets the value of the processNo property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getFromStepCode() {
-        return fromStepCode;
+    public String getProcessNo() {
+        return processNo;
     }
 
     /**
-     * Sets the value of the fromStepCode property.
+     * Sets the value of the processNo property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setFromStepCode(String value) {
-        this.fromStepCode = value;
-    }
-
-    /**
-     * Gets the value of the fromStepName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFromStepName() {
-        return fromStepName;
-    }
-
-    /**
-     * Sets the value of the fromStepName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFromStepName(String value) {
-        this.fromStepName = value;
-    }
-
-    /**
-     * Gets the value of the groupName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getGroupName() {
-        return groupName;
-    }
-
-    /**
-     * Sets the value of the groupName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setGroupName(String value) {
-        this.groupName = value;
+    public void setProcessNo(String value) {
+        this.processNo = value;
     }
 
     /**
@@ -151,32 +105,80 @@ public class StepModel {
     }
 
     /**
-     * Gets the value of the actions property.
+     * Gets the value of the durationUnit property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getDurationUnit() {
+        return durationUnit;
+    }
+
+    /**
+     * Sets the value of the durationUnit property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setDurationUnit(Integer value) {
+        this.durationUnit = value;
+    }
+
+    /**
+     * Gets the value of the total property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getTotal() {
+        return total;
+    }
+
+    /**
+     * Sets the value of the total property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setTotal(Integer value) {
+        this.total = value;
+    }
+
+    /**
+     * Gets the value of the data property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the actions property.
+     * This is why there is not a <CODE>set</CODE> method for the data property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getActions().add(newItem);
+     *    getData().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ActionModel }
+     * {@link DossierSequenceModel }
      * 
      * 
      */
-    public List<ActionModel> getActions() {
-        if (actions == null) {
-            actions = new ArrayList<ActionModel>();
+    public List<DossierSequenceModel> getData() {
+        if (data == null) {
+            data = new ArrayList<DossierSequenceModel>();
         }
-        return this.actions;
+        return this.data;
     }
 
 }

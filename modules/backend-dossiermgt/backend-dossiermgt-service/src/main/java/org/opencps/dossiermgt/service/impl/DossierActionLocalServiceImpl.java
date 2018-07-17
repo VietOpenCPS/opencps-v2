@@ -427,4 +427,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public List<DossierAction> getDossiersPending(long groupId, String pending) {
 		return dossierActionPersistence.findByG_PENDING(groupId, Boolean.parseBoolean(pending));
 	}
+	
+	public List<DossierAction> findDossierActionByDID_FSN(long dossierId, String fromSequenceNo) {
+		return dossierActionPersistence.findByDID_FSN(dossierId, fromSequenceNo);
+	}
 }
