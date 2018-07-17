@@ -215,11 +215,7 @@ public class OneGateUtils {
 
 		// LamTV: Process payment Fee
 		long dossierId = input.getDossierId();
-		List<PaymentFile> paymentList = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
-		PaymentFile payment = null;
-		if (paymentList != null && paymentList.size() > 0) {
-			payment = paymentList.get(0);
-		}
+		PaymentFile payment = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 		if (payment != null) {
 			model.setPaymentFee(payment.getPaymentFee());
 			model.setPaymentNote(payment.getPaymentNote());

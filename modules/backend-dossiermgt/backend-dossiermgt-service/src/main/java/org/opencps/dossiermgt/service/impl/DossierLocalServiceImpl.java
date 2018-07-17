@@ -1254,15 +1254,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		List<PaymentFile> lsPF = paymentFileLocalService.getByDossierId(id);
+//		List<PaymentFile> lsPF = paymentFileLocalService.getByDossierId(id);
 
-		for (PaymentFile pf : lsPF) {
-			if (pf.getIsNew()) {
-				pf.setIsNew(false);
-
-				paymentFileLocalService.updatePaymentFile(pf);
-			}
-		}
+//		for (PaymentFile pf : lsPF) {
+//			if (pf.getIsNew()) {
+//				pf.setIsNew(false);
+//
+//				paymentFileLocalService.updatePaymentFile(pf);
+//			}
+//		}
 
 		return dossier;
 	}

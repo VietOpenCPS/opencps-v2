@@ -120,12 +120,10 @@ public class DossierMgtUtils {
 	private static boolean checkPayOk(Dossier dossier) {
 		boolean result = true;
 		PaymentFileActions actions = new PaymentFileActionsImpl();
-		List<PaymentFile> paymentFiles = actions.getPaymentFiles(dossier.getDossierId());
-		if (paymentFiles != null) {
-			for (PaymentFile paymentFile : paymentFiles) {
-				if (paymentFile.getPaymentStatus() != 2) {
-					result = result && false;
-				}
+		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
+		if (paymentFile != null) {
+			if (paymentFile.getPaymentStatus() != 2) {
+				result = result && false;
 			}
 		}
 		return result;
@@ -158,13 +156,13 @@ public class DossierMgtUtils {
 	private static boolean checkWaiting(String preCondition, Dossier dossier) {
 		long dossierActionId = dossier.getDossierActionId();
 		DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-		Date actionDate = action.getModifiedDate();
+//		Date actionDate = action.getModifiedDate();
 		String[] waitingArr = StringUtil.split(preCondition);
 		if (waitingArr.length != 2) {
 			return false;
 		}
 		String condition = waitingArr[0];
-		String nBlock = waitingArr[1];
+//		String nBlock = waitingArr[1];
 		if ("waiting".equals(condition)) {
 			
 		}

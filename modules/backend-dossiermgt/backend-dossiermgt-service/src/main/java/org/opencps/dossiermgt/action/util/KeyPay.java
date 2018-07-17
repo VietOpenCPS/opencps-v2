@@ -11,10 +11,11 @@ import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.keypay.util.KPJsonRest;
 import org.opencps.dossiermgt.action.keypay.util.KPRest;
 import org.opencps.dossiermgt.action.keypay.util.MD5;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -212,7 +213,13 @@ public class KeyPay {
 
 			if (Validator.isNotNull(paymentFile)) {
 
-				paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(paymentFile.getGroupId(), paymentFile.getGovAgencyCode());
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(paymentFile.getDossierId());
+				String govAgencyCode = StringPool.BLANK;
+				if (dossier != null) {
+					govAgencyCode = dossier.getGovAgencyCode();
+				}
+//				paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(paymentFile.getGroupId(), paymentFile.getGovAgencyCode());
+				paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(paymentFile.getGroupId(), govAgencyCode);
 
 				Map<String, String> fields = new HashMap<String, String>();
 
