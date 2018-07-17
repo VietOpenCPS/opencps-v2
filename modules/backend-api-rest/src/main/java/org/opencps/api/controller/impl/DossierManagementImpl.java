@@ -47,7 +47,6 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -79,7 +78,6 @@ import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -276,6 +274,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossiersTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -461,6 +460,7 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	//LamTV: Process dossierTodo
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierProcessList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -847,9 +847,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 				Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-						dossier.getDossierTemplateNo(), groupId);
-
+//				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+//						dossier.getDossierTemplateNo(), groupId);
 				// dossierPermission.hasGetDetailDossier(groupId,
 				// user.getUserId(), dossier, option.getServiceProcessId());
 
@@ -888,8 +887,8 @@ public class DossierManagementImpl implements DossierManagement {
 			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 					input.getGovAgencyCode(), input.getDossierTemplateNo());
 
-			int counter = 0;
-			String referenceUid = StringPool.BLANK;
+//			int counter = 0;
+//			String referenceUid = StringPool.BLANK;
 			//
 			// ProcessOption option = getProcessOption(input.getServiceCode(),
 			// input.getGovAgencyCode(),
@@ -898,8 +897,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// ServiceProcess process =
 			// ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 
-			if (referenceUid.trim().length() == 0)
-				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+//			if (referenceUid.trim().length() == 0)
+//				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 
 			// String serviceName = getServiceName(input.getServiceCode(),
 			// groupId);
@@ -923,18 +922,26 @@ public class DossierManagementImpl implements DossierManagement {
 				postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
 			}
 
-			boolean online = true;
+//			boolean online = true;
+//
+//			String password = StringPool.BLANK;
 
-			String password = StringPool.BLANK;
-
-			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
+//			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
+//					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
+//					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
+//					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
+//					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
+//					input.getContactEmail(), input.getDossierTemplateNo(), password, input.getViaPostal(),
+//					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
+//					true, input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
+			//
+			Dossier dossier = actions.initUpdateDossier(groupId, id, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
-					input.getContactEmail(), input.getDossierTemplateNo(), password, input.getViaPostal(),
-					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
-					true, input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
+					input.getContactEmail(), input.getDossierTemplateNo(), input.getViaPostal(),
+					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(),
+					input.getApplicantNote(), serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
@@ -951,10 +958,8 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, String id) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
-
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -981,12 +986,12 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response cancellingDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1017,10 +1022,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1086,8 +1090,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 		// RESET submitting
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		DossierPermission dossierPermission = new DossierPermission();
-		BackendAuth auth = new BackendAuthImpl();
+//		DossierPermission dossierPermission = new DossierPermission();
+//		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		try {
 			// isSyncAction equal 1 that is the action was processed by
@@ -1114,7 +1118,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		DossierAction dossierResult = null;
@@ -1372,6 +1376,7 @@ public class DossierManagementImpl implements DossierManagement {
 	Log _log = LogFactoryUtil.getLog(DossierManagementImpl.class);
 
 	// Get dossier by certificate Number
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierByCertificateNumber(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String certificateNumber) {
@@ -1502,12 +1507,10 @@ public class DossierManagementImpl implements DossierManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, String body) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1548,10 +1551,9 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1592,10 +1594,9 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1778,6 +1779,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked"})
 	@Override
 	public Response getDossiersPendingList(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -1911,6 +1913,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossiersInfoList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -2065,7 +2068,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			if (dossierAction != null) {
 				String stepCode = dossierAction.getStepCode();
-				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierAction.getDossierActionId(), stepCode);
+				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
 				for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
 					ToUsers toUsers = new ToUsers();
 					toUsers.setAssigned(dau.getAssigned());

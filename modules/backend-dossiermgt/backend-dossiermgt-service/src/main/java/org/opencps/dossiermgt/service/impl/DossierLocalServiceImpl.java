@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
@@ -2370,5 +2371,80 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public List<Dossier> getByNotO_DS_SC_GC(long groupId, int originality, String dossierStatus, String serviceCode, String govAgencyCode) {
 		return dossierPersistence.findByG_NOTO_DS_SC_GC(groupId, originality, dossierStatus, serviceCode, govAgencyCode);
+	}
+
+	//LamTV_Process update dossier
+	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			ServiceContext serviceContext) {
+
+		Date now = new Date();
+		long userId = serviceContext.getUserId();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+		Dossier dossier = dossierPersistence.fetchByPrimaryKey(id);
+
+		dossier.setModifiedDate(now);
+		dossier.setUserId(userId);
+		dossier.setUserName(auditUser.getFullName());
+		//
+		if (Validator.isNotNull(applicantName))
+			dossier.setApplicantName(applicantName);
+		if (Validator.isNotNull(applicantIdType))
+			dossier.setApplicantIdType(applicantIdType);
+		if (Validator.isNotNull(applicantIdNo))
+			dossier.setApplicantIdNo(applicantIdNo);
+		if (Validator.isNotNull(applicantIdDate))
+			dossier.setApplicantIdDate(
+					APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._NORMAL_PARTTERN));
+		if (Validator.isNotNull(address))
+			dossier.setAddress(address);
+		if (Validator.isNotNull(cityCode))
+			dossier.setCityCode(cityCode);
+		if (Validator.isNotNull(cityName))
+			dossier.setCityName(cityName);
+		if (Validator.isNotNull(districtCode))
+			dossier.setDistrictCode(districtCode);
+		if (Validator.isNotNull(districtName))
+			dossier.setDistrictName(districtName);
+		if (Validator.isNotNull(wardCode))
+			dossier.setWardCode(wardCode);
+		if (Validator.isNotNull(wardName))
+			dossier.setWardName(wardName);
+		if (Validator.isNotNull(contactName))
+			dossier.setContactName(contactName);
+		if (Validator.isNotNull(contactEmail))
+			dossier.setContactEmail(contactEmail);
+		if (Validator.isNotNull(contactTelNo))
+			dossier.setContactTelNo(contactTelNo);
+
+		dossier.setViaPostal(viaPostal);
+		if (viaPostal == 1) {
+			dossier.setPostalAddress(StringPool.BLANK);
+			dossier.setPostalCityCode(StringPool.BLANK);
+			dossier.setPostalTelNo(StringPool.BLANK);
+
+		} else if (viaPostal == 2) {
+			if (Validator.isNotNull(postalAddress))
+				dossier.setPostalAddress(postalAddress);
+			if (Validator.isNotNull(postalCityCode))
+				dossier.setPostalCityCode(postalCityCode);
+			if (Validator.isNotNull(postalTelNo))
+				dossier.setPostalTelNo(postalTelNo);
+			if (Validator.isNotNull(postalCityName))
+				dossier.setPostalCityName(postalCityName);
+
+		} else {
+			dossier.setPostalAddress(StringPool.BLANK);
+			dossier.setPostalCityCode(StringPool.BLANK);
+			dossier.setPostalTelNo(StringPool.BLANK);
+		}
+		dossier.setApplicantNote(applicantNote);
+
+		return dossierPersistence.update(dossier);
+
 	}
 }
