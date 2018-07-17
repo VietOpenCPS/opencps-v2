@@ -106,7 +106,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 				for (int j = 0; j < users.size(); j++) {
-					_log.info("UserID: "+i+ users.get(i).getUserId());
+//					_log.info("UserID: "+i+ users.get(i).getUserId());
 				}
 				if (i == 0) {
 					for (User user : users) {
