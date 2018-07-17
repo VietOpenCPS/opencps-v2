@@ -2435,6 +2435,15 @@ public class DossierActionsImpl implements DossierActions {
 	private void updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, ServiceContext context) {
 		Date now = new Date();
 
+		if (Validator.isNull(dossier.getReceiveDate())
+				&& (curStatus.contentEquals(DossierStatusConstants.PROCESSING))) {
+			try {
+				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), new Date(), context);
+			} catch (PortalException e) {
+				e.printStackTrace();
+			}
+		}
+
 		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
 			try {
 				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
