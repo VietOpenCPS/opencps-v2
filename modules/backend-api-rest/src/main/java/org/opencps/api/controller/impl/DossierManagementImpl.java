@@ -5,14 +5,18 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DoActionModel;
@@ -20,6 +24,7 @@ import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
@@ -43,9 +48,11 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
@@ -56,7 +63,9 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -71,7 +80,9 @@ import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
@@ -2265,6 +2276,73 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(404).entity(error).build();
 		}	
 
+	}
+
+	@Override
+	public Response addDossierFileByEForm(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String partNo, String formData) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.info("In dossier file create");
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long dossierId = GetterUtil.getLong(id);
+
+			Dossier dossier = null;
+
+			if (dossierId != 0) {
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (Validator.isNull(dossier)) {
+					dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				}
+			} else {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+
+			String referenceUid = UUID.randomUUID().toString();
+
+			DataHandler dataHandler = file.getDataHandler();
+			
+			DossierFileActions action = new DossierFileActionsImpl();
+			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossier.getDossierTemplateNo(), partNo);
+			
+			
+			_log.info("__Start add file at:" + new Date());
+
+			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
+					dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
+					dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
+			
+			_log.info("__End add file at:" + new Date());
+			
+			if(Validator.isNotNull(formData)) {
+				dossierFile.setFormData(formData);
+			}
+					
+			_log.info("__Start update dossier file at:" + new Date());
+
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			dossierFile = action.updateDossierFileFormData(groupId, dossier.getDossierId(), referenceUid, formData,
+					serviceContext);
+			
+			_log.info("__End update dossier file at:" + new Date());
+
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			
+			_log.info("__End bind to dossierFile" + new Date());
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
 	}
 
 }
