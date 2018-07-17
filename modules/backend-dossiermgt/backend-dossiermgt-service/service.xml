@@ -1116,6 +1116,9 @@
 		<column name="dossierId" type="long" />
 		<column name="serviceProcessId" type="long" />
 		<column name="previousActionId" type="long" />
+		<column name="fromStepCode" type="String" />
+		<column name="fromStepName" type="String" />
+		<column name="fromSequenceNo" type="String" />
 		<column name="actionCode" type="String" />
 		<column name="actionUser" type="String" />
 		<column name="actionName" type="String" />
@@ -1126,10 +1129,13 @@
 		<column name="rollbackable" type="boolean" />
 		<column name="stepCode" type="String" />
 		<column name="stepName" type="String" />
+		<column name="sequenceNo" type="String" />
 		<column name="dueDate" type="Date" />
 		<column name="nextActionId" type="long" />
 		<column name="payload" type="String" />
 		<column name="stepInstruction" type="String" />
+		<column name="state" type="int" />
+		<column name="eventStatus" type="int" />
 
 		<finder return-type="DossierAction" name="DID_DPG">
 			<finder-column name="dossierId" />
@@ -1157,6 +1163,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="pending" />
 		</finder>
+        <finder name="DID_FSN" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fromSequenceNo"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="DossierUser"

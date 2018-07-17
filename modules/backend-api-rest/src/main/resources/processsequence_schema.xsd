@@ -12,6 +12,7 @@
 			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
 			<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
 			<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="state" type="xsd:int" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -73,5 +74,33 @@
 				<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>	
+	</xsd:element>
+	<xsd:complexType name="AssignUserModel">
+		<xsd:sequence>
+			<xsd:element name="userId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="userName" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DossierSequenceModel">
+		<xsd:sequence>
+			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceRole" type="xsd:string" minOccurs="0" />
+			<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
+			<xsd:element name="assignUsers" type="AssignUserModel" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+			<xsd:element name="startDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actions" type="ActionModel" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+		</xsd:sequence>		
+	</xsd:complexType>	
+	<xsd:element name="DossierSequenceResultModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:int" minOccurs="0" />
+				<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />	
+				<xsd:element name="data" type="DossierSequenceModel" minOccurs="0" maxOccurs="unbounded"></xsd:element>			
+			</xsd:sequence>
+		</xsd:complexType>
 	</xsd:element>
 </xsd:schema>
