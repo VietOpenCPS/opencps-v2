@@ -663,10 +663,14 @@
 
 		<column name="dossierId" type="long" />
 		<column name="referenceUid" type="String" />
-		<column name="govAgencyCode" type="String" />
-		<column name="govAgencyName" type="String" />
-		<column name="isNew" type="boolean" />
+<!-- 		<column name="govAgencyCode" type="String" /> -->
+<!-- 		<column name="govAgencyName" type="String" /> -->
+<!-- 		<column name="isNew" type="boolean" /> -->
 		<column name="paymentFee" type="String" />
+		<column name="advanceAmount" type="long" />
+		<column name="feeAmount" type="long" />
+		<column name="serviceAmount" type="long" />
+		<column name="shipAmount" type="long" />
 		<column name="paymentAmount" type="long" />
 		<column name="paymentNote" type="String" />
 		<column name="epaymentProfile" type="String" />
@@ -683,17 +687,19 @@
 		<column name="invoiceTemplateNo" type="String" />
 		<column name="invoiceIssueNo" type="String" />
 		<column name="invoiceNo" type="String" />
-		<column name="invoiceFileEntryId" type="long" />
+		<column name="invoicePayload" type="String" />
+		<column name="einvoice" type="String" />
+<!-- 		<column name="invoiceFileEntryId" type="long" /> -->
 
 		<!-- Order -->
 		<order by="desc">
 			<order-column name="createDate"></order-column>
 		</order>
 		<!-- Finder methods -->
-		<finder return-type="Collection" name="F_DUID">
-			<finder-column name="dossierId" />
-			<finder-column name="referenceUid" />
-		</finder>
+<!-- 		<finder return-type="Collection" name="F_DUID"> -->
+<!-- 			<finder-column name="dossierId" /> -->
+<!-- 			<finder-column name="referenceUid" /> -->
+<!-- 		</finder> -->
 
 		<finder return-type="PaymentFile" name="D_RUID">
 			<finder-column name="dossierId" />
@@ -701,13 +707,14 @@
 		</finder>
 		<!-- References -->
 		
-		<finder return-type="Collection" name="ISN_GID">
+<!-- 		<finder return-type="Collection" name="ISN_GID"> -->
+<!-- 			<finder-column name="groupId" /> -->
+<!-- 			<finder-column name="isNew" /> -->
+<!-- 		</finder> -->
+		<finder name="DossierId" return-type="PaymentFile">
 			<finder-column name="groupId" />
-			<finder-column name="isNew" />
+			<finder-column name="dossierId" />
 		</finder>
-        <finder name="DossierId" return-type="Collection">
-            <finder-column name="dossierId"></finder-column>
-        </finder>
 		
 
 	</entity>

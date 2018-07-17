@@ -126,6 +126,6 @@ public interface PaymentFileActions {
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 	
 	
-	public List<PaymentFile> getPaymentFiles(long dossierId);
+	public PaymentFile getPaymentFiles(long groupId, long dossierId);
 
 }

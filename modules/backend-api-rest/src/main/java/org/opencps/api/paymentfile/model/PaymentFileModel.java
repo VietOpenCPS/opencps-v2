@@ -65,12 +65,12 @@ import javax.xml.bind.annotation.XmlType;
     "createDate",
     "modifiedDate",
     "referenceUid",
-    "govAgencyCode",
-    "govAgencyName",
-    "applicantName",
-    "applicantIdNo",
-    "isNew",
+    "dossierId",
     "paymentFee",
+    "advanceAmount",
+    "feeAmount",
+    "serviceAmount",
+    "shipAmount",
     "paymentAmount",
     "paymentNote",
     "bankInfo",
@@ -89,21 +89,22 @@ import javax.xml.bind.annotation.XmlType;
     "invoiceTemplateNo",
     "invoiceIssueNo",
     "invoiceNo",
-    "invoiceFileType",
-    "invoiceFileSize",
-    "briefNote"
+    "invoicePayload",
+    "einvoice",
+    "applicantName",
+    "applicantIdNo"
 })
 @XmlRootElement(name = "PaymentFileModel")
 public class PaymentFileModel {
     protected String createDate;
     protected String modifiedDate;
     protected String referenceUid;
-    protected String govAgencyCode;
-    protected String govAgencyName;
-    protected String applicantName;
-    protected String applicantIdNo;
-    protected Integer isNew;
+    protected long dossierId;
     protected String paymentFee;
+    protected Long advanceAmount;
+    protected Long feeAmount;
+    protected Long serviceAmount;
+    protected Long shipAmount;
     protected Long paymentAmount;
     protected String paymentNote;
     protected String bankInfo;
@@ -122,17 +123,10 @@ public class PaymentFileModel {
     protected String invoiceTemplateNo;
     protected String invoiceIssueNo;
     protected String invoiceNo;
-    protected String invoiceFileType;
-    protected Long invoiceFileSize;
-    public String getBriefNote() {
-		return briefNote;
-	}
-
-	public void setBriefNote(String briefNote) {
-		this.briefNote = briefNote;
-	}
-
-	protected String briefNote;
+    protected String invoicePayload;
+    protected String einvoice;
+    protected String applicantName;
+    protected String applicantIdNo;
 
     public long getConfirmFileEntryIds() {
 		return confirmFileEntryId;
@@ -214,126 +208,6 @@ public class PaymentFileModel {
     public void setReferenceUid(String referenceUid) {
         this.referenceUid = referenceUid;
     }
-
-    /**
-     * Gets the value of the govAgencyCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-	public String getGovAgencyCode() {
-		return govAgencyCode;
-	}
-
-    /**
-     * Sets the value of the govAgencyCode property.
-     * 
-     * @param govAgencyCode
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-	public void setGovAgencyCode(String govAgencyCode) {
-		this.govAgencyCode = govAgencyCode;
-	}
-
-    /**
-     * Gets the value of the govAgencyName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-	public String getGovAgencyName() {
-		return govAgencyName;
-	}
-
-    /**
-     * Sets the value of the govAgencyName property.
-     * 
-     * @param govAgencyName
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-	public void setGovAgencyName(String govAgencyName) {
-		this.govAgencyName = govAgencyName;
-	}
-
-    /**
-     * Gets the value of the applicantName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-	public String getApplicantName() {
-		return applicantName;
-	}
-
-    /**
-     * Sets the value of the applicantName property.
-     * 
-     * @param applicantName
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-	public void setApplicantName(String applicantName) {
-		this.applicantName = applicantName;
-	}
-
-    /**
-     * Gets the value of the applicantIdNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-	public String getApplicantIdNo() {
-		return applicantIdNo;
-	}
-
-    /**
-     * Sets the value of the applicantIdNo property.
-     * 
-     * @param applicantIdNo
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-	public void setApplicantIdNo(String applicantIdNo) {
-		this.applicantIdNo = applicantIdNo;
-	}
-
-    /**
-     * Gets the value of the isNew property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-	public Integer getIsNew() {
-		return isNew;
-	}
-
-    /**
-     * Sets the value of the isNew property.
-     * 
-     * @param isNew
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-	public void setIsNew(Integer isNew) {
-		this.isNew = isNew;
-	}
 
     /**
      * Gets the value of the paymentFee property.
@@ -767,53 +641,80 @@ public class PaymentFileModel {
 		this.invoiceNo = invoiceNo;
 	}
 
-    /**
-     * Gets the value of the invoiceFileType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-	public String getInvoiceFileType() {
-		return invoiceFileType;
+	public long getDossierId() {
+		return dossierId;
 	}
 
-    /**
-     * Sets the value of the invoiceFileType property.
-     * 
-     * @param invoiceFileType
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-	public void setInvoiceFileType(String invoiceFileType) {
-		this.invoiceFileType = invoiceFileType;
+	public void setDossierId(long dossierId) {
+		this.dossierId = dossierId;
 	}
 
-    /**
-     * Gets the value of the invoiceFileSize property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-	public Long getInvoiceFileSize() {
-		return invoiceFileSize;
+	public Long getAdvanceAmount() {
+		return advanceAmount;
 	}
 
-    /**
-     * Sets the value of the invoiceFileSize property.
-     * 
-     * @param invoiceFileSize
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-	public void setInvoiceFileSize(Long invoiceFileSize) {
-		this.invoiceFileSize = invoiceFileSize;
+	public void setAdvanceAmount(Long advanceAmount) {
+		this.advanceAmount = advanceAmount;
 	}
 
+	public Long getFeeAmount() {
+		return feeAmount;
+	}
+
+	public void setFeeAmount(Long feeAmount) {
+		this.feeAmount = feeAmount;
+	}
+
+	public Long getServiceAmount() {
+		return serviceAmount;
+	}
+
+	public void setServiceAmount(Long serviceAmount) {
+		this.serviceAmount = serviceAmount;
+	}
+
+	public Long getShipAmount() {
+		return shipAmount;
+	}
+
+	public void setShipAmount(Long shipAmount) {
+		this.shipAmount = shipAmount;
+	}
+
+	public String getInvoicePayload() {
+		return invoicePayload;
+	}
+
+	public void setInvoicePayload(String invoicePayload) {
+		this.invoicePayload = invoicePayload;
+	}
+
+	public String getEinvoice() {
+		return einvoice;
+	}
+
+	public void setEinvoice(String einvoice) {
+		this.einvoice = einvoice;
+	}
+
+	public long getConfirmFileEntryId() {
+		return confirmFileEntryId;
+	}
+
+	public String getApplicantName() {
+		return applicantName;
+	}
+
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
+
+	public String getApplicantIdNo() {
+		return applicantIdNo;
+	}
+
+	public void setApplicantIdNo(String applicantIdNo) {
+		this.applicantIdNo = applicantIdNo;
+	}
 
 }

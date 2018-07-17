@@ -117,8 +117,8 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 							// do action
 
-							String userActionName = _getUserActionName(perConditionStr, dossier.getDossierId(),
-									systemUser.getFullName());
+							String userActionName = _getUserActionName(perConditionStr, dossier.getGroupId(),
+									dossier.getDossierId(), systemUser.getFullName());
 
 							// String subUsers = StringPool.BLANK;
 							if (checkPreCondition) {
@@ -151,8 +151,8 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 							// do action
 
-							String userActionName = _getUserActionName(perConditionStr, dossier.getDossierId(),
-									systemUser.getFullName());
+							String userActionName = _getUserActionName(perConditionStr, dossier.getGroupId(),
+									dossier.getDossierId(), systemUser.getFullName());
 
 							// String subUsers = StringPool.BLANK;
 							if (checkPreCondition && perConditionStr.contains("payok")) {
@@ -180,14 +180,12 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 	}
 
-	private String _getUserActionName(String perConditionStr, long dossierId, String defaultName) {
+	private String _getUserActionName(String perConditionStr, long groupId, long dossierId, String defaultName) {
 		String userActionName = StringPool.BLANK;
 
-		List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 
-		if (paymentFiles.size() > 0) {
-			PaymentFile paymentFile = paymentFiles.get(0);
-
+		if (paymentFile != null) {
 			long userId = paymentFile.getUserId();
 
 			try {

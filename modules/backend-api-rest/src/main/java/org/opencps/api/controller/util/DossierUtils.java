@@ -61,7 +61,7 @@ public class DossierUtils {
 
 		for (Document doc : docs) {
 			DossierDataModel model = new DossierDataModel();
-			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID+"CTN"));
+			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 			model.setCreateDate(doc.get(Field.CREATE_DATE));
@@ -196,7 +196,7 @@ public class DossierUtils {
 //			_log.info("i: "+i);
 			DossierDataModel model = new DossierDataModel();
 			
-			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID+"CTN"));
+			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 			model.setCreateDate(doc.get(Field.CREATE_DATE));
@@ -304,9 +304,9 @@ public class DossierUtils {
 		
 		try {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
-			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
+			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
 		} catch (Exception e) {
-			model.setDossierIdCTN("");
+			model.setDossierIdCTN(StringPool.BLANK);
 		}
 		
 
@@ -444,6 +444,17 @@ public class DossierUtils {
 		model.setNotification(Boolean.toString(input.getNotification()));
 		model.setOnline(Boolean.toString(input.getOnline()));
 		model.setLockState(input.getLockState());
+		model.setDelegateAddress(input.getDelegateAddress());
+		model.setDelegateCityCode(input.getDelegateCityCode());
+		model.setDelegateCityName(input.getDelegateCityName());
+		model.setDelegateDistrictCode(input.getDelegateDistrictCode());
+		model.setDelegateDistrictName(input.getDelegateDistrictName());
+		model.setDelegateEmail(input.getDelegateEmail());
+		model.setDelegateIdNo(input.getDelegateIdNo());
+		model.setDelegateName(input.getDelegateName());
+		model.setDelegateTelNo(input.getDelegateTelNo());
+		model.setDelegateWardCode(input.getDelegateWardCode());
+		model.setDelegateWardName(input.getDelegateWardName());
 
 		return model;
 	}
