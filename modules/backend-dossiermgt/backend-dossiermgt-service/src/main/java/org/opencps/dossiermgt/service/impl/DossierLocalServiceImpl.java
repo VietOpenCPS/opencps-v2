@@ -1768,6 +1768,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
 		String originality = GetterUtil.getString(params.get(DossierTerm.ORIGINALLITY));
 		String assigned = GetterUtil.getString(params.get(DossierTerm.ASSIGNED));
+		//LamTV_ADD
+		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
+		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1795,7 +1798,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, booleanCommon);
+				assigned, statusStep, subStatusStep, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1842,6 +1845,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 		String originality = GetterUtil.getString(params.get(DossierTerm.ORIGINALLITY));
 		String assigned = GetterUtil.getString(params.get(DossierTerm.ASSIGNED));
+		//LamTV_ADD
+		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
+		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1866,7 +1872,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, booleanCommon);
+				assigned, statusStep, subStatusStep, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1946,7 +1952,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
 			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
 			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
-			BooleanQuery booleanQuery) throws ParseException {
+			String statusStep, String subStatusStep, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2239,6 +2245,48 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(assigned));
 			query.addField(DossierTerm.ASSIGNED);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		//LamTV_Test
+		if (Validator.isNotNull(statusStep)) {
+			String[] statusStepArr = StringUtil.split(statusStep);
+
+			if (statusStepArr != null && statusStepArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < statusStepArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(statusStepArr[i]);
+					query.addField(DossierTerm.DOSSIER_STATUS);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(statusStep);
+				query.addFields(DossierTerm.DOSSIER_STATUS);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		if (Validator.isNotNull(subStatusStep)) {
+			String[] subStatusStepArr = StringUtil.split(subStatusStep);
+
+			if (subStatusStepArr != null && subStatusStepArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < subStatusStepArr.length; i++) {
+					String subStatusStepDetail = subStatusStepArr[i];
+					if (!"empty".equals(subStatusStepDetail)) {
+						MultiMatchQuery query = new MultiMatchQuery(subStatusStepArr[i]);
+						query.addField(DossierTerm.DOSSIER_SUB_STATUS);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				if (!"empty".equals(subStatusStep)) {
+					MultiMatchQuery query = new MultiMatchQuery(subStatusStep);
+					query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+					booleanQuery.add(query, BooleanClauseOccur.MUST);
+				}
+			}
 		}
 	
 		return booleanQuery;

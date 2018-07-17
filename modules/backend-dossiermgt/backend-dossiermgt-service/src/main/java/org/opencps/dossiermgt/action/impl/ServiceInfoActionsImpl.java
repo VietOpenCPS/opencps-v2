@@ -387,6 +387,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				ServiceFileTemplateLocalServiceUtil.deleteServiceFileTemplate(serviceFileTemplate);
 				flag = true;
 			}
+		} else {
+			flag = true;
 		}
 
 		return flag;

@@ -85,7 +85,8 @@ public class DossierActionUserLocalServiceImpl
 		dau.setStepCode(stepCode);
 		dau.setModerator(moderator);
 		dau.setVisited(visited);
-				
+		dau.setDossierId(dossierId);
+
 		return dossierActionUserPersistence.update(dau);
 	}
 
@@ -104,6 +105,7 @@ public class DossierActionUserLocalServiceImpl
 		dau.setStepCode(stepCode);
 		dau.setModerator(moderator);
 		dau.setVisited(visited);
+		dau.setDossierId(dossierId);
 				
 		return dossierActionUserPersistence.update(dau);
 	}

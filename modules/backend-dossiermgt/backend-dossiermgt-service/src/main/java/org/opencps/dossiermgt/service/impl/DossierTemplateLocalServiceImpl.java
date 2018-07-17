@@ -318,6 +318,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 	}
 
 	//LamTV_ Process output DossierTemplate to DB
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierTemplate updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
 			String description, ServiceContext serviceContext) throws PortalException {
 

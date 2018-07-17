@@ -130,4 +130,8 @@ public class DossierTerm {
 	public static final String DOSSIER_STATUS_UNRESOLVED = "unresolved";
 	public static final String DOSSIER_STATUS_CANCELLED = "cancelled";
 	public static final String DOSSIER_STATUS_DONE = "done";
+	//LamTV_Add
+	public static final String DOSSIER_STATUS_STEP = "statusStep";
+	public static final String DOSSIER_SUBSTATUS_STEP = "subStatusStep";
+	public static final String USER_NOTE = "userNote";
 }

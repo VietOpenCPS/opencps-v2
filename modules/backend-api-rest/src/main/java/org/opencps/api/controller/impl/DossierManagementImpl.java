@@ -11,7 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierMarkUtils;
@@ -37,7 +36,6 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.dossiermgt.action.DossierActionUser;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
@@ -63,6 +61,7 @@ import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -76,8 +75,11 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -495,6 +497,62 @@ public class DossierManagementImpl implements DossierManagement {
 			String substatus = query.getSubstatus();
 			String step = query.getStep();
 			_log.info("step: "+step);
+			StringBuilder strStatusStep = null;
+			StringBuilder strSubStatusStep = null;
+			if (Validator.isNotNull(step)) {
+				strStatusStep = new StringBuilder();
+				strSubStatusStep = new StringBuilder();
+				String[] stepArr = step.split(StringPool.COMMA);
+				if (stepArr != null && stepArr.length > 0) {
+					String statusStep = StringPool.BLANK;
+					String subStatusStep = StringPool.BLANK;
+					for (int i = 0; i < stepArr.length; i++) {
+						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, stepArr[i]);
+						if (stepConfig != null) {
+							statusStep = stepConfig.getDossierStatus();
+							subStatusStep = stepConfig.getDossierSubStatus();
+							if (i == 0) {
+								strStatusStep.append(statusStep);
+								if (Validator.isNotNull(subStatusStep)) {
+									strSubStatusStep.append(subStatusStep);
+								} else {
+									strSubStatusStep.append("empty");
+								}
+							} else {
+								strStatusStep.append(StringPool.COMMA);
+								strStatusStep.append(statusStep);
+								strSubStatusStep.append(StringPool.COMMA);
+								if (Validator.isNotNull(subStatusStep)) {
+									strSubStatusStep.append(subStatusStep);
+								} else {
+									strSubStatusStep.append("empty");
+								}
+							}
+						}
+					}
+				}
+ 			}
+			_log.info("strStatusStep: "+strStatusStep.toString());
+			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
+//			if (stepList != null && stepList.size() > 0) {
+//				_log.info("length: "+stepList.size());
+//				for (StepConfig step: stepList) {
+//					params.put(DossierTerm.STATUS, step.getDossierStatus());
+//					params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+//					_log.info("START");
+//					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
+//							null, serviceContext);
+//					_log.info("START");
+//					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+//					statistic.put("stepCode", step.getStepCode());
+//					statistic.put("stepName", step.getStepName());
+//					statistic.put("dossierStatus", step.getDossierStatus());
+//					statistic.put("dossierSubStatus", step.getDossierSubStatus());
+//					statistic.put("totalCount", count);
+//					total += count;
+//					statistics.put(statistic);
+//				}
+//			}
 			String agency = query.getAgency();
 			String service = query.getService();
 			String template = query.getTemplate();
@@ -538,7 +596,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TEMPLATE, template);
 			params.put(DossierTerm.YEAR, year);
 			params.put(DossierTerm.MONTH, month);
-			params.put(DossierTerm.STEP, step);
+//			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
 			params.put(DossierTerm.FOLLOW, follow);
@@ -555,6 +613,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			//Process follow StepCode
+			params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
+			params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, strSubStatusStep.toString());
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
 
@@ -2024,40 +2085,64 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response updateReassignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long dossierId, ReAssign reAssignNew) {
-		ReAssign reAssign = new ReAssign();
+			User user, ServiceContext serviceContext, long dossierId, String toUsers) {
 
-		List<ToUsers> lstUsers = new ArrayList<>();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
-		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		if (dossier != null) {
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-			if (dossierAction != null) {
-				String stepCode = dossierAction.getStepCode();
-				DossierActionUserLocalServiceUtil.deleteByDossierAndStepCode(dossierId, stepCode);
-				for (ToUsers tu : reAssignNew.getToUsers()) {
-					try {
-						DossierActionUserLocalServiceUtil.addDossierActionUser(tu.getUserId(), groupId, dossier.getDossierActionId(), dossierId, stepCode, (tu.getAssigned() != ProcessActionTerm.NOT_ASSIGNED ? 1 : 0), tu.getAssigned(), true);
-					} catch (PortalException e) {
-						e.printStackTrace();
+//		_log.info("groupId: "+groupId);
+//		_log.info("toUsers: "+toUsers);
+
+		try {
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			ReAssign reAssign = new ReAssign();
+			if (dossier != null) {
+				DossierAction dossierAction = DossierActionLocalServiceUtil
+						.fetchDossierAction(dossier.getDossierActionId());
+				if (dossierAction != null) {
+					String stepCode = dossierAction.getStepCode();
+					long dossierActionId = dossier.getDossierActionId();
+					DossierActionUserLocalServiceUtil.deleteByDossierAndStepCode(dossierId, stepCode);
+					//
+					if (Validator.isNotNull(toUsers)) {
+						JSONArray userArr = JSONFactoryUtil.createJSONArray(toUsers);
+						if (userArr != null && userArr.length() > 0) {
+							long userId = 0;
+							int assigned = 0;
+							int moderator = 0;
+							for (int i = 0; i < userArr.length(); i++) {
+								JSONObject jsonUser = userArr.getJSONObject(i);
+								if (jsonUser != null) {
+									userId = jsonUser.getLong("userId");
+									assigned = jsonUser.getInt("assigned");
+									if (assigned > 0) {
+										moderator = 1;
+									}
+									DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId,
+											dossierActionId, dossierId, stepCode, moderator, assigned, true);
+								}
+							}
+							List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil
+									.getByDossierAndStepCode(dossierId, stepCode);
+							List<ToUsers> lstUsers = new ArrayList<>();
+							for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
+								ToUsers tu = new ToUsers();
+								tu.setAssigned(dau.getAssigned());
+								tu.setUserId(dau.getUserId());
+								User u = UserLocalServiceUtil.fetchUser(tu.getUserId());
+								tu.setModerator(dau.getModerator() == 1 ? true : false);
+								tu.setUserName(u.getFullName());
+								lstUsers.add(tu);
+							}
+							reAssign.getToUsers().addAll(lstUsers);
+						}
 					}
 				}
-				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierAction.getDossierActionId(), stepCode);
-				for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
-					ToUsers tu = new ToUsers();
-					tu.setAssigned(dau.getAssigned());
-					tu.setUserId(dau.getUserId());
-					User u = UserLocalServiceUtil.fetchUser(tu.getUserId());
-					tu.setModerator(dau.getModerator() == 1 ? true : false);
-					tu.setUserName(u.getFullName());
-					lstUsers.add(tu);
-				}
 			}
+			return Response.status(200).entity(reAssign).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
 		}
-		
-		reAssign.getToUsers().addAll(lstUsers);
-		return Response.status(200).entity(reAssign).build();
+
 	}
 
 	@Override
@@ -2086,6 +2171,5 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(404).entity(null).build();			
 		}
 	}
-
 
 }

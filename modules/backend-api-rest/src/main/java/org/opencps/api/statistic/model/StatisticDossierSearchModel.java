@@ -43,7 +43,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierStatus",
     "dossierSubStatus",
     "level",
-    "notStatusReg"
+    "notStatusReg",
+    "step"
 })
 @XmlRootElement(name = "StatisticDossierSearchModel")
 public class StatisticDossierSearchModel {
@@ -56,6 +57,8 @@ public class StatisticDossierSearchModel {
     protected BigInteger level;
 	@QueryParam(value = "notStatusReg")
     protected Long notStatusReg;
+	@QueryParam(value = "step")
+    protected String step;
 
 	/**
      * Gets the value of the dossierStatus property.
@@ -151,6 +154,14 @@ public class StatisticDossierSearchModel {
      */
 	public void setNotStatusReg(Long notStatusReg) {
 		this.notStatusReg = notStatusReg;
+	}
+
+	public String getStep() {
+		return step;
+	}
+
+	public void setStep(String step) {
+		this.step = step;
 	}
 
 }

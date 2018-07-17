@@ -127,6 +127,8 @@ public interface DictcollectionInterface {
 			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling,
 			String metadata);
 
+	public boolean deleteAllDictItem(long userId, long groupId, long dictCollectionId);
+
 //	public long updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
 //			String itemNameEN, String itemDescription, String parent, Integer level, Integer sibling, String metadata);
 }
