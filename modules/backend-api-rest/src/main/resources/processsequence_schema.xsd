@@ -4,16 +4,27 @@
 		<xsd:sequence>
 			<xsd:element name="userId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="createDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modifiedDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="serviceProcessId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="previousActionId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="fromStepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="fromStepName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
 			<xsd:element name="actionUser" type="xsd:string" minOccurs="0" />
 			<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
 			<xsd:element name="actionNote" type="xsd:string" minOccurs="0" />
 			<xsd:element name="actionOverdue" type="xsd:int" minOccurs="0" />
+			<xsd:element name="pending" type="xsd:boolean" minOccurs="0" />
+			<xsd:element name="roolbackable" type="xsd:boolean" minOccurs="0" />
 			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
 			<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
 			<xsd:element name="stepName" type="xsd:string" minOccurs="0" />
-			<xsd:element name="sequenceNo" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dueDate" type="xsd:string" minOccurs="0" />
+			<xsd:element name="nextActionId" type="xsd:long" minOccurs="0" />
 			<xsd:element name="state" type="xsd:int" minOccurs="0" />
+			<xsd:element name="eventStatus" type="xsd:int" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="StepModel">
