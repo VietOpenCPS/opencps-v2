@@ -26,6 +26,9 @@ import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierRequestUD;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -34,6 +37,9 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -440,12 +446,30 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addTextSortable(DossierTerm.LOCK_STATE, StringPool.BLANK);
 			}
 			//LamTV: Process Assigned dossier
-			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionsUserId,
-					object.getUserId());
-			if (dau != null) {
-				document.addNumberSortable(DossierTerm.ASSIGNED, dau.getAssigned());
-			} else {
-				document.addNumberSortable(DossierTerm.ASSIGNED, ConstantsTerm.NO_ASSINED);
+//			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionsUserId,
+//					object.getUserId());
+//			if (dau != null) {
+//				document.addNumberSortable(DossierTerm.ASSIGNED, dau.getAssigned());
+//			} else {
+//				document.addNumberSortable(DossierTerm.ASSIGNED, ConstantsTerm.NO_ASSINED);
+//			}
+			//LamTV_Add durationCount and durationUnit
+			try {
+				long groupId = object.getGroupId();
+				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId,
+						object.getServiceCode(), object.getGovAgencyCode());
+				ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
+						object.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
+						.fetchServiceProcess(processOption.getServiceProcessId());
+
+				double durationCount = serviceProcess.getDurationCount();
+				double durationUnit = serviceProcess.getDurationUnit();
+				document.addNumberSortable(DossierTerm.DURATION_COUNT, durationCount);
+				document.addNumberSortable(DossierTerm.DURATION_UNIT, durationUnit);
+			} catch (Exception e) {
+				document.addNumberSortable(DossierTerm.DURATION_COUNT, 0d);
+				document.addNumberSortable(DossierTerm.DURATION_UNIT, 0d);
 			}
 		} catch (Exception e) {
 			_log.error(e);

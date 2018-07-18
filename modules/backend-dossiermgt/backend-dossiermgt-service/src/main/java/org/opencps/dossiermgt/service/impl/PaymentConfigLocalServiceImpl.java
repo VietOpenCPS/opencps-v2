@@ -303,6 +303,44 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
+	//LamTV_Process output DB
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentConfig updatePaymentConfigDB(long userId, long groupId, String govAgencyCode, String govAgencyName,
+			String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo, String invoiceLastNo,
+			String bankInfo, String epaymentConfig, ServiceContext serviceContext){
+
+		try {
+
+			Date now = new Date();
+			User userAction = userLocalService.getUser(userId);
+
+			long paymentConfigId = counterLocalService.increment(PaymentConfig.class.getName());
+			PaymentConfig object = paymentConfigPersistence.create(paymentConfigId);
+
+			// Add audit fields
+			object.setCompanyId(serviceContext.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			object.setGovAgencyCode(govAgencyCode);
+			object.setGovAgencyName(govAgencyName);
+			object.setGovAgencyTaxNo(govAgencyTaxNo);
+			object.setInvoiceTemplateNo(invoiceTemplateNo);
+			object.setInvoiceIssueNo(invoiceIssueNo);
+			object.setInvoiceLastNo(invoiceLastNo);
+			object.setBankInfo(bankInfo);
+			object.setEpaymentConfig(epaymentConfig);
+
+			return paymentConfigPersistence.update(object);
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+
 	private void validateDelete(long paymentConfigId) throws PortalException {
 		// TODO add logic fod remove paymentConfig in here
 	}

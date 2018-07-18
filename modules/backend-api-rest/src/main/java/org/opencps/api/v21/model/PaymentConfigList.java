@@ -27,55 +27,61 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="StepConfig" maxOccurs="unbounded">
+ *         &lt;element name="PaymentConfig" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="stepCode">
+ *                   &lt;element name="govAgencyCode">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="stepName">
+ *                   &lt;element name="govAgencyName">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="stepType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *                   &lt;element name="dossierStatus">
+ *                   &lt;element name="govAgencyTaxNo">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="1000"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="invoiceTemplateNo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="dossierSubStatus">
+ *                   &lt;element name="invoiceIssueNo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="menuGroup">
+ *                   &lt;element name="invoiceLastNo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="menuStepName">
+ *                   &lt;element name="bankInfo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="buttonConfig">
+ *                   &lt;element name="epaymentConfig">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
@@ -97,41 +103,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stepConfig"
+    "paymentConfig"
 })
-@XmlRootElement(name = "StepConfigList")
-public class StepConfigList {
+@XmlRootElement(name = "PaymentConfigList")
+public class PaymentConfigList {
 
-    @XmlElement(name = "StepConfig", required = true)
-    protected List<StepConfigList.StepConfig> stepConfig;
+    @XmlElement(name = "PaymentConfig", required = true)
+    protected List<PaymentConfigList.PaymentConfig> paymentConfig;
 
     /**
-     * Gets the value of the stepConfig property.
+     * Gets the value of the paymentConfig property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stepConfig property.
+     * This is why there is not a <CODE>set</CODE> method for the paymentConfig property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getStepConfig().add(newItem);
+     *    getPaymentConfig().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link StepConfigList.StepConfig }
+     * {@link PaymentConfigList.PaymentConfig }
      * 
      * 
      */
-    public List<StepConfigList.StepConfig> getStepConfig() {
-        if (stepConfig == null) {
-            stepConfig = new ArrayList<StepConfigList.StepConfig>();
+    public List<PaymentConfigList.PaymentConfig> getPaymentConfig() {
+        if (paymentConfig == null) {
+            paymentConfig = new ArrayList<PaymentConfigList.PaymentConfig>();
         }
-        return this.stepConfig;
+        return this.paymentConfig;
     }
 
 
@@ -145,50 +151,56 @@ public class StepConfigList {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="stepCode">
+     *         &lt;element name="govAgencyCode">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="stepName">
+     *         &lt;element name="govAgencyName">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="stepType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
-     *         &lt;element name="dossierStatus">
+     *         &lt;element name="govAgencyTaxNo">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="1000"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="invoiceTemplateNo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="dossierSubStatus">
+     *         &lt;element name="invoiceIssueNo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="menuGroup">
+     *         &lt;element name="invoiceLastNo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="menuStepName">
+     *         &lt;element name="bankInfo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="buttonConfig">
+     *         &lt;element name="epaymentConfig">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
@@ -205,223 +217,224 @@ public class StepConfigList {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "stepCode",
-        "stepName",
-        "stepType",
-        "dossierStatus",
-        "dossierSubStatus",
-        "menuGroup",
-        "menuStepName",
-        "buttonConfig"
+        "govAgencyCode",
+        "govAgencyName",
+        "govAgencyTaxNo",
+        "invoiceTemplateNo",
+        "invoiceIssueNo",
+        "invoiceLastNo",
+        "bankInfo",
+        "epaymentConfig"
     })
-    public static class StepConfig {
+    public static class PaymentConfig {
 
         @XmlElement(required = true)
-        protected String stepCode;
+        protected String govAgencyCode;
         @XmlElement(required = true)
-        protected String stepName;
-        protected Integer stepType;
+        protected String govAgencyName;
         @XmlElement(required = true)
-        protected String dossierStatus;
+        protected String govAgencyTaxNo;
         @XmlElement(required = true)
-        protected String dossierSubStatus;
+        protected String invoiceTemplateNo;
         @XmlElement(required = true)
-        protected String menuGroup;
+        protected String invoiceIssueNo;
         @XmlElement(required = true)
-        protected String menuStepName;
+        protected String invoiceLastNo;
         @XmlElement(required = true)
-        protected String buttonConfig;
+        protected String bankInfo;
+        @XmlElement(required = true)
+        protected String epaymentConfig;
 
         /**
-         * Gets the value of the stepCode property.
+         * Gets the value of the govAgencyCode property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getStepCode() {
-            return stepCode;
+        public String getGovAgencyCode() {
+            return govAgencyCode;
         }
 
         /**
-         * Sets the value of the stepCode property.
+         * Sets the value of the govAgencyCode property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setStepCode(String value) {
-            this.stepCode = value;
+        public void setGovAgencyCode(String value) {
+            this.govAgencyCode = value;
         }
 
         /**
-         * Gets the value of the stepName property.
+         * Gets the value of the govAgencyName property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getStepName() {
-            return stepName;
+        public String getGovAgencyName() {
+            return govAgencyName;
         }
 
         /**
-         * Sets the value of the stepName property.
+         * Sets the value of the govAgencyName property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setStepName(String value) {
-            this.stepName = value;
+        public void setGovAgencyName(String value) {
+            this.govAgencyName = value;
         }
 
         /**
-         * Gets the value of the stepType property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link Integer }
-         *     
-         */
-        public Integer getStepType() {
-            return stepType;
-        }
-
-        /**
-         * Sets the value of the stepType property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link Integer }
-         *     
-         */
-        public void setStepType(Integer value) {
-            this.stepType = value;
-        }
-
-        /**
-         * Gets the value of the dossierStatus property.
+         * Gets the value of the govAgencyTaxNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getDossierStatus() {
-            return dossierStatus;
+        public String getGovAgencyTaxNo() {
+            return govAgencyTaxNo;
         }
 
         /**
-         * Sets the value of the dossierStatus property.
+         * Sets the value of the govAgencyTaxNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setDossierStatus(String value) {
-            this.dossierStatus = value;
+        public void setGovAgencyTaxNo(String value) {
+            this.govAgencyTaxNo = value;
         }
 
         /**
-         * Gets the value of the dossierSubStatus property.
+         * Gets the value of the invoiceTemplateNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getDossierSubStatus() {
-            return dossierSubStatus;
+        public String getInvoiceTemplateNo() {
+            return invoiceTemplateNo;
         }
 
         /**
-         * Sets the value of the dossierSubStatus property.
+         * Sets the value of the invoiceTemplateNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setDossierSubStatus(String value) {
-            this.dossierSubStatus = value;
+        public void setInvoiceTemplateNo(String value) {
+            this.invoiceTemplateNo = value;
         }
 
         /**
-         * Gets the value of the menuGroup property.
+         * Gets the value of the invoiceIssueNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getMenuGroup() {
-            return menuGroup;
+        public String getInvoiceIssueNo() {
+            return invoiceIssueNo;
         }
 
         /**
-         * Sets the value of the menuGroup property.
+         * Sets the value of the invoiceIssueNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setMenuGroup(String value) {
-            this.menuGroup = value;
+        public void setInvoiceIssueNo(String value) {
+            this.invoiceIssueNo = value;
         }
 
         /**
-         * Gets the value of the menuStepName property.
+         * Gets the value of the invoiceLastNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getMenuStepName() {
-            return menuStepName;
+        public String getInvoiceLastNo() {
+            return invoiceLastNo;
         }
 
         /**
-         * Sets the value of the menuStepName property.
+         * Sets the value of the invoiceLastNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setMenuStepName(String value) {
-            this.menuStepName = value;
+        public void setInvoiceLastNo(String value) {
+            this.invoiceLastNo = value;
         }
 
         /**
-         * Gets the value of the buttonConfig property.
+         * Gets the value of the bankInfo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getButtonConfig() {
-            return buttonConfig;
+        public String getBankInfo() {
+            return bankInfo;
         }
 
         /**
-         * Sets the value of the buttonConfig property.
+         * Sets the value of the bankInfo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setButtonConfig(String value) {
-            this.buttonConfig = value;
+        public void setBankInfo(String value) {
+            this.bankInfo = value;
+        }
+
+        /**
+         * Gets the value of the epaymentConfig property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getEpaymentConfig() {
+            return epaymentConfig;
+        }
+
+        /**
+         * Sets the value of the epaymentConfig property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setEpaymentConfig(String value) {
+            this.epaymentConfig = value;
         }
 
     }

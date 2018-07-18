@@ -38,13 +38,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DossierActionNextActiontoUser", propOrder = {
     "userId",
     "userName",
-    "moderator"
+    "moderator",
+    "assigned"
 })
 public class DossierActionNextActiontoUser {
 
     protected Long userId;
     protected String userName;
     protected Boolean moderator;
+    protected Integer assigned;
 
     /**
      * Gets the value of the userId property.
@@ -117,5 +119,13 @@ public class DossierActionNextActiontoUser {
     public void setModerator(Boolean value) {
         this.moderator = value;
     }
+
+	public Integer getAssigned() {
+		return assigned;
+	}
+
+	public void setAssigned(Integer assigned) {
+		this.assigned = assigned;
+	}
 
 }
