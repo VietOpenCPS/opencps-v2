@@ -7,6 +7,7 @@
 		<input type="hidden" name="dossierStatus" id="dossierStatus">
 		
 		<input type="hidden" name="dossierTemplateNo" id="dossierTemplateNo">
+		<input type="hidden" name="dossierTemplateId" id="dossierTemplateId">
 		<input type="hidden" name="dossierId" id="dossierId" value="${(dossierId)!}">
 		<div class="row-header align-middle">
 			<div class="background-triangle-big">Tên thủ tục</div> 
@@ -27,7 +28,7 @@
 
 				<#elseif dossier.dossierStatus?has_content && dossier.dossierStatus == "waiting" && dossier.submitting?has_content && dossier.submitting != true>
 
-				<a class="btn btn-active" id="btn-submit-dossier-header" style="display: none;" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</a>
+				<a id="btn-submit-dossier-header" style="display: none;" data-bind="value : lockState"><i class="fa fa-paper-plane"></i> Nộp hồ sơ</a>
 
 				</#if>
 			</div>
@@ -762,7 +763,7 @@
 		$(document).on("click",".dossier-component-profile",function() {
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateId = "${(dossierTemplateId)!}";
+			var dossierTemplateId = $("#dossierTemplateId").val();
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
 				$(this).modal("show");
 			});
@@ -972,9 +973,9 @@
 		var dataSourceDossierTemplate = new kendo.data.DataSource({
 			transport :{
 				read : function(options){
-					if(options.data.dossierTemplateNo){
+					if(options.data.dossierTemplateId){
 						$.ajax({
-							url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+							url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateId + '/parts',
 							dataType : "json",
 							type : "GET",
 							headers : {"groupId": ${groupId}},
@@ -982,8 +983,14 @@
 
 							},
 							success : function(result){
-								options.success(result.dossierParts);
-								$("#dossierTemplateNo").val(result.templateNo);
+								if (result.data) {
+									options.success(result);
+								} else {
+									options.success({
+										data: [],
+										total: 0
+									})
+								}
 							},
 							error : function(result){
 								options.error(result);
@@ -993,6 +1000,8 @@
 				}
 			},
 			schema : {
+				total: 'total',
+				data: 'data',
 				model : {
 					id : "partNo"
 				}
@@ -1036,9 +1045,10 @@
 					type : "GET",
 					headers : {"groupId": ${groupId}},
 					success : function(result){
-						
+						$("#dossierTemplateNo").val(result.dossierTemplateNo);
+						$("#dossierTemplateId").val(result.dossierTemplateId);
 						dataSourceDossierTemplate.read({
-							dossierTemplateNo : result.dossierTemplateNo
+							dossierTemplateId : result.dossierTemplateId
 						});
 
 						var payment = fnLoadPayment(result.dossierId);
