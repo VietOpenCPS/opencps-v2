@@ -9,6 +9,14 @@
 				<div class="col-xs-12 col-sm-12">
 					<button id="btn_add_service_process" class="k-button btn-primary form-control" title="Thêm quy trình"><i class="glyphicon glyphicon-plus"></i> Thêm quy trình</button>
 				</div>
+				<div class="col-xs-12 col-sm-6 MT5">
+					<input type="file" style="display: none;" name="input_import_service_process" id="input_import_service_process">
+					<button id="btn_import_service_process" class="k-button btn-primary form-control" title="Thêm quy trình"><i class="glyphicon glyphicon-plus"></i> Import</button>
+				</div>
+				<div class="col-xs-12 col-sm-6 MT5">
+					<input type="file" style="display: none;" name="input_export_service_process" id="input_export_service_process">
+					<button id="btn_export_service_process" class="k-button btn-primary form-control" title="Thêm quy trình"><i class="glyphicon glyphicon-plus"></i> Export</button>
+				</div>
 			</div>
 			<div class="row MT10">
 				<div class="col-xs-12 col-sm-12">
@@ -50,6 +58,35 @@
 
 <script type="text/javascript">
 
+    $("#btn_import_service_process").click(function (event) {
+    	$("#input_import_service_process").click();
+    })
+    $("#input_import_service_process").change(function (event) {
+    	var url = '/o/rest/v2/dossiers/import/files'
+    	var data = new FormData();
+		data.append( 'file', $(this)[0].files[0]);
+		$.ajax({
+			type : 'POST', 
+			url  : url, 
+			data : data,
+			headers: {"groupId": ${groupId}},
+			processData: false,
+			contentType: false,
+			cache: false,
+			success :  function(result){ 
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
+			},
+			error:function(result){
+				notification.show({
+					message: "Thực hiện không thành công, xin vui lòng thử lại"
+				}, "error");
+
+				$(this).val("");
+			}
+		});
+    })
 	var serviceProcessDataSource = new kendo.data.DataSource({
 		transport: {
 			read: function(options) {
