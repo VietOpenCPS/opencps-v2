@@ -184,7 +184,9 @@ import javax.xml.bind.annotation.XmlType;
     "processBlock",
     "processUnit",
     "paymentFee",
-    "paymentNote"
+    "paymentNote",
+    "durationCount",
+    "durationUnit"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -274,6 +276,8 @@ public class DossierDetailModel {
     protected String dossierTemplateName;
     protected String paymentFee;
     protected String paymentNote;
+    protected Double durationCount;
+    protected Double durationUnit;
 
     public String getPaymentFee() {
 		return paymentFee;
@@ -2003,6 +2007,22 @@ public class DossierDetailModel {
 
 	public void setDelegateWardName(String delegateWardName) {
 		this.delegateWardName = delegateWardName;
+	}
+
+	public Double getDurationCount() {
+		return durationCount;
+	}
+
+	public void setDurationCount(Double durationCount) {
+		this.durationCount = durationCount;
+	}
+
+	public Double getDurationUnit() {
+		return durationUnit;
+	}
+
+	public void setDurationUnit(Double durationUnit) {
+		this.durationUnit = durationUnit;
 	}
 
 }

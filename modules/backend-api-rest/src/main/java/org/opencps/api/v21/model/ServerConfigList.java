@@ -27,55 +27,40 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="StepConfig" maxOccurs="unbounded">
+ *         &lt;element name="ServerConfig" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="stepCode">
+ *                   &lt;element name="govAgencyCode">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="stepName">
+ *                   &lt;element name="serverNo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="stepType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *                   &lt;element name="dossierStatus">
+ *                   &lt;element name="serverName">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="1000"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="protocol">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="dossierSubStatus">
- *                     &lt;simpleType>
- *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
- *                       &lt;/restriction>
- *                     &lt;/simpleType>
- *                   &lt;/element>
- *                   &lt;element name="menuGroup">
- *                     &lt;simpleType>
- *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
- *                       &lt;/restriction>
- *                     &lt;/simpleType>
- *                   &lt;/element>
- *                   &lt;element name="menuStepName">
- *                     &lt;simpleType>
- *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
- *                       &lt;/restriction>
- *                     &lt;/simpleType>
- *                   &lt;/element>
- *                   &lt;element name="buttonConfig">
+ *                   &lt;element name="configs">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
@@ -97,41 +82,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stepConfig"
+    "serverConfig"
 })
-@XmlRootElement(name = "StepConfigList")
-public class StepConfigList {
+@XmlRootElement(name = "ServerConfigList")
+public class ServerConfigList {
 
-    @XmlElement(name = "StepConfig", required = true)
-    protected List<StepConfigList.StepConfig> stepConfig;
+    @XmlElement(name = "ServerConfig", required = true)
+    protected List<ServerConfigList.ServerConfig> serverConfig;
 
     /**
-     * Gets the value of the stepConfig property.
+     * Gets the value of the serverConfig property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stepConfig property.
+     * This is why there is not a <CODE>set</CODE> method for the serverConfig property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getStepConfig().add(newItem);
+     *    getServerConfig().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link StepConfigList.StepConfig }
+     * {@link ServerConfigList.ServerConfig }
      * 
      * 
      */
-    public List<StepConfigList.StepConfig> getStepConfig() {
-        if (stepConfig == null) {
-            stepConfig = new ArrayList<StepConfigList.StepConfig>();
+    public List<ServerConfigList.ServerConfig> getServerConfig() {
+        if (serverConfig == null) {
+            serverConfig = new ArrayList<ServerConfigList.ServerConfig>();
         }
-        return this.stepConfig;
+        return this.serverConfig;
     }
 
 
@@ -145,50 +130,35 @@ public class StepConfigList {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="stepCode">
+     *         &lt;element name="govAgencyCode">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="stepName">
+     *         &lt;element name="serverNo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="stepType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
-     *         &lt;element name="dossierStatus">
+     *         &lt;element name="serverName">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="1000"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="protocol">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="dossierSubStatus">
-     *           &lt;simpleType>
-     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
-     *             &lt;/restriction>
-     *           &lt;/simpleType>
-     *         &lt;/element>
-     *         &lt;element name="menuGroup">
-     *           &lt;simpleType>
-     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
-     *             &lt;/restriction>
-     *           &lt;/simpleType>
-     *         &lt;/element>
-     *         &lt;element name="menuStepName">
-     *           &lt;simpleType>
-     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
-     *             &lt;/restriction>
-     *           &lt;/simpleType>
-     *         &lt;/element>
-     *         &lt;element name="buttonConfig">
+     *         &lt;element name="configs">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
@@ -205,223 +175,143 @@ public class StepConfigList {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "stepCode",
-        "stepName",
-        "stepType",
-        "dossierStatus",
-        "dossierSubStatus",
-        "menuGroup",
-        "menuStepName",
-        "buttonConfig"
+        "govAgencyCode",
+        "serverNo",
+        "serverName",
+        "protocol",
+        "configs"
     })
-    public static class StepConfig {
+    public static class ServerConfig {
 
         @XmlElement(required = true)
-        protected String stepCode;
+        protected String govAgencyCode;
         @XmlElement(required = true)
-        protected String stepName;
-        protected Integer stepType;
+        protected String serverNo;
         @XmlElement(required = true)
-        protected String dossierStatus;
+        protected String serverName;
         @XmlElement(required = true)
-        protected String dossierSubStatus;
+        protected String protocol;
         @XmlElement(required = true)
-        protected String menuGroup;
-        @XmlElement(required = true)
-        protected String menuStepName;
-        @XmlElement(required = true)
-        protected String buttonConfig;
+        protected String configs;
 
         /**
-         * Gets the value of the stepCode property.
+         * Gets the value of the govAgencyCode property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getStepCode() {
-            return stepCode;
+        public String getGovAgencyCode() {
+            return govAgencyCode;
         }
 
         /**
-         * Sets the value of the stepCode property.
+         * Sets the value of the govAgencyCode property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setStepCode(String value) {
-            this.stepCode = value;
+        public void setGovAgencyCode(String value) {
+            this.govAgencyCode = value;
         }
 
         /**
-         * Gets the value of the stepName property.
+         * Gets the value of the serverNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getStepName() {
-            return stepName;
+        public String getServerNo() {
+            return serverNo;
         }
 
         /**
-         * Sets the value of the stepName property.
+         * Sets the value of the serverNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setStepName(String value) {
-            this.stepName = value;
+        public void setServerNo(String value) {
+            this.serverNo = value;
         }
 
         /**
-         * Gets the value of the stepType property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link Integer }
-         *     
-         */
-        public Integer getStepType() {
-            return stepType;
-        }
-
-        /**
-         * Sets the value of the stepType property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link Integer }
-         *     
-         */
-        public void setStepType(Integer value) {
-            this.stepType = value;
-        }
-
-        /**
-         * Gets the value of the dossierStatus property.
+         * Gets the value of the serverName property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getDossierStatus() {
-            return dossierStatus;
+        public String getServerName() {
+            return serverName;
         }
 
         /**
-         * Sets the value of the dossierStatus property.
+         * Sets the value of the serverName property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setDossierStatus(String value) {
-            this.dossierStatus = value;
+        public void setServerName(String value) {
+            this.serverName = value;
         }
 
         /**
-         * Gets the value of the dossierSubStatus property.
+         * Gets the value of the protocol property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getDossierSubStatus() {
-            return dossierSubStatus;
+        public String getProtocol() {
+            return protocol;
         }
 
         /**
-         * Sets the value of the dossierSubStatus property.
+         * Sets the value of the protocol property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setDossierSubStatus(String value) {
-            this.dossierSubStatus = value;
+        public void setProtocol(String value) {
+            this.protocol = value;
         }
 
         /**
-         * Gets the value of the menuGroup property.
+         * Gets the value of the configs property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getMenuGroup() {
-            return menuGroup;
+        public String getConfigs() {
+            return configs;
         }
 
         /**
-         * Sets the value of the menuGroup property.
+         * Sets the value of the configs property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setMenuGroup(String value) {
-            this.menuGroup = value;
-        }
-
-        /**
-         * Gets the value of the menuStepName property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-        public String getMenuStepName() {
-            return menuStepName;
-        }
-
-        /**
-         * Sets the value of the menuStepName property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
-         */
-        public void setMenuStepName(String value) {
-            this.menuStepName = value;
-        }
-
-        /**
-         * Gets the value of the buttonConfig property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-        public String getButtonConfig() {
-            return buttonConfig;
-        }
-
-        /**
-         * Sets the value of the buttonConfig property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
-         */
-        public void setButtonConfig(String value) {
-            this.buttonConfig = value;
+        public void setConfigs(String value) {
+            this.configs = value;
         }
 
     }

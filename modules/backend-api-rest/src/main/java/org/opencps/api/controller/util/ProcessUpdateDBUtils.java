@@ -24,6 +24,8 @@ import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.MenuConfigList.MenuConfig;
 import org.opencps.api.v21.model.Parts;
 import org.opencps.api.v21.model.Parts.DossierPart;
+import org.opencps.api.v21.model.PaymentConfigList;
+import org.opencps.api.v21.model.PaymentConfigList.PaymentConfig;
 import org.opencps.api.v21.model.Processes;
 import org.opencps.api.v21.model.Processes.ProcessOption;
 import org.opencps.api.v21.model.Sequences;
@@ -45,6 +47,7 @@ import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.MenuConfigActions;
+import org.opencps.dossiermgt.action.PaymentConfigActions;
 import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
@@ -54,6 +57,7 @@ import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
 import org.opencps.dossiermgt.action.impl.MenuConfigActionsImpl;
+import org.opencps.dossiermgt.action.impl.PaymentConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
@@ -249,6 +253,48 @@ public class ProcessUpdateDBUtils {
 							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 							actions.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern, docSync, mappingData,
 									fieldConfigs, formReport, formScript);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+	}
+
+	//LamTV_Update PaymentConfig to DB
+	public static void processUpdatePaymentConfig(PaymentConfigList paymentList, long groupId, long userId,
+			ServiceContext serviceContext) {
+
+		try {
+			PaymentConfigActions actions = new PaymentConfigActionsImpl();
+			//Delete all table PaymentConfig
+			boolean flagPayment = actions.deleteAllPaymentConfig(groupId, userId, serviceContext);
+			//Update table PaymentConfig
+			if (paymentList != null && flagPayment) {
+				List<PaymentConfig> paymentConfigList = paymentList.getPaymentConfig();
+				if (paymentConfigList != null && paymentConfigList.size() > 0) {
+					String govAgencyCode = StringPool.BLANK;
+					String govAgencyName = StringPool.BLANK;
+					String govAgencyTaxNo = StringPool.BLANK;
+					String invoiceTemplateNo = StringPool.BLANK;
+					String invoiceIssueNo = StringPool.BLANK;
+					String invoiceLastNo = StringPool.BLANK;
+					String bankInfo = StringPool.BLANK;
+					String epaymentConfig = StringPool.BLANK;
+					for (PaymentConfig paymentConfig : paymentConfigList) {
+						govAgencyCode = paymentConfig.getGovAgencyCode();
+						govAgencyName = paymentConfig.getGovAgencyName();
+						govAgencyTaxNo = paymentConfig.getGovAgencyTaxNo();
+						invoiceTemplateNo = paymentConfig.getInvoiceTemplateNo();
+						invoiceIssueNo = paymentConfig.getInvoiceIssueNo();
+						invoiceLastNo = paymentConfig.getInvoiceLastNo();
+						bankInfo = paymentConfig.getBankInfo();
+						epaymentConfig = paymentConfig.getEpaymentConfig();
+						if (Validator.isNotNull(govAgencyCode)) {
+							// Check record exits DB
+							actions.updatePaymentConfigDB(userId, groupId, govAgencyCode, govAgencyName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo,
+									invoiceLastNo, bankInfo, epaymentConfig, serviceContext);
 						}
 					}
 				}

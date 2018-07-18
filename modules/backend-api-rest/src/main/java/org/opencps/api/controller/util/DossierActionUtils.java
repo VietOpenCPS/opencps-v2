@@ -17,6 +17,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -248,19 +249,28 @@ public class DossierActionUtils {
 			DossierActionNextActiontoUser modelUser = null;
 			if (lstUser != null && lstUser.size() > 0) {
 				outputUsers = new ArrayList<DossierActionNextActiontoUser>();
+				boolean moderator = false;
+				int assigned = 0;
 				for (User user : lstUser) {
 					modelUser = new DossierActionNextActiontoUser();
 					Map<String, Object> attr = user.getModelAttributes();
 					long userId = GetterUtil.getLong(user.getUserId());
 
-					boolean moderator = false;
-					if (attr != null && attr.containsKey("moderator")) {
-						moderator = GetterUtil.getBoolean(attr.get("moderator"));
+					moderator = false;
+					assigned = 0;
+					if (attr != null) {
+						if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
+							moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
+						}
+						if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
+							assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
+						}
 					}
 
 					modelUser.setUserId(userId);
 					modelUser.setUserName(user.getFullName());
 					modelUser.setModerator(moderator);
+					modelUser.setAssigned(assigned);
 					outputUsers.add(modelUser);
 				}
 			}
