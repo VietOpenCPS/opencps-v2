@@ -5,15 +5,18 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.opencps.api.constants.ConstantUtils;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DoActionModel;
@@ -21,10 +24,15 @@ import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
+import org.opencps.api.processsequence.model.ActionModel;
+import org.opencps.api.processsequence.model.DossierSequenceModel;
+import org.opencps.api.processsequence.model.DossierSequenceResultModel;
+import org.opencps.api.processsequence.model.ProcessSequenceOutputModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
 import org.opencps.auth.api.BackendAuth;
@@ -32,16 +40,19 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.dossiermgt.action.DossierActionUser;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
@@ -49,35 +60,43 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -91,6 +110,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -274,6 +294,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossiersTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -459,6 +480,7 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	//LamTV: Process dossierTodo
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierProcessList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -495,6 +517,62 @@ public class DossierManagementImpl implements DossierManagement {
 			String substatus = query.getSubstatus();
 			String step = query.getStep();
 			_log.info("step: "+step);
+			StringBuilder strStatusStep = null;
+			StringBuilder strSubStatusStep = null;
+			if (Validator.isNotNull(step)) {
+				strStatusStep = new StringBuilder();
+				strSubStatusStep = new StringBuilder();
+				String[] stepArr = step.split(StringPool.COMMA);
+				if (stepArr != null && stepArr.length > 0) {
+					String statusStep = StringPool.BLANK;
+					String subStatusStep = StringPool.BLANK;
+					for (int i = 0; i < stepArr.length; i++) {
+						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, stepArr[i]);
+						if (stepConfig != null) {
+							statusStep = stepConfig.getDossierStatus();
+							subStatusStep = stepConfig.getDossierSubStatus();
+							if (i == 0) {
+								strStatusStep.append(statusStep);
+								if (Validator.isNotNull(subStatusStep)) {
+									strSubStatusStep.append(subStatusStep);
+								} else {
+									strSubStatusStep.append("empty");
+								}
+							} else {
+								strStatusStep.append(StringPool.COMMA);
+								strStatusStep.append(statusStep);
+								strSubStatusStep.append(StringPool.COMMA);
+								if (Validator.isNotNull(subStatusStep)) {
+									strSubStatusStep.append(subStatusStep);
+								} else {
+									strSubStatusStep.append("empty");
+								}
+							}
+						}
+					}
+				}
+ 			}
+			_log.info("strStatusStep: "+strStatusStep.toString());
+			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
+//			if (stepList != null && stepList.size() > 0) {
+//				_log.info("length: "+stepList.size());
+//				for (StepConfig step: stepList) {
+//					params.put(DossierTerm.STATUS, step.getDossierStatus());
+//					params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+//					_log.info("START");
+//					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
+//							null, serviceContext);
+//					_log.info("START");
+//					JSONObject statistic = JSONFactoryUtil.createJSONObject();
+//					statistic.put("stepCode", step.getStepCode());
+//					statistic.put("stepName", step.getStepName());
+//					statistic.put("dossierStatus", step.getDossierStatus());
+//					statistic.put("dossierSubStatus", step.getDossierSubStatus());
+//					statistic.put("totalCount", count);
+//					total += count;
+//					statistics.put(statistic);
+//				}
+//			}
 			String agency = query.getAgency();
 			String service = query.getService();
 			String template = query.getTemplate();
@@ -538,7 +616,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TEMPLATE, template);
 			params.put(DossierTerm.YEAR, year);
 			params.put(DossierTerm.MONTH, month);
-			params.put(DossierTerm.STEP, step);
+//			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
 			params.put(DossierTerm.FOLLOW, follow);
@@ -555,6 +633,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			//Process follow StepCode
+			params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
+			params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, strSubStatusStep.toString());
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
 
@@ -786,9 +867,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 				Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-						dossier.getDossierTemplateNo(), groupId);
-
+//				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+//						dossier.getDossierTemplateNo(), groupId);
 				// dossierPermission.hasGetDetailDossier(groupId,
 				// user.getUserId(), dossier, option.getServiceProcessId());
 
@@ -827,8 +907,8 @@ public class DossierManagementImpl implements DossierManagement {
 			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 					input.getGovAgencyCode(), input.getDossierTemplateNo());
 
-			int counter = 0;
-			String referenceUid = StringPool.BLANK;
+//			int counter = 0;
+//			String referenceUid = StringPool.BLANK;
 			//
 			// ProcessOption option = getProcessOption(input.getServiceCode(),
 			// input.getGovAgencyCode(),
@@ -837,8 +917,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// ServiceProcess process =
 			// ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
 
-			if (referenceUid.trim().length() == 0)
-				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+//			if (referenceUid.trim().length() == 0)
+//				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 
 			// String serviceName = getServiceName(input.getServiceCode(),
 			// groupId);
@@ -862,18 +942,26 @@ public class DossierManagementImpl implements DossierManagement {
 				postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
 			}
 
-			boolean online = true;
+//			boolean online = true;
+//
+//			String password = StringPool.BLANK;
 
-			String password = StringPool.BLANK;
-
-			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
+//			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
+//					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
+//					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
+//					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
+//					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
+//					input.getContactEmail(), input.getDossierTemplateNo(), password, input.getViaPostal(),
+//					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
+//					true, input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
+			//
+			Dossier dossier = actions.initUpdateDossier(groupId, id, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
-					input.getContactEmail(), input.getDossierTemplateNo(), password, input.getViaPostal(),
-					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
-					true, input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
+					input.getContactEmail(), input.getDossierTemplateNo(), input.getViaPostal(),
+					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(),
+					input.getApplicantNote(), serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
@@ -890,10 +978,8 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, String id) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
-
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -920,12 +1006,12 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response cancellingDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -956,10 +1042,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1025,8 +1110,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 		// RESET submitting
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		DossierPermission dossierPermission = new DossierPermission();
-		BackendAuth auth = new BackendAuthImpl();
+//		DossierPermission dossierPermission = new DossierPermission();
+//		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		try {
 			// isSyncAction equal 1 that is the action was processed by
@@ -1053,7 +1138,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		DossierAction dossierResult = null;
@@ -1311,6 +1396,7 @@ public class DossierManagementImpl implements DossierManagement {
 	Log _log = LogFactoryUtil.getLog(DossierManagementImpl.class);
 
 	// Get dossier by certificate Number
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierByCertificateNumber(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String certificateNumber) {
@@ -1441,12 +1527,10 @@ public class DossierManagementImpl implements DossierManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, String body) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1487,10 +1571,9 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1531,10 +1614,9 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		BackendAuth auth = new BackendAuthImpl();
-
 		DossierActions actions = new DossierActionsImpl();
 
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1717,6 +1799,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked"})
 	@Override
 	public Response getDossiersPendingList(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -1850,6 +1933,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossiersInfoList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -2004,7 +2088,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			if (dossierAction != null) {
 				String stepCode = dossierAction.getStepCode();
-				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierAction.getDossierActionId(), stepCode);
+				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
 				for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
 					ToUsers toUsers = new ToUsers();
 					toUsers.setAssigned(dau.getAssigned());
@@ -2024,40 +2108,64 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response updateReassignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long dossierId, ReAssign reAssignNew) {
-		ReAssign reAssign = new ReAssign();
+			User user, ServiceContext serviceContext, long dossierId, String toUsers) {
 
-		List<ToUsers> lstUsers = new ArrayList<>();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
-		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		if (dossier != null) {
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-			if (dossierAction != null) {
-				String stepCode = dossierAction.getStepCode();
-				DossierActionUserLocalServiceUtil.deleteByDossierAndStepCode(dossierId, stepCode);
-				for (ToUsers tu : reAssignNew.getToUsers()) {
-					try {
-						DossierActionUserLocalServiceUtil.addDossierActionUser(tu.getUserId(), groupId, dossier.getDossierActionId(), dossierId, stepCode, (tu.getAssigned() != ProcessActionTerm.NOT_ASSIGNED ? 1 : 0), tu.getAssigned(), true);
-					} catch (PortalException e) {
-						e.printStackTrace();
+//		_log.info("groupId: "+groupId);
+//		_log.info("toUsers: "+toUsers);
+
+		try {
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			ReAssign reAssign = new ReAssign();
+			if (dossier != null) {
+				DossierAction dossierAction = DossierActionLocalServiceUtil
+						.fetchDossierAction(dossier.getDossierActionId());
+				if (dossierAction != null) {
+					String stepCode = dossierAction.getStepCode();
+					long dossierActionId = dossier.getDossierActionId();
+					DossierActionUserLocalServiceUtil.deleteByDossierAndStepCode(dossierId, stepCode);
+					//
+					if (Validator.isNotNull(toUsers)) {
+						JSONArray userArr = JSONFactoryUtil.createJSONArray(toUsers);
+						if (userArr != null && userArr.length() > 0) {
+							long userId = 0;
+							int assigned = 0;
+							int moderator = 0;
+							for (int i = 0; i < userArr.length(); i++) {
+								JSONObject jsonUser = userArr.getJSONObject(i);
+								if (jsonUser != null) {
+									userId = jsonUser.getLong("userId");
+									assigned = jsonUser.getInt("assigned");
+									if (assigned > 0) {
+										moderator = 1;
+									}
+									DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId,
+											dossierActionId, dossierId, stepCode, moderator, assigned, true);
+								}
+							}
+							List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil
+									.getByDossierAndStepCode(dossierId, stepCode);
+							List<ToUsers> lstUsers = new ArrayList<>();
+							for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
+								ToUsers tu = new ToUsers();
+								tu.setAssigned(dau.getAssigned());
+								tu.setUserId(dau.getUserId());
+								User u = UserLocalServiceUtil.fetchUser(tu.getUserId());
+								tu.setModerator(dau.getModerator() == 1 ? true : false);
+								tu.setUserName(u.getFullName());
+								lstUsers.add(tu);
+							}
+							reAssign.getToUsers().addAll(lstUsers);
+						}
 					}
 				}
-				List<org.opencps.dossiermgt.model.DossierActionUser> lstDossierActionUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierAction.getDossierActionId(), stepCode);
-				for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDossierActionUsers) {
-					ToUsers tu = new ToUsers();
-					tu.setAssigned(dau.getAssigned());
-					tu.setUserId(dau.getUserId());
-					User u = UserLocalServiceUtil.fetchUser(tu.getUserId());
-					tu.setModerator(dau.getModerator() == 1 ? true : false);
-					tu.setUserName(u.getFullName());
-					lstUsers.add(tu);
-				}
 			}
+			return Response.status(200).entity(reAssign).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
 		}
-		
-		reAssign.getToUsers().addAll(lstUsers);
-		return Response.status(200).entity(reAssign).build();
+
 	}
 
 	@Override
@@ -2087,5 +2195,154 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@Override
+	public Response getDossierSequences(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		DossierSequenceResultModel result = new DossierSequenceResultModel();
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
+			Dossier dossier = null;
+			long dossierId = GetterUtil.getLong(id);
+			dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			if (dossier == null) {
+				throw new Exception("Không tìm thấy hồ sơ");
+			}
+			String serviceCode = dossier.getServiceCode();
+			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, serviceCode, dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
+			if (serviceProcess == null) {
+				throw new Exception("Không tìm thấy hồ sơ");
+			}
+			
+			List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
+			result.setProcessNo(serviceProcess.getProcessNo());
+			result.setDurationUnit(serviceProcess.getDurationUnit());
+			result.setDurationUnit(serviceProcess.getDurationCount());
+			result.setTotal(lstSequences.size());
+			
+			List<DossierSequenceModel> lstDsms = new ArrayList<>();
+			for (ProcessSequence ps : lstSequences) {
+				DossierSequenceModel dsm = new DossierSequenceModel();
+				dsm.setSequenceNo(ps.getSequenceNo());
+				dsm.setSequenceName(ps.getSequenceName());
+				dsm.setSequenceRole(ps.getSequenceRole());
+				dsm.setDurationCount(ps.getDurationCount());
+				
+				List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByDID_FSN(dossier.getDossierId(), dsm.getSequenceNo());
+				List<ActionModel> lstActionModels = new ArrayList<>();
+				
+				for (DossierAction da : lstDossierActions) {
+					ActionModel am = new ActionModel();
+					am.setActionCode(da.getActionCode());
+					am.setActionName(da.getActionName());
+					am.setActionNote(da.getActionNote());
+					am.setActionUser(da.getActionUser());
+					am.setActionOverdue(da.getActionOverdue());
+					am.setPayload(da.getPayload());
+					am.setCreateDate(DateTimeUtils.convertDateToString(da.getCreateDate(), DateTimeUtils._TIMESTAMP));
+					am.setState(da.getState());
+					am.setStepCode(da.getStepCode());
+					am.setStepName(da.getStepName());
+					am.setUserId(da.getUserId());
+				}
+				
+				dsm.getActions().addAll(lstActionModels);
+				
+				lstDsms.add(dsm);
+			}
+						
+			result.getData().addAll(lstDsms);
+			
+			return Response.status(200).entity(result).build();
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("Content not found!");
+			error.setCode(404);
+			error.setDescription(e.getMessage());
+
+			return Response.status(404).entity(error).build();
+		}	
+
+	}
+
+	@Override
+	public Response addDossierFileByEForm(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String partNo, String formData) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.info("In dossier file create");
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long dossierId = GetterUtil.getLong(id);
+
+			Dossier dossier = null;
+
+			if (dossierId != 0) {
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (Validator.isNull(dossier)) {
+					dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				}
+			} else {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+
+			String referenceUid = UUID.randomUUID().toString();
+
+			DataHandler dataHandler = file.getDataHandler();
+			
+			DossierFileActions action = new DossierFileActionsImpl();
+			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossier.getDossierTemplateNo(), partNo);
+			
+			
+			_log.info("__Start add file at:" + new Date());
+
+			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
+					dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
+					dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
+			
+			_log.info("__End add file at:" + new Date());
+			
+			if(Validator.isNotNull(formData)) {
+				dossierFile.setFormData(formData);
+			}
+					
+			_log.info("__Start update dossier file at:" + new Date());
+
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			dossierFile = action.updateDossierFileFormData(groupId, dossier.getDossierId(), referenceUid, formData,
+					serviceContext);
+			
+			_log.info("__End update dossier file at:" + new Date());
+
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			
+			_log.info("__End bind to dossierFile" + new Date());
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
 
 }

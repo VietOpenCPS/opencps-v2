@@ -799,7 +799,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		return dictItemPersistence.countByF_dictItemNewerThan(date, groupId);
 	}
 
-	public void updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
+	public DictItem updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
 			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling, String metadata) {
 
 		try{
@@ -813,11 +813,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 	//			String treeIndex = getTreeIndex(dictItemId, parentItemId, sibling);
 	//		}
 	
-			DictItem dictItem = dictItemPersistence.fetchByIC_DCI(itemCode, dictCollectionId);
-			if (dictItem == null) {
-				long dictItemId = counterLocalService.increment(DictItem.class.getName());
-				dictItem = dictItemPersistence.create(dictItemId);
-			}
+			long dictItemId = counterLocalService.increment(DictItem.class.getName());
+			DictItem dictItem = dictItemPersistence.create(dictItemId);
 	
 			// Group instance
 			dictItem.setGroupId(groupId);
@@ -847,10 +844,11 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 	//
 	//		dictItem.setExpandoBridgeAttributes(baseModel);
 	
-			dictItemPersistence.update(dictItem);
+			return dictItemPersistence.update(dictItem);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DictItemLocalServiceImpl.class);

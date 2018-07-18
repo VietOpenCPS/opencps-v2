@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUserImpl implements DossierActionUser {
@@ -106,12 +107,12 @@ public class DossierActionUserImpl implements DossierActionUser {
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 				for (int j = 0; j < users.size(); j++) {
-					_log.info("UserID: "+i+ users.get(i).getUserId());
+//					_log.info("UserID: "+i+ users.get(i).getUserId());
 				}
 				if (i == 0) {
 					for (User user : users) {
 //						_log.info("user: "+user.getUserId());
-						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false);					
+						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false, stepCode, dossier.getDossierId());
 					}
 				} else {
 					for (User user : users) {
@@ -126,7 +127,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 							}
 							DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 						} else {						
-							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false);					
+							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false, stepCode, dossier.getDossierId());
 						}
 //						model.setModerator(mod);
 //						model.setAssigned(assigned);
@@ -167,7 +168,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 						}
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 					} else {						
-						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierActionId, mod, false);					
+						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierActionId, mod, false, StringPool.BLANK, dossier.getDossierId());
 					}
 				}				
 			}
@@ -197,7 +198,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			moderator = du.getModerator();
 		}
 		else {
-			model.setModerator(1);			
+			model.setModerator(1);
 		}
 		model.setVisited(false);
 		// Add User
@@ -215,12 +216,20 @@ public class DossierActionUserImpl implements DossierActionUser {
 			org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
 			
 			if (Validator.isNull(dau)) {
-				addDossierActionUserByAssigned(allowAssignUser, assignUserId, dossierActionId, moderator, false);
+				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				if (dAction != null) {
+					addDossierActionUserByAssigned(allowAssignUser, assignUserId, dossierActionId, moderator, false,
+							dAction.getStepCode(), dossier.getDossierId());
+				} else {
+					addDossierActionUserByAssigned(allowAssignUser, assignUserId, dossierActionId, moderator, false,
+							StringPool.BLANK, dossier.getDossierId());
+				}
 			}
 		}
 	}
 
-	private void addDossierActionUserByAssigned(int allowAssignUser, long userId, long dossierActionId, int moderator, boolean visited) {
+	private void addDossierActionUserByAssigned(int allowAssignUser, long userId, long dossierActionId, int moderator,
+			boolean visited, String stepCode, long dossierId) {
 		org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
 		model.setVisited(visited);
@@ -258,6 +267,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setVisited(true);
 			assigned = DossierActionUserTerm.ASSIGNED_PH;
 			model.setAssigned(assigned);
+			model.setStepCode(stepCode);
+			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
 		}
@@ -267,6 +278,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setModerator(moderator);
 			assigned = DossierActionUserTerm.ASSIGNED_TH;
 			model.setAssigned(assigned);
+			model.setStepCode(stepCode);
+			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
 
@@ -275,6 +288,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setModerator(moderator);
 			assigned = DossierActionUserTerm.ASSIGNED_PH;
 			model.setAssigned(assigned);
+			model.setStepCode(stepCode);
+			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
 
@@ -283,6 +298,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setModerator(moderator);
 			assigned = DossierActionUserTerm.ASSIGNED_TD;
 			model.setAssigned(assigned);
+			model.setStepCode(stepCode);
+			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);																			
 		}		

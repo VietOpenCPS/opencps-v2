@@ -577,6 +577,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 	}
 
 	//LamTV_ Process output DossierPart to DB
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierPart updateDossierPartDB(long userId, long groupId, String templateNo, String partNo, String partName,
 			String partTip, Integer partType, boolean multiple, String formScript, String formReport, boolean required,
 			boolean esign, String fileTemplateNo, String deliverableType, Integer deliverableAction, boolean eForm,
@@ -585,10 +586,8 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
 
-		DossierPart object = dossierPartPersistence.fetchByTP_NO_PART(groupId, fileTemplateNo, partNo);
-
 		long dossierPartId = counterLocalService.increment(CLASS_NAME);
-		object = dossierPartPersistence.create(dossierPartId);
+		DossierPart object = dossierPartPersistence.create(dossierPartId);
 
 		// Add audit fields
 		object.setCompanyId(serviceContext.getCompanyId());

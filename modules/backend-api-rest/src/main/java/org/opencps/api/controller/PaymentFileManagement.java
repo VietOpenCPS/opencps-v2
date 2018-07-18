@@ -92,6 +92,22 @@ public interface PaymentFileManagement {
 			@ApiParam(value = "referenceUid of Payment", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Get detail payment File follow ReferenceUid - END */
 
+	//LamTV_Process new API Payment
+	@GET
+	@Path("/{id}/payment")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "Get detail Payment File By dossierId", response = PaymentFileResultModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Get detail payment file", response = PaymentFileResultModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Accsess denied", response = ExceptionModel.class) })
+	public Response getPaymentFileByDossierId(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id);
+
 	//4
 	/* Get info epaymentProfile - START */
 	@GET

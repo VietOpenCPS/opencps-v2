@@ -117,6 +117,7 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String AUTO_EVENT_SUBMIT = "submit";
 	public static final String AUTO_EVENT_TIMMER = "timer";
 	public static final String AUTO_EVENT_LISTENER = "listener";
+	public static final String AUTO_EVENT_SPECIAL = "special";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
 
@@ -1254,26 +1255,13 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
 				try {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-					int enable = 0;
+					//GS.AnhTT_Process
+					int enable = 2;
 					if (dActionUser != null) {
 						int assign = dActionUser.getAssigned();
-						switch(assign){
-							case 1:
-								enable = 1;
-								break;
-							case 2:
-								enable = 1;
-								break;
-							case 3:
-								enable = 2;
-								break;
-							default:
-								break;
-						}
+						if (assign==1 && !pending) enable = 1;
 					}
-					if (enable == 1 && pending) {
-						enable = 2;
-					}
+					
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
 					_log.info("processActionList: "+processActionList.size());
@@ -1298,13 +1286,11 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-							if (enable == 1) {
-								int enableButton = processCheckEnable(preCondition, autoEvent, dossier);
-								data.put(ProcessActionTerm.ENABLE, enableButton);
-							} else {
+							if (processCheckEnable(preCondition, autoEvent, dossier) == 1)
 								data.put(ProcessActionTerm.ENABLE, enable);
-							}
-	
+							else
+								data.put(ProcessActionTerm.ENABLE, 0);
+							
 							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
 							data.put(ProcessActionTerm.ACTION_NAME, actionName);
@@ -2243,6 +2229,7 @@ public class DossierActionsImpl implements DossierActions {
 				DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
 				int allowAssignUser = proAction.getAllowAssignUser();
+				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
 						_log.info("LamTV_PROCESS assignUsers != null");
@@ -2250,23 +2237,24 @@ public class DossierActionsImpl implements DossierActions {
 						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId(), subUsersArray);
 					} else {
-						_log.info("PROCESS subUsers == null");
+						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId());
 					}
 				} else {
+					_log.info("PROCESS subUsers == null");
 					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
 				}
 
-				List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
 
-				for (PaymentFile pf : paymentFiles) {
-					if (pf.getIsNew()) {
-						syncPaymentFiles.add(pf);
-					}
-				}
+//				for (PaymentFile pf : paymentFiles) {
+//					if (pf.getIsNew()) {
+//						syncPaymentFiles.add(pf);
+//					}
+//				}
 
 				for (PaymentFile spf : syncPaymentFiles) {
 				}
@@ -2432,6 +2420,15 @@ public class DossierActionsImpl implements DossierActions {
 	
 	private void updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, ServiceContext context) {
 		Date now = new Date();
+
+		if (Validator.isNull(dossier.getReceiveDate())
+				&& Validator.isNotNull(dossier.getDossierNo())) {
+			try {
+				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), new Date(), context);
+			} catch (PortalException e) {
+				e.printStackTrace();
+			}
+		}
 
 		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
 			try {
@@ -2978,14 +2975,14 @@ public class DossierActionsImpl implements DossierActions {
 
 			// Add PaymentSync
 
-			List<PaymentFile> paymentFiles = PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 			List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
 
-			for (PaymentFile pf : paymentFiles) {
-				if (pf.getIsNew()) {
-					syncPaymentFiles.add(pf);
-				}
-			}
+//			for (PaymentFile pf : paymentFiles) {
+//				if (pf.getIsNew()) {
+//					syncPaymentFiles.add(pf);
+//				}
+//			}
 
 			for (PaymentFile spf : syncPaymentFiles) {
 				// Hard-code
@@ -4015,7 +4012,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		int enable = 1;
 		boolean flagAutoEvent = true;
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
-				|| AUTO_EVENT_LISTENER.equals(autoEvent)) {
+				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
 			flagAutoEvent = false;
 		}
 		boolean checkPreCondition = false;
@@ -4099,6 +4096,27 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			}
 		}
 		return createFile;
+	}
+
+	//LamTV_Process update Dossier
+	@Override
+	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			ServiceContext serviceContext) {
+
+		try {
+			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType,
+					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
+					wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+					postalCityCode, postalCityName, postalTelNo, applicantNote, serviceContext);
+
+		} catch (Exception e) {
+			_log.error(e);
+			return null;
+		}
 	}
 
 }

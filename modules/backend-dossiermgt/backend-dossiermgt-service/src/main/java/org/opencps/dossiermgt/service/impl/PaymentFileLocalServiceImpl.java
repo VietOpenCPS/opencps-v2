@@ -376,24 +376,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		paymentFile.setDossierId(dossierId);
 		paymentFile.setReferenceUid(referenceUid);
-		paymentFile.setGovAgencyCode(govAgencyCode);
-		paymentFile.setGovAgencyName(govAgencyName);
+//		paymentFile.setGovAgencyCode(govAgencyCode);
+//		paymentFile.setGovAgencyName(govAgencyName);
 		paymentFile.setPaymentFee(paymentFee);
 		paymentFile.setPaymentAmount(GetterUtil.getLong(paymentAmount));
 		paymentFile.setPaymentNote(paymentNote);
 		paymentFile.setEpaymentProfile(epaymentProfile);
 		paymentFile.setBankInfo(bankInfo);
-
-		// WTF?...
-		/*
-		 * try { Dossier dossier =
-		 * DossierLocalServiceUtil.getDossier(dossierId);
-		 * dossier.setApplicantName(applicantName);
-		 * dossier.setApplicantIdNo(applicantIdNo);
-		 * 
-		 * dossierPersistence.update(dossier); } catch (Exception e) {
-		 * e.printStackTrace(); }
-		 */
 
 		paymentFilePersistence.update(paymentFile);
 
@@ -406,10 +395,10 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 * @param
 	 * @return PaymentFile
 	 */
-	// wtf?..... clgt?
 	public PaymentFile getEpaymentProfile(long dossierId, String referenceUid) {
 
-		return (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
+//		return (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
+		return null;
 
 	}
 
@@ -418,7 +407,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	}
 
 	public List<PaymentFile> getSyncPaymentFile(long groupId, boolean isNew) {
-		return paymentFilePersistence.findByISN_GID(groupId, isNew);
+//		return paymentFilePersistence.findByISN_GID(groupId, isNew);
+		return null;
 	}
 
 	/**
@@ -480,7 +470,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			} else {
 				paymentFile.setPaymentStatus(1);
 			}
-			paymentFile.setIsNew(true);
+//			paymentFile.setIsNew(true);
 		}
 
 		// update dossier
@@ -546,7 +536,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmFileEntryId(fileEntryId);
 			// TODO review payment status
 			paymentFile.setPaymentStatus(1);
-			paymentFile.setIsNew(true);
+//			paymentFile.setIsNew(true);
 		}
 
 		
@@ -606,7 +596,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceNo(invoiceNo);
 			paymentFile.setPaymentStatus(2);
 			
-			paymentFile.setIsNew(true);
+//			paymentFile.setIsNew(true);
 
 		}
 
@@ -652,8 +642,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
-			paymentFile.setInvoiceFileEntryId(fileEntryId);
-			paymentFile.setIsNew(true);
+//			paymentFile.setInvoiceFileEntryId(fileEntryId);
+//			paymentFile.setIsNew(true);
 
 		}
 
@@ -668,9 +658,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	}
 
 	@Override
-	public List<PaymentFile> getByDossierId(long dossierId) {
-		// TODO Auto-generated method stub
-		return paymentFilePersistence.findByDossierId(dossierId);
+	public PaymentFile getByDossierId(long groupId, long dossierId) {
+		try {
+			return paymentFilePersistence.findByDossierId(groupId, dossierId);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

@@ -36,6 +36,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class StatisticManagementImpl implements StatisticManagement {
 
@@ -245,41 +247,75 @@ public class StatisticManagementImpl implements StatisticManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long userId = user.getUserId();
-			int stepType = 0;
+//			int stepType = 0;
 
 			_log.info("START");
 			// Get info input
 //			long notStatusReg = query.getNotStatusReg();
 //			String status = query.getDossierStatus();
 //			String substatus = query.getDossierSubStatus();
-			List<StepConfig> stepList = StepConfigLocalServiceUtil.getByStepType(groupId, stepType);
 			_log.info("START");
 			JSONArray statistics = JSONFactoryUtil.createJSONArray();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.USER_ID, String.valueOf(userId));
-			params.put(DossierTerm.OWNER, String.valueOf(true));
-//			params.put(DossierTerm.NOT_STATUS_REG, notStatusReg);
+//			params.put(DossierTerm.OWNER, String.valueOf(true));
 			int total = 0;
-			if (stepList != null && stepList.size() > 0) {
-				_log.info("length: "+stepList.size());
-				for (StepConfig step: stepList) {
-					params.put(DossierTerm.STATUS, step.getDossierStatus());
-					params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-					_log.info("START");
-					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
-							null, serviceContext);
-					_log.info("START");
-					JSONObject statistic = JSONFactoryUtil.createJSONObject();
-					statistic.put("stepCode", step.getStepCode());
-					statistic.put("stepName", step.getStepName());
-					statistic.put("dossierStatus", step.getDossierStatus());
-					statistic.put("dossierSubStatus", step.getDossierSubStatus());
-					statistic.put("totalCount", count);
-					total += count;
-					statistics.put(statistic);
+			//
+			String stepCode = query.getStep();
+			_log.info("STEPCODE: "+stepCode);
+			if (Validator.isNotNull(stepCode)) {
+				String[] stepArr = stepCode.split(StringPool.COMMA);
+				if (stepArr != null && stepArr.length > 0) {
+					for (int i = 0; i < stepArr.length; i++) {
+						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, stepArr[i]);
+						if (stepConfig != null) {
+							params.put(DossierTerm.STATUS, stepConfig.getDossierStatus());
+							params.put(DossierTerm.SUBSTATUS, stepConfig.getDossierSubStatus());
+							_log.info("START");
+							long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId,
+									params, null, serviceContext);
+							_log.info("START");
+							JSONObject statistic = JSONFactoryUtil.createJSONObject();
+							statistic.put("stepCode", stepConfig.getStepCode());
+							statistic.put("stepName", stepConfig.getStepName());
+							statistic.put("dossierStatus", stepConfig.getDossierStatus());
+							statistic.put("dossierSubStatus", stepConfig.getDossierSubStatus());
+							statistic.put("totalCount", count);
+							total += count;
+							statistics.put(statistic);
+						}
+					}
+				}
+			} else {
+				List<StepConfig> stepList = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+				if (stepList != null && stepList.size() > 0) {
+					_log.info("length: "+stepList.size());
+					for (StepConfig step: stepList) {
+						params.put(DossierTerm.STATUS, step.getDossierStatus());
+						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+						_log.info("DossierStatus: "+step.getDossierStatus());
+						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
+								null, serviceContext);
+						_log.info("count: "+count);
+						JSONObject statistic = JSONFactoryUtil.createJSONObject();
+						statistic.put("stepCode", step.getStepCode());
+						statistic.put("stepName", step.getStepName());
+						statistic.put("dossierStatus", step.getDossierStatus());
+						statistic.put("dossierSubStatus", step.getDossierSubStatus());
+						statistic.put("totalCount", count);
+						total += count;
+						statistics.put(statistic);
+					}
 				}
 			}
+//			_log.info("START");
+//			JSONArray statistics = JSONFactoryUtil.createJSONArray();
+//
+//			params.put(Field.GROUP_ID, String.valueOf(groupId));
+//			params.put(Field.USER_ID, String.valueOf(userId));
+//			params.put(DossierTerm.OWNER, String.valueOf(true));
+//			params.put(DossierTerm.NOT_STATUS_REG, notStatusReg);
 
 			StatisticDossierResults results = new StatisticDossierResults();
 

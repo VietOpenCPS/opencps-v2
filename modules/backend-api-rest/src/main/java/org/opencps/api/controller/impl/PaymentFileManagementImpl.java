@@ -502,11 +502,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					input.getApproveDatetime(), input.getAccountUserName(), input.getGovAgencyTaxNo(),
 					input.getInvoiceTemplateNo(), input.getInvoiceIssueNo(), input.getInvoiceNo(), isSync, serviceContext);
 			
-			if (!isSync) {
-				paymentFile.setIsNew(false);
-				
-				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-			}
+//			if (!isSync) {
+//				paymentFile.setIsNew(false);
+//				
+//				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+//			}
 			
 			
 			
@@ -595,22 +595,23 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
-			if (paymentFile.getInvoiceFileEntryId() > 0) {
-				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
+//			if (paymentFile.getInvoiceFileEntryId() > 0) {
+			long getInvoiceFileEntryId = 0;
+			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(getInvoiceFileEntryId);
 
-				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-						true);
+			File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+					true);
 
-				ResponseBuilder responseBuilder = Response.ok((Object) file);
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header("Content-Disposition",
+					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+			responseBuilder.header("Content-Type", fileEntry.getMimeType());
 
-				return responseBuilder.build();
-			} else {
-				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-			}
+			return responseBuilder.build();
+//			} else {
+//				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+//			}
 
 		} catch (Exception e) {
 			return processException(e);
@@ -763,4 +764,38 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	}
 	
 	Log _log = LogFactoryUtil.getLog(PaymentFileManagementImpl.class);
+
+	//LamTV_Process new API Payment
+	@Override
+	public Response getPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long dossierId = GetterUtil.getLong(id);
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			// Check user is login
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if (dossierId == 0) {
+				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				if (dossier != null) {
+					dossierId = dossier.getDossierId();
+				}
+			}
+
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+
+			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}
+	}
 }

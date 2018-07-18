@@ -569,7 +569,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	}
 
 	//LamTV_ Process output DictCollection to DB
-	public long updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
 			String collectionNameEN, String description) throws NoSuchUserException {
 		Date now = new Date();
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -613,7 +614,6 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			dictCollection.setDescription(description);
 		}
 
-		dictCollectionPersistence.update(dictCollection);
-		return dictCollection.getDictCollectionId();
+		return dictCollectionPersistence.update(dictCollection);
 	}
 }

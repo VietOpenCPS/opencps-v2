@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
@@ -1253,15 +1254,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		List<PaymentFile> lsPF = paymentFileLocalService.getByDossierId(id);
+//		List<PaymentFile> lsPF = paymentFileLocalService.getByDossierId(id);
 
-		for (PaymentFile pf : lsPF) {
-			if (pf.getIsNew()) {
-				pf.setIsNew(false);
-
-				paymentFileLocalService.updatePaymentFile(pf);
-			}
-		}
+//		for (PaymentFile pf : lsPF) {
+//			if (pf.getIsNew()) {
+//				pf.setIsNew(false);
+//
+//				paymentFileLocalService.updatePaymentFile(pf);
+//			}
+//		}
 
 		return dossier;
 	}
@@ -1768,6 +1769,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
 		String originality = GetterUtil.getString(params.get(DossierTerm.ORIGINALLITY));
 		String assigned = GetterUtil.getString(params.get(DossierTerm.ASSIGNED));
+		//LamTV_ADD
+		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
+		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1795,7 +1799,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, booleanCommon);
+				assigned, statusStep, subStatusStep, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1842,6 +1846,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 		String originality = GetterUtil.getString(params.get(DossierTerm.ORIGINALLITY));
 		String assigned = GetterUtil.getString(params.get(DossierTerm.ASSIGNED));
+		//LamTV_ADD
+		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
+		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1866,7 +1873,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, booleanCommon);
+				assigned, statusStep, subStatusStep, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1946,7 +1953,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
 			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
 			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
-			BooleanQuery booleanQuery) throws ParseException {
+			String statusStep, String subStatusStep, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2240,6 +2247,48 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.ASSIGNED);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
+		//LamTV_Test
+		if (Validator.isNotNull(statusStep)) {
+			String[] statusStepArr = StringUtil.split(statusStep);
+
+			if (statusStepArr != null && statusStepArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < statusStepArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(statusStepArr[i]);
+					query.addField(DossierTerm.DOSSIER_STATUS);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(statusStep);
+				query.addFields(DossierTerm.DOSSIER_STATUS);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
+		if (Validator.isNotNull(subStatusStep)) {
+			String[] subStatusStepArr = StringUtil.split(subStatusStep);
+
+			if (subStatusStepArr != null && subStatusStepArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < subStatusStepArr.length; i++) {
+					String subStatusStepDetail = subStatusStepArr[i];
+					if (!"empty".equals(subStatusStepDetail)) {
+						MultiMatchQuery query = new MultiMatchQuery(subStatusStepArr[i]);
+						query.addField(DossierTerm.DOSSIER_SUB_STATUS);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				if (!"empty".equals(subStatusStep)) {
+					MultiMatchQuery query = new MultiMatchQuery(subStatusStep);
+					query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+					booleanQuery.add(query, BooleanClauseOccur.MUST);
+				}
+			}
+		}
 	
 		return booleanQuery;
 	}
@@ -2322,5 +2371,80 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public List<Dossier> getByNotO_DS_SC_GC(long groupId, int originality, String dossierStatus, String serviceCode, String govAgencyCode) {
 		return dossierPersistence.findByG_NOTO_DS_SC_GC(groupId, originality, dossierStatus, serviceCode, govAgencyCode);
+	}
+
+	//LamTV_Process update dossier
+	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			ServiceContext serviceContext) {
+
+		Date now = new Date();
+		long userId = serviceContext.getUserId();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+		Dossier dossier = dossierPersistence.fetchByPrimaryKey(id);
+
+		dossier.setModifiedDate(now);
+		dossier.setUserId(userId);
+		dossier.setUserName(auditUser.getFullName());
+		//
+		if (Validator.isNotNull(applicantName))
+			dossier.setApplicantName(applicantName);
+		if (Validator.isNotNull(applicantIdType))
+			dossier.setApplicantIdType(applicantIdType);
+		if (Validator.isNotNull(applicantIdNo))
+			dossier.setApplicantIdNo(applicantIdNo);
+		if (Validator.isNotNull(applicantIdDate))
+			dossier.setApplicantIdDate(
+					APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._NORMAL_PARTTERN));
+		if (Validator.isNotNull(address))
+			dossier.setAddress(address);
+		if (Validator.isNotNull(cityCode))
+			dossier.setCityCode(cityCode);
+		if (Validator.isNotNull(cityName))
+			dossier.setCityName(cityName);
+		if (Validator.isNotNull(districtCode))
+			dossier.setDistrictCode(districtCode);
+		if (Validator.isNotNull(districtName))
+			dossier.setDistrictName(districtName);
+		if (Validator.isNotNull(wardCode))
+			dossier.setWardCode(wardCode);
+		if (Validator.isNotNull(wardName))
+			dossier.setWardName(wardName);
+		if (Validator.isNotNull(contactName))
+			dossier.setContactName(contactName);
+		if (Validator.isNotNull(contactEmail))
+			dossier.setContactEmail(contactEmail);
+		if (Validator.isNotNull(contactTelNo))
+			dossier.setContactTelNo(contactTelNo);
+
+		dossier.setViaPostal(viaPostal);
+		if (viaPostal == 1) {
+			dossier.setPostalAddress(StringPool.BLANK);
+			dossier.setPostalCityCode(StringPool.BLANK);
+			dossier.setPostalTelNo(StringPool.BLANK);
+
+		} else if (viaPostal == 2) {
+			if (Validator.isNotNull(postalAddress))
+				dossier.setPostalAddress(postalAddress);
+			if (Validator.isNotNull(postalCityCode))
+				dossier.setPostalCityCode(postalCityCode);
+			if (Validator.isNotNull(postalTelNo))
+				dossier.setPostalTelNo(postalTelNo);
+			if (Validator.isNotNull(postalCityName))
+				dossier.setPostalCityName(postalCityName);
+
+		} else {
+			dossier.setPostalAddress(StringPool.BLANK);
+			dossier.setPostalCityCode(StringPool.BLANK);
+			dossier.setPostalTelNo(StringPool.BLANK);
+		}
+		dossier.setApplicantNote(applicantNote);
+
+		return dossierPersistence.update(dossier);
+
 	}
 }

@@ -663,10 +663,14 @@
 
 		<column name="dossierId" type="long" />
 		<column name="referenceUid" type="String" />
-		<column name="govAgencyCode" type="String" />
-		<column name="govAgencyName" type="String" />
-		<column name="isNew" type="boolean" />
+<!-- 		<column name="govAgencyCode" type="String" /> -->
+<!-- 		<column name="govAgencyName" type="String" /> -->
+<!-- 		<column name="isNew" type="boolean" /> -->
 		<column name="paymentFee" type="String" />
+		<column name="advanceAmount" type="long" />
+		<column name="feeAmount" type="long" />
+		<column name="serviceAmount" type="long" />
+		<column name="shipAmount" type="long" />
 		<column name="paymentAmount" type="long" />
 		<column name="paymentNote" type="String" />
 		<column name="epaymentProfile" type="String" />
@@ -683,17 +687,19 @@
 		<column name="invoiceTemplateNo" type="String" />
 		<column name="invoiceIssueNo" type="String" />
 		<column name="invoiceNo" type="String" />
-		<column name="invoiceFileEntryId" type="long" />
+		<column name="invoicePayload" type="String" />
+		<column name="einvoice" type="String" />
+<!-- 		<column name="invoiceFileEntryId" type="long" /> -->
 
 		<!-- Order -->
 		<order by="desc">
 			<order-column name="createDate"></order-column>
 		</order>
 		<!-- Finder methods -->
-		<finder return-type="Collection" name="F_DUID">
-			<finder-column name="dossierId" />
-			<finder-column name="referenceUid" />
-		</finder>
+<!-- 		<finder return-type="Collection" name="F_DUID"> -->
+<!-- 			<finder-column name="dossierId" /> -->
+<!-- 			<finder-column name="referenceUid" /> -->
+<!-- 		</finder> -->
 
 		<finder return-type="PaymentFile" name="D_RUID">
 			<finder-column name="dossierId" />
@@ -701,13 +707,14 @@
 		</finder>
 		<!-- References -->
 		
-		<finder return-type="Collection" name="ISN_GID">
+<!-- 		<finder return-type="Collection" name="ISN_GID"> -->
+<!-- 			<finder-column name="groupId" /> -->
+<!-- 			<finder-column name="isNew" /> -->
+<!-- 		</finder> -->
+		<finder name="DossierId" return-type="PaymentFile">
 			<finder-column name="groupId" />
-			<finder-column name="isNew" />
+			<finder-column name="dossierId" />
 		</finder>
-        <finder name="DossierId" return-type="Collection">
-            <finder-column name="dossierId"></finder-column>
-        </finder>
 		
 
 	</entity>
@@ -1041,7 +1048,7 @@
 		<column name="createDossiers" type="String"/>
 		<column name="assignUserName" type="String" />
 		<column name="extraForm" type="boolean" />
-		<column name="userNote" type="int" />
+<!-- 		<column name="userNote" type="int" /> -->
 		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -1116,6 +1123,9 @@
 		<column name="dossierId" type="long" />
 		<column name="serviceProcessId" type="long" />
 		<column name="previousActionId" type="long" />
+		<column name="fromStepCode" type="String" />
+		<column name="fromStepName" type="String" />
+		<column name="fromSequenceNo" type="String" />
 		<column name="actionCode" type="String" />
 		<column name="actionUser" type="String" />
 		<column name="actionName" type="String" />
@@ -1126,10 +1136,13 @@
 		<column name="rollbackable" type="boolean" />
 		<column name="stepCode" type="String" />
 		<column name="stepName" type="String" />
+		<column name="sequenceNo" type="String" />
 		<column name="dueDate" type="Date" />
 		<column name="nextActionId" type="long" />
 		<column name="payload" type="String" />
 		<column name="stepInstruction" type="String" />
+		<column name="state" type="int" />
+		<column name="eventStatus" type="int" />
 
 		<finder return-type="DossierAction" name="DID_DPG">
 			<finder-column name="dossierId" />
@@ -1157,6 +1170,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="pending" />
 		</finder>
+        <finder name="DID_FSN" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fromSequenceNo"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
@@ -1737,6 +1754,9 @@
 		<finder return-type="StepConfig" name="F_GT_STEP">
 			<finder-column name="groupId" />
 			<finder-column name="stepCode" />
+		</finder>
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId" />
 		</finder>
 		
 	</entity>

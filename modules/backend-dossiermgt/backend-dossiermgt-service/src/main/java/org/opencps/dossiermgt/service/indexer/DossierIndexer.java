@@ -18,6 +18,7 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -25,6 +26,7 @@ import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierRequestUD;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -189,12 +191,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.MONTH_DOSSIER, monthDossier);
 
 			// DossierAction fields
-
-			if (object.getDossierActionId() != 0) {
+			long dossierObjectActionId = object.getDossierActionId();
+			if (dossierObjectActionId != 0) {
 				// Date now = new Date();
 
 				DossierAction dossierAction = DossierActionLocalServiceUtil
-						.fetchDossierAction(object.getDossierActionId());
+						.fetchDossierAction(dossierObjectActionId);
 
 				if (dossierAction != null) {
 					// if (Validator.isNotNull(dossierAction.getCreateDate())) {
@@ -233,6 +235,17 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					document.addTextSortable(DossierTerm.STEP_DUE_DATE,
 							APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
 					// }
+					//Index userNote
+					String actionCode = dossierAction.getActionCode();
+					_log.info("actionCode: "+actionCode);
+					ActionConfig act = ActionConfigLocalServiceUtil.getByCode(object.getGroupId(), actionCode);
+					_log.info("act: "+act);
+					if (act != null) {
+						_log.info("act: "+act.getUserNote());
+						document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
+					} else {
+						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
+					}
 				}
 			}
 

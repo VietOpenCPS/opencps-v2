@@ -295,8 +295,8 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 	}
 
 	@Override
-	public List<PaymentFile> getPaymentFiles(long dossierId) {
-		return PaymentFileLocalServiceUtil.getByDossierId(dossierId);
+	public PaymentFile getPaymentFiles(long groupId, long dossierId) {
+		return PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 	}
 
 }

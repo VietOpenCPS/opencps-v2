@@ -70,8 +70,8 @@ public class PaymentFileUtils {
 			// model.setCreateDate(doc.get(PaymentFileTerm.CREATE_DATE));
 			// model.setModifiedDate(doc.get(PaymentFileTerm.MODIFIED_DATE));
 			model.setReferenceUid(doc.get(PaymentFileTerm.REFERENCE_UID));
-			model.setGovAgencyCode(doc.get(PaymentFileTerm.GOV_AGENCY_CODE));
-			model.setGovAgencyName(doc.get(PaymentFileTerm.GOV_AGENCY_NAME));
+//			model.setGovAgencyCode(doc.get(PaymentFileTerm.GOV_AGENCY_CODE));
+//			model.setGovAgencyName(doc.get(PaymentFileTerm.GOV_AGENCY_NAME));
 			model.setApplicantName(doc.get(PaymentFileTerm.APPLICANT_NAME));
 			model.setApplicantIdNo(doc.get(PaymentFileTerm.APPLICANT_ID_NO));
 			// model.setIsNew(paymentFile.getIsNew());
@@ -94,28 +94,25 @@ public class PaymentFileUtils {
 				model.setConfirmFileSize(0L);
 			}
 			model.setConfirmNote(doc.get(PaymentFileTerm.CONFIRM_NOTE));
-			// model.setApproveDatetime(APIDateTimeUtils.convertDateToString(doc.getDate(PaymentFileTerm.APPROVE_DATETIME)));
 			model.setAccountUserName(doc.get(PaymentFileTerm.ACCOUNT_USER_NAME));
 			model.setGovAgencyTaxNo(doc.get(PaymentFileTerm.GOV_AGENCY_TAX_NO));
 			model.setInvoiceTemplateNo(doc.get(PaymentFileTerm.INVOICE_TEMPLATE_NO));
 			model.setInvoiceIssueNo(doc.get(PaymentFileTerm.INVOICE_ISSUE_NO));
 			model.setInvoiceNo(doc.get(PaymentFileTerm.INVOICE_NO));
-			model.setIsNew(GetterUtil.getBoolean(doc.get(PaymentFileTerm.IS_NEW)) ? 1 :0);
 			
-			DLFileVersion dlFileInvoice = getFileInfo(
-					GetterUtil.getLong(doc.get(PaymentFileTerm.INVOICE_FILE_ENTRY_ID)));
-			if (dlFileInvoice != null) {
-				model.setInvoiceFileType(dlFileInvoice.getExtension());
-				model.setInvoiceFileSize(dlFileInvoice.getSize());
-			} else {
-				model.setInvoiceFileType(StringPool.BLANK);
-				model.setInvoiceFileSize(0L);
-			}
+//			DLFileVersion dlFileInvoice = getFileInfo(
+//					GetterUtil.getLong(doc.get(PaymentFileTerm.INVOICE_FILE_ENTRY_ID)));
+//			if (dlFileInvoice != null) {
+//				model.setInvoiceFileType(dlFileInvoice.getExtension());
+//				model.setInvoiceFileSize(dlFileInvoice.getSize());
+//			} else {
+//				model.setInvoiceFileType(StringPool.BLANK);
+//				model.setInvoiceFileSize(0L);
+//			}
 			model.setConfirmFileEntryId(GetterUtil.getLong(doc.get(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID)));
 			
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
-			
-			model.setBriefNote(dossier.getBriefNote());
+//			Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
+//			model.setBriefNote(dossier.getBriefNote());
 			
 			results.add(model);
 		}
@@ -138,8 +135,8 @@ public class PaymentFileUtils {
 		PaymentFileInputModel model = new PaymentFileInputModel();
 
 		model.setReferenceUid(paymentFile.getReferenceUid());
-		model.setGovAgencyCode(paymentFile.getGovAgencyCode());
-		model.setGovAgencyName(paymentFile.getGovAgencyName());
+//		model.setGovAgencyCode(paymentFile.getGovAgencyCode());
+//		model.setGovAgencyName(paymentFile.getGovAgencyName());
 		// TODO:
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
@@ -173,8 +170,6 @@ public class PaymentFileUtils {
 		model.setCreateDate(APIDateTimeUtils.convertDateToString(paymentFile.getCreateDate()));
 		model.setModifiedDate(APIDateTimeUtils.convertDateToString(paymentFile.getModifiedDate()));
 		model.setReferenceUid(paymentFile.getReferenceUid());
-		model.setGovAgencyCode(paymentFile.getGovAgencyCode());
-		model.setGovAgencyName(paymentFile.getGovAgencyName());
 		Dossier dossier = null;
 		try {
 			dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
@@ -188,8 +183,11 @@ public class PaymentFileUtils {
 		model.setApplicantIdNo((dossier != null && Validator.isNotNull(dossier.getApplicantIdNo()))
 				? dossier.getApplicantIdNo() : StringPool.BLANK);
 
-		model.setIsNew(GetterUtil.getInteger(paymentFile.getIsNew()));
 		model.setPaymentFee(paymentFile.getPaymentFee());
+		model.setAdvanceAmount(paymentFile.getAdvanceAmount());
+		model.setFeeAmount(paymentFile.getFeeAmount());
+		model.setServiceAmount(paymentFile.getServiceAmount());
+		model.setShipAmount(paymentFile.getShipAmount());
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
 		model.setPaymentNote(paymentFile.getPaymentNote());
 		model.setBankInfo(paymentFile.getBankInfo());
@@ -215,20 +213,8 @@ public class PaymentFileUtils {
 		model.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 		model.setInvoiceIssueNo(paymentFile.getInvoiceIssueNo());
 		model.setInvoiceNo(paymentFile.getInvoiceNo());
-
-		DLFileVersion dlFileInvoice = getFileInfo(GetterUtil.getLong(paymentFile.getInvoiceFileEntryId()));
-
-		if (dlFileInvoice != null) {
-			model.setConfirmFileType(dlFileInvoice.getExtension());
-			model.setConfirmFileSize(dlFileInvoice.getSize());
-		} else {
-			model.setConfirmFileType(StringPool.BLANK);
-			model.setConfirmFileSize(0L);
-		}
-
-		//Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
-		
-		model.setBriefNote(dossier.getBriefNote());
+		model.setConfirmPayload(paymentFile.getConfirmPayload());
+		model.setEinvoice(paymentFile.getEinvoice());
 
 		return model;
 	}

@@ -205,4 +205,8 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 		}
 		return null;
 	}
+
+	public List<StepConfig> getStepByGroupId(long groupId) {
+		return stepConfigPersistence.findByF_GID(groupId);
+	}
 }

@@ -17,11 +17,13 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
@@ -219,7 +221,14 @@ public class DossierActionUtils {
 				model.seteSignature(processAction.getESignature());
 				model.setSignatureType(processAction.getSignatureType());
 				model.setExtraForm(processAction.getExtraForm());
-				model.setUserNote(processAction.getUserNote());
+				//model.setUserNote(processAction.getUserNote());
+				ActionConfig act = ActionConfigLocalServiceUtil.getByCode(processAction.getGroupId(),
+						processAction.getActionCode());
+				if (act != null) {
+					model.setUserNote(act.getUserNote());
+				} else {
+					model.setUserNote(0);
+				}
 			}
 
 			JSONObject paymentFee = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
