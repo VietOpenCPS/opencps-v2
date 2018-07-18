@@ -1230,4 +1230,28 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return flag;
 	}
 
+	@Override
+	public boolean deleteAllDictGroup(long userId, long groupId, long dictCollectionId) {
+		boolean flag = false;
+		List<DictGroup> groupList = DictGroupLocalServiceUtil.getDictGroupByDictCollection(groupId, dictCollectionId,
+				-1, -1);
+		if (groupList != null && groupList.size() > 0) {
+			for (DictGroup group : groupList) {
+				DictGroupLocalServiceUtil.deleteDictGroup(group);
+				flag = true;
+			}
+		} else {
+			flag = true;
+		}
+
+		return flag;
+	}
+
+	@Override
+	public void updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
+			String groupNameEN, String groupDescription, ServiceContext serviceContext) {
+
+		DictGroupLocalServiceUtil.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName,
+				groupNameEN, groupDescription, serviceContext);
+	}
 }

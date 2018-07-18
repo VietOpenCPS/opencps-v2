@@ -536,4 +536,41 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		return dictGroupPersistence.countByF_dictGroupNewerThan(date, groupId);
 	}
 
+	//LamTV_Process output DB
+	@Indexable(type = IndexableType.REINDEX)
+	public DictGroup updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
+			String groupNameEN, String groupDescription, ServiceContext serviceContext) {
+
+		try {
+			Date now = new Date();
+			User user = userPersistence.findByPrimaryKey(userId);
+
+			long dictGroupId = counterLocalService.increment(DictGroup.class.getName());
+
+			DictGroup dictGroup = dictGroupPersistence.create(dictGroupId);
+
+			// Group instance
+			dictGroup.setGroupId(groupId);
+
+			// Audit fields
+			dictGroup.setUuid(serviceContext.getUuid());
+			dictGroup.setCompanyId(user.getCompanyId());
+			dictGroup.setUserId(user.getUserId());
+			dictGroup.setUserName(user.getFullName());
+			dictGroup.setCreateDate(serviceContext.getCreateDate(now));
+			dictGroup.setModifiedDate(serviceContext.getCreateDate(now));
+
+			// Other fields
+			dictGroup.setDictCollectionId(dictCollectionId);
+			dictGroup.setGroupCode(groupCode);
+			dictGroup.setGroupName(groupName);
+			dictGroup.setGroupNameEN(groupNameEN);
+			dictGroup.setGroupDescription(groupDescription);
+
+			return dictGroupPersistence.update(dictGroup);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 }

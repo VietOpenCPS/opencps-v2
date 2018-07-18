@@ -1,6 +1,7 @@
 package org.opencps.communication.action.impl;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.opencps.communication.action.NotificationTemplateInterface;
@@ -208,6 +209,31 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 				Boolean.valueOf(grouping), serviceContext);
 
 		return ett;
+	}
+
+	@Override
+	public boolean deleteAllNotificationTemplate(long groupId, long userId, ServiceContext serviceContext) {
+		boolean flag = false;
+		List<Notificationtemplate> tempList = NotificationtemplateLocalServiceUtil.getNotificationtemplates(-1, -1);
+		if (tempList != null && tempList.size() > 0) {
+			for (Notificationtemplate notiTemp : tempList) {
+				NotificationtemplateLocalServiceUtil.deleteNotificationtemplate(notiTemp);
+				flag = true;
+			}
+		} else {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	public void updateNotificationTemplateDB(long userId, long groupId, String notificationType, Boolean sendEmail,
+			String emailSubject, String emailBody, String textMessage, Boolean sendSMS, Integer expireDuration,
+			ServiceContext serviceContext) throws NoSuchUserException {
+
+		NotificationtemplateLocalServiceUtil.updateNotificationTemplateDB(userId, groupId, notificationType, sendEmail,
+				emailSubject, emailBody, textMessage, sendSMS, expireDuration, serviceContext);
+
 	}
 
 }
