@@ -27,55 +27,42 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="DictItem" maxOccurs="unbounded">
+ *         &lt;element name="NotificationTemplate" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="itemCode">
+ *                   &lt;element name="notificationType">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="itemName">
+ *                   &lt;element name="sendEmail" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *                   &lt;element name="emailSubject">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="itemNameEN">
+ *                   &lt;element name="emailBody">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="1000"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="textMessage">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="itemDescription">
- *                     &lt;simpleType>
- *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
- *                       &lt;/restriction>
- *                     &lt;/simpleType>
- *                   &lt;/element>
- *                   &lt;element name="parent">
- *                     &lt;simpleType>
- *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
- *                       &lt;/restriction>
- *                     &lt;/simpleType>
- *                   &lt;/element>
- *                   &lt;element name="level" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *                   &lt;element name="sibling" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *                   &lt;element name="metadata">
- *                     &lt;simpleType>
- *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
- *                       &lt;/restriction>
- *                     &lt;/simpleType>
- *                   &lt;/element>
+ *                   &lt;element name="sendSMS" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *                   &lt;element name="expireDuration" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -91,41 +78,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "dictItem"
+    "notificationTemplate"
 })
-@XmlRootElement(name = "items")
-public class Items {
+@XmlRootElement(name = "NotificationTemplateList")
+public class NotificationTemplateList {
 
-    @XmlElement(name = "DictItem", required = true)
-    protected List<Items.DictItem> dictItem;
+    @XmlElement(name = "NotificationTemplate", required = true)
+    protected List<NotificationTemplateList.NotificationTemplate> notificationTemplate;
 
     /**
-     * Gets the value of the dictItem property.
+     * Gets the value of the notificationTemplate property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the dictItem property.
+     * This is why there is not a <CODE>set</CODE> method for the notificationTemplate property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDictItem().add(newItem);
+     *    getNotificationTemplate().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Items.DictItem }
+     * {@link NotificationTemplateList.NotificationTemplate }
      * 
      * 
      */
-    public List<Items.DictItem> getDictItem() {
-        if (dictItem == null) {
-            dictItem = new ArrayList<Items.DictItem>();
+    public List<NotificationTemplateList.NotificationTemplate> getNotificationTemplate() {
+        if (notificationTemplate == null) {
+            notificationTemplate = new ArrayList<NotificationTemplateList.NotificationTemplate>();
         }
-        return this.dictItem;
+        return this.notificationTemplate;
     }
 
 
@@ -139,50 +126,37 @@ public class Items {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="itemCode">
+     *         &lt;element name="notificationType">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="itemName">
+     *         &lt;element name="sendEmail" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+     *         &lt;element name="emailSubject">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="itemNameEN">
+     *         &lt;element name="emailBody">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="1000"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="textMessage">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="itemDescription">
-     *           &lt;simpleType>
-     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
-     *             &lt;/restriction>
-     *           &lt;/simpleType>
-     *         &lt;/element>
-     *         &lt;element name="parent">
-     *           &lt;simpleType>
-     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
-     *             &lt;/restriction>
-     *           &lt;/simpleType>
-     *         &lt;/element>
-     *         &lt;element name="level" type="{http://www.w3.org/2001/XMLSchema}int"/>
-     *         &lt;element name="sibling" type="{http://www.w3.org/2001/XMLSchema}int"/>
-     *         &lt;element name="metadata">
-     *           &lt;simpleType>
-     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
-     *             &lt;/restriction>
-     *           &lt;/simpleType>
-     *         &lt;/element>
+     *         &lt;element name="sendSMS" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+     *         &lt;element name="expireDuration" type="{http://www.w3.org/2001/XMLSchema}int"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -193,206 +167,170 @@ public class Items {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "itemCode",
-        "itemName",
-        "itemNameEN",
-        "itemDescription",
-        "parent",
-        "level",
-        "sibling",
-        "metadata"
+        "notificationType",
+        "sendEmail",
+        "emailSubject",
+        "emailBody",
+        "textMessage",
+        "sendSMS",
+        "expireDuration"
     })
-    public static class DictItem {
+    public static class NotificationTemplate {
 
         @XmlElement(required = true)
-        protected String itemCode;
+        protected String notificationType;
+        protected boolean sendEmail;
         @XmlElement(required = true)
-        protected String itemName;
+        protected String emailSubject;
         @XmlElement(required = true)
-        protected String itemNameEN;
+        protected String emailBody;
         @XmlElement(required = true)
-        protected String itemDescription;
-        @XmlElement(required = true)
-        protected String parent;
-        protected int level;
-        protected int sibling;
-        @XmlElement(required = true)
-        protected String metadata;
+        protected String textMessage;
+        protected boolean sendSMS;
+        protected int expireDuration;
 
         /**
-         * Gets the value of the itemCode property.
+         * Gets the value of the notificationType property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getItemCode() {
-            return itemCode;
+        public String getNotificationType() {
+            return notificationType;
         }
 
         /**
-         * Sets the value of the itemCode property.
+         * Sets the value of the notificationType property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setItemCode(String value) {
-            this.itemCode = value;
+        public void setNotificationType(String value) {
+            this.notificationType = value;
         }
 
         /**
-         * Gets the value of the itemName property.
+         * Gets the value of the sendEmail property.
+         * 
+         */
+        public boolean isSendEmail() {
+            return sendEmail;
+        }
+
+        /**
+         * Sets the value of the sendEmail property.
+         * 
+         */
+        public void setSendEmail(boolean value) {
+            this.sendEmail = value;
+        }
+
+        /**
+         * Gets the value of the emailSubject property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getItemName() {
-            return itemName;
+        public String getEmailSubject() {
+            return emailSubject;
         }
 
         /**
-         * Sets the value of the itemName property.
+         * Sets the value of the emailSubject property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setItemName(String value) {
-            this.itemName = value;
+        public void setEmailSubject(String value) {
+            this.emailSubject = value;
         }
 
         /**
-         * Gets the value of the itemNameEN property.
+         * Gets the value of the emailBody property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getItemNameEN() {
-            return itemNameEN;
+        public String getEmailBody() {
+            return emailBody;
         }
 
         /**
-         * Sets the value of the itemNameEN property.
+         * Sets the value of the emailBody property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setItemNameEN(String value) {
-            this.itemNameEN = value;
+        public void setEmailBody(String value) {
+            this.emailBody = value;
         }
 
         /**
-         * Gets the value of the itemDescription property.
+         * Gets the value of the textMessage property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getItemDescription() {
-            return itemDescription;
+        public String getTextMessage() {
+            return textMessage;
         }
 
         /**
-         * Sets the value of the itemDescription property.
+         * Sets the value of the textMessage property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setItemDescription(String value) {
-            this.itemDescription = value;
+        public void setTextMessage(String value) {
+            this.textMessage = value;
         }
 
         /**
-         * Gets the value of the parent property.
+         * Gets the value of the sendSMS property.
          * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
          */
-        public String getParent() {
-            return parent;
+        public boolean isSendSMS() {
+            return sendSMS;
         }
 
         /**
-         * Sets the value of the parent property.
+         * Sets the value of the sendSMS property.
          * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
          */
-        public void setParent(String value) {
-            this.parent = value;
+        public void setSendSMS(boolean value) {
+            this.sendSMS = value;
         }
 
         /**
-         * Gets the value of the level property.
+         * Gets the value of the expireDuration property.
          * 
          */
-        public int getLevel() {
-            return level;
+        public int getExpireDuration() {
+            return expireDuration;
         }
 
         /**
-         * Sets the value of the level property.
+         * Sets the value of the expireDuration property.
          * 
          */
-        public void setLevel(int value) {
-            this.level = value;
-        }
-
-        /**
-         * Gets the value of the sibling property.
-         * 
-         */
-        public int getSibling() {
-            return sibling;
-        }
-
-        /**
-         * Sets the value of the sibling property.
-         * 
-         */
-        public void setSibling(int value) {
-            this.sibling = value;
-        }
-
-        /**
-         * Gets the value of the metadata property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-        public String getMetadata() {
-            return metadata;
-        }
-
-        /**
-         * Sets the value of the metadata property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
-         */
-        public void setMetadata(String value) {
-            this.metadata = value;
+        public void setExpireDuration(int value) {
+            this.expireDuration = value;
         }
 
     }

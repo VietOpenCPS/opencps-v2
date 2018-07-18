@@ -27,55 +27,69 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="StepConfig" maxOccurs="unbounded">
+ *         &lt;element name="Employee" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="stepCode">
+ *                   &lt;element name="employeeNo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="stepName">
+ *                   &lt;element name="fullname">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="stepType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *                   &lt;element name="dossierStatus">
+ *                   &lt;element name="title">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="1000"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="gender" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *                   &lt;element name="birthdate">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="dossierSubStatus">
+ *                   &lt;element name="telNo">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="menuGroup">
+ *                   &lt;element name="email">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="menuStepName">
+ *                   &lt;element name="workingStatus">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="buttonConfig">
+ *                   &lt;element name="jobTitle">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="255"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="roles">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
@@ -97,41 +111,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stepConfig"
+    "employee"
 })
-@XmlRootElement(name = "StepConfigList")
-public class StepConfigList {
+@XmlRootElement(name = "users")
+public class Users {
 
-    @XmlElement(name = "StepConfig", required = true)
-    protected List<StepConfigList.StepConfig> stepConfig;
+    @XmlElement(name = "Employee", required = true)
+    protected List<Users.Employee> employee;
 
     /**
-     * Gets the value of the stepConfig property.
+     * Gets the value of the employee property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stepConfig property.
+     * This is why there is not a <CODE>set</CODE> method for the employee property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getStepConfig().add(newItem);
+     *    getEmployee().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link StepConfigList.StepConfig }
+     * {@link Users.Employee }
      * 
      * 
      */
-    public List<StepConfigList.StepConfig> getStepConfig() {
-        if (stepConfig == null) {
-            stepConfig = new ArrayList<StepConfigList.StepConfig>();
+    public List<Users.Employee> getEmployee() {
+        if (employee == null) {
+            employee = new ArrayList<Users.Employee>();
         }
-        return this.stepConfig;
+        return this.employee;
     }
 
 
@@ -145,50 +159,64 @@ public class StepConfigList {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="stepCode">
+     *         &lt;element name="employeeNo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="stepName">
+     *         &lt;element name="fullname">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="stepType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
-     *         &lt;element name="dossierStatus">
+     *         &lt;element name="title">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="1000"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="gender" type="{http://www.w3.org/2001/XMLSchema}int"/>
+     *         &lt;element name="birthdate">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="dossierSubStatus">
+     *         &lt;element name="telNo">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="menuGroup">
+     *         &lt;element name="email">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="menuStepName">
+     *         &lt;element name="workingStatus">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="buttonConfig">
+     *         &lt;element name="jobTitle">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="255"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="roles">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
@@ -205,223 +233,269 @@ public class StepConfigList {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "stepCode",
-        "stepName",
-        "stepType",
-        "dossierStatus",
-        "dossierSubStatus",
-        "menuGroup",
-        "menuStepName",
-        "buttonConfig"
+        "employeeNo",
+        "fullname",
+        "title",
+        "gender",
+        "birthdate",
+        "telNo",
+        "email",
+        "workingStatus",
+        "jobTitle",
+        "roles"
     })
-    public static class StepConfig {
+    public static class Employee {
 
         @XmlElement(required = true)
-        protected String stepCode;
+        protected String employeeNo;
         @XmlElement(required = true)
-        protected String stepName;
-        protected Integer stepType;
+        protected String fullname;
         @XmlElement(required = true)
-        protected String dossierStatus;
+        protected String title;
+        protected int gender;
         @XmlElement(required = true)
-        protected String dossierSubStatus;
+        protected String birthdate;
         @XmlElement(required = true)
-        protected String menuGroup;
+        protected String telNo;
         @XmlElement(required = true)
-        protected String menuStepName;
+        protected String email;
         @XmlElement(required = true)
-        protected String buttonConfig;
+        protected String workingStatus;
+        @XmlElement(required = true)
+        protected String jobTitle;
+        @XmlElement(required = true)
+        protected String roles;
 
         /**
-         * Gets the value of the stepCode property.
+         * Gets the value of the employeeNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getStepCode() {
-            return stepCode;
+        public String getEmployeeNo() {
+            return employeeNo;
         }
 
         /**
-         * Sets the value of the stepCode property.
+         * Sets the value of the employeeNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setStepCode(String value) {
-            this.stepCode = value;
+        public void setEmployeeNo(String value) {
+            this.employeeNo = value;
         }
 
         /**
-         * Gets the value of the stepName property.
+         * Gets the value of the fullname property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getStepName() {
-            return stepName;
+        public String getFullname() {
+            return fullname;
         }
 
         /**
-         * Sets the value of the stepName property.
+         * Sets the value of the fullname property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setStepName(String value) {
-            this.stepName = value;
+        public void setFullname(String value) {
+            this.fullname = value;
         }
 
         /**
-         * Gets the value of the stepType property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link Integer }
-         *     
-         */
-        public Integer getStepType() {
-            return stepType;
-        }
-
-        /**
-         * Sets the value of the stepType property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link Integer }
-         *     
-         */
-        public void setStepType(Integer value) {
-            this.stepType = value;
-        }
-
-        /**
-         * Gets the value of the dossierStatus property.
+         * Gets the value of the title property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getDossierStatus() {
-            return dossierStatus;
+        public String getTitle() {
+            return title;
         }
 
         /**
-         * Sets the value of the dossierStatus property.
+         * Sets the value of the title property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setDossierStatus(String value) {
-            this.dossierStatus = value;
+        public void setTitle(String value) {
+            this.title = value;
         }
 
         /**
-         * Gets the value of the dossierSubStatus property.
+         * Gets the value of the gender property.
+         * 
+         */
+        public int getGender() {
+            return gender;
+        }
+
+        /**
+         * Sets the value of the gender property.
+         * 
+         */
+        public void setGender(int value) {
+            this.gender = value;
+        }
+
+        /**
+         * Gets the value of the birthdate property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getDossierSubStatus() {
-            return dossierSubStatus;
+        public String getBirthdate() {
+            return birthdate;
         }
 
         /**
-         * Sets the value of the dossierSubStatus property.
+         * Sets the value of the birthdate property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setDossierSubStatus(String value) {
-            this.dossierSubStatus = value;
+        public void setBirthdate(String value) {
+            this.birthdate = value;
         }
 
         /**
-         * Gets the value of the menuGroup property.
+         * Gets the value of the telNo property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getMenuGroup() {
-            return menuGroup;
+        public String getTelNo() {
+            return telNo;
         }
 
         /**
-         * Sets the value of the menuGroup property.
+         * Sets the value of the telNo property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setMenuGroup(String value) {
-            this.menuGroup = value;
+        public void setTelNo(String value) {
+            this.telNo = value;
         }
 
         /**
-         * Gets the value of the menuStepName property.
+         * Gets the value of the email property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getMenuStepName() {
-            return menuStepName;
+        public String getEmail() {
+            return email;
         }
 
         /**
-         * Sets the value of the menuStepName property.
+         * Sets the value of the email property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setMenuStepName(String value) {
-            this.menuStepName = value;
+        public void setEmail(String value) {
+            this.email = value;
         }
 
         /**
-         * Gets the value of the buttonConfig property.
+         * Gets the value of the workingStatus property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getButtonConfig() {
-            return buttonConfig;
+        public String getWorkingStatus() {
+            return workingStatus;
         }
 
         /**
-         * Sets the value of the buttonConfig property.
+         * Sets the value of the workingStatus property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setButtonConfig(String value) {
-            this.buttonConfig = value;
+        public void setWorkingStatus(String value) {
+            this.workingStatus = value;
+        }
+
+        /**
+         * Gets the value of the jobTitle property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getJobTitle() {
+            return jobTitle;
+        }
+
+        /**
+         * Sets the value of the jobTitle property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setJobTitle(String value) {
+            this.jobTitle = value;
+        }
+
+        /**
+         * Gets the value of the roles property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getRoles() {
+            return roles;
+        }
+
+        /**
+         * Sets the value of the roles property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setRoles(String value) {
+            this.roles = value;
         }
 
     }

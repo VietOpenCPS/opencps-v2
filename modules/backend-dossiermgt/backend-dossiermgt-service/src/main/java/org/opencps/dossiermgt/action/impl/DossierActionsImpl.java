@@ -35,6 +35,7 @@ import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -4037,10 +4038,13 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			for (ProcessStepRole processStepRole : processStepRoleList) {
 				List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
 				if (users != null && users.size() > 0) {
+					HashMap<String, Object> assigned = new HashMap<>();
+					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
 						HashMap<String, Object> moderator = new HashMap<>();
-						moderator.put("moderator", processStepRole.getModerator());
+						moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
 						user.setModelAttributes(moderator);
+						user.setModelAttributes(assigned);
 					}
 					lstUser.addAll(users);
 				}

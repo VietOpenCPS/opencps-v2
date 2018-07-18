@@ -3,10 +3,8 @@ package org.opencps.api.controller.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 
 import javax.xml.bind.JAXBContext;
@@ -21,6 +19,7 @@ import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DossierTemplate;
 import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.ObjectFactory;
+import org.opencps.api.v21.model.PaymentConfigList;
 import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.StepConfigList;
@@ -145,7 +144,8 @@ public class ReadXMLFileUtils {
 				ProcessUpdateDBUtils.processUpdateDeliverableType(deliTypeList, folderPath, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_PAYMENT_CONFIG:
-				convertXMLToMenuConfig(xmlString);
+				PaymentConfigList paymentList = convertXMLToPaymentConfig(xmlString);
+				ProcessUpdateDBUtils.processUpdatePaymentConfig(paymentList, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_SERVER_CONFIG:
 				convertXMLToMenuConfig(xmlString);
@@ -297,6 +297,21 @@ public class ReadXMLFileUtils {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			StringReader reader = new StringReader(xmlString);
 			DeliverableTypeList objectElement = (DeliverableTypeList) jaxbUnmarshaller.unmarshal(reader);
+			return objectElement;
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	// LamTV_ Process convert xml to Object PaymentConfig
+	private static PaymentConfigList convertXMLToPaymentConfig(String xmlString) {
+		JAXBContext jaxbContext = null;
+		try {
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			PaymentConfigList objectElement = (PaymentConfigList) jaxbUnmarshaller.unmarshal(reader);
 			return objectElement;
 		} catch (JAXBException e) {
 			e.printStackTrace();

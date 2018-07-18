@@ -53,10 +53,35 @@ import com.liferay.portal.kernel.util.StringPool;
     "min",
     "max",
     "type",
-    "lock"
+    "lock",
+    "idNo"
 })
 @XmlRootElement(name = "ApplicantSearchModel")
 public class ApplicantSearchModel {
+
+	@QueryParam(value = "keywords")
+    protected String keywords;
+	@DefaultValue("applicantName") @QueryParam(value = "sort")
+    protected String sort;
+	@QueryParam(value = "order")
+    protected String order;
+	@QueryParam(value = "start")
+    protected int start;
+	@QueryParam(value = "end")
+    protected int end;
+	@QueryParam(value = "type")
+    protected String type;
+	@QueryParam(value = "lock")
+    protected String lock;
+	@QueryParam(value = "idNo")
+    protected String idNo;
+
+	public String getLock() {
+		return lock;
+	}
+	public void setLock(String lock) {
+		this.lock = lock;
+	}
 
 	public String getKeywords() {
 		return keywords;
@@ -96,26 +121,11 @@ public class ApplicantSearchModel {
 		this.type = type;
 	}
 
-	@QueryParam(value = "keywords")
-    protected String keywords;
-	@DefaultValue("applicantName") @QueryParam(value = "sort")
-    protected String sort;
-	@QueryParam(value = "order")
-    protected String order;
-	@QueryParam(value = "start")
-    protected int start;
-	@QueryParam(value = "end")
-    protected int end;
-	@QueryParam(value = "type")
-    protected String type;
-	@QueryParam(value = "lock")
-    protected String lock;
-	public String getLock() {
-		return lock;
+	public String getIdNo() {
+		return idNo;
 	}
-	public void setLock(String lock) {
-		this.lock = lock;
+	public void setIdNo(String idNo) {
+		this.idNo = idNo;
 	}
-
 
 }
