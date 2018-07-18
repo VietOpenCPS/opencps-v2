@@ -79,9 +79,12 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
-			long previousActionId, String actionCode, String actionUser, String actionName, String actionNote,
+			long previousActionId, 
+			String fromStepCode, String fromStepName, String fromSequenceNo,
+			String actionCode, String actionUser, String actionName, String actionNote,
 			int actionOverdue, String syncActionCode, boolean pending, boolean rollbackable, String stepCode,
 			String stepName, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			int state, int eventStatus,
 			ServiceContext context) throws PortalException {
 
 		validateUpdateAction(groupId, dossierActionId, dossierId, serviceProcessId, previousActionId, actionCode,
@@ -119,6 +122,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setDossierId(dossierId);
 			object.setServiceProcessId(serviceProcessId);
 			object.setPreviousActionId(previousActionId);
+			object.setFromStepCode(fromStepCode);
+			object.setFromStepName(fromStepName);
+			object.setSequenceNo(fromSequenceNo);
 			object.setActionCode(actionCode);
 			object.setActionUser(actionUser);
 			object.setActionName(actionName);
@@ -133,6 +139,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setNextActionId(nextActionId);
 			object.setPayload(payload);
 			object.setStepInstruction(stepInstruction);
+			object.setState(state);
+			object.setEventStatus(eventStatus);
 
 			// Add DossierActionId to Dossier
 
@@ -161,8 +169,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId,
-			long serviceProcessId, long previousActionId, String actionCode, String actionUser, String actionName, String actionNote, int actionOverdue,
+			long serviceProcessId, long previousActionId, 
+			String fromStepCode, String fromStepName, String fromSequenceNo,	
+			String actionCode, String actionUser, String actionName, String actionNote, int actionOverdue,
 			String stepCode, String stepName, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			int state, int eventStatus,
 			ServiceContext context) throws PortalException {
 
 		DossierAction object = null;
@@ -192,6 +203,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setDossierId(dossierId);
 			object.setServiceProcessId(serviceProcessId);
 			object.setPreviousActionId(previousActionId);
+			object.setFromStepCode(fromStepCode);
+			object.setFromStepName(fromStepName);
+			object.setSequenceNo(fromSequenceNo);
 			object.setActionCode(actionCode);
 			object.setActionUser(actionUser);
 			object.setActionName(actionName);
@@ -203,6 +217,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setNextActionId(nextActionId);
 			object.setPayload(payload);
 			object.setStepInstruction(stepInstruction);
+			object.setState(state);
+			object.setEventStatus(eventStatus);
 
 			// Add DossierActionId to Dossier
 
