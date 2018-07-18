@@ -27,6 +27,7 @@ import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
+import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
@@ -2168,6 +2169,9 @@ public class DossierActionsImpl implements DossierActions {
 
 		long dossierId = dossier.getDossierId();
 		ServiceProcess serviceProcess = null;
+		ActionConfig actionConfig = null;
+		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+		
 		if (option != null && proAction != null) {
 			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
@@ -2242,9 +2246,19 @@ public class DossierActionsImpl implements DossierActions {
 				_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
 				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
 
+				String fromStepCode = curStep != null ? curStep.getStepCode() : StringPool.BLANK;
+				String fromStepName = curStep != null ? curStep.getStepName() : StringPool.BLANK;
+				String fromSequenceNo = curStep != null ? curStep.getSequenceNo() : StringPool.BLANK;
+				int state = DossierActionTerm.STATE_ALREADY_PROCESSED;
+				int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
+
 				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId,
-						serviceProcessId, 0l, actionCode, actionUser, actionName, actionNote, actionOverdue,
-						stepCode, stepName, dueDate, 0l, payload, stepInstruction, context);
+						serviceProcessId, 0l, 
+						fromStepCode, fromStepName, fromSequenceNo,
+						actionCode, actionUser, actionName, actionNote, actionOverdue,
+						stepCode, stepName, dueDate, 0l, payload, stepInstruction, 
+						state, eventStatus,
+						context);
 				//update dossierStatus
 				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
 						jsonDataStatusText.getString(curStatus), curSubStatus,
@@ -2331,7 +2345,6 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		//Create notification
-		ActionConfig actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 		createNotificationQueue(userId, groupId, dossier, actionConfig, context);
 				
 		//Create DossierSync
@@ -2526,7 +2539,8 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		ProcessOption option = null;
-
+		ActionConfig actionConfig = null;
+		
 		try {
 			_log.info("dossier.getServiceCode(): " + dossier.getServiceCode());
 			_log.info("dossier.getGovAgencyCode(): " + dossier.getGovAgencyCode());
@@ -2603,7 +2617,8 @@ public class DossierActionsImpl implements DossierActions {
 		Date dueDate = getDueDate(groupId, dossierId, referenceUid, processActionId);
 
 		String payload = buildPayload(groupId, dossierId, referenceUid, processActionId);
-
+		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+		
 		// In the special action (actionCode = 1100, save DOSSIER in SERVER)
 		if (actionCode.contentEquals(SPECIAL_ACTION)
 				&& (types.contains(OCPSUserUtils.APPLICANT_01) || types.contains(OCPSUserUtils.APPLICANT_02))) {
@@ -2615,10 +2630,26 @@ public class DossierActionsImpl implements DossierActions {
 
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, DossierStatusConstants.NEW);
 
-			dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
-					0l, actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
-					processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
-					curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), context);
+			if (curStep != null && actionConfig != null) {
+				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
+						0l, 
+						curStep.getStepCode(), curStep.getStepName(), curStep.getSequenceNo(),
+						actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
+						processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
+						curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), 
+						DossierActionTerm.STATE_ALREADY_PROCESSED, (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING), 
+						context);				
+			}
+			else {
+				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
+						0l, 
+						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+						actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
+						processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
+						curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), 
+						DossierActionTerm.STATE_ALREADY_PROCESSED, DossierActionTerm.EVENT_STATUS_NOT_CREATED, 						
+						context);				
+			}
 
 			// Add DossierActionUser
 
@@ -2653,11 +2684,18 @@ public class DossierActionsImpl implements DossierActions {
 
 			// update reference dossier
 			DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
-
+			String fromStepCode = curStep != null ? curStep.getStepCode() : StringPool.BLANK;
+			String fromStepName = curStep != null ? curStep.getStepName() : StringPool.BLANK;
+			String fromSequenceNo = curStep != null ? curStep.getSequenceNo() : StringPool.BLANK;
+			int state = DossierActionTerm.STATE_ALREADY_PROCESSED;
+			int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
 			dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
-					0l, actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
+					0l, 
+					fromStepCode, fromStepName, fromSequenceNo,
+					actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 					processAction.getSyncActionCode(), hasDossierSync, processAction.getRollbackable(),
 					curStep.getStepCode(), curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(),
+					state, eventStatus,
 					context);
 
 			// Add DossierActionUser
