@@ -237,8 +237,9 @@
 		});
 
 		var printDossierPartName = function() {
+			console.log("${(dossierTemplateId)!}")
 			$.ajax({
-				url : "${api.server}/dossiertemplates/"+"${(dossier.dossierTemplateNo)!}",
+				url : "${api.server}/dossiertemplates/"+"${(dossierTemplateId)!}" + '/parts',
 				type : "GET",
 				dataType : "json",
 				headers : {"groupId": ${groupId}},
@@ -247,7 +248,7 @@
 				},
 				async : false,
 				success:function(result){
-					var data =  result.dossierParts;
+					var data =  result.data;
 					if (data) {
 						for(var i = 0; i<data.length; i++){
 

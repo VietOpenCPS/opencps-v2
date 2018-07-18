@@ -326,7 +326,7 @@
 		$(document).off("click",".uploadfile-form-repository");
 		$(document).on("click",".uploadfile-form-repository",function(){
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateNo = $("#dossierTemplateNo").val();
+			var dossierTemplateId = $("#dossierTemplateId").val();
 			var partNo = $(this).attr("part-no");
 			$("#uploadFileTemplateDialog").load("${ajax.customer_dossier_detail_filetemplate}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateNo="+dossierTemplateNo,function(result){
 				$(this).modal("show");
@@ -338,7 +338,7 @@
 		$(document).on("click",".dossier-component-profile",function() {
 			var partNo = $(this).attr("data-partno");
 			var dossierId = "${(dossierId)!}";
-			var dossierTemplateId = "${(dossierTemplateId)!}";
+			var dossierTemplateId = $("#dossierTemplateId").val();
 			$("#profileDetail").load("${ajax.customer_dossier_component_profiles}&${portletNamespace}dossierPartNo="+partNo+"&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}dossierTemplateId="+dossierTemplateId,function(result){
 				$(this).modal("show");
 			});
@@ -442,9 +442,9 @@
 	var dataSourceDossierTemplate = new kendo.data.DataSource({
 		transport :{
 			read : function(options){
-				if(options.data.dossierTemplateNo){
+				if(options.data.dossierTemplateId){
 					$.ajax({
-						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateNo,
+						url : "${api.server}/dossiertemplates/"+options.data.dossierTemplateId + '/parts',
 						dataType : "json",
 						type : "GET",
 						headers : {"groupId": ${groupId}},
@@ -452,9 +452,8 @@
 
 						},
 						success : function(result){
-							if (result && result.dossierParts) {
-								options.success(result.dossierParts);
-								$("#dossierTemplateNo").val(result.templateNo);
+							if (result.data) {
+								options.success(result);
 							} else {
 								options.success({
 									data: [],
@@ -470,6 +469,8 @@
 			}
 		},
 		schema : {
+			total: 'total',
+			data: 'data',
 			model : {
 				id : "partNo"
 			}
@@ -829,8 +830,10 @@
 				type : "GET",
 				headers : {"groupId": ${groupId}},
 				success : function(result){
+					$("#dossierTemplateNo").val(result.dossierTemplateNo);
+					$("#dossierTemplateId").val(result.dossierTemplateId);
 					dataSourceDossierTemplate.read({
-						dossierTemplateNo : result.dossierTemplateNo
+						dossierTemplateId : result.dossierTemplateId
 					});
 					var viewModel = kendo.observable({
 						dossierTemplateNo : function(){

@@ -36,7 +36,7 @@
 									<div class="accordion-inner P0">
 										# if(domains[i].serviceConfigs.length > 0) {#
 										# for (var j = 0; j < domains[i].serviceConfigs.length; j ++) {#
-										<div class="eq-height">
+										<div class="eq-height border-bottom">
 											<div class="col-xs-12 col-sm-11 align-middle MR100">
 												<a class="link-serviceInfo" data-pk="#:domains[i].serviceConfigs[j].serviceConfigId#" admt-pk="#domains[i].serviceConfigs.serviceConfigId#" href="\\#">
 													#:domains[i].serviceConfigs[j].serviceInfoName#
