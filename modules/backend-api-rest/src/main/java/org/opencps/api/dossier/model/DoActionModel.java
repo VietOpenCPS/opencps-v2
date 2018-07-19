@@ -51,7 +51,8 @@ import javax.xml.bind.annotation.XmlType;
     "payload",
     "assignUsers",
     "security",
-    "payment"
+    "payment",
+    "createDossiers"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
@@ -69,6 +70,8 @@ public class DoActionModel {
 	protected String security;
 	@FormParam(value = "payment")
 	protected String payment;
+	@FormParam(value = "createDossiers")
+	protected String createDossiers;
 
     /**
      * Gets the value of the actionCode property.
@@ -204,6 +207,14 @@ public class DoActionModel {
 
 	public void setPayment(String payment) {
 		this.payment = payment;
+	}
+
+	public String getCreateDossiers() {
+		return createDossiers;
+	}
+
+	public void setCreateDossiers(String createDossiers) {
+		this.createDossiers = createDossiers;
 	}
 
 }
