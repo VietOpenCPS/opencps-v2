@@ -101,7 +101,7 @@ public class OpenCPSRestClient {
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
 				baseUrl,DOSSIERS_BASE_PATH, username,
 				password, properties, params, context);
-
+		_log.info("Call post API result: " + resultObj.toJSONString());
 		result = OpenCPSConverter.convertDossierDetail(resultObj);
 		
 		return result;
@@ -131,7 +131,7 @@ public class OpenCPSRestClient {
 		
 	}
 	
-	public ExecuteOneAction postDossierAction(long dossierId, ExecuteOneAction model) {
+	public ExecuteOneAction postDossierAction(String dossierId, ExecuteOneAction model) {
 		ExecuteOneAction result = new ExecuteOneAction();
 
 		try {
