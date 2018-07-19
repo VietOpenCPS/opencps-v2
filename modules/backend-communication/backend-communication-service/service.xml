@@ -139,6 +139,11 @@
 			<order-column name="createDate" />
 		</order>
 		
+		<finder return-type="ServerConfig" name="G_CF_CD">
+			<finder-column name="groupId"/>
+			<finder-column name="serverNo"/>
+		</finder>
+
 		<finder return-type="ServerConfig" name="CF_CD">
 			<finder-column name="serverNo"/>
 		</finder>

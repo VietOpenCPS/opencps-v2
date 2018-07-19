@@ -171,6 +171,16 @@ public class OpenCPSConverter {
 	public static DossierDetailModel convertDossierDetail(JSONObject jsonObj) {
 		DossierDetailModel model = new DossierDetailModel();
 	
+		if (jsonObj.has("status") && jsonObj.getInt("status") != 200) {
+			return model;
+		}
+		
+		if (!jsonObj.has("message")) {
+			return model;
+		}
+		
+		jsonObj = jsonObj.getJSONObject("message");
+		
 		if (jsonObj.has(DossierTerm.DOSSIER_ID)) {
 			model.setDossierId(jsonObj.getInt(DossierTerm.DOSSIER_ID));
 		}
