@@ -178,7 +178,7 @@ public class OpenCPSConverter {
 		if (!jsonObj.has("message")) {
 			return model;
 		}
-		
+
 		jsonObj = jsonObj.getJSONObject("message");
 		
 		if (jsonObj.has(DossierTerm.DOSSIER_ID)) {
