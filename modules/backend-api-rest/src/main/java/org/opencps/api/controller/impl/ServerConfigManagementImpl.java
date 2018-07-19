@@ -91,8 +91,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0l, input.getServerNo(),
-					input.getServerName(), input.getProtocol(), StringPool.BLANK, new Date(), serviceContext);
+			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0l, input.getGovAgencyCode(),
+					input.getServerNo(), input.getServerName(), input.getProtocol(), StringPool.BLANK, new Date(),
+					serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
@@ -184,8 +185,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, input.getServerNo(),
-					input.getServerName(), input.getProtocol(), StringPool.BLANK, new Date(), serviceContext);
+			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, input.getGovAgencyCode(),
+					input.getServerNo(), input.getServerName(), input.getProtocol(), StringPool.BLANK, new Date(),
+					serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
@@ -333,8 +335,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfig oldConfig = ServerConfigLocalServiceUtil.getServerConfig(id);
 
-			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, oldConfig.getServerNo(),
-					oldConfig.getServerName(), oldConfig.getProtocol(), input.getValue(), new Date(), serviceContext);
+			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id,
+					oldConfig.getGovAgencyCode(), oldConfig.getServerNo(), oldConfig.getServerName(),
+					oldConfig.getProtocol(), input.getValue(), new Date(), serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
@@ -390,8 +393,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfig oldConfig = ServerConfigLocalServiceUtil.getServerConfig(id);
 
-			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, oldConfig.getServerNo(),
-					oldConfig.getServerName(), oldConfig.getProtocol(), input.getValue(), new Date(), serviceContext);
+			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id,
+					oldConfig.getGovAgencyCode(), oldConfig.getServerNo(), oldConfig.getServerName(),
+					oldConfig.getProtocol(), input.getValue(), new Date(), serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 

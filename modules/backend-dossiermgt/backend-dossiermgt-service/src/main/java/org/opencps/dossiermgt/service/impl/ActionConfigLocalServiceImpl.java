@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
@@ -224,7 +225,11 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		}
 		return null;
 	}
-	
+
+	//LamTV_Add
+	public List<ActionConfig> getByGroupId(long groupId) {
+		return actionConfigPersistence.findByF_BY_GID(groupId);
+	}
 	private void validate(long groupId, String actionCode, long actionConfigId) throws PortalException {
 
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);

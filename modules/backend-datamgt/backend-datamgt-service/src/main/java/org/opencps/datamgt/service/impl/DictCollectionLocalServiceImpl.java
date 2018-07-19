@@ -576,6 +576,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		DictCollection dictCollection = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode, groupId);
+		_log.info("collectionCode: "+collectionCode);
+		_log.info("dictCollection: "+dictCollection);
 		if (dictCollection != null) {
 			dictCollection.setModifiedDate(now);
 
@@ -584,13 +586,13 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 				dictCollection.setCollectionCode(collectionCode);
 			}
 			if (Validator.isNotNull(collectionName)) {
-				dictCollection.setCollectionCode(collectionName);
+				dictCollection.setCollectionName(collectionName);
 			}
 			if (Validator.isNotNull(collectionNameEN)) {
-				dictCollection.setCollectionCode(collectionNameEN);
+				dictCollection.setCollectionNameEN(collectionNameEN);
 			}
 			if (Validator.isNotNull(description)) {
-				dictCollection.setCollectionCode(description);
+				dictCollection.setDescription(description);
 			}
 		} else {
 			long dictCollectionId = counterLocalService.increment(DictCollection.class.getName());

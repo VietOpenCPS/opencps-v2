@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
 import org.opencps.dossiermgt.model.MenuConfig;
@@ -196,5 +197,9 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public List<MenuConfig> getByGroupId(long groupId) {
+		return menuConfigPersistence.findByF_BY_GID(groupId);
 	}
 }

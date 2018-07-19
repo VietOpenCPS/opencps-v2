@@ -36,4 +36,10 @@ public interface NotificationTemplateInterface {
 			String userUrlPattern, String guestUrlPattern, String interval, String grouping,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException;
+
+	public boolean deleteAllNotificationTemplate(long groupId, long userId, ServiceContext serviceContext);
+
+	public void updateNotificationTemplateDB(long userId, long groupId, String notificationType, Boolean sendEmail,
+			String emailSubject, String emailBody, String textMessage, Boolean sendSMS, Integer expireDuration,
+			ServiceContext serviceContext) throws NoSuchUserException;
 }
