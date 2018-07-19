@@ -607,6 +607,7 @@ public class ProcessUpdateDBUtils {
 			ServiceConfigActions actionConfig, ServiceContext serviceContext) {
 		List<ProcessOption> optionList = process.getProcessOption();
 		if (optionList != null && optionList.size() > 0) {
+			_log.info("optionList: "+optionList.size());
 			String optionCode = StringPool.BLANK;
 			String optionName = StringPool.BLANK;
 			Integer seqOrder = 0;
