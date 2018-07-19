@@ -86,7 +86,7 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 	@Override
 	public boolean deleteAllMenuConfig(long groupId, long userId, ServiceContext serviceContext) {
 		boolean flag = false;
-		List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getMenuConfigs(-1, -1);
+		List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getByGroupId(groupId);
 		if (menuList != null && menuList.size() > 0) {
 			for (MenuConfig menuConfig : menuList) {
 				MenuConfigLocalServiceUtil.deleteMenuConfig(menuConfig);

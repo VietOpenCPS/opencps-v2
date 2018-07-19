@@ -96,7 +96,7 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 	@Override
 	public boolean deleteAllActionConfig(long groupId, long userId, ServiceContext serviceContext) {
 		boolean flag = false;
-		List<ActionConfig> actList = ActionConfigLocalServiceUtil.getActionConfigs(-1, -1);
+		List<ActionConfig> actList = ActionConfigLocalServiceUtil.getByGroupId(groupId);
 		if (actList != null && actList.size() > 0) {
 			for (ActionConfig act : actList) {
 				ActionConfigLocalServiceUtil.deleteActionConfig(act);

@@ -38,12 +38,15 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+	"govAgencyCode",
     "serverNo",
     "serverName",
     "protocol"
 })
 @XmlRootElement(name = "ServerConfigInputModel")
 public class ServerConfigInputModel {
+	@FormParam("govAgencyCode")
+    protected String govAgencyCode;
 	@FormParam("serverNo")
     protected String serverNo;
 	@FormParam("serverName")
@@ -122,5 +125,13 @@ public class ServerConfigInputModel {
     public void setProtocol(String value) {
         this.protocol = value;
     }
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
 
 }

@@ -423,6 +423,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 						}
 					}
 				}
+			} else {
+				flag = true;
 			}
 		}catch (Exception e) {
 			return false;

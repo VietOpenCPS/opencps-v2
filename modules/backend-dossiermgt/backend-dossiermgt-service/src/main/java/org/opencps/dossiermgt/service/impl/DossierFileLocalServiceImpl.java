@@ -1049,5 +1049,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.fetchByFILE_ID(fileEntryId);
 	}
 
+	public List<DossierFile> findByDID(long dossierId) {
+		return dossierFilePersistence.findByDID_(dossierId);
+	}
+	
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

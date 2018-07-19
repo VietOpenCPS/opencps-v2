@@ -134,4 +134,7 @@ public class DossierTerm {
 	public static final String DOSSIER_STATUS_STEP = "statusStep";
 	public static final String DOSSIER_SUBSTATUS_STEP = "subStatusStep";
 	public static final String USER_NOTE = "userNote";
+	public static final String DURATION_COUNT = "durationCount";
+	public static final String DURATION_UNIT = "durationUnit";
+
 }

@@ -23,5 +23,5 @@ public class ApplicantTerm {
 	public static String MAPPINGUSERID = "mappingUserId";
 	public static String PROFILE = "profile";
 	public static String LOCK = "lock";
-	
+
 }

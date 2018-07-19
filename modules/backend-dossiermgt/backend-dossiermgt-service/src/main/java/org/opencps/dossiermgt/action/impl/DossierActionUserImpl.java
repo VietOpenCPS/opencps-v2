@@ -189,6 +189,12 @@ public class DossierActionUserImpl implements DossierActionUser {
 		model.setDossierActionId(dossierActionId);
 		
 		DossierUserPK duPk = new DossierUserPK();
+		if (dossierActionId > 0) {
+			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+			if (dAction != null) {
+				model.setStepCode(dAction.getStepCode());
+			}
+		}
 		duPk.setDossierId(dossier.getDossierId());
 		duPk.setUserId(userId);
 		DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
@@ -233,6 +239,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 		org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
 		model.setVisited(visited);
+		model.setDossierId(dossierId);
+		model.setStepCode(stepCode);
 		
 		if (allowAssignUser == ProcessActionTerm.NOT_ASSIGNED) {
 			model.setUserId(userId);
@@ -267,8 +275,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setVisited(true);
 			assigned = DossierActionUserTerm.ASSIGNED_PH;
 			model.setAssigned(assigned);
-			model.setStepCode(stepCode);
-			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
 		}
@@ -278,8 +284,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setModerator(moderator);
 			assigned = DossierActionUserTerm.ASSIGNED_TH;
 			model.setAssigned(assigned);
-			model.setStepCode(stepCode);
-			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
 
@@ -288,8 +292,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setModerator(moderator);
 			assigned = DossierActionUserTerm.ASSIGNED_PH;
 			model.setAssigned(assigned);
-			model.setStepCode(stepCode);
-			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
 
@@ -298,8 +300,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 			model.setModerator(moderator);
 			assigned = DossierActionUserTerm.ASSIGNED_TD;
 			model.setAssigned(assigned);
-			model.setStepCode(stepCode);
-			model.setDossierId(dossierId);
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);																			
 		}		

@@ -15,4 +15,7 @@ public class ActionConfigTerm {
 	public static final String DOCUMENT_TYPE = "documentType";
 	
 	public static final String ACTION_CODE_1300 = "1300";
+	
+	public static final int EVENT_TYPE_NOT_SENT = 0;
+	public static final int EVENT_TYPE_SENT = 1;
 }

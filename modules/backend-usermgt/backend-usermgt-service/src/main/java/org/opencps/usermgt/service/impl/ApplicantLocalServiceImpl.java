@@ -22,7 +22,6 @@ import java.util.List;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.exception.DuplicateApplicantIdException;
 import org.opencps.usermgt.exception.DuplicateContactEmailException;
-import org.opencps.usermgt.exception.DuplicateContactTelNoException;
 import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
@@ -53,7 +52,10 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -420,11 +422,15 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicant;
 	}
 
+	@SuppressWarnings("deprecation")
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
+		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
+		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
+		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
 
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
@@ -469,9 +475,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String type = String.valueOf(params.get("type"));
-		String lock = String.valueOf(params.get("lock"));
-
 		if (Validator.isNotNull(type)) {
 			MultiMatchQuery query = new MultiMatchQuery(type);
 
@@ -488,16 +491,32 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		// LamTV: Process search LIKE
+		if (Validator.isNotNull(idNo)) {
+			String[] keywordArr = idNo.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(ApplicantTerm.APPLICANTIDNO,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
+	@SuppressWarnings("deprecation")
 	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
+		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
+		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
+		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
 
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
@@ -539,9 +558,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String type = String.valueOf(params.get("type"));
-		String lock = String.valueOf(params.get("lock"));
-
 		if (Validator.isNotNull(type)) {
 			MultiMatchQuery query = new MultiMatchQuery(type);
 
@@ -555,6 +571,18 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			query.addFields(ApplicantTerm.LOCK);
 
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// LamTV: Process search LIKE
+		if (Validator.isNotNull(idNo)) {
+			String[] keywordArr = idNo.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(ApplicantTerm.APPLICANTIDNO,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 

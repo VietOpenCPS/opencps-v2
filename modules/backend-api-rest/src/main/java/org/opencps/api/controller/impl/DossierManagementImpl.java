@@ -552,8 +552,8 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
  			}
-			_log.info("strStatusStep: "+strStatusStep.toString());
-			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
+//			_log.info("strStatusStep: "+strStatusStep.toString());
+//			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
 //			if (stepList != null && stepList.size() > 0) {
 //				_log.info("length: "+stepList.size());
 //				for (StepConfig step: stepList) {
@@ -2245,13 +2245,25 @@ public class DossierManagementImpl implements DossierManagement {
 				
 				for (DossierAction da : lstDossierActions) {
 					ActionModel am = new ActionModel();
+					am.setUserId(da.getUserId());
+					am.setFromStepCode(da.getFromStepCode());
+					am.setFromStepName(da.getFromStepName());
+					am.setSequenceNo(da.getSequenceNo());
+					am.setDossierId(da.getDossierId());
+					am.setServiceProcessId(da.getServiceProcessId());
+					am.setPreviousActionId(da.getPreviousActionId());
 					am.setActionCode(da.getActionCode());
 					am.setActionName(da.getActionName());
 					am.setActionNote(da.getActionNote());
 					am.setActionUser(da.getActionUser());
 					am.setActionOverdue(da.getActionOverdue());
 					am.setPayload(da.getPayload());
+					am.setPending(da.getPending());
+					am.setRoolbackable(da.getRollbackable());
 					am.setCreateDate(DateTimeUtils.convertDateToString(da.getCreateDate(), DateTimeUtils._TIMESTAMP));
+					am.setModifiedDate(DateTimeUtils.convertDateToString(da.getModifiedDate(), DateTimeUtils._TIMESTAMP));
+					am.setDueDate(DateTimeUtils.convertDateToString(da.getDueDate(), DateTimeUtils._TIMESTAMP));
+					am.setNextActionId(da.getNextActionId());
 					am.setState(da.getState());
 					am.setStepCode(da.getStepCode());
 					am.setStepName(da.getStepName());
