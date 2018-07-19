@@ -18,10 +18,14 @@ import org.opencps.api.v21.model.DocumentTypeList.DocumentType;
 import org.opencps.api.v21.model.DossierTemplate;
 import org.opencps.api.v21.model.FileTemplates;
 import org.opencps.api.v21.model.FileTemplates.FileTemplate;
+import org.opencps.api.v21.model.Groups;
+import org.opencps.api.v21.model.Groups.DictGroup;
 import org.opencps.api.v21.model.Items;
 import org.opencps.api.v21.model.Items.DictItem;
 import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.MenuConfigList.MenuConfig;
+import org.opencps.api.v21.model.NotificationTemplateList;
+import org.opencps.api.v21.model.NotificationTemplateList.NotificationTemplate;
 import org.opencps.api.v21.model.Parts;
 import org.opencps.api.v21.model.Parts.DossierPart;
 import org.opencps.api.v21.model.PaymentConfigList;
@@ -30,6 +34,8 @@ import org.opencps.api.v21.model.Processes;
 import org.opencps.api.v21.model.Processes.ProcessOption;
 import org.opencps.api.v21.model.Sequences;
 import org.opencps.api.v21.model.Sequences.ProcessSequence;
+import org.opencps.api.v21.model.ServerConfigList;
+import org.opencps.api.v21.model.ServerConfigList.ServerConfig;
 import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.ServiceProcess.Roles;
@@ -39,6 +45,9 @@ import org.opencps.api.v21.model.StepConfigList.StepConfig;
 import org.opencps.api.v21.model.Steps;
 import org.opencps.api.v21.model.Steps.ProcessStep;
 import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
+import org.opencps.communication.action.NotificationTemplateInterface;
+import org.opencps.communication.action.impl.NotificationTemplateActions;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.dossiermgt.action.ActionConfigActions;
@@ -195,7 +204,6 @@ public class ProcessUpdateDBUtils {
 				if (docTypeList != null && docTypeList.size() > 0) {
 					for (DocumentType docType : docTypeList) {
 						String typeCode = docType.getTypeCode();
-						Integer templateClass = docType.getTemplateClass();
 						String documentName = docType.getDocumentName();
 						String codePattern = docType.getCodePattern();
 						Integer docSync = docType.getDocSync();
@@ -209,7 +217,7 @@ public class ProcessUpdateDBUtils {
 							}
 							// Check record exits DB
 							DocumentTypeActions actions = new DocumentTypeActionsImpl();
-							actions.updateDocumentTypeDB(userId, groupId, typeCode, templateClass, documentName, codePattern, docSync,
+							actions.updateDocumentTypeDB(userId, groupId, typeCode, 0, documentName, codePattern, docSync,
 									documentScript);
 						}
 					}
@@ -233,7 +241,7 @@ public class ProcessUpdateDBUtils {
 						String codePattern = deliType.getCodePattern();
 						Integer docSync = deliType.getDocSync();
 						String mappingData = deliType.getMappingData();
-						String fieldConfigs = deliType.getFieldConfigs();
+						String govAgencies = deliType.getGovAgencies();
 						if (Validator.isNotNull(typeCode)) {
 							String filePathReport = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
 									+ typeCode + ConstantUtils.EXTENTION_XML;
@@ -252,7 +260,7 @@ public class ProcessUpdateDBUtils {
 							// Check record exits DB
 							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 							actions.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern, docSync, mappingData,
-									fieldConfigs, formReport, formScript);
+									govAgencies, formReport, formScript);
 						}
 					}
 				}
@@ -304,11 +312,89 @@ public class ProcessUpdateDBUtils {
 		}
 	}
 
+	//LamTV_Update ServerConfig to DB
+	public static void processUpdateServerConfig(ServerConfigList serverList, long groupId, long userId,
+			ServiceContext serviceContext) {
+
+		try {
+			//Delete all table ServerConfig
+			ServerConfigLocalServiceUtil.removeAllServer();
+			//Update table ServerConfig
+			if (serverList != null) {
+				List<ServerConfig> serverConfigList = serverList.getServerConfig();
+				if (serverConfigList != null && serverConfigList.size() > 0) {
+					String govAgencyCode = StringPool.BLANK;
+					String serverNo = StringPool.BLANK;
+					String serverName = StringPool.BLANK;
+					String protocol = StringPool.BLANK;
+					String configs = StringPool.BLANK;
+					for (ServerConfig serverConfig : serverConfigList) {
+						govAgencyCode = serverConfig.getGovAgencyCode();
+						serverNo = serverConfig.getServerNo();
+						serverName = serverConfig.getServerName();
+						protocol = serverConfig.getProtocol();
+						configs = serverConfig.getConfigs();
+						if (Validator.isNotNull(govAgencyCode)) {
+							// Check record exits DB
+							ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0, govAgencyCode, serverNo,
+									serverName, protocol, configs, null, serviceContext);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
+	}
+
+	//LamTV_Update NotificationTemplate to DB
+	public static void processUpdateNotificationTemplate(NotificationTemplateList notiTempList, long groupId,
+			long userId, ServiceContext serviceContext) {
+
+		try {
+			NotificationTemplateInterface actions = new NotificationTemplateActions();
+			//Delete all table NotificationTemplate
+			boolean flagTemp = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
+			//Update table NotificationTemplate
+			if (notiTempList != null && flagTemp) {
+				List<NotificationTemplate> notiTemplateList = notiTempList.getNotificationTemplate();
+				if (notiTemplateList != null && notiTemplateList.size() > 0) {
+					String notificationType = StringPool.BLANK;
+					Boolean sendEmail = false;
+					String emailSubject = StringPool.BLANK;
+					String emailBody = StringPool.BLANK;
+					String textMessage = StringPool.BLANK;
+					Boolean sendSMS = false;
+					Integer expireDuration = 0;
+					for (NotificationTemplate notiTemplate : notiTemplateList) {
+						notificationType = notiTemplate.getNotificationType();
+						sendEmail = notiTemplate.isSendEmail();
+						emailSubject = notiTemplate.getEmailSubject();
+						emailBody = notiTemplate.getEmailBody();
+						textMessage = notiTemplate.getTextMessage();
+						sendSMS = notiTemplate.isSendSMS();
+						expireDuration = notiTemplate.getExpireDuration();
+						if (Validator.isNotNull(notificationType)) {
+							// Check record exits DB
+							actions.updateNotificationTemplateDB(userId, groupId, notificationType, sendEmail, emailSubject, emailBody, textMessage,
+									sendSMS, expireDuration, serviceContext);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
+
 	//LamTV_Update Dictcollection to DB
 	public static void processUpdateDictCollection(DictCollection dicts, long groupId, long userId, ServiceContext serviceContext) {
 		try {
 			if (dicts != null) {
 				String collectionCode = dicts.getCollectionCode();
+				_log.info("collectionCode: "+collectionCode);
 				String collectionName = dicts.getCollectionName();
 				String collectionNameEN = dicts.getCollectionNameEN();
 				String description = dicts.getDescription();
@@ -317,38 +403,8 @@ public class ProcessUpdateDBUtils {
 						collectionName, collectionNameEN, description);
 				if (dictCollectionId > 0) {
 					processUpdateDictItem(userId, groupId, dictCollectionId, dicts, actionCollection);
+					processUpdateDictGroup(userId, groupId, dictCollectionId, dicts, actionCollection, serviceContext);
 				}
-				
-//				if (deliverableTypeList != null && deliverableTypeList.size() > 0) {
-//					for (DeliverableType deliType : deliverableTypeList) {
-//						String typeCode = deliType.getTypeCode();
-//						String typeName = deliType.getTypeName();
-//						String codePattern = deliType.getCodePattern();
-//						Integer docSync = deliType.getDocSync();
-//						String mappingData = deliType.getMappingData();
-//						String fieldConfigs = deliType.getFieldConfigs();
-//						if (Validator.isNotNull(typeCode)) {
-//							String filePathReport = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-//									+ typeCode + ConstantUtils.EXTENTION_XML;
-//							String filePathForm = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-//									+ typeCode + ConstantUtils.EXTENTION_JSON;
-//							File xmlFile = new File(filePathReport);
-//							File jsonFile = new File(filePathForm);
-//							String formScript = StringPool.BLANK;
-//							String formReport = StringPool.BLANK;
-//							if (xmlFile.exists() && !xmlFile.isDirectory()) {
-//								formReport = ReadXMLFile.convertFiletoString(xmlFile);
-//							}
-//							if (jsonFile.exists() && !jsonFile.isDirectory()) {
-//								formScript = ReadXMLFile.convertFiletoString(jsonFile);
-//							}
-//							// Check record exits DB
-//							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
-//							actions.updateDeliverableTypeDB(20164l, 55301l, typeCode, typeName, codePattern, docSync, mappingData,
-//									fieldConfigs, formReport, formScript);
-//						}
-//					}
-//				}
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -717,6 +773,7 @@ public class ProcessUpdateDBUtils {
 			ServiceProcessActions actionService, ServiceContext serviceContext) throws PortalException {
 		// Delete all ServiceFileTemplate with serviceInfoId
 		boolean flagStep = actionService.deleteAllProcessStep(userId, groupId, serviceProcessId, serviceContext);
+		_log.info("flagStep: "+flagStep);
 		// Add list file serviceFileTemplate
 		List<ProcessStep> proStepList = steps.getProcessStep();
 		if (proStepList != null && proStepList.size() > 0 && flagStep) {
@@ -809,6 +866,7 @@ public class ProcessUpdateDBUtils {
 		if (itemList != null) {
 			// Delete all DictItem with dictCollectionId
 			boolean flagItem = actionCollection.deleteAllDictItem(userId, groupId, dictCollectionId);
+			_log.info("flagItem: "+flagItem);
 			// Add list file serviceFileTemplate
 			List<DictItem> dictItemList = itemList.getDictItem();
 			if (dictItemList != null && dictItemList.size() > 0 && flagItem) {
@@ -833,6 +891,33 @@ public class ProcessUpdateDBUtils {
 					long dictItemParentId = actionCollection.getDictItemByItemCode(dictCollectionId, parent, groupId);
 					actionCollection.updateDictItemDB(userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
 							itemDescription, dictItemParentId, level, sibling, metadata);
+				}
+			}
+		}
+	}
+
+	//LamTV_ Process DictGroup
+	private static void processUpdateDictGroup(long userId, long groupId, long dictCollectionId, DictCollection dicts,
+			DictcollectionInterface actionCollection, ServiceContext serviceContext) {
+		Groups groupList = dicts.getGroups();
+		if (groupList != null) {
+			// Delete all DictItem with dictCollectionId
+			boolean flagGroup = actionCollection.deleteAllDictGroup(userId, groupId, dictCollectionId);
+			// Add list file serviceFileTemplate
+			List<DictGroup> dictGroupList = groupList.getDictGroup();
+			if (dictGroupList != null && dictGroupList.size() > 0 && flagGroup) {
+				String groupCode = StringPool.BLANK;
+				String groupName = StringPool.BLANK;
+				String groupNameEN = StringPool.BLANK;
+				String groupDescription = StringPool.BLANK;
+				for (DictGroup dictGroup : dictGroupList) {
+					groupCode = dictGroup.getGroupCode();
+					groupName = dictGroup.getGroupName();
+					groupNameEN = dictGroup.getGroupNameEN();
+					groupDescription = dictGroup.getGroupDescription();
+					//
+					actionCollection.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName, groupNameEN,
+							groupDescription, serviceContext);
 				}
 			}
 		}

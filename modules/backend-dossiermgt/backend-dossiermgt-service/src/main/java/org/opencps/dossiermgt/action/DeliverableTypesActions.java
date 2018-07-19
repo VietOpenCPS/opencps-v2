@@ -32,6 +32,6 @@ public interface DeliverableTypesActions {
 			ServiceContext serviceContext) throws SystemException, PortalException;
 
 	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
-			Integer docSync, String mappingData, String fieldConfigs, String formReport, String formScript);
+			Integer docSync, String mappingData, String govAgencies, String formReport, String formScript);
 
 }

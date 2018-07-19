@@ -552,8 +552,8 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
  			}
-			_log.info("strStatusStep: "+strStatusStep.toString());
-			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
+//			_log.info("strStatusStep: "+strStatusStep.toString());
+//			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
 //			if (stepList != null && stepList.size() > 0) {
 //				_log.info("length: "+stepList.size());
 //				for (StepConfig step: stepList) {

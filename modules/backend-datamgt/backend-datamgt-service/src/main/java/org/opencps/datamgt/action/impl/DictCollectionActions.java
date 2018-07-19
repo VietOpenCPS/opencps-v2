@@ -1214,13 +1214,17 @@ public class DictCollectionActions implements DictcollectionInterface {
 	public boolean deleteAllDictItem(long userId, long groupId, long dictCollectionId) {
 		boolean flag = false;
 		try {
+			_log.info("STARTTTTT");
 			List<DictItem> itemList = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollectionId);
+			_log.info("itemList: "+itemList);
+			_log.info("STARTTTTT");
 			if (itemList != null && itemList.size() > 0) {
 				for (DictItem item : itemList) {
 					DictItemLocalServiceUtil.deleteDictItem(item);
 					flag = true;
 				}
 			} else {
+				_log.info("STARTTTTT");
 				flag = true;
 			}
 		}catch (Exception e) {
@@ -1230,4 +1234,28 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return flag;
 	}
 
+	@Override
+	public boolean deleteAllDictGroup(long userId, long groupId, long dictCollectionId) {
+		boolean flag = false;
+		List<DictGroup> groupList = DictGroupLocalServiceUtil.getDictGroupByDictCollection(groupId, dictCollectionId,
+				-1, -1);
+		if (groupList != null && groupList.size() > 0) {
+			for (DictGroup group : groupList) {
+				DictGroupLocalServiceUtil.deleteDictGroup(group);
+				flag = true;
+			}
+		} else {
+			flag = true;
+		}
+
+		return flag;
+	}
+
+	@Override
+	public void updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
+			String groupNameEN, String groupDescription, ServiceContext serviceContext) {
+
+		DictGroupLocalServiceUtil.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName,
+				groupNameEN, groupDescription, serviceContext);
+	}
 }
