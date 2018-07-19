@@ -799,6 +799,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		return dictItemPersistence.countByF_dictItemNewerThan(date, groupId);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public DictItem updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
 			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling, String metadata) {
 

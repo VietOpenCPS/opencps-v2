@@ -1214,13 +1214,17 @@ public class DictCollectionActions implements DictcollectionInterface {
 	public boolean deleteAllDictItem(long userId, long groupId, long dictCollectionId) {
 		boolean flag = false;
 		try {
+			_log.info("STARTTTTT");
 			List<DictItem> itemList = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollectionId);
+			_log.info("itemList: "+itemList);
+			_log.info("STARTTTTT");
 			if (itemList != null && itemList.size() > 0) {
 				for (DictItem item : itemList) {
 					DictItemLocalServiceUtil.deleteDictItem(item);
 					flag = true;
 				}
 			} else {
+				_log.info("STARTTTTT");
 				flag = true;
 			}
 		}catch (Exception e) {

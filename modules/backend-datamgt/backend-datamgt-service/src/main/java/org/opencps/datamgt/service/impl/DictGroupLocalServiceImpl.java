@@ -569,6 +569,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 			return dictGroupPersistence.update(dictGroup);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

@@ -204,7 +204,6 @@ public class ProcessUpdateDBUtils {
 				if (docTypeList != null && docTypeList.size() > 0) {
 					for (DocumentType docType : docTypeList) {
 						String typeCode = docType.getTypeCode();
-						Integer templateClass = docType.getTemplateClass();
 						String documentName = docType.getDocumentName();
 						String codePattern = docType.getCodePattern();
 						Integer docSync = docType.getDocSync();
@@ -218,7 +217,7 @@ public class ProcessUpdateDBUtils {
 							}
 							// Check record exits DB
 							DocumentTypeActions actions = new DocumentTypeActionsImpl();
-							actions.updateDocumentTypeDB(userId, groupId, typeCode, templateClass, documentName, codePattern, docSync,
+							actions.updateDocumentTypeDB(userId, groupId, typeCode, 0, documentName, codePattern, docSync,
 									documentScript);
 						}
 					}
@@ -242,7 +241,7 @@ public class ProcessUpdateDBUtils {
 						String codePattern = deliType.getCodePattern();
 						Integer docSync = deliType.getDocSync();
 						String mappingData = deliType.getMappingData();
-						String fieldConfigs = deliType.getFieldConfigs();
+						String govAgencies = deliType.getGovAgencies();
 						if (Validator.isNotNull(typeCode)) {
 							String filePathReport = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
 									+ typeCode + ConstantUtils.EXTENTION_XML;
@@ -261,7 +260,7 @@ public class ProcessUpdateDBUtils {
 							// Check record exits DB
 							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 							actions.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern, docSync, mappingData,
-									fieldConfigs, formReport, formScript);
+									govAgencies, formReport, formScript);
 						}
 					}
 				}
@@ -395,6 +394,7 @@ public class ProcessUpdateDBUtils {
 		try {
 			if (dicts != null) {
 				String collectionCode = dicts.getCollectionCode();
+				_log.info("collectionCode: "+collectionCode);
 				String collectionName = dicts.getCollectionName();
 				String collectionNameEN = dicts.getCollectionNameEN();
 				String description = dicts.getDescription();
@@ -773,6 +773,7 @@ public class ProcessUpdateDBUtils {
 			ServiceProcessActions actionService, ServiceContext serviceContext) throws PortalException {
 		// Delete all ServiceFileTemplate with serviceInfoId
 		boolean flagStep = actionService.deleteAllProcessStep(userId, groupId, serviceProcessId, serviceContext);
+		_log.info("flagStep: "+flagStep);
 		// Add list file serviceFileTemplate
 		List<ProcessStep> proStepList = steps.getProcessStep();
 		if (proStepList != null && proStepList.size() > 0 && flagStep) {
@@ -865,6 +866,7 @@ public class ProcessUpdateDBUtils {
 		if (itemList != null) {
 			// Delete all DictItem with dictCollectionId
 			boolean flagItem = actionCollection.deleteAllDictItem(userId, groupId, dictCollectionId);
+			_log.info("flagItem: "+flagItem);
 			// Add list file serviceFileTemplate
 			List<DictItem> dictItemList = itemList.getDictItem();
 			if (dictItemList != null && dictItemList.size() > 0 && flagItem) {
