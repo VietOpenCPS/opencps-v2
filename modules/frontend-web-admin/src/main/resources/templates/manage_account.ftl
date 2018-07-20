@@ -338,7 +338,7 @@
 			success : function(result){
 				var item = dataSourceCitizen.get(id);
 				if(result){
-					dataSourceCitizen.pushUpdate(result);
+					dataSourceCitizen.read(result);
 					// var mappingUser = item.mappingUser;
 					// mappingUser.locking = false;
 					// item.set("mappingUser",mappingUser);

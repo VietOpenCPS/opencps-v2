@@ -208,12 +208,64 @@
 								<div class="col-sm-10" data-bind="text:paymentStatus"></div>
 							</div>
 
+							<div class="row MB5">
+								<div class="col-sm-2">								
+									<span class="text-bold">Hình thức thanh toán</span>	
+								</div>
+								<div class="col-sm-10" data-bind="text:paymentMethod"></div>
+							</div>
+
+							<#-- <div class="row MB5">
+								<div class="col-sm-2">								
+									<span class="text-bold">Ngày báo đã nộp</span>	
+								</div>
+								<div class="col-sm-10" data-bind="text:paymentMethod"></div>
+							</div>
+
+							<div class="row MB5">
+								<div class="col-sm-2">								
+									<span class="text-bold">Ngày xác nhận thu phí</span>	
+								</div>
+								<div class="col-sm-10" data-bind="text:paymentMethod"></div>
+							</div> -->
+
+							<div class="row MB5">
+								<div class="col-sm-2">								
+									<span class="text-bold">Người thực hiện</span>	
+								</div>
+								<div class="col-sm-10" data-bind="text:accountUserName"></div>
+							</div>
 							<div class="row MB10">
 								<div class="col-sm-2">								
 									<span class="text-bold">Ngày thanh toán</span>	
 								</div>
 								<div class="col-sm-10" data-bind="text:paymentApproveDatetime"></div>
 							</div>
+							
+							<div id="so_HDDT">
+								<div class="row MB5">
+									<div class="col-sm-2">								
+										<span class="text-bold">Mã hóa đơn điện tử</span>	
+									</div>
+									<div class="col-sm-10" data-bind="text:invoiceTemplateNo"></div>
+								</div>
+								<div class="row MB5">
+									<div class="col-sm-2">								
+										<span class="text-bold">Số hóa đơn điện tử</span>	
+									</div>
+									<div class="col-sm-10" data-bind="text:invoiceNo"></div>
+								</div>
+
+								<div class="row MB5">
+									<div class="col-sm-2">								
+										<span class="text-bold">Mã tra cứu trên hệ thống HĐĐT</span>	
+									</div>
+									<div class="col-sm-10" data-bind="text:invoiceNo"></div>
+								</div>
+
+								
+							</div>
+							
 
 							<div id="unpaid">
 								<div class="row MB10">
@@ -224,7 +276,7 @@
 									</div>
 								</div>
 
-								<div class="row MB20 MT20" data-bind="value: isPay">
+								<div class="row MB20 MT20" data-bind="value: isPay" id="uploadFile">
 									<div class="col-sm-12 text-center">
 										<div class="row">
 											<div class="col-sm-4">
@@ -346,6 +398,9 @@
 						dossierStatusText : result.dossierStatusText,
 						stepInstruction : result.stepInstruction,
 						dossierStatus : result.dossierStatus,
+						invoiceNo : result.invoiceNo,
+						invoiceTemplateNo : result.invoiceTemplateNo,
+						paymentMethod : result.paymentMethod,
 						paymentDossier : payment,
 
 						contactName: result.contactName,
@@ -355,6 +410,7 @@
 						address: result.address,
 						contactTelNo: result.contactTelNo,
 						contactEmail: result.contactEmail,
+
 						paymentFee : function(e){
 							if(this.get('paymentDossier').paymentFee){
 								return this.get('paymentDossier').paymentFee;
@@ -391,15 +447,27 @@
 							if(this.get('paymentDossier')){
 								if(this.get('paymentDossier').paymentStatus === 0){
 									$("#dossier-payment-confirm").prop("disabled",false);
+									$("#dossier-payment-viewpdf").hide();
+									$("#uploadFile").hide();
+									$("#so_HDDT").hide();
 									return "Chờ nộp";
 								}else if(this.get('paymentDossier').paymentStatus === 1){
 									$("#dossier-payment-confirm").prop("disabled",true);
+									$("#dossier-payment-viewpdf").show();
+									$("#uploadFile").show();
+									$("#so_HDDT").hide();
 									return "Báo đã nộp";
 								}else if(this.get('paymentDossier').paymentStatus === 2){
 									$("#dossier-payment-confirm").prop("disabled",false);
+									$("#dossier-payment-viewpdf").show();
+									$("#uploadFile").show();
+									$("#so_HDDT").show();
 									return "Hoàn thành";
 								}else {
 									$("#dossier-payment-confirm").prop("disabled",false);
+									$("#dossier-payment-viewpdf").hide();
+									$("#uploadFile").hide();
+									$("#so_HDDT").hide();
 									return "Không hợp lệ";
 								}
 							}
@@ -479,6 +547,7 @@
 
 	
 	$("#dossier-payment-confirm").click(function(){
+
 		var referenceUid = $(this).attr("data-pk");
 		if(referenceUid){
 
@@ -502,6 +571,8 @@
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 					$("#dossier-payment-confirm").prop("disabled",true);
+					$("#dossier-payment-viewpdf").show();
+					$("#uploadFile").show();
 				},
 				error :  function(result){
 					notification.show({
@@ -533,7 +604,7 @@
 		var referenceUid = $(this).attr("data-pk");
 		if(referenceUid){
 			$.ajax({
-				url : "${api.server}/dossiers/43601/payments/ddd25e45-0144-b226-ef2b-a1d09a7a24de/invoicefile",
+				url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/invoicefile",
 				dataType : "json",
 				type : "GET",
 				headers : {"groupId": ${groupId}},

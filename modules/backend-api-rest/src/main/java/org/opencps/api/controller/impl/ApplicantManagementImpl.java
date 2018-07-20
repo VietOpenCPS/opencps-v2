@@ -715,8 +715,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.lockApplicant(serviceContext, id);
-
+//				applicant = actions.lockApplicant(serviceContext, id);
+				applicant = ApplicantLocalServiceUtil.lockApplicant(id, serviceContext);
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
 				return Response.status(200).entity(results).build();

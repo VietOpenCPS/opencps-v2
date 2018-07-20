@@ -115,7 +115,7 @@
 								<span class="text-bold">
 								Địa chỉ: 
 								</span>
-								{{detailModel.wardName}}/{{detailModel.districtName}}/{{detailModel.cityName}}
+								{{detailModel.address}} - {{detailModel.wardName}} - {{detailModel.districtName}} - {{detailModel.cityName}}
 							</div>
 							
 						</div>

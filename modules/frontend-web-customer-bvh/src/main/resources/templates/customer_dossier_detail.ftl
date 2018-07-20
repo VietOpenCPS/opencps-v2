@@ -781,10 +781,10 @@
 			transport : {
 				read : function(options){
 					$.ajax({
-						url : "${api.server}/dictcollections/ADMINISTRATIVE_REGION/dictitems",
+						url : "${api.server}/dictcollections/VNPOST_CODE/dictitems?parent=0",
 						dataType : "json",
+						headers: {"groupId": 55217},
 						type : "GET",
-						headers: {"groupId": ${groupId}},
 						data : {
 							parent : 0
 						},

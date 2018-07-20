@@ -167,20 +167,20 @@
 									}
 								}
 								#
-
+								<p data-toggle="tooltip" title="Ngày hẹn trả">
 								#
 								if(typeof dueDate !== "undefined"){
 									if(dueDate != ""){
 
 								#
-									<p data-toggle="tooltip" title="Ngày hẹn trả">
+									<#-- <p data-toggle="tooltip" title="Ngày hẹn trả"> -->
 										<i class="fa fa-clock-o" aria-hidden="true"></i> #:dueDate#
-									</p>
+									<#-- </p> -->
 								#
 									}
 								}
 								#
-								
+								</p>
 							</div>
 						</div>
 					</div>

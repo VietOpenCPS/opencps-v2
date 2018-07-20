@@ -49,10 +49,8 @@
           </div>
           <div class="col-sm-12 ML15">
             <span class="text-bold">Trụ sở <span data-bind="text:govAgencyName"></span> tại:</span> <br>
-            <p class="text-bold">Địa chỉ: </span data-bind="">Số 20, ngõ 2, Hoa Lư, Q.Hai Bà Trưng, TP.Hà Nội. <span></p>
-            <p class="text-bold">Số điện thoại: 
-            </span data-bind="">0243.9745845 - 0243.9745846 
-            <span></p>
+            <p class="text-bold">Địa chỉ: <span data-bind="text:govAgencyAddress"></span></p>
+            <p class="text-bold">Số điện thoại: <span data-bind="text:govAgencyTelNo"></span></p>
             </div>
           </div>
 
@@ -90,29 +88,15 @@
               headers : {"groupId": ${groupId}},
               success : function(result){
                 var dossierTemplateParts = funGetDossierTemplate(result.dossierTemplateNo);
-
+                var govAgencyInfo = funGetGovInfo(result.govAgencyCode)
+                console.log("aaaaaaaa = " + JSON.stringify(govAgencyInfo));
                 var viewModel = kendo.observable({
                   serviceName : result.serviceName,
                   govAgencyName : result.govAgencyName,
                   dossierIdCTN : result.dossierIdCTN,
-                  govAgencyAddress : function(){
-                    var govAgencyCode = result.govAgencyCode;
-                    var govAgencyAddress = "";
-                    if(govAgencyCode){
-                      $.ajax({
-                        url : "",
-                        dataType : "json",
-                        type : "GET",
-                        headers : {"groupId": ${groupId}},
-                        success : function(result){
-
-                        },
-                        error : function(xhr){
-
-                        }
-                      });
-                    }
-                  },
+                  govAgencyAddress : govAgencyInfo.address,
+                  govAgencyTelNo : govAgencyInfo.telNo,
+                  govAgencyEmail : govAgencyInfo.email,
                   postalAddress : result.postalAddress,
                   viaPostal : function(e){
                     if(result.viaPostal < 2){
@@ -163,6 +147,29 @@
             });
           }
           return dossierTemplates;
+        }
+
+        var funGetGovInfo = function(govAgencyCode){
+          var govAgencyAddress = [];
+          if(govAgencyCode){
+            $.ajax({
+              url : "${api.server}/onegate/govinfo",
+              dataType : "json",
+              type : "GET",
+              headers : {
+                "groupId": 55301,
+                "govAgencyCode": govAgencyCode
+              },
+              async : false,
+              success : function(result){
+                govAgencyAddress = result;
+              },
+              error : function(result){
+
+              }
+            });
+          }
+          return govAgencyAddress;
         }
 
       </script>

@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function (event) {
 	const config = {
 		headers: {
-			'groupId': themeDisplay.getScopeGroupId()
+			'groupId': themeDisplay.getScopeGroupId(),
+			Accept : "application/json"
 		}
 	};
 		
@@ -44,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				advancedFilterLoaiSanPham : {},
 				advancedFilterNhanHieu : {},
 				stateSearchKeyword: false,
-				stateFollow: true
+				stateFollow: true,
+				submitAlpaca: false
 			},
 			onScroll: 'onScroll',
 			schema: {
@@ -70,7 +72,27 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								.then((dialog) => {
 									if (item.eform) {
 										var urlFiles = "/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/files/"+item.referenceUid+"/resetformdata";
-										axios.put(urlFiles, config).then(function (response) {
+										$.ajax({
+											url : urlFiles,
+											dataType : "json",
+											type : "PUT",
+											headers : {
+												groupId : themeDisplay.getScopeGroupId()
+											},
+											success : function(result){
+												item.counter = 0;
+												$("#validCreateFile"+item.partNo).val("0");
+												vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thành công!";
+												vm.snackbardossierViewJX = true;
+												vm.submitAlpaca = false;
+											},
+											error : function(xhr){
+												console.log(xhr);
+												vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thất bại!";
+												vm.snackbarerordossierViewJX = true;
+											}
+										});
+										/*axios.put(urlFiles, config).then(function (response) {
 											item.counter = 0;
 											$("#validCreateFile"+item.partNo).val("0");
 											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thành công!";
@@ -79,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 										.catch(function (error) {
 											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thất bại!";
 											vm.snackbarerordossierViewJX = true;
-										});
+										});*/
 									} else {
 										var urlFiles = "/o/rest/v2/dossiers/" + vm.detailModel.dossierId + "/files/" + item.templateFileNo + "/all";
 										axios.delete(urlFiles, config).then(function (response) {
@@ -87,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											$("#validCreateFile"+item.partNo).val("0");
 											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thành công!";
 											vm.snackbardossierViewJX = true;
+											vm.submitAlpaca = false;
 										})
 										.catch(function (error) {
 											vm.snackbartextdossierViewJX = "Xoá dữ liệu thành phần hồ sơ thất bại!";
