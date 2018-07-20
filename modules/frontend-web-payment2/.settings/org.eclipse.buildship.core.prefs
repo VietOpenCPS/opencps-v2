@@ -1,12 +1,12 @@
-#Wed Jun 27 10:41:16 ICT 2018
-build.commands=org.eclipse.jdt.core.javabuilder
+#Wed Jul 18 22:46:30 ICT 2018
 connection.arguments=
-connection.java.home=null
-connection.jvm.arguments=
-connection.project.dir=../..
 containers=org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/
-derived.resources=.gradle,build
-connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
-eclipse.preferences.version=1
+connection.jvm.arguments=
+build.commands=org.eclipse.jdt.core.javabuilder
+connection.project.dir=../..
 natures=org.eclipse.jdt.core.javanature
+eclipse.preferences.version=1
+connection.java.home=null
+derived.resources=.gradle,build
 project.path=\:modules\:frontend-web-payment2
+connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
