@@ -75,7 +75,11 @@ import javax.xml.bind.annotation.XmlType;
     "postalAddress",
     "postalCityCode",
     "postalTelNo",
-    "originality"
+    "originality",
+    "dossierNo",
+    "submitDate",
+    "receiveDate",
+    "dueDate"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -127,6 +131,14 @@ public class DossierInputModel {
 	protected String postalTelNo;
 	@FormParam(value = "originality")
 	protected String originality;
+	@FormParam(value = "dossierNo")
+	protected String dossierNo;
+	@FormParam(value = "submitDate")
+	protected String submitDate;
+	@FormParam(value = "receiveDate")
+	protected String receiveDate;
+	@FormParam(value = "dueDate")
+	protected String dueDate;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -606,5 +618,101 @@ public class DossierInputModel {
      */
     public void setOriginality(String value) {
         this.originality = value;
+    } 
+
+    /**
+     * Gets the value of the dossierNo property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDossierNo() {
+        return dossierNo;
+    }
+
+    /**
+     * Sets the value of the dossierNo property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDossierNo(String value) {
+        this.dossierNo = value;
+    } 
+
+    /**
+     * Gets the value of the submitDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSubmitDate() {
+        return submitDate;
+    }
+
+    /**
+     * Sets the value of the submitDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSubmitDate(String value) {
+        this.submitDate = value;
+    } 
+
+    /**
+     * Gets the value of the receiveDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getReceiveDate() {
+        return receiveDate;
+    }
+
+    /**
+     * Sets the value of the receiveDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setReceiveDate(String value) {
+        this.receiveDate = value;
+    } 
+
+    /**
+     * Gets the value of the dueDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    /**
+     * Sets the value of the dueDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDueDate(String value) {
+        this.dueDate = value;
     } 
 }
