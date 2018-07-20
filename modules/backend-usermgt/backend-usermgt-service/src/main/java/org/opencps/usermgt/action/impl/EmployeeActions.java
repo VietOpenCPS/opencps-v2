@@ -507,7 +507,7 @@ public class EmployeeActions implements EmployeeInterface {
 						20143
 					};
 
-					String passWord = PwdGenerator.getPassword();
+					String passWord = PwdGenerator.getPassword(10) + "@Al9";
 
 					String fullName = employee.getFullName();
 					String[] fml = new String[3];
@@ -590,10 +590,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 				}
 				catch (Exception e) {
-					jsonObject.put("screenName", user.getScreenName());
-					jsonObject.put("email", user.getEmailAddress());
-					jsonObject.put("exist", Boolean.TRUE);
-					jsonObject.put("duplicate", Boolean.TRUE.toString());
+					_log.error(e);
 				}
 
 			}

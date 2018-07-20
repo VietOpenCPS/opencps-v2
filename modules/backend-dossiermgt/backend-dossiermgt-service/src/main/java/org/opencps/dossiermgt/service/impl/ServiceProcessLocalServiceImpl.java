@@ -753,6 +753,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	
 	
 	public List<ServiceProcess> getByServerNo(String serverNo) {
+		
 		return serviceProcessPersistence.findBySVR_NO(serverNo);
 	}
 

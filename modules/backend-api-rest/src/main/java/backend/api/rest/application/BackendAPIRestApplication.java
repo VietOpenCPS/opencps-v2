@@ -63,7 +63,7 @@ import org.osgi.service.component.annotations.Reference;
 public class BackendAPIRestApplication extends Application {
 
 	public Set<Object> getSingletons() {
-		Set<Object> singletons = new HashSet<Object>();
+		Set<Object>  singletons = new HashSet<Object>();
 		
 		
 		// add REST endpoints (resources)
