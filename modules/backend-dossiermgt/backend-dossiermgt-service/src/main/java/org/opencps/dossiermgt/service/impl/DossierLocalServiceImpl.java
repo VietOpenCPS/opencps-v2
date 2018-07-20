@@ -45,6 +45,12 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -397,14 +403,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalServiceName(postalServiceName);
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
-			dossier.setPostalCityName(
-					getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalCityCode));
+			dossier.setPostalCityName(getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalCityCode));
 			dossier.setPostalDistrictCode(postalDistrictCode);
 			dossier.setPostalDistrictName(
 					getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalDistrictCode));
 			dossier.setPostalWardCode(postalWardCode);
-			dossier.setPostalWardName(
-					getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalWardCode));
+			dossier.setPostalWardName(getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, postalWardCode));
 			dossier.setPostalTelNo(postalTelNo);
 		}
 
@@ -413,28 +417,33 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setPassword(password);
 		dossier.setOnline(false);
 
-		//LamTV_Process
-//		if (dossierActionId > 0) {
-//			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-//			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(),
-//					dAction.getActionCode());
-//			if (process != null) {
-//				process.setPaymentFee(paymentFee);
-//				ProcessActionLocalServiceUtil.updateProcessAction(process);
-//			}
-//		} else {
-//		ServiceProcess serProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
-//				dossier.getDossierTemplateNo());
-//		if (serProcess != null) {
-//			ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(serProcess.getServiceProcessId(),
-//					String.valueOf(10000));
-//			if (process != null) {
-//				process.setPaymentFee(paymentFee);
-//				ProcessActionLocalServiceUtil.updateProcessAction(process);
-//			}
-//		}
-//		}
-		//LamTV_ Process Post payment
+		// LamTV_Process
+		// if (dossierActionId > 0) {
+		// DossierAction dAction =
+		// DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+		// ProcessAction process =
+		// ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(),
+		// dAction.getActionCode());
+		// if (process != null) {
+		// process.setPaymentFee(paymentFee);
+		// ProcessActionLocalServiceUtil.updateProcessAction(process);
+		// }
+		// } else {
+		// ServiceProcess serProcess =
+		// ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(),
+		// dossier.getServiceCode(), dossier.getGovAgencyCode(),
+		// dossier.getDossierTemplateNo());
+		// if (serProcess != null) {
+		// ProcessAction process =
+		// ProcessActionLocalServiceUtil.getByServiceProcess(serProcess.getServiceProcessId(),
+		// String.valueOf(10000));
+		// if (process != null) {
+		// process.setPaymentFee(paymentFee);
+		// ProcessActionLocalServiceUtil.updateProcessAction(process);
+		// }
+		// }
+		// }
+		// LamTV_ Process Post payment
 		long userId = context.getUserId();
 		long groupId = dossier.getGroupId();
 		String referenceUid = StringPool.BLANK;
@@ -446,10 +455,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		long paymentAmount = 0;
 		String epaymentProfile = StringPool.BLANK;
 		String bankInfo = StringPool.BLANK;
-		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId,
-				referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
-				paymentFeeNote, epaymentProfile, bankInfo, context);
-		
+		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid, govAgencyCode,
+				govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentFeeNote, epaymentProfile,
+				bankInfo, context);
 
 		dossierPersistence.update(dossier);
 
@@ -482,9 +490,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		int counter = DossierNumberGenerator.counterDossier(userId, groupId);
 
 		Dossier dossier = dossierLocalService.createDossier(dossierId);
-		
-		//setDossierStatus = new
-		
+
+		// setDossierStatus = new
+
 		dossier.setDossierStatus(DossierStatusConstants.NEW);
 
 		dossier.setCreateDate(now);
@@ -516,8 +524,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setAddress(address);
 		dossier.setDossierTemplateNo(dossierTemplateNo);
 		dossier.setDossierTemplateName(dossierTemplateName);
-		
-		
 
 		if (Validator.isNotNull(cityCode)) {
 			dossier.setCityCode(cityCode);
@@ -584,17 +590,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		long serviceProcessId = option.getServiceProcessId();
 
 		ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-		
+
 		int durationCount = 0;
 		int durationUnit = 0;
-		if (serviceProcess != null ) {
+		if (serviceProcess != null) {
 			durationCount = serviceProcess.getDurationCount();
 			durationUnit = serviceProcess.getDurationUnit();
 		}
-		
-		_log.info("durationCount: "+durationCount);
-		_log.info("durationUnit: "+durationUnit);
-		
+
+		_log.info("durationCount: " + durationCount);
+		_log.info("durationUnit: " + durationUnit);
+
 		int durationDays = 0;
 
 		if (durationUnit == 0) {
@@ -619,11 +625,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setSubmissionNote(option.getSubmissionNote());
 		dossier.setApplicantNote(applicantNote);
 		dossier.setBriefNote(briefNote);
-		//dossier.setDossierNo(dossierNo);
+		// dossier.setDossierNo(dossierNo);
 
 		// viaPortal: 0 disable, 1: unselected, 2: selected
-//		if (viaPostal == 2) {
-		//LamTV_Hot fix
+		// if (viaPostal == 2) {
+		// LamTV_Hot fix
 		if (viaPostal == 1) {
 			dossier.setViaPostal(viaPostal);
 			dossier.setPostalServiceCode(postalServiceCode);
@@ -659,23 +665,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						StringPool.BLANK, StringPool.TRUE, context);
 			}
 		}
-		
+
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 		params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 		params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
 		params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
 		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
-		String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-				dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+		String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(), dossierId,
+				option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
-
-		//LamTV_ Process Post payment
-//		String referenceUid = StringPool.BLANK;
-//		if (Validator.isNull(referenceUid)) {
-//			referenceUid = PortalUUIDUtil.generate();
-//		}
-//		String govAgencyCode = dossier.getGovAgencyCode();
+		// LamTV_ Process Post payment
+		// String referenceUid = StringPool.BLANK;
+		// if (Validator.isNull(referenceUid)) {
+		// referenceUid = PortalUUIDUtil.generate();
+		// }
+		// String govAgencyCode = dossier.getGovAgencyCode();
 		String govAgencyName = dossier.getGovAgencyName();
 		String paymentNote = StringPool.BLANK;
 		String epaymentProfile = StringPool.BLANK;
@@ -684,15 +689,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		long paymentAmount = 0;
 		if (serviceProcess != null) {
 			paymentFee = serviceProcess.getPaymentFee();
-			_log.info("paymentFee: "+paymentFee);
+			_log.info("paymentFee: " + paymentFee);
 		}
 		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid, govAgencyCode,
 				govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote, epaymentProfile,
 				bankInfo, context);
 
-		_log.info("SERVICEPROCESS"+ serviceProcess.getDossierNoPattern());
-		
-		_log.info("DOSSIER_NO_"+ dossierRef);
+		_log.info("SERVICEPROCESS" + serviceProcess.getDossierNoPattern());
+
+		_log.info("DOSSIER_NO_" + dossierRef);
 
 		dossier.setDossierNo(dossierRef.trim());
 
@@ -1708,6 +1713,42 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 
+		// Get Agency of User
+		boolean isEmployee = false;
+
+		List<String> agencies = new ArrayList<>();
+		
+		_log.info("USER_ID:" + userId);
+		_log.info("GROUP_ID:" + groupId);
+		
+
+		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+
+		_log.info("USER_ID:" + userId);
+
+		if (Validator.isNotNull(employee)) {
+			isEmployee = true;
+
+			List<EmployeeJobPos> employeeJobPos = EmployeeJobPosLocalServiceUtil
+					.findByF_EmployeeId(employee.getEmployeeId());
+			
+			for (EmployeeJobPos emJobPos : employeeJobPos) {
+				long workingUitId = emJobPos.getWorkingUnitId();
+				
+				if (workingUitId != 0) {
+					try {
+						agencies.add(WorkingUnitLocalServiceUtil.getWorkingUnit(workingUitId).getGovAgencyCode());
+
+					} catch (Exception e) {
+						_log.info("AGENCY ERROR:" + workingUitId);
+					}
+				}
+			}
+		}
+		
+
+
+		
 		// TODO
 		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 
@@ -1742,38 +1783,71 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		} else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
+		
+		if (isEmployee) {
+			
+			_log.info("IS EMPLOYEE");
+			
+			if (agencies.size() > 0) {
+				
+				_log.info("IS EMPLOYEE & SIZE > 0");
 
-		//LamTV: Process search LIKE
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				for (String agc: agencies) {
+					MultiMatchQuery query = new MultiMatchQuery(agc);
+
+					query.addField(DossierTerm.GOV_AGENCY_CODE);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+		} else  {
+			if (Validator.isNotNull(agency)) {
+				MultiMatchQuery query = new MultiMatchQuery(agency);
+
+				query.addFields(DossierTerm.GOV_AGENCY_CODE);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+		
+
+		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
 					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN, DossierTerm.BRIEF_NOTE };
 
-//			query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			// query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
+			// booleanQuery.add(query, BooleanClauseOccur.MUST);
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
 				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
 					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
 							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
 			}
-			
+
 			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
-//			query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//			TermQuery termQuery = TermQueryFactoryUtil.create(searchContext, Field.TITLE, "%"+keywords);
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//			for (String string : keyword) {
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//				query.addFields(
-//						new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME, DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
+			// query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
+			// booleanQuery.add(query, BooleanClauseOccur.MUST);
+			// TermQuery termQuery = TermQueryFactoryUtil.create(searchContext,
+			// Field.TITLE, "%"+keywords);
+			// String[] keyword = keywords.split(StringPool.SPACE);
+			// for (String string : keyword) {
+			// MultiMatchQuery query = new MultiMatchQuery(string);
+			// query.addFields(
+			// new String[] { DossierTerm.DOSSIER_ID, DossierTerm.SERVICE_NAME,
+			// DossierTerm.DOSSIER_NO_SEARCH, "dossierIdCTN"});
+			// booleanQuery.add(query, BooleanClauseOccur.MUST);
+			//
+			// }
 		}
 
 		if (Validator.isNotNull(groupId)) {
@@ -1800,12 +1874,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(online)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
 
 			query.addField(DossierTerm.ONLINE);
-			
+
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
@@ -1909,13 +1983,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		if (Validator.isNotNull(agency)) {
-			MultiMatchQuery query = new MultiMatchQuery(agency);
-
-			query.addFields(DossierTerm.GOV_AGENCY_CODE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
 
 		if (Validator.isNotNull(service)) {
 			MultiMatchQuery query = new MultiMatchQuery(service);
@@ -2195,6 +2262,36 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		searchContext.setAndSearch(true);
 		
 
+		// Get Agency of User
+		boolean isEmployee = false;
+
+		List<String> agencies = new ArrayList<>();
+
+		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+
+		_log.info("USER_ID:" + userId);
+
+		if (Validator.isNotNull(employee)) {
+			isEmployee = true;
+
+			List<EmployeeJobPos> employeeJobPos = EmployeeJobPosLocalServiceUtil
+					.findByF_EmployeeId(employee.getEmployeeId());
+			
+			for (EmployeeJobPos emJobPos : employeeJobPos) {
+				long workingUitId = emJobPos.getWorkingUnitId();
+				
+				if (workingUitId != 0) {
+					try {
+						agencies.add(WorkingUnitLocalServiceUtil.getWorkingUnit(workingUitId).getGovAgencyCode());
+
+					} catch (Exception e) {
+						_log.info("AGENCY ERROR:" + workingUitId);
+					}
+				}
+			}
+		}
+		
+
 
 		BooleanQuery booleanQuery = null;
 
@@ -2203,8 +2300,38 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		} else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
+		if (isEmployee) {
+			
+			_log.info("IS EMPLOYEE");
+			
+			if (agencies.size() > 0) {
+				
+				_log.info("IS EMPLOYEE & SIZE > 0");
 
-		//LamTV: Process search LIKE
+				BooleanQuery subQuery = new BooleanQueryImpl();
+
+				for (String agc: agencies) {
+					MultiMatchQuery query = new MultiMatchQuery(agc);
+
+					query.addField(DossierTerm.GOV_AGENCY_CODE);
+
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+		} else  {
+			if (Validator.isNotNull(agency)) {
+				MultiMatchQuery query = new MultiMatchQuery(agency);
+
+				query.addFields(DossierTerm.GOV_AGENCY_CODE);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+		
+
+		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
@@ -2216,11 +2343,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				for (String key : keywordArr) {
 					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
 							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
 			}
-			
+
 			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
@@ -2234,16 +2361,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 
 		}
-		
+
 		if (Validator.isNotNull(online)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
 
 			query.addField(DossierTerm.ONLINE);
-			
+
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-
 
 		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner) && userId > 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));

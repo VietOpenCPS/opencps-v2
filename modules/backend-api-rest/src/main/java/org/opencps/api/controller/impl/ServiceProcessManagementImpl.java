@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +44,7 @@ import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -645,7 +647,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (Validator.isNull(addstep)) {
 				throw new DuplicateStepNoException("InvalidStepCode");
 			}
-			
+
 			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id,
 					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
 					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
@@ -1025,22 +1027,27 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+
 			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException("UnauthorizationException");
 			}
 
-
 			ProcessActionReturnModel results = new ProcessActionReturnModel();
 
-/*			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
-					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
-					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getBoolean(input.getRequestPayment()),
-					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
-					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					serviceContext);
-*/
+			/*
+			 * ProcessAction processAction =
+			 * actions.updateProcessAction(groupId, 0, id,
+			 * input.getPreStepCode(), input.getPostStepCode(),
+			 * input.getAutoEvent(), input.getPreCondition(),
+			 * input.getActionCode(), input.getActionName(),
+			 * GetterUtil.getBoolean(input.getAllowAssignUser()),
+			 * GetterUtil.getLong(input.getAssignUserId()),
+			 * GetterUtil.getBoolean(input.getRequestPayment()),
+			 * input.getPaymentFee(), input.getCreateDossierFiles(),
+			 * input.getReturnDossierFiles(), input.getMakeBriefNote(),
+			 * input.getSyncActionCode(),
+			 * GetterUtil.getBoolean(input.getRollbackable()), serviceContext);
+			 */
 			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
 					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
@@ -1065,12 +1072,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		}
 	}
 
-	
-
 	@Override
 	public Response updateProcessAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, long actionid, ProcessActionInputModel input) {
-		
+
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -1082,21 +1087,27 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+
 			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException("UnauthorizationException");
 			}
 
 			ProcessActionReturnModel results = new ProcessActionReturnModel();
 
-/*			ProcessAction processAction = actions.updateProcessAction(groupId, actionid, id, input.getPreStepCode(),
-					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
-					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getBoolean(input.getRequestPayment()),
-					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
-					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					serviceContext);
-*/
+			/*
+			 * ProcessAction processAction =
+			 * actions.updateProcessAction(groupId, actionid, id,
+			 * input.getPreStepCode(), input.getPostStepCode(),
+			 * input.getAutoEvent(), input.getPreCondition(),
+			 * input.getActionCode(), input.getActionName(),
+			 * GetterUtil.getBoolean(input.getAllowAssignUser()),
+			 * GetterUtil.getLong(input.getAssignUserId()),
+			 * GetterUtil.getBoolean(input.getRequestPayment()),
+			 * input.getPaymentFee(), input.getCreateDossierFiles(),
+			 * input.getReturnDossierFiles(), input.getMakeBriefNote(),
+			 * input.getSyncActionCode(),
+			 * GetterUtil.getBoolean(input.getRollbackable()), serviceContext);
+			 */
 			ProcessAction processAction = actions.updateProcessAction(groupId, actionid, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
 					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
@@ -1105,7 +1116,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
 					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
 					input.getDossierTemplateNo(), serviceContext);
-
 
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
@@ -1128,7 +1138,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, long actionid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -1136,7 +1145,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+
 			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException("UnauthorizationException");
 			}
@@ -1164,7 +1173,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	@Override
 	public Response initServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-		
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
@@ -1175,7 +1183,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+
 			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException("UnauthorizationException");
 			}
@@ -1199,7 +1207,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 	@Override
 	public Response cloneServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String processNo) {
+			Locale locale, User user, ServiceContext serviceContext, String serviceProcessCode, String processNo) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -1209,12 +1217,27 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+
 			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException("UnauthorizationException");
 			}
 
 			String results = "Clone done";
+
+			ServiceProcess serviceProcess = null;
+
+			List<ServiceProcess> serviceProcesses = ServiceProcessLocalServiceUtil
+					.getServiceProcesses(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			for (ServiceProcess process : serviceProcesses) {
+				if (process.getProcessNo().contentEquals(serviceProcessCode) && process.getGroupId() == groupId) {
+					serviceProcess = process;
+
+					break;
+				}
+			}
+
+			long id = serviceProcess.getServiceProcessId();
 
 			ServiceProcessLocalServiceUtil.cloneServiceProcess(id, groupId, processNo, serviceContext);
 

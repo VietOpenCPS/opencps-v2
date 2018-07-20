@@ -16,6 +16,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -23,6 +24,7 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -307,6 +309,18 @@ public class DossierUtils {
 		model.setGovAgencyCode(input.getGovAgencyCode());
 		model.setGovAgencyName(input.getGovAgencyName());
 		model.setDossierTemplateNo(input.getDossierTemplateNo());
+		
+		try {
+			DossierTemplate dossierTemplate  = DossierTemplateLocalServiceUtil.getByTemplateNo(input.getGroupId(), input.getDossierTemplateNo());
+			
+			
+			model.setDossierTemplateId(dossierTemplate.getDossierTemplateId());
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		
 		model.setApplicantName(input.getApplicantName());
 		model.setApplicantIdType(input.getApplicantIdType());
 		model.setApplicantIdNo(input.getApplicantIdNo());
