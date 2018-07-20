@@ -752,6 +752,10 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
+			if (process == null) {
+				throw new NotFoundException("Cant find process");
+			}
+
 			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
 				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 
@@ -774,6 +778,13 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			if (oldDossiers.size() > 0 && oldDossiers.get(0).getOriginality() == Integer.valueOf(input.getOriginality())) {
 				dossier = oldDossiers.get(0);
+				dossier.setApplicantName(input.getApplicantName());
+				dossier.setApplicantNote(input.getApplicantNote());
+				dossier.setApplicantIdNo(input.getApplicantIdNo());
+				dossier.setAddress(input.getAddress());
+				dossier.setContactEmail(input.getContactEmail());
+				dossier.setContactName(input.getContactName());
+				dossier.setContactTelNo(input.getContactTelNo());				
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
@@ -825,8 +836,12 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.setDurationUnit(durationUnit);
 				}
 				
-				DossierLocalServiceUtil.updateDossier(dossier);
+				if (Validator.isNotNull(input.getDossierNo())) {
+					dossier.setDossierNo(input.getDossierNo());
+				}
 			}
+			DossierLocalServiceUtil.updateDossier(dossier);
+
 			//Add to dossier user based on service process role
 			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
@@ -836,7 +851,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-//			_log.info(e);
+			_log.info(e);
 			return processException(e);
 		}
 

@@ -181,8 +181,7 @@ public class OpenCPSConverter {
 		if (!jsonObj.has("message")) {
 			return model;
 		}
-		
-		_log.info("jsonObj1: "+jsonObj);
+
 		String strMessage = jsonObj.getString("message");
 		_log.info("strMessage: "+strMessage);
 		if (Validator.isNotNull(strMessage)) {
