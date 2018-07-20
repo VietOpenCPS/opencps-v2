@@ -7,6 +7,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierTemplateManagement;

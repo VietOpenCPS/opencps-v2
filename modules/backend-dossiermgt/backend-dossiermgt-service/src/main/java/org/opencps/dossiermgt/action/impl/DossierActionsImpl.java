@@ -2300,7 +2300,7 @@ public class DossierActionsImpl implements DossierActions {
 						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
-								proAction.getAssignUserId(), subUsersArray);
+								proAction.getAssignUserId(), subUsersArray);						
 					} else {
 						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
@@ -2310,6 +2310,11 @@ public class DossierActionsImpl implements DossierActions {
 					_log.info("PROCESS subUsers == null");
 					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
+					
+					//Process role as step
+					if (Validator.isNotNull(curStep.getRoleAsStep())) {
+						dossierActionUser.copyRoleAsStep(curStep, dossier);
+					}					
 				}
 
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);

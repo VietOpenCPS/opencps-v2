@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.opencps.api.dossiertemplate.model.DossierPartContentInputUpdateModel;
 import org.opencps.api.dossiertemplate.model.DossierPartInputModel;
@@ -39,6 +40,9 @@ import io.swagger.annotations.ApiResponses;
 
 @Path("/dossiertemplates")
 @Api(value = "/dossiertemplates", tags = "dossiertemplates")
+@XmlSeeAlso({
+	DossierPartContentInputUpdateModel.class
+})
 public interface DossierTemplateManagement {
 
 	@GET

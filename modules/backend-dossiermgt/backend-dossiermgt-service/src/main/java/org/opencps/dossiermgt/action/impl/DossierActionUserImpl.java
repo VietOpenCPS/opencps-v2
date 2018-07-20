@@ -26,7 +26,6 @@ import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -150,6 +149,9 @@ public class DossierActionUserImpl implements DossierActionUser {
 		try {
 			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
 			List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
+			
+			DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+			
 			for (ServiceProcessRole spr : listSprs) {
 				int mod = 0;
 				boolean moderator = spr.getModerator();
@@ -168,7 +170,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 						}
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 					} else {						
-						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierActionId, mod, false, StringPool.BLANK, dossier.getDossierId());
+						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierActionId, mod, false, da.getStepCode(), dossier.getDossierId());
 					}
 				}				
 			}
@@ -303,5 +305,26 @@ public class DossierActionUserImpl implements DossierActionUser {
 			// Add User
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);																			
 		}		
+	}
+
+	@Override
+	public void copyRoleAsStep(ProcessStep curStep, Dossier dossier) {
+		if (Validator.isNull(curStep.getRoleAsStep()))
+			return;
+		List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), curStep.getRoleAsStep());
+		if (lstDaus.size() > 0) {
+			for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDaus) {
+				org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
+				model.setVisited(dau.getVisited());
+				model.setDossierId(dossier.getDossierId());
+				model.setStepCode(curStep.getStepCode());
+				model.setAssigned(dau.getAssigned());
+				model.setDossierActionId(dossier.getDossierActionId());
+				model.setModerator(dau.getModerator());
+				model.setUserId(dau.getUserId());
+
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);
+			}
+		}
 	}
 }
