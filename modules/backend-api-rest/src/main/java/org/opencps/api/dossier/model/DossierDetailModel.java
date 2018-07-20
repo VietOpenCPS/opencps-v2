@@ -186,7 +186,8 @@ import javax.xml.bind.annotation.XmlType;
     "paymentFee",
     "paymentNote",
     "durationCount",
-    "durationUnit"
+    "durationUnit",
+    "sampleCount"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -278,6 +279,7 @@ public class DossierDetailModel {
     protected String paymentNote;
     protected Double durationCount;
     protected Double durationUnit;
+    protected Long sampleCount;
 
     public String getPaymentFee() {
 		return paymentFee;
@@ -2023,6 +2025,14 @@ public class DossierDetailModel {
 
 	public void setDurationUnit(Double durationUnit) {
 		this.durationUnit = durationUnit;
+	}
+
+	public Long getSampleCount() {
+		return sampleCount;
+	}
+
+	public void setSampleCount(Long sampleCount) {
+		this.sampleCount = sampleCount;
 	}
 
 }

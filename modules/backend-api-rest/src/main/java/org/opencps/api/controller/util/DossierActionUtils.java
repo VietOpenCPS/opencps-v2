@@ -221,14 +221,15 @@ public class DossierActionUtils {
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
 				model.seteSignature(processAction.getESignature());
 				model.setSignatureType(processAction.getSignatureType());
-				model.setExtraForm(processAction.getExtraForm());
 				//model.setUserNote(processAction.getUserNote());
 				ActionConfig act = ActionConfigLocalServiceUtil.getByCode(processAction.getGroupId(),
 						processAction.getActionCode());
 				if (act != null) {
 					model.setUserNote(act.getUserNote());
+					model.setExtraForm(act.getExtraForm());
 				} else {
 					model.setUserNote(0);
+					model.setExtraForm(false);
 				}
 			}
 

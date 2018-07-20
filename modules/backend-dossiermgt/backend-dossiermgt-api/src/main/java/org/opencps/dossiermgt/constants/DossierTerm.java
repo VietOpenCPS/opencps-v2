@@ -136,5 +136,6 @@ public class DossierTerm {
 	public static final String USER_NOTE = "userNote";
 	public static final String DURATION_COUNT = "durationCount";
 	public static final String DURATION_UNIT = "durationUnit";
+	public static final String SAMPLE_COUNT = "sampleCount";
 
 }
