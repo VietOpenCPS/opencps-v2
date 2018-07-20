@@ -1489,7 +1489,7 @@
 		<column name="counter" type="String" />
 		<column name="mappingData" type="String" />
 		<column name="docSync" type="int" />
-		<column name="fieldConfigs" type="String" />
+		<column name="govAgencies" type="String" />
 
 		<finder return-type="DeliverableType" name="G_DLT">
 			<finder-column name="groupId" />
@@ -1714,6 +1714,9 @@
             <order-column name="actionCode" order-by="asc" case-sensitive="true"></order-column>
         </order>
 
+		<finder return-type="Collection" name="F_BY_GID">
+			<finder-column name="groupId"></finder-column>
+		</finder>
 		<finder return-type="ActionConfig" name="F_BY_ActionCode">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="actionCode"></finder-column>
@@ -1786,6 +1789,9 @@
             <order-column name="order" order-by="asc" case-sensitive="true"></order-column>
         </order>
 		
+		<finder return-type="Collection" name="F_BY_GID">
+			<finder-column name="groupId"></finder-column>
+		</finder>
 		<finder return-type="MenuConfig" name="F_BY_menuGroup">
 			<finder-column name="menuGroup"></finder-column>
 		</finder>

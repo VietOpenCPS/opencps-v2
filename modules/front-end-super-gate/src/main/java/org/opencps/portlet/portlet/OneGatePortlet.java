@@ -88,6 +88,7 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 				object.put("serviceProcessesApi", "/o/rest/v2/serviceprocesses");
 				
 				object.put("getNextAction", "/o/rest/v2/dossiers");
+				object.put("getServiceConfigs", "/o/rest/v2/serviceconfigs");
 				
 				String token = pullToken(themeDisplay);
 

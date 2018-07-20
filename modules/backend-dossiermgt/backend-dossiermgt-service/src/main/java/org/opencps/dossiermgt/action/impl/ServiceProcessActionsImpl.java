@@ -21,6 +21,8 @@ import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
@@ -258,9 +260,13 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext)
 			throws PortalException {
 
-		 return ServiceProcessLocalServiceUtil.updateServiceProcessDB(userId, groupId, processNo, processName, description,
+		ServiceProcess service =  ServiceProcessLocalServiceUtil.updateServiceProcessDB(userId, groupId, processNo, processName, description,
 				durationCount, durationUnit, generatePassword, serverNo, serverName, dossierNoPattern, dueDatePattern,
 				serviceContext);
+		if (service != null) {
+			return service.getServiceProcessId();
+		}
+		return 0;
 	}
 
 	@Override
@@ -349,6 +355,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		return flag;
 	}
 
+	private static Log _log = LogFactoryUtil.getLog(ServiceProcessActionsImpl.class);
 	@Override
 	public boolean deleteAllProcessStep(long userId, long groupId, long serviceProcessId,
 			ServiceContext serviceContext) {
@@ -356,12 +363,15 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		try {
 			List<ProcessStep> stepList = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
 			if (stepList != null && stepList.size() > 0) {
+				_log.info("stepList: "+stepList.size());
 				long stepId = 0;
 				for (ProcessStep step : stepList) {
 					stepId = step.getProcessStepId();
+					_log.info("stepId: "+stepId);
 					if (stepId > 0) {
 						List<ProcessStepRole> stepRoleList = ProcessStepRoleLocalServiceUtil
 								.findByP_S_ID(stepId);
+						_log.info("stepRoleList: "+stepRoleList.size());
 						if (stepRoleList != null && stepRoleList.size() > 0) {
 							for (ProcessStepRole stepRole : stepRoleList) {
 								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(stepRole);
@@ -372,14 +382,18 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 						}
 					}
 					if (flag) {
+						_log.info("STARTTT: ");
 						ProcessStep processStep = ProcessStepLocalServiceUtil.deleteProcessStep(step);
 						if (processStep == null) {
 							flag = false;
 						}
 					}
 				}
+			} else {
+				flag = true;
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 

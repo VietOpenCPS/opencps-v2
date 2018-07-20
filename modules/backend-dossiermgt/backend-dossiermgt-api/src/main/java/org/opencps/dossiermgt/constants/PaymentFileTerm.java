@@ -15,21 +15,21 @@ public class PaymentFileTerm {
 	public static final String PAYMENT_AMOUNT = "paymentAmount";
 	public static final String PAYMENT_NOTE = "paymentNote";
 	public static final String EPAYMENT_PROFILE = "epaymentProfile";
-	public static final String BANK_INFO	=	"bankInfo";
-	public static final String PAYMENT_STATUS	= "paymentStatus";
-	public static final String PAYMENT_METHOD	= "paymentMethod";
-	public static final String CONFIRM_DATETIME	=	 "confirmDatetime";
-	public static final String CONFIRM_PAYLOAD	= "confirmPayload";
-	public static final String CONFIRM_FILE_ENTRY_ID	= "confirmFileEntryId";
-	public static final String CONFIRM_NOTE	= "confirmNote";
-	public static final String APPROVE_DATETIME	= "approveDatetime";
-	public static final String ACCOUNT_USER_NAME	= "accountUserName";
-	public static final String GOV_AGENCY_TAX_NO	=	"govAgencyTaxNo";
-	public static final String INVOICE_TEMPLATE_NO	= "invoiceTemplateNo";
-	public static final String INVOICE_ISSUE_NO	= "invoiceIssueNo";
-	public static final String INVOICE_NO	= "invoiceNo";
-	public static final String INVOICE_FILE_ENTRY_ID	= "invoiceFileEntryId";
-	//Search payment file
+	public static final String BANK_INFO = "bankInfo";
+	public static final String PAYMENT_STATUS = "paymentStatus";
+	public static final String PAYMENT_METHOD = "paymentMethod";
+	public static final String CONFIRM_DATETIME = "confirmDatetime";
+	public static final String CONFIRM_PAYLOAD = "confirmPayload";
+	public static final String CONFIRM_FILE_ENTRY_ID = "confirmFileEntryId";
+	public static final String CONFIRM_NOTE = "confirmNote";
+	public static final String APPROVE_DATETIME = "approveDatetime";
+	public static final String ACCOUNT_USER_NAME = "accountUserName";
+	public static final String GOV_AGENCY_TAX_NO = "govAgencyTaxNo";
+	public static final String INVOICE_TEMPLATE_NO = "invoiceTemplateNo";
+	public static final String INVOICE_ISSUE_NO = "invoiceIssueNo";
+	public static final String INVOICE_NO = "invoiceNo";
+	public static final String INVOICE_FILE_ENTRY_ID = "invoiceFileEntryId";
+	// Search payment file
 	public static final String SERVICE = "sevice";
 	public static final String AGENCY = "agency";
 	public static final String STATUS = "status";
@@ -39,5 +39,11 @@ public class PaymentFileTerm {
 	public static final String COUNTER = "counter";
 	public static final String SERVICE_CODE = "serviceCode";
 	public static final String SERVICE_NAME = "serviceName";
+	public static final String PAYMENT_REQUEST = "requestPayment";
+	public static final String ADVANCE_AMOUNT = "advanceAmount";
+	public static final String FEE_AMOUNT = "feeAmount";
+	public static final String SERVICE_AMOUNT = "serviceAmount";
+	public static final String SHIP_AMOUNT = "shipAmount";
+	public static final String EDITABLE = "editable";
 
 }

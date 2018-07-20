@@ -552,8 +552,8 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
  			}
-			_log.info("strStatusStep: "+strStatusStep.toString());
-			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
+//			_log.info("strStatusStep: "+strStatusStep.toString());
+//			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
 //			if (stepList != null && stepList.size() > 0) {
 //				_log.info("length: "+stepList.size());
 //				for (StepConfig step: stepList) {
@@ -772,7 +772,7 @@ public class DossierManagementImpl implements DossierManagement {
 					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
 			Dossier dossier = null;
 			
-			if (oldDossiers.size() > 0) {
+			if (oldDossiers.size() > 0 && oldDossiers.get(0).getOriginality() == Integer.valueOf(input.getOriginality())) {
 				dossier = oldDossiers.get(0);
 			}
 			else {

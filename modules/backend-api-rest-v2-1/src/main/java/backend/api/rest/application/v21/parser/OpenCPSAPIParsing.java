@@ -131,6 +131,8 @@ public class OpenCPSAPIParsing {
 					menuConfigStepsItem.setStepName(current.getString("stepName"));
 					menuConfigStepsItem.setMenuStepName(current.getString("menuStepName"));
 					menuConfigStepsItem.setButtonConfig(current.getString("buttonConfig"));
+					menuConfigStepsItem.setDossierStatus(current.getString("dossierStatus"));
+					menuConfigStepsItem.setDossierSubStatus(current.getString("dossierSubStatus"));
 					
 					menuConfigStepsItems.add(menuConfigStepsItem);
 					

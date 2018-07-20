@@ -79,7 +79,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		return serverConfig;
 	}
 
-	public ServerConfig updateServerConfig(long groupId, long serverConfigId, String serverNo, String serverName,
+	public ServerConfig updateServerConfig(long groupId, long serverConfigId, String govAgencyCode, String serverNo, String serverName,
 			String protocol, String configs, Date lastSync, ServiceContext context) throws PortalException {
 
 		validateAdd(serverConfigId, serverNo, serverName, protocol, configs, lastSync);
@@ -103,6 +103,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			serverConfig.setUserId(userId);
 			serverConfig.setUserName(auditUser.getFullName());
 
+			serverConfig.setGovAgencyCode(govAgencyCode);
 			serverConfig.setServerNo(serverNo);
 			serverConfig.setServerName(serverName);
 			serverConfig.setProtocol(protocol);
@@ -182,6 +183,11 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	
 	public List<ServerConfig> getGroupId(long groupId) {
 		return serverConfigPersistence.findByCF_GID(groupId);
+	}
+
+	//LamTV_Remove all record
+	public void removeAllServer() {
+		serverConfigPersistence.removeAll();
 	}
 
 }

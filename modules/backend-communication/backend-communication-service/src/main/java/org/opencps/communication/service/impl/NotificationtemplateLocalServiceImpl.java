@@ -409,5 +409,41 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 	}
 
+	//LamTV_Add ouput DB
+	@Indexable(type = IndexableType.REINDEX)
+	public Notificationtemplate updateNotificationTemplateDB(long userId, long groupId, String notificationType, Boolean sendEmail,
+			String emailSubject, String emailBody, String textMessage, Boolean sendSMS, Integer expireDuration,
+			ServiceContext serviceContext) throws NoSuchUserException {
+
+		Date now = new Date();
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		long notificationTemplateId = counterLocalService.increment(Notificationtemplate.class.getName());
+
+		Notificationtemplate notificationTemplate = notificationtemplatePersistence.create(notificationTemplateId);
+
+		// Group instance
+		notificationTemplate.setGroupId(groupId);
+
+		// Audit fields
+		notificationTemplate.setCompanyId(user.getCompanyId());
+		notificationTemplate.setUserId(user.getUserId());
+		notificationTemplate.setUserName(user.getFullName());
+		notificationTemplate.setCreateDate(serviceContext.getCreateDate(now));
+		notificationTemplate.setModifiedDate(serviceContext.getCreateDate(now));
+
+		notificationTemplate.setSendEmail(sendEmail);
+		notificationTemplate.setNotificationType(notificationType);
+		notificationTemplate.setEmailSubject(emailSubject);
+		notificationTemplate.setEmailBody(emailBody);
+		notificationTemplate.setTextMessage(textMessage);
+		notificationTemplate.setSendSMS(sendSMS);
+		notificationTemplate.setExpireDuration(expireDuration);
+
+		return notificationtemplatePersistence.update(notificationTemplate);
+
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(NotificationtemplateLocalServiceImpl.class);
 }

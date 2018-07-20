@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -167,10 +169,31 @@ public class OpenCPSConverter {
 		
 		return model;
 	}
-		
+	
+	private static Log _log = LogFactoryUtil.getLog(OpenCPSConverter.class);
 	public static DossierDetailModel convertDossierDetail(JSONObject jsonObj) {
 		DossierDetailModel model = new DossierDetailModel();
 	
+		if (jsonObj.has("status") && jsonObj.getInt("status") != 200) {
+			return model;
+		}
+		
+		if (!jsonObj.has("message")) {
+			return model;
+		}
+		
+		_log.info("jsonObj1: "+jsonObj);
+		String strMessage = jsonObj.getString("message");
+		_log.info("strMessage: "+strMessage);
+		if (Validator.isNotNull(strMessage)) {
+			try {
+				jsonObj = JSONFactoryUtil.createJSONObject(strMessage);
+				_log.info("jsonObj2: "+jsonObj);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
 		if (jsonObj.has(DossierTerm.DOSSIER_ID)) {
 			model.setDossierId(jsonObj.getInt(DossierTerm.DOSSIER_ID));
 		}

@@ -35,6 +35,7 @@ import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -1333,6 +1334,34 @@ public class DossierActionsImpl implements DossierActions {
 				long processActionId = GetterUtil.getLong(params.get(ProcessActionTerm.PROCESS_ACTION_ID));
 				ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
 
+				//Process PaymentFile
+				JSONObject payment = JSONFactoryUtil.createJSONObject();
+				if (processAction != null) {
+					payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
+					String paymentFeeData = processAction.getPaymentFee();
+					if (Validator.isNotNull(paymentFeeData)) {
+						JSONObject jsonPaymentFee = JSONFactoryUtil.createJSONObject(paymentFeeData);
+						if (jsonPaymentFee != null) {
+							String advanceAmount = jsonPaymentFee.getString(PaymentFileTerm.ADVANCE_AMOUNT);
+							String feeAmount = jsonPaymentFee.getString(PaymentFileTerm.FEE_AMOUNT);
+							String serviceAmount = jsonPaymentFee.getString(PaymentFileTerm.SERVICE_AMOUNT);
+							String shipAmount = jsonPaymentFee.getString(PaymentFileTerm.SHIP_AMOUNT);
+							String paymentFee = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_FEE);
+							String paymentNote = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_NOTE);
+							boolean editable = Boolean.valueOf(jsonPaymentFee.getString(PaymentFileTerm.EDITABLE));
+
+							payment.put(PaymentFileTerm.ADVANCE_AMOUNT, advanceAmount);
+							payment.put(PaymentFileTerm.FEE_AMOUNT, feeAmount);
+							payment.put(PaymentFileTerm.SERVICE_AMOUNT, serviceAmount);
+							payment.put(PaymentFileTerm.SHIP_AMOUNT, shipAmount);
+							payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFee);
+							payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentNote);
+							payment.put(PaymentFileTerm.EDITABLE, editable);
+
+						}
+					}
+				}
+
 				// Nho check null
 				String postStepCode = processAction.getPostStepCode();
 				long serviceProcessId = processAction.getServiceProcessId();
@@ -2352,9 +2381,26 @@ public class DossierActionsImpl implements DossierActions {
 				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);				
 			}
 			
+			//Update payload
+			JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
+			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
+			
+			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+				List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
+				if (lstFiles.size() > 0) {
+					for (DossierFile df : lstFiles) {
+						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+						dossierFilesArr.put(dossierFileObj);
+					}
+				}
+			}
+			
+			payloadObject.put("dossierFiles", dossierFilesArr);
+			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, payload, serviceProcess.getServerNo(), state);
+					syncType, payloadObject.toJSONString(), serviceProcess.getServerNo(), state);
 			
 		}
 				
