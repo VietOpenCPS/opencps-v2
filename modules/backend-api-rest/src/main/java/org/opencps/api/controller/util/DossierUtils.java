@@ -455,21 +455,24 @@ public class DossierUtils {
 		model.setDelegateTelNo(input.getDelegateTelNo());
 		model.setDelegateWardCode(input.getDelegateWardCode());
 		model.setDelegateWardName(input.getDelegateWardName());
+		model.setDurationCount(input.getDurationCount());
+		model.setDurationUnit(input.getDurationUnit());
+		model.setSampleCount(input.getSampleCount());
 
-		try {
-			long groupId = input.getGroupId();
-			ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, input.getServiceCode(), input.getGovAgencyCode());
-			ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,input.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
-			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
-
-			double durationCount = serviceProcess.getDurationCount();
-			double durationUnit = serviceProcess.getDurationUnit();
-			model.setDurationCount(durationCount);
-			model.setDurationUnit(durationUnit);
-		} catch (Exception e) {
-			model.setDurationCount(0d);
-			model.setDurationUnit(0d);
-		}
+//		try {
+//			long groupId = input.getGroupId();
+//			ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, input.getServiceCode(), input.getGovAgencyCode());
+//			ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,input.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
+//			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+//
+//			double durationCount = serviceProcess.getDurationCount();
+//			double durationUnit = serviceProcess.getDurationUnit();
+//			model.setDurationCount(durationCount);
+//			model.setDurationUnit(durationUnit);
+//		} catch (Exception e) {
+//			model.setDurationCount(0d);
+//			model.setDurationUnit(0d);
+//		}
 
 		return model;
 	}

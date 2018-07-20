@@ -741,8 +741,16 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDossierTemplateNo(), groupId);
 
 			// Create dossierNote
-
-			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
+			ServiceProcess process = null;
+			boolean online = true;
+			if (option != null) {
+				long serviceProcessId = option.getServiceProcessId();
+				process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
+				// DOSSIER that was created in CLIENT is set ONLINE = false
+				if (process.getServerNo().trim().length() != 0) {
+					online = false;
+				}
+			}
 
 			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
 				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
@@ -755,15 +763,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
-			boolean online = true;
-
-			// DOSSIER that was created in CLIENT is set ONLINE = false
-			if (process.getServerNo().trim().length() != 0) {
-				online = false;
-			}
-
 			String password = StringPool.BLANK;
-
 			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
 				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
 			}
@@ -776,14 +776,14 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier = oldDossiers.get(0);
 			}
 			else {
-				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(),
-						serviceName, input.getGovAgencyCode(), govAgencyName, input.getApplicantName(),
-						input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
-						input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
-						input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
-						input.getContactEmail(), input.getDossierTemplateNo(), password, 0, StringPool.BLANK,
-						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, online, process.getDirectNotification(),
-						input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);				
+				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
+						input.getGovAgencyCode(), govAgencyName, input.getApplicantName(), input.getApplicantIdType(),
+						input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
+						cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
+						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
+						input.getDossierTemplateNo(), password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
+						Integer.valueOf(input.getOriginality()), serviceContext);
 			}
 
 			if (Validator.isNull(dossier)) {
@@ -820,6 +820,9 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 
 					dossier.setDueDate(dueDate);
+					dossier.setReceiveDate(now);
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
 				}
 				
 				DossierLocalServiceUtil.updateDossier(dossier);
