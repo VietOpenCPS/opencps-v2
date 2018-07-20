@@ -1289,7 +1289,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-							if (!processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
+							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
 								data.put(ProcessActionTerm.ENABLE, 0);
@@ -4132,21 +4132,21 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					return result;
 			}
 		}
-		//
-		int originality = dossier.getOriginality();
-		ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-		if (actConfig != null) {
-			int syncType = actConfig.getSyncType();
-			if (originality == 1 && syncType == 2) {
-				result = true;
-				return result;
-			} else if (syncType == 1) {
-				if (originality == 2 || originality == 3) {
-					result = true;
-					return result;
-				}
-			}
-		}
+
+//		int originality = dossier.getOriginality();
+//		ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+//		if (actConfig != null) {
+//			int syncType = actConfig.getSyncType();
+//			if (originality == 1 && syncType == 2) {
+//				result = true;
+//				return result;
+//			} else if (syncType == 1) {
+//				if (originality == 2 || originality == 3) {
+//					result = true;
+//					return result;
+//				}
+//			}
+//		}
 		
 		return result;
 	}
