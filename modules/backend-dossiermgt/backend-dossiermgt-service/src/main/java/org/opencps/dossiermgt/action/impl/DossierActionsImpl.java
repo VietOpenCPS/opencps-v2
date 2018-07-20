@@ -1790,7 +1790,7 @@ public class DossierActionsImpl implements DossierActions {
 	}
 
 	@Override
-	public JSONObject getPayloadNextActions(long userId, long companyId, long groupId,
+	public JSONArray getPayloadNextActions(long userId, long companyId, long groupId,
 			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
 			ServiceContext serviceContext) {
 		
@@ -1799,46 +1799,41 @@ public class DossierActionsImpl implements DossierActions {
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			_log.info("dossier: "+dossier);
-		if (dossier != null) {
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			_log.info("dossier: " + dossier);
+			if (dossier != null) {
+				DossierAction dossierAction = DossierActionLocalServiceUtil
+						.fetchDossierAction(dossier.getDossierActionId());
 
-			JSONArray result = JSONFactoryUtil.createJSONArray();
-			if (dossierAction != null) {
-				String actionCode = dossierAction.getActionCode();
-				if (Validator.isNotNull(actionCode)) {
-					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-					if (actConfig != null) {
-						boolean extraForm = actConfig.getExtraForm();
-						if (extraForm) {
-							String formConfig  = actConfig.getFormConfig();
-							String sampleData = actConfig.getSampleData();
-							
-							String formData = AutoFillFormData.sampleDataBinding(
-									sampleData, dossierId, serviceContext);
-							JSONObject formDataJson = JSONFactoryUtil.createJSONObject(formData);
-							JSONArray formConfigArr = JSONFactoryUtil.createJSONArray(formConfig);
-							if (formConfigArr != null && formConfigArr.length() > 0) {
-								int length = formConfigArr.length();
-								for (int i = 0; i < length; i++) {
-									JSONObject jsonObject = formConfigArr.getJSONObject(i);
-									String value = formDataJson.getString(jsonObject.getString("fieldName"));
-									jsonObject.put("value", value);
-									result.put(jsonObject);
+				JSONArray result = JSONFactoryUtil.createJSONArray();
+				if (dossierAction != null) {
+					String actionCode = dossierAction.getActionCode();
+					if (Validator.isNotNull(actionCode)) {
+						ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+						if (actConfig != null) {
+							boolean extraForm = actConfig.getExtraForm();
+							if (extraForm) {
+								String formConfig = actConfig.getFormConfig();
+								String sampleData = actConfig.getSampleData();
+
+								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
+										serviceContext);
+								JSONObject formDataJson = JSONFactoryUtil.createJSONObject(formData);
+								JSONArray formConfigArr = JSONFactoryUtil.createJSONArray(formConfig);
+								if (formConfigArr != null && formConfigArr.length() > 0) {
+									int length = formConfigArr.length();
+									for (int i = 0; i < length; i++) {
+										JSONObject jsonObject = formConfigArr.getJSONObject(i);
+										String value = formDataJson.getString(jsonObject.getString("fieldName"));
+										jsonObject.put("value", value);
+										result.put(jsonObject);
+									}
 								}
+								return result;
 							}
-							
 						}
 					}
 				}
 			}
-//		formScript = dossierPart.getFormScript();
-//		eForm = Validator.isNotNull(formScript) ? true : false;
-//		formData = AutoFillFormData.sampleDataBinding(
-//				dossierPart.getSampleData(), dossierId, serviceContext);
-//		_log.info("Dossier part: " + dossierPart.getPartNo());
-//		_log.info("Form data: " + formData);
-		}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

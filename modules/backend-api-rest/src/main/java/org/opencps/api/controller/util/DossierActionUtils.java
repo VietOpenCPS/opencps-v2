@@ -13,6 +13,7 @@ import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionPaymentModel;
 import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
 import org.opencps.api.dossieraction.model.DossierNextActionModel;
+import org.opencps.api.dossieraction.model.DossierPayLoadModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
@@ -423,5 +424,25 @@ public class DossierActionUtils {
 			listContacts.add(contact);
 		}
 		return listContacts;
+	}
+
+	public static List<DossierPayLoadModel> mappingToPayLoadNextActions(JSONArray jsonData) {
+
+		List<DossierPayLoadModel> outputs = new ArrayList<DossierPayLoadModel>();
+		if (jsonData != null && jsonData.length() > 0) {
+			for (int i = 0; i < jsonData.length(); i++) {
+				JSONObject jsonObject = jsonData.getJSONObject(i);
+				DossierPayLoadModel model = new DossierPayLoadModel();
+
+				model.setFieldLabel(jsonObject.getString(ProcessActionTerm.FIELD_LABEL));
+				model.setFieldName(jsonObject.getString(ProcessActionTerm.FIELD_NAME));
+				model.setFieldType(jsonObject.getString(ProcessActionTerm.FIELD_TYPE));
+				model.setValue(jsonObject.getString(ProcessActionTerm.VALUE));
+
+				outputs.add(model);
+			}
+		}
+
+		return outputs;
 	}
 }
