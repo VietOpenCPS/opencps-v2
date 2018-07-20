@@ -291,6 +291,7 @@
 		<column name="serviceProcessId" type="long" />
 		<column name="instructionNote" type="String" />
 		<column name="submissionNote" type="String" />
+		<column name="sampleCount" type="long" />
 
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId" />
@@ -408,6 +409,9 @@
 		<column name="lockState" type="String" />
 		<column name="originality" type="int" />
 		<column name="originDossierId" type="long" />
+		<column name="sampleCount" type="long" />
+		<column name="durationUnit" type="double" />
+		<column name="durationCount" type="double" />
 		<!-- Order -->
 		
 		<!-- Finder methods -->

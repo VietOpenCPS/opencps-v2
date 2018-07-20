@@ -1289,7 +1289,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-							if (processCheckEnable(preCondition, autoEvent, dossier) == 1)
+							if (!processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
 								data.put(ProcessActionTerm.ENABLE, 0);
@@ -1336,7 +1336,11 @@ public class DossierActionsImpl implements DossierActions {
 
 				//Process PaymentFile
 				JSONObject payment = JSONFactoryUtil.createJSONObject();
+				String postStepCode = StringPool.BLANK;
+				long serviceProcessId = 0;
 				if (processAction != null) {
+					postStepCode = processAction.getPostStepCode();
+					serviceProcessId = processAction.getServiceProcessId();
 					payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
 					String paymentFeeData = processAction.getPaymentFee();
 					if (Validator.isNotNull(paymentFeeData)) {
@@ -1358,13 +1362,37 @@ public class DossierActionsImpl implements DossierActions {
 							payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentNote);
 							payment.put(PaymentFileTerm.EDITABLE, editable);
 
+						} else {
+							PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+							if (paymentFile != null) {
+								payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+								payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+								payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+								payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
+								payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFile.getPaymentFee());
+								payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+								payment.put(PaymentFileTerm.EDITABLE, false);
+							} else {
+								payment.put(PaymentFileTerm.ADVANCE_AMOUNT, 0);
+								payment.put(PaymentFileTerm.FEE_AMOUNT, 0);
+								payment.put(PaymentFileTerm.SERVICE_AMOUNT, 0);
+								payment.put(PaymentFileTerm.SHIP_AMOUNT, 0);
+								payment.put(PaymentFileTerm.PAYMENT_FEE, 0);
+								payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
+								payment.put(PaymentFileTerm.EDITABLE, false);
+							}
 						}
+					} else {
+						payment.put(PaymentFileTerm.ADVANCE_AMOUNT, 0);
+						payment.put(PaymentFileTerm.FEE_AMOUNT, 0);
+						payment.put(PaymentFileTerm.SERVICE_AMOUNT, 0);
+						payment.put(PaymentFileTerm.SHIP_AMOUNT, 0);
+						payment.put(PaymentFileTerm.PAYMENT_FEE, 0);
+						payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
+						payment.put(PaymentFileTerm.EDITABLE, false);
 					}
 				}
 
-				// Nho check null
-				String postStepCode = processAction.getPostStepCode();
-				long serviceProcessId = processAction.getServiceProcessId();
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 						serviceProcessId);
 
@@ -1378,8 +1406,6 @@ public class DossierActionsImpl implements DossierActions {
 				List<String> createFileTempNoList = ListUtil.toList(StringUtil.split(createDossierFiles));
 				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));
 				_log.info("-----RETURN DOSSIER FILE TEMPLATE NOS----" + returnFileTempNoList.size());
-
-
 
 				if (returnFileTempNoList != null && !returnFileTempNoList.isEmpty()) {
 					DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
@@ -4093,8 +4119,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	}
 
 	//LamTV_Process check permission action
-	private int processCheckEnable(String preCondition, String autoEvent, Dossier dossier) {
-		int enable = 1;
+	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
+			long groupId) {
+		boolean result = true;
 		boolean flagAutoEvent = true;
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
 				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
@@ -4107,10 +4134,26 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		}
 		if (flagAutoEvent) {
 			if (Validator.isNull(autoEvent) && checkPreCondition) {
-					enable = 0;
+					return result;
 			}
 		}
-		return enable;
+		//
+		int originality = dossier.getOriginality();
+		ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+		if (actConfig != null) {
+			int syncType = actConfig.getSyncType();
+			if (originality == 1 && syncType == 2) {
+				result = true;
+				return result;
+			} else if (syncType == 1) {
+				if (originality == 2 || originality == 3) {
+					result = true;
+					return result;
+				}
+			}
+		}
+		
+		return result;
 	}
 
 	// LamTV_Process role list user

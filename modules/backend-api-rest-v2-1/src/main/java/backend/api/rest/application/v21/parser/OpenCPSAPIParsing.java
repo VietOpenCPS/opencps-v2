@@ -123,7 +123,7 @@ public class OpenCPSAPIParsing {
 
 				JSONObject current = arrayStep.getJSONObject(i);
 				if (menuConfigItem.getMenuGroup().trim().equals(current.getString("menuGroup"))
-						&& current.getInt("stepType") == 1) {
+						&& (current.getInt("stepType") == 1 || current.getInt("stepType") == 2)) {
 					
 					menuConfigStepsItem = new MenuConfigStepsItem();
 
