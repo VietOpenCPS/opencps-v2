@@ -772,7 +772,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 	//LamTV_Process output ServiceProcess to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
+	public ServiceProcess updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
 			String description, Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
 			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException {
 
@@ -823,9 +823,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setDueDatePattern(dueDatePattern);
 		}
 
-		serviceProcessPersistence.update(object);
-
-		return object.getServiceProcessId();
+		return serviceProcessPersistence.update(object);
 	}
 
 	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,

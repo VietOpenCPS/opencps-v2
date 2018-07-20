@@ -239,15 +239,30 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
-							<xsd:element name="docSync" type = "xsd:int" minOccurs="0"/>
+							<xsd:element name="counter" type = "xsd:int" minOccurs="0"/>
 							<xsd:element name="mappingData">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
+										<xsd:maxLength value="1000"></xsd:maxLength>
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
-							<xsd:element name="fieldConfigs">
+							<xsd:element name="docSync" type = "xsd:int" minOccurs="0"/>
+							<xsd:element name="dataConfig">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="1000"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="tableConfig">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="1000"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="govAgencies">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
 										<xsd:maxLength value="255"></xsd:maxLength>

@@ -123,6 +123,7 @@
 
 		<!-- Other fields -->
 
+		<column name="govAgencyCode" type="String" />
 		<column name="serverNo" type="String" />
 		<column name="serverName" type="String" />
 		<column name="protocol" type="String" />
@@ -138,6 +139,11 @@
 			<order-column name="createDate" />
 		</order>
 		
+		<finder return-type="ServerConfig" name="G_CF_CD">
+			<finder-column name="groupId"/>
+			<finder-column name="serverNo"/>
+		</finder>
+
 		<finder return-type="ServerConfig" name="CF_CD">
 			<finder-column name="serverNo"/>
 		</finder>

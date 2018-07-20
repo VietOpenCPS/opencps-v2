@@ -222,7 +222,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	//LamTV_ Process output DeliverableType to DB
 	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
-			Integer docSync, String mappingData, String fieldConfigs, String formReport, String formScript) {
+			Integer docSync, String mappingData, String govAgencies, String formReport, String formScript) {
 
 		Date now = new Date();
 		User userAction = userPersistence.fetchByPrimaryKey(userId);
@@ -250,7 +250,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			object.setMappingData(mappingData);
 			object.setCodePattern(codePattern);
 			object.setDocSync(docSync);
-			object.setFieldConfigs(fieldConfigs);
+			object.setGovAgencies(govAgencies);
 
 		} else {
 			object.setModifiedDate(now);
@@ -276,9 +276,9 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			if (Validator.isNotNull(docSync)) {
 				object.setDocSync(docSync);
 			}
-			if (Validator.isNotNull(fieldConfigs)) {
-				object.setFieldConfigs(fieldConfigs);
-			}
+//			if (Validator.isNotNull(fieldConfigs)) {
+//				object.setFieldConfigs(fieldConfigs);
+//			}
 		}
 
 		return deliverableTypePersistence.update(object);

@@ -18,8 +18,10 @@ import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DossierTemplate;
 import org.opencps.api.v21.model.MenuConfigList;
+import org.opencps.api.v21.model.NotificationTemplateList;
 import org.opencps.api.v21.model.ObjectFactory;
 import org.opencps.api.v21.model.PaymentConfigList;
+import org.opencps.api.v21.model.ServerConfigList;
 import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.StepConfigList;
@@ -148,10 +150,12 @@ public class ReadXMLFileUtils {
 				ProcessUpdateDBUtils.processUpdatePaymentConfig(paymentList, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_SERVER_CONFIG:
-				convertXMLToMenuConfig(xmlString);
+				ServerConfigList serverList = convertXMLToServerConfig(xmlString);
+				ProcessUpdateDBUtils.processUpdateServerConfig(serverList, groupId, userId, serviceContext);
 				break;
 			case ConstantUtils.XML_NOTIFICATION_TEMPLATE:
-				convertXMLToMenuConfig(xmlString);
+				NotificationTemplateList notiTempList = convertXMLToNotificationTemplate(xmlString);
+				ProcessUpdateDBUtils.processUpdateNotificationTemplate(notiTempList, groupId, userId, serviceContext);
 				break;
 			default:
 				break;
@@ -312,6 +316,36 @@ public class ReadXMLFileUtils {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			StringReader reader = new StringReader(xmlString);
 			PaymentConfigList objectElement = (PaymentConfigList) jaxbUnmarshaller.unmarshal(reader);
+			return objectElement;
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	// LamTV_ Process convert xml to Object ServerConfig
+	private static ServerConfigList convertXMLToServerConfig(String xmlString) {
+		JAXBContext jaxbContext = null;
+		try {
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			ServerConfigList objectElement = (ServerConfigList) jaxbUnmarshaller.unmarshal(reader);
+			return objectElement;
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	// LamTV_ Process convert xml to Object NotificationTemplate
+	private static NotificationTemplateList convertXMLToNotificationTemplate(String xmlString) {
+		JAXBContext jaxbContext = null;
+		try {
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			NotificationTemplateList objectElement = (NotificationTemplateList) jaxbUnmarshaller.unmarshal(reader);
 			return objectElement;
 		} catch (JAXBException e) {
 			e.printStackTrace();

@@ -87,7 +87,7 @@ public class StepConfigActionsImpl implements StepConfigActions {
 	@Override
 	public boolean deleteAllStepConfig(long groupId, long userId, ServiceContext serviceContext) {
 		boolean flag = false;
-		List<StepConfig> stepList = StepConfigLocalServiceUtil.getStepConfigs(-1, -1);
+		List<StepConfig> stepList = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 		if (stepList != null && stepList.size() > 0) {
 			for (StepConfig step : stepList) {
 				StepConfigLocalServiceUtil.deleteStepConfig(step);
