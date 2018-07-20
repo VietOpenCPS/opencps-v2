@@ -608,8 +608,10 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 	@Override
 	public Response getAllDossierFilesByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id) {
+			Locale locale, User user, ServiceContext serviceContext, String id) {
 		DossierFileResultsModel results = new DossierFileResultsModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long dossierId = GetterUtil.getLong(id);
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -619,10 +621,22 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
-			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(id);
+			List<DossierFile> dossierFiles = null;
+			if (dossierId > 0) {
+				dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
+			} else {
+				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				if (dossier != null) {
+					dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossier.getDossierId());
+				}
+			}
 
-			results.setTotal(dossierFiles.size());
-			results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			if (dossierFiles != null) {
+				results.setTotal(dossierFiles.size());
+				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			} else {
+				results.setTotal(0);
+			}
 
 			return Response.status(200).entity(results).build();
 

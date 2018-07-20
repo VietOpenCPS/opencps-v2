@@ -2397,6 +2397,26 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 			payloadObject.put("dossierFiles", dossierFilesArr);
+
+			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossierId);
+				dossierFilesArr = JSONFactoryUtil.createJSONArray();
+
+				// check return file
+				List<String> returnDossierFileTemplateNos = ListUtil
+						.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+
+				for (DossierFile dossierFile : lsDossierFile) {
+					if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+						dossierFilesArr.put(dossierFileObj);
+
+					}
+
+				}
+				payloadObject.put("dossierFiles", dossierFilesArr);				
+			}
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,

@@ -953,6 +953,10 @@ definitions:
       menuStepName:
         type: string
         example: 'step name 001'
+      dossierStatus:
+        type: string
+      dossierSubStatus:
+        type: string
       buttonConfig:
         type: string
         example: 'step name 001'

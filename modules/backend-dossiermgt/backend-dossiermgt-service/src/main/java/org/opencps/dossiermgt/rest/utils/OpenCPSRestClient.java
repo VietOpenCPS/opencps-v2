@@ -169,6 +169,7 @@ public class OpenCPSRestClient {
 			properties.put("Content-Type", "application/x-www-form-urlencoded");
 
 			String path = DOSSIERS_BASE_PATH + "/" + id + "/all/files";
+			_log.info("id: "+id);
 
 			ServiceContext serviceContext = new ServiceContext();
 
