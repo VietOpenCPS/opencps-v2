@@ -964,6 +964,11 @@
 		<column name="configNote" type="String"/>
 		<column name="dossierTemplateNo" type="String"/>
 		
+		<order>
+			<order-column name="actionCode" case-sensitive="false"
+	order-by="asc" />
+		</order>
+		
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
 		</finder>
@@ -1210,7 +1215,21 @@
 		<column name="govAgencyName" type="String" />
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />
-
+		
+		<!-- Add new -->
+		<column name="totalCount" type="int"/>
+		<column name="deniedCount" type="int"/>
+		<column name="cancelledCount" type="int"/>
+		<column name="processCount" type="int"/>
+		<column name="releaseCount" type="int"/>
+		<column name="betimesCount" type="int"/>
+		<column name="doneCount" type="int"/>
+		<column name="releasingCount" type="int"/>
+		<column name="unresolvedCount" type="int"/>
+		<column name="processingCount" type="int"/>
+		<column name="ontimePercentage" type="int"/>
+				
+		<!-- new remove -->
 		<column name="administrationLevel" type="int" />
 
 		<column name="reporting" type="boolean" />

@@ -75,7 +75,7 @@ public interface ServiceProcessManagement {
 
 	public Response cloneServiceProcesses(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @FormParam("processNo") String processNo);
+			@Context ServiceContext serviceContext, @PathParam("id") String id, @FormParam("processNo") String processNo);
 
 
 	@GET

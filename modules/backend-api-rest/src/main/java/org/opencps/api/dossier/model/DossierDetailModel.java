@@ -110,6 +110,7 @@ import javax.xml.bind.annotation.XmlType;
     "govAgencyCode",
     "govAgencyName",
     "dossierTemplateNo",
+    "dossierTemplateId",
     "applicantName",
     "applicantIdType",
     "applicantIdNo",
@@ -201,6 +202,7 @@ public class DossierDetailModel {
     protected String govAgencyCode;
     protected String govAgencyName;
     protected String dossierTemplateNo;
+    protected Long dossierTemplateId;
     protected String applicantName;
     protected String applicantIdType;
     protected String applicantIdNo;
@@ -2003,6 +2005,14 @@ public class DossierDetailModel {
 
 	public void setDelegateWardName(String delegateWardName) {
 		this.delegateWardName = delegateWardName;
+	}
+
+	public Long getDossierTemplateId() {
+		return dossierTemplateId;
+	}
+
+	public void setDossierTemplateId(Long dossierTemplateId) {
+		this.dossierTemplateId = dossierTemplateId;
 	}
 
 }
