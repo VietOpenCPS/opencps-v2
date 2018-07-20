@@ -121,7 +121,7 @@ public interface DossierActions {
 			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
 			ServiceContext serviceContext);
 
-	public JSONObject getPayloadNextActions(long userId, long companyId, long groupId,
+	public JSONArray getPayloadNextActions(long userId, long companyId, long groupId,
 			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
 			ServiceContext serviceContext);
 
