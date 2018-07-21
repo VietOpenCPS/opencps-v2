@@ -59,6 +59,7 @@ import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
@@ -784,7 +785,9 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setAddress(input.getAddress());
 				dossier.setContactEmail(input.getContactEmail());
 				dossier.setContactName(input.getContactName());
-				dossier.setContactTelNo(input.getContactTelNo());				
+				dossier.setContactTelNo(input.getContactTelNo());	
+				dossier.setDossierNo(input.getDossierNo());
+				dossier.setSubmitDate(new Date());
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
@@ -2204,7 +2207,18 @@ public class DossierManagementImpl implements DossierManagement {
 		if (dossier != null) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			if (dossierAction != null && dossierAction.isRollbackable()) {
-				
+				DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
+			
+				DossierAction previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getPreviousActionId());
+				if (previousAction != null) {
+					DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+					try {
+						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
+					} catch (PortalException e) {
+//						e.printStackTrace();
+						return processException(e);
+					}
+				}
 			}
 			return Response.status(200).entity(null).build();			
 		}
