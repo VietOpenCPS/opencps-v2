@@ -36,7 +36,7 @@ public class LoginPostAction implements LifecycleAction {
 
 			String friendlyUrl = user.getSiteGroups().get(0).getFriendlyURL();
 
-			lifecycleEvent.getResponse().sendRedirect("/group" + friendlyUrl);
+			lifecycleEvent.getResponse().sendRedirect("/web" + friendlyUrl);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
