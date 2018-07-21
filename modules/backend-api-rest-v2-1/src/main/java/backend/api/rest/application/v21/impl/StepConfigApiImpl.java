@@ -127,7 +127,9 @@ public class StepConfigApiImpl implements StepConfigApi {
 	@Override
 	public StepConfigItemResult getStepConfigByMainStatusAndSubStatus(String mainStatus, String subStatus) {
 		StepConfigItemResult result = new StepConfigItemResult();
-		List<StepConfig> lstStepConfigs = StepConfigLocalServiceUtil.getStepByMainStatusAndSubStatus(mainStatus, subStatus);
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		List<StepConfig> lstStepConfigs = StepConfigLocalServiceUtil.getStepByMainStatusAndSubStatus(groupId, mainStatus, subStatus);
 		
 		if (lstStepConfigs.size() > 0) {
 			List<StepConfigItem> lstItems = new ArrayList<>();
