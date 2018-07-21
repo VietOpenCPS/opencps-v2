@@ -53,11 +53,11 @@ public class DossierUserActionsImpl implements DossierUserActions {
 				List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
 				for (ServiceProcessRole spr : listSprs) {
 					int mod = 0;
-					boolean moderator = spr.getModerator();
-					
-					if (moderator) {
-						mod = 1;
-					}
+//					boolean moderator = spr.getModerator();
+//					
+//					if (moderator) {
+//						mod = 1;
+//					}
 					List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 					for (User user : users) {
 						org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());

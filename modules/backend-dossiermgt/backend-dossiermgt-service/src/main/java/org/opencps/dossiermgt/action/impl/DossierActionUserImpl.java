@@ -202,12 +202,20 @@ public class DossierActionUserImpl implements DossierActionUser {
 		DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
 		
 		if (du != null) {
-			model.setModerator(du.getModerator());
-			moderator = du.getModerator();
+			//Update dossier user if assigned
+			if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
+				du.setModerator(1);
+				DossierUserLocalServiceUtil.updateDossierUser(du.getDossierId(), du.getUserId(), du.getModerator(), du.getVisited());
+				
+				model.setModerator(du.getModerator());
+				moderator = du.getModerator();
+			}
+
 		}
 		else {
 			model.setModerator(1);
 		}
+		
 		model.setVisited(false);
 		// Add User
 		DossierActionUserLocalServiceUtil.addDossierActionUser(model);
@@ -221,6 +229,29 @@ public class DossierActionUserImpl implements DossierActionUser {
 			pk.setDossierActionId(dossierActionId);
 			pk.setUserId(subUser.getLong("userId"));
 						
+			duPk = new DossierUserPK();
+			if (dossierActionId > 0) {
+				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				if (dAction != null) {
+					model.setStepCode(dAction.getStepCode());
+				}
+			}
+			duPk.setDossierId(dossier.getDossierId());
+			duPk.setUserId(subUser.getLong("userId"));
+			du = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
+			
+			if (du != null) {
+				//Update dossier user if assigned
+				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
+					du.setModerator(1);
+					DossierUserLocalServiceUtil.updateDossierUser(du.getDossierId(), du.getUserId(), du.getModerator(), du.getVisited());
+					
+					model.setModerator(du.getModerator());
+					moderator = du.getModerator();
+				}
+
+			}
+			
 			org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
 			
 			if (Validator.isNull(dau)) {
@@ -239,6 +270,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 	private void addDossierActionUserByAssigned(int allowAssignUser, long userId, long dossierActionId, int moderator,
 			boolean visited, String stepCode, long dossierId) {
 		org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
+	
 		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
 		model.setVisited(visited);
 		model.setDossierId(dossierId);
@@ -310,7 +342,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 	@Override
 	public void copyRoleAsStep(ProcessStep curStep, Dossier dossier) {
 		if (Validator.isNull(curStep.getRoleAsStep()))
-			return;
+			return;		
 		List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), curStep.getRoleAsStep());
 		if (lstDaus.size() > 0) {
 			for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDaus) {

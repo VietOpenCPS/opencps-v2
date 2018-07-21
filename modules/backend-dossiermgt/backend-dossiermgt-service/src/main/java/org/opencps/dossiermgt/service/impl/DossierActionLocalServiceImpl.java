@@ -282,6 +282,21 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return action;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateState(long actionId, int state) {
+		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
+
+		action.setState(state);
+
+		Date now = new Date();
+
+		action.setModifiedDate(now);
+
+		dossierActionPersistence.update(action);
+
+		return action;		
+	}
+	
 	private void validateUpdateAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
 			long previousActionId, String actionCode, String actionUser, String actionName, String actionNote,
 			int actionOverdue, String syncActionCode, boolean pending, boolean rollbackable, String stepCode,
