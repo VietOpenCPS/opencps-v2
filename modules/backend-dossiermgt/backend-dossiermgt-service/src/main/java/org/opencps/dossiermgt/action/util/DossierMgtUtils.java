@@ -145,6 +145,12 @@ public class DossierMgtUtils {
 					result = result && checkBien("#tenbien@tphoso", splitBiens[0], dossier);
 				}																							
 			}
+			if (preCondition.contains("viapostal=")) {
+				String[] splitViaPostals = preCondition.split("=");
+				if (splitViaPostals.length == 1) {
+					result = result && checkViaPostal(splitViaPostals[0], dossier);
+				}																							
+			}
 		}
 
 		return result;
@@ -224,6 +230,17 @@ public class DossierMgtUtils {
 		}
 	}
 
+	private static boolean checkViaPostal(String viaPostal, Dossier dossier) {
+		int viaPostalInt = Integer.valueOf(viaPostal);
+		
+		if (viaPostalInt == dossier.getViaPostal()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	private static boolean checkDossierOnline(Dossier dossier) {
 		if (dossier.getOnline()) 
 			return true;
