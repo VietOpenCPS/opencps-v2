@@ -36,7 +36,7 @@ public class DossierGarbageCollectorScheduler extends BaseSchedulerEntryMessageL
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(),
-				1, TimeUnit.DAY));
+				1, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
