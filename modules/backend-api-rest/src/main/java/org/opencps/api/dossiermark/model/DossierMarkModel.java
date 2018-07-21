@@ -39,110 +39,47 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DossierMarkModel", propOrder = {
     "dossierId",
     "dossierPartNo",
+    "fileMark",
     "fileCheck",
-    "fileType"
+    "fileComment"
 })
 public class DossierMarkModel {
 
-    protected Long dossierId;
-    protected String dossierPartNo;
-    protected Boolean fileCheck;
-    protected Integer fileType;
+	protected Long dossierId;
+	protected String dossierPartNo;
+	protected Integer fileMark;
+	protected Integer fileCheck;
+	protected String fileComment;
 
-    /**
-     * Gets the value of the dossierId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    public Long getDossierId() {
-        return dossierId;
-    }
-
-    /**
-     * Sets the value of the dossierId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setDossierId(Long value) {
-        this.dossierId = value;
-    }
-
-    /**
-     * Gets the value of the dossierPartNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDossierPartNo() {
-        return dossierPartNo;
-    }
-
-    /**
-     * Sets the value of the dossierPartNo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDossierPartNo(String value) {
-        this.dossierPartNo = value;
-    }
-
-    /**
-     * Gets the value of the fileCheck property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFileCheck() {
-        return fileCheck;
-    }
-
-    /**
-     * Sets the value of the fileCheck property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFileCheck(Boolean value) {
-        this.fileCheck = value;
-    }
-
-    /**
-     * Gets the value of the fileType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getFileType() {
-        return fileType;
-    }
-
-    /**
-     * Sets the value of the fileType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setFileType(Integer value) {
-        this.fileType = value;
-    }
+	public Long getDossierId() {
+		return dossierId;
+	}
+	public void setDossierId(Long dossierId) {
+		this.dossierId = dossierId;
+	}
+	public String getDossierPartNo() {
+		return dossierPartNo;
+	}
+	public void setDossierPartNo(String dossierPartNo) {
+		this.dossierPartNo = dossierPartNo;
+	}
+	public Integer getFileMark() {
+		return fileMark;
+	}
+	public void setFileMark(Integer fileMark) {
+		this.fileMark = fileMark;
+	}
+	public Integer getFileCheck() {
+		return fileCheck;
+	}
+	public void setFileCheck(Integer fileCheck) {
+		this.fileCheck = fileCheck;
+	}
+	public String getFileComment() {
+		return fileComment;
+	}
+	public void setFileComment(String fileComment) {
+		this.fileComment = fileComment;
+	}
 
 }

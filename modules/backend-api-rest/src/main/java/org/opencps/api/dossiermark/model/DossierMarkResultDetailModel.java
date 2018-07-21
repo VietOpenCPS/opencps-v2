@@ -38,86 +38,41 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "dossierMarkId",
+    "fileMark",
     "fileCheck",
-    "fileType"
+    "fileComment"
 })
 @XmlRootElement(name = "DossierMarkResultDetailModel")
 public class DossierMarkResultDetailModel {
 
-    protected Long dossierMarkId;
-    protected Boolean fileCheck;
-    protected Integer fileType;
+	protected Long dossierMarkId;
+	protected Integer fileMark;
+	protected Integer fileCheck;
+	protected String fileComment;
 
-    /**
-     * Gets the value of the dossierMarkId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    public Long getDossierMarkId() {
-        return dossierMarkId;
-    }
-
-    /**
-     * Sets the value of the dossierMarkId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setDossierMarkId(Long value) {
-        this.dossierMarkId = value;
-    }
-
-    /**
-     * Gets the value of the fileCheck property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFileCheck() {
-        return fileCheck;
-    }
-
-    /**
-     * Sets the value of the fileCheck property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFileCheck(Boolean value) {
-        this.fileCheck = value;
-    }
-
-    /**
-     * Gets the value of the fileType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getFileType() {
-        return fileType;
-    }
-
-    /**
-     * Sets the value of the fileType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setFileType(Integer value) {
-        this.fileType = value;
-    }
+	public Long getDossierMarkId() {
+		return dossierMarkId;
+	}
+	public void setDossierMarkId(Long dossierMarkId) {
+		this.dossierMarkId = dossierMarkId;
+	}
+	public Integer getFileMark() {
+		return fileMark;
+	}
+	public void setFileMark(Integer fileMark) {
+		this.fileMark = fileMark;
+	}
+	public Integer getFileCheck() {
+		return fileCheck;
+	}
+	public void setFileCheck(Integer fileCheck) {
+		this.fileCheck = fileCheck;
+	}
+	public String getFileComment() {
+		return fileComment;
+	}
+	public void setFileComment(String fileComment) {
+		this.fileComment = fileComment;
+	}
 
 }

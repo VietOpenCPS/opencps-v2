@@ -23,8 +23,9 @@ public class DossierMarkUtils {
 		DossierMarkResultDetailModel model = new DossierMarkResultDetailModel();
 		try {
 			model.setDossierMarkId(dossierMark.getDossierMarkId());
-			model.setFileCheck(dossierMark.isFileCheck());
-			model.setFileType(dossierMark.getFileType());
+			model.setFileCheck(dossierMark.getFileCheck());
+			model.setFileMark(dossierMark.getFileMark());
+			model.setFileComment(dossierMark.getFileComment());
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -41,7 +42,8 @@ public class DossierMarkUtils {
 				model.setDossierId(dossierMark.getDossierId());
 				model.setDossierPartNo(dossierMark.getDossierPartNo());
 				model.setFileCheck(dossierMark.getFileCheck());
-				model.setFileType(dossierMark.getFileType());
+				model.setFileMark(dossierMark.getFileMark());
+				model.setFileComment(dossierMark.getFileComment());
 				
 				result.add(model);
 			}

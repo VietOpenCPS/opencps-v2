@@ -54,7 +54,8 @@ import javax.xml.bind.annotation.XmlType;
     "formData",
     "counter",
     "returned",
-    "dossierFileId"
+    "dossierFileId",
+    "partType"
 })
 public class DossierActionNextActioncreateFiles {
 
@@ -71,6 +72,7 @@ public class DossierActionNextActioncreateFiles {
     protected Integer counter;
     protected Boolean returned;
     protected Long dossierFileId;
+    protected Integer partType;
     
     /**
      * Gets the value of the dossierFileId property.
@@ -384,5 +386,13 @@ public class DossierActionNextActioncreateFiles {
     public void setFormData(String value) {
         this.formData = value;
     }
+
+	public Integer getPartType() {
+		return partType;
+	}
+
+	public void setPartType(Integer partType) {
+		this.partType = partType;
+	}
 
 }

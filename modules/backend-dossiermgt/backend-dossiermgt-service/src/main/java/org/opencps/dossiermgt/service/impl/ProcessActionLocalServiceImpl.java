@@ -626,7 +626,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		object.setActionName(actionName);
 		object.setAllowAssignUser(allowAssignUser);
 		object.setAssignUserId(assignUserId);
-		object.setAssignUserName(assignUserName);
+//		object.setAssignUserName(assignUserName);
 		object.setRequestPayment(requestPayment);
 		object.setPaymentFee(paymentFee);
 		object.setCreateDossierFiles(createDossierFiles);

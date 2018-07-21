@@ -16,7 +16,6 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -26,9 +25,7 @@ import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierRequestUD;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -37,9 +34,7 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -330,18 +325,39 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.ONLINE, Boolean.toString(object.getOnline()));
 			document.addTextSortable(DossierTerm.SERVER_NO, object.getServerNo());
 			document.addTextSortable(DossierTerm.DOSSIER_OVER_DUE,
-					Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
+					Boolean.toString(getDossierOverDue(object.getPrimaryKey(), object.getDueDate())));
 
 			// TODO: index dossierAction StepCode
+//			StringBundler sb = new StringBundler();
+//			long dossierActionsUserId = object.getDossierActionId();
+//			if (dossierActionsUserId > 0) {
+//				List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
+//						.getListUser(dossierActionsUserId);
+//				if (dossierActionUsers != null && dossierActionUsers.size() > 0) {
+//					int length = dossierActionUsers.size();
+//					for (int i = 0; i < length; i++) {
+//						DossierActionUser dau = dossierActionUsers.get(i);
+//						long userId = dau.getUserId();
+//						if (i == 0) {
+//							sb.append(userId);
+//						} else {
+//							sb.append(StringPool.SPACE);
+//							sb.append(userId);
+//
+//						}
+//					}
+//				}
+//			}
+//			_log.info("Mapping user:" + sb.toString());
+//			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
+			//
 			StringBundler sb = new StringBundler();
-			long dossierActionsUserId = object.getDossierActionId();
-			if (dossierActionsUserId > 0) {
-				List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
-						.getListUser(dossierActionsUserId);
-				if (dossierActionUsers != null && dossierActionUsers.size() > 0) {
-					int length = dossierActionUsers.size();
+			if (dossierId > 0) {
+				List<DossierUser> dossierUserList = DossierUserLocalServiceUtil.findByDID(dossierId);
+				if (dossierUserList != null && dossierUserList.size() > 0) {
+					int length = dossierUserList.size();
 					for (int i = 0; i < length; i++) {
-						DossierActionUser dau = dossierActionUsers.get(i);
+						DossierUser dau = dossierUserList.get(i);
 						long userId = dau.getUserId();
 						if (i == 0) {
 							sb.append(userId);
@@ -529,8 +545,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		return certIndex;
 	}
 
-	private boolean getDossierOverDue(long dossierId) {
-		// TODO add logic here
+	private boolean getDossierOverDue(long dossierId, Date dueDate) {
+		
 
 		return false;
 	}
