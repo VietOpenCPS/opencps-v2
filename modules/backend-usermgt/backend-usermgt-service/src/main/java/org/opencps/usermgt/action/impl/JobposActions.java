@@ -227,4 +227,12 @@ public class JobposActions implements JobposInterface {
 	public JobPos getJobPos(long jobPosId) {
 		return JobPosLocalServiceUtil.fetchJobPos(jobPosId);
 	}
+
+	@Override
+	public void updateJobPosDB(long userId, long groupId, String jobCode, String title, String description,
+			ServiceContext serviceContext) throws PortalException {
+
+		JobPosLocalServiceUtil.updateJobPosDB(userId, groupId, jobCode, title, description, serviceContext);
+
+	}
 }

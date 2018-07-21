@@ -43,8 +43,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
  */
 @ProviderType
 public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl {
-	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Boolean fileCheck,
-			int fileType, ServiceContext serviceContext) throws PortalException, SystemException {
+	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Integer fileMark,
+			Integer fileCheck, String fileComment, ServiceContext serviceContext)
+			throws PortalException, SystemException {
 
 		long userId = serviceContext.getUserId();
 
@@ -67,7 +68,8 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 		object.setDossierId(dossierId);
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileCheck(fileCheck);
-		object.setFileType(fileType);
+		object.setFileMark(fileMark);
+		object.setFileComment(fileComment);
 
 		return dossierMarkPersistence.update(object);
 	}

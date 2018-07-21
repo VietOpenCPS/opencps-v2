@@ -18,15 +18,20 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.DossierMark;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -85,11 +90,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					
 					if (Validator.isNotNull(payload)) {
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
-						jsonData = processMergeDossierFormData(dossier, jsonData);
 					}
-					else {
-						jsonData = processMergeDossierFormData(dossier, jsonData);						
-					}
+					jsonData = processMergeDossierFormData(dossier, jsonData);
 					Message message = new Message();
 					message.put("formReport", documentScript);
 					message.put("formData", jsonData.toJSONString());
@@ -186,8 +188,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				throw new UnauthenticationException();
 			}
 
-			String serviceCode = input.getServiceCode();
-			String govAgencyCode = input.getGovAgencyCode();
+//			String serviceCode = input.getServiceCode();
+//			String govAgencyCode = input.getGovAgencyCode();
 			String strDossiers = input.getDossiers();
 			JSONArray  dossierIdArr = null;
 			if (Validator.isNotNull(strDossiers)) {
@@ -227,6 +229,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 							}
 							JSONObject jsonData = null;
 							jsonData = JSONFactoryUtil.createJSONObject(payload);
+							jsonData.put(DossierTerm.TOTAL, length);
 							jsonData = processMergeDossierFormData(dossier, jsonData);
 							formDataArr.put(jsonData);
 							_log.info("jsonData: "+jsonData);
@@ -301,21 +304,74 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 	//LamTV_ Mapping process dossier and formData
 	private JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
-		jsonData.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
+		jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
 		jsonData.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
 		jsonData.put(DossierTerm.APPLICANT_ID_TYPE, dossier.getApplicantIdType());
-		jsonData.put(DossierTerm.APPLICANT_ID_DATE, dossier.getApplicantIdDate());
-		jsonData.put(DossierTerm.ADDRESS, dossier.getAddress());
+		jsonData.put(DossierTerm.APPLICANT_ID_DATE,
+				APIDateTimeUtils.convertDateToString(dossier.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		jsonData.put(DossierTerm.CITY_CODE, dossier.getCityCode());
 		jsonData.put(DossierTerm.CITY_NAME, dossier.getCityName());
 		jsonData.put(DossierTerm.DISTRICT_CODE, dossier.getDistrictCode());
 		jsonData.put(DossierTerm.DISTRICT_NAME, dossier.getDistrictName());
 		jsonData.put(DossierTerm.WARD_CODE, dossier.getWardCode());
 		jsonData.put(DossierTerm.WARD_NAME, dossier.getWardName());
-		jsonData.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
+		jsonData.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+		jsonData.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
+		jsonData.put(DossierTerm.ADDRESS, dossier.getAddress());
 		jsonData.put(DossierTerm.CONTACT_TEL_NO, dossier.getContactTelNo());
 		jsonData.put(DossierTerm.CONTACT_EMAIL, dossier.getContactEmail());
+		jsonData.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
+		jsonData.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
+		jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
+		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
+		jsonData.put(DossierTerm.RECEIVE_DATE,
+				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
+		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
+		//
+		long dossierActionId = dossier.getDossierActionId();
+		long groupId = dossier.getGroupId();
+		if (dossierActionId > 0) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+			if (dossierAction != null) {
+				long serviceProcessId = dossierAction.getServiceProcessId();
+				jsonData.put(DossierTerm.ACTION_USER, dossierAction.getActionUser());
+				String fromSequenceNo = dossierAction.getFromSequenceNo();
+				String sequenceNo = dossierAction.getSequenceNo();
+				if (Validator.isNotNull(fromSequenceNo)) {
+					ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, fromSequenceNo);
+					if (sequence != null) {
+						jsonData.put(DossierTerm.SEQUENCE_ROLE, sequence.getSequenceRole());
+					} else {
+						jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+					}
+				} else {
+					jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+				}
+				if (Validator.isNotNull(sequenceNo)) {
+					ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, sequenceNo);
+					if (sequence != null) {
+						jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, sequence.getSequenceRole());
+					} else {
+						jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+					}
+				} else {
+					jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+				}
+			}
+		}
 
+		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
+		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossier.getDossierId());
+		if (dossierMarkList != null && dossierMarkList.size() > 0) {
+			for (DossierMark dossierMark : dossierMarkList) {
+				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
+				dossierMarkArr.put(strDossierMark);
+			}
+		}
+		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
 		return jsonData;
 	}
 
