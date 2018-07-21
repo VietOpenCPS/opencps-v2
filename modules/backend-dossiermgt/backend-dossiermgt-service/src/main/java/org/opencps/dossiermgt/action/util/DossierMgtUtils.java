@@ -7,10 +7,12 @@ import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -57,52 +59,139 @@ public class DossierMgtUtils {
 			preCondition.trim();
 			
 			switch (preCondition) {
-			case "payok":
-				result = result && checkPayOk(dossier);
-				break;
-
-			case "cancelling":
-				result = result && checkCancelling(dossier);
-				break;
-
-			case "reject_cancelling":
-				result = result && checkCancelling(dossier);
-				break;
-
-			case "correcting":
-				result = result && checkCorrecting(dossier);
-				break;
-
-			case "reject_correcting":
-				result = result && checkCorrecting(dossier);
-				break;
-
-			case "submitting":
-				result = result && checkSubmitting(dossier);
-				break;
-
-			case "reject_submitting":
-				result = result && checkSubmitting(dossier);
-				break;
-
-			case "waiting":
-				result = result && checkWaiting(preCondition, dossier);
-				break;
-				
-			case "online=true":
-				result = result && checkDossierOnline(dossier);
-				break;
-			case "online=false":
-				result = result && checkDossierOnegate(dossier);
-				break;
-			default:
-				break;
+				case "payok":
+					result = result && checkPayOk(dossier);
+					break;					
+				case "cancelling":
+					result = result && checkCancelling(dossier);
+					break;
+	
+				case "reject_cancelling":
+					result = result && checkCancelling(dossier);
+					break;
+	
+				case "correcting":
+					result = result && checkCorrecting(dossier);
+					break;
+	
+				case "reject_correcting":
+					result = result && checkCorrecting(dossier);
+					break;
+	
+				case "submitting":
+					result = result && checkSubmitting(dossier);
+					break;
+	
+				case "reject_submitting":
+					result = result && checkSubmitting(dossier);
+					break;
+	
+				case "waiting":
+					result = result && checkWaiting(preCondition, dossier);
+					break;
+					
+				case "online=true":
+					result = result && checkDossierOnline(dossier);
+					break;
+				case "online=false":
+					result = result && checkDossierOnegate(dossier);
+					break;
+				default:
+					break;
+			}
+			if (preCondition.contains("service=")) {
+				String[] splitCodes = preCondition.split("=");
+				if (splitCodes.length == 1) {
+					result = result && checkServiceCode(splitCodes[0], dossier);
+				}			
+			}
+			if (preCondition.contains("agency=")) {
+				String[] splitAgencies = preCondition.split("=");
+				if (splitAgencies.length == 1) {
+					result = result && checkAgencyCode(splitAgencies[0], dossier);
+				}							
+			}
+			if (preCondition.contains("template=")) {
+				String[] splitTemplates = preCondition.split("=");
+				if (splitTemplates.length == 1) {
+					result = result && checkTemplateCode(splitTemplates[0], dossier);
+				}											
+			}
+			if (preCondition.contains("originality=")) {
+				String[] splitOriginalities = preCondition.split("=");
+				if (splitOriginalities.length == 1) {
+					result = result && checkOriginality(splitOriginalities[0], dossier);
+				}															
+			}
+			if (preCondition.contains("stepdone=")) {
+				String[] splitSteps = preCondition.split("=");
+				if (splitSteps.length == 1) {
+					result = result && checkStepDone(splitSteps[0], dossier);
+				}																			
+			}
+			if (preCondition.contains("stepnotdone=")) {
+				String[] splitSteps = preCondition.split("=");
+				if (splitSteps.length == 1) {
+					result = result && checkStepNotDone(splitSteps[0], dossier);
+				}																			
 			}
 		}
 
 		return result;
 	}
 	
+	private static boolean checkServiceCode(String serviceCode, Dossier dossier) {
+		if (serviceCode.equalsIgnoreCase(dossier.getServiceCode())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private static boolean checkAgencyCode(String agencyCode, Dossier dossier) {
+		if (agencyCode.equalsIgnoreCase(dossier.getGovAgencyCode())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private static boolean checkTemplateCode(String templateCode, Dossier dossier) {
+		if (templateCode.equalsIgnoreCase(dossier.getDossierTemplateNo())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private static boolean checkStepDone(String stepCode, Dossier dossier) {
+		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
+		if (lstDaus.size() > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private static boolean checkStepNotDone(String stepCode, Dossier dossier) {
+		return !checkStepDone(stepCode, dossier);
+	}
+	
+	private static boolean checkOriginality(String originality, Dossier dossier) {
+		int o = Integer.valueOf(originality);
+		
+		if (o == dossier.getOriginality()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	private static boolean checkDossierOnline(Dossier dossier) {
 		if (dossier.getOnline()) 
 			return true;
