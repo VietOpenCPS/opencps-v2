@@ -64,6 +64,8 @@ import javax.xml.bind.annotation.XmlType;
  "toUsers",
  "createFiles",
  "returnFiles",
+ "checkInput",
+ "configNote"
 })
 @XmlRootElement(name = "DossierDetailNextActionModel")
 public class DossierDetailNextActionModel {
@@ -84,7 +86,8 @@ public class DossierDetailNextActionModel {
 	protected List<DossierActionNextActiontoUser> toUsers;
 	protected List<DossierActionNextActioncreateFiles> createFiles;
 	protected List<DossierActionNextActionReturnFiles> returnFiles;
-	
+	protected Integer checkInput;
+	protected String configNote;
 
 	public Long getProcessActionId() {
 		return processActionId;
@@ -359,6 +362,22 @@ public class DossierDetailNextActionModel {
 			returnFiles = new ArrayList<DossierActionNextActionReturnFiles>();
 		}
 		return this.returnFiles;
+	}
+
+	public Integer getCheckInput() {
+		return checkInput;
+	}
+
+	public void setCheckInput(Integer checkInput) {
+		this.checkInput = checkInput;
+	}
+
+	public String getConfigNote() {
+		return configNote;
+	}
+
+	public void setConfigNote(String configNote) {
+		this.configNote = configNote;
 	}
 
 }

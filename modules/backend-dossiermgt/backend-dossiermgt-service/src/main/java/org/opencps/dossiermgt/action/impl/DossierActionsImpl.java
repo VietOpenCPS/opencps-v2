@@ -46,6 +46,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -65,6 +66,7 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
@@ -1457,6 +1459,19 @@ public class DossierActionsImpl implements DossierActions {
 								createFile.put(DossierPartTerm.PART_TIP, dossierPart.getPartTip());
 								createFile.put(DossierPartTerm.MULTIPLE, dossierPart.getMultiple());
 								createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
+								createFile.put(DossierPartTerm.PART_TYPE, dossierPart.getPartType());
+								//Get dossierMark
+								DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId,
+										dossierId, dossierPart.getPartNo());
+								if (dossierMark != null) {
+									createFile.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+									createFile.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+									createFile.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
+								} else {
+									createFile.put(DossierPartTerm.FILE_MARK, 0);
+									createFile.put(DossierPartTerm.FILE_MARK, 0);
+									createFile.put(DossierPartTerm.FILE_COMMENT, StringPool.BLANK);
+								}
 
 								ServiceContext context = new ServiceContext();
 								context.setScopeGroupId(dossierPart.getGroupId());

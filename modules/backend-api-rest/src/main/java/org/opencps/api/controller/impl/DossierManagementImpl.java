@@ -1471,8 +1471,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			DossierMarkActions actions = new DossierMarkActionsImpl();
 
-			DossierMark dossierMark = actions.addDossierMark(groupId, dossierId, dossierPartNo, input.isFileCheck(),
-					input.getFileType(), serviceContext);
+			DossierMark dossierMark = actions.addDossierMark(groupId, dossierId, dossierPartNo, input.getFileMark(),
+					input.getFileCheck(), input.getFileComment(), serviceContext);
 
 			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
 

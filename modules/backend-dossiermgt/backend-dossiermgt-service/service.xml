@@ -913,6 +913,7 @@
 		<column name="stepCode" type="String" />
 		<column name="serviceProcessId" type="long" />
 		<column name="pluginName" type="String" />
+		<column name="pluginType" type="int" />
 		<column name="sequenceNo" type="String" />
 		<column name="pluginForm" type="String" />
 		<column name="sampleData" type="String" />
@@ -971,6 +972,11 @@
         <finder name="F_GID_SID" return-type="Collection">
             <finder-column name="groupId" />
             <finder-column name="serviceProcessId" />
+        </finder>
+        <finder name="F_GID_SID_SNO" return-type="ProcessSequence">
+            <finder-column name="groupId" />
+            <finder-column name="serviceProcessId" />
+            <finder-column name="sequenceNo" />
         </finder>
 	</entity>	
 	
@@ -1050,10 +1056,8 @@
 		<column name="dossierTemplateNo" type="String"/>
 		<column name="signatureType" type="String"/>
 		<column name="createDossiers" type="String"/>
-		<column name="assignUserName" type="String" />
-		<column name="extraForm" type="boolean" />
-<!-- 		<column name="userNote" type="int" /> -->
-		
+		<column name="checkInput" type="int" />
+
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
 		</finder>
@@ -1671,8 +1675,9 @@
 		<!-- Other fields -->
 		<column name="dossierId" type="long" />
 		<column name="dossierPartNo" type="String" />
-		<column name="fileCheck" type="boolean" />
-		<column name="fileType" type="int" />
+		<column name="fileCheck" type="int" />
+		<column name="fileMark" type="int" />
+		<column name="fileComment" type="String" />
 
 		<finder return-type="DossierMark" name="G_DID_PN">
 			<finder-column name="groupId" />
