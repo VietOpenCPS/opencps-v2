@@ -166,7 +166,6 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
 		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
-
 		if (!isAuth) {
 			throw new UnauthenticationException();
 		}
@@ -176,7 +175,6 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 		WorkingUnit workingUnit = workingUnitPersistence.fetchByPrimaryKey(workingUnitId);
 		
-		
 		//TODO
 		List<EmployeeJobPos> listEmp = employeeJobPosPersistence.findByF_workingUnitId(workingUnitId);
 
@@ -184,13 +182,13 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 			throw new UnauthorizationException();
 		}
 		
-		
 		List<WorkingUnit> listWor = workingUnitPersistence.findByF_childs_unit(workingUnit.getGroupId(), workingUnit.getTreeIndex());
 		
-		if (Validator.isNotNull(listWor) && listWor.size() > 0) {
+		//It's own tree index and it's childs
+		if (Validator.isNotNull(listWor) && listWor.size() > 1) {
 			throw new UnauthorizationException();
 		}
-		
+		System.out.println("After check child wu");
 		try {
 
 			workingUnit = workingUnitPersistence.remove(workingUnitId);
