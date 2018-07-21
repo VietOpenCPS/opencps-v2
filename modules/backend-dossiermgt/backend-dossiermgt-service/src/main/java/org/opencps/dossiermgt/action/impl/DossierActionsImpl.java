@@ -2280,6 +2280,17 @@ public class DossierActionsImpl implements DossierActions {
 						stepCode, stepName, dueDate, 0l, payload, stepInstruction, 
 						state, eventStatus,
 						context);
+				
+				if (actionConfig != null) {
+					if (actionConfig.getRollbackable()) {
+						DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
+					}
+				}
+				else {
+					if (proAction.isRollbackable()) {
+						DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
+					}
+				}
 				//update dossierStatus
 				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
 						jsonDataStatusText.getString(curStatus), curSubStatus,
@@ -2702,6 +2713,9 @@ public class DossierActionsImpl implements DossierActions {
 						curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), 
 						DossierActionTerm.STATE_ALREADY_PROCESSED, (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING), 
 						context);				
+				if (actionConfig.getRollbackable()) {
+					DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
+				}
 			}
 			else {
 				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
@@ -2761,6 +2775,17 @@ public class DossierActionsImpl implements DossierActions {
 					state, eventStatus,
 					context);
 
+			if (actionConfig != null) {
+				if (actionConfig.getRollbackable()) {
+					DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
+				}
+			}
+			else {
+				if (processAction.isRollbackable()) {
+					DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
+				}
+			}
+			
 			// Add DossierActionUser
 
 			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
