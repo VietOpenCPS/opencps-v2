@@ -49,27 +49,28 @@ public class DossierUserActionsImpl implements DossierUserActions {
 	public void initDossierUser(long groupId, Dossier dossier) {
 		try {
 			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
-			
-			List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
-			for (ServiceProcessRole spr : listSprs) {
-				int mod = 0;
-				boolean moderator = spr.getModerator();
-				
-				if (moderator) {
-					mod = 1;
-				}
-				List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
-				for (User user : users) {
-					org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
-					
-					if (du != null) {
-						du.setModerator(mod);
-						du.setVisited(true);
+			if (serviceProcess != null) {
+				List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
+				for (ServiceProcessRole spr : listSprs) {
+					int mod = 0;
+//					boolean moderator = spr.getModerator();
+//					
+//					if (moderator) {
+//						mod = 1;
+//					}
+					List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
+					for (User user : users) {
+						org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
 						
-						DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
-					} else {						
-						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
-					}
+						if (du != null) {
+							du.setModerator(mod);
+							du.setVisited(true);
+							
+							DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
+						} else {						
+							DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+						}
+					}				
 				}				
 			}
 			

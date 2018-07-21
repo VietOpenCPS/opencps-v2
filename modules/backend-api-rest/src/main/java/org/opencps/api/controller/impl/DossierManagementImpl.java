@@ -59,6 +59,7 @@ import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
@@ -741,8 +742,20 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDossierTemplateNo(), groupId);
 
 			// Create dossierNote
+			ServiceProcess process = null;
+			boolean online = true;
+			if (option != null) {
+				long serviceProcessId = option.getServiceProcessId();
+				process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
+				// DOSSIER that was created in CLIENT is set ONLINE = false
+				if (process.getServerNo().trim().length() != 0) {
+					online = false;
+				}
+			}
 
-			ServiceProcess process = ServiceProcessLocalServiceUtil.getServiceProcess(option.getServiceProcessId());
+			if (process == null) {
+				throw new NotFoundException("Cant find process");
+			}
 
 			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
 				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
@@ -755,15 +768,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
-			boolean online = true;
-
-			// DOSSIER that was created in CLIENT is set ONLINE = false
-			if (process.getServerNo().trim().length() != 0) {
-				online = false;
-			}
-
 			String password = StringPool.BLANK;
-
 			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
 				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
 			}
@@ -774,16 +779,25 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			if (oldDossiers.size() > 0 && oldDossiers.get(0).getOriginality() == Integer.valueOf(input.getOriginality())) {
 				dossier = oldDossiers.get(0);
+				dossier.setApplicantName(input.getApplicantName());
+				dossier.setApplicantNote(input.getApplicantNote());
+				dossier.setApplicantIdNo(input.getApplicantIdNo());
+				dossier.setAddress(input.getAddress());
+				dossier.setContactEmail(input.getContactEmail());
+				dossier.setContactName(input.getContactName());
+				dossier.setContactTelNo(input.getContactTelNo());	
+				dossier.setDossierNo(input.getDossierNo());
+				dossier.setSubmitDate(new Date());
 			}
 			else {
-				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(),
-						serviceName, input.getGovAgencyCode(), govAgencyName, input.getApplicantName(),
-						input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
-						input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
-						input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
-						input.getContactEmail(), input.getDossierTemplateNo(), password, 0, StringPool.BLANK,
-						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, online, process.getDirectNotification(),
-						input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);				
+				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
+						input.getGovAgencyCode(), govAgencyName, input.getApplicantName(), input.getApplicantIdType(),
+						input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
+						cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
+						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
+						input.getDossierTemplateNo(), password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
+						Integer.valueOf(input.getOriginality()), serviceContext);
 			}
 
 			if (Validator.isNull(dossier)) {
@@ -820,10 +834,17 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 
 					dossier.setDueDate(dueDate);
+					dossier.setReceiveDate(now);
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
 				}
 				
-				DossierLocalServiceUtil.updateDossier(dossier);
+				if (Validator.isNotNull(input.getDossierNo())) {
+					dossier.setDossierNo(input.getDossierNo());
+				}
 			}
+			DossierLocalServiceUtil.updateDossier(dossier);
+
 			//Add to dossier user based on service process role
 			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
@@ -833,7 +854,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-//			_log.info(e);
+			_log.info(e);
 			return processException(e);
 		}
 
@@ -2186,7 +2207,18 @@ public class DossierManagementImpl implements DossierManagement {
 		if (dossier != null) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			if (dossierAction != null && dossierAction.isRollbackable()) {
-				
+				DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
+			
+				DossierAction previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getPreviousActionId());
+				if (previousAction != null) {
+					DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+					try {
+						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
+					} catch (PortalException e) {
+//						e.printStackTrace();
+						return processException(e);
+					}
+				}
 			}
 			return Response.status(200).entity(null).build();			
 		}

@@ -175,8 +175,9 @@ import javax.xml.bind.annotation.XmlType;
     "endorsementDate",
     "lockState",
     "statusReg",
-    "processBlock",
-    "processUnit"
+    "durationCount",
+    "durationUnit",
+    "sampleCount"
 })
 public class DossierDataModel {
 
@@ -254,25 +255,9 @@ public class DossierDataModel {
 	protected String endorsementDate;
 	protected String lockState;
 	protected String statusReg;
-
-	public int getProcessBlock() {
-		return processBlock;
-	}
-
-	public void setProcessBlock(int processBlock) {
-		this.processBlock = processBlock;
-	}
-
-	public int getProcessUnit() {
-		return processUnit;
-	}
-
-	public void setProcessUnit(int processUnit) {
-		this.processUnit = processUnit;
-	}
-
-	protected int processBlock;
-    protected int processUnit;
+	protected Double durationCount;
+	protected Double durationUnit;
+	protected Long sampleCount;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1876,33 +1861,28 @@ public class DossierDataModel {
 		this.certDate = certDate;
 	}
 
-    /**
-     * Gets the value of the data property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the data property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getCertNumber().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DossierDataModel }
-     * 
-     * 
-     */
-//	public List<CertNumberModel> getCertNumber() {
-//		if (certNumber == null) {
-//			certNumber = new ArrayList<CertNumberModel>();
-//        }
-//        return this.certNumber;
-//	}
+	public Double getDurationCount() {
+		return durationCount;
+	}
+
+	public void setDurationCount(Double durationCount) {
+		this.durationCount = durationCount;
+	}
+
+	public Double getDurationUnit() {
+		return durationUnit;
+	}
+
+	public void setDurationUnit(Double durationUnit) {
+		this.durationUnit = durationUnit;
+	}
+
+	public Long getSampleCount() {
+		return sampleCount;
+	}
+
+	public void setSampleCount(Long sampleCount) {
+		this.sampleCount = sampleCount;
+	}
 
 }

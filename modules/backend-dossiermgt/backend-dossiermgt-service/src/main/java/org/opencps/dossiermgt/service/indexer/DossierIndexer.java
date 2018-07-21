@@ -454,23 +454,26 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 //				document.addNumberSortable(DossierTerm.ASSIGNED, ConstantsTerm.NO_ASSINED);
 //			}
 			//LamTV_Add durationCount and durationUnit
-			try {
-				long groupId = object.getGroupId();
-				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId,
-						object.getServiceCode(), object.getGovAgencyCode());
-				ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
-						object.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
-				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
-						.fetchServiceProcess(processOption.getServiceProcessId());
-
-				double durationCount = serviceProcess.getDurationCount();
-				double durationUnit = serviceProcess.getDurationUnit();
-				document.addNumberSortable(DossierTerm.DURATION_COUNT, durationCount);
-				document.addNumberSortable(DossierTerm.DURATION_UNIT, durationUnit);
-			} catch (Exception e) {
-				document.addNumberSortable(DossierTerm.DURATION_COUNT, 0d);
-				document.addNumberSortable(DossierTerm.DURATION_UNIT, 0d);
-			}
+//			try {
+//				long groupId = object.getGroupId();
+//				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId,
+//						object.getServiceCode(), object.getGovAgencyCode());
+//				ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
+//						object.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
+//				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
+//						.fetchServiceProcess(processOption.getServiceProcessId());
+//
+//				double durationCount = serviceProcess.getDurationCount();
+//				double durationUnit = serviceProcess.getDurationUnit();
+//				document.addNumberSortable(DossierTerm.DURATION_COUNT, durationCount);
+//				document.addNumberSortable(DossierTerm.DURATION_UNIT, durationUnit);
+//			} catch (Exception e) {
+//				document.addNumberSortable(DossierTerm.DURATION_COUNT, 0d);
+//				document.addNumberSortable(DossierTerm.DURATION_UNIT, 0d);
+//			}
+			document.addNumberSortable(DossierTerm.DURATION_COUNT, object.getDurationCount());
+			document.addNumberSortable(DossierTerm.DURATION_UNIT, object.getDurationUnit());
+			document.addNumberSortable(DossierTerm.SAMPLE_COUNT, object.getSampleCount());
 		} catch (Exception e) {
 			_log.error(e);
 		}
