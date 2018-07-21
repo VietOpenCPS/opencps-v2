@@ -105,50 +105,50 @@ public class DossierMgtUtils {
 			}
 			if (preCondition.contains("service=")) {
 				String[] splitCodes = preCondition.split("=");
-				if (splitCodes.length == 1) {
-					result = result && checkServiceCode(splitCodes[0], dossier);
+				if (splitCodes.length == 2) {
+					result = result && checkServiceCode(splitCodes[1], dossier);
 				}			
 			}
 			if (preCondition.contains("agency=")) {
 				String[] splitAgencies = preCondition.split("=");
-				if (splitAgencies.length == 1) {
-					result = result && checkAgencyCode(splitAgencies[0], dossier);
+				if (splitAgencies.length == 2) {
+					result = result && checkAgencyCode(splitAgencies[1], dossier);
 				}							
 			}
 			if (preCondition.contains("template=")) {
 				String[] splitTemplates = preCondition.split("=");
-				if (splitTemplates.length == 1) {
-					result = result && checkTemplateCode(splitTemplates[0], dossier);
+				if (splitTemplates.length == 2) {
+					result = result && checkTemplateCode(splitTemplates[1], dossier);
 				}											
 			}
 			if (preCondition.contains("originality=")) {
 				String[] splitOriginalities = preCondition.split("=");
-				if (splitOriginalities.length == 1) {
-					result = result && checkOriginality(splitOriginalities[0], dossier);
+				if (splitOriginalities.length == 2) {
+					result = result && checkOriginality(splitOriginalities[1], dossier);
 				}															
 			}
 			if (preCondition.contains("stepdone=")) {
 				String[] splitSteps = preCondition.split("=");
-				if (splitSteps.length == 1) {
-					result = result && checkStepDone(splitSteps[0], dossier);
+				if (splitSteps.length == 2) {
+					result = result && checkStepDone(splitSteps[1], dossier);
 				}																			
 			}
 			if (preCondition.contains("stepnotdone=")) {
 				String[] splitSteps = preCondition.split("=");
-				if (splitSteps.length == 1) {
-					result = result && checkStepNotDone(splitSteps[0], dossier);
+				if (splitSteps.length == 2) {
+					result = result && checkStepNotDone(splitSteps[1], dossier);
 				}																			
 			}
-			if (preCondition.contains("#tenbien@tphoso=")) {
+			if (preCondition.contains("#")) {
 				String[] splitBiens = preCondition.split("=");
-				if (splitBiens.length == 1) {
-					result = result && checkBien("#tenbien@tphoso", splitBiens[0], dossier);
+				if (splitBiens.length == 2) {
+					result = result && checkBien(splitBiens[0], splitBiens[1], dossier);
 				}																							
 			}
 			if (preCondition.contains("viapostal=")) {
 				String[] splitViaPostals = preCondition.split("=");
-				if (splitViaPostals.length == 1) {
-					result = result && checkViaPostal(splitViaPostals[0], dossier);
+				if (splitViaPostals.length == 2) {
+					result = result && checkViaPostal(splitViaPostals[1], dossier);
 				}																							
 			}
 		}
@@ -206,7 +206,7 @@ public class DossierMgtUtils {
 		JSONObject resultObj;
 		try {
 			resultObj = JSONFactoryUtil.createJSONObject(dataBinding);
-			if (resultObj.has(key) && resultObj.getString(key).equals(value)) {
+			if (resultObj.has("key") && resultObj.getString("key").equals(value)) {
 				return true;
 			}
 			else {
