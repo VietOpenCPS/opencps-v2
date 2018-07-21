@@ -301,9 +301,15 @@ public class DossierUtils {
 //			model.setDelegateTelNo(DossierTerm.getDelegateTelNo());
 //			model.setDelegateWardCode(DossierTerm.getDelegateWardCode());
 //			model.setDelegateWardName(DossierTerm.getDelegateWardName());
-			model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));
-			model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));
-			model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));
+			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
+				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+			}
+			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
+				model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));				
+			}
+			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
+				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+			}
 
 			ouputs.add(model);
 		}
