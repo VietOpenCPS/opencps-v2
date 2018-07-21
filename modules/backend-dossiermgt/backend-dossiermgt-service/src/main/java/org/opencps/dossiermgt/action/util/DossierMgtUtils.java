@@ -18,6 +18,10 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -135,6 +139,12 @@ public class DossierMgtUtils {
 					result = result && checkStepNotDone(splitSteps[0], dossier);
 				}																			
 			}
+			if (preCondition.contains("#tenbien@tphoso=")) {
+				String[] splitBiens = preCondition.split("=");
+				if (splitBiens.length == 1) {
+					result = result && checkBien("#tenbien@tphoso", splitBiens[0], dossier);
+				}																							
+			}
 		}
 
 		return result;
@@ -179,6 +189,28 @@ public class DossierMgtUtils {
 
 	private static boolean checkStepNotDone(String stepCode, Dossier dossier) {
 		return !checkStepDone(stepCode, dossier);
+	}
+	
+	private static boolean checkBien(String key, String value, Dossier dossier) {
+		ServiceContext context = new ServiceContext();
+		context.setUserId(dossier.getUserId());
+		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
+		jsonObj.put("key", key);
+		String dataBinding = AutoFillFormData.sampleDataBinding(jsonObj.toJSONString(), dossier.getDossierId(), context);
+		JSONObject resultObj;
+		try {
+			resultObj = JSONFactoryUtil.createJSONObject(dataBinding);
+			if (resultObj.has(key) && resultObj.getString(key).equals(value)) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		} catch (JSONException e) {
+//			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 	private static boolean checkOriginality(String originality, Dossier dossier) {
