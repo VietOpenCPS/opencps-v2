@@ -930,6 +930,7 @@
 
 		<column name="processStepId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
+		<column name="roleCode" type="String" />
 		<column name="roleName" type="String" />
 		<column name="moderator" type="boolean" />
 		<column name="condition" type="String" />
@@ -940,6 +941,9 @@
 		<finder return-type="ProcessStepRole" name="F_STEP_ROLE">
 			<finder-column name="processStepId" />
 			<finder-column name="roleId" />
+		</finder>
+		<finder return-type="ProcessStepRole" name="F_CODE">
+			<finder-column name="roleCode" />
 		</finder>
 
 	</entity>
