@@ -1772,6 +1772,7 @@
 		</finder>
 
 		<finder return-type="Collection" name="F_MS_SS">
+			<finder-column name="groupId" />
 			<finder-column name="dossierStatus" />
 			<finder-column name="dossierSubStatus" />
 		</finder>

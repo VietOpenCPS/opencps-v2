@@ -210,7 +210,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 		return stepConfigPersistence.findByF_GID(groupId);
 	}
 	
-	public List<StepConfig> getStepByMainStatusAndSubStatus(String mainStatus, String subStatus) {
-		return stepConfigPersistence.findByF_MS_SS(mainStatus, subStatus);
+	public List<StepConfig> getStepByMainStatusAndSubStatus(long groupId, String mainStatus, String subStatus) {
+		return stepConfigPersistence.findByF_MS_SS(groupId, mainStatus, subStatus);
 	}
 }
