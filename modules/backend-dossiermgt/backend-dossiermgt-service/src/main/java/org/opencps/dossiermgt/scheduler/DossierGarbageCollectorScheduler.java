@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.scheduler;
 
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -36,7 +35,7 @@ public class DossierGarbageCollectorScheduler extends BaseSchedulerEntryMessageL
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(),
-				1, TimeUnit.MINUTE));
+				30, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
