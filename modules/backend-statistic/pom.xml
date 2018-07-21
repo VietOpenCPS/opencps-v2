@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.opencps.statistic</groupId>
+    <artifactId>opencps-dossier-statistic</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+		<module>opencps-statistic-rest</module>
+        <module>opencps-statistic-service</module>
+        <module>opencps-statistic-common</module>
+    </modules>
+    
+    <profiles>
+    	<profile>
+    		<id>default</id>
+			<properties>
+			
+				<!-- jenkins configuration -->
+				<build.scm.revision>${jenkins.build.scm.revision}</build.scm.revision>
+				<build.number>${jenkins.build.number}</build.number>
+				<build.id>${jenkins.build.id}</build.id>
+				<build.job.name>${jenkins.build.job.name}</build.job.name>
+				<maven.test.skip>false</maven.test.skip>
+			</properties>
+    	</profile>
+    </profiles>
+
+</project>
