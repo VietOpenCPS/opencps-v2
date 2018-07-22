@@ -2,7 +2,7 @@
 
 
 
-<link type="text/css" href="/o/front-end-super-gate/css/app.12f50e6b4802f94d6a04d4b49ba33a90.css" rel="stylesheet">
+<link type="text/css" href="/o/front-end-super-gate/css/app.44c4276fa05a7233e758b44ee79a9682.css" rel="stylesheet">
 
 <div id="app"></div>
 
