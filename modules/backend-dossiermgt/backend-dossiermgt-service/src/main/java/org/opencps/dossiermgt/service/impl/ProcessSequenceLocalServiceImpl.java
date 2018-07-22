@@ -134,4 +134,8 @@ public class ProcessSequenceLocalServiceImpl
 	public List<ProcessSequence> getByServiceProcess(long groupId, long serviceProcessId) {
 		return processSequencePersistence.findByF_GID_SID(groupId, serviceProcessId);
 	}
+
+	public ProcessSequence findBySID_SNO(long groupId, long serviceProcessId, String sequenceNo) {
+		return processSequencePersistence.fetchByF_GID_SID_SNO(groupId, serviceProcessId, sequenceNo);
+	}
 }

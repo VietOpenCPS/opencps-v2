@@ -17,6 +17,7 @@ import org.opencps.api.dossieraction.model.DossierPayLoadModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -222,7 +223,8 @@ public class DossierActionUtils {
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
 				model.seteSignature(processAction.getESignature());
 				model.setSignatureType(processAction.getSignatureType());
-				//model.setUserNote(processAction.getUserNote());
+				model.setCheckInput(processAction.getCheckInput());
+				model.setConfigNote(processAction.getConfigNote());
 				ActionConfig act = ActionConfigLocalServiceUtil.getByCode(processAction.getGroupId(),
 						processAction.getActionCode());
 				if (act != null) {
@@ -284,18 +286,19 @@ public class DossierActionUtils {
 				for (int j = 0; j < createFiles.length(); j++) {
 					JSONObject createFile = createFiles.getJSONObject(j);
 					DossierActionNextActioncreateFiles dossierActionNextActioncreateFile = new DossierActionNextActioncreateFiles();
-					dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong("dossierPartId"));
-					dossierActionNextActioncreateFile.setEform(createFile.getBoolean("eform"));
-					dossierActionNextActioncreateFile.setFormData(createFile.getString("formData"));
-					dossierActionNextActioncreateFile.setFormScript(createFile.getString("formScript"));
-					dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean("multiple"));
-					dossierActionNextActioncreateFile.setPartName(createFile.getString("partName"));
-					dossierActionNextActioncreateFile.setPartNo(createFile.getString("partNo"));
-					dossierActionNextActioncreateFile.setPartTip(createFile.getString("partTip"));
+					dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong(DossierPartTerm.DOSSIERPART_ID));
+					dossierActionNextActioncreateFile.setEform(createFile.getBoolean(DossierPartTerm.EFORM));
+					dossierActionNextActioncreateFile.setFormData(createFile.getString(DossierPartTerm.FORM_DATA));
+					dossierActionNextActioncreateFile.setFormScript(createFile.getString(DossierPartTerm.FORM_SCRIPT));
+					dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean(DossierPartTerm.MULTIPLE));
+					dossierActionNextActioncreateFile.setPartName(createFile.getString(DossierPartTerm.PART_NAME));
+					dossierActionNextActioncreateFile.setPartNo(createFile.getString(DossierPartTerm.PART_NO));
+					dossierActionNextActioncreateFile.setPartType(createFile.getInt(DossierPartTerm.PART_TYPE));
+					dossierActionNextActioncreateFile.setPartTip(createFile.getString(DossierPartTerm.PART_TIP));
 					dossierActionNextActioncreateFile.setTemplateFileNo(createFile.getString(DossierFileTerm.FILE_TEMPLATE_NO));
-					dossierActionNextActioncreateFile.setReferenceUid(createFile.getString("referenceUid"));
-					dossierActionNextActioncreateFile.setCounter(createFile.getInt("counter"));
-					dossierActionNextActioncreateFile.setDossierFileId(createFile.getLong("dossierFileId"));
+					dossierActionNextActioncreateFile.setReferenceUid(createFile.getString(DossierPartTerm.REFERENCE_UID));
+					dossierActionNextActioncreateFile.setCounter(createFile.getInt(DossierPartTerm.COUNTER));
+					dossierActionNextActioncreateFile.setDossierFileId(createFile.getLong(DossierPartTerm.DOSSIER_FILE_ID));
 					outputCreeateFiles.add(dossierActionNextActioncreateFile);
 				}
 				model.getCreateFiles().addAll(outputCreeateFiles);

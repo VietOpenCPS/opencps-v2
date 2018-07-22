@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
-import org.opencps.api.dossier.model.DossierSearchDetailModel;
-import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -33,7 +31,6 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -55,6 +52,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierUtils {
+
+	private static final long VALUE_CONVERT_TIMESTAMP = 1000 * 60 * 60 * 24;
 
 	public static List<DossierDataModel> mappingForGetList(List<Document> docs) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
@@ -111,6 +110,29 @@ public class DossierUtils {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+//			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+//				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			} else {
+//			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+//			}
+			//Process OverDue
+			Date now = new Date();
+			long dateNowTimeStamp = now.getTime();
+			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
+			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+				if (subTimeStamp > 0) {
+					double dueCount = (double) subTimeStamp / VALUE_CONVERT_TIMESTAMP;
+					double subDueCount = (double) Math.round(dueCount * 100) / 100;
+					double overDue = (double) Math.ceil(subDueCount * 4) / 4;
+					model.setStepOverdue(String.valueOf(overDue));
+				} else {
+					model.setStepOverdue(StringPool.BLANK);
+				}
+			} else {
+				model.setStepOverdue(StringPool.BLANK);
+			}
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
@@ -118,7 +140,7 @@ public class DossierUtils {
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
-			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
+//			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
 			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
@@ -129,7 +151,7 @@ public class DossierUtils {
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
-			model.setStepOverdue(doc.get(DossierTerm.STEP_OVER_DUE));
+//			model.setStepOverdue(doc.get(DossierTerm.STEP_OVER_DUE));
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
@@ -264,8 +286,25 @@ public class DossierUtils {
 			model.setLastActionNote(doc.get(DossierTerm.LAST_ACTION_NOTE));
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
-			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
-			model.setStepOverdue(doc.get(DossierTerm.STEP_OVER_DUE));
+//			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
+			//Process OverDue
+			Date now = new Date();
+			long dateNowTimeStamp = now.getTime();
+			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
+			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+				if (subTimeStamp > 0) {
+					double dueCount = (double) subTimeStamp / VALUE_CONVERT_TIMESTAMP;
+					double subDueCount = (double) Math.round(dueCount * 100) / 100;
+					double overDue = (double) Math.ceil(subDueCount * 4) / 4;
+					model.setStepOverdue(String.valueOf(overDue));
+				} else {
+					model.setStepOverdue(StringPool.BLANK);
+				}
+			} else {
+				model.setStepOverdue(StringPool.BLANK);
+			}
+//			model.setStepOverdue(doc.get(DossierTerm.STEP_OVER_DUE));
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
@@ -301,9 +340,15 @@ public class DossierUtils {
 //			model.setDelegateTelNo(DossierTerm.getDelegateTelNo());
 //			model.setDelegateWardCode(DossierTerm.getDelegateWardCode());
 //			model.setDelegateWardName(DossierTerm.getDelegateWardName());
-			model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));
-			model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));
-			model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));
+			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
+				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+			}
+			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
+				model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));				
+			}
+			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
+				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+			}
 
 			ouputs.add(model);
 		}

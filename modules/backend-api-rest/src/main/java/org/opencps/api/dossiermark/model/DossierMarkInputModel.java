@@ -38,64 +38,36 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+    "fileMark",
     "fileCheck",
-    "fileType"
+    "fileComment"
 })
 @XmlRootElement(name = "DossierMarkInputModel")
 public class DossierMarkInputModel {
+	@FormParam(value = "fileMark")
+	protected Integer fileMark;
 	@FormParam(value = "fileCheck")
-	@DefaultValue("false")
-    protected Boolean fileCheck;
-	@FormParam(value = "fileType")
-	@DefaultValue("0")
-    protected Integer fileType;
+	protected Integer fileCheck;
+	@FormParam(value = "fileComment")
+	protected String fileComment;
 
-    /**
-     * Gets the value of the fileCheck property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFileCheck() {
-        return fileCheck;
-    }
-
-    /**
-     * Sets the value of the fileCheck property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFileCheck(Boolean value) {
-        this.fileCheck = value;
-    }
-
-    /**
-     * Gets the value of the fileType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getFileType() {
-        return fileType;
-    }
-
-    /**
-     * Sets the value of the fileType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setFileType(Integer value) {
-        this.fileType = value;
-    }
+	public Integer getFileMark() {
+		return fileMark;
+	}
+	public void setFileMark(Integer fileMark) {
+		this.fileMark = fileMark;
+	}
+	public Integer getFileCheck() {
+		return fileCheck;
+	}
+	public void setFileCheck(Integer fileCheck) {
+		this.fileCheck = fileCheck;
+	}
+	public String getFileComment() {
+		return fileComment;
+	}
+	public void setFileComment(String fileComment) {
+		this.fileComment = fileComment;
+	}
 
 }

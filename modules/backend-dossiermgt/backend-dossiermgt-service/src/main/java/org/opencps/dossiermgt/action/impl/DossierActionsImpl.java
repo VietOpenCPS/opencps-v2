@@ -46,6 +46,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -65,6 +66,7 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
@@ -1289,7 +1291,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-							if (!processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
+							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
 								data.put(ProcessActionTerm.ENABLE, 0);
@@ -1457,6 +1459,19 @@ public class DossierActionsImpl implements DossierActions {
 								createFile.put(DossierPartTerm.PART_TIP, dossierPart.getPartTip());
 								createFile.put(DossierPartTerm.MULTIPLE, dossierPart.getMultiple());
 								createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
+								createFile.put(DossierPartTerm.PART_TYPE, dossierPart.getPartType());
+								//Get dossierMark
+								DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId,
+										dossierId, dossierPart.getPartNo());
+								if (dossierMark != null) {
+									createFile.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+									createFile.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+									createFile.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
+								} else {
+									createFile.put(DossierPartTerm.FILE_MARK, 0);
+									createFile.put(DossierPartTerm.FILE_MARK, 0);
+									createFile.put(DossierPartTerm.FILE_COMMENT, StringPool.BLANK);
+								}
 
 								ServiceContext context = new ServiceContext();
 								context.setScopeGroupId(dossierPart.getGroupId());
@@ -2193,6 +2208,11 @@ public class DossierActionsImpl implements DossierActions {
 		ActionConfig actionConfig = null;
 		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 		
+		DossierAction previousAction = null;
+		if (dossier.getDossierActionId() != 0) {
+			previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		}
+			
 		if (option != null && proAction != null) {
 			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
@@ -2264,12 +2284,15 @@ public class DossierActionsImpl implements DossierActions {
 				String stepCode = curStep.getStepCode();
 				String stepName = curStep.getStepName();
 				String stepInstruction = curStep.getStepInstruction();
+				String sequenceNo = curStep.getSequenceNo();
+				
 				_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
 				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
 
-				String fromStepCode = curStep != null ? curStep.getStepCode() : StringPool.BLANK;
-				String fromStepName = curStep != null ? curStep.getStepName() : StringPool.BLANK;
-				String fromSequenceNo = curStep != null ? curStep.getSequenceNo() : StringPool.BLANK;
+				String fromStepCode = previousAction != null ? previousAction.getStepCode() : StringPool.BLANK;
+				String fromStepName = previousAction != null ? previousAction.getStepName() : StringPool.BLANK;
+				String fromSequenceNo = previousAction != null ? previousAction.getSequenceNo() : StringPool.BLANK;
+				
 				int state = DossierActionTerm.STATE_ALREADY_PROCESSED;
 				int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
 
@@ -2277,7 +2300,9 @@ public class DossierActionsImpl implements DossierActions {
 						serviceProcessId, 0l, 
 						fromStepCode, fromStepName, fromSequenceNo,
 						actionCode, actionUser, actionName, actionNote, actionOverdue,
-						stepCode, stepName, dueDate, 0l, payload, stepInstruction, 
+						stepCode, stepName, 
+						sequenceNo,
+						dueDate, 0l, payload, stepInstruction, 
 						state, eventStatus,
 						context);
 				
@@ -2692,6 +2717,11 @@ public class DossierActionsImpl implements DossierActions {
 
 		String payload = buildPayload(groupId, dossierId, referenceUid, processActionId);
 		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+	
+		DossierAction previousAction = null;
+		if (dossier.getDossierActionId() != 0) {
+			previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		}
 		
 		// In the special action (actionCode = 1100, save DOSSIER in SERVER)
 		if (actionCode.contentEquals(SPECIAL_ACTION)
@@ -2705,12 +2735,18 @@ public class DossierActionsImpl implements DossierActions {
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, DossierStatusConstants.NEW);
 
 			if (curStep != null && actionConfig != null) {
+				String fromStepCode = previousAction != null ? previousAction.getStepCode() : StringPool.BLANK;
+				String fromStepName = previousAction != null ? previousAction.getStepName() : StringPool.BLANK;
+				String fromSequenceNo = previousAction != null ? previousAction.getSequenceNo() : StringPool.BLANK;
+				
 				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
 						0l, 
-						curStep.getStepCode(), curStep.getStepName(), curStep.getSequenceNo(),
+						fromStepCode, fromStepName, fromSequenceNo,
 						actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 						processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
-						curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), 
+						curStep.getStepName(), 
+						curStep.getSequenceNo(),
+						dueDate, 0l, payload, curStep.getStepInstruction(), 
 						DossierActionTerm.STATE_ALREADY_PROCESSED, (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING), 
 						context);				
 				if (actionConfig.getRollbackable()) {
@@ -2723,7 +2759,9 @@ public class DossierActionsImpl implements DossierActions {
 						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 						actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 						processAction.getSyncActionCode(), false, processAction.getRollbackable(), curStep.getStepCode(),
-						curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(), 
+						curStep.getStepName(), 
+						curStep.getSequenceNo(),
+						dueDate, 0l, payload, curStep.getStepInstruction(), 
 						DossierActionTerm.STATE_ALREADY_PROCESSED, DossierActionTerm.EVENT_STATUS_NOT_CREATED, 						
 						context);				
 			}
@@ -2761,9 +2799,11 @@ public class DossierActionsImpl implements DossierActions {
 
 			// update reference dossier
 			DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
-			String fromStepCode = curStep != null ? curStep.getStepCode() : StringPool.BLANK;
-			String fromStepName = curStep != null ? curStep.getStepName() : StringPool.BLANK;
-			String fromSequenceNo = curStep != null ? curStep.getSequenceNo() : StringPool.BLANK;
+			
+			String fromStepCode = previousAction != null ? previousAction.getStepCode() : StringPool.BLANK;
+			String fromStepName = previousAction != null ? previousAction.getStepName() : StringPool.BLANK;
+			String fromSequenceNo = previousAction != null ? previousAction.getSequenceNo() : StringPool.BLANK;
+
 			int state = DossierActionTerm.STATE_ALREADY_PROCESSED;
 			int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
 			dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId, serviceProcessId,
@@ -2771,7 +2811,9 @@ public class DossierActionsImpl implements DossierActions {
 					fromStepCode, fromStepName, fromSequenceNo,
 					actionCode, actionUser, processAction.getActionName(), actionNote, actionOverdue,
 					processAction.getSyncActionCode(), hasDossierSync, processAction.getRollbackable(),
-					curStep.getStepCode(), curStep.getStepName(), dueDate, 0l, payload, curStep.getStepInstruction(),
+					curStep.getStepCode(), curStep.getStepName(), 
+					curStep.getSequenceNo(),
+					dueDate, 0l, payload, curStep.getStepInstruction(),
 					state, eventStatus,
 					context);
 
@@ -4182,21 +4224,21 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					return result;
 			}
 		}
-		//
-		int originality = dossier.getOriginality();
-		ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-		if (actConfig != null) {
-			int syncType = actConfig.getSyncType();
-			if (originality == 1 && syncType == 2) {
-				result = true;
-				return result;
-			} else if (syncType == 1) {
-				if (originality == 2 || originality == 3) {
-					result = true;
-					return result;
-				}
-			}
-		}
+
+//		int originality = dossier.getOriginality();
+//		ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+//		if (actConfig != null) {
+//			int syncType = actConfig.getSyncType();
+//			if (originality == 1 && syncType == 2) {
+//				result = true;
+//				return result;
+//			} else if (syncType == 1) {
+//				if (originality == 2 || originality == 3) {
+//					result = true;
+//					return result;
+//				}
+//			}
+//		}
 		
 		return result;
 	}

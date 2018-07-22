@@ -7,15 +7,21 @@ import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -57,50 +63,182 @@ public class DossierMgtUtils {
 			preCondition.trim();
 			
 			switch (preCondition) {
-			case "payok":
-				result = result && checkPayOk(dossier);
-				break;
-
-			case "cancelling":
-				result = result && checkCancelling(dossier);
-				break;
-
-			case "reject_cancelling":
-				result = result && checkCancelling(dossier);
-				break;
-
-			case "correcting":
-				result = result && checkCorrecting(dossier);
-				break;
-
-			case "reject_correcting":
-				result = result && checkCorrecting(dossier);
-				break;
-
-			case "submitting":
-				result = result && checkSubmitting(dossier);
-				break;
-
-			case "reject_submitting":
-				result = result && checkSubmitting(dossier);
-				break;
-
-			case "waiting":
-				result = result && checkWaiting(preCondition, dossier);
-				break;
-				
-			case "online=true":
-				result = result && checkDossierOnline(dossier);
-				break;
-			case "online=false":
-				result = result && checkDossierOnegate(dossier);
-				break;
-			default:
-				break;
+				case "payok":
+					result = result && checkPayOk(dossier);
+					break;					
+				case "cancelling":
+					result = result && checkCancelling(dossier);
+					break;
+	
+				case "reject_cancelling":
+					result = result && checkCancelling(dossier);
+					break;
+	
+				case "correcting":
+					result = result && checkCorrecting(dossier);
+					break;
+	
+				case "reject_correcting":
+					result = result && checkCorrecting(dossier);
+					break;
+	
+				case "submitting":
+					result = result && checkSubmitting(dossier);
+					break;
+	
+				case "reject_submitting":
+					result = result && checkSubmitting(dossier);
+					break;
+	
+				case "waiting":
+					result = result && checkWaiting(preCondition, dossier);
+					break;
+					
+				case "online=true":
+					result = result && checkDossierOnline(dossier);
+					break;
+				case "online=false":
+					result = result && checkDossierOnegate(dossier);
+					break;
+				default:
+					break;
+			}
+			if (preCondition.contains("service=")) {
+				String[] splitCodes = preCondition.split("=");
+				if (splitCodes.length == 2) {
+					result = result && checkServiceCode(splitCodes[1], dossier);
+				}			
+			}
+			if (preCondition.contains("agency=")) {
+				String[] splitAgencies = preCondition.split("=");
+				if (splitAgencies.length == 2) {
+					result = result && checkAgencyCode(splitAgencies[1], dossier);
+				}							
+			}
+			if (preCondition.contains("template=")) {
+				String[] splitTemplates = preCondition.split("=");
+				if (splitTemplates.length == 2) {
+					result = result && checkTemplateCode(splitTemplates[1], dossier);
+				}											
+			}
+			if (preCondition.contains("originality=")) {
+				String[] splitOriginalities = preCondition.split("=");
+				if (splitOriginalities.length == 2) {
+					result = result && checkOriginality(splitOriginalities[1], dossier);
+				}															
+			}
+			if (preCondition.contains("stepdone=")) {
+				String[] splitSteps = preCondition.split("=");
+				if (splitSteps.length == 2) {
+					result = result && checkStepDone(splitSteps[1], dossier);
+				}																			
+			}
+			if (preCondition.contains("stepnotdone=")) {
+				String[] splitSteps = preCondition.split("=");
+				if (splitSteps.length == 2) {
+					result = result && checkStepNotDone(splitSteps[1], dossier);
+				}																			
+			}
+			if (preCondition.contains("#")) {
+				String[] splitBiens = preCondition.split("=");
+				if (splitBiens.length == 2) {
+					result = result && checkBien(splitBiens[0], splitBiens[1], dossier);
+				}																							
+			}
+			if (preCondition.contains("viapostal=")) {
+				String[] splitViaPostals = preCondition.split("=");
+				if (splitViaPostals.length == 2) {
+					result = result && checkViaPostal(splitViaPostals[1], dossier);
+				}																							
 			}
 		}
 
 		return result;
+	}
+	
+	private static boolean checkServiceCode(String serviceCode, Dossier dossier) {
+		if (serviceCode.equalsIgnoreCase(dossier.getServiceCode())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private static boolean checkAgencyCode(String agencyCode, Dossier dossier) {
+		if (agencyCode.equalsIgnoreCase(dossier.getGovAgencyCode())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private static boolean checkTemplateCode(String templateCode, Dossier dossier) {
+		if (templateCode.equalsIgnoreCase(dossier.getDossierTemplateNo())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private static boolean checkStepDone(String stepCode, Dossier dossier) {
+		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
+		if (lstDaus.size() > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private static boolean checkStepNotDone(String stepCode, Dossier dossier) {
+		return !checkStepDone(stepCode, dossier);
+	}
+	
+	private static boolean checkBien(String key, String value, Dossier dossier) {
+		ServiceContext context = new ServiceContext();
+		context.setUserId(dossier.getUserId());
+		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
+		jsonObj.put("key", key);
+		String dataBinding = AutoFillFormData.sampleDataBinding(jsonObj.toJSONString(), dossier.getDossierId(), context);
+		JSONObject resultObj;
+		try {
+			resultObj = JSONFactoryUtil.createJSONObject(dataBinding);
+			if (resultObj.has("key") && resultObj.getString("key").equals(value)) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		} catch (JSONException e) {
+//			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	private static boolean checkOriginality(String originality, Dossier dossier) {
+		int o = Integer.valueOf(originality);
+		
+		if (o == dossier.getOriginality()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private static boolean checkViaPostal(String viaPostal, Dossier dossier) {
+		int viaPostalInt = Integer.valueOf(viaPostal);
+		
+		if (viaPostalInt == dossier.getViaPostal()) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	private static boolean checkDossierOnline(Dossier dossier) {

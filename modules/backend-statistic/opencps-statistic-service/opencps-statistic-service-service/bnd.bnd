@@ -1,0 +1,7 @@
+Bundle-Name: opencps-statistic-service-service
+Bundle-SymbolicName: org.opencps.statistic.service
+Bundle-Version: 1.0.0-SNAPSHOT
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+-plugin.service: com.liferay.ant.bnd.service.ServiceAnalyzerPlugin
+-plugin.spring: com.liferay.ant.bnd.spring.SpringDependencyAnalyzerPlugin

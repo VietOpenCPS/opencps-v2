@@ -83,7 +83,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			String fromStepCode, String fromStepName, String fromSequenceNo,
 			String actionCode, String actionUser, String actionName, String actionNote,
 			int actionOverdue, String syncActionCode, boolean pending, boolean rollbackable, String stepCode,
-			String stepName, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			String stepName, 
+			String sequenceNo,
+			Date dueDate, long nextActionId, String payload, String stepInstruction,
 			int state, int eventStatus,
 			ServiceContext context) throws PortalException {
 
@@ -124,7 +126,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setPreviousActionId(previousActionId);
 			object.setFromStepCode(fromStepCode);
 			object.setFromStepName(fromStepName);
-			object.setSequenceNo(fromSequenceNo);
+			object.setFromSequenceNo(fromSequenceNo);
+			object.setSequenceNo(sequenceNo);
 			object.setActionCode(actionCode);
 			object.setActionUser(actionUser);
 			object.setActionName(actionName);
@@ -172,7 +175,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			long serviceProcessId, long previousActionId, 
 			String fromStepCode, String fromStepName, String fromSequenceNo,	
 			String actionCode, String actionUser, String actionName, String actionNote, int actionOverdue,
-			String stepCode, String stepName, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			String stepCode, String stepName, 
+			String sequenceNo,
+			Date dueDate, long nextActionId, String payload, String stepInstruction,
 			int state, int eventStatus,
 			ServiceContext context) throws PortalException {
 
@@ -205,7 +210,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setPreviousActionId(previousActionId);
 			object.setFromStepCode(fromStepCode);
 			object.setFromStepName(fromStepName);
-			object.setSequenceNo(fromSequenceNo);
+			object.setFromSequenceNo(fromSequenceNo);
+			object.setSequenceNo(sequenceNo);
 			object.setActionCode(actionCode);
 			object.setActionUser(actionUser);
 			object.setActionName(actionName);
