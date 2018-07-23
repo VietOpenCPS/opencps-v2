@@ -121,12 +121,12 @@ public class DossierUtils {
 				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
 			_log.info("DUE_DATE: "+doc.get(DossierTerm.DUE_DATE));
-			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
-				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
-				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
-			} else {
-				model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			}
+//			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
+//				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			} else {
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+//			}
 			//Process OverDue
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
@@ -353,12 +353,12 @@ public class DossierUtils {
 			} else {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
-			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
-				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
-				model.setReceiveDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
-			} else {
-				model.setReceiveDate(doc.get(DossierTerm.DUE_DATE));
-			}
+//			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
+//				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				model.setReceiveDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			} else {
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+//			}
 			if (Validator.isNotNull(doc.get(DossierTerm.FINISH_DATE))) {
 				Date finishDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.FINISH_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(finishDate, APIDateTimeUtils._NORMAL_PARTTERN));
