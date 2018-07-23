@@ -3401,7 +3401,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(it)) {
 				jsonData.put(curStatus, it.getItemName());
 				if (Validator.isNotNull(curSubStatus)) {
-					DictItem dItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(curStatus, dc.getPrimaryKey(),
+					DictItem dItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(curSubStatus, dc.getPrimaryKey(),
 							groupId);
 					if (Validator.isNotNull(dItem)) {
 						jsonData.put(curSubStatus, dItem.getItemName());
