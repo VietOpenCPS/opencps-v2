@@ -1821,7 +1821,8 @@ public class DossierActionsImpl implements DossierActions {
 
 				JSONArray result = JSONFactoryUtil.createJSONArray();
 				if (dossierAction != null) {
-					String actionCode = dossierAction.getActionCode();
+					String actionCode = params.containsKey(DossierActionTerm.ACTION_CODE) ? (String)params.get(DossierActionTerm.ACTION_CODE) : StringPool.BLANK;
+					
 					if (Validator.isNotNull(actionCode)) {
 						ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 						if (actConfig != null) {
@@ -1829,12 +1830,15 @@ public class DossierActionsImpl implements DossierActions {
 							if (extraForm) {
 								String formConfig = actConfig.getFormConfig();
 								_log.info("formConfig: " + formConfig);
-								String sampleData = actConfig.getSampleData();
+								String sampleData = Validator.isNotNull(actConfig.getSampleData()) ? actConfig.getSampleData() : "{}";
 
 								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
 										serviceContext);
 								JSONObject formDataJson = JSONFactoryUtil.createJSONObject(formData);
-								JSONArray formConfigArr = JSONFactoryUtil.createJSONArray(formConfig);
+								JSONObject formConfigObj = JSONFactoryUtil.createJSONObject(formConfig);
+								
+								JSONArray formConfigArr = formConfigObj.getJSONArray("fields");
+								
 								_log.info("formConfigArr: " + formConfigArr);
 								if (formConfigArr != null && formConfigArr.length() > 0) {
 									int length = formConfigArr.length();
@@ -1854,6 +1858,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return null;
 	}
