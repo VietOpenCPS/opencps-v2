@@ -844,18 +844,21 @@ public class ProcessUpdateDBUtils {
 		// Add list file serviceFileTemplate
 		List<ProcessRole> processRoleList = processRoles.getProcessRole();
 		if (processRoleList != null && processRoleList.size() > 0 && flagProRole) {
-			long roleId = 0;
+			String roleCode = StringPool.BLANK;
 			String roleName = StringPool.BLANK;
 			boolean moderator = false;
 			String condition = StringPool.BLANK;
 			for (ProcessRole processRole : processRoleList) {
-				roleId = processRole.getRoleId();
+				roleCode = processRole.getRoleCode();
 				roleName = processRole.getRoleName();
 				moderator = processRole.isModerator();
 				condition = processRole.getCondition();
 				//
-				actionService.updateServiceProcessRoleDB(userId, groupId, serviceProcessId, roleId, roleName,
-						moderator, condition, serviceContext);
+				if (Validator.isNotNull(roleCode)) {
+					long roleId = actionService.getByRoleCode(groupId, roleCode);
+					actionService.updateServiceProcessRoleDB(userId, groupId, serviceProcessId, roleId, roleCode, roleName,
+							moderator, condition, serviceContext);
+				}
 			}
 		}
 	}
@@ -935,18 +938,21 @@ public class ProcessUpdateDBUtils {
 			ServiceContext serviceContext) {
 		List<StepRole> stepRoleList = stepRoles.getStepRole();
 		if (stepRoleList != null && stepRoleList.size() > 0) {
-			long roleId = 0;
+			String roleCode = StringPool.BLANK;
 			String roleName = StringPool.BLANK;
 			boolean moderator = false;
 			String condition = StringPool.BLANK;
 			for (StepRole stepRole : stepRoleList) {
-				roleId = stepRole.getRoleId();
+				roleCode = stepRole.getRoleCode();
 				roleName = stepRole.getRoleName();
 				moderator = stepRole.isModerator();
 				condition = stepRole.getCondition();
 				//
-				actionService.updateProcessStepRoleDB(userId, groupId, processStepId, roleId, roleName,
-						moderator, condition, serviceContext);
+				if (Validator.isNotNull(roleCode)) {
+					long roleId = actionService.getByRoleCode(groupId, roleCode);
+					actionService.updateProcessStepRoleDB(userId, groupId, processStepId, roleId, roleCode, roleName,
+							moderator, condition, serviceContext);
+				}
 			}
 		}
 	}

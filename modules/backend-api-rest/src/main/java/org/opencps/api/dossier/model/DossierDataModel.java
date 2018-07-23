@@ -8,9 +8,6 @@
 
 package org.opencps.api.dossier.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -177,7 +174,8 @@ import javax.xml.bind.annotation.XmlType;
     "statusReg",
     "durationCount",
     "durationUnit",
-    "sampleCount"
+    "sampleCount",
+    "assigned"
 })
 public class DossierDataModel {
 
@@ -258,6 +256,7 @@ public class DossierDataModel {
 	protected Double durationCount;
 	protected Double durationUnit;
 	protected Long sampleCount;
+	protected Integer assigned;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1883,6 +1882,14 @@ public class DossierDataModel {
 
 	public void setSampleCount(Long sampleCount) {
 		this.sampleCount = sampleCount;
+	}
+
+	public Integer getAssigned() {
+		return assigned;
+	}
+
+	public void setAssigned(Integer assigned) {
+		this.assigned = assigned;
 	}
 
 }

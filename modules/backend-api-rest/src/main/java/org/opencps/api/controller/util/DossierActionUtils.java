@@ -249,13 +249,14 @@ public class DossierActionUtils {
 				payment.setEditable(paymentFee.getBoolean("editable"));
 			}
 
-			List<DossierActionNextActiontoUser> outputUsers = null;
+			List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 			DossierActionNextActiontoUser modelUser = null;
 			if (lstUser != null && lstUser.size() > 0) {
-				outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 				boolean moderator = false;
 				int assigned = 0;
-				for (User user : lstUser) {
+				int lengthUser = lstUser.size();
+				for (int i = 0; i < lengthUser; i++) {
+					User user = lstUser.get(i);
 					modelUser = new DossierActionNextActiontoUser();
 					Map<String, Object> attr = user.getModelAttributes();
 					long userId = GetterUtil.getLong(user.getUserId());
@@ -278,7 +279,7 @@ public class DossierActionUtils {
 					outputUsers.add(modelUser);
 				}
 			}
-			model.getToUsers().addAll(outputUsers);
+			model.setToUsers(outputUsers);
 
 			List<DossierActionNextActioncreateFiles> outputCreeateFiles = null;
 			if (createFiles != null && createFiles.length() > 0) {

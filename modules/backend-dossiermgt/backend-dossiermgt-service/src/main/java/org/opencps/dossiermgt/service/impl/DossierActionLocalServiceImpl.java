@@ -213,7 +213,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setFromSequenceNo(fromSequenceNo);
 			object.setSequenceNo(sequenceNo);
 			object.setActionCode(actionCode);
-			object.setActionUser(actionUser);
+			if (Validator.isNotNull(actionUser)) {
+				object.setActionUser(actionUser);
+			} else {
+				object.setActionUser(fullName);
+			}
 			object.setActionName(actionName);
 			object.setActionNote(actionNote);
 			object.setActionOverdue(actionOverdue);

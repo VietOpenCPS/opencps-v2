@@ -119,8 +119,8 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 
 	}
 
-	public ProcessStepRole updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName,
-			boolean moderator, String condition, ServiceContext serviceContext) {
+	public ProcessStepRole updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId,
+			String roleCode, String roleName, boolean moderator, String condition, ServiceContext serviceContext) {
 
 		ProcessStepRolePK pk = new ProcessStepRolePK(processStepId, roleId);
 		ProcessStepRole processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
@@ -128,6 +128,7 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 		if (Validator.isNull(processStepRole)) {
 			processStepRole = processStepRolePersistence.create(pk);
 
+			processStepRole.setRoleCode(roleCode);
 			processStepRole.setRoleName(roleName);
 			processStepRole.setModerator(moderator);
 			processStepRole.setCondition(condition);
@@ -142,5 +143,13 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 
 	public ProcessStepRole findByStepAndRole(long processStepId, long roleId) {
 		return processStepRolePersistence.fetchByF_STEP_ROLE(processStepId, roleId);
+	}
+
+	public long getByRoleCode(String roleCode) {
+		ProcessStepRole role = processStepRolePersistence.fetchByF_CODE(roleCode);
+		if (role != null) {
+			return role.getRoleId();
+		}
+		return 0;
 	}
 }

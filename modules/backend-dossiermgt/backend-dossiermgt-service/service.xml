@@ -832,12 +832,16 @@
 
 		<column name="serviceProcessId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
+		<column name="roleCode" type="String" />
 		<column name="roleName" type="String" />
 		<column name="moderator" type="boolean" />
 		<column name="condition" type="String" />
 
 		<finder return-type="Collection" name="P_S_ID">
 			<finder-column name="serviceProcessId" />
+		</finder>
+		<finder return-type="ServiceProcessRole" name="F_CODE">
+			<finder-column name="roleCode" />
 		</finder>
 
 	</entity>

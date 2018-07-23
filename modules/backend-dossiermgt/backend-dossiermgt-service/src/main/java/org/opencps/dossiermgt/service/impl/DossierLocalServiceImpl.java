@@ -1269,7 +1269,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateStatus(long groupId, long id, String refId, String status, String statusText, String subStatus,
-			String subStatusText, String lockState, ServiceContext context) throws PortalException {
+			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
+			throws PortalException {
 
 		validateUpdateStatus(groupId, id, refId, status, statusText, subStatus, subStatusText);
 
@@ -1290,6 +1291,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
 		dossier.setLockState(lockState);
+		dossier.setDossierNote(stepInstruction);
 
 		/*
 		 * if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {

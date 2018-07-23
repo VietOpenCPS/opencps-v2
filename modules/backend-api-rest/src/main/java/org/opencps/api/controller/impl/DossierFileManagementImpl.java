@@ -94,12 +94,14 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		_log.info("In dossier file create");
 		try {
 
+			_log.info("In dossier file create");
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
+			_log.info("In dossier file create");
 			long dossierId = GetterUtil.getLong(id);
-
+			_log.info("In dossier file create");
 			Dossier dossier = null;
 
 			if (dossierId != 0) {
@@ -111,6 +113,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 
+			_log.info("dossier:"+dossier);
+			_log.info("dossier:"+dossier.getOriginDossierId());
 			if (Validator.isNull(referenceUid)) {
 				referenceUid = UUID.randomUUID().toString();
 			}
