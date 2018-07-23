@@ -276,7 +276,18 @@ public class DossierActionUtils {
 					modelUser.setUserName(user.getFullName());
 					modelUser.setModerator(moderator);
 					modelUser.setAssigned(assigned);
-					outputUsers.add(modelUser);
+					boolean flag = true;
+					if (outputUsers != null && outputUsers.isEmpty()) {
+						for (DossierActionNextActiontoUser doUserAct : outputUsers) {
+							if (userId == doUserAct.getUserId()) {
+								flag = false;
+								break;
+							}
+						}
+						if (flag) {
+							outputUsers.add(modelUser);
+						}
+					}
 				}
 			}
 			model.setToUsers(outputUsers);
