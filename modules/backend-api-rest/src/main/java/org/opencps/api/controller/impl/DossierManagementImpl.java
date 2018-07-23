@@ -250,8 +250,16 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.STATUS_REG, statusRegNo);
 			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+			Sort[] sorts = null;
+//			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+//					GetterUtil.getBoolean(query.getOrder())) };
+			if (!GetterUtil.getBoolean(query.getOrder())) {
+				sorts = new Sort[] {
+						SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE, true) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			}
 
 			if (Validator.isNotNull(top)) {
 				switch (top) {
