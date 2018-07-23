@@ -234,7 +234,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	@Override
 	public Response getDossierTodoTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, StatisticDossierSearchModel query) {
+			User user, ServiceContext serviceContext, StatisticDossierSearchModel query, String owner) {
 		BackendAuth auth = new BackendAuthImpl();
 		StatisticActions actions = new StatisticActionsImpl();
 
@@ -259,7 +259,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.USER_ID, String.valueOf(userId));
-//			params.put(DossierTerm.OWNER, String.valueOf(true));
+			boolean ownerBoolean = GetterUtil.getBoolean(owner);
+			if (ownerBoolean) {
+				params.put(DossierTerm.OWNER, String.valueOf(true));				
+			}
 			int total = 0;
 			//
 			String stepCode = query.getStep();
