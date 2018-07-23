@@ -120,6 +120,7 @@ public class DossierUtils {
 			} else {
 				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
+			_log.info("DUE_DATE: "+doc.get(DossierTerm.DUE_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
 				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
@@ -149,6 +150,30 @@ public class DossierUtils {
 			} else {
 				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
 			}
+			//Process StepOverDue
+//			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0.0;
+//			if (Double.compare(durationCount, 0.0) != 0) {
+				long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
+				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//				if (dAction != null) {
+//					String postStep = dAction.getStepCode();
+//					if (Validator.isNotNull(postStep)) {
+//						String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
+//						String govAgencyCode = doc.get(DossierTerm.GOV_AGENCY_CODE);
+//						String dossierTemp = doc.get(DossierTerm.DOSSIER_TEMPLATE_NO);
+//						long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
+//						ProcessOption option = getProcessOption(serviceCode, govAgencyCode,
+//								dossierTemp, groupId);
+//						if (option != null) {
+//						ProcessStep step = ProcessStepLocalServiceUtil.getBySC_SPID(postStep,
+//								option.getServiceProcessId());
+//						}
+//						
+//					}
+//				}
+//			} else {
+//				model.setStepOverdue(StringPool.BLANK);
+//			}
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
@@ -166,7 +191,7 @@ public class DossierUtils {
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
-			model.setStepOverdue(StringPool.BLANK);
+//			model.setStepOverdue(StringPool.BLANK);
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
