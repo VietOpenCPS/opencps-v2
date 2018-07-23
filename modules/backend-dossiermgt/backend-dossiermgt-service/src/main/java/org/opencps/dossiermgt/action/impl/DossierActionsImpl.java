@@ -1402,10 +1402,17 @@ public class DossierActionsImpl implements DossierActions {
 
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 						serviceProcessId);
+				if (processStep != null) {
+					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+							.findByP_S_ID(processStep.getProcessStepId());
+					if (processStepRoleList != null && processStepRoleList.isEmpty()) {
+						List<User> lstUser = processRoleListUser(processStepRoleList, serviceProcessId);
+						if (lstUser != null && lstUser.isEmpty()) {
+							result.put("lstUser", lstUser);
+						}
+					}
+				}
 
-				List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
-						.findByP_S_ID(processStep.getProcessStepId());
-				List<User> lstUser = processRoleListUser(processStepRoleList, serviceProcessId);
 				//
 				String createDossierFiles = processAction.getCreateDossierFiles();
 				String returnDossierFiles = processAction.getReturnDossierFiles();
@@ -1799,7 +1806,6 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				}
 				result.put("processAction", processAction);
-				result.put("lstUser", lstUser);
 				result.put("createFiles", createFiles);
 			}
 		} catch (Exception e) {
@@ -2345,6 +2351,7 @@ public class DossierActionsImpl implements DossierActions {
 				String sequenceNo = curStep.getSequenceNo();
 				
 				_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
+				_log.info("curStep.getDossierSubStatus(): " + curStep.getDossierSubStatus());
 				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
 
 				String fromStepCode = previousAction != null ? previousAction.getStepCode() : StringPool.BLANK;
