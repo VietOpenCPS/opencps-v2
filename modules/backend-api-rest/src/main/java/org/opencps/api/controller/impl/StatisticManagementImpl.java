@@ -275,6 +275,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 						if (stepConfig != null) {
 							params.put(DossierTerm.STATUS, stepConfig.getDossierStatus());
 							params.put(DossierTerm.SUBSTATUS, stepConfig.getDossierSubStatus());
+							//TODO
+							String permission = user.getUserId() + ":write";
+							params.put(DossierTerm.MAPPING_PERMISSION, permission);
 							_log.info("START");
 							long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId,
 									params, null, serviceContext);
@@ -297,6 +300,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 					for (StepConfig step: stepList) {
 						params.put(DossierTerm.STATUS, step.getDossierStatus());
 						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+						//TODO
+						String permission = user.getUserId() + ":write";
+						params.put(DossierTerm.MAPPING_PERMISSION, permission);
 						_log.info("DossierStatus: "+step.getDossierStatus());
 						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 								null, serviceContext);

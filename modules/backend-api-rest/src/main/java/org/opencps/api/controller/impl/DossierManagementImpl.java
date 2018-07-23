@@ -651,6 +651,9 @@ public class DossierManagementImpl implements DossierManagement {
 			//Process follow StepCode
 			params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
 			params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, strSubStatusStep.toString());
+			//TODO
+			String permission = user.getUserId() + ":write";
+			params.put(DossierTerm.MAPPING_PERMISSION, permission);
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
 
