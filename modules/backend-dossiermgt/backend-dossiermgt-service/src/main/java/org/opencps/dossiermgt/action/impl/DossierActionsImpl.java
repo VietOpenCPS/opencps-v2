@@ -2297,6 +2297,7 @@ public class DossierActionsImpl implements DossierActions {
 				String sequenceNo = curStep.getSequenceNo();
 				
 				_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
+				_log.info("curStep.getDossierSubStatus(): " + curStep.getDossierSubStatus());
 				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
 
 				String fromStepCode = previousAction != null ? previousAction.getStepCode() : StringPool.BLANK;
@@ -3342,13 +3343,17 @@ public class DossierActionsImpl implements DossierActions {
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
 
 		if (Validator.isNotNull(dc) && Validator.isNotNull(curStatus)) {
+			_log.info("curStatus: "+curStatus);
 			jsonData = JSONFactoryUtil.createJSONObject();
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(curStatus, dc.getPrimaryKey(), groupId);
+			_log.info("it: "+it);
 			if (Validator.isNotNull(it)) {
 				jsonData.put(curStatus, it.getItemName());
 				if (Validator.isNotNull(curSubStatus)) {
+					_log.info("curSubStatus: "+curSubStatus);
 					DictItem dItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(curSubStatus, dc.getPrimaryKey(),
 							groupId);
+					_log.info("dItem: "+dItem);
 					if (Validator.isNotNull(dItem)) {
 						jsonData.put(curSubStatus, dItem.getItemName());
 					}
