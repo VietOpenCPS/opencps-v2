@@ -2540,11 +2540,16 @@ public class DossierActionsImpl implements DossierActions {
 				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
-			payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-			payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
-			payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
-			payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
-			if (flagChanged != null && flagChanged.length >=4 && flagChanged[4])
+			if (Validator.isNotNull(dossier.getDossierNote()))
+				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+			if (dossier.getExtendDate() != null)
+				payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
+			if (Validator.isNotNull(dossier.getDossierNo()))
+				payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+			if (dossier.getDueDate() != null)
+				payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
+			if (flagChanged != null && flagChanged.length >=4 && flagChanged[3]
+					&& dossier.getFinishDate() != null)
 				payloadObject.put(DossierTerm.FINISH_DATE, dossier.getFinishDate());
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,

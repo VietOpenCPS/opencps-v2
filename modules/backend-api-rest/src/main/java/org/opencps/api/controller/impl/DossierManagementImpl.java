@@ -848,7 +848,8 @@ public class DossierManagementImpl implements DossierManagement {
 				duActions.initDossierUser(groupId, dossier);			
 			}
 			
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA
+					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
 				//Update submit date
 				Date now = new Date();
 				dossier.setSubmitDate(now);
