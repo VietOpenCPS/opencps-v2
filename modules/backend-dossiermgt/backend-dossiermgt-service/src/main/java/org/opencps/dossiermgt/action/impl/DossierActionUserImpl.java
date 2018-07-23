@@ -349,20 +349,37 @@ public class DossierActionUserImpl implements DossierActionUser {
 	@Override
 	public void copyRoleAsStep(ProcessStep curStep, Dossier dossier) {
 		if (Validator.isNull(curStep.getRoleAsStep()))
-			return;		
+			return;	
 		List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), curStep.getRoleAsStep());
 		if (lstDaus.size() > 0) {
 			for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDaus) {
 				org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
-				model.setVisited(dau.getVisited());
-				model.setDossierId(dossier.getDossierId());
-				model.setStepCode(curStep.getStepCode());
-				model.setAssigned(dau.getAssigned());
-				model.setDossierActionId(dossier.getDossierActionId());
-				model.setModerator(dau.getModerator());
-				model.setUserId(dau.getUserId());
+				DossierActionUserPK pk = new DossierActionUserPK();
+				pk.setDossierActionId(dossier.getDossierActionId());
+				pk.setUserId(dau.getUserId());
+				org.opencps.dossiermgt.model.DossierActionUser oldModel = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+				if (oldModel != null) {
+					model.setVisited(dau.getVisited());
+					model.setDossierId(dossier.getDossierId());
+					model.setStepCode(curStep.getStepCode());
+					model.setAssigned(dau.getAssigned());
+					model.setDossierActionId(dossier.getDossierActionId());
+					model.setModerator(dau.getModerator());
+					model.setUserId(dau.getUserId());
 
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+				}
+				else {
+					model.setVisited(dau.getVisited());
+					model.setDossierId(dossier.getDossierId());
+					model.setStepCode(curStep.getStepCode());
+					model.setAssigned(dau.getAssigned());
+					model.setDossierActionId(dossier.getDossierActionId());
+					model.setModerator(dau.getModerator());
+					model.setUserId(dau.getUserId());
+
+					DossierActionUserLocalServiceUtil.addDossierActionUser(model);					
+				}
 			}
 		}
 	}
