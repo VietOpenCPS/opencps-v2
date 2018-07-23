@@ -1828,18 +1828,21 @@ public class DossierActionsImpl implements DossierActions {
 							boolean extraForm = actConfig.getExtraForm();
 							if (extraForm) {
 								String formConfig = actConfig.getFormConfig();
+								_log.info("formConfig: " + formConfig);
 								String sampleData = actConfig.getSampleData();
 
 								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
 										serviceContext);
 								JSONObject formDataJson = JSONFactoryUtil.createJSONObject(formData);
 								JSONArray formConfigArr = JSONFactoryUtil.createJSONArray(formConfig);
+								_log.info("formConfigArr: " + formConfigArr);
 								if (formConfigArr != null && formConfigArr.length() > 0) {
 									int length = formConfigArr.length();
 									for (int i = 0; i < length; i++) {
 										JSONObject jsonObject = formConfigArr.getJSONObject(i);
 										String value = formDataJson.getString(jsonObject.getString("fieldName"));
 										jsonObject.put("value", value);
+										_log.info("formConfigArr: " + formConfigArr);
 										result.put(jsonObject);
 									}
 								}
@@ -2188,7 +2191,7 @@ public class DossierActionsImpl implements DossierActions {
 			String payment,
 			int syncType,
 			ServiceContext context) throws PortalException {
-		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId);
+		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 
@@ -2261,15 +2264,17 @@ public class DossierActionsImpl implements DossierActions {
 					DossierLocalServiceUtil.updateDossier(hsltDossier);
 					
 					JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);
-					hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_NEW,
-						jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW), StringPool.BLANK,
-						StringPool.BLANK, StringPool.BLANK, context);									
+					hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(),
+							DossierTerm.DOSSIER_STATUS_NEW,
+							jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW), StringPool.BLANK,
+							StringPool.BLANK, StringPool.BLANK, previousAction.getStepInstruction(), context);
 				}
 				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_INTEROPERATING, StringPool.BLANK);
 				if (curStep != null) {
-					dossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(), hsltDossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
+					dossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(),
+							hsltDossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
 							jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_INTEROPERATING), StringPool.BLANK,
-							StringPool.BLANK, curStep.getLockState(), context);		
+							StringPool.BLANK, curStep.getLockState(), previousAction.getStepInstruction(), context);
 					
 					
 				}
@@ -2319,7 +2324,8 @@ public class DossierActionsImpl implements DossierActions {
 				//update dossierStatus
 				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
 						jsonDataStatusText.getString(curStatus), curSubStatus,
-						jsonDataStatusText.getString(curSubStatus), curStep.getLockState(), context);
+						jsonDataStatusText.getString(curSubStatus), curStep.getLockState(),
+						dossierAction.getStepInstruction(), context);
 				
 				//Update dossier processing date
 				updateProcessingDate(dossier, curStatus, curSubStatus, context);
@@ -2334,9 +2340,10 @@ public class DossierActionsImpl implements DossierActions {
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
 						_log.info("LamTV_PROCESS assignUsers != null");
-						JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
-						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
-								proAction.getAssignUserId(), subUsersArray);						
+						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
+					dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
+							dossierAction.getDossierActionId(), userId, groupId, proAction.getAssignUserId(),
+							assignedUsersArray);
 					} else {
 						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
@@ -2782,7 +2789,8 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, DossierStatusConstants.NEW,
-					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, context);
+					jsStatus.getString(DossierStatusConstants.NEW), StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, dossierAction.getStepInstruction(), context);
 
 		} else {
 
@@ -2849,8 +2857,9 @@ public class DossierActionsImpl implements DossierActions {
 			// Set dossierStatus by CUR_STEP
 			// LamTV: Update lockState when Sync
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
-			jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
-			jsSubStatus.getString(curStep.getDossierSubStatus()), curStep.getLockState(), context);
+					jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
+					jsSubStatus.getString(curStep.getDossierSubStatus()), curStep.getLockState(),
+					dossierAction.getStepInstruction(), context);
 			
 			//_log.info(jsStatus.toJSONString());
 			//_log.info(jsSubStatus.toJSONString());
@@ -4208,21 +4217,13 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	//LamTV_Process check permission action
 	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
 			long groupId) {
-		boolean result = true;
-		boolean flagAutoEvent = true;
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
 				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-			flagAutoEvent = false;
+			return false;
 		}
-		boolean checkPreCondition = false;
 		String[] preConditionArr = StringUtil.split(preCondition);
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			checkPreCondition = DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
-		}
-		if (flagAutoEvent) {
-			if (Validator.isNull(autoEvent) && checkPreCondition) {
-					return result;
-			}
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
 		}
 
 //		int originality = dossier.getOriginality();
@@ -4239,8 +4240,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 //				}
 //			}
 //		}
-		
-		return result;
+
+		return true;
 	}
 
 	// LamTV_Process role list user

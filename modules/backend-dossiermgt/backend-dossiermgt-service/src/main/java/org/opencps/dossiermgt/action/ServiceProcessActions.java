@@ -86,16 +86,16 @@ public interface ServiceProcessActions {
 			Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo, String serverName,
 			String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException;
 
-	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId, String roleName, boolean moderator,
-			String condition, ServiceContext serviceContext);
+	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId,
+			String roleCode, String roleName, boolean moderator, String condition, ServiceContext serviceContext);
 
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
 			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
 			throws PortalException;
 
-	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName, boolean moderator,
-			String condition, ServiceContext serviceContext);
+	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleCode,
+			String roleName, boolean moderator, String condition, ServiceContext serviceContext);
 
 	public void updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
@@ -118,5 +118,7 @@ public interface ServiceProcessActions {
 	public void updateProcessSequenceDB(long userId, long groupId, long serviceProcessId, String sequenceNo,
 			String sequenceName, String sequenceRole, Integer durationCount, ServiceContext serviceContext)
 			throws PortalException;
+
+	public long getByRoleCode(long groupId, String roleCode);
 
 }

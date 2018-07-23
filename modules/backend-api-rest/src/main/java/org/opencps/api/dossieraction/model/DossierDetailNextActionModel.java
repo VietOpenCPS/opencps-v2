@@ -245,36 +245,6 @@ public class DossierDetailNextActionModel {
 	}
 
 	/**
-	 * Gets the value of the toUsers property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a
-	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the toUsers property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
-	 * getToUsers().add(newItem);
-	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link DossierActionNextActiontoUser }
-	 * 
-	 * 
-	 */
-	public List<DossierActionNextActiontoUser> getToUsers() {
-		if (toUsers == null) {
-			toUsers = new ArrayList<DossierActionNextActiontoUser>();
-		}
-		return this.toUsers;
-	}
-
-	/**
 	 * Gets the value of the createFiles property.
 	 * 
 	 * <p>
@@ -378,6 +348,14 @@ public class DossierDetailNextActionModel {
 
 	public void setConfigNote(String configNote) {
 		this.configNote = configNote;
+	}
+
+	public List<DossierActionNextActiontoUser> getToUsers() {
+		return toUsers;
+	}
+
+	public void setToUsers(List<DossierActionNextActiontoUser> toUsers) {
+		this.toUsers = toUsers;
 	}
 
 }

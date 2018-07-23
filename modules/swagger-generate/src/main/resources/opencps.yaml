@@ -398,7 +398,7 @@ paths:
         409:
           description: StepConfig đã tồn tại trong hệ thống
   /stepconfigs/status/{mainStatus}/{subStatus}:
-    post:
+    get:
       tags:
       - StepConfig
       summary: Thêm định nghĩa step configs
@@ -420,7 +420,7 @@ paths:
         type: string
       - name: subStatus
         in: path
-        description: s
+        description: subStatus
         required: true
         type: string
       responses:

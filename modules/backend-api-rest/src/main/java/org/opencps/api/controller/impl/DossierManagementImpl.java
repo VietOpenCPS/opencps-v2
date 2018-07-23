@@ -677,26 +677,27 @@ public class DossierManagementImpl implements DossierManagement {
 			// _log.info("6");
 			DossierResultsModel results = new DossierResultsModel();
 
-			if (jsonData != null && jsonData.length() > 0) {
+			if (jsonData != null && jsonData.getInt("total") > 0) {
 				results.setTotal(jsonData.getInt("total"));
+				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 //				_log.info("7");
 //				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 
-				List<Document> docs = (List<Document>) jsonData.get("data");
-				if (docs != null && docs.size() > 0) {
-					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
-						results.getData().addAll(DossierUtils.mappingForGetList(docs));
-					} else {
-						// Process paging
-						if (query.getEnd() == -1) {
-							results.getData().addAll(DossierUtils.mappingForGetList(docs));
-						} else {
-							_log.info("669999");
-							results.getData().addAll(
-									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
-						}
-					}
-				}
+//				List<Document> docs = (List<Document>) jsonData.get("data");
+//				if (docs != null && docs.size() > 0) {
+//					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
+//						results.getData().addAll(DossierUtils.mappingForGetList(docs));
+//					} else {
+//						// Process paging
+//						if (query.getEnd() == -1) {
+//							results.getData().addAll(DossierUtils.mappingForGetList(docs));
+//						} else {
+//							_log.info("669999");
+//							results.getData().addAll(
+//									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
+//						}
+//					}
+//				}
 			} else {
 				results.setTotal(0);
 			}
@@ -1172,7 +1173,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
 			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
-			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id);
+			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
 
 			if (dossier != null) {
 				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
@@ -1482,6 +1483,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
