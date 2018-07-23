@@ -135,18 +135,18 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			boolean isCitizen = false;
 
-			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
-
-				if (!auth.isAuth(serviceContext)) {
-					throw new UnauthenticationException();
-				}
-
-				isCitizen = dossierPermission.isCitizen(user.getUserId());
-
-				dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
-			} else {
-				groupId = 55217;
-			}
+//			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
+//
+//				if (!auth.isAuth(serviceContext)) {
+//					throw new UnauthenticationException();
+//				}
+//
+//				isCitizen = dossierPermission.isCitizen(user.getUserId());
+//
+//				dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
+//			} else {
+//				groupId = 55217;
+//			}
 
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
 

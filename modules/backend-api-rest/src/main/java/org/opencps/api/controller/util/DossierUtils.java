@@ -121,7 +121,7 @@ public class DossierUtils {
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
+			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 				if (subTimeStamp > 0) {
@@ -195,10 +195,21 @@ public class DossierUtils {
 //			model.setProcessBlock(processBlock);
 //			model.setProcessUnit(processUnit);
 
-			model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));
-			model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));
-			model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));
-			model.setAssigned(Integer.valueOf(doc.get(DossierTerm.ASSIGNED)));
+			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
+				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+			}
+			else {
+				model.setDurationCount(0d);
+			}
+			model.setDurationUnit(durationUnit);
+			
+			if (Validator.isNotNull(doc.get(DossierTerm.SAMPLE_COUNT))) {
+				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+			}
+			else {
+				model.setSampleCount(0l);
+			}
+			model.setAssigned(GetterUtil.getInteger(doc.get(DossierTerm.ASSIGNED)));
 
 			ouputs.add(model);
 		}
@@ -316,7 +327,8 @@ public class DossierUtils {
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
+			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;		
+//			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 				if (subTimeStamp > 0) {
@@ -365,16 +377,29 @@ public class DossierUtils {
 //			model.setDelegateTelNo(DossierTerm.getDelegateTelNo());
 //			model.setDelegateWardCode(DossierTerm.getDelegateWardCode());
 //			model.setDelegateWardName(DossierTerm.getDelegateWardName());
-			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
+//			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
+//				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
 				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
 			}
-			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
-				model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));				
+			else {
+				model.setDurationCount(0d);
 			}
-			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
+
+			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
+				model.setDurationUnit(durationUnit);				
+			}
+//			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
+//				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.SAMPLE_COUNT))) {
 				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
 			}
-			model.setAssigned(Integer.valueOf(doc.get(DossierTerm.ASSIGNED)));
+			else {
+				model.setSampleCount(0l);
+			}
+			model.setAssigned(GetterUtil.getInteger(doc.get(DossierTerm.ASSIGNED)));
 
 			ouputs.add(model);
 		}
