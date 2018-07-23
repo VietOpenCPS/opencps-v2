@@ -1262,6 +1262,11 @@ public class DossierActionsImpl implements DossierActions {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
 					//GS.AnhTT_Process
 					int enable = 2;
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+						if (dossier.getUserId() == userId && !pending) {
+							enable = 1;
+						}
+					}
 					if (dActionUser != null) {
 						int assign = dActionUser.getAssigned();
 						if (assign==1 && !pending) enable = 1;
