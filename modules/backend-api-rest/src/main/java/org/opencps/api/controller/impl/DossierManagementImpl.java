@@ -796,6 +796,11 @@ public class DossierManagementImpl implements DossierManagement {
 					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
 			Dossier dossier = null;
 			
+			if (originality == DossierTerm.ORIGINALITY_DVCTT
+					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
+				online = true;
+			}
+			
 			if (oldDossiers.size() > 0 && oldDossiers.get(0).getOriginality() == Integer.valueOf(input.getOriginality())) {
 				dossier = oldDossiers.get(0);
 				dossier.setApplicantName(input.getApplicantName());
