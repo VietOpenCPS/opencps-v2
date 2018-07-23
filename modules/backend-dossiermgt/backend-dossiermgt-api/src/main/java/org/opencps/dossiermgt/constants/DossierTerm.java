@@ -35,6 +35,7 @@ public class DossierTerm {
 	public static final String SUBMITTING = "submitting";
 	public static final String SUBMIT_DATE = "submitDate";
 	public static final String RECEIVE_DATE = "receiveDate";
+	public static final String EXTEND_DATE = "extendDate";
 	public static final String RECEIVE_DATE_SORTABLE = "receiveDate_sortable";
 	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";

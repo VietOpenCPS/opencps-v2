@@ -756,14 +756,13 @@ public class DossierManagementImpl implements DossierManagement {
 
 			// Create dossierNote
 			ServiceProcess process = null;
-			boolean online = true;
+			boolean online = GetterUtil.getBoolean(input.getOnline());
 			if (option != null) {
 				long serviceProcessId = option.getServiceProcessId();
 				process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
-				// DOSSIER that was created in CLIENT is set ONLINE = false
-				if (process.getServerNo().trim().length() != 0) {
-					online = false;
-				}
+//				if (process.getServerNo().trim().length() != 0) {
+//					online = false;
+//				}
 			}
 
 			if (process == null) {
@@ -801,6 +800,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setContactTelNo(input.getContactTelNo());	
 				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
+				dossier.setOnline(online);
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,

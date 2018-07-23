@@ -2220,7 +2220,50 @@ public class DossierActionsImpl implements DossierActions {
 		if (dossier.getDossierActionId() != 0) {
 			previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		}
+		
+		boolean changeNote = false, changeExtend = false, changeNo = false, changeDue = false, changeFinish = false;
+		
+		if (Validator.isNotNull(payload)) {
+			JSONObject pl = JSONFactoryUtil.createJSONObject(payload);
+			if (pl.has(DossierTerm.DOSSIER_NOTE)) {
+				if (!pl.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
+					dossier.setDossierNote(pl.getString(DossierTerm.DOSSIER_NOTE));
+					changeNote = true;
+				}
+			}
+			if (pl.has(DossierTerm.EXTEND_DATE)) {
+				if (dossier.getExtendDate() == null || pl.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
+					dossier.setExtendDate(new Date(pl.getLong(DossierTerm.EXTEND_DATE)));
+					changeExtend = true;
+				}
+			}
+			if (pl.has(DossierTerm.DOSSIER_NO)) {
+				if (!pl.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
+					dossier.setDossierNo(pl.getString(DossierTerm.DOSSIER_NO));
+					changeNo = true;
+				}
+			}
+			if (pl.has(DossierTerm.DUE_DATE)) {
+				if (dossier.getDueDate() == null || pl.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
+					dossier.setDueDate(new Date(pl.getLong(DossierTerm.DUE_DATE)));
+					changeDue = true;
+				}
+			}
+			if (pl.has(DossierTerm.FINISH_DATE)) {
+				if (dossier.getFinishDate() == null || pl.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
+					dossier.setFinishDate(new Date(pl.getLong(DossierTerm.FINISH_DATE)));	
+					changeFinish = true;
+				}
+			}
 			
+			DossierLocalServiceUtil.updateDossier(dossier);
+		}
+		
+		//Reindex dossier
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+		indexer.reindex(dossier);
+		
 		if (option != null && proAction != null) {
 			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
@@ -2493,6 +2536,17 @@ public class DossierActionsImpl implements DossierActions {
 				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
+			if (changeNote)
+				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+			if (changeExtend)
+				payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
+			if (changeNo)
+				payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+			if (changeDue)
+				payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
+			if (changeFinish)
+				payloadObject.put(DossierTerm.FINISH_DATE, dossier.getFinishDate());
+			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
 					syncType, payloadObject.toJSONString(), serviceProcess.getServerNo(), state);
@@ -2500,7 +2554,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 				
 		//Reindex dossier
-		Indexer<Dossier> indexer = IndexerRegistryUtil
+		indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 		indexer.reindex(dossier);
 		
