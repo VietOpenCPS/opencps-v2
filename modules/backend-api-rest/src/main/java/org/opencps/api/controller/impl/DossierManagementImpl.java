@@ -95,6 +95,8 @@ import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -757,6 +759,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// Create dossierNote
 			ServiceProcess process = null;
 			boolean online = GetterUtil.getBoolean(input.getOnline());
+			int originality = GetterUtil.getInteger(input.getOriginality());
+			
 			if (option != null) {
 				long serviceProcessId = option.getServiceProcessId();
 				process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
@@ -813,6 +817,26 @@ public class DossierManagementImpl implements DossierManagement {
 						Integer.valueOf(input.getOriginality()), serviceContext);
 			}
 
+			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				if (applicant != null) {
+					dossier = DossierLocalServiceUtil.updateApplicantInfo(
+							dossier.getDossierId(), 
+							applicant.getApplicantIdDate(),
+							applicant.getApplicantIdNo(),
+							applicant.getApplicantIdType(),
+							applicant.getApplicantName(),
+							applicant.getAddress(),
+							applicant.getCityCode(),
+							applicant.getCityName(),
+							applicant.getDistrictCode(),
+							applicant.getDistrictName(),
+							applicant.getWardCode(),
+							applicant.getWardName(),
+							applicant.getContactEmail(),
+							applicant.getContactTelNo());
+				}
+			}
 			if (Validator.isNull(dossier)) {
 				throw new NotFoundException("Cant add DOSSIER");
 			}
@@ -824,7 +848,6 @@ public class DossierManagementImpl implements DossierManagement {
 				duActions.initDossierUser(groupId, dossier);			
 			}
 			
-			int originality = Integer.parseInt(input.getOriginality());
 			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
 				//Update submit date
 				Date now = new Date();
