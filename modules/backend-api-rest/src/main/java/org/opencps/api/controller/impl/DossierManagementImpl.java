@@ -848,7 +848,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<DossierUser> lstDus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
 			if (lstDus.size() == 0) {
 				DossierUserActions duActions = new DossierUserActionsImpl();
-				duActions.initDossierUser(groupId, dossier);			
+				duActions.initDossierUser(groupId, dossier);				
 			}
 			
 			if (originality == DossierTerm.ORIGINALITY_MOTCUA
@@ -883,6 +883,11 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.setDossierNo(input.getDossierNo());
 				}
 			}
+			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
+				long userId = serviceContext.getUserId();
+				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
+			}
+			
 			DossierLocalServiceUtil.updateDossier(dossier);
 
 			//Add to dossier user based on service process role
