@@ -2221,38 +2221,38 @@ public class DossierActionsImpl implements DossierActions {
 			previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		}
 		
-		boolean changeNote = false, changeExtend = false, changeNo = false, changeDue = false, changeFinish = false;
+		boolean[] flagChanged = null;
 		
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = JSONFactoryUtil.createJSONObject(payload);
 			if (pl.has(DossierTerm.DOSSIER_NOTE)) {
 				if (!pl.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
 					dossier.setDossierNote(pl.getString(DossierTerm.DOSSIER_NOTE));
-					changeNote = true;
 				}
 			}
 			if (pl.has(DossierTerm.EXTEND_DATE)) {
 				if (dossier.getExtendDate() == null || pl.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
 					dossier.setExtendDate(new Date(pl.getLong(DossierTerm.EXTEND_DATE)));
-					changeExtend = true;
 				}
 			}
 			if (pl.has(DossierTerm.DOSSIER_NO)) {
 				if (!pl.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
 					dossier.setDossierNo(pl.getString(DossierTerm.DOSSIER_NO));
-					changeNo = true;
 				}
 			}
 			if (pl.has(DossierTerm.DUE_DATE)) {
 				if (dossier.getDueDate() == null || pl.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
 					dossier.setDueDate(new Date(pl.getLong(DossierTerm.DUE_DATE)));
-					changeDue = true;
 				}
 			}
 			if (pl.has(DossierTerm.FINISH_DATE)) {
 				if (dossier.getFinishDate() == null || pl.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
 					dossier.setFinishDate(new Date(pl.getLong(DossierTerm.FINISH_DATE)));	
-					changeFinish = true;
+				}
+			}
+			if (pl.has(DossierTerm.RECEIVE_DATE)) {
+				if (dossier.getReceiveDate() == null || pl.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
+					dossier.setReceiveDate(new Date(pl.getLong(DossierTerm.RECEIVE_DATE)));	
 				}
 			}
 			
@@ -2376,7 +2376,7 @@ public class DossierActionsImpl implements DossierActions {
 						dossierAction.getStepInstruction(), context);
 				
 				//Update dossier processing date
-				updateProcessingDate(dossier, curStatus, curSubStatus, context);
+				flagChanged = updateProcessingDate(dossier, curStatus, curSubStatus, context);
 			}
 				// update reference dossier
 				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
@@ -2535,15 +2535,11 @@ public class DossierActionsImpl implements DossierActions {
 				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
-			if (changeNote)
-				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-			if (changeExtend)
-				payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
-			if (changeNo)
-				payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
-			if (changeDue)
-				payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
-			if (changeFinish)
+			payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+			payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
+			payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+			payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
+			if (flagChanged != null && flagChanged.length >=4 && flagChanged[4])
 				payloadObject.put(DossierTerm.FINISH_DATE, dossier.getFinishDate());
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
@@ -2626,13 +2622,15 @@ public class DossierActionsImpl implements DossierActions {
 		}		
 	}
 	
-	private void updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, ServiceContext context) {
+	private boolean[] updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, ServiceContext context) {
 		Date now = new Date();
-
+		boolean[] bResult = new boolean[4];
+		
 		if (Validator.isNull(dossier.getReceiveDate())
 				&& Validator.isNotNull(dossier.getDossierNo())) {
 			try {
 				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), new Date(), context);
+				bResult[0] = true;
 			} catch (PortalException e) {
 				e.printStackTrace();
 			}
@@ -2641,6 +2639,7 @@ public class DossierActionsImpl implements DossierActions {
 		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
 			try {
 				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				bResult[1] = true;
 			} catch (PortalException e) {
 				e.printStackTrace();
 			}
@@ -2653,6 +2652,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNull(dossier.getReleaseDate())) {
 				try {
 					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+					bResult[2] = true;
 				} catch (PortalException e) {
 					e.printStackTrace();
 				}				
@@ -2665,11 +2665,14 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNull(dossier.getFinishDate())) {
 				try {
 					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+					bResult[3] = true;
 				} catch (PortalException e) {
 					e.printStackTrace();
 				}				
 			}
 		}
+		
+		return bResult;
 	}
 	
 	@Override
