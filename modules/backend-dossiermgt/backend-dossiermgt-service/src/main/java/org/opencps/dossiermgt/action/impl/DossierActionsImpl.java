@@ -1397,10 +1397,17 @@ public class DossierActionsImpl implements DossierActions {
 
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 						serviceProcessId);
+				if (processStep != null) {
+					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+							.findByP_S_ID(processStep.getProcessStepId());
+					if (processStepRoleList != null && processStepRoleList.isEmpty()) {
+						List<User> lstUser = processRoleListUser(processStepRoleList, serviceProcessId);
+						if (lstUser != null && lstUser.isEmpty()) {
+							result.put("lstUser", lstUser);
+						}
+					}
+				}
 
-				List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
-						.findByP_S_ID(processStep.getProcessStepId());
-				List<User> lstUser = processRoleListUser(processStepRoleList, serviceProcessId);
 				//
 				String createDossierFiles = processAction.getCreateDossierFiles();
 				String returnDossierFiles = processAction.getReturnDossierFiles();
@@ -1794,7 +1801,6 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				}
 				result.put("processAction", processAction);
-				result.put("lstUser", lstUser);
 				result.put("createFiles", createFiles);
 			}
 		} catch (Exception e) {
@@ -3397,17 +3403,13 @@ public class DossierActionsImpl implements DossierActions {
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
 
 		if (Validator.isNotNull(dc) && Validator.isNotNull(curStatus)) {
-			_log.info("curStatus: "+curStatus);
 			jsonData = JSONFactoryUtil.createJSONObject();
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(curStatus, dc.getPrimaryKey(), groupId);
-			_log.info("it: "+it);
 			if (Validator.isNotNull(it)) {
 				jsonData.put(curStatus, it.getItemName());
 				if (Validator.isNotNull(curSubStatus)) {
-					_log.info("curSubStatus: "+curSubStatus);
 					DictItem dItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(curSubStatus, dc.getPrimaryKey(),
 							groupId);
-					_log.info("dItem: "+dItem);
 					if (Validator.isNotNull(dItem)) {
 						jsonData.put(curSubStatus, dItem.getItemName());
 					}
