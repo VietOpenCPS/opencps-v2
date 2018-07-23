@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.WorkingUnitManagement;
+import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.WorkingUnitUtils;
-import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.workingunit.model.DataSearchModel;
 import org.opencps.api.workingunit.model.WorkingUnitInputModel;
 import org.opencps.api.workingunit.model.WorkingUnitModel;

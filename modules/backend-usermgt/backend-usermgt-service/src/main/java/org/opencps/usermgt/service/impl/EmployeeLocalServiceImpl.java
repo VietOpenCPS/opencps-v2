@@ -689,4 +689,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	public List<Employee> getLstEmployee(long groupId, long userId){
 		return employeePersistence.findByG_UID(groupId, userId);
 	}
+
+	public Employee getEmployeeByEmpNo(long groupId, String employeeNo){
+		return employeePersistence.fetchByF_GID_EMPNO(groupId, employeeNo);
+	}
 }

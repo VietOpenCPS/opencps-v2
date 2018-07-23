@@ -38,4 +38,7 @@ public interface JobposInterface {
 	void createPermissionsPatch(long userId, long companyId, long groupId, long id, String permissions,
 			ServiceContext serviceContext);
 
+	void updateJobPosDB(long userId, long groupId, String jobCode, String title, String description,
+			ServiceContext serviceContext) throws PortalException;
+
 }

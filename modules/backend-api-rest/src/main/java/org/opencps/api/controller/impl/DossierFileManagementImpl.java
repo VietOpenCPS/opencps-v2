@@ -94,12 +94,14 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		_log.info("In dossier file create");
 		try {
 
+			_log.info("In dossier file create");
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
+			_log.info("In dossier file create");
 			long dossierId = GetterUtil.getLong(id);
-
+			_log.info("In dossier file create");
 			Dossier dossier = null;
 
 			if (dossierId != 0) {
@@ -111,10 +113,17 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 
+			_log.info("dossier:"+dossier);
+			_log.info("dossier:"+dossier.getOriginDossierId());
 			if (Validator.isNull(referenceUid)) {
 				referenceUid = UUID.randomUUID().toString();
 			}
 
+			if (dossier.getOriginDossierId() != 0) {
+				//HSLT
+				dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+			}
+			
 			DataHandler dataHandler = file.getDataHandler();
 
 			DossierFileActions action = new DossierFileActionsImpl();
@@ -235,6 +244,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getDossierId();
+				}
+			}
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			DossierFile dossierFile = action.updateDossierFile(groupId, id, referenceUid, dataHandle.getName(),
@@ -261,6 +277,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getOriginDossierId();
+				}
+			}
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(id, referenceUid);
 
 			return Response.status(200).entity(dossierFile.getFormData()).build();
@@ -305,6 +328,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getOriginDossierId();
+				}
+			}
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			DossierFile dossierFile = action.updateDossierFileFormData(groupId, id, referenceUid, formdata,
@@ -513,6 +543,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getOriginDossierId();
+				}
+			}
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			DossierFile dossierFile = action.resetDossierFileFormData(groupId, id, referenceUid, formdata,
@@ -608,8 +645,10 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 	@Override
 	public Response getAllDossierFilesByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id) {
+			Locale locale, User user, ServiceContext serviceContext, String id) {
 		DossierFileResultsModel results = new DossierFileResultsModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long dossierId = GetterUtil.getLong(id);
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -619,10 +658,22 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
-			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(id);
+			List<DossierFile> dossierFiles = null;
+			if (dossierId > 0) {
+				dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
+			} else {
+				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				if (dossier != null) {
+					dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossier.getDossierId());
+				}
+			}
 
-			results.setTotal(dossierFiles.size());
-			results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			if (dossierFiles != null) {
+				results.setTotal(dossierFiles.size());
+				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			} else {
+				results.setTotal(0);
+			}
 
 			return Response.status(200).entity(results).build();
 

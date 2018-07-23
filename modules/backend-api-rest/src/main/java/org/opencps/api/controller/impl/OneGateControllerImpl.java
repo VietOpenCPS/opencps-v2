@@ -92,9 +92,9 @@ public class OneGateControllerImpl implements OneGateController {
 				List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
 						.getByServiceProcessId(serviceConfig.getServiceConfigId());
 
+				JSONArray options = JSONFactoryUtil.createJSONArray();
 				for (ProcessOption processOption : processOptions) {
 					_log.info("processOptionId"+ processOption.getDossierTemplateId());
-					JSONArray options = JSONFactoryUtil.createJSONArray();
 					JSONObject elmOption = JSONFactoryUtil.createJSONObject();
 					
 					elmOption.put("processOptionId", processOption.getProcessOptionId());

@@ -30,6 +30,10 @@ public class ProcessActionTerm {
 	public static final String ESIGNATURE = "eSignature";
 	public static final String CONFIG_NOTE = "configNote";
 	public static final String ENABLE = "enable";
+	public static final String FIELD_LABEL = "fieldLabel";
+	public static final String FIELD_NAME = "fieldName";
+	public static final String FIELD_TYPE = "fieldType";
+	public static final String VALUE = "value";
 
 	public static final int NOT_ASSIGNED = 0;
 	public static final int ASSIGNED_TH = 1;

@@ -13,9 +13,11 @@ import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionPaymentModel;
 import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
 import org.opencps.api.dossieraction.model.DossierNextActionModel;
+import org.opencps.api.dossieraction.model.DossierPayLoadModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -221,14 +223,16 @@ public class DossierActionUtils {
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
 				model.seteSignature(processAction.getESignature());
 				model.setSignatureType(processAction.getSignatureType());
-				model.setExtraForm(processAction.getExtraForm());
-				//model.setUserNote(processAction.getUserNote());
+				model.setCheckInput(processAction.getCheckInput());
+				model.setConfigNote(processAction.getConfigNote());
 				ActionConfig act = ActionConfigLocalServiceUtil.getByCode(processAction.getGroupId(),
 						processAction.getActionCode());
 				if (act != null) {
 					model.setUserNote(act.getUserNote());
+					model.setExtraForm(act.getExtraForm());
 				} else {
 					model.setUserNote(0);
+					model.setExtraForm(false);
 				}
 			}
 
@@ -245,13 +249,14 @@ public class DossierActionUtils {
 				payment.setEditable(paymentFee.getBoolean("editable"));
 			}
 
-			List<DossierActionNextActiontoUser> outputUsers = null;
+			List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 			DossierActionNextActiontoUser modelUser = null;
 			if (lstUser != null && lstUser.size() > 0) {
-				outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 				boolean moderator = false;
 				int assigned = 0;
-				for (User user : lstUser) {
+				int lengthUser = lstUser.size();
+				for (int i = 0; i < lengthUser; i++) {
+					User user = lstUser.get(i);
 					modelUser = new DossierActionNextActiontoUser();
 					Map<String, Object> attr = user.getModelAttributes();
 					long userId = GetterUtil.getLong(user.getUserId());
@@ -271,10 +276,21 @@ public class DossierActionUtils {
 					modelUser.setUserName(user.getFullName());
 					modelUser.setModerator(moderator);
 					modelUser.setAssigned(assigned);
-					outputUsers.add(modelUser);
+					boolean flag = true;
+					if (outputUsers != null && outputUsers.isEmpty()) {
+						for (DossierActionNextActiontoUser doUserAct : outputUsers) {
+							if (userId == doUserAct.getUserId()) {
+								flag = false;
+								break;
+							}
+						}
+						if (flag) {
+							outputUsers.add(modelUser);
+						}
+					}
 				}
 			}
-			model.getToUsers().addAll(outputUsers);
+			model.setToUsers(outputUsers);
 
 			List<DossierActionNextActioncreateFiles> outputCreeateFiles = null;
 			if (createFiles != null && createFiles.length() > 0) {
@@ -282,18 +298,19 @@ public class DossierActionUtils {
 				for (int j = 0; j < createFiles.length(); j++) {
 					JSONObject createFile = createFiles.getJSONObject(j);
 					DossierActionNextActioncreateFiles dossierActionNextActioncreateFile = new DossierActionNextActioncreateFiles();
-					dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong("dossierPartId"));
-					dossierActionNextActioncreateFile.setEform(createFile.getBoolean("eform"));
-					dossierActionNextActioncreateFile.setFormData(createFile.getString("formData"));
-					dossierActionNextActioncreateFile.setFormScript(createFile.getString("formScript"));
-					dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean("multiple"));
-					dossierActionNextActioncreateFile.setPartName(createFile.getString("partName"));
-					dossierActionNextActioncreateFile.setPartNo(createFile.getString("partNo"));
-					dossierActionNextActioncreateFile.setPartTip(createFile.getString("partTip"));
+					dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong(DossierPartTerm.DOSSIERPART_ID));
+					dossierActionNextActioncreateFile.setEform(createFile.getBoolean(DossierPartTerm.EFORM));
+					dossierActionNextActioncreateFile.setFormData(createFile.getString(DossierPartTerm.FORM_DATA));
+					dossierActionNextActioncreateFile.setFormScript(createFile.getString(DossierPartTerm.FORM_SCRIPT));
+					dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean(DossierPartTerm.MULTIPLE));
+					dossierActionNextActioncreateFile.setPartName(createFile.getString(DossierPartTerm.PART_NAME));
+					dossierActionNextActioncreateFile.setPartNo(createFile.getString(DossierPartTerm.PART_NO));
+					dossierActionNextActioncreateFile.setPartType(createFile.getInt(DossierPartTerm.PART_TYPE));
+					dossierActionNextActioncreateFile.setPartTip(createFile.getString(DossierPartTerm.PART_TIP));
 					dossierActionNextActioncreateFile.setTemplateFileNo(createFile.getString(DossierFileTerm.FILE_TEMPLATE_NO));
-					dossierActionNextActioncreateFile.setReferenceUid(createFile.getString("referenceUid"));
-					dossierActionNextActioncreateFile.setCounter(createFile.getInt("counter"));
-					dossierActionNextActioncreateFile.setDossierFileId(createFile.getLong("dossierFileId"));
+					dossierActionNextActioncreateFile.setReferenceUid(createFile.getString(DossierPartTerm.REFERENCE_UID));
+					dossierActionNextActioncreateFile.setCounter(createFile.getInt(DossierPartTerm.COUNTER));
+					dossierActionNextActioncreateFile.setDossierFileId(createFile.getLong(DossierPartTerm.DOSSIER_FILE_ID));
 					outputCreeateFiles.add(dossierActionNextActioncreateFile);
 				}
 				model.getCreateFiles().addAll(outputCreeateFiles);
@@ -422,5 +439,25 @@ public class DossierActionUtils {
 			listContacts.add(contact);
 		}
 		return listContacts;
+	}
+
+	public static List<DossierPayLoadModel> mappingToPayLoadNextActions(JSONArray jsonData) {
+
+		List<DossierPayLoadModel> outputs = new ArrayList<DossierPayLoadModel>();
+		if (jsonData != null && jsonData.length() > 0) {
+			for (int i = 0; i < jsonData.length(); i++) {
+				JSONObject jsonObject = jsonData.getJSONObject(i);
+				DossierPayLoadModel model = new DossierPayLoadModel();
+
+				model.setFieldLabel(jsonObject.getString(ProcessActionTerm.FIELD_LABEL));
+				model.setFieldName(jsonObject.getString(ProcessActionTerm.FIELD_NAME));
+				model.setFieldType(jsonObject.getString(ProcessActionTerm.FIELD_TYPE));
+				model.setValue(jsonObject.getString(ProcessActionTerm.VALUE));
+
+				outputs.add(model);
+			}
+		}
+
+		return outputs;
 	}
 }

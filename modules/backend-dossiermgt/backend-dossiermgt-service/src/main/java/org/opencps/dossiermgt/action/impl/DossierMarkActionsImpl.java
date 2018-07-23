@@ -17,11 +17,12 @@ public class DossierMarkActionsImpl implements DossierMarkActions {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMarkActionsImpl.class);
 
 	@Override
-	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Boolean fileCheck,
-			int fileType, ServiceContext serviceContext) throws PortalException, SystemException {
+	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Integer fileMark,
+			Integer fileCheck, String fileComment, ServiceContext serviceContext)
+			throws PortalException, SystemException {
 
-		return DossierMarkLocalServiceUtil.addDossierMark(groupId, dossierId, dossierPartNo, fileCheck, fileType,
-				serviceContext);
+		return DossierMarkLocalServiceUtil.addDossierMark(groupId, dossierId, dossierPartNo, fileMark, fileCheck,
+				fileComment, serviceContext);
 	}
 
 	@Override

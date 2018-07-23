@@ -1,0 +1,4 @@
+Bundle-Name: opencps-statistic-rest
+Bundle-SymbolicName: org.opencps.statistic.rest
+Bundle-Version: 1.0.0-SNAPSHOT
+Liferay-Configuration-Path: /configuration

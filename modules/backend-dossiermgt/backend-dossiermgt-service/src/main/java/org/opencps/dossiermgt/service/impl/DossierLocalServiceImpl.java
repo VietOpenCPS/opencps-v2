@@ -31,6 +31,7 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.exception.NoSuchDossierException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
@@ -47,6 +48,7 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
+import org.opencps.usermgt.model.Applicant;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -1269,7 +1271,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateStatus(long groupId, long id, String refId, String status, String statusText, String subStatus,
-			String subStatusText, String lockState, ServiceContext context) throws PortalException {
+			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
+			throws PortalException {
 
 		validateUpdateStatus(groupId, id, refId, status, statusText, subStatus, subStatusText);
 
@@ -1290,6 +1293,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
 		dossier.setLockState(lockState);
+		dossier.setDossierNote(stepInstruction);
 
 		/*
 		 * if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
@@ -2446,5 +2450,51 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossierPersistence.update(dossier);
 
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateApplicantInfo(long dossierId, 
+			Date applicantIdDate,
+			String applicantIdNo,
+			String applicantIdType,
+			String applicantName,
+			String address,
+			String cityCode,
+			String cityName,
+			String districtCode,
+			String districtName,
+			String wardCode,
+			String wardName,
+			String contactEmail,
+			String contactTelNo) throws NoSuchDossierException {
+		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+		
+		dossier.setApplicantIdDate(applicantIdDate);
+		dossier.setApplicantIdNo(applicantIdNo);
+		dossier.setApplicantIdType(applicantIdType);
+		dossier.setApplicantName(applicantName);
+		dossier.setAddress(address);
+		dossier.setCityCode(cityCode);
+		dossier.setCityName(cityName);
+		dossier.setDistrictCode(districtCode);
+		dossier.setDistrictName(districtName);
+		dossier.setWardCode(wardCode);
+		dossier.setWardName(wardName);
+		dossier.setContactEmail(contactEmail);
+		dossier.setContactTelNo(contactTelNo);
+		
+		dossier.setDelegateAddress(address);
+		dossier.setDelegateCityCode(cityCode);
+		dossier.setDelegateCityName(cityName);
+		dossier.setDelegateDistrictCode(districtCode);
+		dossier.setDelegateDistrictName(districtName);
+		dossier.setDelegateEmail(contactEmail);
+		dossier.setDelegateIdNo(applicantIdNo);
+		dossier.setDelegateName(applicantName);
+		dossier.setDelegateTelNo(contactTelNo);
+		dossier.setDelegateWardCode(wardCode);
+		dossier.setDelegateWardName(wardName);
+			
+		return dossierPersistence.update(dossier);
 	}
 }

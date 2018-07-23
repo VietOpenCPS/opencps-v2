@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action;
 
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -19,4 +20,6 @@ public interface DossierActionUser {
 	public void initDossierActionUser(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignedUserId) throws PortalException;
 	
 	public void assignDossierActionUser(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId, JSONArray subUsers) throws PortalException;
+
+	public void copyRoleAsStep(ProcessStep curStep, Dossier dossier);
 }

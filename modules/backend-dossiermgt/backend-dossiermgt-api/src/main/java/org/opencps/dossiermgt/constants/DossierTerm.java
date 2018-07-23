@@ -35,6 +35,7 @@ public class DossierTerm {
 	public static final String SUBMITTING = "submitting";
 	public static final String SUBMIT_DATE = "submitDate";
 	public static final String RECEIVE_DATE = "receiveDate";
+	public static final String EXTEND_DATE = "extendDate";
 	public static final String RECEIVE_DATE_SORTABLE = "receiveDate_sortable";
 	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";
@@ -88,6 +89,7 @@ public class DossierTerm {
 	public static final String STEP = "step";
 	public static final String TOP = "top";
 	public static final String STATE = "state";
+	public static final String TOTAL = "total";
 
 	public static final String FROM_RECEIVEDATE = "fromReceiveDate";
 	public static final String TO_RECEIVEDATE = "toReceiveDate";
@@ -136,5 +138,13 @@ public class DossierTerm {
 	public static final String USER_NOTE = "userNote";
 	public static final String DURATION_COUNT = "durationCount";
 	public static final String DURATION_UNIT = "durationUnit";
+	public static final String SAMPLE_COUNT = "sampleCount";
+	public static final String DELEGATE_ADDRESS = "delegateAddress";
+	
+	public static final String DOSSIER_MARKS = "dossierMarks";
+	public static final String REGISTER_BOOK_CODE = "registerBookCode";
+	public static final String SEQUENCE_ROLE = "sequenceRole";
+	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
+	public static final String ACTION_USER = "actionUser";
 
 }

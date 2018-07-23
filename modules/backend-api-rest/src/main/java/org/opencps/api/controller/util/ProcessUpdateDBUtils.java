@@ -45,6 +45,9 @@ import org.opencps.api.v21.model.StepConfigList.StepConfig;
 import org.opencps.api.v21.model.Steps;
 import org.opencps.api.v21.model.Steps.ProcessStep;
 import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
+import org.opencps.api.v21.model.UserManagement;
+import org.opencps.api.v21.model.UserManagement.Roles.JobPos;
+import org.opencps.api.v21.model.UserManagement.Users.Employee;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -73,7 +76,13 @@ import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
+import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.action.JobposInterface;
+import org.opencps.usermgt.action.impl.EmployeeActions;
+import org.opencps.usermgt.action.impl.JobposActions;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -81,6 +90,9 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import backend.auth.api.exception.UnauthenticationException;
+import backend.auth.api.exception.UnauthorizationException;
 
 public class ProcessUpdateDBUtils {
 
@@ -389,6 +401,85 @@ public class ProcessUpdateDBUtils {
 
 	}
 
+	//LamTV_Update UserManagement to DB
+	public static void processUpdateUser(UserManagement userManagement, long groupId, long userId,
+			ServiceContext serviceContext) {
+		try {
+//			//Delete all table NotificationTemplate
+//			boolean flagUser = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
+//			//Update table NotificationTemplate
+			if (userManagement != null) {
+				org.opencps.api.v21.model.UserManagement.Roles roles = userManagement.getRoles();
+				if (roles != null) {
+					processUpdateJobPos(userId, groupId, roles, serviceContext);
+				}
+				org.opencps.api.v21.model.UserManagement.Users users = userManagement.getUsers();
+				if (users != null) {
+					processUpdateEmployee(userId, groupId, users, serviceContext);
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+	}
+
+	private static void processUpdateEmployee(long userId, long groupId,
+			org.opencps.api.v21.model.UserManagement.Users users, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException, PortalException {
+//		List<Employee> employeeList = users.getEmployee();
+//		if (employeeList != null && employeeList.size() > 0) {
+//			EmployeeInterface actionEmployee = new EmployeeActions();
+//			String employeeNo = StringPool.BLANK;
+//			String fullname = StringPool.BLANK;
+//			String title = StringPool.BLANK;
+//			Integer gender = 0;
+//			String birthdate = StringPool.BLANK;
+//			String telNo = StringPool.BLANK;
+//			String email = StringPool.BLANK;
+//			Integer workingStatus = 0;
+//			String jobTitle = StringPool.BLANK;
+//			String roles = StringPool.BLANK;
+//			for (Employee employee : employeeList) {
+//				employeeNo = employee.getEmployeeNo();
+//				fullname = employee.getFullname();
+//				title = employee.getTitle();
+//				gender = employee.getGender();
+//				birthdate = employee.getBirthdate();
+//				telNo = employee.getTelNo();
+//				email = employee.getEmail();
+//				workingStatus = employee.getWorkingStatus();
+//				jobTitle = employee.getJobTitle();
+//				roles = employee.getRoles();
+//				if (Validator.isNotNull(employeeNo)) {
+//					// Check record exits DB
+//					actionEmployee.updateEmployeeDB(userId, groupId, employeeNo, fullname, title, gender, birthdate,
+//							telNo, email, workingStatus, jobTitle, roles, serviceContext);
+//				}
+//			}
+//		}
+	}
+
+	private static void processUpdateJobPos(long userId, long groupId,
+			org.opencps.api.v21.model.UserManagement.Roles roles, ServiceContext serviceContext)
+			throws NoSuchUserException {
+
+//		List<JobPos> jobPosList = roles.getJobPos();
+//		if (jobPosList != null && jobPosList.size() > 0) {
+//			JobposInterface actionJob = new JobposActions();
+//			String jobCode = StringPool.BLANK;
+//			String title = StringPool.BLANK;
+//			String description = StringPool.BLANK;
+//			for (JobPos jobPos : jobPosList) {
+//				jobCode = jobPos.getCode();
+//				title = jobPos.getTitle();
+//				description = jobPos.getDescription();
+//				if (Validator.isNotNull(jobCode)) {
+//					// Check record exits DB
+//					actionJob.updateJobPosDB(userId, groupId, jobCode, title, description, serviceContext);
+//				}
+//			}
+//		}
+	}
+
 	//LamTV_Update Dictcollection to DB
 	public static void processUpdateDictCollection(DictCollection dicts, long groupId, long userId, ServiceContext serviceContext) {
 		try {
@@ -607,6 +698,7 @@ public class ProcessUpdateDBUtils {
 			ServiceConfigActions actionConfig, ServiceContext serviceContext) {
 		List<ProcessOption> optionList = process.getProcessOption();
 		if (optionList != null && optionList.size() > 0) {
+			_log.info("optionList: "+optionList.size());
 			String optionCode = StringPool.BLANK;
 			String optionName = StringPool.BLANK;
 			Integer seqOrder = 0;
@@ -752,18 +844,21 @@ public class ProcessUpdateDBUtils {
 		// Add list file serviceFileTemplate
 		List<ProcessRole> processRoleList = processRoles.getProcessRole();
 		if (processRoleList != null && processRoleList.size() > 0 && flagProRole) {
-			long roleId = 0;
+			String roleCode = StringPool.BLANK;
 			String roleName = StringPool.BLANK;
 			boolean moderator = false;
 			String condition = StringPool.BLANK;
 			for (ProcessRole processRole : processRoleList) {
-				roleId = processRole.getRoleId();
+				roleCode = processRole.getRoleCode();
 				roleName = processRole.getRoleName();
 				moderator = processRole.isModerator();
 				condition = processRole.getCondition();
 				//
-				actionService.updateServiceProcessRoleDB(userId, groupId, serviceProcessId, roleId, roleName,
-						moderator, condition, serviceContext);
+				if (Validator.isNotNull(roleCode)) {
+					long roleId = actionService.getByRoleCode(groupId, roleCode);
+					actionService.updateServiceProcessRoleDB(userId, groupId, serviceProcessId, roleId, roleCode, roleName,
+							moderator, condition, serviceContext);
+				}
 			}
 		}
 	}
@@ -843,18 +938,21 @@ public class ProcessUpdateDBUtils {
 			ServiceContext serviceContext) {
 		List<StepRole> stepRoleList = stepRoles.getStepRole();
 		if (stepRoleList != null && stepRoleList.size() > 0) {
-			long roleId = 0;
+			String roleCode = StringPool.BLANK;
 			String roleName = StringPool.BLANK;
 			boolean moderator = false;
 			String condition = StringPool.BLANK;
 			for (StepRole stepRole : stepRoleList) {
-				roleId = stepRole.getRoleId();
+				roleCode = stepRole.getRoleCode();
 				roleName = stepRole.getRoleName();
 				moderator = stepRole.isModerator();
 				condition = stepRole.getCondition();
 				//
-				actionService.updateProcessStepRoleDB(userId, groupId, processStepId, roleId, roleName,
-						moderator, condition, serviceContext);
+				if (Validator.isNotNull(roleCode)) {
+					long roleId = actionService.getByRoleCode(groupId, roleCode);
+					actionService.updateProcessStepRoleDB(userId, groupId, processStepId, roleId, roleCode, roleName,
+							moderator, condition, serviceContext);
+				}
 			}
 		}
 	}

@@ -83,7 +83,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			String fromStepCode, String fromStepName, String fromSequenceNo,
 			String actionCode, String actionUser, String actionName, String actionNote,
 			int actionOverdue, String syncActionCode, boolean pending, boolean rollbackable, String stepCode,
-			String stepName, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			String stepName, 
+			String sequenceNo,
+			Date dueDate, long nextActionId, String payload, String stepInstruction,
 			int state, int eventStatus,
 			ServiceContext context) throws PortalException {
 
@@ -124,7 +126,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setPreviousActionId(previousActionId);
 			object.setFromStepCode(fromStepCode);
 			object.setFromStepName(fromStepName);
-			object.setSequenceNo(fromSequenceNo);
+			object.setFromSequenceNo(fromSequenceNo);
+			object.setSequenceNo(sequenceNo);
 			object.setActionCode(actionCode);
 			object.setActionUser(actionUser);
 			object.setActionName(actionName);
@@ -172,7 +175,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			long serviceProcessId, long previousActionId, 
 			String fromStepCode, String fromStepName, String fromSequenceNo,	
 			String actionCode, String actionUser, String actionName, String actionNote, int actionOverdue,
-			String stepCode, String stepName, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			String stepCode, String stepName, 
+			String sequenceNo,
+			Date dueDate, long nextActionId, String payload, String stepInstruction,
 			int state, int eventStatus,
 			ServiceContext context) throws PortalException {
 
@@ -205,9 +210,14 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object.setPreviousActionId(previousActionId);
 			object.setFromStepCode(fromStepCode);
 			object.setFromStepName(fromStepName);
-			object.setSequenceNo(fromSequenceNo);
+			object.setFromSequenceNo(fromSequenceNo);
+			object.setSequenceNo(sequenceNo);
 			object.setActionCode(actionCode);
-			object.setActionUser(actionUser);
+			if (Validator.isNotNull(actionUser)) {
+				object.setActionUser(actionUser);
+			} else {
+				object.setActionUser(fullName);
+			}
 			object.setActionName(actionName);
 			object.setActionNote(actionNote);
 			object.setActionOverdue(actionOverdue);
@@ -280,6 +290,36 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		dossierActionPersistence.update(action);
 
 		return action;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateState(long actionId, int state) {
+		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
+
+		action.setState(state);
+
+		Date now = new Date();
+
+		action.setModifiedDate(now);
+
+		dossierActionPersistence.update(action);
+
+		return action;		
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateRollbackable(long actionId, boolean rollbackable) {
+		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
+
+		action.setRollbackable(rollbackable);
+
+		Date now = new Date();
+
+		action.setModifiedDate(now);
+
+		dossierActionPersistence.update(action);
+
+		return action;		
 	}
 
 	private void validateUpdateAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,

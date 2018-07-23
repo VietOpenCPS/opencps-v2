@@ -7,6 +7,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierTemplateManagement;
@@ -35,6 +36,8 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -49,6 +52,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class DossierTemplateManagementImpl implements DossierTemplateManagement {
 
+	private static Log _log = LogFactoryUtil.getLog(DossierTemplateManagementImpl.class);
 	@Override
 	public Response getDossierTemplates(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierTemplateSearchModel query) {
@@ -589,16 +593,25 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 	@Override
 	public Response getFormScript(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id, String partNo) {
+			User user, ServiceContext serviceContext, String id, String partNo) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long dossierTempId = GetterUtil.getLong(id);
+		_log.info("dossierTempId: "+dossierTempId+"|id: "+id+"|partNo: "+partNo);
+		
 
 		DossierPartContentInputUpdateModel result = new DossierPartContentInputUpdateModel();
 
 		try {
 
-			String content = actions.getFormScript(groupId, id, partNo);
+			if (dossierTempId == 0) {
+				DossierTemplate dossierTemp = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, id);
+				if (dossierTemp != null) {
+					dossierTempId = dossierTemp.getDossierTemplateId();
+				}
+			}
+			String content = actions.getFormScript(groupId, dossierTempId, partNo);
 
 			result.setValue(content);
 

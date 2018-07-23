@@ -202,7 +202,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			//TODO: user_group
 //			RoleLocalServiceUtil.addGroupRole(groupId, role.getRoleId());
 
-			jobPos.setMappingRoleId(role.getRoleId());
+		jobPos.setMappingRoleId(role.getRoleId());
 		}
 		
 		jobPos.setExpandoBridgeAttributes(serviceContext);
@@ -403,4 +403,65 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
+
+	//LamTV_ADD
+	@Indexable(type = IndexableType.REINDEX)
+	public JobPos updateJobPosDB(long userId, long groupId, String jobPosCode, String title, String description,
+			ServiceContext serviceContext) throws PortalException {
+
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		JobPos jobPos = jobPosPersistence.fetchByF_CODE(groupId, jobPosCode);
+
+//		JobPos jobPosCheck = jobPosPersistence.fetchByF_title(jobPos.getGroupId(), title);
+		
+//		if (Validator.isNotNull(jobPosCheck) && jobPosCheck.getJobPosId() != jobPosId) {
+//			throw new DuplicateCategoryException();
+//		}
+		if (jobPos != null) {
+			//Audit field
+			jobPos.setUserId(user.getUserId());
+			jobPos.setUserName(user.getFullName());
+			jobPos.setModifiedDate(serviceContext.getCreateDate(now));
+			//Other field
+			if (Validator.isNotNull(title))
+				jobPos.setTitle(title);
+			if (Validator.isNotNull(description))
+				jobPos.setDescription(description);
+
+		} else {
+			long jobPosId = counterLocalService.increment(JobPos.class.getName());
+			jobPos = jobPosPersistence.create(jobPosId);
+			// create role name
+			String role_name = title;
+			role_name = title + jobPosId;
+
+			// add role
+			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+					role_name, null, null, 1, "", serviceContext);
+
+			// Audit fields
+			jobPos.setUserId(user.getUserId());
+			jobPos.setUserName(user.getFullName());
+			jobPos.setGroupId(groupId);
+			jobPos.setCreateDate(now);
+			jobPos.setModifiedDate(serviceContext.getCreateDate(now));
+			jobPos.setCompanyId(serviceContext.getCompanyId());
+
+			// Other fields
+			jobPos.setJobPosCode(jobPosCode);
+			jobPos.setTitle(title);
+			jobPos.setDescription(description);
+		}
+
+		jobPosPersistence.update(jobPos);
+
+		return jobPos;
+	}
+
+	public JobPos getByJobCode(long groupId, String jobCode) {
+		return jobPosPersistence.fetchByF_CODE(groupId, jobCode);
+	}
+
 }

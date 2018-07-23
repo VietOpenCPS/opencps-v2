@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class APIMessageProcessor extends BaseMessageProcessor {
 	private Log _log = LogFactoryUtil.getLog(APIMessageProcessor.class);
@@ -74,10 +75,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				retry++;
 				if (retry < DossierSyncTerm.MAX_RETRY) {
 					dossierSync.setRetry(retry);
+					dossierSync.setState(DossierSyncTerm.STATE_WAITING_SYNC);
 					DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);						
 				}
 				else {
 					dossierSync.setState(DossierSyncTerm.STATE_ACK_ERROR);
+					DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 				}
 			}
 		}
@@ -99,10 +102,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			retry++;
 			if (retry < DossierSyncTerm.MAX_RETRY) {
 				dossierSync.setRetry(retry);
+				dossierSync.setState(DossierSyncTerm.STATE_WAITING_SYNC);
 				DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);						
 			}
 			else {
 				dossierSync.setState(DossierSyncTerm.STATE_ACK_ERROR);
+				DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);	
 			}
 		}
 	}
@@ -156,12 +161,36 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			return false;
 		}
 		
+		//Process action
+		try {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
+			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
+			if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
+					|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment())) {
+				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+				pfiModel.setApplicantName(dossier.getApplicantName());
+				pfiModel.setBankInfo(StringPool.BLANK);
+				pfiModel.setEpaymentProfile(StringPool.BLANK);
+				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+				pfiModel.setPaymentAmount(processAction.getPaymentFee());
+				pfiModel.setPaymentFee(processAction.getPaymentFee());
+				pfiModel.setPaymentNote(StringPool.BLANK);
+				pfiModel.setReferenceUid(StringPool.BLANK);
+				
+				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			}
+		}
+		catch (Exception e) {
+			
+		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setPayload(dossierSync.getPayload());
 		
-		ExecuteOneAction actionResult = client.postDossierAction(dossier.getDossierId(), actionModel);
+		ExecuteOneAction actionResult = client.postDossierAction(dossier.getReferenceUid(), actionModel);
 		if (actionResult != null) {
 			return true;
 		}
@@ -180,7 +209,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
 		model.setOnline("true");
 		DossierDetailModel result = client.postDossier(model);
-		if (result == null) {
+		if (result == null || Validator.isNull(result.getDossierId())) {
 			return false;
 		}
 		
@@ -249,8 +278,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-		if (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
-				|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment()) {
+		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
+				|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment())) {
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 			pfiModel.setApplicantName(dossier.getApplicantName());
@@ -271,7 +300,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setPayload(dossierSync.getPayload());
 		
-		ExecuteOneAction actionResult = client.postDossierAction(dossier.getDossierId(), actionModel);
+		ExecuteOneAction actionResult = client.postDossierAction(String.valueOf(result.getDossierId()), actionModel);
 		if (actionResult != null) {
 			return true;
 		}
