@@ -224,8 +224,12 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.AGENCY, agency);
 			params.put(DossierTerm.SERVICE, service);
 			params.put(DossierTerm.TEMPLATE, template);
-			params.put(DossierTerm.YEAR, year);
-			params.put(DossierTerm.MONTH, month);
+			if (year != 0) {
+				params.put(DossierTerm.YEAR, year);				
+			}
+			if (month != 0) {
+				params.put(DossierTerm.MONTH, month);				
+			}
 			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
