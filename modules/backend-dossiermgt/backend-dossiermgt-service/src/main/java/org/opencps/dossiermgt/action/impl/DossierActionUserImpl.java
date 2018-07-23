@@ -5,6 +5,7 @@ import java.util.List;
 import org.opencps.dossiermgt.action.DossierActionUser;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierUser;
@@ -358,6 +359,17 @@ public class DossierActionUserImpl implements DossierActionUser {
 				pk.setDossierActionId(dossier.getDossierActionId());
 				pk.setUserId(dau.getUserId());
 				org.opencps.dossiermgt.model.DossierActionUser oldModel = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+				
+				DossierUserPK duPk = new DossierUserPK();
+				duPk.setDossierId(dossier.getDossierId());
+				duPk.setUserId(dau.getUserId());
+				int moderator = 0;
+				
+				if (dau.getAssigned() != DossierActionUserTerm.NOT_ASSIGNED) {
+					moderator = 1;
+				}
+				DossierUser duModel = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
+				
 				if (oldModel != null) {
 					model.setVisited(dau.getVisited());
 					model.setDossierId(dossier.getDossierId());
@@ -379,6 +391,19 @@ public class DossierActionUserImpl implements DossierActionUser {
 					model.setUserId(dau.getUserId());
 
 					DossierActionUserLocalServiceUtil.addDossierActionUser(model);					
+				}
+				
+				if (duModel == null) {
+					DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), 
+							dau.getUserId(), moderator, true);
+				}
+				else {
+					try {
+						DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), dau.getUserId(),
+								moderator, true);
+					} catch (NoSuchDossierUserException e) {
+						e.printStackTrace();
+					}					
 				}
 			}
 		}
