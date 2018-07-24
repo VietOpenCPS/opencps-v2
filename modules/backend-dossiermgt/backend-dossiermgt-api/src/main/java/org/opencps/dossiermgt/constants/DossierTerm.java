@@ -126,6 +126,7 @@ public class DossierTerm {
 	
 	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
 	public static final String DOSSIER_STATUS_NEW = "new";
+	public static final String DOSSIER_STATUS_RECEIVING = "receiving";
 	public static final String DOSSIER_STATUS_PROCESSING = "processing";
 	public static final String DOSSIER_STATUS_RELEASING = "releasing";
 	public static final String DOSSIER_STATUS_DENIED = "denied";
