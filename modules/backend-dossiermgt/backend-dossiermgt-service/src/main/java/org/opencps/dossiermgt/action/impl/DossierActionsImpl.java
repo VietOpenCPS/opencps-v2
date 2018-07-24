@@ -2226,6 +2226,7 @@ public class DossierActionsImpl implements DossierActions {
 		ServiceProcess serviceProcess = null;
 		ActionConfig actionConfig = null;
 		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+		String prevStatus = dossier.getDossierStatus();
 		
 		DossierAction previousAction = null;
 		if (dossier.getDossierActionId() != 0) {
@@ -2393,7 +2394,7 @@ public class DossierActionsImpl implements DossierActions {
 						dossierAction.getStepInstruction(), context);
 				
 				//Update dossier processing date
-				flagChanged = updateProcessingDate(dossier, curStatus, curSubStatus, context);
+				flagChanged = updateProcessingDate(dossier, curStatus, curSubStatus, prevStatus, context);
 			}
 				// update reference dossier
 				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
@@ -2556,6 +2557,8 @@ public class DossierActionsImpl implements DossierActions {
 				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
 			if (dossier.getExtendDate() != null)
 				payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
+			if (dossier.getReceiveDate() != null)
+				payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
 			if (Validator.isNotNull(dossier.getDossierNo()))
 				payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			if (dossier.getDueDate() != null)
@@ -2644,9 +2647,39 @@ public class DossierActionsImpl implements DossierActions {
 		}		
 	}
 	
-	private boolean[] updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, ServiceContext context) {
+	private boolean[] updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, String prevStatus, ServiceContext context) {
 		Date now = new Date();
 		boolean[] bResult = new boolean[4];
+		
+		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
+				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
+				|| (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+			params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+			params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+			params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+			String serviceCode = dossier.getServiceCode();
+			String govAgencyCode = dossier.getGovAgencyCode();
+			String dossierTemplateNo = dossier.getDossierTemplateNo();
+			
+			ProcessOption option;
+			try {
+				option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, dossier.getGroupId());
+				long serviceProcessId = option.getServiceProcessId();
+
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+
+				String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
+						dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+
+				dossier.setDossierNo(dossierRef.trim());
+				
+				DossierLocalServiceUtil.updateDossier(dossier);
+			} catch (PortalException e) {
+//				e.printStackTrace();
+			}		
+		}
 		
 		if (Validator.isNull(dossier.getReceiveDate())
 				&& Validator.isNotNull(dossier.getDossierNo())) {
@@ -2658,7 +2691,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 
-		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
+		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus) && DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
 			try {
 				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				bResult[1] = true;
