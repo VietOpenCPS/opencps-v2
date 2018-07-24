@@ -2362,7 +2362,7 @@ public class DossierActionsImpl implements DossierActions {
 				int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
 
 				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId,
-						serviceProcessId, 0l, 
+						serviceProcessId, dossier.getDossierActionId(), 
 						fromStepCode, fromStepName, fromSequenceNo,
 						actionCode, actionUser, actionName, actionNote, actionOverdue,
 						stepCode, stepName, 
@@ -2370,6 +2370,11 @@ public class DossierActionsImpl implements DossierActions {
 						dueDate, 0l, payload, stepInstruction, 
 						state, eventStatus,
 						context);
+				
+				//Update previous action nextActionId
+				if (previousAction != null && dossierAction != null) {
+					DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
+				}
 				
 				if (actionConfig != null) {
 					if (actionConfig.getRollbackable()) {

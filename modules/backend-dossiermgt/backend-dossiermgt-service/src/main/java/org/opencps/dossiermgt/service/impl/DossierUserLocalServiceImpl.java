@@ -103,4 +103,8 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 	public List<DossierUser> findByDID(long dossierId) {
 		return dossierUserPersistence.findByDID(dossierId);
 	}
+	
+	public DossierUser findByDID_UD(long dossierId, long userId) {
+		return dossierUserPersistence.fetchByDID_UID(dossierId, userId);
+	}
 }
