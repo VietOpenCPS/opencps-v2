@@ -24,6 +24,7 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
@@ -2238,45 +2239,9 @@ public class DossierActionsImpl implements DossierActions {
 		
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = JSONFactoryUtil.createJSONObject(payload);
-			if (pl.has(DossierTerm.DOSSIER_NOTE)) {
-				if (!pl.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
-					dossier.setDossierNote(pl.getString(DossierTerm.DOSSIER_NOTE));
-				}
-			}
-			if (pl.has(DossierTerm.EXTEND_DATE)) {
-				if (dossier.getExtendDate() == null || pl.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
-					dossier.setExtendDate(new Date(pl.getLong(DossierTerm.EXTEND_DATE)));
-				}
-			}
-			if (pl.has(DossierTerm.DOSSIER_NO)) {
-				if (!pl.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
-					dossier.setDossierNo(pl.getString(DossierTerm.DOSSIER_NO));
-				}
-			}
-			if (pl.has(DossierTerm.DUE_DATE)) {
-				if (dossier.getDueDate() == null || pl.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
-					dossier.setDueDate(new Date(pl.getLong(DossierTerm.DUE_DATE)));
-				}
-			}
-			if (pl.has(DossierTerm.FINISH_DATE)) {
-				if (dossier.getFinishDate() == null || pl.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
-					dossier.setFinishDate(new Date(pl.getLong(DossierTerm.FINISH_DATE)));	
-				}
-			}
-			if (pl.has(DossierTerm.RECEIVE_DATE)) {
-				if (dossier.getReceiveDate() == null || pl.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
-					dossier.setReceiveDate(new Date(pl.getLong(DossierTerm.RECEIVE_DATE)));	
-				}
-			}
-			
-			DossierLocalServiceUtil.updateDossier(dossier);
+			DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
-		
-		//Reindex dossier
-		Indexer<Dossier> indexer = IndexerRegistryUtil
-				.nullSafeGetIndexer(Dossier.class);
-		indexer.reindex(dossier);
-		
+				
 		if (option != null && proAction != null) {
 			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
@@ -2487,26 +2452,8 @@ public class DossierActionsImpl implements DossierActions {
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
 		if (syncType > 0) {
-			int state = DossierSyncTerm.STATE_NOT_SYNC;
-			if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-				if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
-					state = DossierSyncTerm.STATE_WAITING_SYNC;
-				}
-				else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM) {
-					state = DossierSyncTerm.STATE_NOT_SYNC;
-				}
-			}
-			else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA) {
-				state = DossierSyncTerm.STATE_NOT_SYNC;
-			}
-			else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
-				if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
-					state = DossierSyncTerm.STATE_NOT_SYNC;
-				}
-				else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM) {
-					state = DossierSyncTerm.STATE_WAITING_SYNC;
-				}				
-			}
+			int state = DossierActionUtils.getSyncState(syncType, dossier);
+			
 			//If state = 1 set pending dossier
 			if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
 				dossierAction.setPending(true);
@@ -2554,24 +2501,7 @@ public class DossierActionsImpl implements DossierActions {
 				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
-			if (Validator.isNotNull(dossier.getDossierNote()))
-				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-			if (dossier.getExtendDate() != null && flagChanged != null &&
-					flagChanged.containsKey(DossierTerm.EXTEND_DATE) && flagChanged.get(DossierTerm.EXTEND_DATE))
-				payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
-			if (dossier.getReceiveDate() != null && flagChanged != null && flagChanged.get(DossierTerm.RECEIVE_DATE))
-				payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
-			if (Validator.isNotNull(dossier.getDossierNo()) && flagChanged != null && 
-					flagChanged.containsKey(DossierTerm.DOSSIER_NO) &&
-					flagChanged.get(DossierTerm.DOSSIER_NO))
-				payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
-			if (dossier.getDueDate() != null && flagChanged != null && flagChanged.containsKey(DossierTerm.DUE_DATE)
-					&& flagChanged.get(DossierTerm.DUE_DATE))
-				payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
-			if (flagChanged != null && flagChanged.containsKey(DossierTerm.FINISH_DATE)
-					&& flagChanged.get(DossierTerm.FINISH_DATE)
-					&& dossier.getFinishDate() != null)
-				payloadObject.put(DossierTerm.FINISH_DATE, dossier.getFinishDate());
+			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
@@ -2580,7 +2510,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 				
 		//Reindex dossier
-		indexer = IndexerRegistryUtil
+		Indexer<Dossier> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 		indexer.reindex(dossier);
 		
