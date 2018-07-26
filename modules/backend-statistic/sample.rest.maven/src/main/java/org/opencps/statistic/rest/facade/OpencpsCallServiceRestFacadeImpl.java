@@ -8,6 +8,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.gm.gcc.cei.ole.support.dealership.dto.DealershipResponse;
+
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
@@ -30,11 +32,11 @@ public class OpencpsCallServiceRestFacadeImpl extends OpencpsRestFacade<String, 
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 
 		// build the url
-		String url = buildUrl("http://google.com", urlPathSegments, urlQueryParams);
+		String url = buildUrl(payload, urlPathSegments, urlQueryParams);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 
-		return executeGenericRestCall(url, HttpMethod.POST, httpHeaders, payload, String.class).getBody();
+		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, String.class).getBody();
 
 	}
 

