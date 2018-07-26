@@ -41,7 +41,7 @@ public class DossierActionUtils {
 		if (dossier.getExtendDate() != null && bResult != null &&
 				bResult.containsKey(DossierTerm.EXTEND_DATE) && bResult.get(DossierTerm.EXTEND_DATE))
 			payloadObject.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate().getTime());
-		if (dossier.getReceiveDate() != null && bResult != null && bResult.get(DossierTerm.RECEIVE_DATE))
+		if (dossier.getReceiveDate() != null && bResult != null && bResult.containsKey(DossierTerm.RECEIVE_DATE) && bResult.get(DossierTerm.RECEIVE_DATE))
 			payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
 		if (Validator.isNotNull(dossier.getDossierNo()) && bResult != null && 
 				bResult.containsKey(DossierTerm.DOSSIER_NO) &&

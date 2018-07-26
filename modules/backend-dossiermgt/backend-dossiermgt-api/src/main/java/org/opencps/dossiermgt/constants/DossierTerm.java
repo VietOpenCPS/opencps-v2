@@ -128,7 +128,12 @@ public class DossierTerm {
 	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
 	public static final String DOSSIER_STATUS_NEW = "new";
 	public static final String DOSSIER_STATUS_RECEIVING = "receiving";
+	public static final String DOSSIER_STATUS_WAITING = "waiting";
 	public static final String DOSSIER_STATUS_PROCESSING = "processing";
+	public static final String DOSSIER_STATUS_PAUSING = "pausing";
+	public static final String DOSSIER_STATUS_POSTING = "posting";
+	public static final String DOSSIER_STATUS_CORRECTING = "correcting";
+	public static final String DOSSIER_STATUS_CANCELLING = "cancelling";
 	public static final String DOSSIER_STATUS_RELEASING = "releasing";
 	public static final String DOSSIER_STATUS_DENIED = "denied";
 	public static final String DOSSIER_STATUS_UNRESOLVED = "unresolved";

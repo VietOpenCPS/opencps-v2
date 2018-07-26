@@ -1262,10 +1262,12 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
 				try {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
+					_log.info("User id: " + userId);
+					_log.info("Dossier action user:" );
 					//GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-						if (dossier.getUserId() == userId && !pending) {
+						if (dossier.getUserId() == userId && !pending && dossierAction != null && dossierAction.getUserId() == userId) {
 							enable = 1;
 						}
 					}
@@ -1273,7 +1275,7 @@ public class DossierActionsImpl implements DossierActions {
 						int assign = dActionUser.getAssigned();
 						if (assign==1 && !pending) enable = 1;
 					}
-					
+					_log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
 					_log.info("processActionList: "+processActionList.size());
@@ -2501,6 +2503,7 @@ public class DossierActionsImpl implements DossierActions {
 				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
+			_log.info("Flag changed: " + flagChanged);
 			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
@@ -2665,6 +2668,14 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 		
+		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus)
+				&& DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {
+			bResult.put(DossierTerm.DOSSIER_NO, true);
+			bResult.put(DossierTerm.RECEIVE_DATE, true);
+			bResult.put(DossierTerm.PROCESS_DATE, true);
+			bResult.put(DossierTerm.RELEASE_DATE, true);
+			bResult.put(DossierTerm.FINISH_DATE, true);
+		}
 		return bResult;
 	}
 	
