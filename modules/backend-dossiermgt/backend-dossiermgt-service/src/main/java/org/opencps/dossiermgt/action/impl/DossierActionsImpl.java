@@ -1329,13 +1329,13 @@ public class DossierActionsImpl implements DossierActions {
 
 		// TODO filter by Auto
 		String auto = GetterUtil.getString(params.get(DossierActionTerm.AUTO));
-		_log.info("auto =: " + auto);
+//		_log.info("auto =: " + auto);
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
-		_log.info("dossierId =: " + dossierId);
+//		_log.info("dossierId =: " + dossierId);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			_log.info("dossier: "+dossier);
+//			_log.info("dossier: "+dossier);
 			if (dossier != null) {
 				String dossierTempNo = dossier.getDossierTemplateNo();
 				long processActionId = GetterUtil.getLong(params.get(ProcessActionTerm.PROCESS_ACTION_ID));
@@ -1405,9 +1405,9 @@ public class DossierActionsImpl implements DossierActions {
 				if (processStep != null) {
 					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 							.findByP_S_ID(processStep.getProcessStepId());
-					if (processStepRoleList != null && processStepRoleList.isEmpty()) {
+					if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
 						List<User> lstUser = processRoleListUser(processStepRoleList, serviceProcessId);
-						if (lstUser != null && lstUser.isEmpty()) {
+						if (lstUser != null && !lstUser.isEmpty()) {
 							result.put("lstUser", lstUser);
 						}
 					}
@@ -4365,11 +4365,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	private List<User> processRoleListUser(List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
 		List<User> lstUser = null;
 		// Check roles
+		_log.info("processStepRoleList: "+processStepRoleList);
 		if (processStepRoleList != null && processStepRoleList.size() > 0) {
+			_log.info("processStepRoleList.size(): "+processStepRoleList.size());
 			lstUser = new ArrayList<User>();
 			for (ProcessStepRole processStepRole : processStepRoleList) {
 				List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
 				if (users != null && users.size() > 0) {
+					_log.info("users.size(): "+users.size());
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
