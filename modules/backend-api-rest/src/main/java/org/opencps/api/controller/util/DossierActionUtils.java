@@ -209,6 +209,7 @@ public class DossierActionUtils {
 
 			ProcessAction processAction = (ProcessAction) jsonData.get("processAction");
 			List<User> lstUser = (List<User>) jsonData.get("lstUser");
+			_log.info("LAmTV_List user: "+lstUser);
 			JSONArray createFiles = jsonData.getJSONArray("createFiles");
 			List<DossierFile> returnFiles = (List<DossierFile>) jsonData.get("returnFiles");
 
@@ -254,9 +255,7 @@ public class DossierActionUtils {
 			if (lstUser != null && lstUser.size() > 0) {
 				boolean moderator = false;
 				int assigned = 0;
-				int lengthUser = lstUser.size();
-				for (int i = 0; i < lengthUser; i++) {
-					User user = lstUser.get(i);
+				for (User user: lstUser) {
 					modelUser = new DossierActionNextActiontoUser();
 					Map<String, Object> attr = user.getModelAttributes();
 					long userId = GetterUtil.getLong(user.getUserId());
@@ -277,7 +276,7 @@ public class DossierActionUtils {
 					modelUser.setModerator(moderator);
 					modelUser.setAssigned(assigned);
 					boolean flag = true;
-					if (outputUsers != null && outputUsers.isEmpty()) {
+					if (outputUsers != null && !outputUsers.isEmpty()) {
 						for (DossierActionNextActiontoUser doUserAct : outputUsers) {
 							if (userId == doUserAct.getUserId()) {
 								flag = false;
@@ -287,6 +286,8 @@ public class DossierActionUtils {
 						if (flag) {
 							outputUsers.add(modelUser);
 						}
+					} else {
+						outputUsers.add(modelUser);
 					}
 				}
 			}

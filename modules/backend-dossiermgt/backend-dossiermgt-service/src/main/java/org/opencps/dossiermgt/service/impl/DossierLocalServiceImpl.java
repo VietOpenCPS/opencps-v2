@@ -219,24 +219,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 			}
 
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
-				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
-				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-
-				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
-
-				long serviceProcessId = option.getServiceProcessId();
-
-				ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-
-				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-
-				dossier.setDossierNo(dossierRef.trim());
-			}
+//			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+//				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+//				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+//				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+//				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+//				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+//
+//				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+//
+//				long serviceProcessId = option.getServiceProcessId();
+//
+//				ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
+//
+//				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+//						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+//
+//				dossier.setDossierNo(dossierRef.trim());
+//			}
 		} else {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
@@ -1776,6 +1776,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		//LamTV_ADD
 		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
+		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1803,7 +1804,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, booleanCommon);
+				assigned, statusStep, subStatusStep, permission, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1853,6 +1854,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		//LamTV_ADD
 		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
+		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1877,7 +1879,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, booleanCommon);
+				assigned, statusStep, subStatusStep, permission, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1957,7 +1959,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
 			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
 			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
-			String statusStep, String subStatusStep, BooleanQuery booleanQuery) throws ParseException {
+			String statusStep, String subStatusStep, String permission, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2293,7 +2295,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 			}
 		}
-	
+
+		if (Validator.isNotNull(permission)) {
+			MultiMatchQuery query = new MultiMatchQuery(permission);
+			query.addField(DossierTerm.MAPPING_PERMISSION);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 		return booleanQuery;
 	}
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {

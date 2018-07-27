@@ -126,6 +126,7 @@ public class DossierTerm {
 	
 	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
 	public static final String DOSSIER_STATUS_NEW = "new";
+	public static final String DOSSIER_STATUS_RECEIVING = "receiving";
 	public static final String DOSSIER_STATUS_PROCESSING = "processing";
 	public static final String DOSSIER_STATUS_RELEASING = "releasing";
 	public static final String DOSSIER_STATUS_DENIED = "denied";
@@ -146,5 +147,6 @@ public class DossierTerm {
 	public static final String SEQUENCE_ROLE = "sequenceRole";
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
 	public static final String ACTION_USER = "actionUser";
+	public static final String MAPPING_PERMISSION = "permission";
 
 }
