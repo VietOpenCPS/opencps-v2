@@ -2348,7 +2348,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
 			result.setProcessNo(serviceProcess.getProcessNo());
 			result.setDurationUnit(serviceProcess.getDurationUnit());
-			result.setDurationUnit(serviceProcess.getDurationCount());
+			result.setDurationCount(serviceProcess.getDurationCount());
 			result.setTotal(lstSequences.size());
 			
 			List<DossierSequenceModel> lstDsms = new ArrayList<>();
@@ -2387,6 +2387,8 @@ public class DossierManagementImpl implements DossierManagement {
 					am.setStepCode(da.getStepCode());
 					am.setStepName(da.getStepName());
 					am.setUserId(da.getUserId());
+					
+					lstActionModels.add(am);
 				}
 				
 				dsm.getActions().addAll(lstActionModels);
