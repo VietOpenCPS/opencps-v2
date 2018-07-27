@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
-@Component(immediate = true, service = UserRegisterTaskScheduler.class)
+//@Component(immediate = true, service = UserRegisterTaskScheduler.class)
 public class UserRegisterTaskScheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override

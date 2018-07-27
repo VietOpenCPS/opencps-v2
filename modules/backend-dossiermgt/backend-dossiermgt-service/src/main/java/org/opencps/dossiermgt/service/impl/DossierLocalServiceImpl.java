@@ -215,24 +215,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 			}
 
-//			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
-//				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-//				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-//				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-//				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
-//				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-//
-//				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
-//
-//				long serviceProcessId = option.getServiceProcessId();
-//
-//				ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-//
-//				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-//						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-//
-//				dossier.setDossierNo(dossierRef.trim());
-//			}
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+
+				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+
+				long serviceProcessId = option.getServiceProcessId();
+
+				ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
+
+				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+
+				dossier.setDossierNo(dossierRef.trim());
+			}
 		} else {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
