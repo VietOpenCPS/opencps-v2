@@ -202,4 +202,8 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	public List<MenuConfig> getByGroupId(long groupId) {
 		return menuConfigPersistence.findByF_BY_GID(groupId);
 	}
+	
+	public List<MenuConfig> getByMenus(long[] menuConfigIds) {
+		return menuConfigPersistence.findByF_A_MID(menuConfigIds);
+	}
 }
