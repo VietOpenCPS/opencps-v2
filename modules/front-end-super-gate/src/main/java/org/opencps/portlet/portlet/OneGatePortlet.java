@@ -106,6 +106,7 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 				super.serveResource(resourceRequest, resourceResponse);
 
 			}
+			
 		} catch (Exception e) {
 
 			throw new PortletException((Throwable) e);

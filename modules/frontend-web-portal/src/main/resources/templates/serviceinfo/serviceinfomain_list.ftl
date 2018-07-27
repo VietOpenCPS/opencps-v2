@@ -182,6 +182,7 @@
               serviceInstruction =  serviceConfigs.serviceInstruction;
               serviceLevel =  serviceConfigs.serviceLevel;
               serviceUrl =  serviceConfigs.serviceUrl;
+              var serviceConfigId =  serviceConfigs.serviceConfigId;
               if(serviceLevel>=3){
                 #
                  <div class="dropdown">
@@ -190,7 +191,7 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
                       <#-- <li><a href="#:serviceUrl#">#:govAgencyName#</a></li> -->
-                      <li><a href="/group/cong-tiep-nhan/quan-ly-ho-so\#/taohosomoi">#:govAgencyName#</a></li>
+                      <li><a href="/web${(Request.layoutfriendurl)!}\#/add-dvc/#:serviceConfigId#">#:govAgencyName#</a></li>
                   </ul>
                   </div>
                 #
