@@ -64,8 +64,18 @@ public class DossierUtils {
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-			model.setCreateDate(doc.get(Field.CREATE_DATE));
-			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.CREATE_DATE))) {
+				Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setCreateDate(APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setCreateDate(doc.get(DossierTerm.CREATE_DATE));
+			}
+			if (Validator.isNotNull(doc.get(DossierTerm.MODIFIED_DATE))) {
+				Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.MODIFIED_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setModifiedDate(APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+			model.setModifiedDate(doc.get(DossierTerm.MODIFIED_DATE));
+			}
 			model.setReferenceUid(doc.get(DossierTerm.REFERENCE_UID));
 			model.setCounter(GetterUtil.getInteger(doc.get(DossierTerm.COUNTER)));
 			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
@@ -101,27 +111,27 @@ public class DossierUtils {
 				model.setSubmitDate(APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //				_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
-			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+				model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 			}
 //			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
 				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
-			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
-			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-//			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
-//				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
-//				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			_log.info("DUE_DATE: "+doc.get(DossierTerm.DUE_DATE));
+//			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
+//				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
-//			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 //			}
 			//Process OverDue
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
+			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 				if (subTimeStamp > 0) {
@@ -134,7 +144,36 @@ public class DossierUtils {
 			} else {
 				model.setDossierOverdue(StringPool.BLANK);
 			}
-			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.FINISH_DATE))) {
+				Date finishDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.FINISH_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setFinishDate(APIDateTimeUtils.convertDateToString(finishDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			}
+			//Process StepOverDue
+//			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0.0;
+//			if (Double.compare(durationCount, 0.0) != 0) {
+				long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
+				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//				if (dAction != null) {
+//					String postStep = dAction.getStepCode();
+//					if (Validator.isNotNull(postStep)) {
+//						String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
+//						String govAgencyCode = doc.get(DossierTerm.GOV_AGENCY_CODE);
+//						String dossierTemp = doc.get(DossierTerm.DOSSIER_TEMPLATE_NO);
+//						long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
+//						ProcessOption option = getProcessOption(serviceCode, govAgencyCode,
+//								dossierTemp, groupId);
+//						if (option != null) {
+//						ProcessStep step = ProcessStepLocalServiceUtil.getBySC_SPID(postStep,
+//								option.getServiceProcessId());
+//						}
+//						
+//					}
+//				}
+//			} else {
+//				model.setStepOverdue(StringPool.BLANK);
+//			}
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
@@ -152,7 +191,7 @@ public class DossierUtils {
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
-			model.setStepOverdue(StringPool.BLANK);
+//			model.setStepOverdue(StringPool.BLANK);
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
@@ -195,10 +234,21 @@ public class DossierUtils {
 //			model.setProcessBlock(processBlock);
 //			model.setProcessUnit(processUnit);
 
-			model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));
-			model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));
-			model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));
-			model.setAssigned(Integer.valueOf(doc.get(DossierTerm.ASSIGNED)));
+			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
+				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+			}
+			else {
+				model.setDurationCount(0d);
+			}
+			model.setDurationUnit(durationUnit);
+			
+			if (Validator.isNotNull(doc.get(DossierTerm.SAMPLE_COUNT))) {
+				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+			}
+			else {
+				model.setSampleCount(0l);
+			}
+			model.setAssigned(GetterUtil.getInteger(doc.get(DossierTerm.ASSIGNED)));
 
 			ouputs.add(model);
 		}
@@ -247,8 +297,18 @@ public class DossierUtils {
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-			model.setCreateDate(doc.get(Field.CREATE_DATE));
-			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.CREATE_DATE))) {
+				Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setSubmitDate(APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setSubmitDate(doc.get(DossierTerm.CREATE_DATE));
+			}
+			if (Validator.isNotNull(doc.get(DossierTerm.MODIFIED_DATE))) {
+				Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.MODIFIED_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setSubmitDate(APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setSubmitDate(doc.get(DossierTerm.MODIFIED_DATE));
+			}
 			model.setReferenceUid(doc.get(DossierTerm.REFERENCE_UID));
 			model.setCounter(GetterUtil.getInteger(doc.get(DossierTerm.COUNTER)));
 			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
@@ -293,8 +353,18 @@ public class DossierUtils {
 			} else {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
+//			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
+//				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				model.setReceiveDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.FINISH_DATE))) {
+				Date finishDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.FINISH_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(finishDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.FINISH_DATE));
+			}
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
@@ -316,7 +386,8 @@ public class DossierUtils {
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
+			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;		
+//			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 				if (subTimeStamp > 0) {
@@ -365,16 +436,29 @@ public class DossierUtils {
 //			model.setDelegateTelNo(DossierTerm.getDelegateTelNo());
 //			model.setDelegateWardCode(DossierTerm.getDelegateWardCode());
 //			model.setDelegateWardName(DossierTerm.getDelegateWardName());
-			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
+//			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
+//				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
 				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
 			}
-			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
-				model.setDurationUnit(Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)));				
+			else {
+				model.setDurationCount(0d);
 			}
-			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
+
+			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
+				model.setDurationUnit(durationUnit);				
+			}
+//			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
+//				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.SAMPLE_COUNT))) {
 				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
 			}
-			model.setAssigned(Integer.valueOf(doc.get(DossierTerm.ASSIGNED)));
+			else {
+				model.setSampleCount(0l);
+			}
+			model.setAssigned(GetterUtil.getInteger(doc.get(DossierTerm.ASSIGNED)));
 
 			ouputs.add(model);
 		}

@@ -7,6 +7,9 @@ import javax.naming.AuthenticationException;
 import org.opencps.dossiermgt.action.MenuConfigActions;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -75,11 +78,15 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 	}
 
 	@Override
-	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
+	public long updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
 			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
 
-		return MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
+		MenuConfig menuConfig = MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
 				menuType, queryParams, tableConfig, buttonConfig);
+		if (menuConfig != null) {
+			return menuConfig.getMenuConfigId();
+		}
+		return 0;
 	}
 
 	//LamTV_ Process all list MenuConfig
@@ -96,6 +103,18 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 			flag = true;
 		}
 		return flag;
+	}
+
+	@Override
+	public void updateMenuRoles(long groupId, long menuConfigId, String roles) {
+
+		JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, roles);
+		if (job != null) {
+			long roleId = job.getMappingRoleId();
+			if (roleId > 0) {
+				MenuRoleLocalServiceUtil.updateMenuRoleDB(menuConfigId, roleId);
+			}
+		}
 	}
 
 }

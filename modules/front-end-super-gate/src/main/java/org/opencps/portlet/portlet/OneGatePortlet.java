@@ -93,6 +93,9 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 				
 				object.put("getNextAction", "/o/rest/v2/dossiers");
 				object.put("getServiceConfigs", "/o/rest/v2/serviceconfigs");
+				object.put("stepConfigAPI", "/o/rest/v2/stepconfigs");
+				object.put("commentApi", "/o/rest/v2/comments");    
+				object.put("stepConfigApi", "/o/rest/v2_1/stepconfigs");
 				
 				String token = pullToken(themeDisplay);
 
@@ -107,6 +110,7 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 				super.serveResource(resourceRequest, resourceResponse);
 
 			}
+			
 		} catch (Exception e) {
 
 			throw new PortletException((Throwable) e);

@@ -35,6 +35,8 @@ public class DossierTerm {
 	public static final String SUBMITTING = "submitting";
 	public static final String SUBMIT_DATE = "submitDate";
 	public static final String RECEIVE_DATE = "receiveDate";
+	public static final String PROCESS_DATE = "processDate";
+	public static final String EXTEND_DATE = "extendDate";
 	public static final String RECEIVE_DATE_SORTABLE = "receiveDate_sortable";
 	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";
@@ -125,7 +127,13 @@ public class DossierTerm {
 	
 	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
 	public static final String DOSSIER_STATUS_NEW = "new";
+	public static final String DOSSIER_STATUS_RECEIVING = "receiving";
+	public static final String DOSSIER_STATUS_WAITING = "waiting";
 	public static final String DOSSIER_STATUS_PROCESSING = "processing";
+	public static final String DOSSIER_STATUS_PAUSING = "pausing";
+	public static final String DOSSIER_STATUS_POSTING = "posting";
+	public static final String DOSSIER_STATUS_CORRECTING = "correcting";
+	public static final String DOSSIER_STATUS_CANCELLING = "cancelling";
 	public static final String DOSSIER_STATUS_RELEASING = "releasing";
 	public static final String DOSSIER_STATUS_DENIED = "denied";
 	public static final String DOSSIER_STATUS_UNRESOLVED = "unresolved";
@@ -145,5 +153,6 @@ public class DossierTerm {
 	public static final String SEQUENCE_ROLE = "sequenceRole";
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
 	public static final String ACTION_USER = "actionUser";
+	public static final String MAPPING_PERMISSION = "permission";
 
 }
