@@ -92,7 +92,7 @@ public class ServiceInfoUtils {
 				cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
 				cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
 				cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
-				cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(ServiceConfigTerm.SERVICECONFIG_ID)));
+				cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(Field.ENTRY_CLASS_PK)));
 				
 				lsServiceConfig.add(cf);
 			}
