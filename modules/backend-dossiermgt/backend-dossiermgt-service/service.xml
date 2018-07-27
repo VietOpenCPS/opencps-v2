@@ -1818,14 +1818,21 @@
 		<finder return-type="MenuConfig" name="F_BY_menuGroup">
 			<finder-column name="menuGroup"></finder-column>
 		</finder>
+        <finder name="F_A_MID" return-type="Collection">
+            <finder-column name="menuConfigId" arrayable-operator="OR"></finder-column>
+        </finder>
 		
 	</entity>
-
+	
 	<entity local-service="true" name="MenuRole" remote-service="false"
 		table="opencps_menurole" uuid="true">
 
 		<column name="menuConfigId" type="long" primary="true" />
+
 		<column name="roleId" type="long" primary="true" />
+        <finder name="F_RID" return-type="Collection">
+            <finder-column name="roleId" arrayable-operator="OR"></finder-column>
+        </finder>		
 
 		<finder return-type="MenuRole" name="F_MENU_ROLE">
 			<finder-column name="menuConfigId" />
