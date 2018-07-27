@@ -10,9 +10,9 @@
       <span class="show-per-page">Hiển thị
         <span class="select-wrapper">
          <select class="ML5" id="slPageSize">
-           <option value="5" selected="">5</option>
+           <option value="5">5</option>
            <option value="10">10</option>
-           <option value="15">15</option>
+           <option value="15" selected="">15</option>
            <option value="25">25</option>
            <option value="50">50</option>
          </select>
@@ -282,7 +282,7 @@
   data: "data",
   model : { id: "serviceInfoId" }
 },
-pageSize: 5,
+pageSize: 15,
 serverPaging: false,
 serverSorting: false,
 serverFiltering: false
@@ -291,7 +291,6 @@ serverFiltering: false
     $("#service_info_list_view").kendoListView({
      dataSource: serviceInfoDataSource,
      template: kendo.template($("#service_info_template").html()),
-     selectable: true,
      template: function(data){
 
       var _pageSize = serviceInfoDataSource.pageSize();
