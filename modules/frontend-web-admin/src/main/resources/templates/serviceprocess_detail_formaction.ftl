@@ -96,10 +96,20 @@
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" id="allowAssignUser" name="allowAssignUser" data-bind="checked: allowAssignUser"> <label>Phân công người xử lý</label> </div>
+						Phân công người thực hiện
+						
+					</div>				
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" id="allowAssignUser" name="allowAssignUser" data-bind="value: allowAssignUser">
+							<option value=""></option>
+							<option value="0">Không phân công</option>
+							<option value="1">Chỉ phân công người thực hiện</option>
+							<option value="2">Phân công thực hiện và phối hợp</option>
+							<option value="3">Phân công thực hiện,phối hợp và theo dõi</option>
+						</select>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row" v-if="allowAssignUser != 0">
 					<div class="col-xs-12 col-sm-12">
 						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId">
 							<option></option>
@@ -145,10 +155,22 @@
 		<div class="row MT10">
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
-					<div class="col-xs-12 col-sm-12">
-						<div class="checkbox"> <input type="checkbox" id="requestPayment" name="requestPayment" data-bind="checked:requestPayment"> <label>Yêu cầu thanh toán</label> </div>
-					</div>
+					<div class="col-xs-12 col-sm-12"><label>Yêu cầu thanh toán</label></div>
 				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<select class="form-control" id="requestPayment" name="requestPayment" data-bind="value: requestPayment">
+							<option value=""></option>
+							<option value="0">Không thay đổi trạng thái</option>
+							<option value="1">Yêu cầu nộp tiền tạm ứng</option>
+							<option value="2">Báo đã nộp phí trực tuyến</option>
+							<option value="3">Yêu cầu nộp lại phí trực tuyến</option>
+							<option value="4">Xác nhận hoàn thành thu phí</option>
+						</select>
+					</div>
+					
+				</div>
+				
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						<input class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee">
