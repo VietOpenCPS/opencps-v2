@@ -60,7 +60,7 @@
 	<bean class="org.opencps.dossiermgt.service.indexer.DossierStatisticIndexer"
 		id="org.opencps.dossiermgt.service.indexer.DossierStatisticIndexer" />
 		
-	<bean class="org.opencps.dossiermgt.service.indexer.ActionConfigIndexer"
+ 	<bean class="org.opencps.dossiermgt.service.indexer.ActionConfigIndexer"
 		id="org.opencps.dossiermgt.service.indexer.ActionConfigIndexer" />
 		
 	<bean class="org.opencps.dossiermgt.service.indexer.MenuConfigIndexer"
@@ -68,7 +68,7 @@
 		
 	<bean class="org.opencps.dossiermgt.service.indexer.StepConfigIndexer"
 		id="org.opencps.dossiermgt.service.indexer.StepConfigIndexer" />
-
+ 
 	<!-- Listeners -->
 	<bean id="dossier.listener.jasper" class="org.opencps.jasper.message.Engine" />
 

@@ -36,22 +36,18 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
-import org.opencps.usermgt.model.Applicant;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -2502,6 +2498,44 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDelegateWardCode(wardCode);
 		dossier.setDelegateWardName(wardName);
 			
+		return dossierPersistence.update(dossier);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateDossier(long dossierId, JSONObject obj) throws NoSuchDossierException {
+		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+		
+		if (obj.has(DossierTerm.DOSSIER_NOTE)) {
+			if (!obj.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
+				dossier.setDossierNote(obj.getString(DossierTerm.DOSSIER_NOTE));
+			}
+		}
+		if (obj.has(DossierTerm.EXTEND_DATE)) {
+			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
+				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));
+			}
+		}
+		if (obj.has(DossierTerm.DOSSIER_NO)) {
+			if (!obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
+				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
+			}
+		}
+		if (obj.has(DossierTerm.DUE_DATE)) {
+			if (dossier.getDueDate() == null || obj.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
+				dossier.setDueDate(new Date(obj.getLong(DossierTerm.DUE_DATE)));
+			}
+		}
+		if (obj.has(DossierTerm.FINISH_DATE)) {
+			if (dossier.getFinishDate() == null || obj.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
+				dossier.setFinishDate(new Date(obj.getLong(DossierTerm.FINISH_DATE)));	
+			}
+		}
+		if (obj.has(DossierTerm.RECEIVE_DATE)) {
+			if (dossier.getReceiveDate() == null || obj.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
+				dossier.setReceiveDate(new Date(obj.getLong(DossierTerm.RECEIVE_DATE)));	
+			}
+		}
+		
 		return dossierPersistence.update(dossier);
 	}
 }

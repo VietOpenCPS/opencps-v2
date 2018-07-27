@@ -42,13 +42,20 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil} to access the menu role local service.
 	 */
 
+	public List<MenuRole> getByRoles(long[] roleIds) {
+		return menuRolePersistence.findByF_RID(roleIds);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
 	public MenuRole updateMenuRoleDB(long menuConfigId, long roleId) {
-		MenuRolePK pk = new MenuRolePK(menuConfigId, roleId);
-		MenuRole menuRole = menuRolePersistence.fetchByPrimaryKey(pk);
-		if (Validator.isNull(menuRole)) {
-			menuRole = menuRolePersistence.create(pk);
+		MenuRolePK pk = new MenuRolePK();
+		pk.setMenuConfigId(menuConfigId);
+		pk.setRoleId(roleId);
+		MenuRole model = menuRolePersistence.fetchByF_MENU_ROLE(menuConfigId, roleId);
+		if (model == null) {
+			model = menuRolePersistence.create(pk);
 		}
 
-		return menuRolePersistence.update(menuRole);
+		return model;
 	}
 }

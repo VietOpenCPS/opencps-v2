@@ -66,7 +66,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-@Component(immediate = true, service = SyncQueueProcessScheduler.class)
+//@Component(immediate = true, service = SyncQueueProcessScheduler.class)
 public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {

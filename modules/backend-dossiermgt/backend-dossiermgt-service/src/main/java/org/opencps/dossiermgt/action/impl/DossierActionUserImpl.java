@@ -92,6 +92,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		_log.info("2");
 		// Get List ProcessStepRole
 		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
+		_log.info("Process step role: " + listProcessStepRole);
 		ProcessStepRole processStepRole = null;
 		if (listProcessStepRole.size() != 0) {
 			for (int i = 0; i < listProcessStepRole.size(); i++) {
@@ -108,7 +109,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 //				if (i == 0) {
 					for (User user : users) {
-//						_log.info("user: "+user.getUserId());
+						_log.info("user in assign process step role: "+user.getUserId());
+						updateDossierUser(dossier, processStepRole, user);
 						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false, stepCode, dossier.getDossierId());
 					}
 //				} else {
@@ -141,6 +143,23 @@ public class DossierActionUserImpl implements DossierActionUser {
 			initDossierActionUserByServiceProcessRole(dossier, allowAssignUser, dossierActionId, userId, groupId, assignUserId);
 		}
 //		_log.info("END ROLES");
+	}
+	
+	private void updateDossierUser(Dossier dossier, ProcessStepRole processStepRole, User user) {
+		DossierUserPK pk = new DossierUserPK();
+		pk.setDossierId(dossier.getDossierId());
+		pk.setUserId(user.getUserId());
+		DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(pk);
+		if (du == null) {
+			DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), user.getUserId(), processStepRole.getModerator() ? 1 : 0, true);
+		}
+		else {
+			try {
+				DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), du.getModerator() == 0 ? (processStepRole.getModerator() ? 1 : 0) : 1, true);
+			} catch (NoSuchDossierUserException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void initDossierActionUserByServiceProcessRole(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId) {
@@ -280,7 +299,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		model.setVisited(visited);
 		model.setDossierId(dossierId);
 		model.setStepCode(stepCode);
-		
+		_log.info("Allow assign user: " + allowAssignUser);
 		if (allowAssignUser == ProcessActionTerm.NOT_ASSIGNED) {
 			model.setUserId(userId);
 			model.setDossierActionId(dossierActionId);
@@ -291,6 +310,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setAssigned(assigned);
 			}
 			// Add User
+			_log.info("Add assigned user by step role: " + model);
 			DossierActionUserLocalServiceUtil.addDossierActionUser(model);					
 		}
 		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH) {
