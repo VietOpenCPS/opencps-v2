@@ -380,7 +380,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	//LamTV_ Process output ProcessStep to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessStep updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
-			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
+			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
 			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
 			throws PortalException {
 
@@ -402,7 +402,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		object.setServiceProcessId(serviceProcessId);
 		object.setStepCode(stepCode);
 		object.setStepName(stepName);
-		object.setSequenceNo(String.valueOf(sequenceNo));
+		object.setSequenceNo(sequenceNo);
 		object.setGroupName(groupName);
 		object.setDossierStatus(dossierStatus);
 		object.setDossierSubStatus(dossierSubStatus);

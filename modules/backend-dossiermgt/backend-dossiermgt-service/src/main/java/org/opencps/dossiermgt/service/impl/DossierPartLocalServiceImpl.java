@@ -619,6 +619,11 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		return dossierPartPersistence.update(object);
 	}
 
+	//LamTV_Get dossierPart by partNo and dossierId
+	public DossierPart getByTempAndPartNo(long groupId, String templateNo, String partNo) {
+		return dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
+	}
+
 	public static final String CLASS_NAME = DossierPart.class.getName();
 
 }
