@@ -334,7 +334,7 @@ public class ProcessUpdateDBUtils {
 
 		try {
 			//Delete all table ServerConfig
-			ServerConfigLocalServiceUtil.removeAllServer();
+			ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
 			//Update table ServerConfig
 			if (serverList != null) {
 				List<ServerConfig> serverConfigList = serverList.getServerConfig();
