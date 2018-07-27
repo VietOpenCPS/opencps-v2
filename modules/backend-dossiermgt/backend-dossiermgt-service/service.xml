@@ -1821,6 +1821,19 @@
 		
 	</entity>
 
+	<entity local-service="true" name="MenuRole" remote-service="false"
+		table="opencps_menurole" uuid="true">
+
+		<column name="menuConfigId" type="long" primary="true" />
+		<column name="roleId" type="long" primary="true" />
+
+		<finder return-type="MenuRole" name="F_MENU_ROLE">
+			<finder-column name="menuConfigId" />
+			<finder-column name="roleId" />
+		</finder>
+
+	</entity>
+
 	<entity local-service="true" name="DocumentType" remote-service="false"
 		table="opencps_documenttype" uuid="true">
 
