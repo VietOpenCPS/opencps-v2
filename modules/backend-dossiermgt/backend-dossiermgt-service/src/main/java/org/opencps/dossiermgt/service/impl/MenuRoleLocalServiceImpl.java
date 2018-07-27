@@ -58,6 +58,6 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 			model = menuRolePersistence.create(pk);
 		}
 
-		return model;
+		return menuRolePersistence.update(model);
 	}
 }
