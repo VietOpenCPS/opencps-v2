@@ -2326,9 +2326,9 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
 			Dossier dossier = null;
 			long dossierId = GetterUtil.getLong(id);
