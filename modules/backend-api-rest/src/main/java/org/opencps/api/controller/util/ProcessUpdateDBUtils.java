@@ -194,10 +194,14 @@ public class ProcessUpdateDBUtils {
 						String queryParams = menuConfig.getQueryParams();
 						String tableConfig = menuConfig.getTableConfig();
 						String buttonConfig = menuConfig.getButtonConfig();
+						String roles = menuConfig.getRoles();
 						if (Validator.isNotNull(menuGroup)) {
 							// Check record exits DB
-							actions.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order, menuType, queryParams,
+							long menuConfigId = actions.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order, menuType, queryParams,
 									tableConfig, buttonConfig);
+							if (menuConfigId > 0) {
+								actions.updateMenuRoles(groupId, menuConfigId, roles);
+							}
 						}
 					}
 				}
@@ -874,7 +878,7 @@ public class ProcessUpdateDBUtils {
 		if (proStepList != null && proStepList.size() > 0 && flagStep) {
 			String stepCode = StringPool.BLANK;
 			String stepName = StringPool.BLANK;
-			Integer sequenceNo = 0;
+			String sequenceNo = StringPool.BLANK;
 			String groupName = StringPool.BLANK;
 			String dossierStatus = StringPool.BLANK;
 			String dossierSubStatus = StringPool.BLANK;

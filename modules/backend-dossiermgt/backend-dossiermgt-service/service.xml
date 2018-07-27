@@ -1823,7 +1823,7 @@
         </finder>
 		
 	</entity>
-
+	
 	<entity local-service="true" name="MenuRole" remote-service="false"
 		table="opencps_menurole" uuid="true">
 
@@ -1833,6 +1833,12 @@
         <finder name="F_RID" return-type="Collection">
             <finder-column name="roleId" arrayable-operator="OR"></finder-column>
         </finder>		
+
+		<finder return-type="MenuRole" name="F_MENU_ROLE">
+			<finder-column name="menuConfigId" />
+			<finder-column name="roleId" />
+		</finder>
+
 	</entity>
 
 	<entity local-service="true" name="DocumentType" remote-service="false"

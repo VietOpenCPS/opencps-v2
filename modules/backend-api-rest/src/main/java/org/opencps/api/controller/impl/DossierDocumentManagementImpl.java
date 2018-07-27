@@ -19,18 +19,21 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierMark;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -219,7 +222,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 						if (Validator.isNotNull(dossier)) {
 							long dossierActionId = dossier.getDossierActionId();
-							_log.info("formReportArr: "+formReportArr);
+							_log.info("dossierActionId: "+dossierActionId);
 							String payload = StringPool.BLANK;
 							if (dossierActionId != 0) {
 								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
@@ -325,6 +328,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
 		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
 		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
+		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
 		jsonData.put(DossierTerm.RECEIVE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
@@ -364,11 +368,30 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		}
 
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
-		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossier.getDossierId());
+		long dossierId = dossier.getDossierId();
+		String templateNo = dossier.getDossierTemplateNo();
+		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossierId);
 		if (dossierMarkList != null && dossierMarkList.size() > 0) {
+			JSONObject jsonMark = null;
+			String partNo = StringPool.BLANK;
 			for (DossierMark dossierMark : dossierMarkList) {
-				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
-				dossierMarkArr.put(strDossierMark);
+				jsonMark = JSONFactoryUtil.createJSONObject();
+				partNo = dossierMark.getDossierPartNo();
+				if (Validator.isNotNull(partNo)) {
+					DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
+					if (part != null) {
+						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
+						jsonMark.put(DossierPartTerm.PART_NAME, part.getPartName());
+						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
+						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
+					}
+				}
+				jsonMark.put(DossierPartTerm.PART_NO, partNo);
+				jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+				jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
+				jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
+//				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
+				dossierMarkArr.put(jsonMark);
 			}
 		}
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);

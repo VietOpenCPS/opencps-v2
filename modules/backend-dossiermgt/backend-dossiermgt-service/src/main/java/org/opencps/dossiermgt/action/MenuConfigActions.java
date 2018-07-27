@@ -20,8 +20,10 @@ public interface MenuConfigActions {
 	public void deleteMenuConfig(Long menuConfigId, ServiceContext serviceContext)
 			throws PortalException, AuthenticationException;
 
-	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order, Integer menuType,
+	public long updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order, Integer menuType,
 			String queryParams, String tableConfig, String buttonConfig);
 
 	public boolean deleteAllMenuConfig(long groupId, long userId, ServiceContext serviceContext);
+
+	public void updateMenuRoles(long groupId, long menuConfigId, String roles);
 }

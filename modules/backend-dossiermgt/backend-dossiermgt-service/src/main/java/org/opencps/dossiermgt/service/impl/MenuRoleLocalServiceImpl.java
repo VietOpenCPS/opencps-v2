@@ -18,6 +18,10 @@ import java.util.List;
 
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.service.base.MenuRoleLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.persistence.MenuRolePK;
+
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 
 /**
  * The implementation of the menu role local service.
@@ -42,5 +46,18 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 	
 	public List<MenuRole> getByRoles(long[] roleIds) {
 		return menuRolePersistence.findByF_RID(roleIds);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public MenuRole updateMenuRoleDB(long menuConfigId, long roleId) {
+		MenuRolePK pk = new MenuRolePK();
+		pk.setMenuConfigId(menuConfigId);
+		pk.setRoleId(roleId);
+		MenuRole model = menuRolePersistence.fetchByF_MENU_ROLE(menuConfigId, roleId);
+		if (model == null) {
+			model = menuRolePersistence.create(pk);
+		}
+
+		return model;
 	}
 }
