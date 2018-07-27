@@ -1262,8 +1262,6 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
 				try {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-					_log.info("User id: " + userId);
-					_log.info("Dossier action user:" );
 					//GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {

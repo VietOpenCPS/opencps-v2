@@ -14,14 +14,12 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.List;
-
 import org.opencps.dossiermgt.model.MenuRole;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.service.base.MenuRoleLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * The implementation of the menu role local service.
@@ -43,7 +41,7 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil} to access the menu role local service.
 	 */
-	
+
 	public List<MenuRole> getByRoles(long[] roleIds) {
 		return menuRolePersistence.findByF_RID(roleIds);
 	}
