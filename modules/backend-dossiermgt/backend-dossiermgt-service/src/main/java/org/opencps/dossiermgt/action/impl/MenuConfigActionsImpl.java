@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.BackendAuthImpl;
 
@@ -108,11 +110,16 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 	@Override
 	public void updateMenuRoles(long groupId, long menuConfigId, String roles) {
 
-		JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, roles);
-		if (job != null) {
-			long roleId = job.getMappingRoleId();
-			if (roleId > 0) {
-				MenuRoleLocalServiceUtil.updateMenuRoleDB(menuConfigId, roleId);
+		if (Validator.isNotNull(roles)) {
+			String[] roleArr = StringUtil.split(roles);
+			for (String role: roleArr) {
+				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, role);
+				if (job != null) {
+					long roleId = job.getMappingRoleId();
+					if (roleId > 0) {
+						MenuRoleLocalServiceUtil.updateMenuRoleDB(menuConfigId, roleId);
+					}
+				}
 			}
 		}
 	}
