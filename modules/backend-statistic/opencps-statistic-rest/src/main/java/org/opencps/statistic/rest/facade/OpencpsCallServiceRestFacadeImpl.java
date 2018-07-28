@@ -13,10 +13,10 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
 
 public class OpencpsCallServiceRestFacadeImpl extends OpencpsRestFacade<String, String>
-		implements OpencpCallServiceFacade<String, String> {
+		implements OpencpsCallServiceFacade<String, String> {
 
 	@Override
-	public String callWebPage(String payload) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+	public String callRestService(String payload) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		return makeServiceCall(payload);
 	}
 

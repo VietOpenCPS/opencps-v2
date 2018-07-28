@@ -1,6 +1,6 @@
 package org.opencps.statistic.rest.dto;
 
-public class DossierStatisticRequest {
+public class DossierStatisticRequest extends CommonRequest {
 	public String getDomain() {
 		return domain;
 	}
@@ -33,36 +33,9 @@ public class DossierStatisticRequest {
 		this.reporting = reporting;
 	}
 
-	public long getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(long groupId) {
-		this.groupId = groupId;
-	}
-
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-	public int getEnd() {
-		return end;
-	}
-
-	public void setEnd(int end) {
-		this.end = end;
-	}
-
-	private int end;
 	private String domain;
 	private String govAgencyCode;
 	private String groupAgencyCode;
 	private boolean reporting;
-	private long groupId;
-	private int start;
 
 }
