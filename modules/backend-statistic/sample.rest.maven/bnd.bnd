@@ -1,4 +1,0 @@
-Bundle-Name: sample.rest.maven
-Bundle-SymbolicName: sample.rest.maven
-Bundle-Version: 1.0.0-SNAPSHOT
-Liferay-Configuration-Path: /configuration
