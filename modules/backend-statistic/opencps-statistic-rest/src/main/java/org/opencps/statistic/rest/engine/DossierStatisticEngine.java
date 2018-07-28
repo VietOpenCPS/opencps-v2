@@ -55,7 +55,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			LOG.info(agencyResponse.getTotal() + "TOTAL");
 			
-			for (GovAgencyData agencyData : agencyResponse.getAgencyDatas()) {
+			for (GovAgencyData agencyData : agencyResponse.getData()) {
 				LOG.info("DATA_1 " + agencyData.getItemCode());
 				LOG.info("DATA_2 " + agencyData.getItemName());
 			}

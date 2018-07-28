@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonIgnoreProperties(ignoreUnknown = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GovAgencyResponse {
 	public int getTotal() {
@@ -14,11 +14,11 @@ public class GovAgencyResponse {
 	public void setTotal(int total) {
 		this.total = total;
 	}
-	public List<GovAgencyData> getAgencyDatas() {
+	public List<GovAgencyData> getData() {
 		return data;
 	}
-	public void setAgencyDatas(List<GovAgencyData> agencyDatas) {
-		this.data = agencyDatas;
+	public void setData(List<GovAgencyData> data) {
+		this.data = data;
 	}
 	private int total;
 
