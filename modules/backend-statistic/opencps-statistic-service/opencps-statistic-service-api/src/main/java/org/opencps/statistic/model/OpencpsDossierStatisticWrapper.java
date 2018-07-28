@@ -96,6 +96,10 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("domainCode", getDomainCode());
 		attributes.put("domainName", getDomainName());
 		attributes.put("reporting", getReporting());
+		attributes.put("overtimeInside", getOvertimeInside());
+		attributes.put("overtimeOutside", getOvertimeOutside());
+		attributes.put("interoperatingCount", getInteroperatingCount());
+		attributes.put("waitingCount", getWaitingCount());
 
 		return attributes;
 	}
@@ -311,6 +315,31 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		if (reporting != null) {
 			setReporting(reporting);
 		}
+
+		Integer overtimeInside = (Integer)attributes.get("overtimeInside");
+
+		if (overtimeInside != null) {
+			setOvertimeInside(overtimeInside);
+		}
+
+		Integer overtimeOutside = (Integer)attributes.get("overtimeOutside");
+
+		if (overtimeOutside != null) {
+			setOvertimeOutside(overtimeOutside);
+		}
+
+		Integer interoperatingCount = (Integer)attributes.get(
+				"interoperatingCount");
+
+		if (interoperatingCount != null) {
+			setInteroperatingCount(interoperatingCount);
+		}
+
+		Integer waitingCount = (Integer)attributes.get("waitingCount");
+
+		if (waitingCount != null) {
+			setWaitingCount(waitingCount);
+		}
 	}
 
 	@Override
@@ -414,6 +443,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the interoperating count of this opencps dossier statistic.
+	*
+	* @return the interoperating count of this opencps dossier statistic
+	*/
+	@Override
+	public int getInteroperatingCount() {
+		return _opencpsDossierStatistic.getInteroperatingCount();
+	}
+
+	/**
 	* Returns the month of this opencps dossier statistic.
 	*
 	* @return the month of this opencps dossier statistic
@@ -471,6 +510,26 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getOvertimeCount() {
 		return _opencpsDossierStatistic.getOvertimeCount();
+	}
+
+	/**
+	* Returns the overtime inside of this opencps dossier statistic.
+	*
+	* @return the overtime inside of this opencps dossier statistic
+	*/
+	@Override
+	public int getOvertimeInside() {
+		return _opencpsDossierStatistic.getOvertimeInside();
+	}
+
+	/**
+	* Returns the overtime outside of this opencps dossier statistic.
+	*
+	* @return the overtime outside of this opencps dossier statistic
+	*/
+	@Override
+	public int getOvertimeOutside() {
+		return _opencpsDossierStatistic.getOvertimeOutside();
 	}
 
 	/**
@@ -571,6 +630,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getUnresolvedCount() {
 		return _opencpsDossierStatistic.getUnresolvedCount();
+	}
+
+	/**
+	* Returns the waiting count of this opencps dossier statistic.
+	*
+	* @return the waiting count of this opencps dossier statistic
+	*/
+	@Override
+	public int getWaitingCount() {
+		return _opencpsDossierStatistic.getWaitingCount();
 	}
 
 	/**
@@ -915,6 +984,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the interoperating count of this opencps dossier statistic.
+	*
+	* @param interoperatingCount the interoperating count of this opencps dossier statistic
+	*/
+	@Override
+	public void setInteroperatingCount(int interoperatingCount) {
+		_opencpsDossierStatistic.setInteroperatingCount(interoperatingCount);
+	}
+
+	/**
 	* Sets the modified date of this opencps dossier statistic.
 	*
 	* @param modifiedDate the modified date of this opencps dossier statistic
@@ -987,6 +1066,26 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setOvertimeCount(int overtimeCount) {
 		_opencpsDossierStatistic.setOvertimeCount(overtimeCount);
+	}
+
+	/**
+	* Sets the overtime inside of this opencps dossier statistic.
+	*
+	* @param overtimeInside the overtime inside of this opencps dossier statistic
+	*/
+	@Override
+	public void setOvertimeInside(int overtimeInside) {
+		_opencpsDossierStatistic.setOvertimeInside(overtimeInside);
+	}
+
+	/**
+	* Sets the overtime outside of this opencps dossier statistic.
+	*
+	* @param overtimeOutside the overtime outside of this opencps dossier statistic
+	*/
+	@Override
+	public void setOvertimeOutside(int overtimeOutside) {
+		_opencpsDossierStatistic.setOvertimeOutside(overtimeOutside);
 	}
 
 	/**
@@ -1152,6 +1251,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setUuid(java.lang.String uuid) {
 		_opencpsDossierStatistic.setUuid(uuid);
+	}
+
+	/**
+	* Sets the waiting count of this opencps dossier statistic.
+	*
+	* @param waitingCount the waiting count of this opencps dossier statistic
+	*/
+	@Override
+	public void setWaitingCount(int waitingCount) {
+		_opencpsDossierStatistic.setWaitingCount(waitingCount);
 	}
 
 	/**

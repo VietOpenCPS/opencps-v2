@@ -1,5 +1,7 @@
 package org.opencps.statistic.rest.dto;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -10,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DossierStatisticResponse {
 	private int total;
 	@XmlElement(name = "data")
-	private DossierStatisticData dossierStatisticData;
+	private List<DossierStatisticData> dossierStatisticData;
 
 	public int getTotal() {
 		return total;
@@ -20,11 +22,11 @@ public class DossierStatisticResponse {
 		this.total = total;
 	}
 
-	public DossierStatisticData getDossierStatisticData() {
+	public List<DossierStatisticData> getDossierStatisticData() {
 		return dossierStatisticData;
 	}
 
-	public void setDossierStatisticData(DossierStatisticData dossierStatisticData) {
+	public void setDossierStatisticData(List<DossierStatisticData> dossierStatisticData) {
 		this.dossierStatisticData = dossierStatisticData;
 	}
 

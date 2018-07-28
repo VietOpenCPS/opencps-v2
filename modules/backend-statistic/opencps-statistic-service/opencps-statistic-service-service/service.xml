@@ -44,7 +44,10 @@
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />
 		<column name="reporting" type="boolean" />
-
+		<column name="overtimeInside" type="int"/>
+		<column name="overtimeOutside" type="int"/>
+		<column name="interoperatingCount" type="int"/>
+		<column name="waitingCount" type="int"/>
 		<!-- Order -->
 
 		<!-- Filter -->
