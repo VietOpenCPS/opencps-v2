@@ -8,10 +8,14 @@ public interface DossierStatisticConstants {
 	
 	String GOV_AGENCY_GROUP_CODE = "GOVERNMENT_AGENCY";
 	
-	int GROUP_ID_PROCESS_PORTAL = 55301;
-	int GROUP_ID_RECEIVED_PORTAL = 55217;
+	long GROUP_ID_PROCESS_PORTAL = 55301;
+	long GROUP_ID_RECEIVED_PORTAL = 55217;
 	
 	String GOV_AGENCY_ENDPOINT = "opencps.rest.enpoind.govagency";
+	
+	String DOSSIER_ENDPOINT = "opencps.rest.enpoind.dossier";
+	
+	String OPENCPS_AUTHENCATION = "opencps.rest.authentication";
 	
 	String GROUP_ID = "groupId";
 }

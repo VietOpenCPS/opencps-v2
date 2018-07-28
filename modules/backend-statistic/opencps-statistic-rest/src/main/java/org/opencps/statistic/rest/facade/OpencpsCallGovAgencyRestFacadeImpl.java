@@ -17,10 +17,10 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceFailedExcept
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
 
-public class OpencpsCallGovAgencyServiceImpl extends OpencpsRestFacade<GovAgencyRequest, GovAgencyResponse>
-		implements OpencpsCallServiceFacade<GovAgencyRequest, GovAgencyResponse> {
+public class OpencpsCallGovAgencyRestFacadeImpl extends OpencpsRestFacade<GovAgencyRequest, GovAgencyResponse>
+		implements OpencpsCallRestFacade<GovAgencyRequest, GovAgencyResponse> {
 
-	private final static Logger LOG = LoggerFactory.getLogger(OpencpsCallGovAgencyServiceImpl.class);
+	private final static Logger LOG = LoggerFactory.getLogger(OpencpsCallGovAgencyRestFacadeImpl.class);
 	
 	@Override
 	public GovAgencyResponse callRestService(GovAgencyRequest payload)

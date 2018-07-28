@@ -6,8 +6,8 @@ import java.util.Date;
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
-import org.opencps.statistic.rest.facade.OpencpsCallGovAgencyServiceImpl;
-import org.opencps.statistic.rest.facade.OpencpsCallServiceFacade;
+import org.opencps.statistic.rest.facade.OpencpsCallGovAgencyRestFacadeImpl;
+import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -35,7 +35,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 	private SimpleDateFormat _simpleDateTimeFormat = new SimpleDateFormat("hh:mm:ss dd/MM/yyyy");
 
-	private OpencpsCallServiceFacade<GovAgencyRequest, GovAgencyResponse> callService = new OpencpsCallGovAgencyServiceImpl();
+	private OpencpsCallRestFacade<GovAgencyRequest, GovAgencyResponse> callService = new OpencpsCallGovAgencyRestFacadeImpl();
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
