@@ -520,6 +520,21 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	public void setGovAgencyCode(String govAgencyCode);
 
 	/**
+	 * Returns the group agency code of this opencps dossier statistic.
+	 *
+	 * @return the group agency code of this opencps dossier statistic
+	 */
+	@AutoEscape
+	public String getGroupAgencyCode();
+
+	/**
+	 * Sets the group agency code of this opencps dossier statistic.
+	 *
+	 * @param groupAgencyCode the group agency code of this opencps dossier statistic
+	 */
+	public void setGroupAgencyCode(String groupAgencyCode);
+
+	/**
 	 * Returns the gov agency name of this opencps dossier statistic.
 	 *
 	 * @return the gov agency name of this opencps dossier statistic

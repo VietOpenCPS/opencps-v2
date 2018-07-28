@@ -91,6 +91,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("pausingCount", getPausingCount());
 		attributes.put("ontimePercentage", getOntimePercentage());
 		attributes.put("govAgencyCode", getGovAgencyCode());
+		attributes.put("groupAgencyCode", getGroupAgencyCode());
 		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("domainCode", getDomainCode());
 		attributes.put("domainName", getDomainName());
@@ -279,6 +280,12 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 
 		if (govAgencyCode != null) {
 			setGovAgencyCode(govAgencyCode);
+		}
+
+		String groupAgencyCode = (String)attributes.get("groupAgencyCode");
+
+		if (groupAgencyCode != null) {
+			setGroupAgencyCode(groupAgencyCode);
 		}
 
 		String govAgencyName = (String)attributes.get("govAgencyName");
@@ -632,6 +639,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the group agency code of this opencps dossier statistic.
+	*
+	* @return the group agency code of this opencps dossier statistic
+	*/
+	@Override
+	public java.lang.String getGroupAgencyCode() {
+		return _opencpsDossierStatistic.getGroupAgencyCode();
+	}
+
+	/**
 	* Returns the user name of this opencps dossier statistic.
 	*
 	* @return the user name of this opencps dossier statistic
@@ -875,6 +892,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setGovAgencyName(java.lang.String govAgencyName) {
 		_opencpsDossierStatistic.setGovAgencyName(govAgencyName);
+	}
+
+	/**
+	* Sets the group agency code of this opencps dossier statistic.
+	*
+	* @param groupAgencyCode the group agency code of this opencps dossier statistic
+	*/
+	@Override
+	public void setGroupAgencyCode(java.lang.String groupAgencyCode) {
+		_opencpsDossierStatistic.setGroupAgencyCode(groupAgencyCode);
 	}
 
 	/**

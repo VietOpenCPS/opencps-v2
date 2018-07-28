@@ -1,14 +1,29 @@
 package org.opencps.statistic.rest.service;
 
+import java.util.List;
+
+import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.rest.converter.DossierStatisticConverter;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
+import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 
-public class DossierStatisticFinderServiceImpl implements DossierStatisticFinderService{
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+
+public class DossierStatisticFinderServiceImpl implements DossierStatisticFinderService {
 
 	@Override
-	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest) {
-		DossierStatisticResponse dossierStatisticResponse;
-		return null;
+	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest)
+			throws PortalException, SystemException {
+
+		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
+				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getDomain(),
+						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getGroupAgencyCode(),
+						dossierStatisticRequest.isReporting(), dossierStatisticRequest.getStart(),
+						dossierStatisticRequest.getEnd());
+
+		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
 	}
 
 }

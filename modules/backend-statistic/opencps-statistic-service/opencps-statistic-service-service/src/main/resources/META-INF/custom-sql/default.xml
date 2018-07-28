@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <custom-sql>
-    <sql id="[fully-qualified class name + method]">
-    SQL query wrapped in <![CDATA[...]]>
-    No terminating semi-colon
-    </sql>
+	<sql id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder.searchStatisic">
+		<![CDATA[
+			SELECT opencps_statistic.* 
+			FROM opencps_statistic 
+			WHERE 
+				(opencps_statistic.domainCode = ?) AND
+				(opencps_statistic.govAgencyCode = ?) AND 
+				(opencps_statistic.groupAgencyCode = ?) AND 
+				(opencps_statistic.reporting = ?) AND
+				(opencps_statistic.groupId = ?)
+		]]>
+	</sql>
 </custom-sql>

@@ -39,6 +39,7 @@
 		<column name="pausingCount" type="int" />
 		<column name="ontimePercentage" type="int" />
 		<column name="govAgencyCode" type="String" />
+		<column name="groupAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />

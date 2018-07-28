@@ -196,6 +196,16 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 			companyId, start, end, orderByComparator);
 	}
 
+	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
+		long groupId, java.lang.String domain, java.lang.String govAgencyCode,
+		java.lang.String groupAgenvyCode, boolean reporting, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsDossierStatisticLocalService.searchDossierStatistic(groupId,
+			domain, govAgencyCode, groupAgenvyCode, reporting, start, end);
+	}
+
 	/**
 	* Returns the number of rows matching the dynamic query.
 	*

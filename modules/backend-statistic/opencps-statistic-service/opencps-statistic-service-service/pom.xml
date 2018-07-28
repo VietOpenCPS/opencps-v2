@@ -14,6 +14,13 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+<!-- https://mvnrepository.com/artifact/com.liferay/com.liferay.portal.dao.orm.custom.sql -->
+	<dependency>
+	    <groupId>com.liferay</groupId>
+	    <artifactId>com.liferay.portal.dao.orm.custom.sql</artifactId>
+	    <version>1.0.16</version>
+	    <scope>provided</scope>
+	</dependency>
 		<dependency>
 			<groupId>com.liferay</groupId>
 			<artifactId>com.liferay.portal.spring.extender</artifactId>
