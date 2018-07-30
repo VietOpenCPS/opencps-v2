@@ -3,8 +3,14 @@
 </#if>
 
 <div class="row panel">
-    <div class="row-header">
+    <div class="row-header align-middle">
         <div class="background-triangle-big">CHI TIÊT THỦ TỤC HÀNH CHÍNH</div>
+        <div class="pull-right group-icons align-middle-lg">
+            <a href="javascript:;" onclick="fnBack();">
+                <i class="fa fa-reply" aria-hidden="true"></i>
+                Quay lại
+            </a>
+        </div>
     </div>
     <div class="panel-body" id="dataDetailServiceInfo">
         <div class="row MB15">
@@ -167,9 +173,45 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    var setValue = function(combobox,value) {
+      combobox.value(value);
+    }
+    var fnBack = function() {
+        var tabstrip = $("#service_info_tabstrip").data("kendoTabStrip");
+      var index=tabstrip.select().index();
+      var content=tabstrip.contentElement(index);
+      var id = $(content).find('li.active').attr("dataPk");
+      console.log(id);
+
+      $("#serviceinfo-right-content").load("${ajax.serviceinfomain_list}",function(result){
+        if(index == 2){
+          $("#service_info_list_view").getKendoListView().dataSource.read({
+            "level": id
+          });
+          var levelCombobox =  $("#levelSearch").data("kendoComboBox");
+          setValue(levelCombobox,id);
+          levelCombobox.trigger("change");
+          levelCombobox._isSelect = false;
+        }else if(index == 1){
+         $("#service_info_list_view").getKendoListView().dataSource.read({
+          "domain": id
+        });
+         var domainCombobox =  $("#domainCodeSearch").data("kendoComboBox");
+         setValue(domainCombobox,id);
+         domainCombobox.trigger("change");
+         domainCombobox._isSelect = false;
+       }else{
+        $("#service_info_list_view").getKendoListView().dataSource.read({
+          "administration": id
+        });
+        var administrationCombobox =  $("#administrationCodeSearch").data("kendoComboBox");
+        setValue(administrationCombobox,id);
+        administrationCombobox.trigger("change");
+        administrationCombobox._isSelect = false;
+      }
 
     });
+    }
 
     var pullDataDetail= function(id){
         console.log(id);
