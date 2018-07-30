@@ -31,18 +31,16 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.exception.NoSuchDossierException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -50,6 +48,7 @@ import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -217,7 +216,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 			}
 
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA
+					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -234,6 +234,37 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
 				dossier.setDossierNo(dossierRef.trim());
+				ServiceProcess process = null;
+				
+				if (option != null) {
+					process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
+				}
+				
+				//Update submit date
+				now = new Date();
+				dossier.setSubmitDate(now);
+				int durationCount = 0;
+				int durationUnit = 0;
+				if (process != null ) {
+					durationCount = process.getDurationCount();
+					durationUnit = process.getDurationUnit();
+					int durationDays = 0;
+
+					if (durationUnit == 0) {
+						durationDays = durationCount;
+					} else {
+						durationDays = Math.round(durationCount / 8);
+					}
+					Date dueDate = null;
+					if (durationDays > 0) {
+						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
+					}
+
+					dossier.setDueDate(dueDate);
+					dossier.setReceiveDate(now);
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
+				}				
 			}
 		} else {
 
@@ -1269,7 +1300,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateStatus(long groupId, long id, String refId, String status, String statusText, String subStatus,
-			String subStatusText, String lockState, ServiceContext context) throws PortalException {
+			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
+			throws PortalException {
 
 		validateUpdateStatus(groupId, id, refId, status, statusText, subStatus, subStatusText);
 
@@ -1290,6 +1322,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
 		dossier.setLockState(lockState);
+		dossier.setDossierNote(stepInstruction);
 
 		/*
 		 * if (status.equalsIgnoreCase(DossierStatusConstants.RECEIVING)) {
@@ -1772,6 +1805,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		//LamTV_ADD
 		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
+		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1799,7 +1833,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, booleanCommon);
+				assigned, statusStep, subStatusStep, permission, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1849,6 +1883,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		//LamTV_ADD
 		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
+		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1873,7 +1908,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, booleanCommon);
+				assigned, statusStep, subStatusStep, permission, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1953,7 +1988,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
 			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
 			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
-			String statusStep, String subStatusStep, BooleanQuery booleanQuery) throws ParseException {
+			String statusStep, String subStatusStep, String permission, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2289,7 +2324,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 			}
 		}
-	
+
+		if (Validator.isNotNull(permission)) {
+			MultiMatchQuery query = new MultiMatchQuery(permission);
+			query.addField(DossierTerm.MAPPING_PERMISSION);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 		return booleanQuery;
 	}
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
@@ -2446,5 +2486,94 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossierPersistence.update(dossier);
 
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateApplicantInfo(long dossierId, 
+			Date applicantIdDate,
+			String applicantIdNo,
+			String applicantIdType,
+			String applicantName,
+			String address,
+			String cityCode,
+			String cityName,
+			String districtCode,
+			String districtName,
+			String wardCode,
+			String wardName,
+			String contactEmail,
+			String contactTelNo) throws NoSuchDossierException {
+		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+		
+		dossier.setApplicantIdDate(applicantIdDate);
+		dossier.setApplicantIdNo(applicantIdNo);
+		dossier.setApplicantIdType(applicantIdType);
+		dossier.setApplicantName(applicantName);
+		dossier.setAddress(address);
+		dossier.setCityCode(cityCode);
+		dossier.setCityName(cityName);
+		dossier.setDistrictCode(districtCode);
+		dossier.setDistrictName(districtName);
+		dossier.setWardCode(wardCode);
+		dossier.setWardName(wardName);
+		dossier.setContactEmail(contactEmail);
+		dossier.setContactTelNo(contactTelNo);
+		
+		dossier.setDelegateAddress(address);
+		dossier.setDelegateCityCode(cityCode);
+		dossier.setDelegateCityName(cityName);
+		dossier.setDelegateDistrictCode(districtCode);
+		dossier.setDelegateDistrictName(districtName);
+		dossier.setDelegateEmail(contactEmail);
+		dossier.setDelegateIdNo(applicantIdNo);
+		dossier.setDelegateName(applicantName);
+		dossier.setDelegateTelNo(contactTelNo);
+		dossier.setDelegateWardCode(wardCode);
+		dossier.setDelegateWardName(wardName);
+			
+		return dossierPersistence.update(dossier);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateDossier(long dossierId, JSONObject obj) throws NoSuchDossierException {
+		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+		
+		if (obj.has(DossierTerm.DOSSIER_NOTE)) {
+			if (!obj.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
+				dossier.setDossierNote(obj.getString(DossierTerm.DOSSIER_NOTE));
+			}
+		}
+		if (obj.has(DossierTerm.EXTEND_DATE)) {
+			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
+				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));
+			}
+		}
+		if (obj.has(DossierTerm.DOSSIER_NO)) {
+			if (!obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
+				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
+			}
+		}
+		if (obj.has(DossierTerm.DUE_DATE)) {
+			if (dossier.getDueDate() == null || obj.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
+				dossier.setDueDate(new Date(obj.getLong(DossierTerm.DUE_DATE)));
+			}
+		}
+		if (obj.has(DossierTerm.FINISH_DATE)) {
+			if (dossier.getFinishDate() == null || obj.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
+				dossier.setFinishDate(new Date(obj.getLong(DossierTerm.FINISH_DATE)));	
+			}
+		}
+		if (obj.has(DossierTerm.RECEIVE_DATE)) {
+			if (dossier.getReceiveDate() == null || obj.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
+				dossier.setReceiveDate(new Date(obj.getLong(DossierTerm.RECEIVE_DATE)));	
+			}
+		}
+		if (obj.has(DossierTerm.SUBMIT_DATE)) {
+			if (dossier.getSubmitDate() == null || obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime()) {
+				dossier.setSubmitDate(new Date(obj.getLong(DossierTerm.SUBMIT_DATE)));	
+			}
+		}
+		
+		return dossierPersistence.update(dossier);
 	}
 }

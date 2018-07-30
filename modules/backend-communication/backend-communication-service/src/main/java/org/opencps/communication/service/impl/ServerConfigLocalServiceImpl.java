@@ -190,4 +190,10 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		serverConfigPersistence.removeAll();
 	}
 
+	//LamTV_Remove all record by groupId
+	public void deleteByGroupId(long groupId, long userId, ServiceContext serviceContext) {
+		serverConfigPersistence.removeByCF_GID(groupId);
+	}
+
+
 }

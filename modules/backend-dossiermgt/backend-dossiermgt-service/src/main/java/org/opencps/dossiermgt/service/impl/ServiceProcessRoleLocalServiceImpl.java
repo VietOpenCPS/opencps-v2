@@ -126,8 +126,8 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 
 	}
 
-	public void updateServiceProcessRoleDB(long groupId, long serviceProcessId, long roleId, String roleName, boolean moderator,
-			String condition, ServiceContext serviceContext) {
+	public void updateServiceProcessRoleDB(long groupId, long serviceProcessId, long roleId, String roleCode,
+			String roleName, boolean moderator, String condition, ServiceContext serviceContext) {
 
 		ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId, roleId);
 		ServiceProcessRole serviceProcessRole = serviceProcessRolePersistence.fetchByPrimaryKey(pk);
@@ -135,6 +135,7 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 		if (Validator.isNull(serviceProcessRole)) {
 			serviceProcessRole = serviceProcessRolePersistence.create(pk);
 
+			serviceProcessRole.setRoleCode(roleCode);
 			serviceProcessRole.setRoleName(roleName);
 			serviceProcessRole.setModerator(moderator);
 			serviceProcessRole.setCondition(condition);
@@ -146,4 +147,13 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 
 		serviceProcessRolePersistence.update(serviceProcessRole);
 	}
+
+	public long getByServiceRoleCode(String roleCode) {
+		ServiceProcessRole serviceRole = serviceProcessRolePersistence.fetchByF_CODE(roleCode);
+		if (serviceRole != null) {
+			return serviceRole.getRoleId();
+		}
+		return 0;
+	}
+
 }

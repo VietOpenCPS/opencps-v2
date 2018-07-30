@@ -234,7 +234,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	@Override
 	public Response getDossierTodoTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, StatisticDossierSearchModel query) {
+			User user, ServiceContext serviceContext, StatisticDossierSearchModel query, String owner) {
 		BackendAuth auth = new BackendAuthImpl();
 		StatisticActions actions = new StatisticActionsImpl();
 
@@ -259,7 +259,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.USER_ID, String.valueOf(userId));
-//			params.put(DossierTerm.OWNER, String.valueOf(true));
+			boolean ownerBoolean = GetterUtil.getBoolean(owner);
+			if (ownerBoolean) {
+				params.put(DossierTerm.OWNER, String.valueOf(true));				
+			}
 			int total = 0;
 			//
 			String stepCode = query.getStep();
@@ -272,6 +275,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 						if (stepConfig != null) {
 							params.put(DossierTerm.STATUS, stepConfig.getDossierStatus());
 							params.put(DossierTerm.SUBSTATUS, stepConfig.getDossierSubStatus());
+							//TODO
+							String permission = user.getUserId() + ":write";
+							params.put(DossierTerm.MAPPING_PERMISSION, permission);
 							_log.info("START");
 							long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId,
 									params, null, serviceContext);
@@ -294,6 +300,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 					for (StepConfig step: stepList) {
 						params.put(DossierTerm.STATUS, step.getDossierStatus());
 						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+						//TODO
+						String permission = user.getUserId() + ":write";
+						params.put(DossierTerm.MAPPING_PERMISSION, permission);
 						_log.info("DossierStatus: "+step.getDossierStatus());
 						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 								null, serviceContext);

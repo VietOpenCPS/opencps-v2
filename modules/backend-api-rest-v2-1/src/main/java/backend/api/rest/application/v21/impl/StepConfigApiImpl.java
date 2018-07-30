@@ -1,5 +1,8 @@
 package backend.api.rest.application.v21.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
@@ -119,6 +122,40 @@ public class StepConfigApiImpl implements StepConfigApi {
 	public StepConfigItemResult getStepConfigsElasticsearch(String q) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public StepConfigItemResult getStepConfigByMainStatusAndSubStatus(String mainStatus, String subStatus) {
+		StepConfigItemResult result = new StepConfigItemResult();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		List<StepConfig> lstStepConfigs = StepConfigLocalServiceUtil.getStepByMainStatusAndSubStatus(groupId, mainStatus, subStatus);
+		
+		if (lstStepConfigs.size() > 0) {
+			List<StepConfigItem> lstItems = new ArrayList<>();
+			
+			result.setTotal((long)lstStepConfigs.size());
+			
+			for (StepConfig st : lstStepConfigs) {
+				StepConfigItem item = new StepConfigItem();
+				item.setButtonConfig(st.getButtonConfig());
+				item.setCreateDate(String.valueOf(st.getCreateDate().getTime()));
+				item.setDossierStatus(st.getDossierStatus());
+				item.setDossierSubStatus(st.getDossierSubStatus());
+				item.setMenuGroup(st.getMenuGroup());
+				item.setMenuStepName(st.getMenuStepName());
+				item.setStepCode(st.getStepCode());
+				item.setStepName(st.getStepName());
+				item.setStepConfigId(st.getStepConfigId());
+				item.setStepType(st.getStepType());
+				
+				lstItems.add(item);
+			}
+			
+			result.getData().addAll(lstItems);
+		}
+		
+		return result;
 	}
 
 }

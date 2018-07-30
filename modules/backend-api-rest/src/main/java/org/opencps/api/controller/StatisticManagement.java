@@ -7,6 +7,7 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -48,5 +49,5 @@ public interface StatisticManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getDossierTodoTest(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
+			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query, @QueryParam("owner") String owner);
 }

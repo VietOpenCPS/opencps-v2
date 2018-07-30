@@ -14,10 +14,10 @@ import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierActionUtils;
 import org.opencps.api.dossier.model.ListContacts;
-import org.opencps.api.dossieraction.model.DossierActionResultsModel;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
 import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
 import org.opencps.api.dossieraction.model.DossierNextActionResultsModel;
+import org.opencps.api.dossieraction.model.DossierResultPayLoadModel;
 import org.opencps.api.processsequence.model.ActionModel;
 import org.opencps.api.processsequence.model.DossierActionResult21Model;
 import org.opencps.api.processsequence.model.ProcessSequenceModel;
@@ -39,6 +39,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -46,6 +47,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -57,7 +59,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
@@ -172,13 +173,15 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				query.setStart(-1);
 				query.setEnd(-1);
 			}
-
+			ProcessAction proAction = ProcessActionLocalServiceUtil.fetchProcessAction(GetterUtil.getInteger(actionId));
+			String actionCode = (proAction != null) ? proAction.getActionCode() : StringPool.BLANK;
+			
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossierId));
 			params.put(ProcessActionTerm.PROCESS_ACTION_ID, actionId);
-			params.put(DossierActionTerm.ACTION_CODE, query.getActionCode());
+			params.put(DossierActionTerm.ACTION_CODE, actionCode);
 			params.put(DossierActionTerm.AUTO, query.getAuto());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -186,10 +189,16 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 			DossierActions actions = new DossierActionsImpl();
 
-			JSONObject jsonData = actions.getPayloadNextActions(user.getUserId(), company.getCompanyId(), groupId, params,
+			JSONArray jsonData = actions.getPayloadNextActions(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			DossierDetailNextActionModel result = DossierActionUtils.mappingToDetailNextActions(jsonData);
+			DossierResultPayLoadModel result = new DossierResultPayLoadModel();
+			if (jsonData != null && jsonData.length() > 0) {
+				result.setTotal(jsonData.length());
+				result.getData().addAll(DossierActionUtils.mappingToPayLoadNextActions(jsonData));
+			} else {
+				result.setTotal(0);
+			}
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {

@@ -10,9 +10,9 @@
       <span class="show-per-page">Hiển thị
         <span class="select-wrapper">
          <select class="ML5" id="slPageSize">
-           <option value="5" selected="">5</option>
+           <option value="5">5</option>
            <option value="10">10</option>
-           <option value="15">15</option>
+           <option value="15" selected="">15</option>
            <option value="25">25</option>
            <option value="50">50</option>
          </select>
@@ -99,13 +99,13 @@
      <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer align-middle-lg" data-pk="#: id #">
       #: serviceName #
     </div>
-    <div class="col-sm-2 align-middle-lg text-center">
+    <div class="col-sm-2 align-middle-lg text-left">
       #: domainName #
     </div>
-    <div class="col-sm-1 align-middle-lg text-center">
+    <div class="col-sm-1 align-middle-lg text-left">
       Mức độ #: maxLevel #
     </div>
-    <div class="col-sm-2 text-center">
+    <div class="col-sm-2 center-all">
       #if((typeof  serviceConfigs !== 'undefined') ){
           var govAgencyCode = "";
           var govAgencyName = "";
@@ -182,6 +182,7 @@
               serviceInstruction =  serviceConfigs.serviceInstruction;
               serviceLevel =  serviceConfigs.serviceLevel;
               serviceUrl =  serviceConfigs.serviceUrl;
+              var serviceConfigId =  serviceConfigs.serviceConfigId;
               if(serviceLevel>=3){
                 #
                  <div class="dropdown">
@@ -190,7 +191,7 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
                       <#-- <li><a href="#:serviceUrl#">#:govAgencyName#</a></li> -->
-                      <li><a href="/group/cong-tiep-nhan/quan-ly-ho-so\#/taohosomoi">#:govAgencyName#</a></li>
+                      <li><a href="/web${(Request.layoutfriendurl)!}\#/add-dvc/#:serviceConfigId#">#:govAgencyName#</a></li>
                   </ul>
                   </div>
                 #
@@ -282,7 +283,7 @@
   data: "data",
   model : { id: "serviceInfoId" }
 },
-pageSize: 5,
+pageSize: 15,
 serverPaging: false,
 serverSorting: false,
 serverFiltering: false
@@ -291,7 +292,6 @@ serverFiltering: false
     $("#service_info_list_view").kendoListView({
      dataSource: serviceInfoDataSource,
      template: kendo.template($("#service_info_template").html()),
-     selectable: true,
      template: function(data){
 
       var _pageSize = serviceInfoDataSource.pageSize();
@@ -315,7 +315,6 @@ serverFiltering: false
       localIndex=0;
       var listView = e.sender;
       var firstItem = listView.element.children().first();
-      listView.select(firstItem);
         //  the first select dossier template
         //  onSelectDossiertemplate(firstItem.attr("data-pk"));
       },

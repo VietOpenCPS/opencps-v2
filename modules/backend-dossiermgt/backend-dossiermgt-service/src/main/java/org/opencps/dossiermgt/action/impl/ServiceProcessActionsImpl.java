@@ -17,6 +17,8 @@ import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -270,16 +272,16 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	}
 
 	@Override
-	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId, String roleName, boolean moderator,
+	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId,String roleCode, String roleName, boolean moderator,
 			String condition, ServiceContext serviceContext) {
 
-		ServiceProcessRoleLocalServiceUtil.updateServiceProcessRoleDB(groupId, serviceProcessId, roleId, roleName,
-				moderator, condition, serviceContext);
+		ServiceProcessRoleLocalServiceUtil.updateServiceProcessRoleDB(groupId, serviceProcessId, roleId, roleCode,
+				roleName, moderator, condition, serviceContext);
 	}
 
 	@Override
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
-			Integer sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
+			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
 			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
 			throws PortalException {
 
@@ -293,11 +295,11 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	}
 
 	@Override
-	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleName,
-			boolean moderator, String condition, ServiceContext serviceContext) {
+	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleCode,
+			String roleName, boolean moderator, String condition, ServiceContext serviceContext) {
 
-		ProcessStepRoleLocalServiceUtil.updateProcessStepRoleDB(userId, groupId, processStepId, roleId, roleName, moderator,
-				condition, serviceContext);
+		ProcessStepRoleLocalServiceUtil.updateProcessStepRoleDB(userId, groupId, processStepId, roleId, roleCode,
+				roleName, moderator, condition, serviceContext);
 	}
 
 	@Override
@@ -428,6 +430,16 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 
 		ProcessSequenceLocalServiceUtil.updateProcessSequenceDB(userId, groupId, serviceProcessId, sequenceNo,
 				sequenceName, sequenceRole, durationCount, serviceContext);
+	}
+
+	@Override
+	public long getByRoleCode(long groupId, String roleCode) {
+
+		JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, roleCode);
+		if (job != null) {
+			return job.getMappingRoleId();
+		}
+		return 0;
 	}
 
 }

@@ -100,7 +100,7 @@ public class DossierTemplateUtils {
 
 		}
 
-		output.getDossierParts_0020().addAll(inputs);
+		output.getDossierParts().addAll(inputs);
 
 		return output;
 	}

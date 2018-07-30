@@ -5,11 +5,24 @@ import java.util.List;
 
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.MenuConfig;
+import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 
 import io.swagger.model.ActionConfigItem;
 import io.swagger.model.MenuConfigItem;
@@ -18,6 +31,7 @@ import io.swagger.model.MenuConfigStepsItem;
 import io.swagger.model.StepConfigItem;
 
 public class OpenCPSAPIParsing {
+	protected Log _log = LogFactoryUtil.getLog(OpenCPSAPIParsing.class);
 	
 //	private OpenCPSAPIParsing() {
 //		
@@ -88,6 +102,108 @@ public class OpenCPSAPIParsing {
 
 	}
 
+	public MenuConfigItemResult getModel(long groupId, User user) {
+		MenuConfigItemResult object = new MenuConfigItemResult();
+		List<MenuConfigItem> data = new ArrayList<>();
+		
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+		if (applicant == null) {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+			if (employee != null) {
+				List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+				long[] arrRoles = new long[lstRoles.size()];
+				int i = 0;
+				for (Role r : lstRoles) {
+					arrRoles[i++] = r.getRoleId();
+				}
+				List<MenuRole> lstMenuRoles = i > 0 ? MenuRoleLocalServiceUtil.getByRoles(arrRoles) : new ArrayList<>();
+				long[] arrMenuConfigIds = new long[lstMenuRoles.size()];
+				i = 0;
+				for (MenuRole r : lstMenuRoles) {
+					arrMenuConfigIds[i++] = r.getMenuConfigId();
+				}
+				
+				List<MenuConfig> lstMenus = i > 0 ? MenuConfigLocalServiceUtil.getByMenus(arrMenuConfigIds) : new ArrayList<>();
+				List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+
+				for (MenuConfig menuConfig : lstMenus) {
+					MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+					MenuConfigStepsItem menuConfigStepsItem = new MenuConfigStepsItem();
+					List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+					
+					for (StepConfig stepConfig : lstSteps) {
+						if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
+							if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+								menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+								
+								menuConfigStepsItems.add(menuConfigStepsItem);							
+							}
+						}
+					}
+					
+					menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+					
+					data.add(menuConfigItem);
+				}				
+			}
+		}
+		else {
+			List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+			List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+
+			for (MenuConfig menuConfig : lstMenus) {
+				MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+				MenuConfigStepsItem menuConfigStepsItem = new MenuConfigStepsItem();
+				List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+				
+				for (StepConfig stepConfig : lstSteps) {
+					if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
+						if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+							menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+							
+							menuConfigStepsItems.add(menuConfigStepsItem);							
+						}
+					}
+				}
+				
+				menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+				
+				data.add(menuConfigItem);
+			}
+		}
+		
+		object.setData(data);
+		object.setTotal(Long.valueOf(data.size()));
+		return object;
+	}
+	
+	public MenuConfigItem mappingMenuConfigItem(MenuConfig menuConfig) {
+		MenuConfigItem menuConfigItem = new MenuConfigItem();
+		menuConfigItem.setMenuGroup(menuConfig.getMenuGroup());
+		menuConfigItem.setMenuName(menuConfig.getMenuName());
+		menuConfigItem.setOrder(menuConfig.getOrder());
+		menuConfigItem.setMenuType(menuConfig.getMenuType());
+		menuConfigItem.setQueryParams(menuConfig.getQueryParams());
+		menuConfigItem.setButtonConfig(menuConfig.getButtonConfig());
+		menuConfigItem.setTableConfig(menuConfig.getTableConfig());
+		
+		return menuConfigItem;
+	}
+	
+	public MenuConfigStepsItem mappingMenuConfigStepsItem(StepConfig stepConfig) {
+		MenuConfigStepsItem menuConfigStepsItem = new MenuConfigStepsItem();
+		if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+			menuConfigStepsItem = new MenuConfigStepsItem();
+			menuConfigStepsItem.setStepCode(stepConfig.getStepCode());
+			menuConfigStepsItem.setStepName(stepConfig.getStepName());
+			menuConfigStepsItem.setMenuStepName(stepConfig.getMenuStepName());
+			menuConfigStepsItem.setButtonConfig(stepConfig.getButtonConfig());
+			menuConfigStepsItem.setDossierStatus(stepConfig.getDossierStatus());
+			menuConfigStepsItem.setDossierSubStatus(stepConfig.getDossierSubStatus());			
+		}		
+		
+		return menuConfigStepsItem;
+	}
 	public MenuConfigItemResult getModel(JSONObject ett) {
 
 		MenuConfigItemResult object = new MenuConfigItemResult();
@@ -123,7 +239,7 @@ public class OpenCPSAPIParsing {
 
 				JSONObject current = arrayStep.getJSONObject(i);
 				if (menuConfigItem.getMenuGroup().trim().equals(current.getString("menuGroup"))
-						&& current.getInt("stepType") == 1) {
+						&& (current.getInt("stepType") == 1 || current.getInt("stepType") == 2)) {
 					
 					menuConfigStepsItem = new MenuConfigStepsItem();
 

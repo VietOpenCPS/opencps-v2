@@ -95,6 +95,7 @@ public class ServiceInfoPortlet extends FreeMarkerPortlet {
 		// set varible
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute("layoutfriendurl", themeDisplay.getScopeGroup().getFriendlyURL());
 
 		super.render(renderRequest, renderResponse);
 

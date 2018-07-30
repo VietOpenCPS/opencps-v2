@@ -397,6 +397,39 @@ paths:
           description: Tham số truyền vào không hợp lệ
         409:
           description: StepConfig đã tồn tại trong hệ thống
+  /stepconfigs/status/{mainStatus}/{subStatus}:
+    get:
+      tags:
+      - StepConfig
+      summary: Thêm định nghĩa step configs
+      operationId: getStepConfigByMainStatusAndSubStatus
+      description: Lấy định nghĩa step configs
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: mainStatus
+        in: path
+        description: mainStatus
+        required: true
+        type: string
+      - name: subStatus
+        in: path
+        description: subStatus
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/StepConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
   /stepconfigs/{id}:
     get:
       tags:

@@ -141,18 +141,19 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 		MenuConfigItemResult body = new MenuConfigItemResult();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
-		try {
-			
-			JSONObject query = JSONFactoryUtil.createJSONObject(" { \"sort\" : [ { \"order_Number_sortable\" : \"asc\" }, \"_score\" ], \"from\" : 0, \"size\" : 10000, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(org.opencps.dossiermgt.model.MenuConfig or org.opencps.dossiermgt.model.StepConfig) AND groupId:"+groupId+")\" }}}");
-			
-			JSONObject data = ElasticQueryWrapUtil.query(query.toJSONString(), MenuConfig.class.getName(), company.getCompanyId());
-			
-			body = parsing.getModel(data);
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			
+//			JSONObject query = JSONFactoryUtil.createJSONObject(" { \"sort\" : [ { \"order_Number_sortable\" : \"asc\" }, \"_score\" ], \"from\" : 0, \"size\" : 10000, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(org.opencps.dossiermgt.model.MenuConfig or org.opencps.dossiermgt.model.StepConfig) AND groupId:"+groupId+")\" }}}");
+//			
+//			JSONObject data = ElasticQueryWrapUtil.query(query.toJSONString(), MenuConfig.class.getName(), company.getCompanyId());
+//			
+//			body = parsing.getModel(data);
+//			
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+
+		body = parsing.getModel(groupId, user);
 		
 		return body;
 	}

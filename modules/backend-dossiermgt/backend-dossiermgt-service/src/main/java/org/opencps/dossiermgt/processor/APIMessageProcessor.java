@@ -161,6 +161,30 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			return false;
 		}
 		
+		//Process action
+		try {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
+			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
+			if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
+					|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment())) {
+				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+				pfiModel.setApplicantName(dossier.getApplicantName());
+				pfiModel.setBankInfo(StringPool.BLANK);
+				pfiModel.setEpaymentProfile(StringPool.BLANK);
+				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+				pfiModel.setPaymentAmount(processAction.getPaymentFee());
+				pfiModel.setPaymentFee(processAction.getPaymentFee());
+				pfiModel.setPaymentNote(StringPool.BLANK);
+				pfiModel.setReferenceUid(StringPool.BLANK);
+				
+				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			}
+		}
+		catch (Exception e) {
+			
+		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
