@@ -111,6 +111,29 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			if (jsonData != null && jsonData.length() > 0) {
 				result.setTotal(jsonData.length());
 				result.getData().addAll(DossierActionUtils.mappingToNextActions(jsonData));
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				DossierAction dossierAction = null;
+				
+				if (dossier != null) {
+					long serviceProcessId = 0;
+					String stepCode = StringPool.BLANK;
+					long dossierActionId = dossier.getDossierActionId();
+					if (dossierActionId > 0) {
+						dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					}
+
+					if (dossierAction != null) {
+						serviceProcessId = dossierAction.getServiceProcessId();
+						stepCode = dossierAction.getStepCode();
+					}
+
+					if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
+						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+						if (processStep != null) {
+							result.setCheckInput(processStep.getCheckInput());
+						}
+					}
+				}
 			} else {
 				result.setTotal(0);
 			}

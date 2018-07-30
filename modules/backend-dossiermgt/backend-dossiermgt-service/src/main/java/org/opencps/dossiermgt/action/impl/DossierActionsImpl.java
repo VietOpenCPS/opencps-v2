@@ -1262,8 +1262,8 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
 				try {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-					_log.info("User id: " + userId);
-					_log.info("Dossier action user:" );
+//					_log.info("User id: " + userId);
+//					_log.info("Dossier action user:" );
 					//GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
@@ -1275,10 +1275,10 @@ public class DossierActionsImpl implements DossierActions {
 						int assign = dActionUser.getAssigned();
 						if (assign==1 && !pending) enable = 1;
 					}
-					_log.info("Enable: " + enable);
+//					_log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
-					_log.info("processActionList: "+processActionList.size());
+//					_log.info("processActionList: "+processActionList.size());
 					if (processActionList != null && processActionList.size() > 0) {
 						results = JSONFactoryUtil.createJSONArray();
 						JSONObject data = null;
@@ -1290,7 +1290,7 @@ public class DossierActionsImpl implements DossierActions {
 						String autoEvent = StringPool.BLANK;
 						String preCondition = StringPool.BLANK;
 						for (ProcessAction processAction : processActionList) {
-							_log.info("processAction: "+processAction);
+//							_log.info("processAction: "+processAction);
 							data = JSONFactoryUtil.createJSONObject();
 							processActionId = processAction.getProcessActionId();
 							actionCode = processAction.getActionCode();
