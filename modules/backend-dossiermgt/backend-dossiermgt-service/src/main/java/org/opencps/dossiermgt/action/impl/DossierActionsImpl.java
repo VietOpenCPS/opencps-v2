@@ -2625,7 +2625,8 @@ public class DossierActionsImpl implements DossierActions {
 		if (DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus)
 				&& DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus)) {
 			try {
-				DossierLocalServiceUtil.updateSubmittingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), new Date(), context);
+				DossierLocalServiceUtil.updateSubmittingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				dossier.setSubmitDate(now);
 				bResult.put(DossierTerm.SUBMIT_DATE, true);
 			} catch (PortalException e) {
 				e.printStackTrace();
@@ -2634,7 +2635,8 @@ public class DossierActionsImpl implements DossierActions {
 		if (Validator.isNull(dossier.getReceiveDate())
 				&& Validator.isNotNull(dossier.getDossierNo())) {
 			try {
-				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), new Date(), context);
+				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				dossier.setReceiveDate(now);
 				bResult.put(DossierTerm.RECEIVE_DATE, true);
 			} catch (PortalException e) {
 				e.printStackTrace();
@@ -2644,6 +2646,7 @@ public class DossierActionsImpl implements DossierActions {
 		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus) && DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
 			try {
 				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				dossier.setProcessDate(now);
 				bResult.put(DossierTerm.PROCESS_DATE, true);
 			} catch (PortalException e) {
 				e.printStackTrace();
@@ -2657,6 +2660,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNull(dossier.getReleaseDate())) {
 				try {
 					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+					dossier.setReleaseDate(now);
 					bResult.put(DossierTerm.RELEASE_DATE, true);
 				} catch (PortalException e) {
 					e.printStackTrace();
@@ -2670,6 +2674,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNull(dossier.getFinishDate())) {
 				try {
 					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+					dossier.setFinishDate(now);
 					bResult.put(DossierTerm.FINISH_DATE, true);
 				} catch (PortalException e) {
 					e.printStackTrace();
