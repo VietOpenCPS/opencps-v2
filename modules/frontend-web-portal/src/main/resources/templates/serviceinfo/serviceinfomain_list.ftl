@@ -99,13 +99,13 @@
      <div class="col-sm-6 item-serviceinfo text-hover-blue hover-pointer align-middle-lg" data-pk="#: id #">
       #: serviceName #
     </div>
-    <div class="col-sm-2 align-middle-lg text-center">
+    <div class="col-sm-2 align-middle-lg text-left">
       #: domainName #
     </div>
-    <div class="col-sm-1 align-middle-lg text-center">
+    <div class="col-sm-1 align-middle-lg text-left">
       Mức độ #: maxLevel #
     </div>
-    <div class="col-sm-2 text-center">
+    <div class="col-sm-2 center-all">
       #if((typeof  serviceConfigs !== 'undefined') ){
           var govAgencyCode = "";
           var govAgencyName = "";
@@ -315,7 +315,6 @@ serverFiltering: false
       localIndex=0;
       var listView = e.sender;
       var firstItem = listView.element.children().first();
-      listView.select(firstItem);
         //  the first select dossier template
         //  onSelectDossiertemplate(firstItem.attr("data-pk"));
       },

@@ -346,7 +346,10 @@
     });
 
     $(document).on("click",".btn-revert",function(){
+      funRevert();
+    });
 
+    function funRevert () {
       var tabstrip = $("#service_info_tabstrip").data("kendoTabStrip");
       var index=tabstrip.select().index();
       var content=tabstrip.contentElement(index);
@@ -381,7 +384,7 @@
       }
 
     });
-    });
+    }
 
     $(document).on("click",".showInstruction",function(event){
       var instructionContent=$(this).attr("serviceInstruction");
