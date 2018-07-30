@@ -102,6 +102,8 @@ public class OpencpsStatisticRestApplication extends Application {
 		try {
 			return dossierStatisticFinderService.finderDossierStatistic(dossierStatisticRequest);
 		} catch (Exception e) {
+			
+			
 			throwException(new OpencpsServiceException(serviceExceptionDetails));
 		}
 
