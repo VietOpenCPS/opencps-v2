@@ -101,8 +101,7 @@ public class ServiceConfigUtils {
 			config.setForBusiness(doc.get(ServiceConfigTerm.FOR_BUSINESS));
 			config.setPostalService(doc.get(ServiceConfigTerm.POSTAL_SERVICE));
 			config.setRegistration(doc.get(ServiceConfigTerm.REGISTRATION));
-			config.setServiceConfigId(GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICECONFIG_ID)));
-			
+
 			configs.add(config);
 		}
 
