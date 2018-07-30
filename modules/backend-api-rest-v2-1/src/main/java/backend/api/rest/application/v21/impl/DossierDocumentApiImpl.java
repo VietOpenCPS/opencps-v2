@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import backend.api.rest.application.v21.parser.DossierDocumentParser;
 import io.swagger.api.DossierDocumentsApi;
@@ -101,7 +102,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			if (end == 0) {
+			if (Validator.isNull(end) || end == 0) {
 				start = -1;
 				end = -1;
 			}
