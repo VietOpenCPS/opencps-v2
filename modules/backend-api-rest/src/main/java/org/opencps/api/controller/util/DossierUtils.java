@@ -12,6 +12,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -56,7 +57,7 @@ public class DossierUtils {
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
-	public static List<DossierDataModel> mappingForGetList(List<Document> docs) {
+	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 
 		for (Document doc : docs) {
@@ -174,6 +175,15 @@ public class DossierUtils {
 //			} else {
 //				model.setStepOverdue(StringPool.BLANK);
 //			}
+			//LamTV: Process Assigned dossier
+			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
+			_log.info("ASSIGNED" + dau);
+			if (dau != null) {
+				model.setAssigned(dau.getAssigned());
+			} else {
+				model.setAssigned(ConstantsTerm.NO_ASSINED);
+			}
+			
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
@@ -182,7 +192,25 @@ public class DossierUtils {
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
 //			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
-			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
+//			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
+			String strPermission = GetterUtil.getString(doc.get(DossierTerm.MAPPING_PERMISSION));
+			if (Validator.isNotNull(strPermission)) {
+				String[] permissionArr = strPermission.split(StringPool.SPACE);
+				if (permissionArr != null) {
+					for (String permission: permissionArr) {
+						if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
+							model.setPermission(permission);
+						} else {
+							model.setPermission(StringPool.BLANK);
+						}
+					}
+				} else {
+					model.setPermission(StringPool.BLANK);
+				}
+			} else {
+				model.setPermission(StringPool.BLANK);
+			}
+
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
 			model.setLastActionCode(doc.get(DossierTerm.LAST_ACTION_CODE));
 			model.setLastActionName(doc.get(DossierTerm.LAST_ACTION_NAME));
@@ -248,7 +276,6 @@ public class DossierUtils {
 			else {
 				model.setSampleCount(0l);
 			}
-			model.setAssigned(GetterUtil.getInteger(doc.get(DossierTerm.ASSIGNED)));
 
 			ouputs.add(model);
 		}
