@@ -14,6 +14,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.statistic.rest.dto.DossierResponse;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
@@ -44,6 +45,22 @@ public class OpencpsStatisticRestApplication extends Application {
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
 	}
+	
+	@GET
+	public DossierResponse searchDossier(@HeaderParam("groupId") long groupId, @QueryParam("govAgencyCode") String govAgencyCode,
+			@QueryParam("groupAgencyCode") String groupAgencyCode, @QueryParam("reporting") boolean reporting,
+			@QueryParam("start") int start, @QueryParam("end") int end) {
+
+		if (start == 0)
+			start = QueryUtil.ALL_POS;
+
+		if (end == 0)
+			end = QueryUtil.ALL_POS;
+
+		
+		return null;
+	}
+	
 
 	@GET
 	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
@@ -79,8 +96,8 @@ public class OpencpsStatisticRestApplication extends Application {
 		dossierStatisticRequest.setEnd(end);
 
 		OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
-		serviceExceptionDetails.setFaultCode("100");
-		serviceExceptionDetails.setFaultMessage("Student Name is not correct");
+		serviceExceptionDetails.setFaultCode("500");
+		serviceExceptionDetails.setFaultMessage("Fault");
 
 		try {
 			return dossierStatisticFinderService.finderDossierStatistic(dossierStatisticRequest);
