@@ -3,7 +3,6 @@ package org.opencps.statistic.rest.facade;
 
 import java.util.HashMap;
 
-import org.osgi.service.component.annotations.Component;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
@@ -13,12 +12,11 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceFailedExcept
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
 
-@Component(immediate = true, service = OpencpsCallServiceRestFacadeImpl.class)
 public class OpencpsCallServiceRestFacadeImpl extends OpencpsRestFacade<String, String>
-		implements OpencpCallServiceFacade<String, String> {
+		implements OpencpsCallRestFacade<String, String> {
 
 	@Override
-	public String callWebPage(String payload) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+	public String callRestService(String payload) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		return makeServiceCall(payload);
 	}
 

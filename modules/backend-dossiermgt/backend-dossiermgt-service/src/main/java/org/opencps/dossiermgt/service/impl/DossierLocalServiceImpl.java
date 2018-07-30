@@ -43,6 +43,7 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -215,24 +216,56 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 			}
 
-//			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
-//				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-//				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-//				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-//				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
-//				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-//
-//				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
-//
-//				long serviceProcessId = option.getServiceProcessId();
-//
-//				ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-//
-//				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-//						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-//
-//				dossier.setDossierNo(dossierRef.trim());
-//			}
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA
+					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+
+				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+
+				long serviceProcessId = option.getServiceProcessId();
+
+				ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
+
+				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+
+				dossier.setDossierNo(dossierRef.trim());
+				ServiceProcess process = null;
+				
+				if (option != null) {
+					process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
+				}
+				
+				//Update submit date
+				now = new Date();
+				dossier.setSubmitDate(now);
+				int durationCount = 0;
+				int durationUnit = 0;
+				if (process != null ) {
+					durationCount = process.getDurationCount();
+					durationUnit = process.getDurationUnit();
+					int durationDays = 0;
+
+					if (durationUnit == 0) {
+						durationDays = durationCount;
+					} else {
+						durationDays = Math.round(durationCount / 8);
+					}
+					Date dueDate = null;
+					if (durationDays > 0) {
+						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
+					}
+
+					dossier.setDueDate(dueDate);
+					dossier.setReceiveDate(now);
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
+				}				
+			}
 		} else {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
@@ -2533,6 +2566,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (obj.has(DossierTerm.RECEIVE_DATE)) {
 			if (dossier.getReceiveDate() == null || obj.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
 				dossier.setReceiveDate(new Date(obj.getLong(DossierTerm.RECEIVE_DATE)));	
+			}
+		}
+		if (obj.has(DossierTerm.SUBMIT_DATE)) {
+			if (dossier.getSubmitDate() == null || obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime()) {
+				dossier.setSubmitDate(new Date(obj.getLong(DossierTerm.SUBMIT_DATE)));	
 			}
 		}
 		

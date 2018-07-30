@@ -14,27 +14,45 @@
 
 package org.opencps.statistic.service.impl;
 
+import java.util.List;
+
+import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBaseImpl;
+
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 
 /**
  * The implementation of the opencps dossier statistic local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.statistic.service.OpencpsDossierStatisticLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.statistic.service.OpencpsDossierStatisticLocalService}
+ * interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author khoavu
  * @see OpencpsDossierStatisticLocalServiceBaseImpl
  * @see org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil
  */
-public class OpencpsDossierStatisticLocalServiceImpl
-	extends OpencpsDossierStatisticLocalServiceBaseImpl {
+public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStatisticLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil} to access the opencps dossier statistic local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil} to
+	 * access the opencps dossier statistic local service.
 	 */
+
+	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, String domain, String govAgencyCode,
+			String groupAgenvyCode, boolean reporting, int start, int end) throws PortalException, SystemException {
+		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroupAndReporting(groupId, domain, govAgencyCode,
+				groupAgenvyCode, reporting, start, end);
+	}
 }

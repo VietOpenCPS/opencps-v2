@@ -182,6 +182,12 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		java.lang.String uuid, long companyId, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId,
+		java.lang.String domain, java.lang.String govAgencyCode,
+		java.lang.String groupAgenvyCode, boolean reporting, int start, int end)
+		throws PortalException, SystemException;
+
 	/**
 	* Returns the number of rows matching the dynamic query.
 	*

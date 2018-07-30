@@ -858,38 +858,6 @@ public class DossierManagementImpl implements DossierManagement {
 				duActions.initDossierUser(groupId, dossier);				
 			}
 			
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA
-					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
-				//Update submit date
-				Date now = new Date();
-				dossier.setSubmitDate(now);
-				int durationCount = 0;
-				int durationUnit = 0;
-				if (process != null ) {
-					durationCount = process.getDurationCount();
-					durationUnit = process.getDurationUnit();
-					int durationDays = 0;
-
-					if (durationUnit == 0) {
-						durationDays = durationCount;
-					} else {
-						durationDays = Math.round(durationCount / 8);
-					}
-					Date dueDate = null;
-					if (durationDays > 0) {
-						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
-					}
-
-					dossier.setDueDate(dueDate);
-					dossier.setReceiveDate(now);
-					dossier.setDurationCount(durationCount);
-					dossier.setDurationUnit(durationUnit);
-				}
-				
-				if (Validator.isNotNull(input.getDossierNo())) {
-					dossier.setDossierNo(input.getDossierNo());
-				}
-			}
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				long userId = serviceContext.getUserId();
 				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);

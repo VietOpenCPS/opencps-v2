@@ -1,0 +1,19 @@
+/*----- Base CSS -----*/
+@import url(font-awesome.min.css);              /* Font Icons */
+@import url(animate.css);                       /* Animate css */
+@import url(support-class.css);                 /* Minor classes for things */
+@import url(bootstrap-datetimepicker.css);  	/* Datetime picker for alpaca */
+
+@import url(base-style.css);                    /* Style header, footer, navbar */
+
+
+
+/*----- Components -----*/
+@import url(apaca.min.css);                     /* CSS for apaca form */
+@import url(jasny-bootstrap.min.css);           /* CSS support for input file */
+@import url(bootstrap-editable.css);            /* Editable Bootstrap */
+@import url(kendo.common.core.min.css);			/* Kendo base css */
+@import url(kendo.silver.min.css);				/* Kendo support css */
+@import url(override-kendoui.css);              /* Override Kendo css */
+@import url(modern_component.css);              /* Components style css */
+@import url(custom-style.css);                  /* Custom style for non-components */
