@@ -2622,6 +2622,15 @@ public class DossierActionsImpl implements DossierActions {
 			}		
 		}
 		
+		if (DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus)
+				&& DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus)) {
+			try {
+				DossierLocalServiceUtil.updateSubmittingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), new Date(), context);
+				bResult.put(DossierTerm.SUBMIT_DATE, true);
+			} catch (PortalException e) {
+				e.printStackTrace();
+			}
+		}
 		if (Validator.isNull(dossier.getReceiveDate())
 				&& Validator.isNotNull(dossier.getDossierNo())) {
 			try {

@@ -22,4 +22,21 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public interface OpencpsDossierFinder {
+	public java.util.List<org.opencps.statistic.model.OpencpsDossier> searchDossiers(
+		long groupId, java.lang.String keyword,
+		java.lang.String registerBookCode, java.lang.String processNo,
+		java.lang.String serviceCode, java.lang.String govAgencyCode,
+		java.lang.String applicantIdType, java.lang.String applicantIdNo,
+		java.lang.String cityCode, java.lang.String districtCode,
+		java.lang.String wardCode, java.lang.String contactTelNo,
+		java.lang.String contactEmail, java.lang.String delegateIdNo,
+		java.lang.String delegateTelNo, java.lang.String dossierStatus,
+		java.lang.String dossierSubStatus, long dossierActionId, int viaPostal,
+		boolean online, int originality, java.lang.String serverNo,
+		long originDossierId, boolean order, java.lang.String orderBy,
+		int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
+	public void main(java.lang.String[] args);
 }

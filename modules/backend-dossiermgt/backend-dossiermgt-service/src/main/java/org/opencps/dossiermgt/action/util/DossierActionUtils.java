@@ -53,7 +53,10 @@ public class DossierActionUtils {
 		if (bResult != null && bResult.containsKey(DossierTerm.FINISH_DATE)
 				&& bResult.get(DossierTerm.FINISH_DATE)
 				&& dossier.getFinishDate() != null)
-			payloadObject.put(DossierTerm.FINISH_DATE, dossier.getFinishDate());
+			payloadObject.put(DossierTerm.FINISH_DATE, dossier.getFinishDate().getTime());
+		if (bResult != null && bResult.containsKey(DossierTerm.SUBMIT_DATE)
+				&& bResult.get(DossierTerm.SUBMIT_DATE))
+			payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate().getTime());
 		
 		return payloadObject;
 	}
