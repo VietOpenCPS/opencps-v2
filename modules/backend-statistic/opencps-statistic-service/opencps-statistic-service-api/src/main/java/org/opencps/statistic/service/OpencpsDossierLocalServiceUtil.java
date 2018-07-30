@@ -187,6 +187,30 @@ public class OpencpsDossierLocalServiceUtil {
 			start, end, orderByComparator);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossier> searchDossier(
+		long groupId, java.lang.String keyword,
+		java.lang.String registerBookCode, java.lang.String processNo,
+		java.lang.String serviceCode, java.lang.String govAgencyCode,
+		java.lang.String applicantIdType, java.lang.String applicantIdNo,
+		java.lang.String cityCode, java.lang.String districtCode,
+		java.lang.String wardCode, java.lang.String contactTelNo,
+		java.lang.String contactEmail, java.lang.String delegateIdNo,
+		java.lang.String delegateTelNo, java.lang.String dossierStatus,
+		java.lang.String dossierSubStatus, long dossierActionId, int viaPostal,
+		boolean online, int originality, java.lang.String serverNo,
+		long originDossierId, boolean order, java.lang.String orderBy,
+		int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .searchDossier(groupId, keyword, registerBookCode,
+			processNo, serviceCode, govAgencyCode, applicantIdType,
+			applicantIdNo, cityCode, districtCode, wardCode, contactTelNo,
+			contactEmail, delegateIdNo, delegateTelNo, dossierStatus,
+			dossierSubStatus, dossierActionId, viaPostal, online, originality,
+			serverNo, originDossierId, order, orderBy, start, end);
+	}
+
 	/**
 	* Returns the number of rows matching the dynamic query.
 	*
