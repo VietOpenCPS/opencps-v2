@@ -1,0 +1,216 @@
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+body.mBody {
+	font-family: Arial, sans-serif;
+	color: #2a2a2a;
+	min-width: 1200px;
+	overflow-x: hidden;
+}
+
+.mBody a, 
+.mBody a:hover, 
+.mBody a:focus {
+	color: inherit;
+	text-decoration: none;
+}
+
+.mBody form {
+	margin-bottom: 0;
+}
+
+.mBody .portlet-borderless-container {
+	min-height: inherit;
+}
+
+.mBody ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#banner, footer, #content {
+	min-width: 1170px;
+}
+
+@media (max-width: 979px) {
+	body.mBody {
+		padding: 0;
+	}
+}
+
+.mBody .portlet-title-text {
+	overflow: visible;
+}
+
+.journal-content-article p {
+    margin-bottom: 5px;
+    line-height: normal;
+}
+
+/*----- Center things -----*/
+.center-ver {
+	display: -webkit-box;
+	display: flex;
+	-webkit-justify-content: center;
+    justify-content: center;
+}
+.center-hoz {
+	display: -webkit-box;
+	display: flex;
+	-webkit-align-items: center;
+	align-items: center;
+}
+.center-all {
+	display: -webkit-box;
+	display: flex;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+    justify-content: center;
+}
+
+/*----- Status Colors -----*/
+.status-color-new {
+	color: #00b4ff;
+}
+.status-color-receiving {
+	color: #23b58d;
+}
+.status-color-waiting {
+	color: #a5a313;
+}
+.status-color-paying {
+	color: #ffa400;
+}
+.status-color-denied {
+	color: #ff0000;
+}
+.status-color-received {
+	color: #23b58d;
+}
+.status-color-processing {
+	color: #0078ff;
+}
+.status-color-canceled {
+	color: #ff2300;
+}
+.status-color-done {
+	color: #0030ff;
+}
+.status-color-archived {
+	color: #888;
+}
+.status-color-system {
+	color: #155315;
+}
+.status-color-error {
+	color: #ff0000;
+}
+
+
+
+/*----- Portlet Progressbar -----*/
+.portlet-boundary_guideline_WAR_guidelineportlet_ img {
+	margin-bottom: 25px;
+}
+
+
+
+/*----- Ma mau cho ho so -----*/
+.mamau:before {
+    content: "\f111";
+    position: absolute;
+    font-family: FontAwesome;
+}
+.moi {
+    color: #00b4ff;
+}
+.tiepnhanhoso {
+    color: #00b3ce;
+}
+.chobosung {
+    color: #a5a313;
+}
+.chothanhtoan {
+    color: #af8400;
+}
+.datuchoi {
+    color: #d46262;
+}
+.datiepnhan {
+    color: #23b58d;
+}
+.dangxuly {
+    color: #0078ff;
+}
+.dahuy {
+    color: #74635b;
+}
+.hoanthanh {
+    color: #37b400;
+}
+.luutru {
+    color: #807da9;
+}
+.hethong {
+    color: #0055b4;
+}
+.loi {
+    color: #e54127;
+}
+
+/*----- Requires -----*/
+.cssRequired:after {
+    content: "*";
+    color: red;
+}
+.requiredStyleCSS {
+	font-weight: 700;
+	font-style: italic;
+}
+
+/*----- Layout -----*/
+.mBody .Layout_3_4_5 > div > .span4, 
+.mBody .Layout_3_4_5 > div > .span5 {
+	margin-left: 1.5%;
+}
+.mBody .Layout_3_4_5 > div > .span5 {
+	width: 41.79914%;
+}
+
+.mBody .opencps_20_80 > div > .span9 {
+	margin-left: 1.5%;
+	width: 75.42307%;
+}
+
+/*----- Other -----*/
+.page-theme #content {
+	padding-top: 25px;
+}
+.journal-content-article * {
+	font-family: Arial, sans-serif !important;
+}
+.portlet-column-content.empty {
+	padding: 0;
+}
+
+/*----- Override -----*/
+.opencps-form-navigator-container .button-holder button, 
+.opencps-form-navigator-container .button-holder > span, 
+.opencps-form-navigator-container .button-holder > a {
+    display: inline-block;
+    width: auto;
+    margin-right: 10px;
+}
+.mBody .opencps-form-navigator-container .button-holder {
+    text-align: center;
+}
+.alpaca-field > div > table {
+	width: 790px !important;
+}
