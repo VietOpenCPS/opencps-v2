@@ -2,6 +2,8 @@ package org.opencps.statistic.rest.dto;
 
 import java.util.List;
 
+import org.opencps.statistic.model.OpencpsDossier;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -15,11 +17,11 @@ public class DossierResponse {
 	public void setTotal(int total) {
 		this.total = total;
 	}
-	public List<DossierData> getData() {
+	public List<OpencpsDossier> getData() {
 		return data;
 	}
-	public void setData(List<DossierData> data) {
+	public void setData(List<OpencpsDossier> data) {
 		this.data = data;
 	}
-	private List<DossierData> data;
+	private List<OpencpsDossier> data;
 }
