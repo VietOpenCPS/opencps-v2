@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import backend.api.rest.application.v21.parser.DocumentTypeParser;
 import io.swagger.api.DocumentTypesApi;
@@ -56,7 +57,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 //				throw new UnauthenticationException();
 //			}
 			_log.info("groupId: "+groupId);
-			if (end == 0) {
+			if (Validator.isNull(end) || end == 0) {
 				start = -1;
 				end = -1;
 			}
