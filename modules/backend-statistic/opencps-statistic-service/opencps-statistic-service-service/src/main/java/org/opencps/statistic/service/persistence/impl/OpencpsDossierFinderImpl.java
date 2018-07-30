@@ -1,15 +1,13 @@
 package org.opencps.statistic.service.persistence.impl;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.opencps.statistic.model.OpencpsDossier;
-import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.impl.OpencpsDossierImpl;
-import org.opencps.statistic.model.impl.OpencpsDossierStatisticImpl;
 import org.opencps.statistic.service.persistence.OpencpsDossierFinder;
+import org.opencps.statistic.service.util.StatisticServiceConstans;
 
 import com.liferay.portal.dao.orm.custom.sql.CustomSQLUtil;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
@@ -29,9 +27,11 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 	private final static Log LOG = LogFactoryUtil.getLog(OpencpsDossierFinderImpl.class);
 
 	private static final String SEARCH_DOSSIER = OpencpsDossierFinder.class.getName() + ".getDossier";
-	
-	private static final int START_DAY_OF_MONTH = 1;
-	
+
+	private static final String START_HOUR_MINUTE_SECOND = "00:00:00";
+	private static final String END_HOUR_MINUTE_SECOND = "23:59:59";
+	private static final String RELEASE_DATE = "releaseDate";
+
 	private static final String CONDITION_REGISTER_BOOK_CODE = "(opencps_dossier.registerBookCode = ?) AND";
 	private static final String CONDITION_PROCESS_NO = "(opencps_dossier.processNo = ?) AND";
 	private static final String CONDITION_SERVICE_CODE = "(opencps_dossier.serviceCode = ?) AND";
@@ -182,9 +182,11 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 			if (!hasGroupId) {
 				sql = StringUtil.replace(sql, CONDITION_GROUP_ID, StringPool.BLANK);
 			}
-			
+
+			sql = StringUtil.replace(sql, StatisticServiceConstans.SPECIFY_RELEASE_DATE, buildReleaseDataCondition());
+
 			LOG.info(sql);
-			
+
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(false);
@@ -295,26 +297,40 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 		return null;
 
 	}
-	
-	
-	private static String buildReleaseDataCondition() {
-		
-		LocalDate todayDate = LocalDate.now();
-		
-		//todayDate.atTime(0, 0, 0);
-		
-		LocalDate startOfMonth = todayDate.withDayOfMonth(1);
-		
-		System.out.println(todayDate.format(_dateTimeFormatter));
-		
-		return null;
-	}
-	
-	public static void main(String[] args) {
-		
-		buildReleaseDataCondition();
-	}
-	
-	private static DateTimeFormatter _dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+	private static String buildReleaseDataCondition() {
+
+		LocalDate todayDate = LocalDate.now();
+
+		LocalDate firstDayOfCurMonth = todayDate.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate lastDayOfCurMonth = todayDate.with(TemporalAdjusters.lastDayOfMonth());
+
+		StringBuilder builder = new StringBuilder();
+
+		builder.append(StringPool.OPEN_PARENTHESIS);
+		builder.append(RELEASE_DATE);
+		builder.append(StringPool.SPACE);
+		builder.append(StringPool.GREATER_THAN_OR_EQUAL);
+		builder.append(StringPool.APOSTROPHE);
+		builder.append(firstDayOfCurMonth.toString());
+		builder.append(StringPool.SPACE);
+		builder.append(START_HOUR_MINUTE_SECOND);
+		builder.append(StringPool.APOSTROPHE);
+		builder.append(StringPool.SPACE);
+		builder.append(StringPool.AMPERSAND);
+		builder.append(StringPool.AMPERSAND);
+		builder.append(StringPool.SPACE);
+		builder.append(RELEASE_DATE);
+		builder.append(StringPool.SPACE);
+		builder.append(StringPool.LESS_THAN_OR_EQUAL);
+		builder.append(StringPool.SPACE);
+		builder.append(StringPool.APOSTROPHE);
+		builder.append(lastDayOfCurMonth.toString());
+		builder.append(StringPool.SPACE);
+		builder.append(END_HOUR_MINUTE_SECOND);
+		builder.append(StringPool.APOSTROPHE);
+		builder.append(StringPool.CLOSE_PARENTHESIS);
+
+		return builder.toString();
+	}
 }

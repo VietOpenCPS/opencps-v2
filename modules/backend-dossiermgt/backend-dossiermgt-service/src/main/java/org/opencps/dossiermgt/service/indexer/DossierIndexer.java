@@ -484,14 +484,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addTextSortable(DossierTerm.LOCK_STATE, StringPool.BLANK);
 			}
 			//LamTV: Process Assigned dossier
-			long dossierActionsUserId = object.getDossierActionId();
-			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionsUserId,
-					object.getUserId());
-			if (dau != null) {
-				document.addNumberSortable(DossierTerm.ASSIGNED, dau.getAssigned());
-			} else {
-				document.addNumberSortable(DossierTerm.ASSIGNED, ConstantsTerm.NO_ASSINED);
-			}
+//			long dossierActionsUserId = object.getDossierActionId();
+//			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionsUserId,
+//					object.getUserId());
+//			if (dau != null) {
+//				document.addNumberSortable(DossierTerm.ASSIGNED, dau.getAssigned());
+//			} else {
+//				document.addNumberSortable(DossierTerm.ASSIGNED, ConstantsTerm.NO_ASSINED);
+//			}
 			//LamTV_Add durationCount and durationUnit
 //			try {
 //				long groupId = object.getGroupId();

@@ -37,6 +37,4 @@ public interface OpencpsDossierFinder {
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
-
-	public void main(java.lang.String[] args);
 }
