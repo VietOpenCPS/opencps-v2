@@ -873,6 +873,7 @@
 		<column name="lockState" type="String" />
 		<column name="groupName" type="String" />
 		<column name="roleAsStep" type="String" />
+		<column name="checkInput" type="int" />
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />

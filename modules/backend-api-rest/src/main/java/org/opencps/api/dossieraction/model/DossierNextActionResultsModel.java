@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "data")
 public class DossierNextActionResultsModel {
 
+ protected Integer checkInput;
  protected Integer total;
  protected List<DossierNextActionModel> data;
 
@@ -71,6 +72,30 @@ public class DossierNextActionResultsModel {
      this.total = value;
  }
 
+ /**
+  * Gets the value of the checkInput property.
+  * 
+  * @return
+  *     possible object is
+  *     {@link Integer }
+  *     
+  */
+ public Integer getCheckInput() {
+     return checkInput;
+ }
+
+ /**
+  * Sets the value of the checkInput property.
+  * 
+  * @param value
+  *     allowed object is
+  *     {@link Integer }
+  *     
+  */
+ public void setCheckInput(Integer value) {
+     this.checkInput = value;
+ }
+ 
  /**
   * Gets the value of the data property.
   * 
