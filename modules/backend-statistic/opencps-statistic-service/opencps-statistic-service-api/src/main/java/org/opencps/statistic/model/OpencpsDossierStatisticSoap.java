@@ -64,10 +64,15 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setPausingCount(model.getPausingCount());
 		soapModel.setOntimePercentage(model.getOntimePercentage());
 		soapModel.setGovAgencyCode(model.getGovAgencyCode());
+		soapModel.setGroupAgencyCode(model.getGroupAgencyCode());
 		soapModel.setGovAgencyName(model.getGovAgencyName());
 		soapModel.setDomainCode(model.getDomainCode());
 		soapModel.setDomainName(model.getDomainName());
 		soapModel.setReporting(model.getReporting());
+		soapModel.setOvertimeInside(model.getOvertimeInside());
+		soapModel.setOvertimeOutside(model.getOvertimeOutside());
+		soapModel.setInteroperatingCount(model.getInteroperatingCount());
+		soapModel.setWaitingCount(model.getWaitingCount());
 
 		return soapModel;
 	}
@@ -363,6 +368,14 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_govAgencyCode = govAgencyCode;
 	}
 
+	public String getGroupAgencyCode() {
+		return _groupAgencyCode;
+	}
+
+	public void setGroupAgencyCode(String groupAgencyCode) {
+		_groupAgencyCode = groupAgencyCode;
+	}
+
 	public String getGovAgencyName() {
 		return _govAgencyName;
 	}
@@ -399,6 +412,38 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_reporting = reporting;
 	}
 
+	public int getOvertimeInside() {
+		return _overtimeInside;
+	}
+
+	public void setOvertimeInside(int overtimeInside) {
+		_overtimeInside = overtimeInside;
+	}
+
+	public int getOvertimeOutside() {
+		return _overtimeOutside;
+	}
+
+	public void setOvertimeOutside(int overtimeOutside) {
+		_overtimeOutside = overtimeOutside;
+	}
+
+	public int getInteroperatingCount() {
+		return _interoperatingCount;
+	}
+
+	public void setInteroperatingCount(int interoperatingCount) {
+		_interoperatingCount = interoperatingCount;
+	}
+
+	public int getWaitingCount() {
+		return _waitingCount;
+	}
+
+	public void setWaitingCount(int waitingCount) {
+		_waitingCount = waitingCount;
+	}
+
 	private String _uuid;
 	private long _dossierStatisticId;
 	private long _companyId;
@@ -429,8 +474,13 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _pausingCount;
 	private int _ontimePercentage;
 	private String _govAgencyCode;
+	private String _groupAgencyCode;
 	private String _govAgencyName;
 	private String _domainCode;
 	private String _domainName;
 	private boolean _reporting;
+	private int _overtimeInside;
+	private int _overtimeOutside;
+	private int _interoperatingCount;
+	private int _waitingCount;
 }

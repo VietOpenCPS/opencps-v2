@@ -468,6 +468,8 @@ public class EmployeeActions implements EmployeeInterface {
 				RoleLocalServiceUtil.deleteUserRoles(
 					user.getUserId(), roleIdsInit);
 				RoleLocalServiceUtil.clearUserRoles(user.getUserId());
+				
+				
 
 				for (Role role : roleIdsInit) {
 					try {
