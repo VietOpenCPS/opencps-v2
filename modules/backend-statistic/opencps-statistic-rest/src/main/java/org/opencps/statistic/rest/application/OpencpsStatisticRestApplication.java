@@ -4,65 +4,104 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.opencps.statistic.rest.facade.OpencpCallServiceFacade;
+import org.opencps.statistic.rest.dto.DossierStatisticRequest;
+import org.opencps.statistic.rest.dto.DossierStatisticResponse;
+import org.opencps.statistic.rest.service.DossierStatisticFinderService;
+import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+
+import opencps.statistic.common.webservice.exception.OpencpsServiceException;
+import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
+import opencps.statistic.common.webservice.exception.ServiceException;
 
 /**
  * @author khoavu
  */
 @ApplicationPath("/statistics")
 @Component(immediate = true, service = Application.class)
+@Consumes("application/json")
+@Produces("application/json")
 public class OpencpsStatisticRestApplication extends Application {
-	
 
+	private final static Logger LOG = LoggerFactory.getLogger(OpencpsStatisticRestApplication.class);
+
+	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
 	}
 
 	@GET
-	@Produces("text/plain")
-	public String working() {
-		return "It works!";
-	}
+	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
+			@QueryParam("domain") String domain, @QueryParam("govAgencyCode") String govAgencyCode,
+			@QueryParam("groupAgencyCode") String groupAgencyCode, @QueryParam("reporting") boolean reporting,
+			@QueryParam("start") int start, @QueryParam("end") int end) {
 
-	@GET
-	@Path("/morning")
-	@Produces("text/plain")
-	public String hello() {
+		LOG.info("GET DossierStatisticResponse");
+
+		LOG.info("GROUPID_" + groupId);
+		LOG.info("DOMAIN_" + domain);
+		LOG.info("GOVAGENCYCODE_" + govAgencyCode);
+		LOG.info("GROUPAGENCYCODE_" + groupAgencyCode);
+		LOG.info("REPORTING_" + reporting);
+
+		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
+
+		if (start == 0)
+			start = QueryUtil.ALL_POS;
+
+		if (end == 0)
+			end = QueryUtil.ALL_POS;
+
+		LOG.info("START_" + start);
+		LOG.info("END_" + end);
+
+		dossierStatisticRequest.setDomain(domain);
+		dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+		dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
+		dossierStatisticRequest.setReporting(reporting);
+		dossierStatisticRequest.setGroupId(groupId);
+		dossierStatisticRequest.setStart(start);
+		dossierStatisticRequest.setEnd(end);
+
+		OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+		serviceExceptionDetails.setFaultCode("100");
+		serviceExceptionDetails.setFaultMessage("Student Name is not correct");
+
 		try {
-			return _opencpCallServiceFacade.callWebPage("hello");
-
+			return dossierStatisticFinderService.finderDossierStatistic(dossierStatisticRequest);
 		} catch (Exception e) {
-			return "error";
-		}
-	}
-
-	@GET
-	@Path("/morning/{name}")
-	@Produces("text/plain")
-	public String morning(
-		@PathParam("name") String name,
-		@QueryParam("drink") String drink) {
-
-		String greeting = "Good Morning " + name;
-
-		if (drink != null) {
-			greeting += ". Would you like some " + drink + "?";
+			throwException(new OpencpsServiceException(serviceExceptionDetails));
 		}
 
-		return greeting;
+		return null;
 	}
-	
-	@Reference
-	private OpencpCallServiceFacade<String, String> _opencpCallServiceFacade;
+
+	/**
+	 * Handle Exception
+	 * 
+	 * @param serviceException
+	 * @throws ServiceException
+	 */
+	public static void throwException(OpencpsServiceException serviceException) throws ServiceException {
+		ResponseBuilder builder = Response.status(Response.Status.NOT_ACCEPTABLE);
+		builder.type("application/json");
+		builder.entity(serviceException.getFaultDetails());
+		throw new WebApplicationException(builder.build());
+	}
 
 }

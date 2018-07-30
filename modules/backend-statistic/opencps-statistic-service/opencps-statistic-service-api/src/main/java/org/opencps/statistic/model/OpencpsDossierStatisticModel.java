@@ -520,6 +520,21 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	public void setGovAgencyCode(String govAgencyCode);
 
 	/**
+	 * Returns the group agency code of this opencps dossier statistic.
+	 *
+	 * @return the group agency code of this opencps dossier statistic
+	 */
+	@AutoEscape
+	public String getGroupAgencyCode();
+
+	/**
+	 * Sets the group agency code of this opencps dossier statistic.
+	 *
+	 * @param groupAgencyCode the group agency code of this opencps dossier statistic
+	 */
+	public void setGroupAgencyCode(String groupAgencyCode);
+
+	/**
 	 * Returns the gov agency name of this opencps dossier statistic.
 	 *
 	 * @return the gov agency name of this opencps dossier statistic
@@ -584,6 +599,62 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 * @param reporting the reporting of this opencps dossier statistic
 	 */
 	public void setReporting(boolean reporting);
+
+	/**
+	 * Returns the overtime inside of this opencps dossier statistic.
+	 *
+	 * @return the overtime inside of this opencps dossier statistic
+	 */
+	public int getOvertimeInside();
+
+	/**
+	 * Sets the overtime inside of this opencps dossier statistic.
+	 *
+	 * @param overtimeInside the overtime inside of this opencps dossier statistic
+	 */
+	public void setOvertimeInside(int overtimeInside);
+
+	/**
+	 * Returns the overtime outside of this opencps dossier statistic.
+	 *
+	 * @return the overtime outside of this opencps dossier statistic
+	 */
+	public int getOvertimeOutside();
+
+	/**
+	 * Sets the overtime outside of this opencps dossier statistic.
+	 *
+	 * @param overtimeOutside the overtime outside of this opencps dossier statistic
+	 */
+	public void setOvertimeOutside(int overtimeOutside);
+
+	/**
+	 * Returns the interoperating count of this opencps dossier statistic.
+	 *
+	 * @return the interoperating count of this opencps dossier statistic
+	 */
+	public int getInteroperatingCount();
+
+	/**
+	 * Sets the interoperating count of this opencps dossier statistic.
+	 *
+	 * @param interoperatingCount the interoperating count of this opencps dossier statistic
+	 */
+	public void setInteroperatingCount(int interoperatingCount);
+
+	/**
+	 * Returns the waiting count of this opencps dossier statistic.
+	 *
+	 * @return the waiting count of this opencps dossier statistic
+	 */
+	public int getWaitingCount();
+
+	/**
+	 * Sets the waiting count of this opencps dossier statistic.
+	 *
+	 * @param waitingCount the waiting count of this opencps dossier statistic
+	 */
+	public void setWaitingCount(int waitingCount);
 
 	@Override
 	public boolean isNew();

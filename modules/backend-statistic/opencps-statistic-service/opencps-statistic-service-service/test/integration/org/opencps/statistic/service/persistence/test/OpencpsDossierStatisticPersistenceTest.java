@@ -183,6 +183,8 @@ public class OpencpsDossierStatisticPersistenceTest {
 
 		newOpencpsDossierStatistic.setGovAgencyCode(RandomTestUtil.randomString());
 
+		newOpencpsDossierStatistic.setGroupAgencyCode(RandomTestUtil.randomString());
+
 		newOpencpsDossierStatistic.setGovAgencyName(RandomTestUtil.randomString());
 
 		newOpencpsDossierStatistic.setDomainCode(RandomTestUtil.randomString());
@@ -190,6 +192,14 @@ public class OpencpsDossierStatisticPersistenceTest {
 		newOpencpsDossierStatistic.setDomainName(RandomTestUtil.randomString());
 
 		newOpencpsDossierStatistic.setReporting(RandomTestUtil.randomBoolean());
+
+		newOpencpsDossierStatistic.setOvertimeInside(RandomTestUtil.nextInt());
+
+		newOpencpsDossierStatistic.setOvertimeOutside(RandomTestUtil.nextInt());
+
+		newOpencpsDossierStatistic.setInteroperatingCount(RandomTestUtil.nextInt());
+
+		newOpencpsDossierStatistic.setWaitingCount(RandomTestUtil.nextInt());
 
 		_opencpsDossierStatistics.add(_persistence.update(
 				newOpencpsDossierStatistic));
@@ -258,6 +268,8 @@ public class OpencpsDossierStatisticPersistenceTest {
 			newOpencpsDossierStatistic.getOntimePercentage());
 		Assert.assertEquals(existingOpencpsDossierStatistic.getGovAgencyCode(),
 			newOpencpsDossierStatistic.getGovAgencyCode());
+		Assert.assertEquals(existingOpencpsDossierStatistic.getGroupAgencyCode(),
+			newOpencpsDossierStatistic.getGroupAgencyCode());
 		Assert.assertEquals(existingOpencpsDossierStatistic.getGovAgencyName(),
 			newOpencpsDossierStatistic.getGovAgencyName());
 		Assert.assertEquals(existingOpencpsDossierStatistic.getDomainCode(),
@@ -266,6 +278,14 @@ public class OpencpsDossierStatisticPersistenceTest {
 			newOpencpsDossierStatistic.getDomainName());
 		Assert.assertEquals(existingOpencpsDossierStatistic.getReporting(),
 			newOpencpsDossierStatistic.getReporting());
+		Assert.assertEquals(existingOpencpsDossierStatistic.getOvertimeInside(),
+			newOpencpsDossierStatistic.getOvertimeInside());
+		Assert.assertEquals(existingOpencpsDossierStatistic.getOvertimeOutside(),
+			newOpencpsDossierStatistic.getOvertimeOutside());
+		Assert.assertEquals(existingOpencpsDossierStatistic.getInteroperatingCount(),
+			newOpencpsDossierStatistic.getInteroperatingCount());
+		Assert.assertEquals(existingOpencpsDossierStatistic.getWaitingCount(),
+			newOpencpsDossierStatistic.getWaitingCount());
 	}
 
 	@Test
@@ -337,8 +357,10 @@ public class OpencpsDossierStatisticPersistenceTest {
 			true, "overtimeCount", true, "doneCount", true, "releasingCount",
 			true, "unresolvedCount", true, "processingCount", true,
 			"undueCount", true, "overdueCount", true, "pausingCount", true,
-			"ontimePercentage", true, "govAgencyCode", true, "govAgencyName",
-			true, "domainCode", true, "domainName", true, "reporting", true);
+			"ontimePercentage", true, "govAgencyCode", true, "groupAgencyCode",
+			true, "govAgencyName", true, "domainCode", true, "domainName",
+			true, "reporting", true, "overtimeInside", true, "overtimeOutside",
+			true, "interoperatingCount", true, "waitingCount", true);
 	}
 
 	@Test
@@ -624,6 +646,8 @@ public class OpencpsDossierStatisticPersistenceTest {
 
 		opencpsDossierStatistic.setGovAgencyCode(RandomTestUtil.randomString());
 
+		opencpsDossierStatistic.setGroupAgencyCode(RandomTestUtil.randomString());
+
 		opencpsDossierStatistic.setGovAgencyName(RandomTestUtil.randomString());
 
 		opencpsDossierStatistic.setDomainCode(RandomTestUtil.randomString());
@@ -631,6 +655,14 @@ public class OpencpsDossierStatisticPersistenceTest {
 		opencpsDossierStatistic.setDomainName(RandomTestUtil.randomString());
 
 		opencpsDossierStatistic.setReporting(RandomTestUtil.randomBoolean());
+
+		opencpsDossierStatistic.setOvertimeInside(RandomTestUtil.nextInt());
+
+		opencpsDossierStatistic.setOvertimeOutside(RandomTestUtil.nextInt());
+
+		opencpsDossierStatistic.setInteroperatingCount(RandomTestUtil.nextInt());
+
+		opencpsDossierStatistic.setWaitingCount(RandomTestUtil.nextInt());
 
 		_opencpsDossierStatistics.add(_persistence.update(
 				opencpsDossierStatistic));
