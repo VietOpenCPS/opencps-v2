@@ -32,7 +32,6 @@ import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
 import org.opencps.api.processsequence.model.ActionModel;
 import org.opencps.api.processsequence.model.DossierSequenceModel;
 import org.opencps.api.processsequence.model.DossierSequenceResultModel;
-import org.opencps.api.processsequence.model.ProcessSequenceOutputModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
 import org.opencps.auth.api.BackendAuth;
@@ -40,7 +39,6 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -115,7 +113,6 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -132,6 +129,7 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -300,7 +298,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
 
 			return Response.status(200).entity(results).build();
 
@@ -317,6 +315,7 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -470,11 +469,11 @@ public class DossierManagementImpl implements DossierManagement {
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
 					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
-						results.getData().addAll(DossierUtils.mappingForGetList(docs));
+						results.getData().addAll(DossierUtils.mappingForGetList(docs, userId));
 					} else {
 						// Process paging
 						if (query.getEnd() == -1) {
-							results.getData().addAll(DossierUtils.mappingForGetList(docs));
+							results.getData().addAll(DossierUtils.mappingForGetList(docs, userId));
 						} else {
 							_log.info("669999");
 							results.getData().addAll(
@@ -503,6 +502,7 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -698,7 +698,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (jsonData != null && jsonData.getInt("total") > 0) {
 				results.setTotal(jsonData.getInt("total"));
-				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
 //				_log.info("7");
 //				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
 
@@ -1847,6 +1847,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -1965,7 +1966,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
 
 			return Response.status(200).entity(results).build();
 
@@ -1981,6 +1982,7 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -2108,7 +2110,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
 
 			return Response.status(200).entity(results).build();
 
