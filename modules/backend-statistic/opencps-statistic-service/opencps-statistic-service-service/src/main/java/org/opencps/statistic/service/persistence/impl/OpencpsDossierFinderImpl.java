@@ -186,6 +186,7 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 			sql = StringUtil.replace(sql, StatisticServiceConstans.SPECIFY_RELEASE_DATE, buildReleaseDataCondition());
 
 			LOG.info(sql);
+			LOG.info("GROUP_ID_" + groupId);
 
 			SQLQuery q = session.createSQLQuery(sql);
 

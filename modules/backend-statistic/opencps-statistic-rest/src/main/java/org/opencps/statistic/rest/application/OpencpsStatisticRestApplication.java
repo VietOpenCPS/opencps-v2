@@ -7,6 +7,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -14,9 +15,12 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.statistic.rest.dto.DossierRequest;
 import org.opencps.statistic.rest.dto.DossierResponse;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
+import org.opencps.statistic.rest.service.DossierFinderService;
+import org.opencps.statistic.rest.service.DossierFinderServiceImpl;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.osgi.service.component.annotations.Component;
@@ -42,14 +46,21 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
+	private DossierFinderService dossierFinderService = new DossierFinderServiceImpl();
+
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
 	}
-	
+
 	@GET
-	public DossierResponse searchDossier(@HeaderParam("groupId") long groupId, @QueryParam("govAgencyCode") String govAgencyCode,
-			@QueryParam("groupAgencyCode") String groupAgencyCode, @QueryParam("reporting") boolean reporting,
-			@QueryParam("start") int start, @QueryParam("end") int end) {
+	@Path("/dossiers")
+	public DossierResponse searchDossier(@HeaderParam("groupId") long groupId,
+			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("groupAgencyCode") String groupAgencyCode,
+			@QueryParam("reporting") boolean reporting, @QueryParam("start") int start, @QueryParam("end") int end) {
+
+		DossierRequest dossierRequest = new DossierRequest();
+
+		dossierRequest.setGroupId(groupId);
 
 		if (start == 0)
 			start = QueryUtil.ALL_POS;
@@ -57,10 +68,18 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (end == 0)
 			end = QueryUtil.ALL_POS;
 
-		
+		OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+		serviceExceptionDetails.setFaultCode("500");
+		serviceExceptionDetails.setFaultMessage("Fault");
+
+		try {
+			return dossierFinderService.searchDossierService(dossierRequest);
+		} catch (Exception e) {
+			throwException(new OpencpsServiceException(serviceExceptionDetails));
+		}
+
 		return null;
 	}
-	
 
 	@GET
 	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
@@ -102,8 +121,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		try {
 			return dossierStatisticFinderService.finderDossierStatistic(dossierStatisticRequest);
 		} catch (Exception e) {
-			
-			
+
 			throwException(new OpencpsServiceException(serviceExceptionDetails));
 		}
 
