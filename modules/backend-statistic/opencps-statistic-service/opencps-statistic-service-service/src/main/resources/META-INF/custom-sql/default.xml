@@ -38,6 +38,7 @@
 				(opencps_dossier.online = ?) AND
 				(opencps_dossier.serverNo = ?) AND
 				(opencps_dossier.originDossierId = ?) AND
+				(opencps_dossier.originality = ?) AND
 				(opencps_dossier.releaseDate IS NULL OR [$SPECIFY_RELEASE_DATE$]) AND
 				(opencps_dossier.groupId = ?)
 		]]>
