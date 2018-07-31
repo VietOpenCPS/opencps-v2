@@ -60,7 +60,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 	
 	@Override
 	public void processRequest() {
-		if (dossierSync.getActionCode().equals(ActionConfigTerm.ACTION_CODE_1300)) {
+//		if (dossierSync.getActionCode().equals(ActionConfigTerm.ACTION_CODE_1300)) {
 			dossierSync.setState(DossierSyncTerm.STATE_ALREADY_SENT);
 			DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 			if (syncRequest()) {
@@ -83,7 +83,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 				}
 			}
-		}
+//		}
 	}	
 	
 	@Override
