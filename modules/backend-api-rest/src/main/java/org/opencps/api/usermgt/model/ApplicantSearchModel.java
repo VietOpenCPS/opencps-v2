@@ -50,8 +50,8 @@ import com.liferay.portal.kernel.util.StringPool;
     "administration",
     "domain",
     "level",
-    "min",
-    "max",
+    "start",
+    "end",
     "type",
     "lock",
     "idNo"
