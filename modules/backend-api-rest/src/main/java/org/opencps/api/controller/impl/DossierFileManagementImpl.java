@@ -792,11 +792,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			//Process FILE
 			String fileName = dataHandle.getName();
 			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
-			//delete folder if exits
-			File fileOld = new File(pathFolder);
-			if (fileOld.exists()) {
-				Files.deleteIfExists(fileOld.toPath());
-			}
+//			//delete folder if exits
+//			File fileOld = new File(pathFolder);
+//			if (fileOld.exists()) {
+//				Files.deleteIfExists(fileOld.toPath());
+//			}
 			_log.info("LamTV_pathFolder: "+pathFolder);
 			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
 			File fileList = new File(pathFolder);
