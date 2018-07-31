@@ -24,6 +24,7 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.exception.NoSuchDossierTemplateException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -101,10 +102,16 @@ public class OneGateControllerImpl implements OneGateController {
 					elmOption.put("optionName", processOption.getOptionName());
 					elmOption.put("instructionNote", processOption.getInstructionNote());
 					
-					DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
-					elmOption.put("templateNo", dossierTemplate.getTemplateNo());
-					elmOption.put("templateName", dossierTemplate.getTemplateName());
-					
+					try {
+						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
+						if (dossierTemplate != null) {
+							elmOption.put("templateNo", dossierTemplate.getTemplateNo());
+							elmOption.put("templateName", dossierTemplate.getTemplateName());						
+						}
+					}
+					catch (NoSuchDossierTemplateException e) {
+						
+					}
 					options.put(elmOption);
 					
 					elmData.put("options", options);

@@ -758,7 +758,7 @@ public class DossierManagementImpl implements DossierManagement {
 			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 			// throw new UnauthorizationException();
 			// }
-
+//			_log.info("Gov agency code: " + input.getGovAgencyCode());
 			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 					input.getGovAgencyCode(), input.getDossierTemplateNo());
 
@@ -795,7 +795,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-
+//			_log.info("Service code: " + input.getServiceCode());
 			String password = StringPool.BLANK;
 			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
 				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
@@ -833,7 +833,7 @@ public class DossierManagementImpl implements DossierManagement {
 						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), serviceContext);
 			}
-
+//			_log.info("Dossier created: " + dossier);
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
 				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
 				if (applicant != null) {

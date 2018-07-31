@@ -58,7 +58,6 @@ import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -81,7 +80,6 @@ import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
@@ -2334,6 +2332,8 @@ public class DossierActionsImpl implements DossierActions {
 				if (serviceConfig != null) {
 					if (lstOptions.size() > 0) {
 						ProcessOption processOption = lstOptions.get(0);
+						ServiceProcess ltProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+						
 						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
 						
 						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
@@ -2345,15 +2345,16 @@ public class DossierActionsImpl implements DossierActions {
 								dossier.getContactName(), dossier.getContactEmail(), dossierTemplate.getTemplateNo(), 
 								dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
 								dossier.getPostalCityName(), dossier.getPostalTelNo(), 
-								dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_MOTCUA, context);
+								dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 
 						if (hsltDossier != null) {
 							//Set HSLT dossierId to origin dossier
 							hsltDossier.setOriginDossierId(dossierId);
+							hsltDossier.setServerNo(ltProcess.getServerNo());
 							DossierLocalServiceUtil.updateDossier(hsltDossier);
 							
 							JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);
-							hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(), dossier.getReferenceUid(),
+							hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(), hsltDossier.getReferenceUid(),
 									DossierTerm.DOSSIER_STATUS_NEW,
 									jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW), StringPool.BLANK,
 									StringPool.BLANK, StringPool.BLANK, previousAction.getStepInstruction(), context);
@@ -2361,7 +2362,7 @@ public class DossierActionsImpl implements DossierActions {
 						JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_INTEROPERATING, StringPool.BLANK);
 						if (curStep != null) {
 							dossier = DossierLocalServiceUtil.updateStatus(groupId, dossier.getDossierId(),
-									hsltDossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
+									dossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
 									jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_INTEROPERATING), StringPool.BLANK,
 									StringPool.BLANK, curStep.getLockState(), previousAction.getStepInstruction(), context);
 							
@@ -2521,12 +2522,16 @@ public class DossierActionsImpl implements DossierActions {
 			
 			//If state = 1 set pending dossier
 			if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
-				dossierAction.setPending(true);
-				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				if (dossierAction != null) {
+					dossierAction.setPending(true);
+					DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				}
 			}
 			else {
-				dossierAction.setPending(false);
-				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);				
+				if (dossierAction != null) {
+					dossierAction.setPending(false);
+					DossierActionLocalServiceUtil.updateDossierAction(dossierAction);				
+				}
 			}
 			
 			//Update payload
@@ -2577,15 +2582,23 @@ public class DossierActionsImpl implements DossierActions {
 				
 		//Do action hslt
 		if (Validator.isNotNull(actionConfig.getMappingAction())) {
+			ActionConfig mappingConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionConfig.getMappingAction());
 			if (dossier.getOriginDossierId() != 0) {
 				Dossier hslt = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+				ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
+						hslt.getDossierTemplateNo(), groupId);
+				ProcessAction actionHslt = getProcessAction(groupId, hslt.getDossierId(), hslt.getReferenceUid(), actionConfig.getMappingAction(), optionHslt.getServiceProcessId());
 				
-				doAction(groupId, userId, dossier, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);
+				doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 			}
 			else {
 				Dossier originDossier = DossierLocalServiceUtil.getByOrigin(groupId, dossierId);
-				if (originDossier != null) {
+				if (originDossier != null) {					
+					ProcessOption optionOrigin = getProcessOption(originDossier.getServiceCode(), originDossier.getGovAgencyCode(),
+							originDossier.getDossierTemplateNo(), groupId);
+					ProcessAction actionOrigin = getProcessAction(groupId, originDossier.getDossierId(), originDossier.getReferenceUid(), actionConfig.getMappingAction(), optionOrigin.getServiceProcessId());
 					
+					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 				}
 			}
 		}
@@ -2596,7 +2609,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		return dossierAction;
 	}
-	
+		
 	private void createNotificationQueue(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
 		if (Validator.isNotNull(actionConfig.getNotificationType())) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
