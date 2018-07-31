@@ -139,15 +139,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantResultsModel results = new ApplicantResultsModel();
 		BackendAuth auth = new BackendAuthImpl();
+		_log.info("START APP");
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
+//			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException();
+//			}
 
 			if (query.getEnd() == 0) {
 
@@ -175,11 +176,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					serviceContext);
 
 			results.setTotal(jsonData.getInt("total"));
-			results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get("data")));
+			if (jsonData != null && jsonData.getInt("total") > 0) {
+				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get("data")));
+			}
 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {

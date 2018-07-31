@@ -57,7 +57,10 @@ import com.liferay.portal.kernel.util.StringPool;
     "agency",
     "service",
     "domain",
-    "applicant"
+    "applicant",
+    "serviceCode",
+    "serviceName",
+    "typeCode"
 })
 @XmlRootElement(name = "ServiceConfigSearchModel")
 public class ServiceConfigSearchModel {
@@ -82,6 +85,12 @@ public class ServiceConfigSearchModel {
     protected String domain;
 	@QueryParam(value = "applicant")
     protected String applicant;
+	@QueryParam(value = "serviceCode")
+    protected String serviceCode;
+	@QueryParam(value = "serviceName")
+    protected String serviceName;
+	@QueryParam(value = "typeCode")
+    protected String typeCode;
 
     /**
      * Gets the value of the keyword property.
@@ -322,5 +331,29 @@ public class ServiceConfigSearchModel {
     public void setApplicant(String value) {
         this.applicant = value;
     }
+
+	public String getServiceCode() {
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+	public String getTypeCode() {
+		return typeCode;
+	}
+
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
+	}
 
 }
