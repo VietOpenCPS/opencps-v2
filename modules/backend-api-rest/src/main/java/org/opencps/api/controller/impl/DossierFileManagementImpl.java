@@ -125,16 +125,24 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
 			}
 			
-			DataHandler dataHandler = file.getDataHandler();
+			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 
 			DossierFileActions action = new DossierFileActionsImpl();
 			
 			
 			_log.info("__Start add file at:" + new Date());
-
-			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
-					dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
-					dataHandler.getInputStream(), fileType, isSync, serviceContext);
+			DossierFile dossierFile =  null;
+			
+			if (dataHandler != null) {
+				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
+						dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
+						dataHandler.getInputStream(), fileType, isSync, serviceContext);				
+			}
+			else {
+				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
+						dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, displayName, 0,
+						null, fileType, isSync, serviceContext);								
+			}
 			
 			_log.info("__End add file at:" + new Date());
 			

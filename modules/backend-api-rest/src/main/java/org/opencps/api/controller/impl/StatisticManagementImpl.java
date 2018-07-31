@@ -249,12 +249,12 @@ public class StatisticManagementImpl implements StatisticManagement {
 			long userId = user.getUserId();
 //			int stepType = 0;
 
-			_log.info("START");
+//			_log.info("START");
 			// Get info input
 //			long notStatusReg = query.getNotStatusReg();
 //			String status = query.getDossierStatus();
 //			String substatus = query.getDossierSubStatus();
-			_log.info("START");
+//			_log.info("START");
 			JSONArray statistics = JSONFactoryUtil.createJSONArray();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
@@ -266,7 +266,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			int total = 0;
 			//
 			String stepCode = query.getStep();
-			_log.info("STEPCODE: "+stepCode);
+//			_log.info("STEPCODE: "+stepCode);
 			if (Validator.isNotNull(stepCode)) {
 				String[] stepArr = stepCode.split(StringPool.COMMA);
 				if (stepArr != null && stepArr.length > 0) {
@@ -278,10 +278,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 							//TODO
 							String permission = user.getUserId() + ":write";
 							params.put(DossierTerm.MAPPING_PERMISSION, permission);
-							_log.info("START");
+//							_log.info("START");
 							long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId,
 									params, null, serviceContext);
-							_log.info("START");
+//							_log.info("START");
 							JSONObject statistic = JSONFactoryUtil.createJSONObject();
 							statistic.put("stepCode", stepConfig.getStepCode());
 							statistic.put("stepName", stepConfig.getStepName());
@@ -296,17 +296,17 @@ public class StatisticManagementImpl implements StatisticManagement {
 			} else {
 				List<StepConfig> stepList = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 				if (stepList != null && stepList.size() > 0) {
-					_log.info("length: "+stepList.size());
+//					_log.info("length: "+stepList.size());
 					for (StepConfig step: stepList) {
 						params.put(DossierTerm.STATUS, step.getDossierStatus());
 						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
 						//TODO
 						String permission = user.getUserId() + ":write";
 						params.put(DossierTerm.MAPPING_PERMISSION, permission);
-						_log.info("DossierStatus: "+step.getDossierStatus());
+//						_log.info("DossierStatus: "+step.getDossierStatus());
 						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 								null, serviceContext);
-						_log.info("count: "+count);
+//						_log.info("count: "+count);
 						JSONObject statistic = JSONFactoryUtil.createJSONObject();
 						statistic.put("stepCode", step.getStepCode());
 						statistic.put("stepName", step.getStepName());
@@ -329,7 +329,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			StatisticDossierResults results = new StatisticDossierResults();
 
 			results.setTotal(total);
-			_log.info("total: "+total);
+//			_log.info("total: "+total);
 			results.getStatisticDossierModel()
 					.addAll(StatisticUtils.mapperStatisticDossierList(statistics));
 

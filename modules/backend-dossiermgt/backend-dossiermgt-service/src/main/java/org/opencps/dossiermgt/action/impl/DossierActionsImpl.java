@@ -367,12 +367,12 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
-			_log.info("hits.toList():" +hits.toList());
+//			_log.info("hits.toList():" +hits.toList());
 
 			result.put("data", hits.toList());
 
 			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
-			_log.info("total:" +total);
+//			_log.info("total:" +total);
 
 			result.put("total", total);
 
@@ -1242,13 +1242,13 @@ public class DossierActionsImpl implements DossierActions {
 		List<ProcessAction> processActionList = null;
 		JSONArray results = null;
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		_log.info("dossier: "+dossier);
+//		_log.info("dossier: "+dossier);
 		if (dossier != null) {
 			long serviceProcessId = 0;
 			String stepCode = StringPool.BLANK;
 			boolean pending = false;
 			long dossierActionId = dossier.getDossierActionId();
-			_log.info("dossierActionId: "+dossierActionId);
+//			_log.info("dossierActionId: "+dossierActionId);
 			if (dossierActionId > 0) {
 				dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			}
