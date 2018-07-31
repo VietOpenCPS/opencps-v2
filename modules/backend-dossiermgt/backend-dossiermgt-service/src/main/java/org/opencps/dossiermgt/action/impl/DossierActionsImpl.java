@@ -1417,6 +1417,36 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				}
 
+				//Put receiving to next action
+				if (processAction != null) {
+					ProcessStep prevStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPreStepCode(), groupId,
+							serviceProcessId);
+					String curStatus = prevStep.getDossierStatus();
+					String nextStatus = processStep != null ? processStep.getDossierStatus() : StringPool.BLANK;
+					JSONObject receivingObj = JSONFactoryUtil.createJSONObject();
+					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : 0l);
+					receivingObj.put(DossierTerm.DUE_DATE, dossier.getDueDate() != null ? dossier.getDueDate().getTime() : 0l);
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+						if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus)
+								&& DossierTerm.DOSSIER_STATUS_PROCESSING.equals(nextStatus)) {
+							receivingObj.put("editable", true);
+						}
+						else {
+							receivingObj.put("editable", false);
+						}
+					}
+					else {
+						if (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
+								&& DossierTerm.DOSSIER_STATUS_PROCESSING.equals(nextStatus)) {
+							receivingObj.put("editable", true);
+						}
+						else {
+							receivingObj.put("editable", false);
+						}						
+					}
+					
+					result.put("receiving", receivingObj);
+				}
 				//
 				String createDossierFiles = processAction.getCreateDossierFiles();
 				String returnDossierFiles = processAction.getReturnDossierFiles();
