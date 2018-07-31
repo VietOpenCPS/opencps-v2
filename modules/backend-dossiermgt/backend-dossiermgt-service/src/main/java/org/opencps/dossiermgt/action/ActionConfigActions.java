@@ -11,19 +11,19 @@ public interface ActionConfigActions {
 
 	public ActionConfig addActionConfig(long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
-			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType, ServiceContext serviceContext)
+			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType, String mappingAction, ServiceContext serviceContext)
 			throws PortalException, AuthenticationException;
 
 	public ActionConfig updateActionConfig(Long actionConfigId, long userId, long groupId, String actionCode,
 			String actionName, Boolean extraForm, String formScript, String sampleData, Boolean insideProcess,
 			Integer userNote, Integer syncType, Boolean pending, Boolean rollbackable, String notificationType,
-			String documentType, ServiceContext serviceContext) throws PortalException, AuthenticationException;
+			String documentType, String mappingAction, ServiceContext serviceContext) throws PortalException, AuthenticationException;
 
 	public void deleteActionConfig(Long actionConfigId, ServiceContext serviceContext) throws PortalException, AuthenticationException;
 
 	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName, Boolean extraForm,
 			String sampleData, Boolean insideProcess, Integer userNote, Integer syncType, Integer eventType,
-			Integer infoType, Boolean rollbackable, String notificationType, String formConfig);
+			Integer infoType, Boolean rollbackable, String notificationType, String formConfig, String mappingAction);
 
 	public boolean deleteAllActionConfig(long groupId, long userId, ServiceContext serviceContext);
 
