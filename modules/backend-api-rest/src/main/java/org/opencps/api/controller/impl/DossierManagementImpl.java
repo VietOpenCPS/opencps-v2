@@ -55,7 +55,6 @@ import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -130,8 +129,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
-		BackendAuth auth = new BackendAuthImpl();
-		DossierPermission dossierPermission = new DossierPermission();
+//		BackendAuth auth = new BackendAuthImpl();
+//		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
 
 		try {
@@ -651,8 +650,16 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 			//Process follow StepCode
-			params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
-			params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, strSubStatusStep.toString());
+			if (Validator.isNotNull(strStatusStep)) {
+				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
+			} else {
+				params.put(DossierTerm.DOSSIER_STATUS_STEP, StringPool.BLANK);
+			}
+			if (Validator.isNotNull(strSubStatusStep)) {
+				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, strSubStatusStep.toString());
+			} else {
+				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, StringPool.BLANK);
+			}
 			//TODO
 			String permission = user.getUserId() + ":write";
 			params.put(DossierTerm.MAPPING_PERMISSION, permission);

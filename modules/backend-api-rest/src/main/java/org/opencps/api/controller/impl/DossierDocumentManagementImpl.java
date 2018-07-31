@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,13 +84,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				}
 
 				if (dossierActionId != 0) {
-
+					JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 					String payload = StringPool.BLANK;
 					if (dAction != null) {
 						payload = dAction.getPayload();
+						jsonData = processMergeDossierProcessRole(dossier, 1, jsonData, dAction);
 					}
-					JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 					
 					if (Validator.isNotNull(payload)) {
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
@@ -200,14 +201,18 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 			_log.info("START");
-			JSONArray formDataArr = null;
-			JSONArray formReportArr = null;
+			JSONObject formDataJSON = null;
 			if (dossierIdArr != null && dossierIdArr.length() > 0) {
-				int length = dossierIdArr.length();
+				//Declare Object
 				JSONObject jsonDossier = null;
+				JSONObject jsonData = null;
 				Dossier dossier = null;
 				long dossierId = 0;
-				formDataArr = JSONFactoryUtil.createJSONArray();
+				//
+				int length = dossierIdArr.length();
+				formDataJSON = JSONFactoryUtil.createJSONObject();
+				formDataJSON.put(DossierTerm.TOTAL, length);
+				//Get formScript
 				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
 				String documentScript = StringPool.BLANK;
 				_log.info("typeCode: "+typeCode);
@@ -215,6 +220,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				if (docType != null) {
 					documentScript = docType.getDocumentScript();
 				}
+				//
+				JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 				for (int i = 0; i < length; i++) {
 					jsonDossier = dossierIdArr.getJSONObject(i);
 					dossierId = Long.valueOf(jsonDossier.getString(DossierTerm.DOSSIER_ID));
@@ -229,23 +236,26 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								if (dAction != null) {
 									payload = dAction.getPayload();
 								}
+								if (i == 0) {
+									formDataJSON = processMergeDossierProcessRole(dossier, length, formDataJSON,  dAction);
+								}
+								//Mapping FormData with dossier
+								jsonData = JSONFactoryUtil.createJSONObject(payload);
+								jsonData = processMergeDossierFormData(dossier, jsonData);
+								formDataArr.put(jsonData);
+								_log.info("jsonData: "+jsonData);
+								_log.info("formDataArr: "+formDataArr);
+								_log.info("payload: "+payload);
 							}
-							JSONObject jsonData = null;
-							jsonData = JSONFactoryUtil.createJSONObject(payload);
-							jsonData.put(DossierTerm.TOTAL, length);
-							jsonData = processMergeDossierFormData(dossier, jsonData);
-							formDataArr.put(jsonData);
-							_log.info("jsonData: "+jsonData);
-							_log.info("formDataArr: "+formDataArr);
-							_log.info("payload: "+payload);
 						}
 					}
 				}
+				formDataJSON.put(DossierTerm.MAPPING_DOSSIER, formDataArr);
 
 				Message message = new Message();
 				message.put("formReport", documentScript);
-				message.put("formData", formDataArr.toJSONString());
-				message.put("className", DossierDocument.class.getName());
+				message.put("formData", formDataJSON.toJSONString());
+//				message.put("className", DossierDocument.class.getName());
 
 				try {
 					String previewResponse = (String) MessageBusUtil
@@ -331,41 +341,83 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
 		jsonData.put(DossierTerm.RECEIVE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonData.put(DossierTerm.DUE_DATE,
+				APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
 		//
-		long dossierActionId = dossier.getDossierActionId();
+//		long dossierActionId = dossier.getDossierActionId();
 		long groupId = dossier.getGroupId();
-		if (dossierActionId > 0) {
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-			if (dossierAction != null) {
-				long serviceProcessId = dossierAction.getServiceProcessId();
-				jsonData.put(DossierTerm.ACTION_USER, dossierAction.getActionUser());
-				String fromSequenceNo = dossierAction.getFromSequenceNo();
-				String sequenceNo = dossierAction.getSequenceNo();
-				if (Validator.isNotNull(fromSequenceNo)) {
-					ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, fromSequenceNo);
-					if (sequence != null) {
-						jsonData.put(DossierTerm.SEQUENCE_ROLE, sequence.getSequenceRole());
-					} else {
-						jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
-					}
-				} else {
-					jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
-				}
-				if (Validator.isNotNull(sequenceNo)) {
-					ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, sequenceNo);
-					if (sequence != null) {
-						jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, sequence.getSequenceRole());
-					} else {
-						jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
-					}
-				} else {
-					jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
-				}
-			}
-		}
+//		String sequenceNo = StringPool.BLANK;
+//		if (dossierActionId > 0) {
+//			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//			if (dossierAction != null) {
+//				long serviceProcessId = dossierAction.getServiceProcessId();
+//				jsonData.put(DossierTerm.ACTION_USER, dossierAction.getActionUser());
+//				sequenceNo = dossierAction.getSequenceNo();
+//				if (Validator.isNotNull(sequenceNo)) {
+//					ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, sequenceNo);
+//					if (sequence != null) {
+//						jsonData.put(DossierTerm.SEQUENCE_ROLE, sequence.getSequenceRole());
+//					} else {
+//						jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+//					}
+//				} else {
+//					jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+//				}
+//			}
+//			//Process get Next sequence Role
+//			try {
+//				ServiceProcessActions actions = new ServiceProcessActionsImpl();
+//				ServiceProcess serviceProcess = actions.getServiceProcessByCode(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(),
+//						dossier.getDossierTemplateNo());
+//
+//				if (serviceProcess != null) {
+//					long serviceProcessId = serviceProcess.getServiceProcessId();
+//					if (serviceProcessId > 0) {
+//						List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcessId);
+//						String[] sequenceArr = null;
+//						if (sequenceList != null && !sequenceList.isEmpty()) {
+//							int length = sequenceList.size();
+//							sequenceArr = new String[length];
+//							for (int i = 0; i < length; i++) {
+//								ProcessSequence processSequence = sequenceList.get(i);
+//								if (processSequence != null) {
+//									sequenceArr[i] = processSequence.getSequenceNo();
+//								}
+//							}
+//						}
+//							
+//						if (sequenceArr != null && sequenceArr.length > 0) {
+//							Arrays.sort(sequenceArr);
+//							for (int i = 0; i < sequenceArr.length; i++) {
+//								String seq = sequenceArr[i];
+//								if (sequenceNo.equals(seq)) {
+//									String nextSequenceNo = sequenceArr[i+1];
+//									if (Validator.isNotNull(nextSequenceNo)) {
+//										ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, nextSequenceNo);
+//										if (sequence != null) {
+//											jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, sequence.getSequenceRole());
+//										} else {
+//											jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+//										}
+//									} else {
+//										jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+//									}
+//								}
+//							}
+//						} else {
+//							jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+//						}
+//					}
+//				} else {
+//					jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+//				}
+//			} catch (PortalException e) {
+//				e.printStackTrace();
+//			}
+//		}
 
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
 		long dossierId = dossier.getDossierId();
@@ -395,6 +447,73 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 		}
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
+		return jsonData;
+	}
+
+	//LamTV_ Mapping process dossier and formData
+	private JSONObject processMergeDossierProcessRole(Dossier dossier, int length, JSONObject jsonData,
+			DossierAction dAction) {
+		//
+		long groupId = dossier.getGroupId();
+		if (dAction != null) {
+			long serviceProcessId = dAction.getServiceProcessId();
+			jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+			jsonData.put(DossierTerm.TOTAL, length);
+			jsonData.put(DossierTerm.ACTION_USER, dAction.getActionUser());
+			String sequenceNo = dAction.getSequenceNo();
+			if (Validator.isNotNull(sequenceNo)) {
+				ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId,
+						sequenceNo);
+				if (sequence != null) {
+					jsonData.put(DossierTerm.SEQUENCE_ROLE, sequence.getSequenceRole());
+				} else {
+					jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+				}
+			} else {
+				jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+			}
+			// Process get Next sequence Role
+			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+					serviceProcessId);
+			String[] sequenceArr = null;
+			if (sequenceList != null && !sequenceList.isEmpty()) {
+				int lengthSeq = sequenceList.size();
+				sequenceArr = new String[lengthSeq];
+				for (int i = 0; i < lengthSeq; i++) {
+					ProcessSequence processSequence = sequenceList.get(i);
+					if (processSequence != null) {
+						sequenceArr[i] = processSequence.getSequenceNo();
+					}
+				}
+			}
+
+			if (sequenceArr != null && sequenceArr.length > 0) {
+				for (int i = 0; i < sequenceArr.length; i++) {
+						_log.info("sequenceArr[i]: "+sequenceArr[i]);
+				}
+				Arrays.sort(sequenceArr);
+				for (int i = 0; i < sequenceArr.length; i++) {
+					String seq = sequenceArr[i];
+					if (sequenceNo.equals(seq)) {
+						String nextSequenceNo = sequenceArr[i + 1];
+						if (Validator.isNotNull(nextSequenceNo)) {
+							ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId,
+									serviceProcessId, nextSequenceNo);
+							if (sequence != null) {
+								jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, sequence.getSequenceRole());
+							} else {
+								jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+							}
+						} else {
+							jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+						}
+					}
+				}
+			} else {
+				jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+			}
+		}
+
 		return jsonData;
 	}
 
