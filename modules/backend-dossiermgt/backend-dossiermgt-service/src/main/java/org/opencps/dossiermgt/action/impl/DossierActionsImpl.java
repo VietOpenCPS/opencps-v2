@@ -2235,6 +2235,23 @@ public class DossierActionsImpl implements DossierActions {
 		return duration;
 	}
 
+	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+
+		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			if(Validator.isNotNull(it)){
+				return it.getItemName();
+			}else{
+				return StringPool.BLANK;
+			}
+		} else {
+			return StringPool.BLANK;
+		}
+
+	}
+	
 	@Override
 	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
@@ -2300,14 +2317,18 @@ public class DossierActionsImpl implements DossierActions {
 			int actionOverdue = getActionDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			
-			_log.info("LamTV_NEXT_ACTION");
+			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
 			String actionName = proAction.getActionName();
-			if (ProcessActionTerm.ACTION_CREATE_HSLT.equals(actionCode)) {
+			if (Validator.isNotNull(proAction.getCreateDossiers())) {
 				//Create new HSLT
-				Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, UUID.randomUUID().toString(), 
+				String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+				
+				String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
+
+				Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
 						dossier.getCounter(), dossier.getServiceCode(),
-						dossier.getServiceName(), proAction.getCreateDossiers(), dossier.getGovAgencyName(), dossier.getApplicantName(), 
+						dossier.getServiceName(), proAction.getCreateDossiers(), govAgencyName, dossier.getApplicantName(), 
 						dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
 						dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
 						dossier.getDistrictName(), dossier.getWardCode(), dossier.getWardName(), dossier.getContactName(),
@@ -2322,7 +2343,7 @@ public class DossierActionsImpl implements DossierActions {
 					DossierLocalServiceUtil.updateDossier(hsltDossier);
 					
 					JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);
-					hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(),
+					hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(), dossier.getReferenceUid(),
 							DossierTerm.DOSSIER_STATUS_NEW,
 							jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW), StringPool.BLANK,
 							StringPool.BLANK, StringPool.BLANK, previousAction.getStepInstruction(), context);
