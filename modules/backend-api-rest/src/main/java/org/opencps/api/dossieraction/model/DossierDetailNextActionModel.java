@@ -61,6 +61,7 @@ import javax.xml.bind.annotation.XmlType;
  "extraForm",
  "userNote",
  "payment",
+ "receiving",
  "toUsers",
  "createFiles",
  "returnFiles",
@@ -83,6 +84,7 @@ public class DossierDetailNextActionModel {
 	protected Boolean extraForm;
 	protected Integer userNote;
 	protected DossierActionPaymentModel payment;
+	protected ReceivingModel receiving;
 	protected List<DossierActionNextActiontoUser> toUsers;
 	protected List<DossierActionNextActioncreateFiles> createFiles;
 	protected List<DossierActionNextActionReturnFiles> returnFiles;
@@ -358,4 +360,11 @@ public class DossierDetailNextActionModel {
 		this.toUsers = toUsers;
 	}
 
+	public ReceivingModel getReceiving() {
+		return receiving;
+	}
+	
+	public void setReceiving(ReceivingModel value) {
+		this.receiving = value;
+	}
 }
