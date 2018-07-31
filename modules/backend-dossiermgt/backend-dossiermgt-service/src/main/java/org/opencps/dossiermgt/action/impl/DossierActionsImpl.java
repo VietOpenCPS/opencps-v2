@@ -2546,6 +2546,10 @@ public class DossierActionsImpl implements DossierActions {
 					}										
 				}
 			}
+			else {
+				//Sync result files
+				
+			}
 			
 			payloadObject.put("dossierFiles", dossierFilesArr);
 
@@ -2569,7 +2573,7 @@ public class DossierActionsImpl implements DossierActions {
 				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
-			_log.info("Flag changed: " + flagChanged);
+//			_log.info("Flag changed: " + flagChanged);
 			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
