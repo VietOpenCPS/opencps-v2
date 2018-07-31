@@ -44,7 +44,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 			String wardName = model.getWardName();
 			String contactName = model.getContactName();
 			String contactTelNo = model.getContactTelNo();
-			String contactEmail = model.getContactName();
+			String contactEmail = model.getContactEmail();
 			
 			ApplicantLocalServiceUtil.updateApplicant(groupId, userId, companyId, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,

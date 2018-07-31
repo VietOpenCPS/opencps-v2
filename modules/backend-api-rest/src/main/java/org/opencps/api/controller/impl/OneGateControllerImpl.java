@@ -95,7 +95,7 @@ public class OneGateControllerImpl implements OneGateController {
 
 				JSONArray options = JSONFactoryUtil.createJSONArray();
 				for (ProcessOption processOption : processOptions) {
-					_log.info("processOptionId"+ processOption.getDossierTemplateId());
+//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
 					JSONObject elmOption = JSONFactoryUtil.createJSONObject();
 					
 					elmOption.put("processOptionId", processOption.getProcessOptionId());
@@ -124,7 +124,7 @@ public class OneGateControllerImpl implements OneGateController {
 			
 			results.put("data", data);
 			
-			_log.info(results.toJSONString());
+//			_log.info(results.toJSONString());
 
 			return Response.status(200).entity(results.toJSONString()).build();
 

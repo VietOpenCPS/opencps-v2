@@ -532,7 +532,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String step = query.getStep();
-			_log.info("step: "+step);
+//			_log.info("step: "+step);
 			StringBuilder strStatusStep = null;
 			StringBuilder strSubStatusStep = null;
 			if (Validator.isNotNull(step)) {
