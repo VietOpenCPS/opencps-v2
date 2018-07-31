@@ -473,6 +473,10 @@
             <finder-column name="serviceCode"></finder-column>
             <finder-column name="govAgencyCode"></finder-column>
         </finder>
+		<finder return-type="Collection" name="G_O_DID">
+			<finder-column name="groupId" />
+			<finder-column name="originDossierId" />
+		</finder>
 
 	</entity>
 

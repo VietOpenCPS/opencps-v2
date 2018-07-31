@@ -879,6 +879,9 @@ definitions:
       userNote:
         type: integer
         example: 0
+      mappingAction:
+        type: string
+        example: "1200"        
   StepConfigItemResult:
     type: object
     required:
