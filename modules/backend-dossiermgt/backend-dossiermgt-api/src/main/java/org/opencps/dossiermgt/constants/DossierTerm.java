@@ -154,5 +154,6 @@ public class DossierTerm {
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
 	public static final String ACTION_USER = "actionUser";
 	public static final String MAPPING_PERMISSION = "permission";
+	public static final String MAPPING_DOSSIER = "dossiers";
 
 }
