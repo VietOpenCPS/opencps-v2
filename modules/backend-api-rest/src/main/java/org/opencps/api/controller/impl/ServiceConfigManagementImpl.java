@@ -1003,6 +1003,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			JSONObject jsonGuide = JSONFactoryUtil.createJSONObject();
 			jsonGuide.put(ServiceConfigTerm.SERVICE_CODE, search.getServiceCode());
 			jsonGuide.put(ServiceConfigTerm.SERVICE_NAME, search.getServiceName());
+			jsonGuide.put(ServiceConfigTerm.ACTION_USER, user.getFullName());
 			if (serviceConfig != null) {
 				jsonGuide.put(ServiceConfigTerm.SERVICE_INSTRUCTION, serviceConfig.getServiceInstruction());
 			}
@@ -1068,6 +1069,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			if (docType != null) {
 				documentScript = docType.getDocumentScript();
 			}
+			_log.info("documentScript: "+documentScript);
 
 			Message message = new Message();
 			message.put("formReport", documentScript);
