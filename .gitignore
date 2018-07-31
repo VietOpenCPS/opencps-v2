@@ -83,3 +83,8 @@ mt-dklr/**
 theme_nz/*
 modules/vr-business
 gradle.properties
+modules/backend-statistic
+modules/backend-api-rest-v2-1
+modules/front-end-supperadmin
+modules/front-end-super-gate
+
