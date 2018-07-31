@@ -1419,30 +1419,16 @@ public class DossierActionsImpl implements DossierActions {
 
 				//Put receiving to next action
 				if (processAction != null) {
-					ProcessStep prevStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPreStepCode(), groupId,
-							serviceProcessId);
-					String curStatus = prevStep.getDossierStatus();
-					String nextStatus = processStep != null ? processStep.getDossierStatus() : StringPool.BLANK;
+					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+					
 					JSONObject receivingObj = JSONFactoryUtil.createJSONObject();
 					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : 0l);
 					receivingObj.put(DossierTerm.DUE_DATE, dossier.getDueDate() != null ? dossier.getDueDate().getTime() : 0l);
-					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-						if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus)
-								&& DossierTerm.DOSSIER_STATUS_PROCESSING.equals(nextStatus)) {
-							receivingObj.put("editable", true);
-						}
-						else {
-							receivingObj.put("editable", false);
-						}
+					if (Validator.isNotNull(serviceProcess) && "0".equals(serviceProcess.getDueDatePattern())) {
+						receivingObj.put("editable", true);
 					}
 					else {
-						if (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
-								&& DossierTerm.DOSSIER_STATUS_PROCESSING.equals(nextStatus)) {
-							receivingObj.put("editable", true);
-						}
-						else {
-							receivingObj.put("editable", false);
-						}						
+						receivingObj.put("editable", false);
 					}
 					
 					result.put("receiving", receivingObj);
@@ -2539,13 +2525,25 @@ public class DossierActionsImpl implements DossierActions {
 			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
 			
 			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-				List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
-				if (lstFiles.size() > 0) {
-					for (DossierFile df : lstFiles) {
-						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
-						dossierFilesArr.put(dossierFileObj);
-					}
+				if (dossier.getOriginDossierId() == 0) {
+					List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
+					if (lstFiles.size() > 0) {
+						for (DossierFile df : lstFiles) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+						}
+					}					
+				}
+				else {
+					List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getOriginDossierId());
+					if (lstFiles.size() > 0) {
+						for (DossierFile df : lstFiles) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+						}
+					}										
 				}
 			}
 			
