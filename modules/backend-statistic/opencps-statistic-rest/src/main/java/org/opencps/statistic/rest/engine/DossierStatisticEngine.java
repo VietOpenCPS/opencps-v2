@@ -58,6 +58,10 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			for (GovAgencyData agencyData : agencyResponse.getData()) {
 				LOG.info("DATA_1 " + agencyData.getItemCode());
 				LOG.info("DATA_2 " + agencyData.getItemName());
+				
+				/* 2. Get dossier in GOV  */
+				
+				
 			}
 			
 

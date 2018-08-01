@@ -8,26 +8,25 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "data")
-public class DossierStatisticResponse {
+@XmlRootElement(name = "DossierResponse")
+public class GetDossierResponse {
 	private int total;
+	
 	@XmlElement(name = "data")
-	private List<DossierStatisticData> dossierStatisticData;
+	private List<GetDossierData> data;
 
 	public int getTotal() {
 		return total;
 	}
-
 	public void setTotal(int total) {
 		this.total = total;
 	}
-
-	public List<DossierStatisticData> getDossierStatisticData() {
-		return dossierStatisticData;
+	
+	public List<GetDossierData> getData() {
+		return data;
 	}
-
-	public void setDossierStatisticData(List<DossierStatisticData> dossierStatisticData) {
-		this.dossierStatisticData = dossierStatisticData;
+	public void setData(List<GetDossierData> data) {
+		this.data = data;
 	}
-
+	
 }

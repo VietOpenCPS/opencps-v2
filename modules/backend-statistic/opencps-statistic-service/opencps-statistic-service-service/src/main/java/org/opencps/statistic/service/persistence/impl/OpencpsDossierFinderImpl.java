@@ -7,7 +7,7 @@ import java.util.List;
 import org.opencps.statistic.model.OpencpsDossier;
 import org.opencps.statistic.model.impl.OpencpsDossierImpl;
 import org.opencps.statistic.service.persistence.OpencpsDossierFinder;
-import org.opencps.statistic.service.util.StatisticServiceConstans;
+import org.opencps.statistic.service.util.StatisticServiceConstants;
 
 import com.liferay.portal.dao.orm.custom.sql.CustomSQLUtil;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
@@ -30,7 +30,7 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 
 	private static final String START_HOUR_MINUTE_SECOND = "00:00:00";
 	private static final String END_HOUR_MINUTE_SECOND = "23:59:59";
-	private static final String RELEASE_DATE = "releaseDate";
+	private static final String RELEASE_DATE = "opencps_dossier.releaseDate";
 
 	private static final String CONDITION_REGISTER_BOOK_CODE = "(opencps_dossier.registerBookCode = ?) AND";
 	private static final String CONDITION_PROCESS_NO = "(opencps_dossier.processNo = ?) AND";
@@ -183,7 +183,7 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 				sql = StringUtil.replace(sql, CONDITION_GROUP_ID, StringPool.BLANK);
 			}
 
-			sql = StringUtil.replace(sql, StatisticServiceConstans.SPECIFY_RELEASE_DATE, buildReleaseDataCondition());
+			sql = StringUtil.replace(sql, StatisticServiceConstants.SPECIFY_RELEASE_DATE, buildReleaseDataCondition());
 
 			LOG.info(sql);
 			LOG.info("GROUP_ID_" + groupId);
@@ -282,7 +282,8 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 			if (hasGroupId) {
 				qPos.add(groupId);
 			}
-
+			
+			
 			return (List<OpencpsDossier>) QueryUtil.list(q, getDialect(), start, end);
 
 		} catch (Exception e) {

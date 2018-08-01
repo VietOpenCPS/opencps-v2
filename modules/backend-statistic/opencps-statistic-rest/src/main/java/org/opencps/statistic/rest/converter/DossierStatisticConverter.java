@@ -60,7 +60,7 @@ public class DossierStatisticConverter {
 		if (Validator.isNull(date)) {
 			return StringPool.BLANK;
 		} else {
-			return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(_formartter);
+			return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(_formartter);
 		}
 	}
 
@@ -77,7 +77,6 @@ public class DossierStatisticConverter {
 
 			for (OpencpsDossierStatistic dossierStatistic : source) {
 
-				dossierStatistic.setBetimesCount(22);
 
 				DossierStatisticData dossierStatisticData = new DossierStatisticData();
 
@@ -95,12 +94,10 @@ public class DossierStatisticConverter {
 				dossierStatisticData.setOntimeCount(dossierStatistic.getOntimeCount());
 				dossierStatisticData.setOvertimeCount(dossierStatistic.getOvertimeCount());
 
-				/* TODO Need check again: get from DB or process logic */
 				dossierStatisticData.setOvertimeInside(dossierStatistic.getOvertimeInside());
 				dossierStatisticData.setOvertimeOutside(dossierStatistic.getOvertimeOutside());
 				dossierStatisticData.setInteroperatingCount(dossierStatistic.getInteroperatingCount());
 				dossierStatisticData.setWaitingCount(dossierStatistic.getWaitingCount());
-				/* End TODO */
 
 				dossierStatisticData.setDoneCount(dossierStatistic.getDoneCount());
 				dossierStatisticData.setReleasingCount(dossierStatistic.getReleasingCount());

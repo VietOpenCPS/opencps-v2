@@ -18,4 +18,7 @@ public interface DossierStatisticConstants {
 	String OPENCPS_AUTHENCATION = "opencps.rest.authentication";
 	
 	String GROUP_ID = "groupId";
+	
+	int START_YEARS = 1990;
+
 }
