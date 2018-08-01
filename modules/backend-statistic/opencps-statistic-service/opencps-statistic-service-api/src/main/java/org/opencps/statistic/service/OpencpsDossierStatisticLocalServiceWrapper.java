@@ -198,12 +198,14 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 
 	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
-		long groupId, java.lang.String domain, java.lang.String govAgencyCode,
-		java.lang.String groupAgenvyCode, boolean reporting, int start, int end)
+		long groupId, int month, int year, java.lang.String domain,
+		java.lang.String govAgencyCode, java.lang.String groupAgenvyCode,
+		boolean reporting, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsDossierStatisticLocalService.searchDossierStatistic(groupId,
-			domain, govAgencyCode, groupAgenvyCode, reporting, start, end);
+			month, year, domain, govAgencyCode, groupAgenvyCode, reporting,
+			start, end);
 	}
 
 	/**

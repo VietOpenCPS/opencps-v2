@@ -31,9 +31,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 	private static final String CONDITION_DOMAIN = "(opencps_statistic.domainCode = ?) AND";
 	private static final String CONDITION_GOV_AGENCY = "(opencps_statistic.govAgencyCode = ?) AND";
 	private static final String CONDITION_GROUP_AGENCY = "(opencps_statistic.groupAgencyCode = ?) AND";
+	//private static final String CONDITION_MONTH = "(opencps_statistic.month = ?) AND";
+	private static final String CONDITION_YEAR = "(opencps_statistic.year = ?) AND";
 
 	@SuppressWarnings("unchecked")
-	public List<OpencpsDossierStatistic> searchByDomainGovAgencyGroupAndReporting(long groupId, String domain,
+	public List<OpencpsDossierStatistic> searchByDomainGovAgencyGroupAndReporting(long groupId, int month, int year, String domain,
 			String govAgency, String groupAgencyCode, boolean reporting, int start, int end) {
 		Session session = null;
 
@@ -42,8 +44,14 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 			String sql = CustomSQLUtil.get(getClass(), SEARCH_DOSSIER_STATISTIC);
 
-			LOG.info(sql);
+			//LOG.info(sql);
+			
 
+			/* remove year*/
+			if (year == 0) {
+				sql = StringUtil.replace(sql, CONDITION_YEAR, StringPool.BLANK);
+			}
+			
 			/* remove condition domain, find by all domain */
 			if (Validator.isNull(domain) || domain.contentEquals(TOTAL)) {
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, StringPool.BLANK);
@@ -58,9 +66,8 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			if (Validator.isNull(groupAgencyCode) || groupAgencyCode.contentEquals(TOTAL)) {
 				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
 			}
-
-			LOG.info(sql);
-
+			
+			//LOG.info(sql);
 			
 			SQLQuery q = session.createSQLQuery(sql);
 
@@ -68,6 +75,14 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			q.addEntity("OpencpsDossierStatistic", OpencpsDossierStatisticImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
+			
+			/* add month parameter */			
+			qPos.add(month);
+			
+			/* add year parameter */
+			if (year != 0) {
+				qPos.add(year);
+			}
 
 			/* add domain parameter */
 			if (Validator.isNotNull(domain) && !domain.contentEquals(TOTAL)) {

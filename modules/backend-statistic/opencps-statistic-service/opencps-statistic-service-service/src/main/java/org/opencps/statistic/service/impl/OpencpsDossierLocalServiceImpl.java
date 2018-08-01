@@ -53,11 +53,13 @@ public class OpencpsDossierLocalServiceImpl extends OpencpsDossierLocalServiceBa
 			String serviceCode, String govAgencyCode, String applicantIdType, String applicantIdNo, String cityCode,
 			String districtCode, String wardCode, String contactTelNo, String contactEmail, String delegateIdNo,
 			String delegateTelNo, String dossierStatus, String dossierSubStatus, long dossierActionId, int viaPostal,
-			boolean online, int originality, String serverNo, long originDossierId, boolean order, String orderBy,
-			int start, int end) throws PortalException, SystemException {
+			boolean online, boolean onlineValue, int originality, String serverNo, long originDossierId,
+			boolean isReceiveDate, boolean isReleaseDate, boolean isBetimes, boolean isOntime, boolean isUndue, boolean order,
+			String orderBy, int start, int end) throws PortalException, SystemException {
 		return opencpsDossierFinder.searchDossiers(groupId, keyword, registerBookCode, processNo, serviceCode,
 				govAgencyCode, applicantIdType, applicantIdNo, cityCode, districtCode, wardCode, contactTelNo,
 				contactEmail, delegateIdNo, delegateTelNo, dossierStatus, dossierSubStatus, dossierActionId, viaPostal,
-				online, originality, serverNo, originDossierId, order, orderBy, start, end);
+				online, onlineValue, originality, serverNo, originDossierId, isReceiveDate, isReleaseDate, isBetimes,
+				isOntime,isUndue, order, orderBy, start, end);
 	}
 }
