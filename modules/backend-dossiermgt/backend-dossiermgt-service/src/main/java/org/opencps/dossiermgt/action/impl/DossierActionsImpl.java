@@ -2478,7 +2478,7 @@ public class DossierActionsImpl implements DossierActions {
 						//Generate PDF
 						String formData = dossierAction.getPayload();
 						Message message = new Message();
-
+						_log.info("Document script: " + dt.getDocumentScript());
 						JSONObject msgData = JSONFactoryUtil.createJSONObject();
 						msgData.put("className", DossierDocument.class.getName());
 						msgData.put("classPK", dossierDocument.getDossierDocumentId());
