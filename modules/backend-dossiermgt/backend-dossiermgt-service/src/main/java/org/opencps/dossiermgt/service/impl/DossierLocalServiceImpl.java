@@ -197,24 +197,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			// create DossierFile if it is eForm
 
-			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
+//			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
+//
+//			dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
 
-			dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
-
-			for (DossierPart part : dossierParts) {
-				if (Validator.isNotNull(part.getFormScript()) && part.getPartType() != 2) {
-					String dossierFileUUID = PortalUUIDUtil.generate();
+//			for (DossierPart part : dossierParts) {
+//				if (Validator.isNotNull(part.getFormScript()) && part.getPartType() != 2) {
+//					String dossierFileUUID = PortalUUIDUtil.generate();
 
 					// TODO HotFix
 
 //					if (groupId != 55301) {
-					if (originality == DossierTerm.ORIGINALITY_DVCTT || originality == DossierTerm.ORIGINALITY_MOTCUA) {
-						dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
-								part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
-								null, StringPool.BLANK, StringPool.TRUE, context);
-					}
-				}
-			}
+//					if (originality == DossierTerm.ORIGINALITY_DVCTT || originality == DossierTerm.ORIGINALITY_MOTCUA) {
+//						dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
+//								part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
+//								null, StringPool.BLANK, StringPool.TRUE, context);
+//					}
+//				}
+//			}
 
 			if (originality == DossierTerm.ORIGINALITY_MOTCUA
 					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
