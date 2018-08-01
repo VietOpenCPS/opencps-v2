@@ -2576,4 +2576,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		
 		return dossierPersistence.update(dossier);
 	}
+	
+	public Dossier getByOrigin(long groupId, long originDossierId) {
+		return dossierPersistence.fetchByG_O_DID_First(groupId, originDossierId, null);
+	}	
 }

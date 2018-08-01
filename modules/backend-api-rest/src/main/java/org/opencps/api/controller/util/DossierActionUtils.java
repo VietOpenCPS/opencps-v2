@@ -14,10 +14,12 @@ import org.opencps.api.dossieraction.model.DossierActionPaymentModel;
 import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
 import org.opencps.api.dossieraction.model.DossierNextActionModel;
 import org.opencps.api.dossieraction.model.DossierPayLoadModel;
+import org.opencps.api.dossieraction.model.ReceivingModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -250,6 +252,16 @@ public class DossierActionUtils {
 				payment.setEditable(paymentFee.getBoolean("editable"));
 			}
 
+			JSONObject receivingObj = jsonData.getJSONObject("receiving");
+			if (receivingObj != null) {
+				ReceivingModel receiving = new ReceivingModel();
+				receiving.setDueDate(receivingObj.getLong(DossierTerm.DUE_DATE));
+				receiving.setReceiveDate(receivingObj.getLong(DossierTerm.RECEIVE_DATE));
+				receiving.setEditable(receivingObj.getBoolean("editable"));
+				
+				model.setReceiving(receiving);
+			}
+			
 			List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 			DossierActionNextActiontoUser modelUser = null;
 			if (lstUser != null && lstUser.size() > 0) {

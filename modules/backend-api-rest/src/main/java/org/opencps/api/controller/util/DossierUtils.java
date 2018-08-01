@@ -121,7 +121,7 @@ public class DossierUtils {
 			} else {
 				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
-			_log.info("DUE_DATE: "+doc.get(DossierTerm.DUE_DATE));
+//			_log.info("DUE_DATE: "+doc.get(DossierTerm.DUE_DATE));
 //			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
 //				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
@@ -177,7 +177,7 @@ public class DossierUtils {
 //			}
 			//LamTV: Process Assigned dossier
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-			_log.info("ASSIGNED" + dau);
+//			_log.info("ASSIGNED" + dau);
 			if (dau != null) {
 				model.setAssigned(dau.getAssigned());
 			} else {

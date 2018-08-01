@@ -48,8 +48,8 @@ public class ReadXMLFileUtils {
 				line = bufReader.readLine();
 			}
 			String xml2String = sb.toString();
-			_log.info("XML to String using BufferedReader : ");
-			_log.info(xml2String);
+//			_log.info("XML to String using BufferedReader : ");
+//			_log.info(xml2String);
 
 			return xml2String;
 		} catch (Exception e) {

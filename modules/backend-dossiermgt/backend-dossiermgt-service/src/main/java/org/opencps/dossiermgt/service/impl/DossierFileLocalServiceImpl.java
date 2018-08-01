@@ -134,16 +134,18 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
 		long fileEntryId = 0;
 
-		try {
-			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
-					fileType, fileSize, serviceContext);
-
-			if (fileEntry != null) {
-				fileEntryId = fileEntry.getFileEntryId();
+		if (inputStream != null) {
+			try {
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
+						fileType, fileSize, serviceContext);
+	
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new SystemException(e);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new SystemException(e);
 		}
 		_log.info("****End uploadFile file at:" + new Date());
 

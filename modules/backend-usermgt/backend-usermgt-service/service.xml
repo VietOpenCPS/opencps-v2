@@ -531,6 +531,11 @@
 			<finder-column name="applicantIdNo"/>
 		</finder>
 
+		<finder return-type="Applicant" name="F_APLC_GID" >
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo"/>
+		</finder>
+
 		<finder return-type="Applicant" name="F_CTT_ID" unique="true">
 			<finder-column name="contactTelNo"/>
 		</finder>

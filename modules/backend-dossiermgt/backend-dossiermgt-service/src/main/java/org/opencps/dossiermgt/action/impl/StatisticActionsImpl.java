@@ -28,10 +28,10 @@ public class StatisticActionsImpl implements StatisticActions {
 		long total = 0;
 		try {
 			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
-			_log.info("statusCode: "+statusCode);
+//			_log.info("statusCode: "+statusCode);
 			if (Validator.isNotNull(statusCode)) {
 				total = DossierLocalServiceUtil.countLucene(params, searchContext);
-				_log.info("total: "+total);
+//				_log.info("total: "+total);
 			}
 		} catch (Exception e) {
 			// _log.error(e);

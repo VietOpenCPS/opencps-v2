@@ -121,6 +121,8 @@ public class ProcessUpdateDBUtils {
 						Integer infoType = actConfig.getInfoType();
 						Boolean rollbackable = actConfig.isRollbackable();
 						String notificationType = actConfig.getNotificationType();
+						String mappingAction = actConfig.getMappingAction();
+						
 						if (Validator.isNotNull(actionCode)) {
 //							String filePath = folderPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH + ConstantUtils.PREFIX_ACTIONCONFIG
 //									+ actionCode + ConstantUtils.EXTENTION_JSON;
@@ -132,7 +134,7 @@ public class ProcessUpdateDBUtils {
 							// Check record exits DB
 							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
 									insideProcess, userNote, syncType, eventType, infoType, rollbackable,
-									notificationType, formConfig);
+									notificationType, formConfig, mappingAction);
 						}
 					}
 				}

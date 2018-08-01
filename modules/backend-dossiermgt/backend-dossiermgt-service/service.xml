@@ -473,6 +473,10 @@
             <finder-column name="serviceCode"></finder-column>
             <finder-column name="govAgencyCode"></finder-column>
         </finder>
+		<finder return-type="Collection" name="G_O_DID">
+			<finder-column name="groupId" />
+			<finder-column name="originDossierId" />
+		</finder>
 
 	</entity>
 
@@ -1727,6 +1731,7 @@
 		<column name="rollbackable" type="boolean" />
 		<column name="notificationType" type="String" />
 		<column name="documentType" type="String" />
+		<column name="mappingAction" type="String" />
 		
         <order by="asc">
             <order-column name="actionCode" order-by="asc" case-sensitive="true"></order-column>
