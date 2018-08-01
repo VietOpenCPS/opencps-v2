@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,12 +33,14 @@ import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -47,10 +50,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class OneGateControllerImpl implements OneGateController {
 
@@ -75,53 +77,74 @@ public class OneGateControllerImpl implements OneGateController {
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			JSONArray data = JSONFactoryUtil.createJSONArray();
-
-			results.put("total", serviceConfigs.size());
+			int total = 0;
 
 			for (ServiceConfig serviceConfig : serviceConfigs) {
-				JSONObject elmData = JSONFactoryUtil.createJSONObject();
-
-				elmData.put("serviceConfigId", serviceConfig.getServiceConfigId());
-
-				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
-
-				elmData.put("serviceCode", serviceInfo.getServiceCode());
-				elmData.put("serviceName", serviceInfo.getServiceName());
-				elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
-				elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
-
-				List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
-						.getByServiceProcessId(serviceConfig.getServiceConfigId());
-
-				JSONArray options = JSONFactoryUtil.createJSONArray();
-				for (ProcessOption processOption : processOptions) {
-//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
-					JSONObject elmOption = JSONFactoryUtil.createJSONObject();
+				if (serviceConfig.getServiceLevel() >= 2) {
+					total++;
+					JSONObject elmData = JSONFactoryUtil.createJSONObject();
+	
+					elmData.put("serviceConfigId", serviceConfig.getServiceConfigId());
+	
+					ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
 					
-					elmOption.put("processOptionId", processOption.getProcessOptionId());
-					elmOption.put("optionName", processOption.getOptionName());
-					elmOption.put("instructionNote", processOption.getInstructionNote());
-					
-					try {
-						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
-						if (dossierTemplate != null) {
-							elmOption.put("templateNo", dossierTemplate.getTemplateNo());
-							elmOption.put("templateName", dossierTemplate.getTemplateName());						
-						}
-					}
-					catch (NoSuchDossierTemplateException e) {
+					elmData.put("serviceCode", serviceInfo.getServiceCode());
+					elmData.put("serviceName", serviceInfo.getServiceName());
+					elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
+					elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
+	
+					List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
+							.getByServiceProcessId(serviceConfig.getServiceConfigId());
+	
+					JSONArray options = JSONFactoryUtil.createJSONArray();
+					for (ProcessOption processOption : processOptions) {
+	//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
+						long serviceProcessId = processOption.getServiceProcessId();
+						List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
 						
-					}
-					options.put(elmOption);
-					
-					elmData.put("options", options);
+						boolean hasPermission = false;
 
+						if (lstRoles.size() > 0) {
+							long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
+							for (ServiceProcessRole spr : lstRoles) {
+								if (Arrays.asList(roleIds).contains(spr.getRoleId())) {
+									hasPermission = true;
+									break;
+								}
+							}
+						}
+						if (hasPermission) {
+							JSONObject elmOption = JSONFactoryUtil.createJSONObject();
+							
+							elmOption.put("processOptionId", processOption.getProcessOptionId());
+							elmOption.put("optionName", processOption.getOptionName());
+							elmOption.put("instructionNote", processOption.getInstructionNote());
+							
+							try {
+								DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
+								if (dossierTemplate != null) {
+									elmOption.put("templateNo", dossierTemplate.getTemplateNo());
+									elmOption.put("templateName", dossierTemplate.getTemplateName());						
+								}
+							}
+							catch (NoSuchDossierTemplateException e) {
+								
+							}
+							options.put(elmOption);							
+						}
+						
+						elmData.put("options", options);
+	
+					}
+					
+					
+					data.put(elmData);
+				
 				}
 				
-				
-				data.put(elmData);
 			}
 			
+			results.put("total", total);
 			results.put("data", data);
 			
 //			_log.info(results.toJSONString());
