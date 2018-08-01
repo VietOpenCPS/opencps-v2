@@ -793,15 +793,17 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			String fileName = dataHandle.getName();
 			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
 //			//delete folder if exits
-//			File fileOld = new File(pathFolder);
-//			if (fileOld.exists()) {
-//				Files.deleteIfExists(fileOld.toPath());
-//			}
-			_log.info("LamTV_pathFolder: "+pathFolder);
+			File fileOld = new File(pathFolder);
+			if (fileOld.exists()) {
+				boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
+				_log.info("LamTV_Delete DONE: "+flag);
+			}
+//			_log.info("LamTV_pathFolder: "+pathFolder);
 			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
 			File fileList = new File(pathFolder);
-			_log.info("LamTV_fileList: "+fileList.getPath());
+//			_log.info("LamTV_fileList: "+fileList.getPath());
 			ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
+			_log.info("LamTV_IMPORT DONE");
 
 			return Response.status(200).entity(result).build();
 
