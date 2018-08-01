@@ -21,10 +21,10 @@ public class DossierFinderServiceImpl implements DossierFinderService {
 				payload.getCityCode(), payload.getDistrictCode(), payload.getWardCode(), payload.getContactTelNo(),
 				payload.getContactEmail(), payload.getDelegateIdNo(), payload.getDelegateTelNo(),
 				payload.getDossierStatus(), payload.getDossierSubStatus(), payload.getDossierActionId(),
-				payload.getViaPostal(), payload.isOnline(), payload.getOriginality(), payload.getServerNo(),
-				payload.getOriginDossierId(), payload.isOrder(), payload.getSort(), payload.getStart(),
+				payload.getViaPostal(), payload.isOnline(), payload.isOnlineValue(), payload.getOriginality(),
+				payload.getServerNo(), payload.getOriginDossierId(), payload.isReceived(), payload.isReleased(),
+				payload.isBetime(), payload.isOntime(), payload.isUndue(), payload.isOrder(), payload.getSort(), payload.getStart(),
 				payload.getEnd());
-		
 
 		return DossierStatisticConverter.getDossierResponse().convert(dossiers);
 	}

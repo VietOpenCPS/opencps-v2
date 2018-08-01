@@ -66,9 +66,12 @@ public class OpencpsStatisticRestApplication extends Application {
 			@QueryParam("delegateTelNo") String delegateTelNo, @QueryParam("dossierStatus") String dossierStatus,
 			@QueryParam("dossierSubStatus") String dossierSubStatus,
 			@QueryParam("dossierActionId") long dossierActionId, @QueryParam("viaPostal") int viaPostal,
-			@QueryParam("online") boolean online, @QueryParam("originality") int originality,
-			@QueryParam("serverNo") String serverNo, @QueryParam("originDossierId") long originDossierId,
-			@QueryParam("start") int start, @QueryParam("end") int end) {
+			@QueryParam("online") boolean online, @QueryParam("onlineValue") boolean onlineValue,
+			@QueryParam("originality") int originality, @QueryParam("serverNo") String serverNo,
+			@QueryParam("originDossierId") long originDossierId, @QueryParam("received") boolean received,
+			@QueryParam("released") boolean released, @QueryParam("betime") boolean betime,
+			@QueryParam("ontime") boolean ontime, @QueryParam("undue") boolean undue, @QueryParam("start") int start,
+			@QueryParam("end") int end) {
 
 		DossierRequest dossierRequest = new DossierRequest();
 
@@ -77,7 +80,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		if (end == 0)
 			end = QueryUtil.ALL_POS;
-		
+
 		dossierRequest.setRegisterBookCode(registerBookCode);
 		dossierRequest.setProcessNo(processNo);
 		dossierRequest.setServiceCode(serviceCode);
@@ -96,16 +99,20 @@ public class OpencpsStatisticRestApplication extends Application {
 		dossierRequest.setDossierActionId(dossierActionId);
 		dossierRequest.setDossierActionId(dossierActionId);
 		dossierRequest.setViaPostal(viaPostal);
-		dossierRequest.setOnline(online);	
+		dossierRequest.setOnline(online);
 		dossierRequest.setOriginDossierId(originDossierId);
 		dossierRequest.setServerNo(serverNo);
 		dossierRequest.setOriginDossierId(originDossierId);
 		dossierRequest.setStart(start);
 		dossierRequest.setEnd(end);
-		
+		dossierRequest.setReceived(received);
+		dossierRequest.setReleased(released);
+		dossierRequest.setBetime(betime);
+		dossierRequest.setOntime(ontime);
 		dossierRequest.setGroupId(groupId);
 		dossierRequest.setStart(start);
 		dossierRequest.setEnd(end);
+		dossierRequest.setUndue(undue);
 
 		validInputDossiers(start, end);
 
