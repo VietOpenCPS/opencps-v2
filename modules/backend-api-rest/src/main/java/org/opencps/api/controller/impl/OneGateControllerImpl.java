@@ -133,12 +133,15 @@ public class OneGateControllerImpl implements OneGateController {
 							options.put(elmOption);							
 						}
 						
-						elmData.put("options", options);
+						if (options.length() > 0) {
+							elmData.put("options", options);							
+						}
 	
 					}
 					
-					
-					data.put(elmData);
+					if (elmData.has("options")) {
+						data.put(elmData);						
+					}
 				
 				}
 				
