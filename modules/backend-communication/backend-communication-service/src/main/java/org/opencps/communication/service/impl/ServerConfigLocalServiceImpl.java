@@ -196,4 +196,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	}
 
 
+	public ServerConfig getByCode(long groupId, String serverNo) {
+		return serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
+	}
 }

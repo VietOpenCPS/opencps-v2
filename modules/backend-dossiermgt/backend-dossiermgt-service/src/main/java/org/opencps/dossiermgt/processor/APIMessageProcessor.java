@@ -49,7 +49,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 	public APIMessageProcessor(DossierSync ds) {
 		super(ds);
 		
-		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(ds.getServerNo());
+		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(ds.getGroupId(), ds.getServerNo());
 		try {
 			client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 		} catch (JSONException e) {
@@ -147,6 +147,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									if (dfResult == null) {
 										return false;
 									}
+									dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());
+									DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 								} catch (PortalException e) {
 									e.printStackTrace();
 								}
@@ -192,6 +194,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		
 		ExecuteOneAction actionResult = client.postDossierAction(dossier.getReferenceUid(), actionModel);
 		if (actionResult != null) {
+			dossierSync.setAcknowlegement(OpenCPSConverter.convertExecuteOneActionToJSON(actionResult).toJSONString());
 			return true;
 		}
 		else {
@@ -213,6 +216,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			return false;
 		}
 		
+		dossierSync.setAcknowlegement(OpenCPSConverter.convertDossierToJSON(result).toJSONString());
 		String payload = dossierSync.getPayload();
 		try {
 			JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
@@ -262,6 +266,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									if (dfResult == null) {
 										return false;
 									}
+									dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());
 								} catch (PortalException e) {
 									e.printStackTrace();
 								}
@@ -302,6 +307,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		
 		ExecuteOneAction actionResult = client.postDossierAction(String.valueOf(result.getDossierId()), actionModel);
 		if (actionResult != null) {
+			dossierSync.setAcknowlegement(OpenCPSConverter.convertExecuteOneActionToJSON(actionResult).toJSONString());
 			return true;
 		}
 		else {
