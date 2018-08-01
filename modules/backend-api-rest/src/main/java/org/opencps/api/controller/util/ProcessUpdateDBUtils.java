@@ -767,17 +767,23 @@ public class ProcessUpdateDBUtils {
 				eForm = dossierPart.isEForm();
 				sampleData = dossierPart.getSampleData();
 				//
-				String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-						+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
-				String filePathForm = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
-						+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_JSON;
-				File xmlFile = new File(filePathReport);
-				File jsonFile = new File(filePathForm);
-				if (xmlFile.exists() && !xmlFile.isDirectory()) {
-					formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
-				}
-				if (jsonFile.exists() && !jsonFile.isDirectory()) {
-					formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
+				if (eForm) {
+					_log.info("eform: "+eForm);
+					String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
+							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
+					String filePathForm = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
+							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_JSON;
+					File xmlFile = new File(filePathReport);
+					File jsonFile = new File(filePathForm);
+					if (xmlFile.exists() && !xmlFile.isDirectory()) {
+						formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
+					}
+					if (jsonFile.exists() && !jsonFile.isDirectory()) {
+						formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
+					}
+				} else {
+					formScript = StringPool.BLANK;
+					formReport = StringPool.BLANK;
 				}
 				//
 				actionTemp.updateDossierPartDB(userId, groupId, templateNo, partNo, partName, partTip, partType,
