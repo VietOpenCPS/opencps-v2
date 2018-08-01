@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.model.ModelListener;
 @Component(immediate = true, service = ModelListener.class)
 public class DossierListenner extends BaseModelListener<Dossier> {
 
-	public static final String ORIGINAL_TODO = "2,3";
+	private static final String ORIGINAL_TODO = "2,3";
 
 	@Override
 	public void onAfterCreate(Dossier model) throws ModelListenerException {
@@ -134,7 +134,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 			String wardName = model.getWardName();
 			String contactName = model.getContactName();
 			String contactTelNo = model.getContactTelNo();
-			String contactEmail = model.getContactName();
+			String contactEmail = model.getContactEmail();
 			
 			ApplicantLocalServiceUtil.updateApplicant(groupId, userId, companyId, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,

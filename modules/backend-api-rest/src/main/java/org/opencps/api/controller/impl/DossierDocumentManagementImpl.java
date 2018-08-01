@@ -144,6 +144,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
 		long dossierId = GetterUtil.getLong(id);
+		_log.info("START");
 
 		try {
 

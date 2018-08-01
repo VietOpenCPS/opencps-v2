@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.io.FileUtils;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.DeliverableTypeList;
@@ -64,12 +65,30 @@ public class ReadXMLFileUtils {
 		return StringPool.BLANK;
 	}
 
-
+	//LamTV_Process delete list file of folder
+	public static boolean deleteFilesForParentFolder(File fileList) {
+		boolean flag = false;
+		File[] filesParent = fileList.listFiles();
+		if (filesParent != null && filesParent.length > 0) {
+			for (File fileEntry : filesParent) {
+				if (fileEntry.isDirectory()) {
+					File[] files = fileEntry.listFiles();
+					for (File file : files) {
+						flag = file.delete();
+					}
+					flag = fileEntry.delete();
+				} else {
+					flag = fileEntry.delete();
+				}
+			}
+			flag = fileList.delete();
+		}
+		return flag;
+	}
 
 	//LamTV_Process get list file of folder
 	public static void listFilesForParentFolder(File fileList, long groupId, long userId,
 			ServiceContext serviceContext) {
-		try {
 			File[] files = fileList.listFiles();
 			String folderParentPath = fileList.getPath();
 			if (files != null && files.length > 0) {
@@ -87,9 +106,6 @@ public class ReadXMLFileUtils {
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
-		}
 	}
 
 	private static void listFilesForFolder(File fileEntry, String folderPath, String folderParentPath, long groupId,
@@ -124,48 +140,48 @@ public class ReadXMLFileUtils {
 	private static void compareParentFile(String folderPath, String fileName, String xmlString, long groupId,
 			long userId, ServiceContext serviceContext) {
 		try{
-		if (Validator.isNotNull(fileName)) {
-			switch (fileName) {
-			case ConstantUtils.XML_ACTION_CONFIG:
-				ActionConfigList actList = convertXMLToActionConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdateActionConfig(actList, folderPath, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_STEP_CONFIG:
-				StepConfigList stepList = convertXMLToStepConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdateStepConfig(stepList, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_MENU_CONFIG:
-				MenuConfigList menuList = convertXMLToMenuConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdateMenuConfig(menuList, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_DOCUMENT_TYPE:
-				DocumentTypeList docList = convertXMLToDocumentType(xmlString);
-				ProcessUpdateDBUtils.processUpdateDocumentType(docList, folderPath, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_DELIVERABLE_TYPE:
-				DeliverableTypeList deliTypeList = convertXMLToDeliverableType(xmlString);
-				ProcessUpdateDBUtils.processUpdateDeliverableType(deliTypeList, folderPath, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_PAYMENT_CONFIG:
-				PaymentConfigList paymentList = convertXMLToPaymentConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdatePaymentConfig(paymentList, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_SERVER_CONFIG:
-				ServerConfigList serverList = convertXMLToServerConfig(xmlString);
-				ProcessUpdateDBUtils.processUpdateServerConfig(serverList, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_NOTIFICATION_TEMPLATE:
-				NotificationTemplateList notiTempList = convertXMLToNotificationTemplate(xmlString);
-				ProcessUpdateDBUtils.processUpdateNotificationTemplate(notiTempList, groupId, userId, serviceContext);
-				break;
-			case ConstantUtils.XML_USERS:
-				UserManagement userManagement = convertXMLToUser(xmlString);
-				ProcessUpdateDBUtils.processUpdateUser(userManagement, groupId, userId, serviceContext);
-				break;
-			default:
-				break;
+			if (Validator.isNotNull(fileName)) {
+				switch (fileName) {
+				case ConstantUtils.XML_ACTION_CONFIG:
+					ActionConfigList actList = convertXMLToActionConfig(xmlString);
+					ProcessUpdateDBUtils.processUpdateActionConfig(actList, folderPath, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_STEP_CONFIG:
+					StepConfigList stepList = convertXMLToStepConfig(xmlString);
+					ProcessUpdateDBUtils.processUpdateStepConfig(stepList, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_MENU_CONFIG:
+					MenuConfigList menuList = convertXMLToMenuConfig(xmlString);
+					ProcessUpdateDBUtils.processUpdateMenuConfig(menuList, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_DOCUMENT_TYPE:
+					DocumentTypeList docList = convertXMLToDocumentType(xmlString);
+					ProcessUpdateDBUtils.processUpdateDocumentType(docList, folderPath, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_DELIVERABLE_TYPE:
+					DeliverableTypeList deliTypeList = convertXMLToDeliverableType(xmlString);
+					ProcessUpdateDBUtils.processUpdateDeliverableType(deliTypeList, folderPath, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_PAYMENT_CONFIG:
+					PaymentConfigList paymentList = convertXMLToPaymentConfig(xmlString);
+					ProcessUpdateDBUtils.processUpdatePaymentConfig(paymentList, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_SERVER_CONFIG:
+					ServerConfigList serverList = convertXMLToServerConfig(xmlString);
+					ProcessUpdateDBUtils.processUpdateServerConfig(serverList, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_NOTIFICATION_TEMPLATE:
+					NotificationTemplateList notiTempList = convertXMLToNotificationTemplate(xmlString);
+					ProcessUpdateDBUtils.processUpdateNotificationTemplate(notiTempList, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.XML_USERS:
+					UserManagement userManagement = convertXMLToUser(xmlString);
+					ProcessUpdateDBUtils.processUpdateUser(userManagement, groupId, userId, serviceContext);
+					break;
+				default:
+					break;
+				}
 			}
-		}
 		}catch (Exception e) {
 			_log.error(e);
 		}

@@ -263,6 +263,9 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="day"></finder-column>
 		</finder>
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId" />
+		</finder>
 		
 	</entity>
 	
