@@ -5,6 +5,9 @@
 			SELECT opencps_statistic.* 
 			FROM opencps_statistic 
 			WHERE 
+				(opencps_statistic.month = ?) AND
+				(opencps_statistic.year = ?) AND
+				(opencps_statistic.domainCode = ?) AND
 				(opencps_statistic.domainCode = ?) AND
 				(opencps_statistic.govAgencyCode = ?) AND 
 				(opencps_statistic.groupAgencyCode = ?) AND 
@@ -35,12 +38,18 @@
 				(opencps_dossier.dossierSubStatus = ?) AND 
 				(opencps_dossier.dossierActionId = ?) AND
 				(opencps_dossier.viaPostal = ?) AND
-				(opencps_dossier.online = ?) AND
+				(opencps_dossier.online_ = ?) AND
 				(opencps_dossier.serverNo = ?) AND
 				(opencps_dossier.originDossierId = ?) AND
 				(opencps_dossier.originality = ?) AND
 				(opencps_dossier.releaseDate IS NULL OR [$SPECIFY_RELEASE_DATE$]) AND
-				(opencps_dossier.groupId = ?)
+				(opencps_dossier.groupId = ?) AND
+				(opencps_dossier.receiveDate >= ?) AND (opencps_dossier.status != 'denied' OR opencps_dossier.status != 'cancelled') AND
+				(opencps_dossier.releaseDate IS NOT NULL) AND
+				(opencps_dossier.dueDate IS NOT NULL) AND (opencps_dossier.extendDate IS NOT NULL) AND (opencps_dossier.extendDate > opencps_dossier.dueDate) AND
+				(opencps_dossier.dueDate IS NULL) OR (opencps_dossier.releaseDate <= opencps_dossier.dueDate) AND
+				(opencps_dossier.status = 'procesing' OR opencps_dossier.status = 'interoperating') AND (opencps_dossier.dueDate IS NULL OR opencps_dossier.dueDate > ?) AND
+				(0=0)
 		]]>
 	</sql>
 	

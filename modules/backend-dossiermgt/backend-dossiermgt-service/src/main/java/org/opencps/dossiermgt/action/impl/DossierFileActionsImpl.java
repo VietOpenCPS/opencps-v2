@@ -334,4 +334,16 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			throw new SystemException(e);
 		}
 	}
+
+	@Override
+	public DossierFile addDossierFileEForm(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
+			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
+			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext)
+			throws SystemException, PortalException {
+
+		return DossierFileLocalServiceUtil.addDossierFileEForm(groupId, dossierId, referenceUid, dossierTemplateNo,
+				dossierPartNo, fileTemplateNo, displayName, sourceFileName, fileSize, inputStream, fileType, isSync,
+				serviceContext);
+	}
+
 }

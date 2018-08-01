@@ -2425,7 +2425,7 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			_log.info("__Start add file at:" + new Date());
 
-			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
+			DossierFile dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
 					dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
 					dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
 			
@@ -2451,6 +2451,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}

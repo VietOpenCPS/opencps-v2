@@ -9,4 +9,5 @@ public interface DossierStatusContants {
 	String DOSSIER_STATUS_UNRESOLVED = "unresolved";
 	String DOSSIER_STATUS_WAITING  = "waiting";
 	String DOSSIER_STATUS_INTEROPERATING = "interoperating";
+	String DOSSIER_STATUS_PROCESING = "procesing";
 }

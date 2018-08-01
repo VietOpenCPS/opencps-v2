@@ -2,26 +2,31 @@ package org.opencps.statistic.rest.dto;
 
 import java.util.List;
 
-import org.opencps.statistic.model.OpencpsDossier;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "DossierResponse")
 public class DossierResponse {
 	private int total;
+	
+	@XmlElement(name = "data")
+	private List<DossierData> data;
+
 	public int getTotal() {
 		return total;
 	}
 	public void setTotal(int total) {
 		this.total = total;
 	}
-	public List<OpencpsDossier> getData() {
+	
+	public List<DossierData> getData() {
 		return data;
 	}
-	public void setData(List<OpencpsDossier> data) {
+	public void setData(List<DossierData> data) {
 		this.data = data;
 	}
-	private List<OpencpsDossier> data;
+	
 }

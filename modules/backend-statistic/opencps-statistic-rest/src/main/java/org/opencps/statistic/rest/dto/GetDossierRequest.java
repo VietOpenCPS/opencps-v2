@@ -1,6 +1,6 @@
 package org.opencps.statistic.rest.dto;
 
-public class DossierRequest extends CommonRequest {
+public class GetDossierRequest extends CommonRequest {
 
 	public String getRegisterBookCode() {
 		return registerBookCode;
@@ -128,13 +128,13 @@ public class DossierRequest extends CommonRequest {
 	public void setOriginDossierId(long originDossierId) {
 		this.originDossierId = originDossierId;
 	}
+	
 	public boolean isOnlineValue() {
 		return onlineValue;
 	}
 	public void setOnlineValue(boolean onlineValue) {
 		this.onlineValue = onlineValue;
 	}
-	
 	public boolean isReceived() {
 		return received;
 	}

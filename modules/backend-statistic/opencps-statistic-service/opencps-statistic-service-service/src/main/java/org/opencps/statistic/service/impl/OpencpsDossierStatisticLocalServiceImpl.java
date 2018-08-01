@@ -50,9 +50,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	 * access the opencps dossier statistic local service.
 	 */
 
-	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, String domain, String govAgencyCode,
-			String groupAgenvyCode, boolean reporting, int start, int end) throws PortalException, SystemException {
-		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroupAndReporting(groupId, domain, govAgencyCode,
-				groupAgenvyCode, reporting, start, end);
+	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, int month, int year, String domain,
+			String govAgencyCode, String groupAgenvyCode, boolean reporting, int start, int end)
+			throws PortalException, SystemException {
+		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroupAndReporting(groupId, month, year, domain,
+				govAgencyCode, groupAgenvyCode, reporting, start, end);
 	}
 }

@@ -191,8 +191,10 @@ public interface OpencpsDossierLocalService extends BaseLocalService,
 		java.lang.String contactTelNo, java.lang.String contactEmail,
 		java.lang.String delegateIdNo, java.lang.String delegateTelNo,
 		java.lang.String dossierStatus, java.lang.String dossierSubStatus,
-		long dossierActionId, int viaPostal, boolean online, int originality,
-		java.lang.String serverNo, long originDossierId, boolean order,
+		long dossierActionId, int viaPostal, boolean online,
+		boolean onlineValue, int originality, java.lang.String serverNo,
+		long originDossierId, boolean isReceiveDate, boolean isReleaseDate,
+		boolean isBetimes, boolean isOntime, boolean isUndue, boolean order,
 		java.lang.String orderBy, int start, int end)
 		throws PortalException, SystemException;
 
