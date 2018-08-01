@@ -67,7 +67,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 				object.put("menuConfigToDo", "/o/rest/v2_1/menuconfigs/todo");
 				object.put("counterMenuStep", "/o/rest/v2/statistics/dossiers/todo");
 				object.put("getListThuTucHanhChinh", "/o/rest/v2/onegate/serviceconfigs/processes");
-
+				
 				object.put("serviceInfoApi", "/o/rest/v2/serviceinfos");
 				object.put("serviceConfigApi", "/o/rest/v2/onegate/serviceconfigs/processes");
 				object.put("regionApi", "/o/rest/v2/dictcollections");
@@ -76,7 +76,12 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 				object.put("applicantApi", "/o/rest/v2/applicant");
 				object.put("dossierlogsApi", "/o/rest/v2/dossierlogs");
 				object.put("dossierApi", "/o/rest/v2/dossiers");
-
+				object.put("serviceProcessesApi", "/o/rest/v2/serviceprocesses");
+				object.put("serviceConfigApi", "/o/rest/v2/serviceconfigs");
+				object.put("serviceConfigByGovApi", "/o/rest/v2/serviceconfigs/govagencies");
+				object.put("commentApi", "/o/rest/v2/comments");
+				object.put("documentApi", "/o/rest/v2_1/dossiers");
+				
 				object.put("getNextAction", "/o/rest/v2/dossiers");
 				object.put("getServiceConfigs", "/o/rest/v2/serviceconfigs");
 
