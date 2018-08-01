@@ -365,15 +365,15 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		try {
 			List<ProcessStep> stepList = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
 			if (stepList != null && stepList.size() > 0) {
-				_log.info("stepList: "+stepList.size());
+//				_log.info("stepList: "+stepList.size());
 				long stepId = 0;
 				for (ProcessStep step : stepList) {
 					stepId = step.getProcessStepId();
-					_log.info("stepId: "+stepId);
+//					_log.info("stepId: "+stepId);
 					if (stepId > 0) {
 						List<ProcessStepRole> stepRoleList = ProcessStepRoleLocalServiceUtil
 								.findByP_S_ID(stepId);
-						_log.info("stepRoleList: "+stepRoleList.size());
+//						_log.info("stepRoleList: "+stepRoleList.size());
 						if (stepRoleList != null && stepRoleList.size() > 0) {
 							for (ProcessStepRole stepRole : stepRoleList) {
 								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(stepRole);
@@ -384,7 +384,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 						}
 					}
 					if (flag) {
-						_log.info("STARTTT: ");
+//						_log.info("STARTTT: ");
 						ProcessStep processStep = ProcessStepLocalServiceUtil.deleteProcessStep(step);
 						if (processStep == null) {
 							flag = false;
