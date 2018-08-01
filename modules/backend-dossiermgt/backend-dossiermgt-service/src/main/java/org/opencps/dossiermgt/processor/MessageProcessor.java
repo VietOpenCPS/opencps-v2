@@ -16,7 +16,7 @@ public class MessageProcessor {
 	public static IMessageProcessor getProcessor(DossierSync ds) {
 		if (ds == null)
 			return null;
-		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(ds.getServerNo());
+		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(ds.getGroupId(), ds.getServerNo());
 		if (sc == null)
 			return null;
 		

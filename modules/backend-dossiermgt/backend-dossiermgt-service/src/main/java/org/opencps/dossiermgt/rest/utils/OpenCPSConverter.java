@@ -3,6 +3,10 @@ package org.opencps.dossiermgt.rest.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
@@ -12,6 +16,7 @@ import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
+import org.opencps.usermgt.model.Employee;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -414,4 +419,34 @@ public class OpenCPSConverter {
 		return result;
 	}
 	
+	public static JSONObject convertFileInputModelToJSON(DossierFileModel model) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put(DossierFileTerm.SIGN_INFO, model.getSignInfo());
+		obj.put(DossierFileTerm.SIGN_CHECK, model.getSignCheck());
+		obj.put(DossierFileTerm.CREATE_DATE, model.getCreateDate());
+		obj.put(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
+		obj.put(DossierFileTerm.DOSSIER_FILE_ID, model.getDossierFileId());
+		obj.put(DossierFileTerm.DOSSIER_PART_NO, model.getDossierPartNo());
+		obj.put(DossierFileTerm.DOSSIER_PART_TYPE, model.getDossierPartType());
+		obj.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());
+		obj.put(DossierFileTerm.FILE_TEMPLATE_NO, model.getFileTemplateNo());
+		return obj;
+	}
+	
+	public static JSONObject convertExecuteOneActionToJSON(ExecuteOneAction model) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put(DossierActionTerm.ACTION_CODE, model.getActionCode());
+		obj.put(DossierActionTerm.ACTION_NOTE, model.getActionNote());
+		obj.put(DossierActionTerm.ACTION_USER, model.getActionUser());
+		obj.put(DossierActionTerm.PAYLOAD, model.getPayload());
+		return obj;
+	}
+	
+	public static JSONObject convertDossierToJSON(DossierDetailModel model) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put(DossierTerm.ADDRESS, model.getAddress());
+		obj.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
+		obj.put(DossierTerm.DOSSIER_ID, model.getDossierId());
+		return obj;
+	}
 }

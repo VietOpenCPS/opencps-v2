@@ -46,8 +46,6 @@ import org.opencps.api.v21.model.Steps;
 import org.opencps.api.v21.model.Steps.ProcessStep;
 import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
 import org.opencps.api.v21.model.UserManagement;
-import org.opencps.api.v21.model.UserManagement.Roles.JobPos;
-import org.opencps.api.v21.model.UserManagement.Users.Employee;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -76,10 +74,6 @@ import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
-import org.opencps.usermgt.action.EmployeeInterface;
-import org.opencps.usermgt.action.JobposInterface;
-import org.opencps.usermgt.action.impl.EmployeeActions;
-import org.opencps.usermgt.action.impl.JobposActions;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -121,6 +115,7 @@ public class ProcessUpdateDBUtils {
 						Integer infoType = actConfig.getInfoType();
 						Boolean rollbackable = actConfig.isRollbackable();
 						String notificationType = actConfig.getNotificationType();
+						String documentType = actConfig.getDocumentType();
 						String mappingAction = actConfig.getMappingAction();
 						
 						if (Validator.isNotNull(actionCode)) {
@@ -134,7 +129,7 @@ public class ProcessUpdateDBUtils {
 							// Check record exits DB
 							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
 									insideProcess, userNote, syncType, eventType, infoType, rollbackable,
-									notificationType, formConfig, mappingAction);
+									notificationType, documentType, formConfig, mappingAction);
 						}
 					}
 				}

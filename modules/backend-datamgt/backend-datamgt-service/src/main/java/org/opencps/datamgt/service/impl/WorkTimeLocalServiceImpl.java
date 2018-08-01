@@ -16,10 +16,16 @@ package org.opencps.datamgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.WorkTimeTerm;
 import org.opencps.datamgt.exception.NoSuchWorkTimeException;
-import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.base.WorkTimeLocalServiceBaseImpl;
 
@@ -43,16 +49,9 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the work time local service.
@@ -320,6 +319,11 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
+	}
+
+	//Add find by groupId
+	public List<WorkTime> getByGroupId(long groupId) {
+		return workTimePersistence.findByF_GID(groupId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(WorkTimeLocalServiceImpl.class);
