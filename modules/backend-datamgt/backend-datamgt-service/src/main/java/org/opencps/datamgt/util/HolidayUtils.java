@@ -33,7 +33,7 @@ public class HolidayUtils {
 	// get value day off
 	private static String strDayWork = StringPool.BLANK;
 
-	public static long countDueDate(Date startDate, double durationCount, int durationUnit, long groupId) {
+	public static Date getDueDate(Date startDate, double durationCount, int durationUnit, long groupId) {
 
 		//Get info day off and day work
 		getDayByGroupId(groupId);
@@ -47,7 +47,7 @@ public class HolidayUtils {
 //		Calendar cal = Calendar.getInstance();
 //		cal.setTime(startDate);
 //		int day = cal.get(Calendar.DAY_OF_WEEK);
-		return 0;
+		return null;
 	}
 
 	private static long processHoursCount(double durationCount, int durationUnit) {
@@ -98,11 +98,11 @@ public class HolidayUtils {
 		}
 	}
 
-	public static long getEndDate(long groupId, Date startDate, long hoursCount, List<Holiday> holidayList) {
+	public static Date getEndDate(long groupId, Date startDate, long hoursCount, List<Holiday> holidayList) {
 
 		/* format pattern = "3 10:30" */
 		if (startDate == null) {
-			return 0;
+			return null;
 		}
 
 		Calendar baseDateCal = Calendar.getInstance();
@@ -224,7 +224,7 @@ public class HolidayUtils {
 									baseDateCal.add(Calendar.HOUR, hoursOverdue);
 									baseDateCal.add(Calendar.MINUTE, minutes);
 									
-									return baseDateCal.getTimeInMillis();
+									return baseDateCal.getTime();
 								}
 							
 								//TODO:
@@ -267,7 +267,7 @@ public class HolidayUtils {
 									baseDateCal.add(Calendar.HOUR, hoursOverdue);
 									baseDateCal.add(Calendar.MINUTE, minutes);
 									
-									return baseDateCal.getTimeInMillis();
+									return baseDateCal.getTime();
 									
 								} else if (hours == endAfterNoon && minutes == 0) {
 									baseDateCal.add(Calendar.DATE, 1);
@@ -290,7 +290,7 @@ public class HolidayUtils {
 									baseDateCal.add(Calendar.HOUR, hoursOverdue);
 									baseDateCal.add(Calendar.MINUTE, minutes);
 
-									return baseDateCal.getTimeInMillis();
+									return baseDateCal.getTime();
 								}
 							}
 						}
@@ -309,7 +309,7 @@ public class HolidayUtils {
 			_log.error(e);
 		}
 
-		return baseDateCal.getTimeInMillis();
+		return baseDateCal.getTime();
 	}
 
 	//LamTV_ Process checkDay
