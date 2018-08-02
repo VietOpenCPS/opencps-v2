@@ -192,6 +192,7 @@ public class OpenCPSRestClient {
 					
 					DossierFileModel fileModel = new DossierFileModel();
 					fileModel.setReferenceUid(object.getString(DossierFileTerm.REFERENCE_UID));
+					fileModel.setDossierPartType(GetterUtil.getInteger(object.getString(DossierFileTerm.DOSSIER_PART_TYPE)));
 					
 					lstDossierFiles.add(fileModel);
 				}

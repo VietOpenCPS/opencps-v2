@@ -191,6 +191,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setPayload(dossierSync.getPayload());
+		actionModel.setActionNote(dossierSync.getActionNote());
 		
 		ExecuteOneAction actionResult = client.postDossierAction(dossier.getReferenceUid(), actionModel);
 		if (actionResult != null) {
@@ -232,8 +233,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						lstRefs.add(fileObj.getString(DossierFileTerm.REFERENCE_UID));
 					}
 				}
-
 				for (DossierFileModel df : lstFiles) {
+//					_log.info("Dossier file model: " + df + ",");
+//					_log.info("Dossier file model: " + df.getDossierPartType() + ",");
+//					_log.info("Dossier file model: " + df.getReferenceUid() + ",");
+					
 					if (df.getDossierPartType() == DossierPartTerm.DOSSIER_PART_TYPE_INPUT
 							&& !lstRefs.contains(df.getReferenceUid())) {
 						//Remove file from server
@@ -276,7 +280,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								
 							}
 						}
-						else {
+						else if (df != null && df.getEForm()) {
 							DossierFileModel dfModel = new DossierFileModel();
 							dfModel.setReferenceUid(df.getReferenceUid());
 							dfModel.setDossierPartNo(df.getDossierPartNo());
@@ -321,6 +325,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
+		actionModel.setActionNote(dossierSync.getActionNote());
 		actionModel.setPayload(dossierSync.getPayload());
 		
 		ExecuteOneAction actionResult = client.postDossierAction(String.valueOf(result.getDossierId()), actionModel);
