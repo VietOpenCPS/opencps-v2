@@ -410,7 +410,7 @@
 		<column name="originality" type="int" />
 		<column name="originDossierId" type="long" />
 		<column name="sampleCount" type="long" />
-		<column name="durationUnit" type="double" />
+		<column name="durationUnit" type="int" />
 		<column name="durationCount" type="double" />
 		<!-- Order -->
 		

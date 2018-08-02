@@ -278,7 +278,7 @@ public class DossierDetailModel {
     protected String paymentFee;
     protected String paymentNote;
     protected Double durationCount;
-    protected Double durationUnit;
+    protected Integer durationUnit;
     protected Long sampleCount;
 	protected Double processBlock;
     protected int processUnit;
@@ -2018,11 +2018,11 @@ public class DossierDetailModel {
 		this.durationCount = durationCount;
 	}
 
-	public Double getDurationUnit() {
+	public Integer getDurationUnit() {
 		return durationUnit;
 	}
 
-	public void setDurationUnit(Double durationUnit) {
+	public void setDurationUnit(Integer durationUnit) {
 		this.durationUnit = durationUnit;
 	}
 

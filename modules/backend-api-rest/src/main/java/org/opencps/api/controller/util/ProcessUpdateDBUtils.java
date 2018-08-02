@@ -618,6 +618,7 @@ public class ProcessUpdateDBUtils {
 			String folderParentPath, ServiceInfoActions actionService, ServiceContext serviceContext) {
 		// Delete all ServiceFileTemplate with serviceInfoId
 		boolean flagTemplate = actionService.deleteAllFileTemplate(userId, groupId, serviceInfoId, serviceContext);
+		_log.info("flagTemplate: "+flagTemplate);
 		// Add list file serviceFileTemplate
 		List<FileTemplate> fileTempList = fileTemplate.getFileTemplate();
 		if (fileTempList != null && fileTempList.size() > 0 && flagTemplate) {
@@ -628,9 +629,9 @@ public class ProcessUpdateDBUtils {
 				fileTemplateNo = fileTemp.getFileTemplateNo();
 				fileTemplateName = fileTemp.getTemplateName();
 				fileName = fileTemp.getFilename();
-				if (Validator.isNotNull(fileName)) {
+				if (Validator.isNotNull(fileTemplateNo)) {
 					String filePathTemplate = folderParentPath + ConstantUtils.SOURCE_FILES + StringPool.FORWARD_SLASH
-							+ fileName;
+							+ fileTemplateNo;
 					File file = new File(filePathTemplate);
 					FileEntry fileEntry = null;
 					if (file.exists() && !file.isDirectory()) {
