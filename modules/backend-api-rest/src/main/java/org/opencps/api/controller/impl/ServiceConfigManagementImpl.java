@@ -670,27 +670,32 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 							JSONArray arrService = JSONFactoryUtil.createJSONArray();
 
 							for (Document doc : docs) {
+								int level = GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+								if (level > 2) {
+									JSONObject srvElm = JSONFactoryUtil.createJSONObject();
 
-								JSONObject srvElm = JSONFactoryUtil.createJSONObject();
+									srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
+									srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
+									srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
+									srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
 
-								srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
-								srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
-								srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
-								srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
-
-								arrService.put(srvElm);
+									arrService.put(srvElm);									
+								}
 							}
 
-							domElm.put("serviceConfigs", arrService);
+							if (arrService.length() > 0) {
+								domElm.put("serviceConfigs", arrService);								
+								arrDomain.put(domElm);
+							}
 
-							arrDomain.put(domElm);
 						}
 
 					}
 
-					govElm.put("domains", arrDomain);
-					
-					arrGovAgency.put(govElm);
+					if (arrDomain.length() > 0) {
+						govElm.put("domains", arrDomain);						
+						arrGovAgency.put(govElm);						
+					}
 
 				}
 

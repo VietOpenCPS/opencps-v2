@@ -54,6 +54,7 @@ import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -2416,20 +2417,25 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			String referenceUid = UUID.randomUUID().toString();
-
-			DataHandler dataHandler = file.getDataHandler();
-			
+			DossierFile dossierFile = null;
 			DossierFileActions action = new DossierFileActionsImpl();
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossier.getDossierTemplateNo(), partNo);
+			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 			
-			
-			_log.info("__Start add file at:" + new Date());
-
-			DossierFile dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
-					dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
-					dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
-			
-			_log.info("__End add file at:" + new Date());
+			if (dataHandler != null && dataHandler.getInputStream() != null) {								
+				_log.info("__Start add file at:" + new Date());
+	
+				dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
+						dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
+						dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
+				
+				_log.info("__End add file at:" + new Date());
+			}
+			else {
+				dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
+						dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dossierPart.getPartName(), 0,
+						null, StringPool.BLANK, "true", serviceContext);				
+			}
 			
 			if(Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
@@ -2449,6 +2455,45 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info("__End bind to dossierFile" + new Date());
 
 			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getSampleDataByEForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String partNo) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.info("In dossier file create");
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long dossierId = GetterUtil.getLong(id);
+
+			Dossier dossier = null;
+
+			if (dossierId != 0) {
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (Validator.isNull(dossier)) {
+					dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				}
+			} else {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+
+			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossier.getDossierTemplateNo(), partNo);
+
+			String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossier.getDossierId(), serviceContext);
+			
+			return Response.status(200).entity(formData).build();
 
 		} catch (Exception e) {
 			_log.error(e);

@@ -133,7 +133,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			_log.info("__Start add file at:" + new Date());
 			DossierFile dossierFile =  null;
 			
-			if (dataHandler != null) {
+			if (dataHandler != null && dataHandler.getInputStream() != null) {
 				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
 						dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
 						dataHandler.getInputStream(), fileType, isSync, serviceContext);
