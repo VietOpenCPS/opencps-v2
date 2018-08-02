@@ -822,33 +822,36 @@ paths:
           description: Get list dossierSync is not success
 # List API statistics report
   /statistics/report/{code}:
-    get:
+    put:
       tags:
       - StatisticReport
       summary: Get report file
       operationId: statisticReportPrint
       description: Get report file
       consumes:
-      - applicantion/json
-      - applicantion/xml
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
       produces:
-      - application/pdf
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
       parameters:
       - name: code
         in: path
         description: code documenttype
         required: true
         type: string
-      - name: q
-        in: query
-        description: string query language
-        required: false
-        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào
+        schema:
+            type: string
       responses:
         200:
           description: ok
           schema:
-            type: file
+            type: object
         400:
           description: Get report file is not success
 # Define model
