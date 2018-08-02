@@ -306,6 +306,15 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYear(
+		java.lang.String govAgencyCode, int month, int year)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsDossierStatisticLocalService.getByGovMonthYear(govAgencyCode,
+			month, year);
+	}
+
+	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
 		java.lang.String govAgencyCode, int month, int year,
 		java.lang.String domainCode)
