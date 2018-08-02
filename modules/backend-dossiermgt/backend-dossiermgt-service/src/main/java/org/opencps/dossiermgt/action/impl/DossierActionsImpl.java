@@ -1435,8 +1435,12 @@ public class DossierActionsImpl implements DossierActions {
 					result.put("receiving", receivingObj);
 				}
 				//
-				String createDossierFiles = processAction.getCreateDossierFiles();
-				String returnDossierFiles = processAction.getReturnDossierFiles();
+				String createDossierFiles = StringPool.BLANK;
+				String returnDossierFiles = StringPool.BLANK;
+				if (processAction != null) {
+					createDossierFiles = processAction.getCreateDossierFiles();
+					returnDossierFiles = processAction.getReturnDossierFiles();
+				}
 
 				List<String> createFileTempNoList = ListUtil.toList(StringUtil.split(createDossierFiles));
 				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));
