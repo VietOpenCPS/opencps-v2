@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="DossierPublishModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierTemplateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierTemplateNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="submissionNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="submitting" type="xsd:int" minOccurs="0" />
+				<xsd:element name="submitDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="receiveDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="dueDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="releaseDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="finishDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="cancellingDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="correcttingDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="dossierStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierStatusText" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierSubStatus" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierSubStatusText" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="address" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="online" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>

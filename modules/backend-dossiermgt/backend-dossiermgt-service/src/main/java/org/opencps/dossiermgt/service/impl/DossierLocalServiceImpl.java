@@ -217,8 +217,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				}
 //			}
 
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA
-					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
