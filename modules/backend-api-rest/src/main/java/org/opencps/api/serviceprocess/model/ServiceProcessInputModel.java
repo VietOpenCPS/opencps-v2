@@ -73,7 +73,7 @@ public class ServiceProcessInputModel {
 	@FormParam("description")
     protected String description;
 	@FormParam("durationCount")
-	protected  int durationCount;
+	protected Double durationCount;
 	@FormParam("durationUnit")
     protected  int durationUnit;
 	@FormParam("counter")
@@ -183,7 +183,7 @@ public class ServiceProcessInputModel {
      *     {@link int }
      *     
      */
-    public int getDurationCount() {
+    public Double getDurationCount() {
         return durationCount;
     }
 
@@ -195,7 +195,7 @@ public class ServiceProcessInputModel {
      *     {@link int }
      *     
      */
-    public void setDurationCount(Integer value) {
+    public void setDurationCount(Double value) {
         this.durationCount = value;
     }
 
