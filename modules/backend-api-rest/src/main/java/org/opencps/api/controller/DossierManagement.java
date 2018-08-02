@@ -536,7 +536,7 @@ public interface DossierManagement {
 	@GET
 	@Path("/lucene/searchconflict")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Remove a Dossier by its id", response = DossierDetailModel.class)
+	@ApiOperation(value = "Get a Dossier by its id", response = DossierDetailModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was removed", response = DossierDetailModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),

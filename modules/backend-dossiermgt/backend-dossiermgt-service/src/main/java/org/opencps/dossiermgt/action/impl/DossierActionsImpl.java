@@ -2436,6 +2436,7 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				} else {
 					_log.info("PROCESS subUsers == null");
+					_log.info("Dossier action: " + dossierAction);
 					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
 					
