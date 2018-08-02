@@ -1,14 +1,15 @@
 package org.opencps.datamgt.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.service.WorkTimeLocalServiceUtil;
-import org.opencps.datamgt.util.DateTimeUtils.DateTimeBean;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -103,6 +104,7 @@ public class HolidayUtils {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static Date getEndDate(long groupId, Date startDate, long hoursCount, List<Holiday> holidayList) {
 
 		/* format pattern = "3 10:30" */
@@ -152,7 +154,9 @@ public class HolidayUtils {
 			if (countHours > 0) {
 				_log.info("countHours: "+countHours);
 				int hours = baseDateCal.get(Calendar.HOUR_OF_DAY);
+				_log.info("hours: "+hours);
 				int minutes = baseDateCal.get(Calendar.MINUTE);
+				_log.info("minutes: "+minutes);
 				int dayOfWeek = baseDateCal.get(Calendar.DAY_OF_WEEK);
 				if (Validator.isNotNull(dayOfWeek)) {
 					WorkTime workTime = WorkTimeLocalServiceUtil.fetchByF_day(groupId, dayOfWeek);
@@ -189,8 +193,10 @@ public class HolidayUtils {
 									if (hoursOverdue == endMorning && minutes > 0) {
 										hoursOverdue = startAfterNoon;
 										//
-										baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
-										baseDateCal.add(Calendar.MINUTE, minutes);
+										baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
+										baseDateCal.set(Calendar.MINUTE, minutes);
+										
+										return baseDateCal.getTime();
 									} else if (hoursOverdue > endMorning){
 										int countTest2 = hoursOverdue - endMorning;
 										hoursOverdue = startAfterNoon + countTest2;
@@ -231,8 +237,8 @@ public class HolidayUtils {
 										}
 									}
 									//
-									baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
-									baseDateCal.add(Calendar.MINUTE, minutes);
+									baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
+									baseDateCal.set(Calendar.MINUTE, minutes);
 									
 									return baseDateCal.getTime();
 								}
@@ -269,6 +275,7 @@ public class HolidayUtils {
 										hoursOverdue = startMorning + countTest11;
 										_log.info("hoursOverdue: "+hoursOverdue);
 										_log.info("startMorning: "+startMorning);
+										_log.info("endMorning: "+endMorning);
 										if (hoursOverdue > endMorning) {
 											int countTest12 = hoursOverdue - endMorning;
 											//
@@ -276,13 +283,14 @@ public class HolidayUtils {
 											
 										} else if (hoursOverdue == endMorning && minutes > 0) {
 											hoursOverdue = startAfterNoon;
+											_log.info("hoursOverdue: "+hoursOverdue);
 										}
 									}
-									baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
-									baseDateCal.add(Calendar.MINUTE, minutes);
+									_log.info("hoursOverdue: "+hoursOverdue);
+									baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
+									baseDateCal.set(Calendar.MINUTE, minutes);
 									
 									_log.info("baseDateCal.getTime(): "+baseDateCal.getTime());
-									
 									return baseDateCal.getTime();
 									
 								} else if (hours == endAfterNoon && minutes == 0) {
@@ -294,7 +302,6 @@ public class HolidayUtils {
 										baseDateCal.add(Calendar.DATE, 1);
 										dayOfWeek += 1;
 									}
-									
 									//
 									hoursOverdue = startMorning + countHours;
 									if (hoursOverdue > endMorning) {
@@ -303,8 +310,8 @@ public class HolidayUtils {
 										
 									}
 								
-									baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
-									baseDateCal.add(Calendar.MINUTE, minutes);
+									baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
+									baseDateCal.set(Calendar.MINUTE, minutes);
 
 									return baseDateCal.getTime();
 								}
@@ -312,15 +319,8 @@ public class HolidayUtils {
 						}
 					}
 				}
-
-//				baseDateCal.add(Calendar.HOUR, 1);
-//				
-//				baseDateCal = checkDay(baseDateCal, startDate, holidayList, 0, 0);
-//							saturdayIsHoliday, sundayIsHoliday);
 			}
 
-//			baseDateCal.add(Calendar.HOUR, dateTimeBean.getHours());
-//			baseDateCal.add(Calendar.MINUTE, dateTimeBean.getMinutes());
 		} catch (Exception e) {
 			_log.error(e);
 		}
