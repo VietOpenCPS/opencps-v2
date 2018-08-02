@@ -464,7 +464,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
-			String processName, String description, int durationCount, int durationUnit, long counter,
+			String processName, String description, Double durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
 			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
 			ServiceContext context) throws PortalException {

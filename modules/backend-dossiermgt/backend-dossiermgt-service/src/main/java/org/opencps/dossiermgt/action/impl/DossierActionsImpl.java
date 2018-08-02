@@ -2204,23 +2204,23 @@ public class DossierActionsImpl implements DossierActions {
 		return result;
 	}
 	
-	private int getDuration(ServiceProcess serviceProcess) {
-		int duration = 0;
-		
-		int unit = serviceProcess.getDurationUnit();
-		
-		int count = serviceProcess.getDurationCount();
-		
-		if (unit == 0) {
-			duration = count;
-		}
-		
-		if (unit != 0) {
-			duration = count/8;
-		}
-		
-		return duration;
-	}
+//	private int getDuration(ServiceProcess serviceProcess) {
+//		int duration = 0;
+//		
+//		int unit = serviceProcess.getDurationUnit();
+//		
+//		int count = serviceProcess.getDurationCount();
+//		
+//		if (unit == 0) {
+//			duration = count;
+//		}
+//		
+//		if (unit != 0) {
+//			duration = count/8;
+//		}
+//		
+//		return duration;
+//	}
 
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 

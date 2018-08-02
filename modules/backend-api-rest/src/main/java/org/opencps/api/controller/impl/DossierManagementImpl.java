@@ -255,9 +255,9 @@ public class DossierManagementImpl implements DossierManagement {
 			Sort[] sorts = null;
 //			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 //					GetterUtil.getBoolean(query.getOrder())) };
-			if (!GetterUtil.getBoolean(query.getOrder())) {
-				sorts = new Sort[] {
-						SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE, true) };
+			if (Validator.isNull(query.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
 				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
@@ -424,8 +424,16 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 
 			// _log.info("4");
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+			Sort[] sorts = null;
+//			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+//					GetterUtil.getBoolean(query.getOrder())) };
+			if (Validator.isNull(query.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			}
 
 			if (Validator.isNotNull(top)) {
 				switch (top) {
@@ -667,8 +675,16 @@ public class DossierManagementImpl implements DossierManagement {
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+			Sort[] sorts = null;
+//			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+//					GetterUtil.getBoolean(query.getOrder())) };
+			if (Validator.isNull(query.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			}
 
 			if (Validator.isNotNull(top)) {
 				switch (top) {
@@ -2490,7 +2506,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossier.getDossierTemplateNo(), partNo);
-
+//			_log.info("Dossier part sample data: " + dossierPart.getSampleData());
 			String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossier.getDossierId(), serviceContext);
 			
 			return Response.status(200).entity(formData).build();

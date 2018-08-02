@@ -26,6 +26,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
@@ -243,22 +244,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				//Update submit date
 				now = new Date();
 				dossier.setSubmitDate(now);
-				int durationCount = 0;
+				double durationCount = 0;
 				int durationUnit = 0;
 				if (process != null ) {
 					durationCount = process.getDurationCount();
 					durationUnit = process.getDurationUnit();
-					int durationDays = 0;
-
-					if (durationUnit == 0) {
-						durationDays = durationCount;
-					} else {
-						durationDays = Math.round(durationCount / 8);
-					}
-					Date dueDate = null;
-					if (durationDays > 0) {
-						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
-					}
+//					int durationDays = 0;
+//
+//					if (durationUnit == 0) {
+//						durationDays = durationCount;
+//					} else {
+//						durationDays = Math.round(durationCount / 8);
+//					}
+					Date dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
+//					if (durationDays > 0) {
+//						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
+//					}
 
 					dossier.setDueDate(dueDate);
 					dossier.setReceiveDate(now);
@@ -638,32 +639,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
 		
-		int durationCount = 0;
+		double durationCount = 0;
 		int durationUnit = 0;
 		if (serviceProcess != null ) {
 			durationCount = serviceProcess.getDurationCount();
 			durationUnit = serviceProcess.getDurationUnit();
 		}
-		
+
 		_log.info("durationCount: "+durationCount);
 		_log.info("durationUnit: "+durationUnit);
 		
-		int durationDays = 0;
-
-		if (durationUnit == 0) {
-			durationDays = durationCount;
-		} else {
-			durationDays = Math.round(durationCount / 8);
-		}
-
-//		if (durationDays == 0) {
-//			durationDays = DUE_DATE_DEFAULT;
-//		}
-
-		Date dueDate = null;
-		if (durationDays > 0) {
-			dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
-		}
+		Date dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
 
 		// set dueDate
 		dossier.setDueDate(dueDate);
@@ -2398,7 +2384,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 	
 	public void removeDossierByG_NOTO_DS(int originality, String dossierStatus) {
-		dossierPersistence.removeByNOTO_DS(originality, dossierStatus);
+		List<Dossier> lstDossiers = dossierPersistence.findByNOTO_DS(originality, dossierStatus);
+		for (Dossier dossier : lstDossiers) {
+			try {
+				dossierPersistence.remove(dossier.getDossierId());
+			} catch (NoSuchDossierException e) {
+//				e.printStackTrace();
+			}
+		}
+//		dossierPersistence.removeByNOTO_DS(originality, dossierStatus);
 	}
 	
 	public static final String CLASS_NAME = Dossier.class.getName();
