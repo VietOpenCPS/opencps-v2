@@ -1235,9 +1235,9 @@ public class DossierActionsImpl implements DossierActions {
 
 		// TODO filter by Auto
 		String auto = GetterUtil.getString(params.get(DossierActionTerm.AUTO));
-		_log.info("auto =: " + auto);
+//		_log.info("auto =: " + auto);
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
-		_log.info("dossierId =: " + dossierId);
+//		_log.info("dossierId =: " + dossierId);
 
 		DossierAction dossierAction = null;
 		List<ProcessAction> processActionList = null;
@@ -1846,11 +1846,11 @@ public class DossierActionsImpl implements DossierActions {
 			ServiceContext serviceContext) {
 		
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
-		_log.info("dossierId =: " + dossierId);
+//		_log.info("dossierId =: " + dossierId);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			_log.info("dossier: " + dossier);
+//			_log.info("dossier: " + dossier);
 			if (dossier != null) {
 				DossierAction dossierAction = DossierActionLocalServiceUtil
 						.fetchDossierAction(dossier.getDossierActionId());
@@ -1865,7 +1865,7 @@ public class DossierActionsImpl implements DossierActions {
 							boolean extraForm = actConfig.getExtraForm();
 							if (extraForm) {
 								String formConfig = actConfig.getFormConfig();
-								_log.info("formConfig: " + formConfig);
+//								_log.info("formConfig: " + formConfig);
 								String sampleData = Validator.isNotNull(actConfig.getSampleData()) ? actConfig.getSampleData() : "{}";
 
 								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
@@ -1875,14 +1875,14 @@ public class DossierActionsImpl implements DossierActions {
 								
 								JSONArray formConfigArr = formConfigObj.getJSONArray("fields");
 								
-								_log.info("formConfigArr: " + formConfigArr);
+//								_log.info("formConfigArr: " + formConfigArr);
 								if (formConfigArr != null && formConfigArr.length() > 0) {
 									int length = formConfigArr.length();
 									for (int i = 0; i < length; i++) {
 										JSONObject jsonObject = formConfigArr.getJSONObject(i);
 										String value = formDataJson.getString(jsonObject.getString("fieldName"));
 										jsonObject.put("value", value);
-										_log.info("formConfigArr: " + formConfigArr);
+//										_log.info("formConfigArr: " + formConfigArr);
 										result.put(jsonObject);
 									}
 								}
@@ -2257,7 +2257,7 @@ public class DossierActionsImpl implements DossierActions {
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus) && !dossierStatus.equals("new")) {
 			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-			_log.info("applicantNote: "+applicantNote);
+//			_log.info("applicantNote: "+applicantNote);
 
 			dossier.setApplicantNote(applicantNote);
 
@@ -2283,32 +2283,33 @@ public class DossierActionsImpl implements DossierActions {
 		}
 				
 		if (option != null && proAction != null) {
-			_log.info("In do action process action");
+//			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
 			String paymentFee = proAction.getPaymentFee();
+//			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
 			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI) {
 				try {
 					String serveNo = serviceProcess.getServerNo();
 					//TODO:
-					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), 0l, context,
+					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), userId, context,
 							serveNo);
 				} catch (Exception e) {
 					_log.error(e);
-					_log.info("Can not create PaymentFile with pattern \"" + paymentFee + "\"");
+//					_log.info("Can not create PaymentFile with pattern \"" + paymentFee + "\"");
 				}
 			}
 
 			String postStepCode = proAction.getPostStepCode();
 
 			ProcessStep curStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
-			_log.info("Current step: " + curStep);
+//			_log.info("Current step: " + curStep);
 			
 			int actionOverdue = getActionDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			
-			_log.info("LamTV_NEXT_ACTION: " + proAction);
+//			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
 			String actionName = proAction.getActionName();
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {

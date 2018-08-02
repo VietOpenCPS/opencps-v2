@@ -133,7 +133,7 @@ public class DossierPaymentUtils {
 		try {
 
 			// generator epaymentProfile
-			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
+			JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
 			
 			PaymentFile paymentFile = actions.createPaymentFile(
 					userId, 
