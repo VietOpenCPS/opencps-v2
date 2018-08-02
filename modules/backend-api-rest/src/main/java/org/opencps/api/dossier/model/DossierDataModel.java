@@ -254,7 +254,7 @@ public class DossierDataModel {
 	protected String lockState;
 	protected String statusReg;
 	protected Double durationCount;
-	protected Double durationUnit;
+	protected Integer durationUnit;
 	protected Long sampleCount;
 	protected Integer assigned;
 
@@ -1868,11 +1868,11 @@ public class DossierDataModel {
 		this.durationCount = durationCount;
 	}
 
-	public Double getDurationUnit() {
+	public Integer getDurationUnit() {
 		return durationUnit;
 	}
 
-	public void setDurationUnit(Double durationUnit) {
+	public void setDurationUnit(Integer durationUnit) {
 		this.durationUnit = durationUnit;
 	}
 

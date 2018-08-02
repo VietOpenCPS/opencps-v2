@@ -132,7 +132,7 @@ public class DossierUtils {
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;
+			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 				if (subTimeStamp > 0) {
@@ -283,7 +283,7 @@ public class DossierUtils {
 		return ouputs;
 	}
 	
-	private static String calculatorOverDue(double durationUnit, long subTimeStamp) {
+	private static String calculatorOverDue(int durationUnit, long subTimeStamp) {
 		if (subTimeStamp < 0) {
 			subTimeStamp = Math.abs(subTimeStamp);
 		}
@@ -413,7 +413,7 @@ public class DossierUtils {
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;		
+			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 //			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
