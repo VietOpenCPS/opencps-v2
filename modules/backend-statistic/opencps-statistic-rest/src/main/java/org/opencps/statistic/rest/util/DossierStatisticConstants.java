@@ -15,6 +15,8 @@ public interface DossierStatisticConstants {
 	
 	String DOSSIER_ENDPOINT = "opencps.rest.enpoind.dossier";
 	
+	String SERVICE_INFO_ENDPOINT = "opencps.rest.enpoint.service.info";
+	
 	String OPENCPS_AUTHENCATION = "opencps.rest.authentication";
 	
 	String OPENCPS_GROUP_CONFIG = "opencps.group.id.config";

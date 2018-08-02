@@ -289,6 +289,16 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 				   .fetchOpencpsDossierStatisticByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
+		java.lang.String govAgencyCode, int month, int year,
+		java.lang.String domainCode)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .getByGovMonthYearDomain(govAgencyCode, month, year,
+			domainCode);
+	}
+
 	/**
 	* Returns the opencps dossier statistic with the primary key.
 	*
@@ -327,6 +337,33 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		org.opencps.statistic.model.OpencpsDossierStatistic opencpsDossierStatistic) {
 		return getService()
 				   .updateOpencpsDossierStatistic(opencpsDossierStatistic);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic updateStatistic(
+		long dossierStatisticId, long companyId, long groupId, long userId,
+		java.lang.String userName, int month, int year, int totalCount,
+		int deniedCount, int cancelledCount, int processCount,
+		int remainingCount, int receivedCount, int onlineCount,
+		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
+		int doneCount, int releasingCount, int unresolvedCount,
+		int processingCount, int undueCount, int overdueCount,
+		int pausingCount, int ontimePercentage, int overtimeInside,
+		int overtimeOutside, int interoperatingCount, int waitingCount,
+		java.lang.String govAgencyCode, java.lang.String govAgencyName,
+		java.lang.String domainCode, java.lang.String domainName,
+		boolean reporting)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .updateStatistic(dossierStatisticId, companyId, groupId,
+			userId, userName, month, year, totalCount, deniedCount,
+			cancelledCount, processCount, remainingCount, receivedCount,
+			onlineCount, releaseCount, betimesCount, ontimeCount,
+			overtimeCount, doneCount, releasingCount, unresolvedCount,
+			processingCount, undueCount, overdueCount, pausingCount,
+			ontimePercentage, overtimeInside, overtimeOutside,
+			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
+			domainCode, domainName, reporting);
 	}
 
 	public static OpencpsDossierStatisticLocalService getService() {

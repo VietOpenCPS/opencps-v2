@@ -248,6 +248,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				if (process != null ) {
 					durationCount = process.getDurationCount();
 					durationUnit = process.getDurationUnit();
+					_log.info("durationCount: "+durationCount);
+					_log.info("durationUnit: "+durationUnit);
 //					int durationDays = 0;
 //
 //					if (durationUnit == 0) {
@@ -256,6 +258,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //						durationDays = Math.round(durationCount / 8);
 //					}
 					Date dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
+					_log.info("dueDate: "+dueDate);
 //					if (durationDays > 0) {
 //						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
 //					}

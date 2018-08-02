@@ -11,7 +11,6 @@
 		<module>opencps-statistic-rest</module>
         <module>opencps-statistic-service</module>
         <module>opencps-statistic-common</module>
-    <module>sample.rest.maven</module>
   </modules>
     
     <profiles>

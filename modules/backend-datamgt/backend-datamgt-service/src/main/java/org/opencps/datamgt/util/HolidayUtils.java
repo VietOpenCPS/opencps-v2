@@ -37,17 +37,19 @@ public class HolidayUtils {
 
 		//Get info day off and day work
 		getDayByGroupId(groupId);
+		_log.info("strDayOff: "+strDayOff);
 		// Calculator time working
 		long hoursCount = processHoursCount(durationCount, durationUnit);
+		_log.info("hoursCount: "+hoursCount);
 
 		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
-		if (holidayList != null && holidayList.size() > 0) {
-			return getEndDate( groupId,  startDate,  hoursCount, holidayList);
-		}
+
+		Date dueDate = getEndDate( groupId,  startDate,  hoursCount, holidayList);
+		_log.info("dueDate: "+dueDate);
 //		Calendar cal = Calendar.getInstance();
 //		cal.setTime(startDate);
 //		int day = cal.get(Calendar.DAY_OF_WEEK);
-		return null;
+		return dueDate;
 	}
 
 	private static long processHoursCount(double durationCount, int durationUnit) {
@@ -67,13 +69,15 @@ public class HolidayUtils {
 		StringBuilder sbDayWork = null;
 		// Get day off and day work.
 		if (workTimeList != null && workTimeList.size() > 0) {
+			_log.info("workTimeList.size(): "+workTimeList.size());
 			String strHours = StringPool.BLANK;
 			sbDayOff = new StringBuilder();
 			sbDayWork = new StringBuilder();
 			for (WorkTime work : workTimeList) {
 				strHours = work.getHours();
+				_log.info("strHours: "+strHours);
 				if (Validator.isNull(strHours)) {
-					if (Validator.isNull(sbDayOff)) {
+					if (Validator.isNull(sbDayOff.toString())) {
 						sbDayOff.append(work.getDay());
 					} else {
 						sbDayOff.append(StringPool.COMMA);
@@ -81,18 +85,19 @@ public class HolidayUtils {
 					}
 					
 				} else {
-					if (Validator.isNull(sbDayWork)) {
+					if (Validator.isNull(sbDayWork.toString())) {
 						sbDayWork.append(work.getDay());
 					} else {
-						sbDayOff.append(StringPool.COMMA);
+						sbDayWork.append(StringPool.COMMA);
 						sbDayWork.append(work.getDay());
 					}
 				}
 			}
-			if (Validator.isNull(sbDayOff)) {
+			if (Validator.isNotNull(sbDayOff)) {
 				strDayOff = sbDayOff.toString();
+				_log.info("strDayOff: "+strDayOff);
 			}
-			if (Validator.isNull(sbDayWork)) {
+			if (Validator.isNotNull(sbDayWork)) {
 				strDayWork = sbDayWork.toString();
 			}
 		}
@@ -145,7 +150,8 @@ public class HolidayUtils {
 			}
 
 			if (countHours > 0) {
-				int hours = baseDateCal.get(Calendar.HOUR);
+				_log.info("countHours: "+countHours);
+				int hours = baseDateCal.get(Calendar.HOUR_OF_DAY);
 				int minutes = baseDateCal.get(Calendar.MINUTE);
 				int dayOfWeek = baseDateCal.get(Calendar.DAY_OF_WEEK);
 				if (Validator.isNotNull(dayOfWeek)) {
@@ -160,9 +166,9 @@ public class HolidayUtils {
 							for (int i = 0; i < hoursList.length; i ++) {
 								String hour = hoursList[i];
 								if (i == 0) {
-									hourArr1 = StringUtil.split(hour);
+									hourArr1 = hour.split(StringPool.DASH);
 								} else {
-									hourArr2 = StringUtil.split(hour);
+									hourArr2 = hour.split(StringPool.DASH);
 								}
 							}
 							
@@ -173,13 +179,17 @@ public class HolidayUtils {
 								int endMorning = Integer.parseInt(hourArr1[1]);
 								int startAfterNoon = Integer.parseInt(hourArr2[0]);
 								int endAfterNoon = Integer.parseInt(hourArr2[1]);
-								
+								_log.info("startMorning: "+startMorning);
+								_log.info("endMorning: "+endMorning);
+								_log.info("startAfterNoon: "+startAfterNoon);
+								_log.info("endAfterNoon: "+endAfterNoon);
+								_log.info("hours: "+hours);
 								if (startMorning < hours && hours < endMorning) {
 									hoursOverdue = hours + countHours;
 									if (hoursOverdue == endMorning && minutes > 0) {
 										hoursOverdue = startAfterNoon;
 										//
-										baseDateCal.add(Calendar.HOUR, hoursOverdue);
+										baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
 										baseDateCal.add(Calendar.MINUTE, minutes);
 									} else if (hoursOverdue > endMorning){
 										int countTest2 = hoursOverdue - endMorning;
@@ -221,7 +231,7 @@ public class HolidayUtils {
 										}
 									}
 									//
-									baseDateCal.add(Calendar.HOUR, hoursOverdue);
+									baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
 									baseDateCal.add(Calendar.MINUTE, minutes);
 									
 									return baseDateCal.getTime();
@@ -230,6 +240,7 @@ public class HolidayUtils {
 								//TODO:
 								if (startAfterNoon < hours && hours < endAfterNoon) {
 									hoursOverdue = hours + countHours;
+									_log.info("hoursOverdue: "+hoursOverdue);
 									if (hoursOverdue == endAfterNoon && minutes > 0) {
 										baseDateCal.add(Calendar.DATE, 1);
 										//
@@ -244,6 +255,7 @@ public class HolidayUtils {
 										//
 									} else if (hoursOverdue > endAfterNoon){
 										int countTest11 = hoursOverdue - endAfterNoon;
+										_log.info("countTest11: "+countTest11);
 										//
 										baseDateCal.add(Calendar.DATE, 1);
 										//
@@ -255,6 +267,8 @@ public class HolidayUtils {
 										}
 										//
 										hoursOverdue = startMorning + countTest11;
+										_log.info("hoursOverdue: "+hoursOverdue);
+										_log.info("startMorning: "+startMorning);
 										if (hoursOverdue > endMorning) {
 											int countTest12 = hoursOverdue - endMorning;
 											//
@@ -264,8 +278,10 @@ public class HolidayUtils {
 											hoursOverdue = startAfterNoon;
 										}
 									}
-									baseDateCal.add(Calendar.HOUR, hoursOverdue);
+									baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
 									baseDateCal.add(Calendar.MINUTE, minutes);
+									
+									_log.info("baseDateCal.getTime(): "+baseDateCal.getTime());
 									
 									return baseDateCal.getTime();
 									
@@ -287,7 +303,7 @@ public class HolidayUtils {
 										
 									}
 								
-									baseDateCal.add(Calendar.HOUR, hoursOverdue);
+									baseDateCal.add(Calendar.HOUR_OF_DAY, hoursOverdue);
 									baseDateCal.add(Calendar.MINUTE, minutes);
 
 									return baseDateCal.getTime();
