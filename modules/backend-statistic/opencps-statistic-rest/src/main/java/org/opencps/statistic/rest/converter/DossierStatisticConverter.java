@@ -28,7 +28,7 @@ public class DossierStatisticConverter {
 	public static Converter<List<OpencpsDossier>, DossierResponse> getDossierResponse() {
 		return (source) -> {
 			
-			LOG.info("SOURCE_******" + source.size());
+			//LOG.info("SOURCE_******" + source.size());
 
 			DossierResponse dossierResponse = new DossierResponse();
 			dossierResponse.setTotal(source.size());
@@ -46,7 +46,9 @@ public class DossierStatisticConverter {
 				data.setExtendDate(convertDate(dossier.getExtendDate()));
 				data.setReceiveDate(convertDate(dossier.getReceiveDate()));
 				data.setGovAgencyCode(dossier.getGovAgencyCode());
-
+				data.setServiceCode(dossier.getServiceCode());
+				data.setGroupId(dossier.getGroupId());
+				
 				dossierData.add(data);
 			}
 
@@ -67,7 +69,7 @@ public class DossierStatisticConverter {
 	public static Converter<List<OpencpsDossierStatistic>, DossierStatisticResponse> getDossierStatisticResponse() {
 		return (source) -> {
 
-			LOG.info("source_" + source.size());
+			//LOG.info("source_" + source.size());
 
 			DossierStatisticResponse dossierStatisticResponse = new DossierStatisticResponse();
 
