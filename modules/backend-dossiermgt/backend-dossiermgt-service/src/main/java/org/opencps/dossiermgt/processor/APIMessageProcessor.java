@@ -279,7 +279,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								
 							}
 						}
-						else {
+						else if (df != null && df.getEForm()) {
 							DossierFileModel dfModel = new DossierFileModel();
 							dfModel.setReferenceUid(df.getReferenceUid());
 							dfModel.setDossierPartNo(df.getDossierPartNo());
