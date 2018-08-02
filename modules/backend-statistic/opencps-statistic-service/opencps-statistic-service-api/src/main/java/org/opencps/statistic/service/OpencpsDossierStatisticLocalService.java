@@ -262,6 +262,11 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public OpencpsDossierStatistic fetchOpencpsDossierStatisticByUuidAndGroupId(
 		java.lang.String uuid, long groupId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getByGovMonthYearDomain(
+		java.lang.String govAgencyCode, int month, int year,
+		java.lang.String domainCode) throws PortalException, SystemException;
+
 	/**
 	* Returns the opencps dossier statistic with the primary key.
 	*
@@ -294,4 +299,18 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public OpencpsDossierStatistic updateOpencpsDossierStatistic(
 		OpencpsDossierStatistic opencpsDossierStatistic);
+
+	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId,
+		long companyId, long groupId, long userId, java.lang.String userName,
+		int month, int year, int totalCount, int deniedCount,
+		int cancelledCount, int processCount, int remainingCount,
+		int receivedCount, int onlineCount, int releaseCount, int betimesCount,
+		int ontimeCount, int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, java.lang.String govAgencyCode,
+		java.lang.String govAgencyName, java.lang.String domainCode,
+		java.lang.String domainName, boolean reporting)
+		throws PortalException, SystemException;
 }
