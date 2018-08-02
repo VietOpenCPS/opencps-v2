@@ -1,6 +1,6 @@
-package frontend.web.reports.portlet;
+package frontend.web.chartjs.portlet;
 
-import frontend.web.reports.constants.FrontendWebReportsPortletKeys;
+import frontend.web.chartjs.constants.FrontendWebChartjsPortletKeys;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -28,17 +28,17 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.display-category=category.sample",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.instanceable=false",
-		"javax.portlet.display-name=frontend-web-reports Portlet",
+		"javax.portlet.display-name=frontend-web-chartjs Portlet",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/templates/view.ftl",
-		"javax.portlet.name=" + FrontendWebReportsPortletKeys.FrontendWebReports,
+		"javax.portlet.name=" + FrontendWebChartjsPortletKeys.FrontendWebChartjs,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
 	},
 	service = Portlet.class
 )
-public class FrontendWebReportsPortlet extends FreeMarkerPortlet {
-
+public class FrontendWebChartjsPortlet extends FreeMarkerPortlet {
+	
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 			throws PortletException {
 		try {
