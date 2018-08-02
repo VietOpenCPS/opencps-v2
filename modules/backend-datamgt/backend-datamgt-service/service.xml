@@ -297,6 +297,9 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="holidayDate"></finder-column>
 		</finder>
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId" />
+		</finder>
 	</entity>
 	
 	<entity name="Comment" uuid="true" local-service="true"
