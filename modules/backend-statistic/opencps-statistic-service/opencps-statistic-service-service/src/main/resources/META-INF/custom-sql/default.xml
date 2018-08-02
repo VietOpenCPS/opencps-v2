@@ -49,7 +49,7 @@
 				(opencps_dossier.dueDate IS NOT NULL) AND (opencps_dossier.extendDate IS NOT NULL) AND (opencps_dossier.extendDate > opencps_dossier.dueDate) AND
 				(opencps_dossier.dueDate IS NULL) OR (opencps_dossier.releaseDate <= opencps_dossier.dueDate) AND
 				(opencps_dossier.dossierStatus = 'procesing' OR opencps_dossier.dossierStatus = 'interoperating') AND (opencps_dossier.dueDate IS NULL OR opencps_dossier.dueDate > ?) AND
-				(0=0)
+				(opencps_dossier.originDossierId = 0 AND opencps_dossier.dossierActionId != 0)
 		]]>
 	</sql>
 	

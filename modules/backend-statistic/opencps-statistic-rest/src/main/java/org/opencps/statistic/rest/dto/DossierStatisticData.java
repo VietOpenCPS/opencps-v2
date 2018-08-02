@@ -233,6 +233,22 @@ public class DossierStatisticData {
 		this.reporting = reporting;
 	}
 
+	public long getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(long companyId) {
+		this.companyId = companyId;
+	}
+
+	public long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(long groupId) {
+		this.groupId = groupId;
+	}
+
 	private int month = 0;
 	private int year = 0;
 	private int totalCount = 0;
@@ -262,4 +278,7 @@ public class DossierStatisticData {
 	private String domainCode;
 	private String domainName;
 	private boolean reporting;
+	
+	private long companyId;
+	private long groupId;
 }

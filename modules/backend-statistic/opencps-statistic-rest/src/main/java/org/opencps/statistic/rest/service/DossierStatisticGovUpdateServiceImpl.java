@@ -2,6 +2,7 @@ package org.opencps.statistic.rest.service;
 
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,7 +19,8 @@ public class DossierStatisticGovUpdateServiceImpl
 
 		/* Check if exsist */
 		OpencpsDossierStatistic opencpsDossierStatistic = OpencpsDossierStatisticLocalServiceUtil
-				.getByGovMonthYear(payload.getGovAgencyCode(), payload.getMonth(), payload.getYear());
+				.getByGovMonthYearDomain(payload.getGroupId(), payload.getGovAgencyCode(), payload.getMonth(),
+						payload.getYear(), payload.getDomainCode());
 
 		long dossierStatisticId = 0;
 
@@ -30,11 +32,13 @@ public class DossierStatisticGovUpdateServiceImpl
 
 		int pausingCount = 0;
 
-		return OpencpsDossierStatisticLocalServiceUtil.updateStatistic(dossierStatisticId, 0l, 0l, 0l, StringPool.BLANK,
-				payload.getMonth(), payload.getYear(), payload.getTotalCount(), payload.getDeniedCount(),
-				payload.getCancelledCount(), payload.getProcessCount(), payload.getRemainingCount(),
-				payload.getReceivedCount(), payload.getOnlineCount(), payload.getReleaseCount(),
-				payload.getBetimesCount(), payload.getOntimeCount(), payload.getOvertimeCount(), payload.getDoneCount(),
+		return OpencpsDossierStatisticLocalServiceUtil.updateStatistic(dossierStatisticId, payload.getCompanyId(),
+				payload.getGroupId(), DossierStatisticConstants.STATISTIC_USER_ID,
+				DossierStatisticConstants.STATISTIC_USER_NAME, payload.getMonth(), payload.getYear(),
+				payload.getTotalCount(), payload.getDeniedCount(), payload.getCancelledCount(),
+				payload.getProcessCount(), payload.getRemainingCount(), payload.getReceivedCount(),
+				payload.getOnlineCount(), payload.getReleaseCount(), payload.getBetimesCount(),
+				payload.getOntimeCount(), payload.getOvertimeCount(), payload.getDoneCount(),
 				payload.getReleasingCount(), payload.getUnresolvedCount(), payload.getProcessingCount(),
 				payload.getUndueCount(), payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(),
 				payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),

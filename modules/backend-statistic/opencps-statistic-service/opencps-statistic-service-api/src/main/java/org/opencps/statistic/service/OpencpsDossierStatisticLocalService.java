@@ -263,12 +263,12 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		java.lang.String uuid, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OpencpsDossierStatistic getByGovMonthYear(
+	public OpencpsDossierStatistic getByGovMonthYear(long groupId,
 		java.lang.String govAgencyCode, int month, int year)
 		throws PortalException, SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OpencpsDossierStatistic getByGovMonthYearDomain(
+	public OpencpsDossierStatistic getByGovMonthYearDomain(long groupId,
 		java.lang.String govAgencyCode, int month, int year,
 		java.lang.String domainCode) throws PortalException, SystemException;
 
