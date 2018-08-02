@@ -91,8 +91,8 @@ public interface ServiceProcessActions {
 
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
-			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
-			throws PortalException;
+			String instructionNote, String briefNote, String roleAsStep, Integer checkInput,
+			ServiceContext serviceContext) throws PortalException;
 
 	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleCode,
 			String roleName, boolean moderator, String condition, ServiceContext serviceContext);
