@@ -343,6 +343,12 @@ public class OpenCPSConverter {
 		return params;
 	}
 	
+	public static HashMap<String, String> convertDossierFileEFormHttpParams(DossierFileModel model) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
+		return params;
+	}
+
 	public static Map<String, Object> convertPaymentFileInputHttpParams(PaymentFileInputModel model) {
 	    Map<String, Object> params = new HashMap<>();
 	    

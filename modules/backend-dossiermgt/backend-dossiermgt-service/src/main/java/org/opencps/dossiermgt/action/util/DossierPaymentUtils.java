@@ -126,69 +126,69 @@ public class DossierPaymentUtils {
 			// generator epaymentProfile
 			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
 
-			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
-					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
-					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
-					serviceContext);
-			
-			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
-			
-			Calendar cal = Calendar.getInstance();
-			
-			cal.setTime(new Date());
-			
-			int prefix = cal.get(Calendar.YEAR);
-			
-			String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
-			
-			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
-			
-			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-			
-			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
-
-			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
-
-				try {
-					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), pattern, dossierId);
-
-					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
-
-					// fill good_code to keypayGoodCode
-					String pattern1 = "good_code=";
-					String pattern2 = "&";
-
-					String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
-
-					Pattern p = Pattern.compile(regexString);
-					Matcher m = p.matcher(generatorPayURL);
-
-					if (m.find()) {
-						String goodCode = m.group(1);
-
-						epaymentProfileJSON.put("keypayGoodCode", goodCode);
-					} else {
-						epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
-					}
-
-					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
-
-					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
-							serviceContext);
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-
-			// Create paymentfile sync
-			if (Validator.isNotNull(serverNo)) {
-//				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-//						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
-			}
+//			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
+//					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
+//					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
+//					serviceContext);
+//			
+//			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
+//			
+//			Calendar cal = Calendar.getInstance();
+//			
+//			cal.setTime(new Date());
+//			
+//			int prefix = cal.get(Calendar.YEAR);
+//			
+//			String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+//			
+//			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
+//			
+//			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+//			
+//			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+//
+//			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+//
+//				try {
+//					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+//							paymentFile.getPaymentFileId(), pattern, dossierId);
+//
+//					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+//
+//					// fill good_code to keypayGoodCode
+//					String pattern1 = "good_code=";
+//					String pattern2 = "&";
+//
+//					String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+//
+//					Pattern p = Pattern.compile(regexString);
+//					Matcher m = p.matcher(generatorPayURL);
+//
+//					if (m.find()) {
+//						String goodCode = m.group(1);
+//
+//						epaymentProfileJSON.put("keypayGoodCode", goodCode);
+//					} else {
+//						epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+//					}
+//
+//					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+//
+//					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+//							serviceContext);
+//
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//
+//			}
+//
+//			// Create paymentfile sync
+//			if (Validator.isNotNull(serverNo)) {
+////				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+////						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
+//			}
 
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
