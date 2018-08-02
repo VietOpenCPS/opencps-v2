@@ -808,6 +808,14 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
 				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 
+			Dossier checkDossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+			
+			if (checkDossier != null) {
+				DossierDetailModel result = DossierUtils.mappingForGetDetail(checkDossier, user.getUserId());
+
+				return Response.status(200).entity(result).build();
+			}
+			
 			String serviceName = getServiceName(input.getServiceCode(), groupId);
 
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());

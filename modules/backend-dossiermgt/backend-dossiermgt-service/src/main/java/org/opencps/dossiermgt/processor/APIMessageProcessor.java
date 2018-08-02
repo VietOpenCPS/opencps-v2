@@ -191,6 +191,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setPayload(dossierSync.getPayload());
+		actionModel.setActionNote(dossierSync.getActionNote());
 		
 		ExecuteOneAction actionResult = client.postDossierAction(dossier.getReferenceUid(), actionModel);
 		if (actionResult != null) {
@@ -324,6 +325,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
+		actionModel.setActionNote(dossierSync.getActionNote());
 		actionModel.setPayload(dossierSync.getPayload());
 		
 		ExecuteOneAction actionResult = client.postDossierAction(String.valueOf(result.getDossierId()), actionModel);
