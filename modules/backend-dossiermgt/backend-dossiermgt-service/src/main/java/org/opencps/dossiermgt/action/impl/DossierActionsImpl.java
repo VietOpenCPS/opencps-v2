@@ -2288,11 +2288,11 @@ public class DossierActionsImpl implements DossierActions {
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
 			String paymentFee = proAction.getPaymentFee();
-			if (Validator.isNotNull(paymentFee)) {
+			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI) {
 				try {
 					String serveNo = serviceProcess.getServerNo();
 					//TODO:
-					DossierPaymentUtils.processPaymentFile(paymentFee, groupId, dossier.getDossierId(), 0l, context,
+					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), 0l, context,
 							serveNo);
 				} catch (Exception e) {
 					_log.error(e);
@@ -2925,7 +2925,7 @@ public class DossierActionsImpl implements DossierActions {
 		// Add paymentFile
 		if (processAction != null && Validator.isNotNull(processAction.getPaymentFee())) {
 			try {
-				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId,
+				DossierPaymentUtils.processPaymentFile(processAction, processAction.getPaymentFee(), groupId, dossierId, userId,
 						context, serviceProcess.getServerNo());
 			} catch (Exception e) {
 

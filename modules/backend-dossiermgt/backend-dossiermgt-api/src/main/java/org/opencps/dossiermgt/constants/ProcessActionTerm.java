@@ -40,11 +40,12 @@ public class ProcessActionTerm {
 	public static final int ASSIGNED_TH_PH = 2;
 	public static final int ASSIGNED_TH_PH_TD = 3;
 	
-	public static final int REQUEST_PAYMENT_1 = 1;
-	public static final int REQUEST_PAYMENT_2 = 2;
-	public static final int REQUEST_PAYMENT_3 = 3;
-	public static final int REQUEST_PAYMENT_4 = 4;
-	public static final int REQUEST_PAYMENT_5 = 5;
+	public static final int REQUEST_PAYMENT_KHONG_THAY_DOI = 0;
+	public static final int REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG = 1;
+	public static final int REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI = 2;
+	public static final int REQUEST_PAYMENT_BAO_DA_NOP_PHI = 3;
+	public static final int REQUEST_PAYMENT_YEU_CAU_NOP_LAI_PHI_TRUC_TUYEN = 4;
+	public static final int REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI = 5;
 	
 	public static final String ACTION_CREATE_HSLT = "3200";
 }

@@ -166,8 +166,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		try {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-			if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
-					|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment())) {
+			if (processAction != null && (processAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI)) {
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -321,8 +320,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
-				|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment())) {
+		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI != processAction.getRequestPayment())) {
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 			pfiModel.setApplicantName(dossier.getApplicantName());
