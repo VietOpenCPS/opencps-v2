@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUtils {
 
@@ -215,6 +216,7 @@ public class DossierActionUtils {
 			JSONArray createFiles = jsonData.getJSONArray("createFiles");
 			List<DossierFile> returnFiles = (List<DossierFile>) jsonData.get("returnFiles");
 
+			DossierActionPaymentModel payment = new DossierActionPaymentModel();
 			if (processAction != null) {
 				model.setProcessActionId(processAction.getProcessActionId());
 				model.setActionCode(processAction.getActionCode());
@@ -237,19 +239,24 @@ public class DossierActionUtils {
 					model.setUserNote(0);
 					model.setExtraForm(false);
 				}
-			}
-
-			JSONObject paymentFee = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
-			DossierActionPaymentModel payment = null;
-			if (paymentFee != null) {
-				payment = new DossierActionPaymentModel();
 				//
-				payment.setRequestPayment(paymentFee.getInt("requestPayment"));
-				payment.setAdvanceAmount(paymentFee.getLong("advanceAmount"));
-				payment.setFeeAmount(paymentFee.getLong("feeAmount"));
-				payment.setServiceAmount(paymentFee.getLong("serviceAmount"));
-				payment.setShipAmount(paymentFee.getLong("shipAmount"));
-				payment.setEditable(paymentFee.getBoolean("editable"));
+				String strPaymentFee = processAction.getPaymentFee();
+				if (Validator.isNotNull(strPaymentFee)) {
+					JSONObject paymentFee = JSONFactoryUtil.createJSONObject(strPaymentFee);
+					if (paymentFee != null) {
+						//
+						payment.setRequestPayment(paymentFee.getInt("requestPayment"));
+						payment.setAdvanceAmount(paymentFee.getLong("advanceAmount"));
+						payment.setFeeAmount(paymentFee.getLong("feeAmount"));
+						payment.setServiceAmount(paymentFee.getLong("serviceAmount"));
+						payment.setShipAmount(paymentFee.getLong("shipAmount"));
+						payment.setEditable(paymentFee.getBoolean("editable"));
+						
+						model.setPayment(payment);
+					}
+				}
+			} else {
+				model.setPayment(payment);
 			}
 
 			JSONObject receivingObj = jsonData.getJSONObject("receiving");
