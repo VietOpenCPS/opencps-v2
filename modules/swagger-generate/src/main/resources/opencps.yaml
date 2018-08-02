@@ -820,6 +820,37 @@ paths:
             $ref: '#/definitions/DossierStatisticResultModel'
         400:
           description: Get list dossierSync is not success
+# List API statistics report
+  /statistics/report/{code}:
+    get:
+      tags:
+      - StatisticReport
+      summary: Get report file
+      operationId: statisticReportPrint
+      description: Get report file
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - application/pdf
+      parameters:
+      - name: code
+        in: path
+        description: code documenttype
+        required: true
+        type: string
+      - name: q
+        in: query
+        description: string query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: ok
+          schema:
+            type: file
+        400:
+          description: Get report file is not success
 # Define model
 definitions:
   ActionConfigItemResult:
