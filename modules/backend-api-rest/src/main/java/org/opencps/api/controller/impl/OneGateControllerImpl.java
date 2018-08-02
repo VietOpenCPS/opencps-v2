@@ -103,7 +103,7 @@ public class OneGateControllerImpl implements OneGateController {
 						List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
 						
 						boolean hasPermission = false;
-
+						_log.info("List role: " + lstRoles);
 						if (lstRoles.size() > 0) {
 							long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
 							for (ServiceProcessRole spr : lstRoles) {
@@ -113,7 +113,7 @@ public class OneGateControllerImpl implements OneGateController {
 								}
 							}
 						}
-						if (hasPermission) {
+//						if (hasPermission) {
 							JSONObject elmOption = JSONFactoryUtil.createJSONObject();
 							
 							elmOption.put("processOptionId", processOption.getProcessOptionId());
@@ -131,7 +131,7 @@ public class OneGateControllerImpl implements OneGateController {
 								
 							}
 							options.put(elmOption);							
-						}
+//						}
 						
 						if (options.length() > 0) {
 							elmData.put("options", options);							
