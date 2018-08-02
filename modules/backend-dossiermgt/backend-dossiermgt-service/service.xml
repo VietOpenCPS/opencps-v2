@@ -789,7 +789,7 @@
 		<column name="processNo" type="String" />
 		<column name="processName" type="String" />
 		<column name="description" type="String" />
-		<column name="durationCount" type="int" />
+		<column name="durationCount" type="double" />
 		<column name="durationUnit" type="int" />
 		<column name="counter" type="long" />
 		<column name="generateDossierNo" type="boolean" />

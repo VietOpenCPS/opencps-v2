@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 public class DossierActionResult21Model {
 
     protected String processNo;
-    protected Integer durationCount;
+    protected Double durationCount;
     protected Integer durationUnit;
     protected List<ProcessSequenceModel> data;
 
@@ -83,7 +83,7 @@ public class DossierActionResult21Model {
      *     {@link Integer }
      *     
      */
-    public Integer getDurationCount() {
+    public Double getDurationCount() {
         return durationCount;
     }
 
@@ -95,7 +95,7 @@ public class DossierActionResult21Model {
      *     {@link Integer }
      *     
      */
-    public void setDurationCount(Integer value) {
+    public void setDurationCount(Double value) {
         this.durationCount = value;
     }
 

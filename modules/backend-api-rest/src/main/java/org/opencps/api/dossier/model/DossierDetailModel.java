@@ -280,6 +280,8 @@ public class DossierDetailModel {
     protected Double durationCount;
     protected Double durationUnit;
     protected Long sampleCount;
+	protected Double processBlock;
+    protected int processUnit;
 
     public String getPaymentFee() {
 		return paymentFee;
@@ -297,11 +299,11 @@ public class DossierDetailModel {
 		this.paymentNote = paymentNote;
 	}
 
-	public int getProcessBlock() {
+	public Double getProcessBlock() {
 		return processBlock;
 	}
 
-	public void setProcessBlock(int processBlock) {
+	public void setProcessBlock(Double processBlock) {
 		this.processBlock = processBlock;
 	}
 
@@ -312,9 +314,6 @@ public class DossierDetailModel {
 	public void setProcessUnit(int processUnit) {
 		this.processUnit = processUnit;
 	}
-
-	protected int processBlock;
-    protected int processUnit;
 
 	public String getDossierTemplateName() {
 		return dossierTemplateName;

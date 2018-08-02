@@ -826,6 +826,7 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="checkInput" type="xsd:int" />
 							<xsd:element name="roles" >
 								<xsd:complexType>
 									<xsd:sequence >
