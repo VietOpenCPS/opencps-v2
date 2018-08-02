@@ -1268,7 +1268,7 @@ public class DossierActionsImpl implements DossierActions {
 					//GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-						if (dossier.getUserId() == userId && !pending && dossierAction != null && dossierAction.getUserId() == userId) {
+						if (dossier.getUserId() == userId && !pending) {
 							enable = 1;
 						}
 					}

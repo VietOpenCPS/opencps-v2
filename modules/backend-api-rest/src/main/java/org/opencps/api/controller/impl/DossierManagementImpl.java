@@ -108,6 +108,9 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -2499,6 +2502,38 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.error(e);
 			return processException(e);
 		}
+	}
+
+	@Override
+	public Response removeDossierLucene(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+		return null;
+	}
+
+	@Override
+	public Response removeConflictDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		return null;
+	}
+
+	@Override
+	public Response getConflictDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
+		DossierActions actions = new DossierActionsImpl();
+		
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		DossierResultsModel results = new DossierResultsModel();
+
+		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
+					-1, -1, serviceContext);
+		
+		return Response.status(200).entity(jsonData).build();
 	}
 
 }
