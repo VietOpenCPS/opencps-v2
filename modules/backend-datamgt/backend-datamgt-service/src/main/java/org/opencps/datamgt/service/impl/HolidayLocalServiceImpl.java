@@ -16,6 +16,7 @@ package org.opencps.datamgt.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
@@ -355,6 +356,10 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
+	}
+
+	public List<Holiday> getHolidayByGroupId(long groupId) {
+		return holidayPersistence.findByF_GID(groupId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(HolidayLocalServiceImpl.class);
