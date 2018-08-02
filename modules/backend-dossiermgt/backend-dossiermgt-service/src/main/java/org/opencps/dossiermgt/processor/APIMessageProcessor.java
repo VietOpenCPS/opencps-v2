@@ -232,8 +232,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						lstRefs.add(fileObj.getString(DossierFileTerm.REFERENCE_UID));
 					}
 				}
-
 				for (DossierFileModel df : lstFiles) {
+//					_log.info("Dossier file model: " + df + ",");
+//					_log.info("Dossier file model: " + df.getDossierPartType() + ",");
+//					_log.info("Dossier file model: " + df.getReferenceUid() + ",");
+					
 					if (df.getDossierPartType() == DossierPartTerm.DOSSIER_PART_TYPE_INPUT
 							&& !lstRefs.contains(df.getReferenceUid())) {
 						//Remove file from server
