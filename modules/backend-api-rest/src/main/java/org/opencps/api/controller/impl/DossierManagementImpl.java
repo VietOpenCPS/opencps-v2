@@ -2390,6 +2390,7 @@ public class DossierManagementImpl implements DossierManagement {
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
 		result.put("total", lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
+		ProcessSequence prevSequence = null;
 		
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
@@ -2399,9 +2400,13 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("durationCount", ps.getDurationCount());
 
 			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
-			DossierAction firstAction = lstDossierActions.size() > 0 ? lstDossierActions.get(0) : null;
-			if (firstAction != null) {
-				sequenceObj.put("startDate", firstAction.getCreateDate().getTime());
+			if (prevSequence != null) {
+				List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), prevSequence.getSequenceNo());
+				
+				DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
+				if (lastAction != null) {
+					sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
+				}				
 			}
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
 			List<Long> lstUsers = new ArrayList<>();
@@ -2454,6 +2459,8 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("actions", actionsArr);
 			
 			sequenceArr.put(sequenceObj);
+			
+			prevSequence = ps;
 		}
 		
 		result.put("data", sequenceArr);
