@@ -85,7 +85,8 @@ public class DossierNumberGenerator {
 			Date now = new Date();
 
 			String day = String.valueOf(DateTimeUtils.getDayFromDate(now));
-			String month = String.valueOf(DateTimeUtils.getMonthFromDate(now));
+			//LamTV_Process month = monthCalendar + 1
+			String month = String.valueOf(DateTimeUtils.getMonthFromDate(now) + 1);
 			String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
 
 			for (String pattern : patterns) {
@@ -99,7 +100,7 @@ public class DossierNumberGenerator {
 					if (r.toString().equals(codePattern)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						
-						String number = countByInit(serviceProcessCode, dossierId);
+						String number = countByInit(serviceProcessCode, dossierId, tmp);
 
 						_log.info("//////////////////////////////////////////////////////////// " + number
 								+ "|processOtionId= " + number);
@@ -266,9 +267,9 @@ public class DossierNumberGenerator {
 		return DossierLocalServiceUtil.countByUserId(userId, groupId) + 1;
 	}
 
-	private static String countByInit(String pattern, long dossierid) {
+	private static String countByInit(String pattern, long dossierid, String tmp) {
 		
-		String certNumber;
+		String certNumber = "0";
 
 		try {
 
@@ -353,19 +354,14 @@ public class DossierNumberGenerator {
 					
 				}
 
-
-				certNumber = String.format("%07d", _counterNumber); 
+				int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
+				String format = "%0" + lengthPatern + "d";
+				certNumber = String.format(format, _counterNumber); 
 				
-			} else {
-				certNumber = "0";
 			}
-
-
 		} catch (Exception e) {
-			
-			certNumber = "0";
 		}
-		
+
 		return certNumber;
 
 	}
