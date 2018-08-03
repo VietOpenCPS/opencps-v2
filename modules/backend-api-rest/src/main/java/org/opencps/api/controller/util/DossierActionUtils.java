@@ -228,7 +228,7 @@ public class DossierActionUtils {
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
 				model.seteSignature(processAction.getESignature());
 				model.setSignatureType(processAction.getSignatureType());
-				model.setCheckInput(processAction.getCheckInput());
+//				model.setCheckInput(processAction.getCheckInput());
 				model.setConfigNote(processAction.getConfigNote());
 				ActionConfig act = ActionConfigLocalServiceUtil.getByCode(processAction.getGroupId(),
 						processAction.getActionCode());

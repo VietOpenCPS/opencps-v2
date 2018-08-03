@@ -1940,10 +1940,10 @@
 		<finder return-type="Collection" name="F_DOSSIERID">
 			<finder-column name="dossierId" />
 		</finder>
-<!-- 		<finder return-type="DossierDocument" name="F_DID_CODE"> -->
-<!-- 			<finder-column name="dossierId" /> -->
-<!-- 			<finder-column name="dossierId" /> -->
-<!-- 		</finder> -->
+		<finder return-type="DossierDocument" name="F_GID_DID">
+			<finder-column name="groupId" />
+			<finder-column name="dossierActionId" />
+		</finder>
 	</entity>
 
 	<exceptions>
