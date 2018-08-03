@@ -2437,7 +2437,7 @@ public class DossierActionsImpl implements DossierActions {
 						jsonDataStatusText.getString(curSubStatus), curStep.getLockState(), dossierNote, context);
 				
 				//Update dossier processing date
-				flagChanged = updateProcessingDate(dossier, curStatus, curSubStatus, prevStatus, context);
+				flagChanged = updateProcessingDate(previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
 			}
 				// update reference dossier
 				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
@@ -2769,7 +2769,7 @@ public class DossierActionsImpl implements DossierActions {
 		}		
 	}
 	
-	private Map<String, Boolean> updateProcessingDate(Dossier dossier, String curStatus, String curSubStatus, String prevStatus, ServiceContext context) {
+	private Map<String, Boolean> updateProcessingDate(DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
 		
@@ -2871,6 +2871,30 @@ public class DossierActionsImpl implements DossierActions {
 			bResult.put(DossierTerm.PROCESS_DATE, true);
 			bResult.put(DossierTerm.RELEASE_DATE, true);
 			bResult.put(DossierTerm.FINISH_DATE, true);
+		}
+		
+		//Calculate step due date
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		Date rootDate = now;
+		Date dueDate = null;
+		
+		if (prevAction != null) {
+			if (prevAction.getDueDate() != null) {
+				if (rootDate.getTime() < prevAction.getDueDate().getTime()) {
+					rootDate = prevAction.getDueDate();
+				}
+			}
+		}
+
+		Double durationCount = processStep.getDurationCount();
+		if (Validator.isNotNull(durationCount) && durationCount > 0) {
+			dueDate = HolidayUtils.getDueDate(now, durationCount, 0, dossier.getGroupId());
+		}			
+		
+		if (dossierAction != null) {
+			if (dueDate != null) {
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
 		}
 		return bResult;
 	}

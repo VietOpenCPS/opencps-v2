@@ -2391,6 +2391,7 @@ public class DossierManagementImpl implements DossierManagement {
 		result.put("total", lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		ProcessSequence prevSequence = null;
+		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
@@ -2399,12 +2400,15 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("sequenceRole", ps.getSequenceRole());
 			sequenceObj.put("durationCount", ps.getDurationCount());
 
+			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
+			}
 			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
 			if (prevSequence != null) {
 				List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), prevSequence.getSequenceNo());
 				
 				DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
-				if (lastAction != null) {
+				if (lastAction != null && lstDossierActions.size() > 0) {
 					sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
 				}				
 			}
