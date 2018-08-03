@@ -2341,6 +2341,14 @@ public class DossierActionsImpl implements DossierActions {
 								dossier.getPostalCityName(), dossier.getPostalTelNo(), 
 								dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 
+						//
+						String dossierNote = StringPool.BLANK;
+						if (previousAction != null) {
+							dossierNote = previousAction.getActionNote();
+							if (Validator.isNotNull(dossierNote)) {
+								dossierNote = previousAction.getStepInstruction();
+							}
+						}
 						if (hsltDossier != null) {
 							//Set HSLT dossierId to origin dossier
 							hsltDossier.setOriginDossierId(dossierId);
@@ -2351,14 +2359,14 @@ public class DossierActionsImpl implements DossierActions {
 							hsltDossier = DossierLocalServiceUtil.updateStatus(groupId, hsltDossier.getDossierId(), hsltDossier.getReferenceUid(),
 									DossierTerm.DOSSIER_STATUS_NEW,
 									jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW), StringPool.BLANK,
-									StringPool.BLANK, StringPool.BLANK, previousAction.getStepInstruction(), context);
+									StringPool.BLANK, StringPool.BLANK, dossierNote, context);
 						}
 						JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_INTEROPERATING, StringPool.BLANK);
 						if (curStep != null) {
 							dossier = DossierLocalServiceUtil.updateStatus(groupId, dossier.getDossierId(),
 									dossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
 									jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_INTEROPERATING), StringPool.BLANK,
-									StringPool.BLANK, curStep.getLockState(), previousAction.getStepInstruction(), context);
+									StringPool.BLANK, curStep.getLockState(), dossierNote, context);
 							
 							
 						}					
@@ -2398,6 +2406,14 @@ public class DossierActionsImpl implements DossierActions {
 						state, eventStatus,
 						context);
 				
+				//
+				String dossierNote = StringPool.BLANK;
+				if (dossierAction != null) {
+					dossierNote = dossierAction.getActionNote();
+					if (Validator.isNotNull(dossierNote)) {
+						dossierNote = dossierAction.getStepInstruction();
+					}
+				}
 				//Update previous action nextActionId
 				if (previousAction != null && dossierAction != null) {
 					DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
@@ -2416,8 +2432,7 @@ public class DossierActionsImpl implements DossierActions {
 				//update dossierStatus
 				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
 						jsonDataStatusText.getString(curStatus), curSubStatus,
-						jsonDataStatusText.getString(curSubStatus), curStep.getLockState(),
-						dossierAction.getStepInstruction(), context);
+						jsonDataStatusText.getString(curSubStatus), curStep.getLockState(), dossierNote, context);
 				
 				//Update dossier processing date
 				flagChanged = updateProcessingDate(dossier, curStatus, curSubStatus, prevStatus, context);
