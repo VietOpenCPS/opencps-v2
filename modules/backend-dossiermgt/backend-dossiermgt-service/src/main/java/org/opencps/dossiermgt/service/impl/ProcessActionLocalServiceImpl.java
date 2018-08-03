@@ -576,7 +576,11 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			throws PortalException {
 		return processActionPersistence.findByG_SPID_PRESC(groupId, serviceProcessId, preStepCode);
 	}
-	
+
+	public List<ProcessAction> getByGroupAndService(long groupId, long serviceProcessId) {
+		return processActionPersistence.findByF_GID_SID(groupId, serviceProcessId);
+	}
+
 	public List<ProcessAction> getByGroupAndAutoEvent(long groupId, String autoEvent, int start, int end) {
 		
 		if (groupId == 0)

@@ -1247,28 +1247,29 @@ public class DossierActionsImpl implements DossierActions {
 		JSONArray results = null;
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 //		_log.info("dossier: "+dossier);
-		if (dossier != null) {
-			long serviceProcessId = 0;
-			String stepCode = StringPool.BLANK;
-			boolean pending = false;
-			long dossierActionId = dossier.getDossierActionId();
-//			_log.info("dossierActionId: "+dossierActionId);
-			if (dossierActionId > 0) {
-				dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-			}
+		try {
+			if (dossier != null) {
+				long serviceProcessId = 0;
+				String stepCode = StringPool.BLANK;
+				boolean pending = false;
+				long dossierActionId = dossier.getDossierActionId();
+				// _log.info("dossierActionId: "+dossierActionId);
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				}
 
-			if (dossierAction != null) {
-				serviceProcessId = dossierAction.getServiceProcessId();
-				stepCode = dossierAction.getStepCode();
-				pending = dossierAction.getPending();
-			}
+				if (dossierAction != null) {
+					serviceProcessId = dossierAction.getServiceProcessId();
+					stepCode = dossierAction.getStepCode();
+					pending = dossierAction.getPending();
+				}
 
-			if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
-				try {
-					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-//					_log.info("User id: " + userId);
-//					_log.info("Dossier action user:" );
-					//GS.AnhTT_Process
+				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
+					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
+							.getByDossierAndUser(dossierActionId, userId);
+					// _log.info("User id: " + userId);
+					// _log.info("Dossier action user:" );
+					// GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
 						if (dossier.getUserId() == userId && !pending) {
@@ -1277,12 +1278,14 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					if (dActionUser != null) {
 						int assign = dActionUser.getAssigned();
-						if (assign==1 && !pending) enable = 1;
+						if (assign == 1 && !pending)
+							enable = 1;
 					}
-//					_log.info("Enable: " + enable);
+					// _log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
-//					_log.info("processActionList: "+processActionList.size());
+					// _log.info("processActionList:
+					// "+processActionList.size());
 					if (processActionList != null && processActionList.size() > 0) {
 						results = JSONFactoryUtil.createJSONArray();
 						JSONObject data = null;
@@ -1294,7 +1297,7 @@ public class DossierActionsImpl implements DossierActions {
 						String autoEvent = StringPool.BLANK;
 						String preCondition = StringPool.BLANK;
 						for (ProcessAction processAction : processActionList) {
-//							_log.info("processAction: "+processAction);
+							// _log.info("processAction: "+processAction);
 							data = JSONFactoryUtil.createJSONObject();
 							processActionId = processAction.getProcessActionId();
 							actionCode = processAction.getActionCode();
@@ -1308,7 +1311,7 @@ public class DossierActionsImpl implements DossierActions {
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
 								data.put(ProcessActionTerm.ENABLE, 0);
-							
+
 							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
 							data.put(ProcessActionTerm.ACTION_NAME, actionName);
@@ -1316,14 +1319,53 @@ public class DossierActionsImpl implements DossierActions {
 							data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
 							data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
 							data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
-//	
+							//
 							results.put(data);
-							}
 						}
-				} catch (Exception e) {
-					_log.error(e);
+					}
+				} else {
+					results = JSONFactoryUtil.createJSONArray();
+					ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+							dossier.getDossierTemplateNo(), groupId);
+					if (option != null) {
+						serviceProcessId = option.getServiceProcessId();
+					}
+						processActionList = ProcessActionLocalServiceUtil
+								.getProcessActionbyServiceProcessId(serviceProcessId);
+					if (processActionList != null && processActionList.size() > 0) {
+						JSONObject data = null;
+						long processActionId = 0;
+						String actionCode = StringPool.BLANK;
+						String actionName = StringPool.BLANK;
+						String preStepCode = StringPool.BLANK;
+						String postStepCode = StringPool.BLANK;
+						String autoEvent = StringPool.BLANK;
+						String preCondition = StringPool.BLANK;
+						for (ProcessAction processAction : processActionList) {
+							// _log.info("processAction: "+processAction);
+							data = JSONFactoryUtil.createJSONObject();
+							processActionId = processAction.getProcessActionId();
+							actionCode = processAction.getActionCode();
+							actionName = processAction.getActionName();
+							preStepCode = processAction.getPreStepCode();
+							postStepCode = processAction.getPostStepCode();
+							autoEvent = processAction.getAutoEvent();
+							preCondition = processAction.getPreCondition();
+							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
+							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
+							data.put(ProcessActionTerm.ACTION_NAME, actionName);
+							data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
+							data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
+							data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
+							data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
+							//
+							results.put(data);
+						}
+					}
 				}
 			}
+		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		return results;
