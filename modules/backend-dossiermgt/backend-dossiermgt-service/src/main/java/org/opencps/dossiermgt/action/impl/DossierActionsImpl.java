@@ -1331,7 +1331,7 @@ public class DossierActionsImpl implements DossierActions {
 						serviceProcessId = option.getServiceProcessId();
 					}
 						processActionList = ProcessActionLocalServiceUtil
-								.getProcessActionbyServiceProcessId(serviceProcessId);
+								.getByServiceStepCode(groupId, serviceProcessId, StringPool.BLANK);
 					if (processActionList != null && processActionList.size() > 0) {
 						JSONObject data = null;
 						long processActionId = 0;

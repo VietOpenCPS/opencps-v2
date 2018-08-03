@@ -1127,9 +1127,10 @@
 			<finder-column name="actionCode" />
 			<finder-column name="actionName" />
 		</finder>
-		<finder return-type="Collection" name="F_GID_SID">
+		<finder return-type="Collection" name="F_GID_SID_PRE">
 			<finder-column name="groupId" />
 			<finder-column name="serviceProcessId" />
+            <finder-column name="preStepCode" />
 		</finder>
 	</entity>
 
