@@ -1184,6 +1184,9 @@ definitions:
         type: integer
         format: int64
         example: 0
+      referenceUid:
+        type: string
+        example: referenceUid
       createDate:
         type: string
         format: date-time

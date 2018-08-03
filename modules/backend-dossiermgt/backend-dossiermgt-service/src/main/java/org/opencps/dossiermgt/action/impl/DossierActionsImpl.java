@@ -1268,7 +1268,7 @@ public class DossierActionsImpl implements DossierActions {
 					//GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-						if (dossier.getUserId() == userId && !pending && dossierAction != null && dossierAction.getUserId() == userId) {
+						if (dossier.getUserId() == userId && !pending) {
 							enable = 1;
 						}
 					}
@@ -1435,8 +1435,12 @@ public class DossierActionsImpl implements DossierActions {
 					result.put("receiving", receivingObj);
 				}
 				//
-				String createDossierFiles = processAction.getCreateDossierFiles();
-				String returnDossierFiles = processAction.getReturnDossierFiles();
+				String createDossierFiles = StringPool.BLANK;
+				String returnDossierFiles = StringPool.BLANK;
+				if (processAction != null) {
+					createDossierFiles = processAction.getCreateDossierFiles();
+					returnDossierFiles = processAction.getReturnDossierFiles();
+				}
 
 				List<String> createFileTempNoList = ListUtil.toList(StringUtil.split(createDossierFiles));
 				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));
@@ -2436,6 +2440,7 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				} else {
 					_log.info("PROCESS subUsers == null");
+					_log.info("Dossier action: " + dossierAction);
 					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
 					

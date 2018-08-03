@@ -47,7 +47,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		// build the url
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
 		
-		LOG.info(url);
+		//LOG.info(url);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 

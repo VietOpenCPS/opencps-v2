@@ -1,6 +1,7 @@
 package org.opencps.statistic.service.persistence.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
@@ -56,12 +57,12 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 	private static final String CONDITION_GROUP_ID = "(opencps_dossier.groupId = ?) AND";
 	private static final String CONDITION_ORIGINALITY = "(opencps_dossier.originality = ?) AND";
 	
-	
-	private static final String CONDITION_RECEIVE_DATE = "(opencps_dossier.receiveDate >= ?) AND (opencps_dossier.status != 'denied' OR opencps_dossier.status != 'cancelled') AND";
+														  
+	private static final String CONDITION_RECEIVE_DATE = "(opencps_dossier.receiveDate >= ?) AND (opencps_dossier.dossierStatus != 'denied' OR opencps_dossier.dossierStatus != 'cancelled') AND";
 	private static final String CONDITION_RELEASE_DATE = "(opencps_dossier.releaseDate IS NOT NULL) AND";
 	private static final String CONDITION_BETIMES_COUNT  = "(opencps_dossier.dueDate IS NOT NULL) AND (opencps_dossier.extendDate IS NOT NULL) AND (opencps_dossier.extendDate > opencps_dossier.dueDate) AND";
 	private static final String CONDITION_ONTIME_COUNT = "(opencps_dossier.dueDate IS NULL) OR (opencps_dossier.releaseDate <= opencps_dossier.dueDate) AND";
-	private static final String CONDITION_UNDUE_TIME = "(opencps_dossier.status = 'procesing' OR opencps_dossier.status = 'interoperating') AND (opencps_dossier.dueDate IS NULL OR opencps_dossier.dueDate > ?) AND";
+	private static final String CONDITION_UNDUE_TIME = "(opencps_dossier.dossierStatus = 'procesing' OR opencps_dossier.dossierStatus = 'interoperating') AND (opencps_dossier.dueDate IS NULL OR opencps_dossier.dueDate > ?) AND";
 
 	@SuppressWarnings("unchecked")
 	public List<OpencpsDossier> searchDossiers(long groupId, String keyword, String registerBookCode, String processNo,
@@ -333,7 +334,7 @@ public class OpencpsDossierFinderImpl extends OpencpsDossierStatisticFinderBaseI
 	}
 	
 	private static String buildCurrentDateTime() {
-		return LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+		return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 		
 	}
 	

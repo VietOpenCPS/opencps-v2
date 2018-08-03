@@ -192,6 +192,7 @@ public class OpenCPSRestClient {
 					
 					DossierFileModel fileModel = new DossierFileModel();
 					fileModel.setReferenceUid(object.getString(DossierFileTerm.REFERENCE_UID));
+					fileModel.setDossierPartType(GetterUtil.getInteger(object.getString(DossierFileTerm.DOSSIER_PART_TYPE)));
 					
 					lstDossierFiles.add(fileModel);
 				}
@@ -232,4 +233,27 @@ public class OpenCPSRestClient {
 		return result;
 	}
 	
+	public DossierFileModel postDossierFileEForm(File file, String dossierUnique, DossierFileModel model) {
+		DossierFileModel result = null;
+
+		try {
+
+			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierUnique + "/eforms/" + model.getDossierPartNo();
+			InvokeREST callRest = new InvokeREST();
+			HashMap<String, String> properties = OpenCPSConverter.convertDossierFileHttpParams(model);
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostFileAPI(groupId, HttpMethod.POST, "application/json", 
+					 baseUrl, requestURL, username,
+					password, properties, file, context);
+			_log.info("Post dossier file eform: " + jsonObj);
+			result = OpenCPSConverter.convertDossierFile(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+		}
+
+		return result;
+		
+	}	
 }

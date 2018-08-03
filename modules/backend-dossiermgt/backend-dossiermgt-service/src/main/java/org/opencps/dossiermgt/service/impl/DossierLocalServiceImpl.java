@@ -217,8 +217,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				}
 //			}
 
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA
-					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -249,6 +248,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				if (process != null ) {
 					durationCount = process.getDurationCount();
 					durationUnit = process.getDurationUnit();
+					_log.info("durationCount: "+durationCount);
+					_log.info("durationUnit: "+durationUnit);
 //					int durationDays = 0;
 //
 //					if (durationUnit == 0) {
@@ -256,7 +257,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //					} else {
 //						durationDays = Math.round(durationCount / 8);
 //					}
-					Date dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
+					Date dueDate = null;
+					if (Validator.isNotNull(durationCount)) {
+						dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
+					}
+					
+					_log.info("dueDate: "+dueDate);
 //					if (durationDays > 0) {
 //						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
 //					}
@@ -265,7 +271,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setReceiveDate(now);
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
-				}				
+				}
 			}
 		} else {
 

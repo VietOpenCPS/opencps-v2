@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "data"
 })
-@XmlRootElement(name = "DossierSequenceResultModel")
+@XmlRootElement(name = "data")
 public class DossierSequenceResultModel {
 
     protected String processNo;

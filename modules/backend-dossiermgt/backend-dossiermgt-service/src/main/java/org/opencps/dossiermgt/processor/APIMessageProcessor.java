@@ -191,6 +191,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setPayload(dossierSync.getPayload());
+		actionModel.setActionNote(dossierSync.getActionNote());
 		
 		ExecuteOneAction actionResult = client.postDossierAction(dossier.getReferenceUid(), actionModel);
 		if (actionResult != null) {
@@ -232,8 +233,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						lstRefs.add(fileObj.getString(DossierFileTerm.REFERENCE_UID));
 					}
 				}
-
 				for (DossierFileModel df : lstFiles) {
+//					_log.info("Dossier file model: " + df + ",");
+//					_log.info("Dossier file model: " + df.getDossierPartType() + ",");
+//					_log.info("Dossier file model: " + df.getReferenceUid() + ",");
+					
 					if (df.getDossierPartType() == DossierPartTerm.DOSSIER_PART_TYPE_INPUT
 							&& !lstRefs.contains(df.getReferenceUid())) {
 						//Remove file from server
@@ -246,7 +250,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					JSONObject fileObj = fileArrs.getJSONObject(i);
 					if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
 						DossierFile df = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossier.getDossierId(), fileObj.getString(DossierFileTerm.REFERENCE_UID));
-						if (df != null) {
+						if (df != null && !df.getEForm()) {
 							if (df.getFileEntryId() > 0) {
 								FileEntry fileEntry;
 								try {
@@ -260,7 +264,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
 									dfModel.setFileTemplateNo(df.getFileTemplateNo());
 									dfModel.setFormData(df.getFormData());
-									dfModel.setFileType(StringPool.BLANK);
+									dfModel.setFileType(fileEntry.getMimeType());
 									
 									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 									if (dfResult == null) {
@@ -272,6 +276,24 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								}
 
 							}
+							else {
+								
+							}
+						}
+						else if (df != null && df.getEForm()) {
+							DossierFileModel dfModel = new DossierFileModel();
+							dfModel.setReferenceUid(df.getReferenceUid());
+							dfModel.setDossierPartNo(df.getDossierPartNo());
+							dfModel.setDisplayName(df.getDisplayName());
+							dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
+							dfModel.setFileTemplateNo(df.getFileTemplateNo());
+							dfModel.setFormData(df.getFormData());
+							
+							DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
+							if (dfResult == null) {
+								return false;
+							}
+							dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());							
 						}
 					}
 				}
@@ -303,6 +325,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
+		actionModel.setActionNote(dossierSync.getActionNote());
 		actionModel.setPayload(dossierSync.getPayload());
 		
 		ExecuteOneAction actionResult = client.postDossierAction(String.valueOf(result.getDossierId()), actionModel);
