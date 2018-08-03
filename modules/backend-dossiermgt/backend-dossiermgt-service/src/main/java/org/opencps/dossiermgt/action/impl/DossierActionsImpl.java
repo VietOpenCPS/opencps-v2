@@ -1427,7 +1427,8 @@ public class DossierActionsImpl implements DossierActions {
 					Date receiveDate = new Date();
 					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : receiveDate.getTime());
 					Date dueDate = null;
-					if (Validator.isNotNull(serviceProcess.getDurationCount())) {
+					double durationCount = serviceProcess.getDurationCount();
+					if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 						dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
 					}
 					
