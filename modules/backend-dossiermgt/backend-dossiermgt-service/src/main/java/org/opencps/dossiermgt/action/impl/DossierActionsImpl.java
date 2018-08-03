@@ -1331,7 +1331,7 @@ public class DossierActionsImpl implements DossierActions {
 						serviceProcessId = option.getServiceProcessId();
 					}
 						processActionList = ProcessActionLocalServiceUtil
-								.getProcessActionbyServiceProcessId(serviceProcessId);
+								.getByServiceStepCode(groupId, serviceProcessId, StringPool.BLANK);
 					if (processActionList != null && processActionList.size() > 0) {
 						JSONObject data = null;
 						long processActionId = 0;
@@ -1358,6 +1358,7 @@ public class DossierActionsImpl implements DossierActions {
 							data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
 							data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
 							data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
+							data.put(ProcessActionTerm.ENABLE, 1);
 							//
 							results.put(data);
 						}
