@@ -2391,6 +2391,7 @@ public class DossierManagementImpl implements DossierManagement {
 		result.put("total", lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		ProcessSequence prevSequence = null;
+		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
@@ -2399,12 +2400,15 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("sequenceRole", ps.getSequenceRole());
 			sequenceObj.put("durationCount", ps.getDurationCount());
 
+			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
+			}
 			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
 			if (prevSequence != null) {
 				List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), prevSequence.getSequenceNo());
 				
 				DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
-				if (lastAction != null) {
+				if (lastAction != null && lstDossierActions.size() > 0) {
 					sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
 				}				
 			}
@@ -2664,7 +2668,14 @@ public class DossierManagementImpl implements DossierManagement {
 
 		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
 					-1, -1, serviceContext);
-		_log.info("JSON data: " + jsonData.toJSONString());
+		long total = jsonData.getLong("total");
+		if (total > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");			
+		}
+		else {
+			
+		}
+		
 		return Response.status(200).entity(jsonData.toJSONString()).build();
 	}
 
