@@ -2817,34 +2817,48 @@ public class DossierActionsImpl implements DossierActions {
 	private Map<String, Boolean> updateProcessingDate(DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
+		String serviceCode = dossier.getServiceCode();
+		String govAgencyCode = dossier.getGovAgencyCode();
+		String dossierTemplateNo = dossier.getDossierTemplateNo();
+		ProcessOption option = null;
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+		params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+		params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+		ServiceProcess serviceProcess =  null;
+		
+		try {
+			option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, dossier.getGroupId());
+			long serviceProcessId = option.getServiceProcessId();
+
+			String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
+					dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+
+			dossier.setDossierNo(dossierRef.trim());
+			
+			DossierLocalServiceUtil.updateDossier(dossier);
+			
+			bResult.put(DossierTerm.DOSSIER_NO, true);
+		} catch (PortalException e) {
+//			e.printStackTrace();
+		}		
 		
 		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
 				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
 				|| (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
-			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-			params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-			params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
-			params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-			String serviceCode = dossier.getServiceCode();
-			String govAgencyCode = dossier.getGovAgencyCode();
-			String dossierTemplateNo = dossier.getDossierTemplateNo();
 			
-			ProcessOption option;
 			try {
-				option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, dossier.getGroupId());
-				long serviceProcessId = option.getServiceProcessId();
+				if (Validator.isNotNull(option)) {
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
+							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
-				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
-
-				String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
-						dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-
-				dossier.setDossierNo(dossierRef.trim());
-				
-				DossierLocalServiceUtil.updateDossier(dossier);
-				
-				bResult.put(DossierTerm.DOSSIER_NO, true);
+					dossier.setDossierNo(dossierRef.trim());
+					
+					DossierLocalServiceUtil.updateDossier(dossier);
+					
+					bResult.put(DossierTerm.DOSSIER_NO, true);					
+				}
 			} catch (PortalException e) {
 //				e.printStackTrace();
 			}		
@@ -2865,6 +2879,17 @@ public class DossierActionsImpl implements DossierActions {
 				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				dossier.setReceiveDate(now);
 				bResult.put(DossierTerm.RECEIVE_DATE, true);
+
+				Double durationCount = serviceProcess.getDurationCount();
+				int durationUnit = serviceProcess.getDurationUnit();
+				Date dueDate = null;
+				if (Validator.isNotNull(durationCount) && durationCount > 0) {
+					dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
+				}
+				
+				if (Validator.isNotNull(dueDate)) {
+					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
+				}
 			} catch (PortalException e) {
 				e.printStackTrace();
 			}
