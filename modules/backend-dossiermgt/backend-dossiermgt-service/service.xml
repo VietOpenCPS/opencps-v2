@@ -1127,7 +1127,10 @@
 			<finder-column name="actionCode" />
 			<finder-column name="actionName" />
 		</finder>
-
+		<finder return-type="Collection" name="F_GID_SID">
+			<finder-column name="groupId" />
+			<finder-column name="serviceProcessId" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierAction"
