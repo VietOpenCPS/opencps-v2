@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
@@ -167,8 +166,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		try {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-			if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
-					|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment())) {
+			if (processAction != null && (processAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI)) {
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -234,10 +232,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					}
 				}
 				for (DossierFileModel df : lstFiles) {
-//					_log.info("Dossier file model: " + df + ",");
-//					_log.info("Dossier file model: " + df.getDossierPartType() + ",");
-//					_log.info("Dossier file model: " + df.getReferenceUid() + ",");
-					
 					if (df.getDossierPartType() == DossierPartTerm.DOSSIER_PART_TYPE_INPUT
 							&& !lstRefs.contains(df.getReferenceUid())) {
 						//Remove file from server
@@ -288,13 +282,34 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
 							dfModel.setFileTemplateNo(df.getFileTemplateNo());
 							dfModel.setFormData(df.getFormData());
-							
-							DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
-							if (dfResult == null) {
-								return false;
+							if (df.getFileEntryId() > 0) {
+								FileEntry fileEntry;
+								try {
+									fileEntry = DLAppLocalServiceUtil.getFileEntry(df.getFileEntryId());
+									File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+											true);
+									dfModel.setFileType(fileEntry.getMimeType());
+									
+									DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
+									if (dfResult == null) {
+										return false;
+									}
+									dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());							
+								} catch (PortalException e) {
+									e.printStackTrace();
+								}
+
 							}
-							dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());							
+							else {
+								DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
+								if (dfResult == null) {
+									return false;
+								}
+								dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());															
+							}
+							
 						}
+						
 					}
 				}
 			}			
@@ -305,8 +320,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_1 == processAction.getRequestPayment()
-				|| ProcessActionTerm.REQUEST_PAYMENT_2 == processAction.getRequestPayment())) {
+		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI != processAction.getRequestPayment())) {
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 			pfiModel.setApplicantName(dossier.getApplicantName());

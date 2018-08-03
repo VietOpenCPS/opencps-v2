@@ -20,6 +20,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
@@ -1235,9 +1236,9 @@ public class DossierActionsImpl implements DossierActions {
 
 		// TODO filter by Auto
 		String auto = GetterUtil.getString(params.get(DossierActionTerm.AUTO));
-		_log.info("auto =: " + auto);
+//		_log.info("auto =: " + auto);
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
-		_log.info("dossierId =: " + dossierId);
+//		_log.info("dossierId =: " + dossierId);
 
 		DossierAction dossierAction = null;
 		List<ProcessAction> processActionList = null;
@@ -1419,21 +1420,22 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				//Put receiving to next action
-				if (processAction != null) {
+//				if (processAction != null) {
 					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 					
 					JSONObject receivingObj = JSONFactoryUtil.createJSONObject();
-					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : 0l);
-					receivingObj.put(DossierTerm.DUE_DATE, dossier.getDueDate() != null ? dossier.getDueDate().getTime() : 0l);
-					if (Validator.isNotNull(serviceProcess) && "0".equals(serviceProcess.getDueDatePattern())) {
-						receivingObj.put("editable", true);
-					}
-					else {
-						receivingObj.put("editable", false);
+					Date receiveDate = new Date();
+					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : receiveDate.getTime());
+					Date dueDate = null;
+					if (Validator.isNotNull(serviceProcess.getDurationCount())) {
+						dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
 					}
 					
+					receivingObj.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0l);
+					receivingObj.put("editable", DossierMgtUtils.isDueDateEditable(serviceProcess.getDueDatePattern()));
+										
 					result.put("receiving", receivingObj);
-				}
+//				}
 				//
 				String createDossierFiles = StringPool.BLANK;
 				String returnDossierFiles = StringPool.BLANK;
@@ -1846,11 +1848,11 @@ public class DossierActionsImpl implements DossierActions {
 			ServiceContext serviceContext) {
 		
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
-		_log.info("dossierId =: " + dossierId);
+//		_log.info("dossierId =: " + dossierId);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			_log.info("dossier: " + dossier);
+//			_log.info("dossier: " + dossier);
 			if (dossier != null) {
 				DossierAction dossierAction = DossierActionLocalServiceUtil
 						.fetchDossierAction(dossier.getDossierActionId());
@@ -1865,7 +1867,7 @@ public class DossierActionsImpl implements DossierActions {
 							boolean extraForm = actConfig.getExtraForm();
 							if (extraForm) {
 								String formConfig = actConfig.getFormConfig();
-								_log.info("formConfig: " + formConfig);
+//								_log.info("formConfig: " + formConfig);
 								String sampleData = Validator.isNotNull(actConfig.getSampleData()) ? actConfig.getSampleData() : "{}";
 
 								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
@@ -1875,14 +1877,14 @@ public class DossierActionsImpl implements DossierActions {
 								
 								JSONArray formConfigArr = formConfigObj.getJSONArray("fields");
 								
-								_log.info("formConfigArr: " + formConfigArr);
+//								_log.info("formConfigArr: " + formConfigArr);
 								if (formConfigArr != null && formConfigArr.length() > 0) {
 									int length = formConfigArr.length();
 									for (int i = 0; i < length; i++) {
 										JSONObject jsonObject = formConfigArr.getJSONObject(i);
 										String value = formDataJson.getString(jsonObject.getString("fieldName"));
 										jsonObject.put("value", value);
-										_log.info("formConfigArr: " + formConfigArr);
+//										_log.info("formConfigArr: " + formConfigArr);
 										result.put(jsonObject);
 									}
 								}
@@ -2257,7 +2259,7 @@ public class DossierActionsImpl implements DossierActions {
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus) && !dossierStatus.equals("new")) {
 			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-			_log.info("applicantNote: "+applicantNote);
+//			_log.info("applicantNote: "+applicantNote);
 
 			dossier.setApplicantNote(applicantNote);
 
@@ -2283,32 +2285,33 @@ public class DossierActionsImpl implements DossierActions {
 		}
 				
 		if (option != null && proAction != null) {
-			_log.info("In do action process action");
+//			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
 			String paymentFee = proAction.getPaymentFee();
-			if (Validator.isNotNull(paymentFee)) {
+//			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
+			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI) {
 				try {
 					String serveNo = serviceProcess.getServerNo();
 					//TODO:
-					DossierPaymentUtils.processPaymentFile(paymentFee, groupId, dossier.getDossierId(), 0l, context,
+					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), userId, context,
 							serveNo);
 				} catch (Exception e) {
 					_log.error(e);
-					_log.info("Can not create PaymentFile with pattern \"" + paymentFee + "\"");
+//					_log.info("Can not create PaymentFile with pattern \"" + paymentFee + "\"");
 				}
 			}
 
 			String postStepCode = proAction.getPostStepCode();
 
 			ProcessStep curStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
-			_log.info("Current step: " + curStep);
+//			_log.info("Current step: " + curStep);
 			
 			int actionOverdue = getActionDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			
-			_log.info("LamTV_NEXT_ACTION: " + proAction);
+//			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
 			String actionName = proAction.getActionName();
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
@@ -2795,8 +2798,7 @@ public class DossierActionsImpl implements DossierActions {
 				e.printStackTrace();
 			}
 		}
-		if (Validator.isNull(dossier.getReceiveDate())
-				&& Validator.isNotNull(dossier.getDossierNo())) {
+		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {
 			try {
 				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				dossier.setReceiveDate(now);
@@ -2925,7 +2927,7 @@ public class DossierActionsImpl implements DossierActions {
 		// Add paymentFile
 		if (processAction != null && Validator.isNotNull(processAction.getPaymentFee())) {
 			try {
-				DossierPaymentUtils.processPaymentFile(processAction.getPaymentFee(), groupId, dossierId, userId,
+				DossierPaymentUtils.processPaymentFile(processAction, processAction.getPaymentFee(), groupId, dossierId, userId,
 						context, serviceProcess.getServerNo());
 			} catch (Exception e) {
 
