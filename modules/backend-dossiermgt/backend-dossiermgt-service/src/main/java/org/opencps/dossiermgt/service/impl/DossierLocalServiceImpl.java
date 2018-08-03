@@ -243,8 +243,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				//Update submit date
 				now = new Date();
 				dossier.setSubmitDate(now);
-				double durationCount = 0;
-				int durationUnit = 0;
+				Double durationCount = 0d;
+				Integer durationUnit = 0;
 				if (process != null ) {
 					durationCount = process.getDurationCount();
 					durationUnit = process.getDurationUnit();
@@ -258,7 +258,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //						durationDays = Math.round(durationCount / 8);
 //					}
 					Date dueDate = null;
-					if (Validator.isNotNull(durationCount)) {
+					if (Validator.isNotNull(durationCount) && durationCount > 0) {
 						dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
 					}
 					

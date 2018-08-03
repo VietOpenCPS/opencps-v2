@@ -156,4 +156,7 @@ public class DossierTerm {
 	public static final String MAPPING_PERMISSION = "permission";
 	public static final String MAPPING_DOSSIER = "dossiers";
 
+	public static final String DOMAIN_CODE = "domainCode";
+	public static final String DOMAIN_NAME = "domainName";
+
 }
