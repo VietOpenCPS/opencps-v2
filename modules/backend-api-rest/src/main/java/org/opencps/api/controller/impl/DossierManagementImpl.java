@@ -63,6 +63,7 @@ import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
@@ -80,6 +81,7 @@ import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
@@ -108,7 +110,6 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.Sort;
@@ -1299,7 +1300,19 @@ public class DossierManagementImpl implements DossierManagement {
 
 //				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
-				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierResult)).build();				
+				long dossierActionId = dossierResult.getDossierActionId();
+				DossierDocument doc = DossierDocumentLocalServiceUtil.getByActiocId(groupId, dossierActionId);
+				long dossierDocumentId = 0;
+				if (doc != null) {
+					dossierDocumentId = doc.getDossierDocumentId();
+				}
+				String strDossierResult = JSONFactoryUtil.looseSerializeDeep(dossierResult);
+				JSONObject jsonData = null;
+				if (Validator.isNotNull(strDossierResult)) {
+					jsonData = JSONFactoryUtil.createJSONObject(strDossierResult);
+					jsonData.put(DossierActionTerm.DOSSIER_DOCUMENT_ID, dossierDocumentId);
+				}
+				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(jsonData)).build();
 			}
 			else {
 				return Response.status(405).entity("{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();

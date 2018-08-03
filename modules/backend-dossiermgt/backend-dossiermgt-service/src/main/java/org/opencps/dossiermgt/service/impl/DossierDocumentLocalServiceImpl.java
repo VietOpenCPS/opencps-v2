@@ -185,6 +185,10 @@ public class DossierDocumentLocalServiceImpl
 		object.setDocSync(docSync);
 
 		return dossierDocumentPersistence.update(object);
-	}	
+	}
+
+	public DossierDocument getByActiocId(long groupId, long dossierActionId) {
+		return dossierDocumentPersistence.fetchByF_GID_DID(groupId, dossierActionId);
+	}
 
 }
