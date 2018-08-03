@@ -51,7 +51,7 @@ public class StepModel {
     protected String fromStepCode;
     protected String fromStepName;
     protected String groupName;
-    protected Integer durationCount;
+    protected Double durationCount;
     protected List<ActionModel> actions;
 
     /**
@@ -134,7 +134,7 @@ public class StepModel {
      *     {@link Integer }
      *     
      */
-    public Integer getDurationCount() {
+    public Double getDurationCount() {
         return durationCount;
     }
 
@@ -146,7 +146,7 @@ public class StepModel {
      *     {@link Integer }
      *     
      */
-    public void setDurationCount(Integer value) {
+    public void setDurationCount(Double value) {
         this.durationCount = value;
     }
 
