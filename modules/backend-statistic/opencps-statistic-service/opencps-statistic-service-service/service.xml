@@ -58,12 +58,19 @@
 		</finder>
 		
 		<finder return-type="OpencpsDossierStatistic" name="M_Y_DM_G">
+			<finder-column name="groupId"/>
 			<finder-column name="govAgencyCode"/>
 			<finder-column name="month"/>
 			<finder-column name="year"/>
 			<finder-column name="domainCode"/>
 		</finder>
 		
+		<finder return-type="OpencpsDossierStatistic" name="M_Y_G">
+			<finder-column name="groupId"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
 
 	</entity>
 	

@@ -81,6 +81,14 @@ public class DossierData {
 		this.groupId = groupId;
 	}
 
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+
 	private String dossierStatus;
 	private String dossierSubStatus;
 	private String receiveDate;
@@ -91,4 +99,5 @@ public class DossierData {
 	private String serviceCode;
 	private long groupId;
 	private String govAgencyCode;
+	private String govAgencyName;
 }

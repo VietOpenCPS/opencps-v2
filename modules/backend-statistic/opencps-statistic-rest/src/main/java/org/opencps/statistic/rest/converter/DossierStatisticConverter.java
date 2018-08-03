@@ -48,6 +48,7 @@ public class DossierStatisticConverter {
 				data.setGovAgencyCode(dossier.getGovAgencyCode());
 				data.setServiceCode(dossier.getServiceCode());
 				data.setGroupId(dossier.getGroupId());
+				data.setGovAgencyName(dossier.getGovAgencyName());
 				
 				dossierData.add(data);
 			}
