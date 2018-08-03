@@ -272,7 +272,7 @@ public interface DossierManagement {
 
 	public Response doAction(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id, @BeanParam DoActionModel input);
+			@PathParam("id") String id, @BeanParam DoActionModel input, @FormParam("dueDate") Long dueDate);
 
 	@GET
 	@Path("/{id}/contacts")
@@ -547,4 +547,18 @@ public interface DossierManagement {
 	public Response getConflictDossier(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext);
+	
+	@DELETE
+	@Path("/lucene/resolveconflict")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get a Dossier by its id", response = DossierDetailModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was removed", response = DossierDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response resolveConflictDossier(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext);	
 }

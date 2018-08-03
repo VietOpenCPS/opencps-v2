@@ -101,6 +101,7 @@ import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -113,6 +114,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -1212,7 +1214,7 @@ public class DossierManagementImpl implements DossierManagement {
 	//LamTV: Process DoAction
 	@Override
 	public Response doAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String id, DoActionModel input) {
+			ServiceContext serviceContext, String id, DoActionModel input, Long dueDate) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
@@ -1233,6 +1235,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (dossier != null) {
 				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
+				if (Validator.isNotNull(dueDate)) {
+					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
+				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
@@ -2387,6 +2392,8 @@ public class DossierManagementImpl implements DossierManagement {
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
 		result.put("total", lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
+		ProcessSequence prevSequence = null;
+		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
@@ -2395,19 +2402,30 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("sequenceRole", ps.getSequenceRole());
 			sequenceObj.put("durationCount", ps.getDurationCount());
 
+			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
+			}
 			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
-			DossierAction firstAction = lstDossierActions.size() > 0 ? lstDossierActions.get(0) : null;
-			if (firstAction != null) {
-				sequenceObj.put("startDate", firstAction.getCreateDate().getTime());
+			if (prevSequence != null) {
+				List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), prevSequence.getSequenceNo());
+				
+				DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
+				if (lastAction != null && lstDossierActions.size() > 0) {
+					sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
+				}				
 			}
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
+			List<Long> lstUsers = new ArrayList<>();
+			
 			for (DossierAction da : lstDossierActions) {
-				JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
-				
-				assignUserObj.put("userId", da.getUserId());
-				assignUserObj.put("userName", da.getUserName());
-				
-				assignUserArr.put(assignUserObj);
+				if (!lstUsers.contains(da.getUserId())) {
+					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+					lstUsers.add(da.getUserId());
+					assignUserObj.put("userId", da.getUserId());
+					assignUserObj.put("userName", da.getUserName());
+					
+					assignUserArr.put(assignUserObj);					
+				}
 			}
 			
 			sequenceObj.put("assignUsers", assignUserArr);
@@ -2447,6 +2465,8 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("actions", actionsArr);
 			
 			sequenceArr.put(sequenceObj);
+			
+			prevSequence = ps;
 		}
 		
 		result.put("data", sequenceArr);
@@ -2650,8 +2670,73 @@ public class DossierManagementImpl implements DossierManagement {
 
 		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
 					-1, -1, serviceContext);
-		_log.info("JSON data: " + jsonData.toJSONString());
-		return Response.status(200).entity(jsonData.toJSONString()).build();
+		
+		List<Dossier> lstInDbs = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		
+		long total = jsonData.getLong("total");
+		JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+		
+		if (total > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+			for (Document document : lstDocuments) {
+				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+				Dossier oldDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (oldDossier == null) {
+					JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+					dossierObj.put(DossierTerm.DOSSIER_ID, dossierId);
+					dossierArr.put(dossierObj);
+				}
+			}
+		}
+		else {
+			
+		}
+		
+		return Response.status(200).entity(dossierArr.toJSONString()).build();
+	}
+
+	@Override
+	public Response resolveConflictDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
+		DossierActions actions = new DossierActionsImpl();
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+		
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		DossierResultsModel results = new DossierResultsModel();
+
+		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
+					-1, -1, serviceContext);
+		
+		List<Dossier> lstInDbs = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		
+		long total = jsonData.getLong("total");
+		JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+		
+		if (total > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+			for (Document document : lstDocuments) {
+				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
+				String uid = document.get(Field.UID);
+				Dossier oldDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (oldDossier == null) {
+					try {
+						indexer.delete(companyId, uid);
+					} catch (SearchException e) {
+					}
+				}
+			}
+		}
+		else {
+			
+		}
+		
+		return Response.status(200).entity("{}").build();
 	}
 
 }
