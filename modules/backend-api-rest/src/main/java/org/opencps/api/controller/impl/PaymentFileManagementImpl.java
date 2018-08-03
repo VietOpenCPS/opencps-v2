@@ -12,11 +12,13 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.PaymentFileManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.PaymentFileUtils;
+import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
@@ -778,5 +780,50 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		} catch (Exception e) {
 			return processException(e);
 		}
+	}
+
+	@Override
+	public Response createPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		long userId = serviceContext.getUserId();
+		
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			/* Check user is login - START */
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			Dossier dossier = getDossier(id, groupId);
+
+			long dossierId = dossier.getPrimaryKey();
+
+			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException();
+			}
+			/* Check user is login - END */
+
+			PaymentFileActions actions = new PaymentFileActionsImpl();
+
+			PaymentFileInputModel PaymentFileInput = new PaymentFileInputModel();
+
+			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
+					input.getPaymentFee(), 0l, 0l, 0l, 0l,
+					0l, input.getPaymentNote(), input.getEpaymentProfile(), input.getBankInfo(),
+					0, input.getPaymentMethod(), serviceContext);
+			
+			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+			
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+
+			PaymentFileInput = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
+
+			return Response.status(200).entity(PaymentFileInput).build();
+
+		} catch (Exception e) {
+			return processException(e);
+		}	
 	}
 }
