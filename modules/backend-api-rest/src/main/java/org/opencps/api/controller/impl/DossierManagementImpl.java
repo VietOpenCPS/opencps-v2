@@ -101,6 +101,7 @@ import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -113,6 +114,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -2668,15 +2670,73 @@ public class DossierManagementImpl implements DossierManagement {
 
 		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
 					-1, -1, serviceContext);
+		
+		List<Dossier> lstInDbs = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		
 		long total = jsonData.getLong("total");
+		JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+		
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");			
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+			for (Document document : lstDocuments) {
+				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+				Dossier oldDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (oldDossier == null) {
+					JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+					dossierObj.put(DossierTerm.DOSSIER_ID, dossierId);
+					dossierArr.put(dossierObj);
+				}
+			}
 		}
 		else {
 			
 		}
 		
-		return Response.status(200).entity(jsonData.toJSONString()).build();
+		return Response.status(200).entity(dossierArr.toJSONString()).build();
+	}
+
+	@Override
+	public Response resolveConflictDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
+		DossierActions actions = new DossierActionsImpl();
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+		
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		DossierResultsModel results = new DossierResultsModel();
+
+		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
+					-1, -1, serviceContext);
+		
+		List<Dossier> lstInDbs = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		
+		long total = jsonData.getLong("total");
+		JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+		
+		if (total > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+			for (Document document : lstDocuments) {
+				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
+				String uid = document.get(Field.UID);
+				Dossier oldDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (oldDossier == null) {
+					try {
+						indexer.delete(companyId, uid);
+					} catch (SearchException e) {
+					}
+				}
+			}
+		}
+		else {
+			
+		}
+		
+		return Response.status(200).entity("{}").build();
 	}
 
 }
