@@ -713,6 +713,7 @@ public class ProcessUpdateDBUtils {
 			String processNo = StringPool.BLANK;
 			String processName = StringPool.BLANK;
 			String registerBookCode = StringPool.BLANK;
+			Integer sampleCount = 0;
 			for (ProcessOption option : optionList) {
 				optionCode = option.getOptionCode();
 				optionName = option.getOptionName();
@@ -725,10 +726,11 @@ public class ProcessUpdateDBUtils {
 				processNo = option.getProcessNo();
 				processName = option.getProcessName();
 				registerBookCode = option.getRegisterBookCode();
+				sampleCount = option.getSampleCount();
 				//
 				actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 						autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
-						registerBookCode, serviceContext);
+						registerBookCode, sampleCount, serviceContext);
 			}
 		}
 	}
@@ -755,6 +757,7 @@ public class ProcessUpdateDBUtils {
 			String sampleData = StringPool.BLANK;
 			String formScript = StringPool.BLANK;
 			String formReport = StringPool.BLANK;
+			Integer fileMark = 0;
 			for (DossierPart dossierPart : dossierPartList) {
 				partNo = dossierPart.getPartNo();
 				partName = dossierPart.getPartName();
@@ -768,6 +771,7 @@ public class ProcessUpdateDBUtils {
 				deliverableAction = dossierPart.getDeliverableAction();
 				eForm = dossierPart.isEForm();
 				sampleData = dossierPart.getSampleData();
+				fileMark = dossierPart.getFileMark();
 				//
 				if (eForm) {
 					_log.info("eform: "+eForm);
@@ -790,7 +794,7 @@ public class ProcessUpdateDBUtils {
 				//
 				actionTemp.updateDossierPartDB(userId, groupId, templateNo, partNo, partName, partTip, partType,
 						multiple, formScript, formReport, required, esign, fileTemplateNo, deliverableType,
-						deliverableAction, eForm, sampleData, serviceContext);
+						deliverableAction, eForm, sampleData, fileMark, serviceContext);
 			}
 		}
 	}

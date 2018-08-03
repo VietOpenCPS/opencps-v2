@@ -581,7 +581,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 	public DossierPart updateDossierPartDB(long userId, long groupId, String templateNo, String partNo, String partName,
 			String partTip, Integer partType, boolean multiple, String formScript, String formReport, boolean required,
 			boolean esign, String fileTemplateNo, String deliverableType, Integer deliverableAction, boolean eForm,
-			String sampleData, ServiceContext serviceContext) throws PortalException {
+			String sampleData, Integer fileMark, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
@@ -615,6 +615,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		object.setDeliverableAction(deliverableAction);
 		object.setSampleData(sampleData);
 		object.setEForm(eForm);
+		object.setFileMark(fileMark);
 
 		return dossierPartPersistence.update(object);
 	}

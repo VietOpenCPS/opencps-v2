@@ -182,6 +182,7 @@
 		<column name="deliverableType" type="String"/>
 		<column name="deliverableAction" type="int"/>
 		<column name="eForm" type="boolean" />
+		<column name="fileMark" type="int" />
 		<!-- Order -->
 
 		<!-- Finder methods -->
