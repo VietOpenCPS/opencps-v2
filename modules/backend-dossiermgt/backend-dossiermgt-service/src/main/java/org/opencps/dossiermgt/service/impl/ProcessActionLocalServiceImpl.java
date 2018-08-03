@@ -577,10 +577,6 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		return processActionPersistence.findByG_SPID_PRESC(groupId, serviceProcessId, preStepCode);
 	}
 
-	public List<ProcessAction> getByGroupAndService(long groupId, long serviceProcessId) {
-		return processActionPersistence.findByF_GID_SID(groupId, serviceProcessId);
-	}
-
 	public List<ProcessAction> getByGroupAndAutoEvent(long groupId, String autoEvent, int start, int end) {
 		
 		if (groupId == 0)
@@ -642,4 +638,9 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		return processActionPersistence.update(object);
 
 	}
+
+	public List<ProcessAction> getByServiceStepCode(long groupId, long serviceProcessId, String preStepCode) {
+		return processActionPersistence.findByF_GID_SID_PRE(groupId, serviceProcessId, preStepCode);
+	}
+
 }
