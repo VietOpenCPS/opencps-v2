@@ -474,6 +474,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") String id);	
 	
 	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Path("/{id}/eforms/{partNo}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Add dossier file and update form data)", response = DossierFileModel.class)
@@ -488,7 +489,7 @@ public interface DossierManagement {
 			@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "partno of dossier part", required = true) @PathParam("partNo") String partNo,
-			@ApiParam(value = "Metadata of DossierFile") @FormParam("formData") @Nullable String formData);	
+			@ApiParam(value = "Metadata of DossierFile") @Multipart("formData") @Nullable String formData);	
 	
 	@GET
 	@Path("/{id}/eforms/{partNo}/formdata")

@@ -975,8 +975,8 @@
 		<column name="sequenceRole" type="String" />
 		<column name="durationCount" type="double" />
 		
-		<order by="desc">
-			<order-column name="modifiedDate" order-by="desc" />
+		<order by="asc">
+			<order-column name="sequenceNo" order-by="asc" />
 		</order>
         <finder name="G_SN" return-type="Collection">
             <finder-column name="groupId"></finder-column>

@@ -505,9 +505,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		long paymentAmount = 0;
 		String epaymentProfile = StringPool.BLANK;
 		String bankInfo = StringPool.BLANK;
-		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId,
-				referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
-				paymentFeeNote, epaymentProfile, bankInfo, context);
+//		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId,
+//				referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
+//				paymentFeeNote, epaymentProfile, bankInfo, context);
 		
 
 		dossierPersistence.update(dossier);
@@ -734,9 +734,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			paymentFee = serviceProcess.getPaymentFee();
 			_log.info("paymentFee: "+paymentFee);
 		}
-		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid, govAgencyCode,
-				govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote, epaymentProfile,
-				bankInfo, context);
+//		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid, govAgencyCode,
+//				govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote, epaymentProfile,
+//				bankInfo, context);
 
 		_log.info("SERVICEPROCESS"+ serviceProcess.getDossierNoPattern());
 		
