@@ -159,10 +159,12 @@ public class DossierActionsImpl implements DossierActions {
 			String statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
 
 			String subStatusCode = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
-			if (groupId == 55217) {
+			if (groupId == 55217 || groupId == 55301) {
 				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 				result.put("data", hits.toList());
+				
+				_log.info("GO HERE ***** ...... *****" + groupId);
 
 				long total = DossierLocalServiceUtil.countLucene(params, searchContext);
 
@@ -170,6 +172,7 @@ public class DossierActionsImpl implements DossierActions {
 
 				return result;
 			}
+			
 //			if (Validator.isNotNull(statusCode) && statusCode.indexOf(StringPool.COMMA) != -1) {
 //				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 //
