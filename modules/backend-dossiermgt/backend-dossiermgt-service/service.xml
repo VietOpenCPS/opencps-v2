@@ -868,7 +868,7 @@
 		<column name="sequenceNo" type="String" />
 		<column name="dossierStatus" type="String" />
 		<column name="dossierSubStatus" type="String" />
-		<column name="durationCount" type="int" />
+		<column name="durationCount" type="double" />
 		<column name="customProcessUrl" type="String" />
 		<column name="stepInstruction" type="String" />
 		<column name="briefNote" type="String" />

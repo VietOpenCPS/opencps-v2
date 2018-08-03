@@ -631,7 +631,8 @@ public class ProcessUpdateDBUtils {
 				fileName = fileTemp.getFilename();
 				if (Validator.isNotNull(fileTemplateNo)) {
 					String filePathTemplate = folderParentPath + ConstantUtils.SOURCE_FILES + StringPool.FORWARD_SLASH
-							+ fileTemplateNo;
+							+ fileName;
+					_log.info("filePathTemplate: "+filePathTemplate);
 					File file = new File(filePathTemplate);
 					FileEntry fileEntry = null;
 					if (file.exists() && !file.isDirectory()) {

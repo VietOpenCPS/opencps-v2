@@ -257,7 +257,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //					} else {
 //						durationDays = Math.round(durationCount / 8);
 //					}
-					Date dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
+					Date dueDate = null;
+					if (Validator.isNotNull(durationCount)) {
+						dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
+					}
+					
 					_log.info("dueDate: "+dueDate);
 //					if (durationDays > 0) {
 //						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
@@ -267,7 +271,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setReceiveDate(now);
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
-				}				
+				}
 			}
 		} else {
 

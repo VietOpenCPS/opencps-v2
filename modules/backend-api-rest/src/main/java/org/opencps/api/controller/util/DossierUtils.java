@@ -11,6 +11,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -127,11 +128,13 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
 			//Process OverDue
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
+			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
@@ -156,25 +159,48 @@ public class DossierUtils {
 //			if (Double.compare(durationCount, 0.0) != 0) {
 				long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-//				if (dAction != null) {
-//					String postStep = dAction.getStepCode();
-//					if (Validator.isNotNull(postStep)) {
-//						String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
-//						String govAgencyCode = doc.get(DossierTerm.GOV_AGENCY_CODE);
-//						String dossierTemp = doc.get(DossierTerm.DOSSIER_TEMPLATE_NO);
-//						long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-//						ProcessOption option = getProcessOption(serviceCode, govAgencyCode,
-//								dossierTemp, groupId);
-//						if (option != null) {
-//						ProcessStep step = ProcessStepLocalServiceUtil.getBySC_SPID(postStep,
-//								option.getServiceProcessId());
-//						}
-//						
-//					}
-//				}
-//			} else {
-//				model.setStepOverdue(StringPool.BLANK);
-//			}
+				if (dAction != null) {
+					long serviceProcessId = dAction.getServiceProcessId();
+					long groupId = dAction.getGroupId();
+					String postStep = dAction.getStepCode();
+				if (Validator.isNotNull(postStep)) {
+					ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStep, groupId, serviceProcessId);
+					if (step != null) {
+						double durationCountStep = step.getDurationCount();
+						_log.info("durationCountStep: "+durationCountStep);
+						Date dueDateStep = null;
+						if (durationCountStep > 0) {
+							dueDateStep = HolidayUtils.getDueDate(dAction.getCreateDate(), durationCountStep,
+									durationUnit, groupId);
+						} else {
+							model.setStepOverdue(StringPool.BLANK);
+						}
+						if (dueDateStep != null) {
+							long dueDateStepTimeStamp = dueDateStep.getTime();
+							if (dueDateStepTimeStamp > 0) {
+								long subTimeStepStamp = dateNowTimeStamp - dueDateStepTimeStamp;
+								if (subTimeStepStamp > 0) {
+									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
+									model.setStepOverdue("Quá hạn "+stepOverDue);
+									_log.info("setStepOverdue Qua Han: "+model.getStepOverdue());
+								} else {
+									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
+									model.setStepOverdue("Còn "+stepOverDue);
+									_log.info("setStepOverdue Còn Han: "+model.getStepOverdue());
+								}
+							} else {
+								model.setStepOverdue(StringPool.BLANK);
+							}
+						}  else {
+							model.setStepOverdue(StringPool.BLANK);
+						}
+					}
+				}  else {
+					model.setStepOverdue(StringPool.BLANK);
+				}
+			} else {
+				model.setStepOverdue(StringPool.BLANK);
+			}
 			//LamTV: Process Assigned dossier
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
 //			_log.info("ASSIGNED" + dau);
