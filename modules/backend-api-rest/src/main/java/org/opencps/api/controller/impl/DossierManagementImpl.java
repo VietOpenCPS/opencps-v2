@@ -2395,7 +2395,7 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("sequenceRole", ps.getSequenceRole());
 			sequenceObj.put("durationCount", ps.getDurationCount());
 
-			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
 			DossierAction firstAction = lstDossierActions.size() > 0 ? lstDossierActions.get(0) : null;
 			if (firstAction != null) {
 				sequenceObj.put("startDate", firstAction.getCreateDate().getTime());
