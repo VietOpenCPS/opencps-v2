@@ -48,4 +48,7 @@ public class ProcessActionTerm {
 	public static final int REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI = 5;
 	
 	public static final String ACTION_CREATE_HSLT = "3200";
+	
+	public static final String DUE_DATE_EDITABLE = "editable";
+	public static final String DUE_DATE_HOUR = "hour";
 }

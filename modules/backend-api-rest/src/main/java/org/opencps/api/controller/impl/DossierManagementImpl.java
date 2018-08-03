@@ -2402,15 +2402,16 @@ public class DossierManagementImpl implements DossierManagement {
 				actionObj.put("payload", da.getPayload());
 				actionObj.put("pending", da.getPending());
 				actionObj.put("rollbackable", da.getRollbackable());
-				actionObj.put("createDate", DateTimeUtils.convertDateToString(da.getCreateDate(), DateTimeUtils._TIMESTAMP));
-				actionObj.put("modifiedDate", DateTimeUtils.convertDateToString(da.getModifiedDate(), DateTimeUtils._TIMESTAMP));
-				actionObj.put("dueDate", DateTimeUtils.convertDateToString(da.getDueDate(), DateTimeUtils._TIMESTAMP));
+				actionObj.put("createDate", da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
+				actionObj.put("modifiedDate", da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
+				actionObj.put("dueDate", da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
 				actionObj.put("nextActionId", da.getNextActionId());
 				actionObj.put("state", da.getState());
 				actionObj.put("stepCode", da.getStepCode());
 				actionObj.put("stepName", da.getStepName());
 				actionObj.put("userId", da.getUserId());				
 				
+				_log.info("Action obj: " + actionObj.toJSONString());
 				actionsArr.put(actionObj);
 			}			
 			

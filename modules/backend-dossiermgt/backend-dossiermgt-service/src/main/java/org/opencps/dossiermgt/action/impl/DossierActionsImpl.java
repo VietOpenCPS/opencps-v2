@@ -20,6 +20,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
@@ -1419,21 +1420,22 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				//Put receiving to next action
-				if (processAction != null) {
+//				if (processAction != null) {
 					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 					
 					JSONObject receivingObj = JSONFactoryUtil.createJSONObject();
-					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : 0l);
-					receivingObj.put(DossierTerm.DUE_DATE, dossier.getDueDate() != null ? dossier.getDueDate().getTime() : 0l);
-					if (Validator.isNotNull(serviceProcess) && "0".equals(serviceProcess.getDueDatePattern())) {
-						receivingObj.put("editable", true);
-					}
-					else {
-						receivingObj.put("editable", false);
+					Date receiveDate = new Date();
+					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : receiveDate.getTime());
+					Date dueDate = null;
+					if (Validator.isNotNull(serviceProcess.getDurationCount())) {
+						dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
 					}
 					
+					receivingObj.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0l);
+					receivingObj.put("editable", DossierMgtUtils.isDueDateEditable(serviceProcess.getDueDatePattern()));
+										
 					result.put("receiving", receivingObj);
-				}
+//				}
 				//
 				String createDossierFiles = StringPool.BLANK;
 				String returnDossierFiles = StringPool.BLANK;
@@ -2796,8 +2798,7 @@ public class DossierActionsImpl implements DossierActions {
 				e.printStackTrace();
 			}
 		}
-		if (Validator.isNull(dossier.getReceiveDate())
-				&& Validator.isNotNull(dossier.getDossierNo())) {
+		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {
 			try {
 				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				dossier.setReceiveDate(now);

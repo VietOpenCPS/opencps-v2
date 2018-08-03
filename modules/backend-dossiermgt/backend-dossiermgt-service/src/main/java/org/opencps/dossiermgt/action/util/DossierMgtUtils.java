@@ -1,10 +1,10 @@
 package org.opencps.dossiermgt.action.util;
 
-import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
@@ -27,6 +27,18 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierMgtUtils {
+	public static boolean isDueDateEditable(String condition) {
+		try {
+			JSONObject obj = JSONFactoryUtil.createJSONObject(condition);
+			if (obj.has(ProcessActionTerm.DUE_DATE_EDITABLE)) {
+				return obj.getBoolean(ProcessActionTerm.DUE_DATE_EDITABLE);
+			}
+		} catch (JSONException e) {
+			return false;
+		}
+		
+		return condition.contains(ProcessActionTerm.DUE_DATE_EDITABLE);
+	}
 	public static ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
 			long groupId) throws PortalException {
 
