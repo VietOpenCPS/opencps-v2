@@ -1421,20 +1421,21 @@ public class DossierActionsImpl implements DossierActions {
 
 				//Put receiving to next action
 //				if (processAction != null) {
+					_log.info("Service process: " + serviceProcessId);
 					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 					
 					JSONObject receivingObj = JSONFactoryUtil.createJSONObject();
 					Date receiveDate = new Date();
 					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : receiveDate.getTime());
 					Date dueDate = null;
-					double durationCount = serviceProcess.getDurationCount();
+					Double durationCount = serviceProcess.getDurationCount();
 					if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 						dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
 					}
 					
 					receivingObj.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0l);
 					receivingObj.put("editable", DossierMgtUtils.isDueDateEditable(serviceProcess.getDueDatePattern()));
-										
+					_log.info("Receiving object: " + receivingObj.toJSONString());					
 					result.put("receiving", receivingObj);
 //				}
 				//
