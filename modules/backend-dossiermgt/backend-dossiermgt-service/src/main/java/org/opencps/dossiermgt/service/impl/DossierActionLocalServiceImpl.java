@@ -23,8 +23,10 @@ import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.impl.DossierActionImpl;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -44,6 +46,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -487,4 +490,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public List<DossierAction> findDossierActionByDID_FSN(long dossierId, String fromSequenceNo) {
 		return dossierActionPersistence.findByDID_FSN(dossierId, fromSequenceNo);
 	}
+	
+	public List<DossierAction> findDossierActionByG_DID_SN(long groupId, long dossierId, String sequenceNo) {
+		return dossierActionPersistence.findByG_DID_SN(groupId, dossierId, sequenceNo, QueryUtil.ALL_POS, QueryUtil.ALL_POS, OrderByComparatorFactoryUtil.create(DossierActionImpl.TABLE_NAME, "createDate"));
+	}	
 }

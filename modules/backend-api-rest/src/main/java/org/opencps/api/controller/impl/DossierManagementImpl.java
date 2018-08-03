@@ -2395,7 +2395,23 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("sequenceRole", ps.getSequenceRole());
 			sequenceObj.put("durationCount", ps.getDurationCount());
 
-			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByDID_FSN(dossier.getDossierId(), ps.getSequenceNo());
+			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+			DossierAction firstAction = lstDossierActions.size() > 0 ? lstDossierActions.get(0) : null;
+			if (firstAction != null) {
+				sequenceObj.put("startDate", firstAction.getCreateDate().getTime());
+			}
+			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
+			for (DossierAction da : lstDossierActions) {
+				JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+				
+				assignUserObj.put("userId", da.getUserId());
+				assignUserObj.put("userName", da.getUserName());
+				
+				assignUserArr.put(assignUserObj);
+			}
+			
+			sequenceObj.put("assignUsers", assignUserArr);
+			
 			JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
 			for (DossierAction da : lstDossierActions) {
 				JSONObject actionObj = JSONFactoryUtil.createJSONObject();
