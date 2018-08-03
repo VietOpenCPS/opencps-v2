@@ -1212,7 +1212,7 @@ public class DossierManagementImpl implements DossierManagement {
 	//LamTV: Process DoAction
 	@Override
 	public Response doAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String id, DoActionModel input) {
+			ServiceContext serviceContext, String id, DoActionModel input, Long dueDate) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
@@ -1233,6 +1233,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (dossier != null) {
 				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
+				if (Validator.isNotNull(dueDate)) {
+					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
+				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
