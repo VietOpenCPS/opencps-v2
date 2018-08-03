@@ -8,11 +8,11 @@
 				(opencps_statistic.month = ?) AND
 				(opencps_statistic.year = ?) AND
 				(opencps_statistic.domainCode = ?) AND
-				(opencps_statistic.domainCode = ?) AND
 				(opencps_statistic.govAgencyCode = ?) AND 
 				(opencps_statistic.groupAgencyCode = ?) AND 
 				(opencps_statistic.reporting = ?) AND
 				(opencps_statistic.groupId = ?)
+			ORDER BY month DESC
 		]]>
 	</sql>
 	

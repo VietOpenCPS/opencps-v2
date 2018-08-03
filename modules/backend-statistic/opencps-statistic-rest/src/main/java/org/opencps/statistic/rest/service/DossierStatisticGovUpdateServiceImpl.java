@@ -44,7 +44,6 @@ public class DossierStatisticGovUpdateServiceImpl
 				payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),
 				payload.getWaitingCount(), payload.getGovAgencyCode(), payload.getGovAgencyName(), StringPool.BLANK,
 				StringPool.BLANK, false);
-
 	}
 
 }

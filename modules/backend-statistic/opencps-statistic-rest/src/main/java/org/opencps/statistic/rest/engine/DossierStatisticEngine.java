@@ -28,6 +28,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceInfoRestFacadeImpl;
 import org.opencps.statistic.rest.service.DossierStatisticDomainUpdateServiceImpl;
 import org.opencps.statistic.rest.service.DossierStatisticGovUpdateServiceImpl;
+import org.opencps.statistic.rest.service.DossierStatisticSumYearService;
 import org.opencps.statistic.rest.service.DossierStatisticUpdateService;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.DossierStatusContants;
@@ -39,8 +40,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -81,13 +80,19 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 	private DossierStatisticUpdateService<HashMap<String, DossierStatisticData>, OpencpsDossierStatistic> updateDomainService = new DossierStatisticDomainUpdateServiceImpl();
 
+	private DossierStatisticSumYearService dossierStatisticSumYearService = new DossierStatisticSumYearService();
+	
+	private int CUR_YEAR = LocalDate.now().getYear();
+	
 	public static final int TYPE_1_ALL_GOV_ALL_DOMAIN = 1;
 
 	public static final int TYPE_2_EACH_GOV_ALL_DOMAIN_AND_EACH_GOV_EACH_DOMAIN = 2;
 
-	//public static final int TYPE_3_EACH_GOV_EACH_DOMAIN = 3;
+	// public static final int TYPE_3_EACH_GOV_EACH_DOMAIN = 3;
 
 	public static final int TYPE_4_ALL_GOV_EACH_DOMAIN = 4;
+
+	public static final int GROUP_TYPE_SITE = 1;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -102,7 +107,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		List<Group> sites = new ArrayList<Group>();
 
 		for (Group group : groups) {
-			if (group.getType() == 1 && group.isSite()) {
+			if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
 				sites.add(group);
 			}
 		}
@@ -115,11 +120,13 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			calulateDossierStatistic(TYPE_1_ALL_GOV_ALL_DOMAIN, site.getGroupId(), company.getCompanyId());
 
 			/* Run TYPE_2 */
-			calulateDossierStatistic(TYPE_2_EACH_GOV_ALL_DOMAIN_AND_EACH_GOV_EACH_DOMAIN, site.getGroupId(),company.getCompanyId());
+			calulateDossierStatistic(TYPE_2_EACH_GOV_ALL_DOMAIN_AND_EACH_GOV_EACH_DOMAIN, site.getGroupId(),
+					company.getCompanyId());
 
 			/* Run TYPE_3 */
 			calulateDossierStatistic(TYPE_4_ALL_GOV_EACH_DOMAIN, site.getGroupId(), company.getCompanyId());
-
+			
+			dossierStatisticSumYearService.caculateSumYear(site.getGroupId(), CUR_YEAR);
 		}
 
 	}
@@ -320,7 +327,8 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						} else {
 							/* ONTIMECOUNT */
 							if (Validator.isNull(dossierData.getDueDate())
-									|| (Validator.isNotNull(dossierData.getReleaseDate()) && dossierData.getReleaseDate().before(dossierData.getDueDate()))) {
+									|| (Validator.isNotNull(dossierData.getReleaseDate())
+											&& dossierData.getReleaseDate().before(dossierData.getDueDate()))) {
 
 								ontimeCount = onlineCount + 1;
 
@@ -411,7 +419,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		}
 
-		//logAsFormattedJson(LOG, domainStatisticData);
+		// logAsFormattedJson(LOG, domainStatisticData);
 
 		overtimeOutside = 0;
 
@@ -456,7 +464,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		govDossierStaticData.setCompanyId(companyId);
 		govDossierStaticData.setGroupId(groupId);
 
-		//logAsFormattedJson(LOG, govDossierStaticData);
+		// logAsFormattedJson(LOG, govDossierStaticData);
 	}
 
 	private static Date getFirstDay() {
@@ -470,21 +478,13 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		return Date.from(instant);
 	}
 
-	public static void logAsFormattedJson(Logger logger, Object obj) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			String contentFormatted = mapper.writeValueAsString(obj);
-			logger.info("Content: \n {}", contentFormatted);
-		} catch (JsonProcessingException e) {
-			logger.info("Error printing REST request! {}", e);
-		}
-	}
+
 
 	@Activate
 	@Modified
 	protected void activate() {
-		schedulerEntryImpl.setTrigger(TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(),
-				45, TimeUnit.SECOND));
+		schedulerEntryImpl.setTrigger(
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

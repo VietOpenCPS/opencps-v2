@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -30,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
@@ -49,6 +51,8 @@ public class OpencpsStatisticRestApplication extends Application {
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
 	private DossierFinderService dossierFinderService = new DossierFinderServiceImpl();
+	
+	public static final String ALL_MONTH = "-1";
 
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
@@ -132,13 +136,11 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
-			@QueryParam("month") int month, @QueryParam("year") int year, @QueryParam("domain") String domain,
-			@QueryParam("agency") String govAgencyCode, @QueryParam("group") String groupAgencyCode,
+			@QueryParam("month")  @DefaultValue(ALL_MONTH) int month, @QueryParam("year") int year, @QueryParam("domain") @DefaultValue(StringPool.BLANK) String domain,
+			@QueryParam("agency") @DefaultValue(StringPool.BLANK) String govAgencyCode, @QueryParam("group") String groupAgencyCode,
 			@QueryParam("reporting") boolean reporting, @QueryParam("start") int start, @QueryParam("end") int end) {
 
 		LOG.info("GET DossierStatisticResponse");
-		LOG.info("YEAR" + year);
-		LOG.info("MONTH" + month);
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 
@@ -203,12 +205,14 @@ public class OpencpsStatisticRestApplication extends Application {
 			throwException(new OpencpsServiceException(serviceExceptionDetails));
 
 		}
+		
+		if (month != -1){
+			if (month < 0 || month > 12) {
+				serviceExceptionDetails.setFaultCode("400");
+				serviceExceptionDetails.setFaultMessage("Invalid month");
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
 
-		if (month < 0 || month > 12) {
-			serviceExceptionDetails.setFaultCode("400");
-			serviceExceptionDetails.setFaultMessage("Invalid month");
-			throwException(new OpencpsServiceException(serviceExceptionDetails));
-
+			}
 		}
 
 	}
