@@ -2404,13 +2404,17 @@ public class DossierManagementImpl implements DossierManagement {
 				sequenceObj.put("startDate", firstAction.getCreateDate().getTime());
 			}
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
+			List<Long> lstUsers = new ArrayList<>();
+			
 			for (DossierAction da : lstDossierActions) {
-				JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
-				
-				assignUserObj.put("userId", da.getUserId());
-				assignUserObj.put("userName", da.getUserName());
-				
-				assignUserArr.put(assignUserObj);
+				if (!lstUsers.contains(da.getUserId())) {
+					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+					lstUsers.add(da.getUserId());
+					assignUserObj.put("userId", da.getUserId());
+					assignUserObj.put("userName", da.getUserName());
+					
+					assignUserArr.put(assignUserObj);					
+				}
 			}
 			
 			sequenceObj.put("assignUsers", assignUserArr);
