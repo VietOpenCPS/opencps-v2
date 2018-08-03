@@ -70,7 +70,7 @@ public abstract class OpencpsRestFacade<T, R> {
 	protected ResponseEntity<R> executeGenericRestCall(String url, HttpMethod requestMethod, HttpHeaders requestHeaders,
 			Object requestContent, Class<R> responseClass)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
-		LOGGER.info("RESOURCE: {}", url);
+		//LOGGER.info("RESOURCE: {}", url);
 
 		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 		Optional.ofNullable(proxy).ifPresent(requestFactory::setProxy);

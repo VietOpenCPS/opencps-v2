@@ -83,6 +83,14 @@ public class GetDossierData {
 		this.releaseDate = releaseDate;
 	}
 
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+
 	private String dossierStatus;
 	private String dossierSubStatus;
 	private Date receiveDate;
@@ -92,6 +100,7 @@ public class GetDossierData {
 	private Date releaseDate;
 	private String serviceCode;
 	private String govAgencyCode;
+	private String govAgencyName;
 	private long groupId;
 	
 }
