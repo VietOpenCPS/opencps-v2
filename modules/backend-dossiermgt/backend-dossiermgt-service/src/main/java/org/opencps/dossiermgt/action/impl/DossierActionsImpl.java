@@ -129,6 +129,8 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String AUTO_EVENT_SPECIAL = "special";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
+	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
+	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -2893,10 +2895,46 @@ public class DossierActionsImpl implements DossierActions {
 		
 		if (dossierAction != null) {
 			if (dueDate != null) {
+				long dateNowTimeStamp = now.getTime();
+				Long dueDateTimeStamp = dueDate.getTime();
+				int durationUnit = 0;
+				int overdue = 0;
+				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+					long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+					if (subTimeStamp > 0) {
+						overdue = calculatorOverDue(durationUnit, subTimeStamp);
+					} else {
+					}
+				} else {
+				}
+
+				dossierAction.setActionOverdue(overdue);
+				
 				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
 			}
 		}
+	
 		return bResult;
+	}
+	
+	private static int calculatorOverDue(int durationUnit, long subTimeStamp) {
+		if (subTimeStamp < 0) {
+			subTimeStamp = Math.abs(subTimeStamp);
+		}
+		double dueCount = 0d;
+		double overDue = 0d;
+		int retval = Double.compare(durationUnit, 1.0);
+		if (retval < 0) {
+			dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
+			double subDueCount = (double) Math.round(dueCount * 100) / 100;
+			overDue = (double) Math.ceil(subDueCount * 4) / 4;
+			return (int)overDue;
+		} else {
+			dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
+			overDue = (double) Math.round(dueCount);
+		}
+
+		return (int)overDue;
 	}
 	
 	@Override

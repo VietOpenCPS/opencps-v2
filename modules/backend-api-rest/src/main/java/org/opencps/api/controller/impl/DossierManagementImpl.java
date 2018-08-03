@@ -2668,7 +2668,14 @@ public class DossierManagementImpl implements DossierManagement {
 
 		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
 					-1, -1, serviceContext);
-		_log.info("JSON data: " + jsonData.toJSONString());
+		long total = jsonData.getLong("total");
+		if (total > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");			
+		}
+		else {
+			
+		}
+		
 		return Response.status(200).entity(jsonData.toJSONString()).build();
 	}
 
