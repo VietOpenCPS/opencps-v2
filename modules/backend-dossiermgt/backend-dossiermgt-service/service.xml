@@ -1165,6 +1165,9 @@
 		<column name="stepInstruction" type="String" />
 		<column name="state" type="int" />
 		<column name="eventStatus" type="int" />
+        <order by="asc">
+            <order-column name="createDate" order-by="asc"></order-column>
+        </order>
 
 		<finder return-type="DossierAction" name="DID_DPG">
 			<finder-column name="dossierId" />
@@ -1193,6 +1196,16 @@
 			<finder-column name="pending" />
 		</finder>
         <finder name="DID_FSN" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fromSequenceNo"></finder-column>
+        </finder>
+        <finder name="G_DID_SN" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="sequenceNo"></finder-column>
+        </finder>
+        <finder name="G_DID_FSN" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
             <finder-column name="dossierId"></finder-column>
             <finder-column name="fromSequenceNo"></finder-column>
         </finder>
