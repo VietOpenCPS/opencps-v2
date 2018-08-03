@@ -109,7 +109,7 @@ public class PaymentFileUtils {
 //				model.setInvoiceFileType(StringPool.BLANK);
 //				model.setInvoiceFileSize(0L);
 //			}
-			model.setConfirmFileEntryId(GetterUtil.getLong(doc.get(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID)));
+//			model.setConfirmFileEntryId(GetterUtil.getLong(doc.get(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID)));
 			
 //			Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
 //			model.setBriefNote(dossier.getBriefNote());
@@ -140,8 +140,8 @@ public class PaymentFileUtils {
 		// TODO:
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
-			model.setApplicantName(dossier.getApplicantName());
-			model.setApplicantIdNo(dossier.getApplicantIdNo());
+//			model.setApplicantName(dossier.getApplicantName());
+//			model.setApplicantIdNo(dossier.getApplicantIdNo());
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -184,10 +184,10 @@ public class PaymentFileUtils {
 				? dossier.getApplicantIdNo() : StringPool.BLANK);
 
 		model.setPaymentFee(paymentFile.getPaymentFee());
-		model.setAdvanceAmount(paymentFile.getAdvanceAmount());
-		model.setFeeAmount(paymentFile.getFeeAmount());
-		model.setServiceAmount(paymentFile.getServiceAmount());
-		model.setShipAmount(paymentFile.getShipAmount());
+//		model.setAdvanceAmount(paymentFile.getAdvanceAmount());
+//		model.setFeeAmount(paymentFile.getFeeAmount());
+//		model.setServiceAmount(paymentFile.getServiceAmount());
+//		model.setShipAmount(paymentFile.getShipAmount());
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
 		model.setPaymentNote(paymentFile.getPaymentNote());
 		model.setBankInfo(paymentFile.getBankInfo());
@@ -276,7 +276,7 @@ public class PaymentFileUtils {
 			model.setApplicantIdNo(doc.get(PaymentFileTerm.APPLICANT_ID_NO));
 			model.setIsNew(GetterUtil.getBoolean(doc.get(PaymentFileTerm.IS_NEW)));
 			model.setPaymentFee(doc.get(PaymentFileTerm.PAYMENT_FEE));
-			model.setPaymentAmount(GetterUtil.getLong(doc.get(PaymentFileTerm.PAYMENT_AMOUNT)));
+//			model.setPaymentAmount(GetterUtil.getLong(doc.get(PaymentFileTerm.PAYMENT_AMOUNT)));
 			model.setPaymentNote(doc.get(PaymentFileTerm.PAYMENT_NOTE));
 			model.setBankInfo(doc.get(PaymentFileTerm.BANK_INFO));
 			model.setEpaymentProfile(doc.get(PaymentFileTerm.EPAYMENT_PROFILE));
@@ -338,7 +338,7 @@ public class PaymentFileUtils {
 
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
 			
-			model.setBriefNote(dossier.getBriefNote());
+//			model.setBriefNote(dossier.getBriefNote());
 
 			results.add(model);
 
