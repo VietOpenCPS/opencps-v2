@@ -1725,6 +1725,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
 		_log.info("USER_ID:" + userId);
+		
+		boolean rootGovAgency = false;
 
 		if (Validator.isNotNull(employee)) {
 			isEmployee = true;
@@ -1732,13 +1734,33 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			List<EmployeeJobPos> employeeJobPos = EmployeeJobPosLocalServiceUtil
 					.findByF_EmployeeId(employee.getEmployeeId());
 			
+			
+			for (EmployeeJobPos emJobPos : employeeJobPos) {
+				long workingUitId = emJobPos.getWorkingUnitId();
+				
+				try {
+					String govcode = WorkingUnitLocalServiceUtil.getWorkingUnit(workingUitId).getGovAgencyCode();
+					
+					if (govcode.contentEquals("BVHTTDL")) {
+						rootGovAgency = true;
+						_log.info("ROOTGOVAGENCY*******:" + rootGovAgency);
+
+						break;
+					}
+					
+				} catch (Exception e) {
+					_log.info("AGENCY ERROR:" + workingUitId);
+				}
+			
+			}
+			
 			for (EmployeeJobPos emJobPos : employeeJobPos) {
 				long workingUitId = emJobPos.getWorkingUnitId();
 				
 				if (workingUitId != 0) {
 					try {
 						agencies.add(WorkingUnitLocalServiceUtil.getWorkingUnit(workingUitId).getGovAgencyCode());
-
+						
 					} catch (Exception e) {
 						_log.info("AGENCY ERROR:" + workingUitId);
 					}
@@ -1746,8 +1768,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 		
-
-
 		
 		// TODO
 		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
@@ -1784,7 +1804,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 		
-		if (isEmployee) {
+		if (isEmployee && !rootGovAgency) {
 			
 			_log.info("IS EMPLOYEE");
 			
@@ -1803,6 +1823,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+				
+				
 			}
 		} else  {
 			if (Validator.isNotNull(agency)) {
@@ -2264,6 +2286,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		// Get Agency of User
 		boolean isEmployee = false;
+		boolean rootGovAgency = false;
 
 		List<String> agencies = new ArrayList<>();
 
@@ -2276,6 +2299,26 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			List<EmployeeJobPos> employeeJobPos = EmployeeJobPosLocalServiceUtil
 					.findByF_EmployeeId(employee.getEmployeeId());
+			
+			
+			for (EmployeeJobPos emJobPos : employeeJobPos) {
+				long workingUitId = emJobPos.getWorkingUnitId();
+				
+				try {
+					String govcode = WorkingUnitLocalServiceUtil.getWorkingUnit(workingUitId).getGovAgencyCode();
+					
+					if (govcode.contentEquals("BVHTTDL")) {
+						rootGovAgency = true;
+						_log.info("ROOTGOVAGENCY*******:" + rootGovAgency);
+
+						break;
+					}
+					
+				} catch (Exception e) {
+					_log.info("AGENCY ERROR:" + workingUitId);
+				}
+			
+			}
 			
 			for (EmployeeJobPos emJobPos : employeeJobPos) {
 				long workingUitId = emJobPos.getWorkingUnitId();
@@ -2300,7 +2343,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		} else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
-		if (isEmployee) {
+		if (isEmployee && !rootGovAgency) {
 			
 			_log.info("IS EMPLOYEE");
 			

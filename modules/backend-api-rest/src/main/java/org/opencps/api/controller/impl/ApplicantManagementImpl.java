@@ -67,9 +67,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 			
-			if (!auth2.checkToken(request, header)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth2.checkToken(request, header)) {
+//				throw new UnauthenticationException();
+//			}
 			
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
