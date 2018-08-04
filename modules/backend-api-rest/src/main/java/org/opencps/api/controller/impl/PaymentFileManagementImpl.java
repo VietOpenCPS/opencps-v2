@@ -809,10 +809,17 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFileInputModel PaymentFileInput = new PaymentFileInputModel();
 
-			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
-					input.getPaymentFee(), 0l, 0l, 0l, 0l,
-					0l, input.getPaymentNote(), input.getEpaymentProfile(), input.getBankInfo(),
-					0, input.getPaymentMethod(), serviceContext);
+			PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());			PaymentFile paymentFile = null;
+			
+			if (oldPaymentFile != null) {
+				paymentFile = oldPaymentFile;
+			}
+			else {
+				paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
+						input.getPaymentFee(), 0l, 0l, 0l, 0l,
+						0l, input.getPaymentNote(), input.getEpaymentProfile(), input.getBankInfo(),
+						0, input.getPaymentMethod(), serviceContext);				
+			}
 			
 			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
 			

@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -70,6 +71,7 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessSequence;
@@ -89,6 +91,7 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -1212,7 +1215,9 @@ public class DossierManagementImpl implements DossierManagement {
 	//LamTV: Process DoAction
 	@Override
 	public Response doAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String id, DoActionModel input, Long dueDate) {
+			ServiceContext serviceContext, String id, DoActionModel input, Long dueDate, Long feeAmount,
+			Long serviceAmount,
+			Long shipAmount) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
@@ -1256,6 +1261,11 @@ public class DossierManagementImpl implements DossierManagement {
 										serviceProcessId);
 								_log.info("Process action: " + proAction);
 								if (proAction != null) {
+									PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+									if (oldPaymentFile != null) {
+										PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
+									}
+									
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
 											input.getActionUser(), input.getActionNote(), input.getPayload(),
 											input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(), serviceContext);
