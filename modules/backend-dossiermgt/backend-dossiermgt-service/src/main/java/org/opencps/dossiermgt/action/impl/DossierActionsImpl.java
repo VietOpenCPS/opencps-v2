@@ -1470,13 +1470,21 @@ public class DossierActionsImpl implements DossierActions {
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 						serviceProcessId);
 				if (processStep != null) {
+					List<User> lstUser = new ArrayList<>();
+					
 					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 							.findByP_S_ID(processStep.getProcessStepId());
-					if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
-						List<User> lstUser = processRoleListUser(processStepRoleList, serviceProcessId);
-						if (lstUser != null && !lstUser.isEmpty()) {
-							result.put("lstUser", lstUser);
+					if (Validator.isNotNull(processStep.getRoleAsStep())) {
+						String[] steps = StringUtil.split(processStep.getRoleAsStep());
+						for (String stepCode : steps) {
+							lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, serviceProcessId));
 						}
+					}
+					if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+						lstUser.addAll(processRoleListUser(processStepRoleList, serviceProcessId));
+					}
+					if (lstUser != null && !lstUser.isEmpty()) {
+						result.put("lstUser", lstUser);
 					}
 				}
 
@@ -4792,6 +4800,28 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return lstUser;
 	}
 
+	private List<User> processRoleAsStepListUser(Dossier dossier, String stepCode, long serviceProcessId) {
+		List<User> lstUser = null;
+		// Check roles
+		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
+		
+		lstUser = new ArrayList<User>();
+		for (DossierActionUser dau : lstDaus) {
+			User user = UserLocalServiceUtil.fetchUser(dau.getUserId());
+			
+			HashMap<String, Object> assigned = new HashMap<>();
+			assigned.put(ProcessStepRoleTerm.ASSIGNED, dau.getAssigned());
+			HashMap<String, Object> moderator = new HashMap<>();
+			moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator());
+			user.setModelAttributes(moderator);
+			user.setModelAttributes(assigned);
+					
+			lstUser.add(user);
+		}
+
+		return lstUser;
+	}
+	
 	//LamTV_Process list file result
 	private JSONObject processFileResult(List<DossierFile> dossierFilesResult, JSONObject createFile, String partNo) {
 		boolean eForm = false;
