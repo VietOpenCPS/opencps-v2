@@ -189,5 +189,17 @@
 				<xsd:element name="bankInfo" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
+	</xsd:element>		
+	
+	<xsd:element name="DossierDocumentModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="documentType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="documentName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="documentCode" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
 	</xsd:element>						
+					
 </xsd:schema>
