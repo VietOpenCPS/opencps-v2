@@ -2518,6 +2518,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateDossier(long dossierId, JSONObject obj) throws NoSuchDossierException {
+		_log.info("Object dossier update: " + obj.toJSONString());
 		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
 		
 		if (obj.has(DossierTerm.DOSSIER_NOTE)) {
@@ -2531,7 +2532,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 		if (obj.has(DossierTerm.DOSSIER_NO)) {
-			if (!obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
+			_log.info("Sync dossier no");
+			if (Validator.isNotNull(obj.getString(DossierTerm.DOSSIER_NO)) && !obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
+				_log.info("Sync set dossier no");
 				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
 			}
 		}
