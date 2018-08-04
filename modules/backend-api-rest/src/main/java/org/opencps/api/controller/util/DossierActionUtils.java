@@ -294,7 +294,7 @@ public class DossierActionUtils {
 			}
 
 			JSONObject receivingObj = jsonData.getJSONObject("receiving");
-			_log.info("Receiving object: " + receivingObj.toJSONString());
+//			_log.info("Receiving object: " + receivingObj.toJSONString());
 			if (receivingObj != null) {
 				ReceivingModel receiving = new ReceivingModel();
 				receiving.setDueDate(receivingObj.getLong(DossierTerm.DUE_DATE));
