@@ -2831,7 +2831,8 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 			option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, dossier.getGroupId());
 			long serviceProcessId = option.getServiceProcessId();
-
+			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+			
 			String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
 					dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
@@ -2888,6 +2889,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				
 				if (Validator.isNotNull(dueDate)) {
+					dossier.setDueDate(dueDate);
 					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
 				}
 			} catch (PortalException e) {
