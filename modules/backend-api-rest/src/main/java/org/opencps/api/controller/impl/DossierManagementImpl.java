@@ -1060,7 +1060,10 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), input.getViaPostal(),
 					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(),
-					input.getApplicantNote(), serviceContext);
+					input.getApplicantNote(), input.isSameAsApplicant(),
+					input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(),
+					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
+					input.getDelegateDistrictCode(), input.getDelegateWardCode(), serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
@@ -2787,6 +2790,142 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		
 		return Response.status(200).entity("{}").build();
+	}
+
+	@Override
+	public Response addDossierPublish(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+//			int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
+
+			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
+					input.getDossierTemplateNo(), groupId);
+
+			// Create dossierNote
+			int originality = GetterUtil.getInteger(input.getOriginality());
+
+//			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
+//				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+
+//			Dossier checkDossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+			
+//			if (checkDossier != null) {
+//				DossierDetailModel result = DossierUtils.mappingForGetDetail(checkDossier, user.getUserId());
+//
+//				return Response.status(200).entity(result).build();
+//			}
+			
+//			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
+//			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+//			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+//			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+//			_log.info("Service code: " + input.getServiceCode());
+//			String password = StringPool.BLANK;
+//			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
+//				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
+//			}
+			//Get input
+			String referenceUid = input.getReferenceUid();
+			int counter = 0;
+			String serviceCode = input.getServiceCode();
+			String serviceName = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				serviceName = getServiceName(input.getServiceCode(), groupId);
+			}
+			
+			
+//			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
+			
+
+//			Dossier dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
+//						input.getGovAgencyCode(), govAgencyName, input.getApplicantName(), input.getApplicantIdType(),
+//						input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
+//						cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
+//						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
+//						input.getDossierTemplateNo(), password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+//						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
+//						Integer.valueOf(input.getOriginality()), serviceContext);
+//			}
+//			_log.info("Dossier created: " + dossier);
+//			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
+//				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+//				if (applicant != null) {
+//					dossier = DossierLocalServiceUtil.updateApplicantInfo(
+//							dossier.getDossierId(), 
+//							applicant.getApplicantIdDate(),
+//							applicant.getApplicantIdNo(),
+//							applicant.getApplicantIdType(),
+//							applicant.getApplicantName(),
+//							applicant.getAddress(),
+//							applicant.getCityCode(),
+//							applicant.getCityName(),
+//							applicant.getDistrictCode(),
+//							applicant.getDistrictName(),
+//							applicant.getWardCode(),
+//							applicant.getWardName(),
+//							applicant.getContactEmail(),
+//							applicant.getContactTelNo());
+//				}
+//			}
+//			if (Validator.isNull(dossier)) {
+//				throw new NotFoundException("Cant add DOSSIER");
+//			}
+
+			//Create DossierMark
+//			if (originality != DossierTerm.ORIGINALITY_MOTCUA) {
+//				String templateNo = dossier.getDossierTemplateNo();
+//				if (Validator.isNotNull(templateNo)) {
+//					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, templateNo);
+//					if (partList != null && partList.size() > 0) {
+//						for (DossierPart dossierPart : partList) {
+//							int fileMark = dossierPart.getFileMark();
+//							String dossierPartNo = dossierPart.getPartNo();
+//							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
+//									fileMark, 0, StringPool.BLANK, serviceContext);
+//						}
+//					}
+//				}
+//			}
+
+			//Create dossier user
+//			List<DossierUser> lstDus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
+//			if (lstDus.size() == 0) {
+//				DossierUserActions duActions = new DossierUserActionsImpl();
+//				duActions.initDossierUser(groupId, dossier);				
+//			}
+//			
+//			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
+//				long userId = serviceContext.getUserId();
+//				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
+//			}
+//			
+//			DossierLocalServiceUtil.updateDossier(dossier);
+//
+//			//Add to dossier user based on service process role
+//			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
+//			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
+//			
+//			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+			DossierDetailModel result = null;
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
+		}
 	}
 
 }

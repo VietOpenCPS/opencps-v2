@@ -2401,7 +2401,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
-			ServiceContext serviceContext) {
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -2464,6 +2466,52 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalCityCode(StringPool.BLANK);
 			dossier.setPostalTelNo(StringPool.BLANK);
 		}
+
+		if (isSameAsApplicant) {
+			dossier.setDelegateName(applicantName);
+			dossier.setDelegateIdNo(applicantIdNo);
+			dossier.setDelegateTelNo(contactTelNo);
+			dossier.setDelegateAddress(address);
+			if (Validator.isNotNull(cityCode)) {
+				dossier.setDelegateCityCode(cityCode);
+				dossier.setDelegateCityName(getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, cityCode));
+			}
+
+			if (Validator.isNotNull(districtCode)) {
+				dossier.setDelegateDistrictCode(districtCode);
+				dossier.setDelegateDistrictName(
+						getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, districtCode));
+			}
+
+			if (Validator.isNotNull(wardCode)) {
+				dossier.setDelegateWardCode(wardCode);
+				dossier.setDelegateWardName(getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, wardCode));
+			}
+		} else {
+			dossier.setDelegateName(delegateName);
+			dossier.setDelegateIdNo(delegateIdNo);
+			dossier.setDelegateTelNo(delegateTelNo);
+			dossier.setDelegateAddress(delegateAddress);
+
+			if (Validator.isNotNull(delegateCityCode)) {
+				dossier.setDelegateCityCode(delegateCityCode);
+				dossier.setDelegateCityName(
+						getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, delegateCityCode));
+			}
+
+			if (Validator.isNotNull(delegateDistrictCode)) {
+				dossier.setDelegateDistrictCode(delegateDistrictCode);
+				dossier.setDelegateDistrictName(
+						getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, delegateDistrictCode));
+			}
+
+			if (Validator.isNotNull(delegateWardCode)) {
+				dossier.setDelegateWardCode(delegateWardCode);
+				dossier.setDelegateWardName(
+						getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, delegateWardCode));
+			}
+		}
+
 		dossier.setApplicantNote(applicantNote);
 
 		return dossierPersistence.update(dossier);
