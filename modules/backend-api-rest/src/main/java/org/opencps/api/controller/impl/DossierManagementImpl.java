@@ -2421,7 +2421,7 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceObj.put("sequenceName", ps.getSequenceName());
 			sequenceObj.put("sequenceRole", ps.getSequenceRole());
 			sequenceObj.put("durationCount", ps.getDurationCount());
-
+			
 			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
 				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
 			}
@@ -2438,6 +2438,14 @@ public class DossierManagementImpl implements DossierManagement {
 				if (lstDossierActions.size() > 0) {
 					sequenceObj.put("startDate", lstDossierActions.get(0).getCreateDate().getTime());
 				}				
+			}
+			
+			if (lstDossierActions.size() > 0) {
+				DossierAction lastDASequence = lstDossierActions.get(lstDossierActions.size() - 1);
+				if (lastDASequence.getActionOverdue() != 0) {
+					String preText = (lastDASequence.getActionOverdue() > 0 ? "Còn " : "Quá ");
+					sequenceObj.put("overdueText", preText + lastDASequence.getActionOverdue() + " ngày");
+				}
 			}
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
 			List<Long> lstUsers = new ArrayList<>();
