@@ -1260,10 +1260,19 @@ public class DossierManagementImpl implements DossierManagement {
 								long serviceProcessId = option.getServiceProcessId();
 								ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 										serviceProcessId);
+								if (feeAmount == null) {
+									feeAmount = 0l;
+								}
+								if (serviceAmount == null) {
+									serviceAmount = 0l;
+								}
+								if (shipAmount == null) {
+									shipAmount = 0l;
+								}
 								_log.info("Process action: " + proAction);
 								if (proAction != null) {
 									PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-									if (oldPaymentFile != null) {
+									if (oldPaymentFile != null && (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
 										PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
 									}
 									

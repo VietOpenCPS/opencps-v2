@@ -257,18 +257,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //					} else {
 //						durationDays = Math.round(durationCount / 8);
 //					}
-					Date dueDate = null;
-					if (Validator.isNotNull(durationCount) && durationCount > 0) {
-						dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
-					}
-					
-					_log.info("dueDate: "+dueDate);
+//					Date dueDate = null;
+//					if (Validator.isNotNull(durationCount) && durationCount > 0) {
+//						dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
+//					}
+//					
+//					_log.info("dueDate: "+dueDate);
 //					if (durationDays > 0) {
 //						dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
 //					}
 
-					dossier.setDueDate(dueDate);
-					dossier.setReceiveDate(now);
+//					dossier.setDueDate(dueDate);
+//					dossier.setReceiveDate(now);
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
 				}
