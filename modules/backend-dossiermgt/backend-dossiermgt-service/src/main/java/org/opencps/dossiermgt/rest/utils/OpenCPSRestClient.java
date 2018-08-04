@@ -12,6 +12,7 @@ import javax.ws.rs.HttpMethod;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
+import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
@@ -256,4 +257,28 @@ public class OpenCPSRestClient {
 		return result;
 		
 	}	
+	
+	public DossierDocumentModel postDossierDocument(File file, String dossierUnique, DossierDocumentModel model) {
+		DossierDocumentModel result = null;
+
+		try {
+
+			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierUnique + "/documents";
+			InvokeREST callRest = new InvokeREST();
+			HashMap<String, String> properties = OpenCPSConverter.convertDossierDocumentHttpParams(model);
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostFileAPI(groupId, HttpMethod.POST, "application/json", 
+					 baseUrl, requestURL, username,
+					password, properties, file, context);
+//			_log.info("Post dossier file eform: " + jsonObj);
+			result = OpenCPSConverter.convertDossierDocument(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+		}
+
+		return result;
+		
+	}		
 }
