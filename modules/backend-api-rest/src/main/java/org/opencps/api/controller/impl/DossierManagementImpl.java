@@ -86,6 +86,7 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
@@ -887,6 +888,22 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			if (Validator.isNull(dossier)) {
 				throw new NotFoundException("Cant add DOSSIER");
+			}
+
+			//Create DossierMark
+			if (originality != DossierTerm.ORIGINALITY_MOTCUA) {
+				String templateNo = dossier.getDossierTemplateNo();
+				if (Validator.isNotNull(templateNo)) {
+					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, templateNo);
+					if (partList != null && partList.size() > 0) {
+						for (DossierPart dossierPart : partList) {
+							int fileMark = dossierPart.getFileMark();
+							String dossierPartNo = dossierPart.getPartNo();
+							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
+									fileMark, 0, StringPool.BLANK, serviceContext);
+						}
+					}
+				}
 			}
 
 			//Create dossier user
