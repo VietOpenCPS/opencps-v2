@@ -243,6 +243,12 @@ public class DossierActionUtils {
 //				_log.info("Payment object: " + jsonData.getJSONObject("payment").toJSONString());
 				JSONObject paymentObject = jsonData.getJSONObject("payment");
 				if (paymentObject != null) {
+					if (paymentObject.has("paymentFee")) {
+						payment.setPaymentFee(paymentObject.getString("paymentFee"));
+					}
+					if (paymentObject.has("paymentNote")) {
+						payment.setPaymentNote(paymentObject.getString("paymentNote"));
+					}
 					if (paymentObject.has("requestPayment")) {
 						payment.setRequestPayment(paymentObject.getInt("requestPayment"));
 					}

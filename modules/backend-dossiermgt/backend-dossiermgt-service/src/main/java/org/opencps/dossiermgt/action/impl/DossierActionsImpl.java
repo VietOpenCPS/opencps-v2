@@ -1400,7 +1400,7 @@ public class DossierActionsImpl implements DossierActions {
 					postStepCode = processAction.getPostStepCode();
 					serviceProcessId = processAction.getServiceProcessId();
 					payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
-					_log.info("Payment fee: " + payment);
+//					_log.info("Payment fee: " + payment);
 					String paymentFeeData = processAction.getPaymentFee();
 					if (Validator.isNotNull(paymentFeeData)) {
 						JSONObject jsonPaymentFee = JSONFactoryUtil.createJSONObject(paymentFeeData);

@@ -44,6 +44,8 @@ import javax.xml.bind.annotation.XmlType;
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DossierActionPaymentModel", propOrder = {
+"paymentFee",
+"paymentNote",
 "requestPayment",
 "advanceAmount",
 "feeAmount",
@@ -52,7 +54,8 @@ import javax.xml.bind.annotation.XmlType;
 "editable"
 })
 public class DossierActionPaymentModel {
-
+	protected String paymentFee;
+	protected String paymentNote;
 	protected Integer requestPayment;
 	protected Long advanceAmount;
 	protected Long feeAmount;
@@ -96,5 +99,16 @@ public class DossierActionPaymentModel {
 	public void setEditable(Boolean editable) {
 		this.editable = editable;
 	}
-
+	public void setPaymentFee(String paymentFee) {
+		this.paymentFee = paymentFee;
+	}
+	public String getPaymentFee() {
+		return paymentFee;
+	}
+	public void setPaymentNote(String paymentNote) {
+		this.paymentNote = paymentNote;
+	}
+	public String getPaymentNote() {
+		return paymentNote;
+	}
 }
