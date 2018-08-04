@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
@@ -2373,9 +2374,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	public void removeDossierByG_NOTO_DS(int originality, String dossierStatus) {
 		List<Dossier> lstDossiers = dossierPersistence.findByNOTO_DS(originality, dossierStatus);
+		Date now = new Date();
+		
 		for (Dossier dossier : lstDossiers) {
+		    long diffInMillies = Math.abs(now.getTime() - dossier.getCreateDate().getTime());
+		    long diff = TimeUnit.MILLISECONDS.convert(diffInMillies, TimeUnit.MINUTES);
+		    
 			try {
-				dossierPersistence.remove(dossier.getDossierId());
+				if (diff > 30)
+					dossierPersistence.remove(dossier.getDossierId());
 			} catch (NoSuchDossierException e) {
 //				e.printStackTrace();
 			}
