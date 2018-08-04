@@ -1352,10 +1352,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setProcessDate(date);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 	
 	@Indexable(type = IndexableType.REINDEX)
@@ -1378,10 +1375,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitDate(date);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1404,10 +1398,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setReceiveDate(date);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1430,10 +1421,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setDueDate(date);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1456,10 +1444,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setReleaseDate(date);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1484,10 +1469,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitting(true);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1514,10 +1496,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitting(true);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1540,10 +1519,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setFinishDate(date);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1568,10 +1544,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier.setSubmitting(true);
 
-		dossierPersistence.update(dossier);
-
-		return dossier;
-
+		return dossierPersistence.update(dossier);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
