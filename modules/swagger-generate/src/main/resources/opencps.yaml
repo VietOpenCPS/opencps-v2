@@ -727,13 +727,13 @@ paths:
             $ref: '#/definitions/DossierDocumentModel'
         400:
           description: DossierDocument has not data
-  /dossiers/{id}/documents/{typeCode}:
+  /dossiers/{id}/documents/{referenceUid}:
     get:
       tags:
       - DossierDocuments
-      summary: Download file document by typeCode
-      operationId: downloadDocByTypeCode
-      description: Download file document by typeCode
+      summary: Download file document by referenceUid
+      operationId: downloadDocByReferenceUid
+      description: Download file document by referenceUid
       consumes:
       - applicantion/json
       - applicantion/xml
@@ -742,7 +742,7 @@ paths:
       - applicantion/xml
       parameters:
         - $ref: '#/parameters/id'
-        - $ref: '#/parameters/typeCode'
+        - $ref: '#/parameters/referenceUid'
       responses:
         200:
           description: Download file is success
@@ -1327,6 +1327,12 @@ parameters:
     type: string
     required: true
     description: id or code of DocumentType
+  referenceUid:
+    name: referenceUid
+    in: path
+    type: string
+    required: true
+    description: referenceUid of Document
   typeCode:
     name: typeCode
     in: path
