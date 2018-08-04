@@ -20,6 +20,7 @@ import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DoActionModel;
+import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
@@ -1310,13 +1311,15 @@ public class DossierManagementImpl implements DossierManagement {
 				if (doc != null) {
 					dossierDocumentId = doc.getDossierDocumentId();
 				}
-				String strDossierResult = JSONFactoryUtil.looseSerializeDeep(dossierResult);
-				JSONObject jsonData = null;
-				if (Validator.isNotNull(strDossierResult)) {
-					jsonData = JSONFactoryUtil.createJSONObject(strDossierResult);
-					jsonData.put(DossierActionTerm.DOSSIER_DOCUMENT_ID, dossierDocumentId);
-				}
-				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(jsonData)).build();
+				
+				DossierActionDetailModel dAction = DossierUtils.mappingDossierAction(dossierResult, dossierDocumentId);
+//				String strDossierResult = JSONFactoryUtil.looseSerializeDeep(dossierResult);
+//				JSONObject jsonData = null;
+//				if (Validator.isNotNull(strDossierResult)) {
+//					jsonData = JSONFactoryUtil.createJSONObject(strDossierResult);
+//					jsonData.put(DossierActionTerm.DOSSIER_DOCUMENT_ID, dossierDocumentId);
+//				}
+				return Response.status(200).entity(dAction).build();
 			}
 			else {
 				return Response.status(405).entity("{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
