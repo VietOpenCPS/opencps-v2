@@ -140,13 +140,16 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
 		DossierDocumentModel result = null;
-
+		ServiceContext context = new ServiceContext();
+		
+		context.setUserId(user.getUserId());
+		
 		try {
 
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-
+			_log.info("In create dossier doc");
 			Dossier dossier = null;
 			long dossierActionId = 0;
 
@@ -156,7 +159,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 					dossierActionId = dossier.getDossierActionId();
 				}
 			}
-
+			_log.info("After get dossier");
 			DataHandler dataHandler = upfileDetail.getDataHandler();
 
 			DossierDocumentActions action = new DossierDocumentActionsImpl();
@@ -166,7 +169,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 			DossierDocument dossierDoc = action.addDossierDoc(groupId, dossierId, dossierActionId, documentType,
 					documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
-					StringPool.BLANK, serviceContext);
+					StringPool.BLANK, context);
 			
 			_log.info("__End add file at:" + new Date());
 			
