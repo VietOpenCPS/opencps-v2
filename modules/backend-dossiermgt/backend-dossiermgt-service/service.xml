@@ -1962,6 +1962,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierActionId" />
 		</finder>
+		<finder return-type="DossierDocument" name="F_GID_DID_REF">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="referenceUid" />
+		</finder>
 	</entity>
 
 	<exceptions>

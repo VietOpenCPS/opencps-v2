@@ -191,4 +191,7 @@ public class DossierDocumentLocalServiceImpl
 		return dossierDocumentPersistence.fetchByF_GID_DID(groupId, dossierActionId);
 	}
 
+	public DossierDocument getDocByReferenceUid(long groupId, long dossierId, String referenceUid) {
+		return dossierDocumentPersistence.fetchByF_GID_DID_REF(groupId, dossierId, referenceUid);
+	}
 }
