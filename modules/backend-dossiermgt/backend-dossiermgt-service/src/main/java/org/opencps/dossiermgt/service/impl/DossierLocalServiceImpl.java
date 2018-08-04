@@ -1945,6 +1945,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		//DossierActionId = 0
+		MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
+		queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
+		booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
+		//OriginDossierId = 0
+		MultiMatchQuery queryOrigin = new MultiMatchQuery(String.valueOf(0));
+		queryOrigin.addField(DossierTerm.ORIGIN_DOSSIER_ID);
+		booleanQuery.add(queryOrigin, BooleanClauseOccur.MUST);
+
 		return booleanQuery;
 	}
 

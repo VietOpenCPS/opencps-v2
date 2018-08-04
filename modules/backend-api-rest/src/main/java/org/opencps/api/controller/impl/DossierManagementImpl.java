@@ -237,10 +237,10 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.SERVICE, service);
 			params.put(DossierTerm.TEMPLATE, template);
 			if (year != 0) {
-				params.put(DossierTerm.YEAR, year);				
+				params.put(DossierTerm.YEAR, year);
 			}
 			if (month != 0) {
-				params.put(DossierTerm.MONTH, month);				
+				params.put(DossierTerm.MONTH, month);
 			}
 			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
@@ -263,8 +263,6 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
 
 			Sort[] sorts = null;
-//			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-//					GetterUtil.getBoolean(query.getOrder())) };
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
