@@ -1452,6 +1452,7 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					_log.info("Payment fee: " + payment);
 					
+					result.put("payment", payment);
 				}
 
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
