@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -848,4 +849,21 @@ public class DossierUtils {
 			}
 		}
 	}
+
+	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
+		DossierActionDetailModel model = new DossierActionDetailModel();
+
+		model.setDossierActionId(dAction.getDossierActionId());
+		model.setDossierId(dAction.getDossierId());
+		model.setDossierDocumentId(dossierDocumentId);
+		model.setFromStepCode(dAction.getFromStepCode());
+		model.setNextActionId(dAction.getNextActionId());
+		model.setGroupId(dAction.getGroupId());
+		model.setPreviousActionId(dAction.getPreviousActionId());
+		model.setSequenceNo(dAction.getSequenceNo());
+		model.setServiceProcessId(dAction.getServiceProcessId());
+
+		return model;
+	}
+
 }
