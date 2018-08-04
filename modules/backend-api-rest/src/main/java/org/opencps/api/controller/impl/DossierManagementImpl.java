@@ -2427,11 +2427,16 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
 			if (prevSequence != null) {
-				List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), prevSequence.getSequenceNo());
+				List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
 				
 				DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
 				if (lastAction != null && lstDossierActions.size() > 0) {
 					sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
+				}			
+			}
+			else {
+				if (lstDossierActions.size() > 0) {
+					sequenceObj.put("startDate", lstDossierActions.get(0).getCreateDate().getTime());
 				}				
 			}
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();

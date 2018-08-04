@@ -1469,9 +1469,11 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				//Put receiving to next action
-//				if (processAction != null) {
+				if (processAction != null) {
 					_log.info("Service process: " + serviceProcessId);
 					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+					
+					ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPostStepCode(), groupId, serviceProcessId);
 					
 					JSONObject receivingObj = JSONFactoryUtil.createJSONObject();
 					Date receiveDate = new Date();
@@ -1484,9 +1486,14 @@ public class DossierActionsImpl implements DossierActions {
 					
 					receivingObj.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0l);
 					receivingObj.put("editable", DossierMgtUtils.isDueDateEditable(serviceProcess.getDueDatePattern()));
-					_log.info("Receiving object: " + receivingObj.toJSONString());					
-					result.put("receiving", receivingObj);
-//				}
+					_log.info("Receiving object: " + receivingObj.toJSONString());	
+					if (postStep != null) {
+						if (DossierTerm.DOSSIER_STATUS_NEW.equals(postStep.getDossierStatus())
+								|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(postStep.getDossierStatus())) {
+							result.put("receiving", receivingObj);													
+						}
+					}
+				}
 				//
 				String createDossierFiles = StringPool.BLANK;
 				String returnDossierFiles = StringPool.BLANK;
@@ -2871,7 +2878,10 @@ public class DossierActionsImpl implements DossierActions {
 				e.printStackTrace();
 			}
 		}
-		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {
+		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT &&
+				(DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus))
+				&& dossier.getReceiveDate() == null) {
 			try {
 				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				dossier.setReceiveDate(now);

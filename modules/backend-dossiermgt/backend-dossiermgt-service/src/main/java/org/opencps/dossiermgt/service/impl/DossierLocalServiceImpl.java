@@ -242,7 +242,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				
 				//Update submit date
 				now = new Date();
-				dossier.setSubmitDate(now);
+//				dossier.setSubmitDate(now);
 				Double durationCount = 0d;
 				Integer durationUnit = 0;
 				if (process != null ) {
