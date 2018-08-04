@@ -704,7 +704,7 @@ paths:
       - application/xml
       parameters:
         - $ref: '#/parameters/id'
-        - name: upfile
+        - name: file
           in: formData 
           type: file
           description: The file to upload
