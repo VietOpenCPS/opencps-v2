@@ -381,6 +381,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 					if (serviceProcess != null) {
 						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, dossier.getGroupId(), serviceProcess.getServiceProcessId());
 						;
+						if (processStep == null) continue;
 						List<ProcessStepRole> lstRoles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getProcessStepId());
 						for (ProcessStepRole psr : lstRoles) {
 							List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
