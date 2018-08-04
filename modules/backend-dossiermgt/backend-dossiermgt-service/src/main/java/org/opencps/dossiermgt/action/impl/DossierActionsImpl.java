@@ -1489,7 +1489,8 @@ public class DossierActionsImpl implements DossierActions {
 					_log.info("Receiving object: " + receivingObj.toJSONString());	
 					if (postStep != null) {
 						if (DossierTerm.DOSSIER_STATUS_NEW.equals(postStep.getDossierStatus())
-								|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(postStep.getDossierStatus())) {
+								|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(postStep.getDossierStatus())
+								&& dossier.getReceiveDate() == null) {
 							result.put("receiving", receivingObj);													
 						}
 					}
