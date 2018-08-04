@@ -4732,14 +4732,18 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
-			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
+			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			ServiceContext serviceContext) {
 
 		try {
-			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType,
-					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
-					wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
-					postalCityCode, postalCityName, postalTelNo, applicantNote, serviceContext);
+			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
+					delegateWardCode, serviceContext);
 
 		} catch (Exception e) {
 			_log.error(e);
