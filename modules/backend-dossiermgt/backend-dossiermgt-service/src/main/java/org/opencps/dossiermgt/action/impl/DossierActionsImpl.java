@@ -1400,6 +1400,7 @@ public class DossierActionsImpl implements DossierActions {
 					postStepCode = processAction.getPostStepCode();
 					serviceProcessId = processAction.getServiceProcessId();
 					payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
+					_log.info("Payment fee: " + payment);
 					String paymentFeeData = processAction.getPaymentFee();
 					if (Validator.isNotNull(paymentFeeData)) {
 						JSONObject jsonPaymentFee = JSONFactoryUtil.createJSONObject(paymentFeeData);
@@ -1449,6 +1450,8 @@ public class DossierActionsImpl implements DossierActions {
 						payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
 						payment.put(PaymentFileTerm.EDITABLE, false);
 					}
+					_log.info("Payment fee: " + payment);
+					
 				}
 
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
@@ -2310,7 +2313,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			dossier.setApplicantNote(applicantNote);
 
-			DossierLocalServiceUtil.updateDossier(dossier);
+			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 		}
 
 		long dossierId = dossier.getDossierId();
@@ -2328,7 +2331,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = JSONFactoryUtil.createJSONObject(payload);
-			DossierLocalServiceUtil.updateDossier(dossierId, pl);			
+			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
 				
 		if (option != null && proAction != null) {
@@ -2833,14 +2836,6 @@ public class DossierActionsImpl implements DossierActions {
 			long serviceProcessId = option.getServiceProcessId();
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			
-			String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
-					dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-
-			dossier.setDossierNo(dossierRef.trim());
-			
-			DossierLocalServiceUtil.updateDossier(dossier);
-			
-			bResult.put(DossierTerm.DOSSIER_NO, true);
 		} catch (PortalException e) {
 //			e.printStackTrace();
 		}		
@@ -2891,7 +2886,13 @@ public class DossierActionsImpl implements DossierActions {
 				if (Validator.isNotNull(dueDate)) {
 					dossier.setDueDate(dueDate);
 					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
+					bResult.put(DossierTerm.DUE_DATE, true);
 				}
+				
+				dossier.setDurationCount(durationCount);
+				dossier.setDurationUnit(durationUnit);
+				
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			} catch (PortalException e) {
 				e.printStackTrace();
 			}

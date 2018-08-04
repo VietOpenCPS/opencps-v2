@@ -241,6 +241,7 @@ public class DossierActionUtils {
 				}
 				//
 				String strPaymentFee = processAction.getPaymentFee();
+				_log.info("String payment fee: " + strPaymentFee);
 				if (Validator.isNotNull(strPaymentFee)) {
 					JSONObject paymentFee = JSONFactoryUtil.createJSONObject(strPaymentFee);
 					if (paymentFee != null) {
