@@ -64,15 +64,15 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-
+			_log.info("Dossier document: " + groupId + "," + dossierId + "," + referenceUid);
 			DossierDocument dossierDoc = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
-//			
+			_log.info("Dossier document: " + dossierDoc);
 //			// download file with dossierDocumentFileId
 			long documentFileId = 0;
 			if (dossierDoc != null) {
 				documentFileId = dossierDoc.getDocumentFileId();
 			}
-
+			
 			if (documentFileId > 0) {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(documentFileId);
 
@@ -133,7 +133,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	}
 
 	@Override
-	public DossierDocumentModel createDossierDoc(String id, Attachment upfileDetail, String documentType,
+	public DossierDocumentModel createDossierDoc(String id, Attachment upfileDetail, String referenceUid, String documentType,
 			String documentName, String documentCode) {
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -155,10 +155,16 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 			if (dossierId != 0) {
 				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-				if (dossier != null) {
-					dossierActionId = dossier.getDossierActionId();
-				}
 			}
+			else {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			if (dossier != null) {
+				dossierActionId = dossier.getDossierActionId();
+			}
+
+			DossierDocument oldDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
+			
 			_log.info("After get dossier");
 			DataHandler dataHandler = upfileDetail.getDataHandler();
 
@@ -166,11 +172,17 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 			
 			
 			_log.info("__Start add file at:" + new Date());
-
-			DossierDocument dossierDoc = action.addDossierDoc(groupId, dossierId, dossierActionId, documentType,
+			DossierDocument dossierDoc = null;
+			if (oldDocument == null) {
+				dossierDoc = action.addDossierDoc(groupId, dossier.getDossierId(), referenceUid, dossierActionId, documentType,
 					documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
 					StringPool.BLANK, context);
-			
+			}
+			else {
+				dossierDoc = DossierDocumentLocalServiceUtil.updateDossierDoc(groupId, oldDocument.getDossierDocumentId(), dossier.getDossierId(), referenceUid, dossierActionId, documentType,
+						documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
+						StringPool.BLANK, context);				
+			}
 			_log.info("__End add file at:" + new Date());
 			
 //			if(Validator.isNotNull(formData)) {

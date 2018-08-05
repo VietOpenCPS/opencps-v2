@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
@@ -13,10 +14,12 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
+import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
@@ -24,6 +27,7 @@ import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
@@ -43,6 +47,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class APIMessageProcessor extends BaseMessageProcessor {
+	private static final int N_OF_RETRIES = 10;
+	
 	private Log _log = LogFactoryUtil.getLog(APIMessageProcessor.class);
 	private OpenCPSRestClient client;
 	public APIMessageProcessor(DossierSync ds) {
@@ -154,6 +160,49 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 
 							}
 						}
+					}
+				}
+			}
+			
+			if (payloadObj.has(DossierSyncTerm.PAYLOAD_SYNC_DOCUMENTS)) {
+				JSONArray fileArrs = payloadObj.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_DOCUMENTS);
+				for (int i = 0; i < fileArrs.length(); i++) {
+					JSONObject fileObj = fileArrs.getJSONObject(i);
+					if (fileObj.has(DossierDocumentTerm.REFERENCE_UID)) {
+						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(dossier.getGroupId(), dossier.getDossierId(), fileObj.getString(DossierDocumentTerm.REFERENCE_UID));
+						if (dossierDocument != null) {
+							int retry = 0;
+							
+							File file = null;
+							
+							while (dossierDocument.getDocumentFileId() == 0) {
+								try {
+									Thread.sleep(1000l);
+									dossierDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(dossier.getGroupId(), dossier.getDossierId(), fileObj.getString(DossierDocumentTerm.REFERENCE_UID));
+									retry++;
+									if (retry > N_OF_RETRIES) break;
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								
+							}
+							if (dossierDocument.getDocumentFileId() > 0) {
+								FileEntry fileEntry;
+								try {
+									fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierDocument.getDocumentFileId());
+									file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+											true);
+								} catch (PortalException e) {
+									e.printStackTrace();
+								}
+
+							}
+							DossierDocumentModel model = OpenCPSConverter.convertDossierDocument(dossierDocument);
+							DossierDocumentModel ddResult = client.postDossierDocument(file, dossier.getReferenceUid(), model);
+							if (ddResult == null) {
+								return false;
+							}
+						}						
 					}
 				}
 			}

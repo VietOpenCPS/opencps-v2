@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -39,6 +38,7 @@ import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -2333,6 +2333,7 @@ public class DossierActionsImpl implements DossierActions {
 		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
+		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
 
 		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
@@ -2626,8 +2627,8 @@ public class DossierActionsImpl implements DossierActions {
 					}					
 				}
 
-				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
+//				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+//				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
 
 //				for (PaymentFile pf : paymentFiles) {
 //					if (pf.getIsNew()) {
@@ -2635,8 +2636,8 @@ public class DossierActionsImpl implements DossierActions {
 //					}
 //				}
 
-				for (PaymentFile spf : syncPaymentFiles) {
-				}
+//				for (PaymentFile spf : syncPaymentFiles) {
+//				}
 			
 			//Update dossier document and dossier sync
 			
@@ -2644,7 +2645,7 @@ public class DossierActionsImpl implements DossierActions {
 			ProcessStep nextStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			if (nextStep != null) {
 			}
-			
+						
 			//Check if generate dossier document
 			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 			if (ac != null) {
@@ -2673,6 +2674,7 @@ public class DossierActionsImpl implements DossierActions {
 						message.put("msgToEngine", msgData);
 						MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 						
+						payloadObject.put("dossierDocument", dossierDocument.getDossierDocumentId());
 					}					
 				}
 			}
@@ -2705,7 +2707,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 			//Update payload
-			JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
+			
 			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
 			
 			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
@@ -2756,6 +2758,17 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
+			
+			List<DossierDocument> lstDossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
+
+			for (DossierDocument dossierDocument : lstDossierDocuments) {
+				JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
+				dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
+				dossierDocumentArr.put(dossierDocumentObj);
+			}
+			payloadObject.put("dossierFiles", dossierFilesArr);				
+			payloadObject.put("dossierDocuments", dossierDocumentArr);
 			
 //			_log.info("Flag changed: " + flagChanged);
 			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
