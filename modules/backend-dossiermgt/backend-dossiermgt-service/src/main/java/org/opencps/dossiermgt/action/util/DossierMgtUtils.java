@@ -196,8 +196,8 @@ public class DossierMgtUtils {
 	}
 
 	private static boolean checkStepDone(String stepCode, Dossier dossier) {
-		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
-		if (lstDaus.size() > 0) {
+		List<DossierAction> lstDActions = DossierActionLocalServiceUtil.findDossierActionByDID_STEP(dossier.getDossierId(), stepCode);
+		if (lstDActions.size() > 0) {
 			return true;
 		}
 		else {

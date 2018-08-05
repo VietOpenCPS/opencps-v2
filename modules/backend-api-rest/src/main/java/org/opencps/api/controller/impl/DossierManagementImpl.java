@@ -799,6 +799,12 @@ public class DossierManagementImpl implements DossierManagement {
 			ServiceProcess process = null;
 			boolean online = GetterUtil.getBoolean(input.getOnline());
 			int originality = GetterUtil.getInteger(input.getOriginality());
+			Integer viaPostal = input.getViaPostal();
+			ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, input.getServiceCode(),
+					input.getGovAgencyCode());
+			if (config != null && Validator.isNotNull(viaPostal)) {
+				viaPostal = config.getPostService()? 1 : 0;
+			}
 			
 			if (option != null) {
 				long serviceProcessId = option.getServiceProcessId();
@@ -844,8 +850,9 @@ public class DossierManagementImpl implements DossierManagement {
 					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
 				online = true;
 			}
-			
+			boolean flagOldDossier = false;
 			if (oldDossiers.size() > 0 && oldDossiers.get(0).getOriginality() == Integer.valueOf(input.getOriginality())) {
+				flagOldDossier = true;
 				dossier = oldDossiers.get(0);
 				dossier.setApplicantName(input.getApplicantName());
 				dossier.setApplicantNote(input.getApplicantNote());
@@ -854,7 +861,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setContactEmail(input.getContactEmail());
 				dossier.setContactName(input.getContactName());
 				dossier.setContactTelNo(input.getContactTelNo());	
-				dossier.setDossierNo(input.getDossierNo());
+//				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
 				dossier.setOnline(online);
 			}
@@ -864,7 +871,7 @@ public class DossierManagementImpl implements DossierManagement {
 						input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
 						cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
 						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
-						input.getDossierTemplateNo(), password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+						input.getDossierTemplateNo(), password, viaPostal, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), serviceContext);
 			}
@@ -894,11 +901,16 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			//Create DossierMark
-			if (originality != DossierTerm.ORIGINALITY_MOTCUA) {
+			_log.info("flagOldDossier: "+flagOldDossier);
+			_log.info("originality: "+originality);
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA && !flagOldDossier) {
 				String templateNo = dossier.getDossierTemplateNo();
+				_log.info("templateNo: "+templateNo);
 				if (Validator.isNotNull(templateNo)) {
 					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, templateNo);
+//					_log.info("partList: "+partList);
 					if (partList != null && partList.size() > 0) {
+						_log.info("partList.size(): "+partList.size());
 						for (DossierPart dossierPart : partList) {
 							int fileMark = dossierPart.getFileMark();
 							String dossierPartNo = dossierPart.getPartNo();
@@ -1291,24 +1303,27 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 								_log.info("Process action: " + proAction);
 								if (proAction != null) {
-									PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-									if (oldPaymentFile != null && (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
-										PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
+									PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,
+											dossier.getDossierId());
+									if (oldPaymentFile != null
+											&& (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
+										PaymentFileLocalServiceUtil.updateApplicantFeeAmount(
+												oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(),
+												feeAmount, serviceAmount, shipAmount);
 									}
 									
-									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
-											input.getActionUser(), input.getActionNote(), input.getPayload(),
-											input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(), serviceContext);
+									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
+											actionCode, input.getActionUser(), input.getActionNote(),
+											input.getPayload(), input.getAssignUsers(), input.getPayment(),
+											actConfig.getSyncType(), serviceContext);
 								} else {
 									//TODO: Error
 								}
 							}
 						} else {
-							dossierResult = actions.doAction(groupId, userId, dossier, null, null,
-									actionCode, input.getActionUser(),
-									input.getActionNote(), input.getPayload(), input.getAssignUsers(),
-									input.getPayment(),
-									actConfig.getSyncType(),
+							dossierResult = actions.doAction(groupId, userId, dossier, null, null, actionCode,
+									input.getActionUser(), input.getActionNote(), input.getPayload(),
+									input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
 									serviceContext);
 						}
 					} else {
@@ -1319,11 +1334,9 @@ public class DossierManagementImpl implements DossierManagement {
 							ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
-								dossierResult = actions.doAction(groupId, userId, dossier, option, proAction, actionCode,
-										input.getActionUser(), input.getActionNote(), input.getPayload(),
-										input.getAssignUsers(), 
-										input.getPayment(),
-										0, serviceContext);
+								dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
+										actionCode, input.getActionUser(), input.getActionNote(), input.getPayload(),
+										input.getAssignUsers(), input.getPayment(), 0, serviceContext);
 							} else {
 								//TODO: Error
 							}

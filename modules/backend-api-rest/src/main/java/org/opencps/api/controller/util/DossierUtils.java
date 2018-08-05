@@ -862,6 +862,7 @@ public class DossierUtils {
 		model.setPreviousActionId(dAction.getPreviousActionId());
 		model.setSequenceNo(dAction.getSequenceNo());
 		model.setServiceProcessId(dAction.getServiceProcessId());
+		model.setRollbackable(dAction.getRollbackable());
 
 		return model;
 	}
