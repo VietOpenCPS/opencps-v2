@@ -2722,14 +2722,36 @@ public class DossierActionsImpl implements DossierActions {
 					}					
 				}
 				else {
-					List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getOriginDossierId());
-					if (lstFiles.size() > 0) {
-						for (DossierFile df : lstFiles) {
-							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
-							dossierFilesArr.put(dossierFileObj);
+					ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), proAction.getCreateDossiers());
+					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+					
+					if (serviceConfig != null) {
+						if (lstOptions.size() > 0) {
+							ProcessOption processOption = lstOptions.get(0);
+							
+							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
+							List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
+							
+							List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getOriginDossierId());
+							if (lstFiles.size() > 0) {
+								for (DossierFile df : lstFiles) {
+									boolean flagHslt = false;
+									for (DossierPart dp : lstParts) {
+										if (dp.getFileTemplateNo().equals(df.getFileTemplateNo())) {
+											flagHslt = true;
+											break;
+										}
+									}
+									if (flagHslt) {
+										JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+										dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+										dossierFilesArr.put(dossierFileObj);										
+									}
+								}
+							}										
 						}
-					}										
+					}
+					
 				}
 			}
 			else {
