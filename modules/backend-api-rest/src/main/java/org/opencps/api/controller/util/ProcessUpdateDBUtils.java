@@ -46,6 +46,7 @@ import org.opencps.api.v21.model.Steps;
 import org.opencps.api.v21.model.Steps.ProcessStep;
 import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
 import org.opencps.api.v21.model.UserManagement;
+import org.opencps.api.v21.model.UserManagement.Roles.JobPos;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -74,6 +75,8 @@ import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
+import org.opencps.usermgt.action.JobposInterface;
+import org.opencps.usermgt.action.impl.JobposActions;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -461,24 +464,24 @@ public class ProcessUpdateDBUtils {
 
 	private static void processUpdateJobPos(long userId, long groupId,
 			org.opencps.api.v21.model.UserManagement.Roles roles, ServiceContext serviceContext)
-			throws NoSuchUserException {
+			throws PortalException {
 
-//		List<JobPos> jobPosList = roles.getJobPos();
-//		if (jobPosList != null && jobPosList.size() > 0) {
-//			JobposInterface actionJob = new JobposActions();
-//			String jobCode = StringPool.BLANK;
-//			String title = StringPool.BLANK;
-//			String description = StringPool.BLANK;
-//			for (JobPos jobPos : jobPosList) {
-//				jobCode = jobPos.getCode();
-//				title = jobPos.getTitle();
-//				description = jobPos.getDescription();
-//				if (Validator.isNotNull(jobCode)) {
-//					// Check record exits DB
-//					actionJob.updateJobPosDB(userId, groupId, jobCode, title, description, serviceContext);
-//				}
-//			}
-//		}
+		List<JobPos> jobPosList = roles.getJobPos();
+		if (jobPosList != null && jobPosList.size() > 0) {
+			JobposInterface actionJob = new JobposActions();
+			String jobCode = StringPool.BLANK;
+			String title = StringPool.BLANK;
+			String description = StringPool.BLANK;
+			for (JobPos jobPos : jobPosList) {
+				jobCode = jobPos.getCode();
+				title = jobPos.getTitle();
+				description = jobPos.getDescription();
+				if (Validator.isNotNull(jobCode)) {
+					// Check record exits DB
+					actionJob.updateJobPosDB(userId, groupId, jobCode, title, description, serviceContext);
+				}
+			}
+		}
 	}
 
 	//LamTV_Update Dictcollection to DB
