@@ -453,6 +453,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			jobPos.setJobPosCode(jobPosCode);
 			jobPos.setTitle(title);
 			jobPos.setDescription(description);
+			jobPos.setMappingRoleId(role.getRoleId());
 		}
 
 		jobPosPersistence.update(jobPos);
