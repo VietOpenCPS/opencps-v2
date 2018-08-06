@@ -3,20 +3,18 @@ package org.opencps.dossiermgt.rest.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
+import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
-import org.opencps.usermgt.model.Employee;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -455,4 +453,42 @@ public class OpenCPSConverter {
 		obj.put(DossierTerm.DOSSIER_ID, model.getDossierId());
 		return obj;
 	}
+	
+	public static HashMap<String, String> convertDossierDocumentHttpParams(DossierDocumentModel model) {
+		HashMap<String, String> params = new HashMap<>();
+	    
+	    if (Validator.isNotNull(model.getReferenceUid())) {
+		    params.put(DossierDocumentTerm.REFERENCE_UID, model.getReferenceUid());	    	
+	    }
+	    if (Validator.isNotNull(model.getDocumentType())) {
+		    params.put(DossierDocumentTerm.DOCUMENT_TYPE, model.getDocumentType());	    	
+	    }
+	    if (Validator.isNotNull(model.getDocumentName())) {
+		    params.put(DossierDocumentTerm.DOCUMENT_NAME, model.getDocumentName());	    	
+	    }
+	    if (Validator.isNotNull(model.getDocumentCode())) {
+		    params.put(DossierDocumentTerm.DOCUMENT_CODE, model.getDocumentCode());	    	
+	    }
+	    
+	    return params;
+	}		
+	
+	public static DossierDocumentModel convertDossierDocument(JSONObject jsonObj) {
+		DossierDocumentModel result = new DossierDocumentModel();
+		
+		if (jsonObj.has(DossierDocumentTerm.REFERENCE_UID)) {
+			result.setReferenceUid(jsonObj.getString(DossierDocumentTerm.REFERENCE_UID));
+		}
+		if (jsonObj.has(DossierDocumentTerm.DOCUMENT_NAME)) {
+			result.setDocumentName(jsonObj.getString(DossierDocumentTerm.DOCUMENT_NAME));
+		}
+		if (jsonObj.has(DossierDocumentTerm.DOCUMENT_TYPE)) {
+			result.setDocumentType(jsonObj.getString(DossierDocumentTerm.DOCUMENT_TYPE));
+		}
+		if (jsonObj.has(DossierDocumentTerm.DOCUMENT_CODE)) {
+			result.setDocumentCode(jsonObj.getString(DossierDocumentTerm.DOCUMENT_CODE));
+		}
+		return result;
+	}
+	
 }

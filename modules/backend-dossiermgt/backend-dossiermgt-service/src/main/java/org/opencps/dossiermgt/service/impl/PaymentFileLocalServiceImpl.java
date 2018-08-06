@@ -23,6 +23,7 @@ import java.util.List;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -686,13 +687,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setFeeAmount(feeAmount);
 			paymentFile.setServiceAmount(serviceAmount);
 			paymentFile.setShipAmount(shipAmount);
-			if (requestPayment == PaymentFileTerm.PAYMENT_STATUS_TAM_UNG) {
+			if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG) {
 				paymentFile.setAdvanceAmount(feeAmount + serviceAmount + shipAmount);
 			}
-			else if (requestPayment == PaymentFileTerm.PAYMENT_STATUS_QUYET_TOAN_PHI) {
+			else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
 				
 			}
-			else if (requestPayment == PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_PHI) {
+			else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
 				paymentFile.setPaymentAmount(feeAmount + serviceAmount + shipAmount - paymentFile.getAdvanceAmount());
 			}
 			

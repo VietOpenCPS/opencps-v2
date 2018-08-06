@@ -1,5 +1,9 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -92,6 +97,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -113,6 +119,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -1402,54 +1409,59 @@ public class DossierActionsImpl implements DossierActions {
 					payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
 //					_log.info("Payment fee: " + payment);
 					String paymentFeeData = processAction.getPaymentFee();
+					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+					String advanceAmount = StringPool.BLANK;
+					String feeAmount = StringPool.BLANK;
+					String serviceAmount = StringPool.BLANK;
+					String shipAmount = StringPool.BLANK;
+					String paymentFee = StringPool.BLANK;
+					String paymentNote = StringPool.BLANK;
+					boolean editable = false;
+					
 					if (Validator.isNotNull(paymentFeeData)) {
 						JSONObject jsonPaymentFee = JSONFactoryUtil.createJSONObject(paymentFeeData);
-						if (jsonPaymentFee != null) {
-							String advanceAmount = jsonPaymentFee.getString(PaymentFileTerm.ADVANCE_AMOUNT);
-							String feeAmount = jsonPaymentFee.getString(PaymentFileTerm.FEE_AMOUNT);
-							String serviceAmount = jsonPaymentFee.getString(PaymentFileTerm.SERVICE_AMOUNT);
-							String shipAmount = jsonPaymentFee.getString(PaymentFileTerm.SHIP_AMOUNT);
-							String paymentFee = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_FEE);
-							String paymentNote = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_NOTE);
-							boolean editable = Boolean.valueOf(jsonPaymentFee.getString(PaymentFileTerm.EDITABLE));
-
-							payment.put(PaymentFileTerm.ADVANCE_AMOUNT, advanceAmount);
-							payment.put(PaymentFileTerm.FEE_AMOUNT, feeAmount);
-							payment.put(PaymentFileTerm.SERVICE_AMOUNT, serviceAmount);
-							payment.put(PaymentFileTerm.SHIP_AMOUNT, shipAmount);
-							payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFee);
-							payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentNote);
-							payment.put(PaymentFileTerm.EDITABLE, editable);
-
-						} else {
-							PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-							if (paymentFile != null) {
-								payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
-								payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
-								payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
-								payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
-								payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFile.getPaymentFee());
-								payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
-								payment.put(PaymentFileTerm.EDITABLE, false);
-							} else {
-								payment.put(PaymentFileTerm.ADVANCE_AMOUNT, 0);
-								payment.put(PaymentFileTerm.FEE_AMOUNT, 0);
-								payment.put(PaymentFileTerm.SERVICE_AMOUNT, 0);
-								payment.put(PaymentFileTerm.SHIP_AMOUNT, 0);
-								payment.put(PaymentFileTerm.PAYMENT_FEE, 0);
-								payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
-								payment.put(PaymentFileTerm.EDITABLE, false);
-							}
-						}
-					} else {
-						payment.put(PaymentFileTerm.ADVANCE_AMOUNT, 0);
-						payment.put(PaymentFileTerm.FEE_AMOUNT, 0);
-						payment.put(PaymentFileTerm.SERVICE_AMOUNT, 0);
-						payment.put(PaymentFileTerm.SHIP_AMOUNT, 0);
-						payment.put(PaymentFileTerm.PAYMENT_FEE, 0);
-						payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
-						payment.put(PaymentFileTerm.EDITABLE, false);
+						
+						advanceAmount = jsonPaymentFee.getString(PaymentFileTerm.ADVANCE_AMOUNT);
+						feeAmount = jsonPaymentFee.getString(PaymentFileTerm.FEE_AMOUNT);
+						serviceAmount = jsonPaymentFee.getString(PaymentFileTerm.SERVICE_AMOUNT);
+						shipAmount = jsonPaymentFee.getString(PaymentFileTerm.SHIP_AMOUNT);
+						paymentFee = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_FEE);
+						paymentNote = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_NOTE);
+						editable = Boolean.valueOf(jsonPaymentFee.getString(PaymentFileTerm.EDITABLE));						
 					}
+					if (paymentFile != null) {
+						payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+						payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+						payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+						payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
+						payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFile.getPaymentFee());
+						payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+						payment.put(PaymentFileTerm.EDITABLE, editable);
+					} else {
+						if (Validator.isNotNull(paymentFeeData)) {	
+							JSONObject jsonPaymentFee = JSONFactoryUtil.createJSONObject(paymentFeeData);
+							if (jsonPaymentFee != null) {
+								payment.put(PaymentFileTerm.ADVANCE_AMOUNT, advanceAmount);
+								payment.put(PaymentFileTerm.FEE_AMOUNT, feeAmount);
+								payment.put(PaymentFileTerm.SERVICE_AMOUNT, serviceAmount);
+								payment.put(PaymentFileTerm.SHIP_AMOUNT, shipAmount);
+								payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFee);
+								payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentNote);
+								payment.put(PaymentFileTerm.EDITABLE, editable);
+
+							} else {
+							}
+						} else {
+							payment.put(PaymentFileTerm.ADVANCE_AMOUNT, 0);
+							payment.put(PaymentFileTerm.FEE_AMOUNT, 0);
+							payment.put(PaymentFileTerm.SERVICE_AMOUNT, 0);
+							payment.put(PaymentFileTerm.SHIP_AMOUNT, 0);
+							payment.put(PaymentFileTerm.PAYMENT_FEE, 0);
+							payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
+							payment.put(PaymentFileTerm.EDITABLE, false);
+						}
+					}
+					
 					_log.info("Payment fee: " + payment);
 					
 					result.put("payment", payment);
@@ -1458,13 +1470,21 @@ public class DossierActionsImpl implements DossierActions {
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 						serviceProcessId);
 				if (processStep != null) {
+					List<User> lstUser = new ArrayList<>();
+					
 					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 							.findByP_S_ID(processStep.getProcessStepId());
-					if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
-						List<User> lstUser = processRoleListUser(processStepRoleList, serviceProcessId);
-						if (lstUser != null && !lstUser.isEmpty()) {
-							result.put("lstUser", lstUser);
+					if (Validator.isNotNull(processStep.getRoleAsStep())) {
+						String[] steps = StringUtil.split(processStep.getRoleAsStep());
+						for (String stepCode : steps) {
+							lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, serviceProcessId));
 						}
+					}
+					if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+						lstUser.addAll(processRoleListUser(processStepRoleList, serviceProcessId));
+					}
+					if (lstUser != null && !lstUser.isEmpty()) {
+						result.put("lstUser", lstUser);
 					}
 				}
 
@@ -2348,18 +2368,97 @@ public class DossierActionsImpl implements DossierActions {
 			long serviceProcessId = option.getServiceProcessId();
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
-			String paymentFee = proAction.getPaymentFee();
+//			String paymentFee = proAction.getPaymentFee();
+			String paymentFee = StringPool.BLANK;
 //			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
 			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI) {
+				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
+				String paymentNote = StringPool.BLANK;
+				long advanceAmount = 0l;
+				long paymentAmount = 0l;
+				String epaymentProfile = StringPool.BLANK;
+				String bankInfo = StringPool.BLANK;
+				int paymentStatus = 0;
+				String paymentMethod = StringPool.BLANK;
+				NumberFormat fmt = NumberFormat.getNumberInstance(LocaleUtil.getDefault());
+				DecimalFormatSymbols customSymbol = new DecimalFormatSymbols();
+				customSymbol.setDecimalSeparator(',');
+				customSymbol.setGroupingSeparator('.');
+				((DecimalFormat)fmt).setDecimalFormatSymbols(customSymbol);
+				fmt.setGroupingUsed(true);
+				
 				try {
-					String serveNo = serviceProcess.getServerNo();
-					//TODO:
-					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), userId, context,
-							serveNo);
-				} catch (Exception e) {
-					_log.error(e);
-//					_log.info("Can not create PaymentFile with pattern \"" + paymentFee + "\"");
+					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
+					_log.info("Payment object in do action: " + paymentObj);
+					if (paymentObj.has("paymentFee")) {
+						paymentFee = paymentObj.getString("paymentFee");
+					}
+					if (paymentObj.has("paymentNote")) {
+						paymentNote = paymentObj.getString("paymentNote");
+					}
+					if (paymentObj.has("feeAmount")) {
+						feeAmount = (Long)fmt.parse(paymentObj.getString("feeAmount"));
+					}
+					if (paymentObj.has("serviceAmount")) {
+						serviceAmount = (Long)fmt.parse(paymentObj.getString("serviceAmount"));
+					}
+					if (paymentObj.has("shipAmount")) {
+						shipAmount = (Long)fmt.parse(paymentObj.getString("shipAmount"));
+					}
+					if (paymentObj.has("requestPayment")) {
+						paymentStatus = paymentObj.getInt("requestPayment");
+					}
 				}
+				catch (JSONException e) {
+					e.printStackTrace();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
+				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+				if (oldPaymentFile != null && (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
+					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
+				}
+				else {
+					if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_TAM_UNG) {
+						advanceAmount = feeAmount + serviceAmount + shipAmount;
+					}
+					else if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_PHI) {
+						paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
+					}
+					PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+							paymentFee, 
+							advanceAmount, 
+							feeAmount, 
+							serviceAmount, 
+							shipAmount, 
+							paymentAmount, 
+							paymentNote, 
+							epaymentProfile, 
+							bankInfo, 
+							paymentStatus, 
+							paymentMethod, 
+							context);
+					long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
+					
+					Calendar cal = Calendar.getInstance();
+					
+					cal.setTime(new Date());
+					
+					int prefix = cal.get(Calendar.YEAR);
+					
+					String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+					
+					paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
+					
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);										
+				}
+//				try {
+//					String serveNo = serviceProcess.getServerNo();
+//					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), userId, context,
+//							serveNo);
+//				} catch (Exception e) {
+//				}
 			}
 
 			String postStepCode = proAction.getPostStepCode();
@@ -2972,21 +3071,24 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		Double durationCount = processStep.getDurationCount();
+		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0) {
 			dueDate = HolidayUtils.getDueDate(now, durationCount, 0, dossier.getGroupId());
 		}			
-		
+		_log.info("Due date in do action: " + dueDate);
 		if (dossierAction != null) {
 			if (dueDate != null) {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
 				int durationUnit = 0;
 				int overdue = 0;
+				_log.info("Due date timestamp: " + dueDateTimeStamp);
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 					long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 					if (subTimeStamp > 0) {
 						overdue = calculatorOverDue(durationUnit, subTimeStamp);
 					} else {
+						overdue = -calculatorOverDue(durationUnit, subTimeStamp);
 					}
 				} else {
 				}
@@ -4698,6 +4800,28 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return lstUser;
 	}
 
+	private List<User> processRoleAsStepListUser(Dossier dossier, String stepCode, long serviceProcessId) {
+		List<User> lstUser = null;
+		// Check roles
+		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
+		
+		lstUser = new ArrayList<User>();
+		for (DossierActionUser dau : lstDaus) {
+			User user = UserLocalServiceUtil.fetchUser(dau.getUserId());
+			
+			HashMap<String, Object> assigned = new HashMap<>();
+			assigned.put(ProcessStepRoleTerm.ASSIGNED, dau.getAssigned());
+			HashMap<String, Object> moderator = new HashMap<>();
+			moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator());
+			user.setModelAttributes(moderator);
+			user.setModelAttributes(assigned);
+					
+			lstUser.add(user);
+		}
+
+		return lstUser;
+	}
+	
 	//LamTV_Process list file result
 	private JSONObject processFileResult(List<DossierFile> dossierFilesResult, JSONObject createFile, String partNo) {
 		boolean eForm = false;

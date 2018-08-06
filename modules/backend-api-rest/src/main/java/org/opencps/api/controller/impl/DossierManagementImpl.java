@@ -1,6 +1,8 @@
 package org.opencps.api.controller.impl;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,6 +63,7 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
@@ -106,9 +109,11 @@ import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -1248,9 +1253,7 @@ public class DossierManagementImpl implements DossierManagement {
 	//LamTV: Process DoAction
 	@Override
 	public Response doAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String id, DoActionModel input, Long dueDate, Long feeAmount,
-			Long serviceAmount,
-			Long shipAmount) {
+			ServiceContext serviceContext, String id, DoActionModel input, Long dueDate) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
@@ -1292,26 +1295,9 @@ public class DossierManagementImpl implements DossierManagement {
 								long serviceProcessId = option.getServiceProcessId();
 								ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 										serviceProcessId);
-								if (feeAmount == null) {
-									feeAmount = 0l;
-								}
-								if (serviceAmount == null) {
-									serviceAmount = 0l;
-								}
-								if (shipAmount == null) {
-									shipAmount = 0l;
-								}
 								_log.info("Process action: " + proAction);
+								
 								if (proAction != null) {
-									PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,
-											dossier.getDossierId());
-									if (oldPaymentFile != null
-											&& (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
-										PaymentFileLocalServiceUtil.updateApplicantFeeAmount(
-												oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(),
-												feeAmount, serviceAmount, shipAmount);
-									}
-									
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 											actionCode, input.getActionUser(), input.getActionNote(),
 											input.getPayload(), input.getAssignUsers(), input.getPayment(),
