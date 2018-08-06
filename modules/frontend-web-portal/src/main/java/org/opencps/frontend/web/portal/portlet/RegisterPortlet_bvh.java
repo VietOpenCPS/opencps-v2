@@ -18,6 +18,8 @@ import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
@@ -62,7 +64,9 @@ public class RegisterPortlet_bvh extends FreeMarkerPortlet {
 
 		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
 		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
-
+		String layoutFriendlyUrl = themeDisplay.getScopeGroup().getFriendlyURL();
+		_log.info("layoutFriendlyUrl==============" + layoutFriendlyUrl);
+		renderRequest.setAttribute("layoutFriendlyUrl", layoutFriendlyUrl);
 		// url
 		PortletURL registerResultURL = PortletURLFactoryUtil.create(
 			renderRequest, portletId, themeDisplay.getPlid(),
@@ -88,5 +92,5 @@ public class RegisterPortlet_bvh extends FreeMarkerPortlet {
 		super.render(renderRequest, renderResponse);
 
 	}
-
+	private static final Log _log = LogFactoryUtil.getLog(RegisterPortlet_bvh.class);
 }

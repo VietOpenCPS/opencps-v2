@@ -49,12 +49,13 @@
 			</button>
 			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 				<!-- <li><a href="/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a></li> -->
-				<#if userType?has_content && userType == "employee">
+				<#-- <#if userType?has_content && userType == "employee">
 				<li><a href="/group/cong-xu-ly/thong-tin-tai-khoan"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
 				<#elseif userType?has_content && userType == "applicant">
 				<li><a href="/group/cong-tiep-nhan/thong-tin-tai-khoan"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
 				<#else>
-				</#if>
+				</#if> -->
+				<li><a href="/web${(layoutFriendlyUrl)!}/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
 				<li><a href="/c/portal/logout"><i class="fa fa-arrow-right"></i> Đăng xuất</a></li>
 			</ul>
 		</div>

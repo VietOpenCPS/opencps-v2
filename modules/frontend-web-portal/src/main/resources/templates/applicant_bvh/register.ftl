@@ -164,26 +164,12 @@
         } else if (!$("#agreement").is(':checked')) {
         notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
         }else{
-         $.ajax({
-          url: '/o/rest/v2/onegate/token',
-          dataType: 'text',
-          type: 'GET',
-          headers: {
-            "groupId": ${groupId}
-          },
-          success: function(result) {
-            console.log("result", result);
-            register(result)
-          },
-          error: function(xhr){
-
-          }
-        }) 
+         register()
        }
       }
     });
 
-     var register = function(dataAuthen){
+     var register = function(){
       //var data = $('#fm').serialize();
 
       var applicantIdType = "";
@@ -209,8 +195,7 @@
         data: data,
         dataType : "json",
         headers: {
-          "groupId": ${groupId},
-          'cps_auth': dataAuthen
+          "groupId": ${groupId}
         },
         success: function(result){
 
