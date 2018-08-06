@@ -54,7 +54,8 @@ import javax.xml.bind.annotation.XmlType;
     "esign",
     "hasForm",
     "typeCode",
-    "deliverableAction"
+    "deliverableAction",
+    "fileMark"
 })
 public class DossierTemplatePartDataModel {
 
@@ -69,6 +70,7 @@ public class DossierTemplatePartDataModel {
     protected String hasForm;
     protected String typeCode;
     protected Integer deliverableAction;
+    protected Integer fileMark;
 
     /**
      * Gets the value of the partNo property.
@@ -333,5 +335,13 @@ public class DossierTemplatePartDataModel {
     public void setDeliverableAction(Integer value) {
         this.deliverableAction = value;
     }
+
+	public Integer getFileMark() {
+		return fileMark;
+	}
+
+	public void setFileMark(Integer fileMark) {
+		this.fileMark = fileMark;
+	}
 
 }
