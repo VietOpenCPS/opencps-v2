@@ -2330,7 +2330,7 @@ public class DossierActionsImpl implements DossierActions {
 			String payment,
 			int syncType,
 			ServiceContext context) throws PortalException {
-		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
+//		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
@@ -2415,7 +2415,7 @@ public class DossierActionsImpl implements DossierActions {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
+//				_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				if (oldPaymentFile != null && (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
 					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
@@ -2544,8 +2544,8 @@ public class DossierActionsImpl implements DossierActions {
 				String stepInstruction = curStep.getStepInstruction();
 				String sequenceNo = curStep.getSequenceNo();
 				
-				_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
-				_log.info("curStep.getDossierSubStatus(): " + curStep.getDossierSubStatus());
+//				_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
+//				_log.info("curStep.getDossierSubStatus(): " + curStep.getDossierSubStatus());
 				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
 
 				String fromStepCode = previousAction != null ? previousAction.getStepCode() : StringPool.BLANK;
@@ -2597,27 +2597,27 @@ public class DossierActionsImpl implements DossierActions {
 				flagChanged = updateProcessingDate(previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
 			}
 				// update reference dossier
-				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
+//				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
 				// Add DossierActionUser
 				DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
 				int allowAssignUser = proAction.getAllowAssignUser();
-				_log.info("allowAssignUser: "+allowAssignUser);
+//				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
-						_log.info("LamTV_PROCESS assignUsers != null");
+//						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 					dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
 							dossierAction.getDossierActionId(), userId, groupId, proAction.getAssignUserId(),
 							assignedUsersArray);
 					} else {
-						_log.info("PROCESS allowAssignUser");
+//						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId());
 					}
 				} else {
-					_log.info("PROCESS subUsers == null");
-					_log.info("Dossier action: " + dossierAction);
+//					_log.info("PROCESS subUsers == null");
+//					_log.info("Dossier action: " + dossierAction);
 					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
 					
@@ -2661,7 +2661,7 @@ public class DossierActionsImpl implements DossierActions {
 						//Generate PDF
 						String formData = dossierAction.getPayload();
 						JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
-						_log.info("Dossier document form data: " + formDataObj.toJSONString());
+//						_log.info("Dossier document form data: " + formDataObj.toJSONString());
 						Message message = new Message();
 //						_log.info("Document script: " + dt.getDocumentScript());
 						JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -2709,8 +2709,7 @@ public class DossierActionsImpl implements DossierActions {
 			//Update payload
 			
 			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
-			
-			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST) {
 				if (dossier.getOriginDossierId() == 0) {
 					List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
 					if (lstFiles.size() > 0) {
@@ -2737,7 +2736,7 @@ public class DossierActionsImpl implements DossierActions {
 								for (DossierFile df : lstFiles) {
 									boolean flagHslt = false;
 									for (DossierPart dp : lstParts) {
-										if (dp.getFileTemplateNo().equals(df.getFileTemplateNo())) {
+										if (dp.getPartNo().equals(df.getDossierPartNo())) {
 											flagHslt = true;
 											break;
 										}
@@ -2760,7 +2759,8 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 			payloadObject.put("dossierFiles", dossierFilesArr);
-
+			_log.info("Payload: " + payloadObject.toJSONString());
+			
 			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossierId);
 				dossierFilesArr = JSONFactoryUtil.createJSONArray();

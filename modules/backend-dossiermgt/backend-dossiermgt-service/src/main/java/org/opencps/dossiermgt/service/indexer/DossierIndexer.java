@@ -240,11 +240,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					// }
 					//Index userNote
 					String actionCode = dossierAction.getActionCode();
-					_log.info("actionCode: "+actionCode);
+//					_log.info("actionCode: "+actionCode);
 					ActionConfig act = ActionConfigLocalServiceUtil.getByCode(object.getGroupId(), actionCode);
-					_log.info("act: "+act);
+//					_log.info("act: "+act);
 					if (act != null) {
-						_log.info("act: "+act.getUserNote());
+//						_log.info("act: "+act.getUserNote());
 						document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
 					} else {
 						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
@@ -391,7 +391,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				}
 			}
-			_log.info("Mapping user:" + sb.toString());
+//			_log.info("Mapping user:" + sb.toString());
 			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
 			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, sb.toString());
 
@@ -417,7 +417,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
 			}
 
-			_log.info("Action user:" + StringUtil.merge(actionUserIds, StringPool.SPACE));
+//			_log.info("Action user:" + StringUtil.merge(actionUserIds, StringPool.SPACE));
 			document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
 
 			// binhth index dossierId CTN
@@ -454,8 +454,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				String certDateTimeStamp = certDateStr + " 00:00:00";
 				Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp,
 						APIDateTimeUtils._NORMAL_PARTTERN);
-				_log.info("certNo: " + certNo);
-				_log.info("certDate: " + certDate);
+//				_log.info("certNo: " + certNo);
+//				_log.info("certDate: " + certDate);
 				if (Validator.isNotNull(certDate)) {
 					document.addTextSortable("so_chung_chi", certNo);
 					document.addDateSortable("ngay_ky_cc", certDate);
@@ -473,7 +473,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			// LamTV: Indexer from dossierRequest to Dossier
 			DossierRequestUD dRegUD = DossierRequestUDLocalServiceUtil.getDossierRequestByDossierId(dossierId);
 			if (dRegUD != null) {
-				_log.info("statusReg: " + dRegUD.getStatusReg());
+//				_log.info("statusReg: " + dRegUD.getStatusReg());
 				document.addNumberSortable(DossierTerm.STATUS_REG, dRegUD.getStatusReg());
 			} else {
 				document.addNumberSortable(DossierTerm.STATUS_REG, 4);
@@ -555,7 +555,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					if (dossierFileRefList != null && dossierFileRefList.size() > 0) {
 						for (DossierFile dof : dossierFileRefList) {
 							deliverableCode = dof.getDeliverableCode();
-							_log.info("DOssier deliverableCode: "+deliverableCode);
+//							_log.info("DOssier deliverableCode: "+deliverableCode);
 							if (Validator.isNotNull(deliverableCode)) {
 								Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
 								if (deli != null) {
