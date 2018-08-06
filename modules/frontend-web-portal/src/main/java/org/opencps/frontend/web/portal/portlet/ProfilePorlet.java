@@ -66,7 +66,9 @@ public class ProfilePorlet extends FreeMarkerPortlet {
 				themeDisplay.getUser().getEmailAddress());
 			
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId( 55301, themeDisplay.getUserId());
-			
+			String layoutFriendlyUrl = themeDisplay.getScopeGroup().getFriendlyURL();
+			_log.info("layoutFriendlyUrl===========>"+layoutFriendlyUrl);
+			renderRequest.setAttribute("layoutFriendlyUrl", layoutFriendlyUrl);
 			if(employee != null){
 				JSONObject employeeObj = JSONFactoryUtil.createJSONObject();
 				String employeeStr = JSONFactoryUtil.looseSerialize(employee);

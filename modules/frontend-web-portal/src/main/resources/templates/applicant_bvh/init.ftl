@@ -13,7 +13,7 @@
 
 <#assign active_user_id = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("active_user_id")) />
 <#assign redirectURL = GetterUtil.getString(PortalUtil.getOriginalServletRequest(request).getParameter("redirectURL")) />
-
+<#assign layoutFriendlyUrl = (Request.layoutFriendlyUrl)!>
 </#if>
 
 

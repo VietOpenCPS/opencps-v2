@@ -18,6 +18,7 @@
 <#assign employee = (Request.employee)!>
 <#assign applicantIdType = (Request.applicantIdType)!>
 <#assign userType = (Request.userType)!>
+<#assign layoutFriendlyUrl = (Request.layoutFriendlyUrl)!>
 </#if>
 
 

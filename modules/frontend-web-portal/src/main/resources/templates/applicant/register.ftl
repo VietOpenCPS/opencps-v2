@@ -133,16 +133,12 @@
        } else if (!$("#agreement").is(':checked')) {
         notification.show({ message: "Bạn chưa đồng ý với điều khoản sử dụng!!!"}, "error");
       }else{
-        getAuthen().then(function (result) {
-          register(result);
-        }).catch(function (error) {
-
-        })
+        register();
       }
     }
   });
 
-     var register = function(dataAuthen){
+     var register = function(){
       var data = $('#fm').serialize();
       $.ajax({
         url: '${api.server}/applicants',
@@ -150,8 +146,7 @@
         data: data,
         dataType : "json",
         headers: {
-          "groupId": ${groupId},
-          'cps_auth': dataAuthen
+          "groupId": ${groupId}
         },
         success: function(result){
 
