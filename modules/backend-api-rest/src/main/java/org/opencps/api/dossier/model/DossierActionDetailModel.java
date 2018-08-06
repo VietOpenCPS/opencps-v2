@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  "dueDate",
  "nextActionId",
  "dossierDocumentId",
+ "rollbackable"
 })
 
 @XmlRootElement(name = "DossierActionDetailModel")
@@ -50,7 +51,14 @@ public class DossierActionDetailModel {
 	protected String dueDate;
 	protected Long nextActionId;
 	protected Long dossierDocumentId;
+	protected Boolean rollbackable;
 
+	public Boolean getRollbackable() {
+		return rollbackable;
+	}
+	public void setRollbackable(Boolean rollbackable) {
+		this.rollbackable = rollbackable;
+	}
 	public Long getDossierActionId() {
 		return dossierActionId;
 	}
