@@ -2722,7 +2722,7 @@ public class DossierActionsImpl implements DossierActions {
 					}					
 				}
 				else {
-					ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), proAction.getCreateDossiers());
+					ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
 					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
 					
 					if (serviceConfig != null) {
