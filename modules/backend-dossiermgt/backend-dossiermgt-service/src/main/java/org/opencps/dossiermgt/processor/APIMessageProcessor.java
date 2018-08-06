@@ -421,7 +421,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										try {
 											List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(dossier.getGroupId(), dossierTemplate.getTemplateNo());
 											for (DossierPart dp : lstParts) {
-												if (dp.getFileTemplateNo().equals(df.getFileTemplateNo()) && dp.getPartNo().equals(df.getDossierPartNo())) {
+												if (dp.getPartNo().equals(df.getDossierPartNo())) {
 													dossierPartNo = dp.getPartNo();
 													dossierTemplateNo = dp.getTemplateNo();
 													fileTemplateNo = dp.getFileTemplateNo();
