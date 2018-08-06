@@ -249,7 +249,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		}
 
-		dossierActionPersistence.update(object);
+		object = dossierActionPersistence.update(object);
 
 		return object;
 	}
@@ -271,9 +271,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		action.setModifiedDate(now);
 
-		dossierActionPersistence.update(action);
-
-		return action;
+		return dossierActionPersistence.update(action);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -309,16 +307,13 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateRollbackable(long actionId, boolean rollbackable) {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
-
 		action.setRollbackable(rollbackable);
 
 		Date now = new Date();
 
 		action.setModifiedDate(now);
 
-		dossierActionPersistence.update(action);
-
-		return action;		
+		return dossierActionPersistence.update(action);
 	}
 
 	private void validateUpdateAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,

@@ -2575,17 +2575,17 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				//Update previous action nextActionId
 				if (previousAction != null && dossierAction != null) {
-					DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
+					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
 				}
 				
 				if (actionConfig != null) {
 					if (actionConfig.getRollbackable()) {
-						DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
+						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
 					}
 				}
 				else {
 					if (proAction.isRollbackable()) {
-						DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
+						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction.getDossierActionId(), true);
 					}
 				}
 				//update dossierStatus
