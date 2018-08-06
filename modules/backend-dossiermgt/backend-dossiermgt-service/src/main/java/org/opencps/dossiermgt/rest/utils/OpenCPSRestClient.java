@@ -2,6 +2,7 @@ package org.opencps.dossiermgt.rest.utils;
 
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Map;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
@@ -19,7 +19,6 @@ import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -262,20 +261,26 @@ public class OpenCPSRestClient {
 		DossierDocumentModel result = null;
 
 		try {
-
+			URL url = new URL(baseUrl);
+			String protocol = url.getProtocol();
+			String host = url.getHost();
+			int port = url.getPort();
+			String baseV21Url = protocol + "://" + host + ":" + port + "/o/rest/v2_1";
+			
 			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierUnique + "/documents";
 			InvokeREST callRest = new InvokeREST();
 			HashMap<String, String> properties = OpenCPSConverter.convertDossierDocumentHttpParams(model);
 			ServiceContext context = new ServiceContext();
-			
+			_log.info("Base url: " + baseV21Url);
 			JSONObject jsonObj = callRest.callPostFileAPI(groupId, HttpMethod.POST, "application/json", 
-					 baseUrl, requestURL, username,
+					baseV21Url, requestURL, username,
 					password, properties, file, context);
-//			_log.info("Post dossier file eform: " + jsonObj);
+			_log.info("Post dossier document: " + jsonObj);
 			result = OpenCPSConverter.convertDossierDocument(jsonObj);
 			
 			return result;
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return result;

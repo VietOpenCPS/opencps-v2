@@ -9,6 +9,7 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
@@ -491,4 +492,12 @@ public class OpenCPSConverter {
 		return result;
 	}
 	
+	public static DossierDocumentModel convertDossierDocument(DossierDocument dossierDocument) {
+		DossierDocumentModel result = new DossierDocumentModel();
+		result.setDocumentCode(dossierDocument.getDocumentCode());
+		result.setDocumentName(dossierDocument.getDocumentName());
+		result.setDocumentType(dossierDocument.getDocumentType());
+		result.setReferenceUid(dossierDocument.getReferenceUid());
+		return result;
+	}
 }

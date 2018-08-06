@@ -708,6 +708,10 @@ paths:
           in: formData 
           type: file
           description: The file to upload
+        - name: referenceUid
+          in: formData 
+          type: string
+          description: reference uid of document
         - name: documentType
           in: formData 
           type: string

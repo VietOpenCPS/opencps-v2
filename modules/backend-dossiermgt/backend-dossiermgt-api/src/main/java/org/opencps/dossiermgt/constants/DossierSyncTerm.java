@@ -23,6 +23,6 @@ public class DossierSyncTerm {
 	public static String SERVER_CONFIG_GROUP_ID = "groupId";
 	
 	public static final String PAYLOAD_SYNC_FILES = "dossierFiles";
-	
+	public static final String PAYLOAD_SYNC_DOCUMENTS = "dossierDocuments";
 	public static final int MAX_RETRY = 10;
 }
