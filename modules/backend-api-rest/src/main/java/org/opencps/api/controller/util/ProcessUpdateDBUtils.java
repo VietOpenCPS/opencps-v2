@@ -353,7 +353,7 @@ public class ProcessUpdateDBUtils {
 						serverName = serverConfig.getServerName();
 						protocol = serverConfig.getProtocol();
 						configs = serverConfig.getConfigs();
-						if (Validator.isNotNull(govAgencyCode)) {
+						if (Validator.isNotNull(serverNo)) {
 							// Check record exits DB
 							ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0, govAgencyCode, serverNo,
 									serverName, protocol, configs, null, serviceContext);
