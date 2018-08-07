@@ -783,7 +783,7 @@ public class EmployeeActions implements EmployeeInterface {
 		if (employee == null) {
 			employee = EmployeeLocalServiceUtil.addEmployee(
 					userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
-					birthDay, telNo, null, email, GetterUtil.get(workingStatus, 1),
+					birthDay, telNo, null, email, GetterUtil.get(workingStatus, 0),
 					0l, title, false, null, null, serviceContext);
 			isNew = true;
 		} else {
