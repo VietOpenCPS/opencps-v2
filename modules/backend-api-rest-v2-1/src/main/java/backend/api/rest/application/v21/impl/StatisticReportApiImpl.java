@@ -3,11 +3,6 @@ package backend.api.rest.application.v21.impl;
 import java.io.File;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -18,6 +13,8 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -64,9 +61,9 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 		serviceContext.setUserId(userId);
 
-		if (!auth.hasResource(serviceContext, StringPool.BLANK, StringPool.BLANK)) {
-			return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
-		}
+//		if (auth.isAuth(serviceContext)) {
+//			return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
+//		}
 
 		DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, code);
 		String documentScript = StringPool.BLANK;
@@ -77,7 +74,13 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 			Message message = new Message();
 			message.put("formReport", documentScript);
-			message.put("formData", doGetFormData(code, body));
+			
+			JSONObject resultObject = doGetFormData(code, body);
+			
+			System.out.println("StatisticReportApiImpl.statisticReportPrint()" + resultObject);
+			System.out.println("StatisticReportApiImpl.statisticReportPrint()" + resultObject.toJSONString());
+			
+			message.put("formData", resultObject);
 
 			try {
 				String previewResponse = (String) MessageBusUtil
@@ -104,7 +107,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 		return Response.status(HttpServletResponse.SC_NOT_FOUND).build();
 	}
 
-	private JSONObject doGetFormData(String code, Object body) {
+	private JSONObject doGetFormData(String code, String body) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		
 		switch(code)
@@ -146,56 +149,613 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 		return result;
 	}
 
-	private JSONObject getFormDataReport10(Object body) {
+	private JSONObject getFormDataReport10(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			result.put("fromDate", resultBody.getString("fromDate"));
+			result.put("toDate", resultBody.getString("toDate"));
+			result.put("actionUser", "");
+			  
+			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONObject currentObject = null;
+			
+			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
+			JSONArray domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+			
+			
+			for (int i = 0; i < dossierData.length(); i++) {
+				currentObject = dossierData.getJSONObject(i);
+				
+				if (!domainRaw.has(currentObject.getString("domainName"))) {
+					domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				} else {
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				}
+				
+			}
+			
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			
+			JSONArray keys = domainRaw.names();
+
+			for (int i = 0; i < keys.length (); ++i) {
+
+			   String key = keys.getString (i);
+			   JSONArray value = domainRaw.getJSONArray(key);
+			   if (Validator.isNotNull(key)) {
+				   
+				   for (int y = 0; y < value.length(); y++) {
+					   JSONObject currentService = value.getJSONObject(y);
+					   JSONArray dossierDataJasper = JSONFactoryUtil.createJSONArray();
+					   
+					   for (int k = 0; k < dossierData.length(); k++) {
+						   JSONObject currentObjectDossier = dossierData.getJSONObject(k);
+							
+						   if (currentObjectDossier.getString("serviceCode").equalsIgnoreCase(currentService.getString("serviceCode"))) {
+							   dossierDataJasper.put(currentObjectDossier);
+						   }
+						   
+					   }
+					   currentService.put("dossiers", dossierDataJasper);
+				   }
+				   
+				   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+			   
+			   
+				   domainRawItem.put("domainName", key);
+				   domainRawItem.put("services", value);
+				   
+				   domains.put(domainRawItem);
+			   }
+			   
+			}
+			
+			result.put("domains", domains);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	private JSONObject getFormDataReport09(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			result.put("fromDate", resultBody.getString("fromDate"));
+			result.put("toDate", resultBody.getString("toDate"));
+			result.put("actionUser", "");
+			  
+			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONObject currentObject = null;
+			
+			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
+			JSONArray domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+			
+			
+			for (int i = 0; i < dossierData.length(); i++) {
+				currentObject = dossierData.getJSONObject(i);
+				
+				if (!domainRaw.has(currentObject.getString("domainName"))) {
+					domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				} else {
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				}
+				
+			}
+			
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			
+			JSONArray keys = domainRaw.names();
+
+			for (int i = 0; i < keys.length (); ++i) {
+
+			   String key = keys.getString (i);
+			   JSONArray value = domainRaw.getJSONArray(key);
+			   if (Validator.isNotNull(key)) {
+				   
+				   for (int y = 0; y < value.length(); y++) {
+					   JSONObject currentService = value.getJSONObject(y);
+					   JSONArray dossierDataJasper = JSONFactoryUtil.createJSONArray();
+					   
+					   for (int k = 0; k < dossierData.length(); k++) {
+						   JSONObject currentObjectDossier = dossierData.getJSONObject(k);
+							
+						   if (currentObjectDossier.getString("serviceCode").equalsIgnoreCase(currentService.getString("serviceCode"))) {
+							   dossierDataJasper.put(currentObjectDossier);
+						   }
+						   
+					   }
+					   currentService.put("dossiers", dossierDataJasper);
+				   }
+				   
+				   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+			   
+			   
+				   domainRawItem.put("domainName", key);
+				   domainRawItem.put("services", value);
+				   
+				   domains.put(domainRawItem);
+			   }
+			   
+			}
+			
+			result.put("domains", domains);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	private JSONObject getFormDataReport08(String body) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private JSONObject getFormDataReport09(Object body) {
+	private JSONObject getFormDataReport07(String body) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private JSONObject getFormDataReport08(Object body) {
-		// TODO Auto-generated method stub
-		return null;
+	private JSONObject getFormDataReport06(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			result.put("fromDate", resultBody.getString("fromDate"));
+			result.put("toDate", resultBody.getString("toDate"));
+			result.put("actionUser", "");
+			  
+			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONObject currentObject = null;
+			
+			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
+			JSONArray domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+			
+			for (int i = 0; i < dossierData.length(); i++) {
+				currentObject = dossierData.getJSONObject(i);
+				
+				if (!domainRaw.has(currentObject.getString("domainName"))) {
+					domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					servicesRaw.put("tiep_nhan", 0);
+					servicesRaw.put("dang_giai_quyet", 0);
+					servicesRaw.put("da_giai_quyet", 0);
+					servicesRaw.put("da_tra_ket_qua", 0);
+					servicesRaw.put("tu_choi", 0);
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				} else {
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					servicesRaw.put("tiep_nhan", 0);
+					servicesRaw.put("dang_giai_quyet", 0);
+					servicesRaw.put("da_giai_quyet", 0);
+					servicesRaw.put("da_tra_ket_qua", 0);
+					servicesRaw.put("tu_choi", 0);
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				}
+				
+			}
+			
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			
+			JSONArray keys = domainRaw.names();
+
+			for (int i = 0; i < keys.length (); ++i) {
+
+			   String key = keys.getString (i);
+			   JSONArray value = domainRaw.getJSONArray(key);
+			   if (Validator.isNotNull(key)) {
+			   
+				   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+			   
+				   domainRawItem.put("domainName", key);
+				   domainRawItem.put("services", value);
+				   
+				   domains.put(domainRawItem);
+			   }
+			   
+			}
+			
+			result.put("domains", domains);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
-	private JSONObject getFormDataReport07(Object body) {
-		// TODO Auto-generated method stub
-		return null;
+	private JSONObject getFormDataReport05(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			result.put("fromDate", resultBody.getString("fromDate"));
+			result.put("toDate", resultBody.getString("toDate"));
+			result.put("actionUser", "");
+			  
+			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONObject currentObject = null;
+			
+			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
+			JSONArray domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+			
+			
+			for (int i = 0; i < dossierData.length(); i++) {
+				currentObject = dossierData.getJSONObject(i);
+				
+				if (!domainRaw.has(currentObject.getString("domainName"))) {
+					domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				} else {
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				}
+				
+			}
+			
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			
+			JSONArray keys = domainRaw.names();
+
+			for (int i = 0; i < keys.length (); ++i) {
+
+			   String key = keys.getString (i);
+			   JSONArray value = domainRaw.getJSONArray(key);
+			   if (Validator.isNotNull(key)) {
+				   
+				   for (int y = 0; y < value.length(); y++) {
+					   JSONObject currentService = value.getJSONObject(y);
+					   JSONArray dossierDataJasper = JSONFactoryUtil.createJSONArray();
+					   
+					   for (int k = 0; k < dossierData.length(); k++) {
+						   JSONObject currentObjectDossier = dossierData.getJSONObject(k);
+							
+						   if (currentObjectDossier.getString("serviceCode").equalsIgnoreCase(currentService.getString("serviceCode"))) {
+							   dossierDataJasper.put(currentObjectDossier);
+						   }
+						   
+					   }
+					   currentService.put("dossiers", dossierDataJasper);
+				   }
+				   
+				   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+			   
+			   
+				   domainRawItem.put("domainName", key);
+				   domainRawItem.put("services", value);
+				   
+				   domains.put(domainRawItem);
+			   }
+			   
+			}
+			
+			result.put("domains", domains);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
-	private JSONObject getFormDataReport06(Object body) {
-		// TODO Auto-generated method stub
-		return null;
+	private JSONObject getFormDataReport04(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			result.put("fromDate", resultBody.getString("fromDate"));
+			result.put("toDate", resultBody.getString("toDate"));
+			result.put("actionUser", "");
+			  
+			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONObject currentObject = null;
+			
+			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
+			JSONArray domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+			
+			for (int i = 0; i < dossierData.length(); i++) {
+				currentObject = dossierData.getJSONObject(i);
+				
+				if (!domainRaw.has(currentObject.getString("domainName"))) {
+					domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					servicesRaw.put("da_tra", 0);
+					servicesRaw.put("tu_choi", 0);
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				} else {
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					servicesRaw.put("da_tra", 0);
+					servicesRaw.put("tu_choi", 0);
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				}
+				
+			}
+			
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			
+			JSONArray keys = domainRaw.names();
+
+			for (int i = 0; i < keys.length (); ++i) {
+
+			   String key = keys.getString (i);
+			   JSONArray value = domainRaw.getJSONArray(key);
+			   if (Validator.isNotNull(key)) {
+			   
+				   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+			   
+				   domainRawItem.put("domainName", key);
+				   domainRawItem.put("services", value);
+				   
+				   domains.put(domainRawItem);
+			   }
+			   
+			}
+			
+			result.put("domains", domains);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
-	private JSONObject getFormDataReport05(Object body) {
-		// TODO Auto-generated method stub
-		return null;
+	private JSONObject getFormDataReport03(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			result.put("fromDate", resultBody.getString("fromDate"));
+			result.put("toDate", resultBody.getString("toDate"));
+			result.put("actionUser", "");
+			  
+			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONObject currentObject = null;
+			
+			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
+			JSONArray domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+			
+			
+			for (int i = 0; i < dossierData.length(); i++) {
+				currentObject = dossierData.getJSONObject(i);
+				
+				if (!domainRaw.has(currentObject.getString("domainName"))) {
+					domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				} else {
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				}
+				
+			}
+			
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			
+			JSONArray keys = domainRaw.names();
+
+			for (int i = 0; i < keys.length (); ++i) {
+
+			   String key = keys.getString (i);
+			   JSONArray value = domainRaw.getJSONArray(key);
+			   if (Validator.isNotNull(key)) {
+				   for (int y = 0; y < value.length(); y++) {
+					   JSONObject currentService = value.getJSONObject(y);
+					   JSONArray dossierDataJasper = JSONFactoryUtil.createJSONArray();
+					   
+					   for (int k = 0; k < dossierData.length(); k++) {
+						   JSONObject currentObjectDossier = dossierData.getJSONObject(k);
+							
+						   if (currentObjectDossier.getString("serviceCode").equalsIgnoreCase(currentService.getString("serviceCode"))) {
+							   dossierDataJasper.put(currentObjectDossier);
+						   }
+						   
+					   }
+					   currentService.put("dossiers", dossierDataJasper);
+				   }
+				   
+				   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+			   
+				   domainRawItem.put("domainName", key);
+				   domainRawItem.put("services", value);
+				   
+				   domains.put(domainRawItem);
+			   }
+			   
+			}
+			
+			result.put("domains", domains);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
-	private JSONObject getFormDataReport04(Object body) {
-		// TODO Auto-generated method stub
-		return null;
+	private JSONObject getFormDataReport02(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			result.put("fromDate", resultBody.getString("fromDate"));
+			result.put("toDate", resultBody.getString("toDate"));
+			result.put("actionUser", "");
+			  
+			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONObject currentObject = null;
+			
+			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
+			JSONArray domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+			
+			for (int i = 0; i < dossierData.length(); i++) {
+				currentObject = dossierData.getJSONObject(i);
+				
+				if (!domainRaw.has(currentObject.getString("domainName"))) {
+					domainsservicesRaw = JSONFactoryUtil.createJSONArray();
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					servicesRaw.put("tong_so", 0);
+					servicesRaw.put("ky_truoc", 0);
+					servicesRaw.put("trong_ky", 0);
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				} else {
+					JSONObject servicesRaw = JSONFactoryUtil.createJSONObject();
+					servicesRaw.put("serviceName", currentObject.getString("serviceName"));
+					servicesRaw.put("serviceCode", currentObject.getString("serviceCode"));
+					servicesRaw.put("tong_so", 0);
+					servicesRaw.put("ky_truoc", 0);
+					servicesRaw.put("trong_ky", 0);
+					
+					domainsservicesRaw.put(servicesRaw);
+					
+					domainRaw.put(currentObject.getString("domainName"), domainsservicesRaw);
+				}
+				
+			}
+			
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			
+			JSONArray keys = domainRaw.names();
+
+			for (int i = 0; i < keys.length (); ++i) {
+
+			   String key = keys.getString (i);
+			   JSONArray value = domainRaw.getJSONArray(key);
+			   
+			   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+			   if (Validator.isNotNull(key)) {
+				   domainRawItem.put("domainName", key);
+				   domainRawItem.put("services", value);
+				   
+				   domains.put(domainRawItem);
+			   }
+			}
+			
+			result.put("domains", domains);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
-	private JSONObject getFormDataReport03(Object body) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private JSONObject getFormDataReport02(Object body) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private JSONObject getFormDataReport01(Object body) {
-		System.out.println("StatisticReportApiImpl.getFormDataReport01()" + body);
-		JSONObject result = (JSONObject) body;
-		System.out.println("StatisticReportApiImpl.getFormDataReport01(result)" + result);
-		
+	private JSONObject getFormDataReport01(String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
+			
+			result.put("year", resultBody.getInt("year"));
+			result.put("month", resultBody.getInt("month"));
+			result.put("govAgencyName", resultBody.getString("govAgencyName"));
+			
+			JSONArray statistics = resultBody.getJSONArray("data");
+			
+			result.put("statistics", statistics);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return result;
 	}
 

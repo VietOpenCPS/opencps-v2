@@ -191,7 +191,7 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
                       <#-- <li><a href="#:serviceUrl#">#:govAgencyName#</a></li> -->
-                      <li><a href="/web${(Request.layoutfriendurl)!}\#/add-dvc/#:serviceConfigId#">#:govAgencyName#</a></li>
+                      <li><a href="/web${(Request.layoutfriendurl)!}/dich-vu-cong\#/add-dvc/#:serviceConfigId#">#:govAgencyName#</a></li>
                   </ul>
                   </div>
                 #

@@ -1,6 +1,6 @@
 Bundle-Name: front-end-super-gate
 Bundle-SymbolicName: front.end.supergate
-Bundle-Version: 1.0.0
+Bundle-Version: 2.2.1
 Export-Package: org.opencps.portlet.constants
 Web-ContextPath:/front-end-super-gate
 
