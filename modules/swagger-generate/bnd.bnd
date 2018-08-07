@@ -1,6 +1,6 @@
 Bundle-Name: swagger-generate
 Bundle-SymbolicName: swagger.generate
-Bundle-Version: 1.0.0
+Bundle-Version: 2.2.1
 Import-Package: *;resolution:=optional
 Export-Package: \
 	io.swagger.api,\
