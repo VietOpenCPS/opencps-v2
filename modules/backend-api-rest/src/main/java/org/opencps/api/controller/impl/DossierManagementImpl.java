@@ -2796,21 +2796,6 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
-//			int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
-//			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
-//					input.getDossierTemplateNo(), groupId);
-//			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
-//				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
-//			Dossier checkDossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
-//			if (checkDossier != null) {
-//				DossierDetailModel result = DossierUtils.mappingForGetDetail(checkDossier, user.getUserId());
-//				return Response.status(200).entity(result).build();
-//			}
-			
-//			String password = StringPool.BLANK;
-//			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-//				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
-//			}
 			//Get input
 			String referenceUid = input.getReferenceUid();
 			int counter = 0;
@@ -2854,7 +2839,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int originality = 0;
 
 
-			Dossier dossier = actions.initDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType,
 					applicantIdNo, applicantIdDate, address, cityCode,
 						cityName, districtCode, districtName, wardCode, wardName,

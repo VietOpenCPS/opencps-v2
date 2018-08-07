@@ -2381,7 +2381,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		    long diff = TimeUnit.MILLISECONDS.convert(diffInMillies, TimeUnit.MINUTES);
 		    
 			try {
-				if (diff > 30)
+				if (diff > DossierTerm.GARBAGE_COLLECTOR_TIME)
 					dossierPersistence.remove(dossier.getDossierId());
 			} catch (NoSuchDossierException e) {
 //				e.printStackTrace();
@@ -2619,5 +2619,140 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	public Dossier getByOrigin(long groupId, long originDossierId) {
 		return dossierPersistence.fetchByG_O_DID_First(groupId, originDossierId, null);
+	}	
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException {
+
+		Date now = new Date();
+
+		long userId = context.getUserId();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+
+		validateInit(groupId, dossierId, referenceUid, serviceCode, govAgencyCode, address, cityCode, districtCode,
+				wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo);
+
+		Dossier dossier = null;
+
+		if (dossierId == 0) {
+			String dossierTemplateName = getDossierTemplateName(groupId, dossierTemplateNo);
+
+			dossierId = counterLocalService.increment(Dossier.class.getName());
+
+			String dossierNote = getDossierNote(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+
+			dossier = dossierPersistence.create(dossierId);
+
+			dossier.setCreateDate(now);
+			dossier.setModifiedDate(now);
+			dossier.setCompanyId(context.getCompanyId());
+			dossier.setGroupId(groupId);
+			dossier.setUserId(userId);
+			dossier.setUserName(auditUser.getFullName());
+
+			// Add extent fields
+			dossier.setReferenceUid(referenceUid);
+			dossier.setCounter(counter);
+			dossier.setServiceCode(serviceCode);
+			dossier.setServiceName(serviceName);
+			dossier.setGovAgencyCode(govAgencyCode);
+			dossier.setGovAgencyName(govAgencyName);
+			dossier.setDossierTemplateNo(dossierTemplateNo);
+			dossier.setDossierTemplateName(dossierTemplateName);
+
+			dossier.setApplicantName(applicantName);
+			dossier.setApplicantIdType(applicantIdType);
+			dossier.setApplicantIdNo(applicantIdNo);
+			dossier.setApplicantIdDate(applicantIdDate);
+			dossier.setPassword(password);
+			dossier.setOnline(online);
+			dossier.setDossierNote(dossierNote);
+
+			dossier.setAddress(address);
+			dossier.setCityCode(cityCode);
+			dossier.setCityName(cityName);
+			dossier.setDistrictCode(districtCode);
+			dossier.setDistrictName(districtName);
+			dossier.setWardCode(wardCode);
+			dossier.setWardName(wardName);
+			dossier.setContactName(contactName);
+			dossier.setContactEmail(contactEmail);
+			dossier.setContactTelNo(contactTelNo);
+
+			dossier.setViaPostal(viaPostal);
+			dossier.setPostalAddress(postalAddress);
+			dossier.setPostalCityCode(postalCityCode);
+			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalTelNo(postalTelNo);
+			dossier.setApplicantNote(applicantNote);
+			dossier.setServerNo(getServerNo(groupId));
+			dossier.setOriginality(originality);
+			
+			dossier = dossierPersistence.update(dossier);
+		} else {
+
+			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+
+			dossier.setModifiedDate(now);
+
+			if (Validator.isNotNull(address))
+				dossier.setAddress(address);
+			if (Validator.isNotNull(cityCode))
+				dossier.setCityCode(cityCode);
+			if (Validator.isNotNull(cityName))
+				dossier.setCityName(cityName);
+			if (Validator.isNotNull(districtCode))
+				dossier.setDistrictCode(districtCode);
+			if (Validator.isNotNull(districtName))
+				dossier.setDistrictName(districtName);
+			if (Validator.isNotNull(wardCode))
+				dossier.setWardCode(wardCode);
+			if (Validator.isNotNull(wardName))
+				dossier.setWardName(wardName);
+			if (Validator.isNotNull(contactName))
+				dossier.setContactName(contactName);
+			if (Validator.isNotNull(contactEmail))
+				dossier.setContactEmail(contactEmail);
+			if (Validator.isNotNull(contactTelNo))
+				dossier.setContactTelNo(contactTelNo);
+
+			dossier.setViaPostal(viaPostal);
+
+			if (viaPostal == 1) {
+				dossier.setPostalAddress(StringPool.BLANK);
+				dossier.setPostalCityCode(StringPool.BLANK);
+				dossier.setPostalTelNo(StringPool.BLANK);
+
+			} else if (viaPostal == 2) {
+				if (Validator.isNotNull(postalAddress))
+					dossier.setPostalAddress(postalAddress);
+				if (Validator.isNotNull(postalCityCode))
+					dossier.setPostalCityCode(postalCityCode);
+				if (Validator.isNotNull(postalTelNo))
+					dossier.setPostalTelNo(postalTelNo);
+				if (Validator.isNotNull(postalCityName))
+					dossier.setPostalCityName(postalCityName);
+
+			} else {
+				dossier.setPostalAddress(StringPool.BLANK);
+				dossier.setPostalCityCode(StringPool.BLANK);
+				dossier.setPostalTelNo(StringPool.BLANK);
+			}
+
+			// if (Validator.isNotNull(applicantNote))
+			dossier.setApplicantNote(applicantNote);
+
+			dossier = dossierPersistence.update(dossier);
+
+		}
+
+		return dossier;
 	}	
 }
