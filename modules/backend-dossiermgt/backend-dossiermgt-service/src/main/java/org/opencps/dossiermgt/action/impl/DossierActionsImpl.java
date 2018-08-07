@@ -2324,14 +2324,13 @@ public class DossierActionsImpl implements DossierActions {
 
 	}
 	
-	private void generateCreateDossierFiles(long groupId, Dossier dossier, ProcessAction processAction) throws PortalException {
+	private void generateCreateDossierFiles(long groupId, long userId, Dossier dossier, ProcessAction processAction) throws PortalException {
 		ServiceContext context = new ServiceContext();
 		context.setScopeGroupId(groupId);
 		context.setCompanyId(dossier.getCompanyId());
+		context.setUserId(userId);
 
 		String createDossierFiles = processAction.getCreateDossierFiles();
-
-		String returnDossierFiles = processAction.getReturnDossierFiles();
 
 		List<String> dossierFileTemplateNos = ListUtil.toList(StringUtil.split(createDossierFiles));
 
@@ -2862,7 +2861,12 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 			//Generate output
-			generateCreateDossierFiles(groupId, dossier, proAction);
+			try {
+				generateCreateDossierFiles(groupId, userId, dossier, proAction);
+			}
+			catch (Exception e) {
+				
+			}
 		}
 		else {
 			
