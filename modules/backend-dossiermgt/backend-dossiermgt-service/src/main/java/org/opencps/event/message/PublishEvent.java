@@ -1,8 +1,11 @@
 package org.opencps.event.message;
 
+import java.util.List;
+
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 
@@ -29,15 +32,13 @@ public class PublishEvent implements MessageListener {
 		_log.info("Publish dossier event");
 		JSONObject dossierObj = (JSONObject) message.get("dossier");;
 		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
-		String serverNo = dossierObj.getString(DossierTerm.SERVER_NO);
-		ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
-		if (serverConfig != null) {
+		List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.PUBLISH_PROTOCOL);
+		for (ServerConfig sc : lstServers) {
 			try {
-				OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(serverConfig.getConfigs()));
+				OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 				client.publishDossier(OpenCPSConverter.convertDossierSummary(dossierObj));
 			} catch (JSONException e) {
-			}
-			
+			}			
 		}
 	}
 
