@@ -83,8 +83,9 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 	 */
 	@Override
 	public PaymentFile createPaymentFile(long userId, long groupId, long dossierId, String referenceUid,
-			String govAgencyCode, String govAgencyName, String applicantName, String applicantIdNo, String paymentFee,
+			String paymentFee, long advanceAmount, long feeAmount, long serviceAmount, long shipAmount,
 			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo,
+			int paymentStatus, String paymentMethod,
 			ServiceContext serviceContext) throws PortalException {
 		_log.info("boom boom");
 		if (Validator.isNull(referenceUid)) {
@@ -94,8 +95,9 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 		try {
 
 			PaymentFile result = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId,
-					referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
-					paymentNote, epaymentProfile, bankInfo, serviceContext);
+					referenceUid, paymentFee, advanceAmount, feeAmount, serviceAmount, shipAmount,
+					paymentAmount, paymentNote, epaymentProfile, bankInfo,
+					paymentStatus, paymentMethod, serviceContext);
 
 			return result;
 

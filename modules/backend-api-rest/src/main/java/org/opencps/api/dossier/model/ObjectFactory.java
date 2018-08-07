@@ -83,4 +83,11 @@ public class ObjectFactory {
         return new DossierSearchModel();
     }
 
+    /**
+     * Create an instance of {@link DossierSearchModel }
+     * 
+     */
+    public DossierPublishModel createDossierPublishModel() {
+        return new DossierPublishModel();
+    }
 }

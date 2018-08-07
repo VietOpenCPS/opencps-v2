@@ -1,5 +1,6 @@
 package backend.api.rest.application.v21.impl;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,8 @@ import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
@@ -16,12 +19,16 @@ import org.opencps.dossiermgt.action.DossierDocumentActions;
 import org.opencps.dossiermgt.action.impl.DossierDocumentActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -45,41 +52,43 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 	private static Log _log = LogFactoryUtil.getLog(DossierDocumentApiImpl.class);
 	@Override
-	public void downloadDocByTypeCode(String id, String typeCode) {
+	public void downloadDocByReferenceUid(String id, String referenceUid) {
 
 		// TODO: check user is loged or password for access dossier file
 //		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
 
 		try {
-//
-////			if (!auth.isAuth(serviceContext)) {
-////				throw new UnauthenticationException();
-////			}
-//
-//			DossierDocument dossierDoc = DossierDocumentLocalServiceUtil.getDocByTypeCode(dossierId, typeCode);
-//			
-//			// TODO download file with dossierFileID
-//			if (Validator.isNull(dossierFile) && Validator.isNumber(referenceUid)) {
-//				dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.valueOf(referenceUid));
+
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
 //			}
-//
-//			if (dossierFile.getFileEntryId() > 0) {
-//				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-//
-//				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-//						true);
-//
-//				ResponseBuilder responseBuilder = Response.ok((Object) file);
-//
-//				responseBuilder.header("Content-Disposition",
-//						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-//				responseBuilder.header("Content-Type", fileEntry.getMimeType());
-//
+			_log.info("Dossier document: " + groupId + "," + dossierId + "," + referenceUid);
+			DossierDocument dossierDoc = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
+			_log.info("Dossier document: " + dossierDoc);
+//			// download file with dossierDocumentFileId
+			long documentFileId = 0;
+			if (dossierDoc != null) {
+				documentFileId = dossierDoc.getDocumentFileId();
+			}
+			
+			if (documentFileId > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(documentFileId);
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
 //				return responseBuilder.build();
-//			} else {
+			} else {
 //				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-//			}
+			}
 
 		} catch (Exception e) {
 			_log.info(e);
@@ -124,41 +133,56 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	}
 
 	@Override
-	public DossierDocumentModel createDossierDoc(String id, Attachment upfileDetail, String documentType,
+	public DossierDocumentModel createDossierDoc(String id, Attachment upfileDetail, String referenceUid, String documentType,
 			String documentName, String documentCode) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
 		DossierDocumentModel result = null;
-
+		ServiceContext context = new ServiceContext();
+		
+		context.setUserId(user.getUserId());
+		
 		try {
 
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-
+			_log.info("In create dossier doc");
 			Dossier dossier = null;
 			long dossierActionId = 0;
 
 			if (dossierId != 0) {
 				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-				if (dossier != null) {
-					dossierActionId = dossier.getDossierActionId();
-				}
+			}
+			else {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			if (dossier != null) {
+				dossierActionId = dossier.getDossierActionId();
 			}
 
+			DossierDocument oldDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
+			
+			_log.info("After get dossier");
 			DataHandler dataHandler = upfileDetail.getDataHandler();
 
 			DossierDocumentActions action = new DossierDocumentActionsImpl();
 			
 			
 			_log.info("__Start add file at:" + new Date());
-
-			DossierDocument dossierDoc = action.addDossierDoc(groupId, dossierId, dossierActionId, documentType,
+			DossierDocument dossierDoc = null;
+			if (oldDocument == null) {
+				dossierDoc = action.addDossierDoc(groupId, dossier.getDossierId(), referenceUid, dossierActionId, documentType,
 					documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
-					StringPool.BLANK, serviceContext);
-			
+					StringPool.BLANK, context);
+			}
+			else {
+				dossierDoc = DossierDocumentLocalServiceUtil.updateDossierDoc(groupId, oldDocument.getDossierDocumentId(), dossier.getDossierId(), referenceUid, dossierActionId, documentType,
+						documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
+						StringPool.BLANK, context);				
+			}
 			_log.info("__End add file at:" + new Date());
 			
 //			if(Validator.isNotNull(formData)) {

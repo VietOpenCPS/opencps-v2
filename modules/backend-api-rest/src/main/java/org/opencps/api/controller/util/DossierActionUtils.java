@@ -212,7 +212,7 @@ public class DossierActionUtils {
 
 			ProcessAction processAction = (ProcessAction) jsonData.get("processAction");
 			List<User> lstUser = (List<User>) jsonData.get("lstUser");
-			_log.info("LAmTV_List user: "+lstUser);
+//			_log.info("LAmTV_List user: "+lstUser);
 			JSONArray createFiles = jsonData.getJSONArray("createFiles");
 			List<DossierFile> returnFiles = (List<DossierFile>) jsonData.get("returnFiles");
 
@@ -228,7 +228,7 @@ public class DossierActionUtils {
 				model.setAllowAssignUser(processAction.getAllowAssignUser());
 				model.seteSignature(processAction.getESignature());
 				model.setSignatureType(processAction.getSignatureType());
-				model.setCheckInput(processAction.getCheckInput());
+//				model.setCheckInput(processAction.getCheckInput());
 				model.setConfigNote(processAction.getConfigNote());
 				ActionConfig act = ActionConfigLocalServiceUtil.getByCode(processAction.getGroupId(),
 						processAction.getActionCode());
@@ -239,27 +239,62 @@ public class DossierActionUtils {
 					model.setUserNote(0);
 					model.setExtraForm(false);
 				}
-				//
-				String strPaymentFee = processAction.getPaymentFee();
-				if (Validator.isNotNull(strPaymentFee)) {
-					JSONObject paymentFee = JSONFactoryUtil.createJSONObject(strPaymentFee);
-					if (paymentFee != null) {
-						//
-						payment.setRequestPayment(paymentFee.getInt("requestPayment"));
-						payment.setAdvanceAmount(paymentFee.getLong("advanceAmount"));
-						payment.setFeeAmount(paymentFee.getLong("feeAmount"));
-						payment.setServiceAmount(paymentFee.getLong("serviceAmount"));
-						payment.setShipAmount(paymentFee.getLong("shipAmount"));
-						payment.setEditable(paymentFee.getBoolean("editable"));
-						
-						model.setPayment(payment);
+//				_log.info("Payment object: " + jsonData.toJSONString());
+//				_log.info("Payment object: " + jsonData.getJSONObject("payment").toJSONString());
+				JSONObject paymentObject = jsonData.getJSONObject("payment");
+				if (paymentObject != null) {
+					if (paymentObject.has("paymentFee")) {
+						payment.setPaymentFee(paymentObject.getString("paymentFee"));
+					}
+					if (paymentObject.has("paymentNote")) {
+						payment.setPaymentNote(paymentObject.getString("paymentNote"));
+					}
+					if (paymentObject.has("requestPayment")) {
+						payment.setRequestPayment(paymentObject.getInt("requestPayment"));
+					}
+					if (paymentObject.has("advanceAmount")) {
+						payment.setAdvanceAmount(paymentObject.getLong("advanceAmount"));
+					}
+					if (paymentObject.has("feeAmount")) {
+						payment.setFeeAmount(paymentObject.getLong("feeAmount"));
+					}
+					if (paymentObject.has("serviceAmount")) {
+						payment.setServiceAmount(paymentObject.getLong("serviceAmount"));
+					}
+					if (paymentObject.has("shipAmount")) {
+						payment.setShipAmount(paymentObject.getLong("shipAmount"));
+					}
+					if (paymentObject.has("editable")) {
+						payment.setEditable(paymentObject.getBoolean("editable"));
 					}
 				}
+				
+				model.setPayment(payment);
+				
+//				_log.info("Payment: " + payment);
+				//
+//				String strPaymentFee = processAction.getPaymentFee();
+//				_log.info("String payment fee: " + strPaymentFee);
+//				if (Validator.isNotNull(strPaymentFee)) {
+//					JSONObject paymentFee = JSONFactoryUtil.createJSONObject(strPaymentFee);
+//					if (paymentFee != null) {
+//						//
+//						payment.setRequestPayment(paymentFee.getInt("requestPayment"));
+//						payment.setAdvanceAmount(paymentFee.getLong("advanceAmount"));
+//						payment.setFeeAmount(paymentFee.getLong("feeAmount"));
+//						payment.setServiceAmount(paymentFee.getLong("serviceAmount"));
+//						payment.setShipAmount(paymentFee.getLong("shipAmount"));
+//						payment.setEditable(paymentFee.getBoolean("editable"));
+//						
+//						model.setPayment(payment);
+//					}
+//				}
 			} else {
 				model.setPayment(payment);
 			}
 
 			JSONObject receivingObj = jsonData.getJSONObject("receiving");
+//			_log.info("Receiving object: " + receivingObj.toJSONString());
 			if (receivingObj != null) {
 				ReceivingModel receiving = new ReceivingModel();
 				receiving.setDueDate(receivingObj.getLong(DossierTerm.DUE_DATE));

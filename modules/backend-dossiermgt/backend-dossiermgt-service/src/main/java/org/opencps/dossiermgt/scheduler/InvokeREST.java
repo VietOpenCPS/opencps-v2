@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class InvokeREST {
 	
@@ -182,7 +183,12 @@ public class InvokeREST {
 			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
-			multipart.addFilePart("file", file);
+			if (file != null) {
+				multipart.addFilePart("file", file);				
+			}
+			else {
+				multipart.addFormField("file", StringPool.BLANK);
+			}
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {

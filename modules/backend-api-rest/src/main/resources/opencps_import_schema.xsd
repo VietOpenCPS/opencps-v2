@@ -507,6 +507,7 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="seqOrder" type="xsd:int" />
+							<xsd:element name="sampleCount" type="xsd:int" />
 							<xsd:element name="autoSelect">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
@@ -653,6 +654,7 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="fileMark" type="xsd:int" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -684,7 +686,7 @@
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:element>
-				<xsd:element name="durationCount" type="xsd:int" />
+				<xsd:element name="durationCount" type="xsd:double" />
 				<xsd:element name="durationUnit" type="xsd:int" />
 				<xsd:element name="generatePassword" type="xsd:boolean" />
 				<xsd:element name="serverNo">

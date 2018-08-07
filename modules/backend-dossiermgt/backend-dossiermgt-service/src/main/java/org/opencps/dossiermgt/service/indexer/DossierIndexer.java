@@ -16,7 +16,6 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -27,6 +26,7 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -36,6 +36,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -239,11 +240,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					// }
 					//Index userNote
 					String actionCode = dossierAction.getActionCode();
-					_log.info("actionCode: "+actionCode);
+//					_log.info("actionCode: "+actionCode);
 					ActionConfig act = ActionConfigLocalServiceUtil.getByCode(object.getGroupId(), actionCode);
-					_log.info("act: "+act);
+//					_log.info("act: "+act);
 					if (act != null) {
-						_log.info("act: "+act.getUserNote());
+//						_log.info("act: "+act.getUserNote());
 						document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
 					} else {
 						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
@@ -390,7 +391,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				}
 			}
-			_log.info("Mapping user:" + sb.toString());
+//			_log.info("Mapping user:" + sb.toString());
 			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
 			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, sb.toString());
 
@@ -416,7 +417,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
 			}
 
-			_log.info("Action user:" + StringUtil.merge(actionUserIds, StringPool.SPACE));
+//			_log.info("Action user:" + StringUtil.merge(actionUserIds, StringPool.SPACE));
 			document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
 
 			// binhth index dossierId CTN
@@ -453,8 +454,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				String certDateTimeStamp = certDateStr + " 00:00:00";
 				Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp,
 						APIDateTimeUtils._NORMAL_PARTTERN);
-				_log.info("certNo: " + certNo);
-				_log.info("certDate: " + certDate);
+//				_log.info("certNo: " + certNo);
+//				_log.info("certDate: " + certDate);
 				if (Validator.isNotNull(certDate)) {
 					document.addTextSortable("so_chung_chi", certNo);
 					document.addDateSortable("ngay_ky_cc", certDate);
@@ -472,7 +473,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			// LamTV: Indexer from dossierRequest to Dossier
 			DossierRequestUD dRegUD = DossierRequestUDLocalServiceUtil.getDossierRequestByDossierId(dossierId);
 			if (dRegUD != null) {
-				_log.info("statusReg: " + dRegUD.getStatusReg());
+//				_log.info("statusReg: " + dRegUD.getStatusReg());
 				document.addNumberSortable(DossierTerm.STATUS_REG, dRegUD.getStatusReg());
 			} else {
 				document.addNumberSortable(DossierTerm.STATUS_REG, 4);
@@ -513,6 +514,20 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.DURATION_COUNT, object.getDurationCount());
 			document.addNumberSortable(DossierTerm.DURATION_UNIT, object.getDurationUnit());
 			document.addNumberSortable(DossierTerm.SAMPLE_COUNT, object.getSampleCount());
+			// add domainCode to dossier
+			String serviceCode = object.getServiceCode();
+			String domainCode = StringPool.BLANK;
+			String domainName = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(object.getGroupId(), serviceCode);
+				if (service != null) {
+					domainCode = service.getDomainCode();
+					domainName = service.getDomainName();
+				}
+			}
+			document.addTextSortable(DossierTerm.DOMAIN_CODE, domainCode);
+			document.addTextSortable(DossierTerm.DOMAIN_NAME, domainName);
+			document.addNumberSortable(DossierTerm.ORIGIN_DOSSIER_ID, object.getOriginDossierId());
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -540,7 +555,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					if (dossierFileRefList != null && dossierFileRefList.size() > 0) {
 						for (DossierFile dof : dossierFileRefList) {
 							deliverableCode = dof.getDeliverableCode();
-							_log.info("DOssier deliverableCode: "+deliverableCode);
+//							_log.info("DOssier deliverableCode: "+deliverableCode);
 							if (Validator.isNotNull(deliverableCode)) {
 								Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
 								if (deli != null) {

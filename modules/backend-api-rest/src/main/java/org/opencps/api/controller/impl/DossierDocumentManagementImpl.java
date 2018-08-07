@@ -284,6 +284,52 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
+	@Override
+	public Response downloadDocByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid) {
+
+		// TODO: check user is loged or password for access dossier file
+//		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		Long dossierId = GetterUtil.getLong(id);
+
+		try {
+
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
+
+			DossierDocument dossierDoc = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
+//			
+//			// download file with dossierDocumentFileId
+			long documentFileId = 0;
+			if (dossierDoc != null) {
+				documentFileId = dossierDoc.getDocumentFileId();
+			}
+
+			if (documentFileId > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(documentFileId);
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
+		}
+	}
+
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();
 

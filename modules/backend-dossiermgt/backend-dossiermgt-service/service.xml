@@ -182,6 +182,7 @@
 		<column name="deliverableType" type="String"/>
 		<column name="deliverableAction" type="int"/>
 		<column name="eForm" type="boolean" />
+		<column name="fileMark" type="int" />
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -975,8 +976,8 @@
 		<column name="sequenceRole" type="String" />
 		<column name="durationCount" type="double" />
 		
-		<order by="desc">
-			<order-column name="modifiedDate" order-by="desc" />
+		<order by="asc">
+			<order-column name="sequenceNo" order-by="asc" />
 		</order>
         <finder name="G_SN" return-type="Collection">
             <finder-column name="groupId"></finder-column>
@@ -1126,7 +1127,11 @@
 			<finder-column name="actionCode" />
 			<finder-column name="actionName" />
 		</finder>
-
+		<finder return-type="Collection" name="F_GID_SID_PRE">
+			<finder-column name="groupId" />
+			<finder-column name="serviceProcessId" />
+            <finder-column name="preStepCode" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierAction"
@@ -1164,6 +1169,9 @@
 		<column name="stepInstruction" type="String" />
 		<column name="state" type="int" />
 		<column name="eventStatus" type="int" />
+        <order by="asc">
+            <order-column name="createDate" order-by="asc"></order-column>
+        </order>
 
 		<finder return-type="DossierAction" name="DID_DPG">
 			<finder-column name="dossierId" />
@@ -1195,6 +1203,20 @@
             <finder-column name="dossierId"></finder-column>
             <finder-column name="fromSequenceNo"></finder-column>
         </finder>
+        <finder name="G_DID_SN" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="sequenceNo"></finder-column>
+        </finder>
+        <finder name="G_DID_FSN" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fromSequenceNo"></finder-column>
+        </finder>
+     	<finder return-type="Collection" name="DID_STEP">
+			<finder-column name="dossierId" />
+			<finder-column name="fromStepCode" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
@@ -1702,6 +1724,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 		</finder>
+		<finder return-type="Collection" name="G_DID_MARK">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="fileMark" comparator="!="/>
+		</finder>
 	</entity>
 	
 	<entity local-service="true" name="ActionConfig" remote-service="false"
@@ -1940,10 +1967,15 @@
 		<finder return-type="Collection" name="F_DOSSIERID">
 			<finder-column name="dossierId" />
 		</finder>
-<!-- 		<finder return-type="DossierDocument" name="F_DID_CODE"> -->
-<!-- 			<finder-column name="dossierId" /> -->
-<!-- 			<finder-column name="dossierId" /> -->
-<!-- 		</finder> -->
+		<finder return-type="DossierDocument" name="F_GID_DID">
+			<finder-column name="groupId" />
+			<finder-column name="dossierActionId" />
+		</finder>
+		<finder return-type="DossierDocument" name="F_GID_DID_REF">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="referenceUid" />
+		</finder>
 	</entity>
 
 	<exceptions>

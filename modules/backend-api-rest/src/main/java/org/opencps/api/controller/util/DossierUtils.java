@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -166,10 +167,10 @@ public class DossierUtils {
 				if (Validator.isNotNull(postStep)) {
 					ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStep, groupId, serviceProcessId);
 					if (step != null) {
-						double durationCountStep = step.getDurationCount();
+						Double durationCountStep = step.getDurationCount();
 						_log.info("durationCountStep: "+durationCountStep);
 						Date dueDateStep = null;
-						if (durationCountStep > 0) {
+						if (Validator.isNotNull(durationCountStep) && durationCountStep > 0) {
 							dueDateStep = HolidayUtils.getDueDate(dAction.getCreateDate(), durationCountStep,
 									durationUnit, groupId);
 						} else {
@@ -287,6 +288,8 @@ public class DossierUtils {
 //			}
 //			model.setProcessBlock(processBlock);
 //			model.setProcessUnit(processUnit);
+			model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
+			model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 
 			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
 				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
@@ -846,4 +849,22 @@ public class DossierUtils {
 			}
 		}
 	}
+
+	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
+		DossierActionDetailModel model = new DossierActionDetailModel();
+
+		model.setDossierActionId(dAction.getDossierActionId());
+		model.setDossierId(dAction.getDossierId());
+		model.setDossierDocumentId(dossierDocumentId);
+		model.setFromStepCode(dAction.getFromStepCode());
+		model.setNextActionId(dAction.getNextActionId());
+		model.setGroupId(dAction.getGroupId());
+		model.setPreviousActionId(dAction.getPreviousActionId());
+		model.setSequenceNo(dAction.getSequenceNo());
+		model.setServiceProcessId(dAction.getServiceProcessId());
+		model.setRollbackable(dAction.getRollbackable());
+
+		return model;
+	}
+
 }

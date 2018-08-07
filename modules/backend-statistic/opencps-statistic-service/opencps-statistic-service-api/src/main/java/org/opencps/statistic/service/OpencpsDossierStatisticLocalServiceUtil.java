@@ -289,14 +289,22 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 				   .fetchOpencpsDossierStatisticByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYear(
+		long groupId, java.lang.String govAgencyCode, int month, int year)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .getByGovMonthYear(groupId, govAgencyCode, month, year);
+	}
+
 	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
-		java.lang.String govAgencyCode, int month, int year,
+		long groupId, java.lang.String govAgencyCode, int month, int year,
 		java.lang.String domainCode)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .getByGovMonthYearDomain(govAgencyCode, month, year,
-			domainCode);
+				   .getByGovMonthYearDomain(groupId, govAgencyCode, month,
+			year, domainCode);
 	}
 
 	/**

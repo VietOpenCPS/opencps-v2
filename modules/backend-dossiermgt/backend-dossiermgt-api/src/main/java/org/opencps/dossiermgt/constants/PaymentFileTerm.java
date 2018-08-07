@@ -46,4 +46,8 @@ public class PaymentFileTerm {
 	public static final String SHIP_AMOUNT = "shipAmount";
 	public static final String EDITABLE = "editable";
 
+	public static final int PAYMENT_STATUS_TAM_UNG = 1;
+	public static final int PAYMENT_STATUS_QUYET_TOAN_PHI = 2;
+	public static final int PAYMENT_STATUS_HOAN_THANH_PHI = 3;
+	
 }

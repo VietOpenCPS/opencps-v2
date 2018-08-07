@@ -157,9 +157,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		employee.setExpandoBridgeAttributes(serviceContext);
 
-		employeePersistence.update(employee);
+		return employeePersistence.update(employee);
 
-		return employee;
 	}
 
 	@Indexable(type = IndexableType.DELETE)

@@ -146,10 +146,15 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		return dossierStatistic;
 
 	}
-
-	public OpencpsDossierStatistic getByGovMonthYearDomain(String govAgencyCode, int month, int year, String domainCode)
+	
+	public OpencpsDossierStatistic getByGovMonthYear(long groupId, String govAgencyCode, int month, int year)
 			throws PortalException, SystemException {
-		return opencpsDossierStatisticPersistence.findByM_Y_DM_G(govAgencyCode, month, year, domainCode);
+		return opencpsDossierStatisticPersistence.fetchByM_Y_G(groupId, govAgencyCode, month, year);
+	}
+
+	public OpencpsDossierStatistic getByGovMonthYearDomain(long groupId, String govAgencyCode, int month, int year, String domainCode)
+			throws PortalException, SystemException {
+		return opencpsDossierStatisticPersistence.fetchByM_Y_DM_G(groupId, govAgencyCode, month, year, domainCode);
 	}
 
 	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, int month, int year, String domain,
