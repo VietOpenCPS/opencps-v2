@@ -44,14 +44,18 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getDossierTemplateNo())) {
 		    params.put(DossierTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());	    	
 	    }
+	    params.put(DossierTerm.SERVICE_NAME, model.getServiceName());
 	    params.put(DossierTerm.APPLICANT_NAME, model.getApplicantName());
 	    params.put(DossierTerm.APPLICANT_ID_TYPE, model.getApplicantIdType());
 	    params.put(DossierTerm.APPLICANT_ID_NO, model.getApplicantIdNo());
 	    params.put(DossierTerm.APPLICANT_ID_DATE, model.getApplicantIdDate());
 	    params.put(DossierTerm.ADDRESS, model.getAddress());
 	    params.put(DossierTerm.CITY_CODE, model.getCityCode());
+	    params.put(DossierTerm.CITY_NAME, model.getCityName());
 	    params.put(DossierTerm.DISTRICT_CODE, model.getDistrictCode());
+	    params.put(DossierTerm.DISTRICT_NAME, model.getDistrictName());
 	    params.put(DossierTerm.WARD_CODE, model.getWardCode());
+	    params.put(DossierTerm.WARD_NAME, model.getWardName());
 	    params.put(DossierTerm.CONTACT_NAME, model.getContactName());
 	    params.put(DossierTerm.CONTACT_TEL_NO, model.getContactTelNo());
 	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
@@ -98,8 +102,14 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.SERVICE_CODE)) {
 			model.setServiceCode(jsonObj.getString(DossierTerm.SERVICE_CODE));
 		}
+		if (jsonObj.has(DossierTerm.SERVICE_NAME)) {
+			model.setServiceName(jsonObj.getString(DossierTerm.SERVICE_NAME));
+		}
 		if (jsonObj.has(DossierTerm.GOV_AGENCY_CODE)) {
 			model.setGovAgencyCode(jsonObj.getString(DossierTerm.GOV_AGENCY_CODE));
+		}
+		if (jsonObj.has(DossierTerm.GOV_AGENCY_NAME)) {
+			model.setGovAgencyName(jsonObj.getString(DossierTerm.GOV_AGENCY_NAME));
 		}
 		if (jsonObj.has(DossierTerm.DOSSIER_TEMPLATE_NO)) {
 			model.setDossierTemplateNo(jsonObj.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
@@ -122,11 +132,20 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.CITY_CODE)) {
 			model.setCityCode(jsonObj.getString(DossierTerm.CITY_CODE));
 		}
+		if (jsonObj.has(DossierTerm.CITY_NAME)) {
+			model.setCityName(jsonObj.getString(DossierTerm.CITY_NAME));
+		}
 		if (jsonObj.has(DossierTerm.DISTRICT_CODE)) {
 			model.setDistrictCode(jsonObj.getString(DossierTerm.DISTRICT_CODE));
 		}
+		if (jsonObj.has(DossierTerm.DISTRICT_NAME)) {
+			model.setDistrictName(jsonObj.getString(DossierTerm.DISTRICT_NAME));
+		}
 		if (jsonObj.has(DossierTerm.WARD_CODE)) {
 			model.setWardCode(jsonObj.getString(DossierTerm.WARD_CODE));
+		}
+		if (jsonObj.has(DossierTerm.WARD_NAME)) {
+			model.setWardName(jsonObj.getString(DossierTerm.WARD_NAME));
 		}
 		if (jsonObj.has(DossierTerm.CONTACT_NAME)) {
 			model.setContactName(jsonObj.getString(DossierTerm.CONTACT_NAME));

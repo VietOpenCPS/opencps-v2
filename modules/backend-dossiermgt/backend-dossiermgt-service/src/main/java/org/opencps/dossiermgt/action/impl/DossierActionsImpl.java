@@ -2804,7 +2804,9 @@ public class DossierActionsImpl implements DossierActions {
 				publishEvent(dossier);
 			}
 		}
-				
+		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+			publishEvent(dossier);			
+		}
 		//Do action hslt
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
 			ActionConfig mappingConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionConfig.getMappingAction());
