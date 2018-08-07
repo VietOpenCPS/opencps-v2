@@ -26,6 +26,7 @@ public class PublishEvent implements MessageListener {
 	}
 	
 	private void _doReceiveRequest(Message message) {		
+		_log.info("Publish dossier event");
 		JSONObject msgData = (JSONObject) message.get("msgToEngine");
 		JSONObject dossierObj = msgData.getJSONObject("dossier");
 		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
