@@ -184,8 +184,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId,
-		java.lang.String domain, java.lang.String govAgencyCode,
-		java.lang.String groupAgenvyCode, boolean reporting, int start, int end)
+		int month, int year, java.lang.String domain,
+		java.lang.String govAgencyCode, java.lang.String groupAgenvyCode,
+		boolean reporting, int start, int end)
 		throws PortalException, SystemException;
 
 	/**
@@ -261,6 +262,16 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public OpencpsDossierStatistic fetchOpencpsDossierStatisticByUuidAndGroupId(
 		java.lang.String uuid, long groupId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getByGovMonthYear(long groupId,
+		java.lang.String govAgencyCode, int month, int year)
+		throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getByGovMonthYearDomain(long groupId,
+		java.lang.String govAgencyCode, int month, int year,
+		java.lang.String domainCode) throws PortalException, SystemException;
+
 	/**
 	* Returns the opencps dossier statistic with the primary key.
 	*
@@ -293,4 +304,18 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public OpencpsDossierStatistic updateOpencpsDossierStatistic(
 		OpencpsDossierStatistic opencpsDossierStatistic);
+
+	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId,
+		long companyId, long groupId, long userId, java.lang.String userName,
+		int month, int year, int totalCount, int deniedCount,
+		int cancelledCount, int processCount, int remainingCount,
+		int receivedCount, int onlineCount, int releaseCount, int betimesCount,
+		int ontimeCount, int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, java.lang.String govAgencyCode,
+		java.lang.String govAgencyName, java.lang.String domainCode,
+		java.lang.String domainName, boolean reporting)
+		throws PortalException, SystemException;
 }

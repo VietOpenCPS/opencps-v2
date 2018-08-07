@@ -13,28 +13,23 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierDocumentManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DossierDucumentUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.DossierMark;
-import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -95,7 +90,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					if (Validator.isNotNull(payload)) {
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
 					}
-					jsonData = processMergeDossierFormData(dossier, jsonData);
+					jsonData = DossierDucumentUtils.processMergeDossierFormData(dossier, jsonData);
 					Message message = new Message();
 					message.put("formReport", documentScript);
 					message.put("formData", jsonData.toJSONString());
@@ -242,7 +237,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								}
 								//Mapping FormData with dossier
 								jsonData = JSONFactoryUtil.createJSONObject(payload);
-								jsonData = processMergeDossierFormData(dossier, jsonData);
+								jsonData = DossierDucumentUtils.processMergeDossierFormData(dossier, jsonData);
 								formDataArr.put(jsonData);
 								_log.info("jsonData: "+jsonData);
 								_log.info("formDataArr: "+formDataArr);
@@ -289,6 +284,52 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
+	@Override
+	public Response downloadDocByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid) {
+
+		// TODO: check user is loged or password for access dossier file
+//		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		Long dossierId = GetterUtil.getLong(id);
+
+		try {
+
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
+
+			DossierDocument dossierDoc = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
+//			
+//			// download file with dossierDocumentFileId
+			long documentFileId = 0;
+			if (dossierDoc != null) {
+				documentFileId = dossierDoc.getDocumentFileId();
+			}
+
+			if (documentFileId > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(documentFileId);
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			_log.info(e);
+			return processException(e);
+		}
+	}
+
 	private Response processException(Exception e) {
 		ErrorMsg error = new ErrorMsg();
 
@@ -314,141 +355,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
 			}
 		}
-	}
-
-	//LamTV_ Mapping process dossier and formData
-	private JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
-		jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
-		jsonData.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
-		jsonData.put(DossierTerm.APPLICANT_ID_TYPE, dossier.getApplicantIdType());
-		jsonData.put(DossierTerm.APPLICANT_ID_DATE,
-				APIDateTimeUtils.convertDateToString(dossier.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		jsonData.put(DossierTerm.CITY_CODE, dossier.getCityCode());
-		jsonData.put(DossierTerm.CITY_NAME, dossier.getCityName());
-		jsonData.put(DossierTerm.DISTRICT_CODE, dossier.getDistrictCode());
-		jsonData.put(DossierTerm.DISTRICT_NAME, dossier.getDistrictName());
-		jsonData.put(DossierTerm.WARD_CODE, dossier.getWardCode());
-		jsonData.put(DossierTerm.WARD_NAME, dossier.getWardName());
-		jsonData.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
-		jsonData.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
-		jsonData.put(DossierTerm.ADDRESS, dossier.getAddress());
-		jsonData.put(DossierTerm.CONTACT_TEL_NO, dossier.getContactTelNo());
-		jsonData.put(DossierTerm.CONTACT_EMAIL, dossier.getContactEmail());
-		jsonData.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
-		jsonData.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
-		jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
-		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
-		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
-		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
-		jsonData.put(DossierTerm.RECEIVE_DATE,
-				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		jsonData.put(DossierTerm.DUE_DATE,
-				APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
-		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
-		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
-		//
-//		long dossierActionId = dossier.getDossierActionId();
-		long groupId = dossier.getGroupId();
-//		String sequenceNo = StringPool.BLANK;
-//		if (dossierActionId > 0) {
-//			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-//			if (dossierAction != null) {
-//				long serviceProcessId = dossierAction.getServiceProcessId();
-//				jsonData.put(DossierTerm.ACTION_USER, dossierAction.getActionUser());
-//				sequenceNo = dossierAction.getSequenceNo();
-//				if (Validator.isNotNull(sequenceNo)) {
-//					ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, sequenceNo);
-//					if (sequence != null) {
-//						jsonData.put(DossierTerm.SEQUENCE_ROLE, sequence.getSequenceRole());
-//					} else {
-//						jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
-//					}
-//				} else {
-//					jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
-//				}
-//			}
-//			//Process get Next sequence Role
-//			try {
-//				ServiceProcessActions actions = new ServiceProcessActionsImpl();
-//				ServiceProcess serviceProcess = actions.getServiceProcessByCode(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(),
-//						dossier.getDossierTemplateNo());
-//
-//				if (serviceProcess != null) {
-//					long serviceProcessId = serviceProcess.getServiceProcessId();
-//					if (serviceProcessId > 0) {
-//						List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcessId);
-//						String[] sequenceArr = null;
-//						if (sequenceList != null && !sequenceList.isEmpty()) {
-//							int length = sequenceList.size();
-//							sequenceArr = new String[length];
-//							for (int i = 0; i < length; i++) {
-//								ProcessSequence processSequence = sequenceList.get(i);
-//								if (processSequence != null) {
-//									sequenceArr[i] = processSequence.getSequenceNo();
-//								}
-//							}
-//						}
-//							
-//						if (sequenceArr != null && sequenceArr.length > 0) {
-//							Arrays.sort(sequenceArr);
-//							for (int i = 0; i < sequenceArr.length; i++) {
-//								String seq = sequenceArr[i];
-//								if (sequenceNo.equals(seq)) {
-//									String nextSequenceNo = sequenceArr[i+1];
-//									if (Validator.isNotNull(nextSequenceNo)) {
-//										ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId, nextSequenceNo);
-//										if (sequence != null) {
-//											jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, sequence.getSequenceRole());
-//										} else {
-//											jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
-//										}
-//									} else {
-//										jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
-//									}
-//								}
-//							}
-//						} else {
-//							jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
-//						}
-//					}
-//				} else {
-//					jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
-//				}
-//			} catch (PortalException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
-		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
-		long dossierId = dossier.getDossierId();
-		String templateNo = dossier.getDossierTemplateNo();
-		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossierId);
-		if (dossierMarkList != null && dossierMarkList.size() > 0) {
-			JSONObject jsonMark = null;
-			String partNo = StringPool.BLANK;
-			for (DossierMark dossierMark : dossierMarkList) {
-				jsonMark = JSONFactoryUtil.createJSONObject();
-				partNo = dossierMark.getDossierPartNo();
-				if (Validator.isNotNull(partNo)) {
-					DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
-					if (part != null) {
-						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
-						jsonMark.put(DossierPartTerm.PART_NAME, part.getPartName());
-						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
-						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
-					}
-				}
-				jsonMark.put(DossierPartTerm.PART_NO, partNo);
-				jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
-				jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
-				jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
-//				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
-				dossierMarkArr.put(jsonMark);
-			}
-		}
-		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
-		return jsonData;
 	}
 
 	//LamTV_ Mapping process dossier and formData

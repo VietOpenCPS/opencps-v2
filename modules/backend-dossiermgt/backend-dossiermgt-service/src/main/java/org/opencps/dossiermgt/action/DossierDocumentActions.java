@@ -15,4 +15,7 @@ public interface DossierDocumentActions {
 			String documentName, String documentCode, String sourceFileName, long fileSize, InputStream inputStream,
 			String fileType, ServiceContext serviceContext);
 
+	public DossierDocument addDossierDoc(long groupId, Long dossierId, String referenceUid, long dossierActionId, String documentType,
+			String documentName, String documentCode, String sourceFileName, long fileSize, InputStream inputStream,
+			String fileType, ServiceContext serviceContext);
 }

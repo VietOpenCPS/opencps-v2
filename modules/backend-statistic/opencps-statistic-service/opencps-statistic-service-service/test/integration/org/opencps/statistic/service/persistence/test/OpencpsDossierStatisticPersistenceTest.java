@@ -324,6 +324,27 @@ public class OpencpsDossierStatisticPersistenceTest {
 	}
 
 	@Test
+	public void testCountByM_Y_DM_G() throws Exception {
+		_persistence.countByM_Y_DM_G(RandomTestUtil.nextLong(),
+			StringPool.BLANK, RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt(), StringPool.BLANK);
+
+		_persistence.countByM_Y_DM_G(0L, StringPool.NULL, 0, 0, StringPool.NULL);
+
+		_persistence.countByM_Y_DM_G(0L, (String)null, 0, 0, (String)null);
+	}
+
+	@Test
+	public void testCountByM_Y_G() throws Exception {
+		_persistence.countByM_Y_G(RandomTestUtil.nextLong(), StringPool.BLANK,
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt());
+
+		_persistence.countByM_Y_G(0L, StringPool.NULL, 0, 0);
+
+		_persistence.countByM_Y_G(0L, (String)null, 0, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		OpencpsDossierStatistic newOpencpsDossierStatistic = addOpencpsDossierStatistic();
 
@@ -580,6 +601,48 @@ public class OpencpsDossierStatisticPersistenceTest {
 				existingOpencpsDossierStatistic.getGroupId()),
 			ReflectionTestUtil.<Long>invoke(existingOpencpsDossierStatistic,
 				"getOriginalGroupId", new Class<?>[0]));
+
+		Assert.assertEquals(Long.valueOf(
+				existingOpencpsDossierStatistic.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingOpencpsDossierStatistic,
+				"getOriginalGroupId", new Class<?>[0]));
+		Assert.assertTrue(Objects.equals(
+				existingOpencpsDossierStatistic.getGovAgencyCode(),
+				ReflectionTestUtil.invoke(existingOpencpsDossierStatistic,
+					"getOriginalGovAgencyCode", new Class<?>[0])));
+		Assert.assertEquals(Integer.valueOf(
+				existingOpencpsDossierStatistic.getMonth()),
+			ReflectionTestUtil.<Integer>invoke(
+				existingOpencpsDossierStatistic, "getOriginalMonth",
+				new Class<?>[0]));
+		Assert.assertEquals(Integer.valueOf(
+				existingOpencpsDossierStatistic.getYear()),
+			ReflectionTestUtil.<Integer>invoke(
+				existingOpencpsDossierStatistic, "getOriginalYear",
+				new Class<?>[0]));
+		Assert.assertTrue(Objects.equals(
+				existingOpencpsDossierStatistic.getDomainCode(),
+				ReflectionTestUtil.invoke(existingOpencpsDossierStatistic,
+					"getOriginalDomainCode", new Class<?>[0])));
+
+		Assert.assertEquals(Long.valueOf(
+				existingOpencpsDossierStatistic.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingOpencpsDossierStatistic,
+				"getOriginalGroupId", new Class<?>[0]));
+		Assert.assertTrue(Objects.equals(
+				existingOpencpsDossierStatistic.getGovAgencyCode(),
+				ReflectionTestUtil.invoke(existingOpencpsDossierStatistic,
+					"getOriginalGovAgencyCode", new Class<?>[0])));
+		Assert.assertEquals(Integer.valueOf(
+				existingOpencpsDossierStatistic.getMonth()),
+			ReflectionTestUtil.<Integer>invoke(
+				existingOpencpsDossierStatistic, "getOriginalMonth",
+				new Class<?>[0]));
+		Assert.assertEquals(Integer.valueOf(
+				existingOpencpsDossierStatistic.getYear()),
+			ReflectionTestUtil.<Integer>invoke(
+				existingOpencpsDossierStatistic, "getOriginalYear",
+				new Class<?>[0]));
 	}
 
 	protected OpencpsDossierStatistic addOpencpsDossierStatistic()

@@ -46,6 +46,8 @@ import org.opencps.api.v21.model.Steps;
 import org.opencps.api.v21.model.Steps.ProcessStep;
 import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
 import org.opencps.api.v21.model.UserManagement;
+import org.opencps.api.v21.model.UserManagement.Roles.JobPos;
+import org.opencps.api.v21.model.UserManagement.Users.Employee;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -74,6 +76,10 @@ import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
+import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.action.JobposInterface;
+import org.opencps.usermgt.action.impl.EmployeeActions;
+import org.opencps.usermgt.action.impl.JobposActions;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -347,7 +353,7 @@ public class ProcessUpdateDBUtils {
 						serverName = serverConfig.getServerName();
 						protocol = serverConfig.getProtocol();
 						configs = serverConfig.getConfigs();
-						if (Validator.isNotNull(govAgencyCode)) {
+						if (Validator.isNotNull(serverNo)) {
 							// Check record exits DB
 							ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0, govAgencyCode, serverNo,
 									serverName, protocol, configs, null, serviceContext);
@@ -426,59 +432,59 @@ public class ProcessUpdateDBUtils {
 
 	private static void processUpdateEmployee(long userId, long groupId,
 			org.opencps.api.v21.model.UserManagement.Users users, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException, PortalException {
-//		List<Employee> employeeList = users.getEmployee();
-//		if (employeeList != null && employeeList.size() > 0) {
-//			EmployeeInterface actionEmployee = new EmployeeActions();
-//			String employeeNo = StringPool.BLANK;
-//			String fullname = StringPool.BLANK;
-//			String title = StringPool.BLANK;
-//			Integer gender = 0;
-//			String birthdate = StringPool.BLANK;
-//			String telNo = StringPool.BLANK;
-//			String email = StringPool.BLANK;
-//			Integer workingStatus = 0;
-//			String jobTitle = StringPool.BLANK;
-//			String roles = StringPool.BLANK;
-//			for (Employee employee : employeeList) {
-//				employeeNo = employee.getEmployeeNo();
-//				fullname = employee.getFullname();
-//				title = employee.getTitle();
-//				gender = employee.getGender();
-//				birthdate = employee.getBirthdate();
-//				telNo = employee.getTelNo();
-//				email = employee.getEmail();
-//				workingStatus = employee.getWorkingStatus();
-//				jobTitle = employee.getJobTitle();
-//				roles = employee.getRoles();
-//				if (Validator.isNotNull(employeeNo)) {
-//					// Check record exits DB
-//					actionEmployee.updateEmployeeDB(userId, groupId, employeeNo, fullname, title, gender, birthdate,
-//							telNo, email, workingStatus, jobTitle, roles, serviceContext);
-//				}
-//			}
-//		}
+		List<Employee> employeeList = users.getEmployee();
+		if (employeeList != null && employeeList.size() > 0) {
+			EmployeeInterface actionEmployee = new EmployeeActions();
+			String employeeNo = StringPool.BLANK;
+			String fullname = StringPool.BLANK;
+			String title = StringPool.BLANK;
+			Integer gender = 0;
+			String birthdate = StringPool.BLANK;
+			String telNo = StringPool.BLANK;
+			String email = StringPool.BLANK;
+			Integer workingStatus = 0;
+			String jobTitle = StringPool.BLANK;
+			String roles = StringPool.BLANK;
+			for (Employee employee : employeeList) {
+				employeeNo = employee.getEmployeeNo();
+				fullname = employee.getFullname();
+				title = employee.getTitle();
+				gender = employee.getGender();
+				birthdate = employee.getBirthdate();
+				telNo = employee.getTelNo();
+				email = employee.getEmail();
+				workingStatus = employee.getWorkingStatus();
+				jobTitle = employee.getJobTitle();
+				roles = employee.getRoles();
+				if (Validator.isNotNull(employeeNo)) {
+					// Check record exits DB
+					actionEmployee.updateEmployeeDB(userId, groupId, employeeNo, fullname, title, gender, birthdate,
+							telNo, email, workingStatus, jobTitle, roles, serviceContext);
+				}
+			}
+		}
 	}
 
 	private static void processUpdateJobPos(long userId, long groupId,
 			org.opencps.api.v21.model.UserManagement.Roles roles, ServiceContext serviceContext)
-			throws NoSuchUserException {
+			throws PortalException {
 
-//		List<JobPos> jobPosList = roles.getJobPos();
-//		if (jobPosList != null && jobPosList.size() > 0) {
-//			JobposInterface actionJob = new JobposActions();
-//			String jobCode = StringPool.BLANK;
-//			String title = StringPool.BLANK;
-//			String description = StringPool.BLANK;
-//			for (JobPos jobPos : jobPosList) {
-//				jobCode = jobPos.getCode();
-//				title = jobPos.getTitle();
-//				description = jobPos.getDescription();
-//				if (Validator.isNotNull(jobCode)) {
-//					// Check record exits DB
-//					actionJob.updateJobPosDB(userId, groupId, jobCode, title, description, serviceContext);
-//				}
-//			}
-//		}
+		List<JobPos> jobPosList = roles.getJobPos();
+		if (jobPosList != null && jobPosList.size() > 0) {
+			JobposInterface actionJob = new JobposActions();
+			String jobCode = StringPool.BLANK;
+			String title = StringPool.BLANK;
+			String description = StringPool.BLANK;
+			for (JobPos jobPos : jobPosList) {
+				jobCode = jobPos.getCode();
+				title = jobPos.getTitle();
+				description = jobPos.getDescription();
+				if (Validator.isNotNull(jobCode)) {
+					// Check record exits DB
+					actionJob.updateJobPosDB(userId, groupId, jobCode, title, description, serviceContext);
+				}
+			}
+		}
 	}
 
 	//LamTV_Update Dictcollection to DB
@@ -575,7 +581,7 @@ public class ProcessUpdateDBUtils {
 				String processNo = process.getProcessNo();
 				String processName = process.getProcessName();
 				String description = process.getDescription();
-				Integer durationCount = process.getDurationCount();
+				Double durationCount = process.getDurationCount();
 				Integer durationUnit = process.getDurationUnit();
 				boolean generatePassword = process.isGeneratePassword();
 				String serverNo = process.getServerNo();
@@ -618,6 +624,7 @@ public class ProcessUpdateDBUtils {
 			String folderParentPath, ServiceInfoActions actionService, ServiceContext serviceContext) {
 		// Delete all ServiceFileTemplate with serviceInfoId
 		boolean flagTemplate = actionService.deleteAllFileTemplate(userId, groupId, serviceInfoId, serviceContext);
+		_log.info("flagTemplate: "+flagTemplate);
 		// Add list file serviceFileTemplate
 		List<FileTemplate> fileTempList = fileTemplate.getFileTemplate();
 		if (fileTempList != null && fileTempList.size() > 0 && flagTemplate) {
@@ -628,9 +635,10 @@ public class ProcessUpdateDBUtils {
 				fileTemplateNo = fileTemp.getFileTemplateNo();
 				fileTemplateName = fileTemp.getTemplateName();
 				fileName = fileTemp.getFilename();
-				if (Validator.isNotNull(fileName)) {
+				if (Validator.isNotNull(fileTemplateNo)) {
 					String filePathTemplate = folderParentPath + ConstantUtils.SOURCE_FILES + StringPool.FORWARD_SLASH
 							+ fileName;
+					_log.info("filePathTemplate: "+filePathTemplate);
 					File file = new File(filePathTemplate);
 					FileEntry fileEntry = null;
 					if (file.exists() && !file.isDirectory()) {
@@ -711,6 +719,7 @@ public class ProcessUpdateDBUtils {
 			String processNo = StringPool.BLANK;
 			String processName = StringPool.BLANK;
 			String registerBookCode = StringPool.BLANK;
+			Integer sampleCount = 0;
 			for (ProcessOption option : optionList) {
 				optionCode = option.getOptionCode();
 				optionName = option.getOptionName();
@@ -723,10 +732,11 @@ public class ProcessUpdateDBUtils {
 				processNo = option.getProcessNo();
 				processName = option.getProcessName();
 				registerBookCode = option.getRegisterBookCode();
+				sampleCount = option.getSampleCount();
 				//
 				actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 						autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
-						registerBookCode, serviceContext);
+						registerBookCode, sampleCount, serviceContext);
 			}
 		}
 	}
@@ -753,6 +763,7 @@ public class ProcessUpdateDBUtils {
 			String sampleData = StringPool.BLANK;
 			String formScript = StringPool.BLANK;
 			String formReport = StringPool.BLANK;
+			Integer fileMark = 0;
 			for (DossierPart dossierPart : dossierPartList) {
 				partNo = dossierPart.getPartNo();
 				partName = dossierPart.getPartName();
@@ -766,23 +777,30 @@ public class ProcessUpdateDBUtils {
 				deliverableAction = dossierPart.getDeliverableAction();
 				eForm = dossierPart.isEForm();
 				sampleData = dossierPart.getSampleData();
+				fileMark = dossierPart.getFileMark();
 				//
-				String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-						+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
-				String filePathForm = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
-						+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_JSON;
-				File xmlFile = new File(filePathReport);
-				File jsonFile = new File(filePathForm);
-				if (xmlFile.exists() && !xmlFile.isDirectory()) {
-					formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
-				}
-				if (jsonFile.exists() && !jsonFile.isDirectory()) {
-					formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
+				if (eForm) {
+					_log.info("eform: "+eForm);
+					String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
+							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
+					String filePathForm = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
+							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_JSON;
+					File xmlFile = new File(filePathReport);
+					File jsonFile = new File(filePathForm);
+					if (xmlFile.exists() && !xmlFile.isDirectory()) {
+						formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
+					}
+					if (jsonFile.exists() && !jsonFile.isDirectory()) {
+						formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
+					}
+				} else {
+					formScript = StringPool.BLANK;
+					formReport = StringPool.BLANK;
 				}
 				//
 				actionTemp.updateDossierPartDB(userId, groupId, templateNo, partNo, partName, partTip, partType,
 						multiple, formScript, formReport, required, esign, fileTemplateNo, deliverableType,
-						deliverableAction, eForm, sampleData, serviceContext);
+						deliverableAction, eForm, sampleData, fileMark, serviceContext);
 			}
 		}
 	}
@@ -883,6 +901,7 @@ public class ProcessUpdateDBUtils {
 			String instructionNote = StringPool.BLANK;
 			String briefNote = StringPool.BLANK;
 			String roleAsStep = StringPool.BLANK;
+			Integer checkInput = 0;
 			for (ProcessStep step : proStepList) {
 				stepCode = step.getStepCode();
 				stepName = step.getStepName();
@@ -894,10 +913,11 @@ public class ProcessUpdateDBUtils {
 				instructionNote = step.getInstructionNote();
 				briefNote = step.getBriefNote();
 				roleAsStep = step.getRoleAsStep();
+				checkInput = step.getCheckInput();
 				//
 				long processStepId = actionService.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode,
 						stepName, sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount,
-						instructionNote, briefNote, roleAsStep, serviceContext);
+						instructionNote, briefNote, roleAsStep, checkInput, serviceContext);
 				//
 				org.opencps.api.v21.model.Steps.ProcessStep.Roles stepRoles = step.getRoles();
 				if (stepRoles != null) {

@@ -128,7 +128,45 @@ public class DossierRequest extends CommonRequest {
 	public void setOriginDossierId(long originDossierId) {
 		this.originDossierId = originDossierId;
 	}
+	public boolean isOnlineValue() {
+		return onlineValue;
+	}
+	public void setOnlineValue(boolean onlineValue) {
+		this.onlineValue = onlineValue;
+	}
 	
+	public boolean isReceived() {
+		return received;
+	}
+	public void setReceived(boolean received) {
+		this.received = received;
+	}
+	public boolean isReleased() {
+		return released;
+	}
+	public void setReleased(boolean released) {
+		this.released = released;
+	}
+	public boolean isBetime() {
+		return betime;
+	}
+	public void setBetime(boolean betime) {
+		this.betime = betime;
+	}
+	public boolean isOntime() {
+		return ontime;
+	}
+	public void setOntime(boolean ontime) {
+		this.ontime = ontime;
+	}
+
+	public boolean isUndue() {
+		return undue;
+	}
+	public void setUndue(boolean undue) {
+		this.undue = undue;
+	}
+
 	private String registerBookCode;
 	private String processNo;
 	private String serviceCode;
@@ -147,7 +185,13 @@ public class DossierRequest extends CommonRequest {
 	private long dossierActionId;
 	private int viaPostal;
 	private boolean online;
+	private boolean onlineValue;
 	private int originality;
 	private String serverNo;
 	private long originDossierId;
+	private boolean received;
+	private boolean released;
+	private boolean betime;
+	private boolean ontime;
+	private boolean undue;
 }

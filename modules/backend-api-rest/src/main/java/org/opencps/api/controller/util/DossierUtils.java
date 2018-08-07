@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -11,6 +12,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -127,12 +129,14 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
 			//Process OverDue
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;
+			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
+			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 				if (subTimeStamp > 0) {
@@ -156,25 +160,48 @@ public class DossierUtils {
 //			if (Double.compare(durationCount, 0.0) != 0) {
 				long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-//				if (dAction != null) {
-//					String postStep = dAction.getStepCode();
-//					if (Validator.isNotNull(postStep)) {
-//						String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
-//						String govAgencyCode = doc.get(DossierTerm.GOV_AGENCY_CODE);
-//						String dossierTemp = doc.get(DossierTerm.DOSSIER_TEMPLATE_NO);
-//						long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-//						ProcessOption option = getProcessOption(serviceCode, govAgencyCode,
-//								dossierTemp, groupId);
-//						if (option != null) {
-//						ProcessStep step = ProcessStepLocalServiceUtil.getBySC_SPID(postStep,
-//								option.getServiceProcessId());
-//						}
-//						
-//					}
-//				}
-//			} else {
-//				model.setStepOverdue(StringPool.BLANK);
-//			}
+				if (dAction != null) {
+					long serviceProcessId = dAction.getServiceProcessId();
+					long groupId = dAction.getGroupId();
+					String postStep = dAction.getStepCode();
+				if (Validator.isNotNull(postStep)) {
+					ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStep, groupId, serviceProcessId);
+					if (step != null) {
+						Double durationCountStep = step.getDurationCount();
+						_log.info("durationCountStep: "+durationCountStep);
+						Date dueDateStep = null;
+						if (Validator.isNotNull(durationCountStep) && durationCountStep > 0) {
+							dueDateStep = HolidayUtils.getDueDate(dAction.getCreateDate(), durationCountStep,
+									durationUnit, groupId);
+						} else {
+							model.setStepOverdue(StringPool.BLANK);
+						}
+						if (dueDateStep != null) {
+							long dueDateStepTimeStamp = dueDateStep.getTime();
+							if (dueDateStepTimeStamp > 0) {
+								long subTimeStepStamp = dateNowTimeStamp - dueDateStepTimeStamp;
+								if (subTimeStepStamp > 0) {
+									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
+									model.setStepOverdue("Quá hạn "+stepOverDue);
+									_log.info("setStepOverdue Qua Han: "+model.getStepOverdue());
+								} else {
+									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
+									model.setStepOverdue("Còn "+stepOverDue);
+									_log.info("setStepOverdue Còn Han: "+model.getStepOverdue());
+								}
+							} else {
+								model.setStepOverdue(StringPool.BLANK);
+							}
+						}  else {
+							model.setStepOverdue(StringPool.BLANK);
+						}
+					}
+				}  else {
+					model.setStepOverdue(StringPool.BLANK);
+				}
+			} else {
+				model.setStepOverdue(StringPool.BLANK);
+			}
 			//LamTV: Process Assigned dossier
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
 //			_log.info("ASSIGNED" + dau);
@@ -261,6 +288,8 @@ public class DossierUtils {
 //			}
 //			model.setProcessBlock(processBlock);
 //			model.setProcessUnit(processUnit);
+			model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
+			model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 
 			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
 				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
@@ -283,7 +312,7 @@ public class DossierUtils {
 		return ouputs;
 	}
 	
-	private static String calculatorOverDue(double durationUnit, long subTimeStamp) {
+	private static String calculatorOverDue(int durationUnit, long subTimeStamp) {
 		if (subTimeStamp < 0) {
 			subTimeStamp = Math.abs(subTimeStamp);
 		}
@@ -413,7 +442,7 @@ public class DossierUtils {
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			double durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1.0;		
+			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 //			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
@@ -820,4 +849,22 @@ public class DossierUtils {
 			}
 		}
 	}
+
+	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
+		DossierActionDetailModel model = new DossierActionDetailModel();
+
+		model.setDossierActionId(dAction.getDossierActionId());
+		model.setDossierId(dAction.getDossierId());
+		model.setDossierDocumentId(dossierDocumentId);
+		model.setFromStepCode(dAction.getFromStepCode());
+		model.setNextActionId(dAction.getNextActionId());
+		model.setGroupId(dAction.getGroupId());
+		model.setPreviousActionId(dAction.getPreviousActionId());
+		model.setSequenceNo(dAction.getSequenceNo());
+		model.setServiceProcessId(dAction.getServiceProcessId());
+		model.setRollbackable(dAction.getRollbackable());
+
+		return model;
+	}
+
 }

@@ -18,7 +18,8 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 			throws PortalException, SystemException {
 
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
-				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getDomain(),
+				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
+						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
 						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getGroupAgencyCode(),
 						dossierStatisticRequest.isReporting(), dossierStatisticRequest.getStart(),
 						dossierStatisticRequest.getEnd());

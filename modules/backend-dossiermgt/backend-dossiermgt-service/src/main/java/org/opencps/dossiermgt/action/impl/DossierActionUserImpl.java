@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUserImpl implements DossierActionUser {
@@ -371,54 +372,59 @@ public class DossierActionUserImpl implements DossierActionUser {
 	public void copyRoleAsStep(ProcessStep curStep, Dossier dossier) {
 		if (Validator.isNull(curStep.getRoleAsStep()))
 			return;	
-		String stepCode = curStep.getRoleAsStep();
-		ServiceProcess serviceProcess;
-		try {
-			serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
-			if (serviceProcess != null) {
-				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, dossier.getGroupId(), serviceProcess.getServiceProcessId());
-				;
-				List<ProcessStepRole> lstRoles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getProcessStepId());
-				for (ProcessStepRole psr : lstRoles) {
-					List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
-					for (User u : users) {
-						DossierUserPK duPk = new DossierUserPK();
-						duPk.setDossierId(dossier.getDossierId());
-						duPk.setUserId(u.getUserId());
-						int moderator = (psr.getModerator() ? 1 : 0);
-						
-						DossierUser duModel = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
-												
-						if (duModel == null) {
-							DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), 
-									u.getUserId(), moderator, true);
-						}
-						else {
-							try {
-								if (duModel.getModerator() == 0 && moderator == 1) {
-									DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), u.getUserId(),
-											moderator, true);							
+		String[] stepCodeArr = StringUtil.split(curStep.getRoleAsStep());
+		if (stepCodeArr.length > 0) {
+			for (String stepCode : stepCodeArr) {
+				ServiceProcess serviceProcess = null;
+				try {
+					serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
+					if (serviceProcess != null) {
+						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, dossier.getGroupId(), serviceProcess.getServiceProcessId());
+						;
+						if (processStep == null) continue;
+						List<ProcessStepRole> lstRoles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getProcessStepId());
+						for (ProcessStepRole psr : lstRoles) {
+							List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
+							for (User u : users) {
+								DossierUserPK duPk = new DossierUserPK();
+								duPk.setDossierId(dossier.getDossierId());
+								duPk.setUserId(u.getUserId());
+								int moderator = (psr.getModerator() ? 1 : 0);
+								
+								DossierUser duModel = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
+														
+								if (duModel == null) {
+									DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), 
+											u.getUserId(), moderator, true);
 								}
-							} catch (NoSuchDossierUserException e) {
-//								e.printStackTrace();
-							}					
-						}	
-						
-						DossierActionUserPK dauPk = new DossierActionUserPK();
-						dauPk.setDossierActionId(dossier.getDossierActionId());
-						dauPk.setUserId(u.getUserId());
-						org.opencps.dossiermgt.model.DossierActionUser dauModel = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPk);
-						int assigned = moderator == 1 ? 1 : 0;
-						if (dauModel == null) {							
-							DossierActionUserLocalServiceUtil.addDossierActionUser(u.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), stepCode, moderator, assigned, true);
-						}
-						else {
-							DossierActionUserLocalServiceUtil.updateDossierActionUser(u.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), stepCode, moderator, assigned, true);
+								else {
+									try {
+										if (duModel.getModerator() == 0 && moderator == 1) {
+											DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), u.getUserId(),
+													moderator, true);							
+										}
+									} catch (NoSuchDossierUserException e) {
+//										e.printStackTrace();
+									}					
+								}	
+								
+								DossierActionUserPK dauPk = new DossierActionUserPK();
+								dauPk.setDossierActionId(dossier.getDossierActionId());
+								dauPk.setUserId(u.getUserId());
+								org.opencps.dossiermgt.model.DossierActionUser dauModel = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPk);
+								int assigned = moderator == 1 ? 1 : 0;
+								if (dauModel == null) {							
+									DossierActionUserLocalServiceUtil.addDossierActionUser(u.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), stepCode, moderator, assigned, true);
+								}
+								else {
+									DossierActionUserLocalServiceUtil.updateDossierActionUser(u.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), stepCode, moderator, assigned, true);
+								}
+							}
 						}
 					}
-				}
+				} catch (PortalException e) {
+				}				
 			}
-		} catch (PortalException e) {
 		}		
 	}
 }

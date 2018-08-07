@@ -24,6 +24,7 @@ public class DossierActionTerm {
 	public static final String PAYLOAD = "payload";
 	public static final String STEP_INSTRUCTION = "stepInstruction";
 	public static final String AUTO = "auto";
+	public static final String DOSSIER_DOCUMENT_ID = "dossierDocumentId";
 	
 	public static final int STATE_WAITING_PROCESSING = 0;
 	public static final int STATE_ALREADY_PROCESSED = 1;

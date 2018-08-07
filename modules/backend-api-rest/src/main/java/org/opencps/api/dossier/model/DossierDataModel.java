@@ -175,7 +175,9 @@ import javax.xml.bind.annotation.XmlType;
     "durationCount",
     "durationUnit",
     "sampleCount",
-    "assigned"
+    "assigned",
+    "domainCode",
+    "domainName"
 })
 public class DossierDataModel {
 
@@ -254,9 +256,11 @@ public class DossierDataModel {
 	protected String lockState;
 	protected String statusReg;
 	protected Double durationCount;
-	protected Double durationUnit;
+	protected Integer durationUnit;
 	protected Long sampleCount;
 	protected Integer assigned;
+	protected String domainCode;
+	protected String domainName;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1868,11 +1872,11 @@ public class DossierDataModel {
 		this.durationCount = durationCount;
 	}
 
-	public Double getDurationUnit() {
+	public Integer getDurationUnit() {
 		return durationUnit;
 	}
 
-	public void setDurationUnit(Double durationUnit) {
+	public void setDurationUnit(Integer durationUnit) {
 		this.durationUnit = durationUnit;
 	}
 
@@ -1890,6 +1894,22 @@ public class DossierDataModel {
 
 	public void setAssigned(Integer assigned) {
 		this.assigned = assigned;
+	}
+
+	public String getDomainCode() {
+		return domainCode;
+	}
+
+	public void setDomainCode(String domainCode) {
+		this.domainCode = domainCode;
+	}
+
+	public String getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
 	}
 
 }

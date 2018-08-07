@@ -65,6 +65,30 @@ public class DossierData {
 		this.govAgencyCode = govAgencyCode;
 	}
 
+	public String getServiceCode() {
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+
+	public long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(long groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+
 	private String dossierStatus;
 	private String dossierSubStatus;
 	private String receiveDate;
@@ -72,6 +96,8 @@ public class DossierData {
 	private String dueDate;
 	private String extendDate;
 	private String releaseDate;
-	
+	private String serviceCode;
+	private long groupId;
 	private String govAgencyCode;
+	private String govAgencyName;
 }

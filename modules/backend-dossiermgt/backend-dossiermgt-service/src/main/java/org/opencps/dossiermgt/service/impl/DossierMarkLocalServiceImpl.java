@@ -88,4 +88,8 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 
 		return dossierMarkPersistence.findByG_DID(groupId, dossierId);
 	}
+
+	public List<DossierMark> getDossierMarksByFileMark(long groupId, long dossierId, int fileMark) {
+		return dossierMarkPersistence.findByG_DID_MARK(groupId, dossierId, fileMark);
+	}
 }

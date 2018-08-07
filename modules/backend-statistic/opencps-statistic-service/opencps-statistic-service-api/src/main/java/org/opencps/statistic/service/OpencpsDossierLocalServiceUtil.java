@@ -197,9 +197,11 @@ public class OpencpsDossierLocalServiceUtil {
 		java.lang.String contactEmail, java.lang.String delegateIdNo,
 		java.lang.String delegateTelNo, java.lang.String dossierStatus,
 		java.lang.String dossierSubStatus, long dossierActionId, int viaPostal,
-		boolean online, int originality, java.lang.String serverNo,
-		long originDossierId, boolean order, java.lang.String orderBy,
-		int start, int end)
+		boolean online, boolean onlineValue, int originality,
+		java.lang.String serverNo, long originDossierId, boolean isReceiveDate,
+		boolean isReleaseDate, boolean isBetimes, boolean isOntime,
+		boolean isUndue, boolean order, java.lang.String orderBy, int start,
+		int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -207,8 +209,10 @@ public class OpencpsDossierLocalServiceUtil {
 			processNo, serviceCode, govAgencyCode, applicantIdType,
 			applicantIdNo, cityCode, districtCode, wardCode, contactTelNo,
 			contactEmail, delegateIdNo, delegateTelNo, dossierStatus,
-			dossierSubStatus, dossierActionId, viaPostal, online, originality,
-			serverNo, originDossierId, order, orderBy, start, end);
+			dossierSubStatus, dossierActionId, viaPostal, online, onlineValue,
+			originality, serverNo, originDossierId, isReceiveDate,
+			isReleaseDate, isBetimes, isOntime, isUndue, order, orderBy, start,
+			end);
 	}
 
 	/**

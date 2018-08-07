@@ -36,8 +36,16 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -122,7 +130,25 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			if (dossier.getOriginDossierId() != 0) {
 				//HSLT
+				Dossier hsltDossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+				
 				dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), hsltDossier.getGovAgencyCode());
+				List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+				
+				if (serviceConfig != null) {
+					if (lstOptions.size() > 0) {
+						ProcessOption processOption = lstOptions.get(0);
+						
+						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
+						List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
+						for (DossierPart dp : lstParts) {
+							if (dp.getPartNo().equals(dossierPartNo) && dp.getFileTemplateNo().equals(fileTemplateNo)) {
+								dossierTemplateNo = dp.getTemplateNo();
+							}
+						}
+					}
+				}
 			}
 			
 			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
@@ -133,15 +159,14 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			_log.info("__Start add file at:" + new Date());
 			DossierFile dossierFile =  null;
 			
-			if (dataHandler != null) {
-				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
-						dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
-						dataHandler.getInputStream(), fileType, isSync, serviceContext);				
-			}
-			else {
-				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
-						dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, displayName, 0,
-						null, fileType, isSync, serviceContext);								
+			if (dataHandler != null && dataHandler.getInputStream() != null) {
+				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+						dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
+						dataHandler.getInputStream(), fileType, isSync, serviceContext);
+			} else {
+				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+						dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
+						serviceContext);
 			}
 			
 			_log.info("__End add file at:" + new Date());

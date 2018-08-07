@@ -26,6 +26,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -58,38 +59,20 @@ public final class OpencpsUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(OpencpsUtils.class);
 
 	private OpencpsUtils() {
-		throw new UnsupportedOperationException("OleUtils cannot be instantiated");
+		throw new UnsupportedOperationException("OpencpsUtils cannot be instantiated");
 	}
 
-	/**
-	 * This will convert ISO Locale to OnStar Locale format (en_US to en-US) Input
-	 * format should be en_US
-	 * 
-	 * @param localeString
-	 * @return
-	 */
+
 	public static String formatISOToOnStarLocale(String localeString) {
 		return (localeString == null ? null : localeString.replace(ISO_LOCALE_SEPERATOR, ONSTAR_LOCALE_SEPERATOR));
 	}
 
-	/**
-	 * This will convert  Locale to locale format (en-US to en_US)
-	 * Input format should be en_US
-	 * 
-	 * @param localeString
-	 * @return
-	 */
+
 	public static String formatOnStarToISOLocale(String localeString) {
 
 		return (localeString == null ? null : localeString.replace(ONSTAR_LOCALE_SEPERATOR, ISO_LOCALE_SEPERATOR));
 	}
 
-	/**
-	 * This method will convert es_US to es_MX as required by backoffice.
-	 * 
-	 * @param localeString
-	 * @return
-	 */
 	public static String changeToOnStarAcceptedLocale(String localeString) {
 
 		if (!StringUtils.equalsIgnoreCase(localeString, ISO_LOCALE_SPANISH_US)) {
@@ -99,67 +82,34 @@ public final class OpencpsUtils {
 		return ISO_LOCALE_SPANISH_MX;
 	}
 
-	/**
-	 * Return current time in onstar format
-	 * 
-	 * @return
-	 */
+
 	public static String getSystemTimeStampInOnStarFormat() {
 		return getTimeStampInOnStarFormat(new Date());
 	}
 
-	/**
-	 * Get timestamp in onstar web service format
-	 * 
-	 * @param date
-	 * @return
-	 */
+
 	public static String getTimeStampInOnStarFormat(Date date) {
 		return formatDate(TIMESTAMP_DATE_FORMAT, date) + TIMESTAMP_SEPERATOR + formatDate(TIMESTAMP_TIME_FORMAT, date)
 				+ TIMESTAMP_POST_FIX;
 	}
 
-	/**
-	 * format date format can be "yyyy-MM-dd" etc.
-	 * 
-	 * @param format
-	 * @param date
-	 * @return
-	 */
+
 	public static String formatDate(String format, Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.format(date);
 	}
 
-	/**
-	 * This will return language code from OnStar Locale (en_US) Input should be
-	 * en_US
-	 * 
-	 * @param locale
-	 * @return
-	 */
+
 	public static String getLanguageCode(String locale) {
 		return (locale == null ? null : locale.substring(0, locale.indexOf(ISO_LOCALE_SEPERATOR)));
 	}
 
-	/**
-	 * This will return country code from OnStar Locale (en_US) Input should be
-	 * en_US
-	 * 
-	 * @param locale
-	 * @return
-	 */
+
 	public static String getCountryCode(String locale) {
 		return (locale == null ? null : locale.substring(locale.indexOf(ISO_LOCALE_SEPERATOR) + 1));
 	}
 
-	/**
-	 * return true if one obj in objects equals e
-	 * 
-	 * @param e
-	 * @param objects
-	 * @return
-	 */
+
 	public static boolean orEquals(Object e, Object... objects) {
 		if (e != null && objects != null && objects.length > 0) {
 			for (Object obj : objects) {
@@ -171,15 +121,7 @@ public final class OpencpsUtils {
 		return false;
 	}
 
-	/**
-	 * Filter the collections by filter interface
-	 * 
-	 * @param <T>
-	 * @param <C>
-	 * @param collection
-	 * @param filter
-	 * @return
-	 */
+
 	@SuppressWarnings("unchecked")
 	public static <T, C extends Collection<T>> C filter(C collection, Predicate<T> filter) {
 		final boolean isDebugEnabled = LOG.isDebugEnabled();
@@ -208,30 +150,16 @@ public final class OpencpsUtils {
 		return newCollection;
 	}
 
-	/**
-	 * Returns true if the object is Not null; false otherwise.
-	 * 
-	 * @param obj
-	 * @return true/false
-	 */
+
 	public static boolean isNotNull(Object obj) {
 		return (null != obj);
 	}
 
-	/**
-	 * Returns true if both strings are equal; false otherwise.
-	 * 
-	 * @return true/false
-	 */
+
 	public static boolean compareString(String string1, String string2) {
 		return StringUtils.equals(StringUtils.defaultString(string1), StringUtils.defaultString(string2));
 	}
 
-	/**
-	 * Return ISO Locale separator
-	 * 
-	 * @return ISO_LOCALE_SEPERATOR
-	 */
 	public static String getISOLocaleSeparator() {
 		return ISO_LOCALE_SEPERATOR;
 	}

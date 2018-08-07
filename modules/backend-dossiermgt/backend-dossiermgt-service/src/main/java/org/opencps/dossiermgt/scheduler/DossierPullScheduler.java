@@ -491,14 +491,14 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossierId,
 					object.getString("referenceUid"));
 
-			if (Validator.isNull(paymentFile)) {
-				paymentFile = actions.createPaymentFile(context.getUserId(), groupId, dossierId,
-						object.getString("referenceUid"), object.getString("govAgencyCode "),
-						object.getString("govAgencyName"), object.getString("applicantName"),
-						object.getString("applicantIdNo"), object.getString("paymentFee"),
-						object.getLong("paymentAmount"), object.getString("paymentNote"),
-						object.getString("epaymentProfile"), object.getString("bankInfo"), context);
-			}
+//			if (Validator.isNull(paymentFile)) {
+//				paymentFile = actions.createPaymentFile(context.getUserId(), groupId, dossierId,
+//						object.getString("referenceUid"), object.getString("govAgencyCode "),
+//						object.getString("govAgencyName"), object.getString("applicantName"),
+//						object.getString("applicantIdNo"), object.getString("paymentFee"),
+//						object.getLong("paymentAmount"), object.getString("paymentNote"),
+//						object.getString("epaymentProfile"), object.getString("bankInfo"), context);
+//			}
 			//
 			// paymentFile.setPaymentStatus(object.getInt("paymentStatus"));
 			paymentFile.setPaymentMethod(object.getString("paymentMethod"));

@@ -379,10 +379,10 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 	//LamTV_ Process output ProcessStep to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessStep updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
-			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
-			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
-			throws PortalException {
+	public ProcessStep updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode,
+			String stepName, String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus,
+			Integer durationCount, String instructionNote, String briefNote, String roleAsStep, Integer checkInput,
+			ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
@@ -410,6 +410,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		object.setStepInstruction(instructionNote);
 		object.setBriefNote(briefNote);
 		object.setRoleAsStep(roleAsStep);
+		object.setCheckInput(checkInput);
 
 		return processStepPersistence.update(object);
 	}
@@ -417,4 +418,5 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	public List<ProcessStep> findByG_SP_SNO(long groupId, long serviceProcessId, String sequenceNo) {
 		return processStepPersistence.findByG_SP_SNO(groupId, serviceProcessId, sequenceNo);
 	}
+
 }
