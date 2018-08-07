@@ -2759,7 +2759,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 			payloadObject.put("dossierFiles", dossierFilesArr);
-			_log.info("Payload: " + payloadObject.toJSONString());
+//			_log.info("Payload: " + payloadObject.toJSONString());
 			
 			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
 				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossierId);
@@ -2799,6 +2799,10 @@ public class DossierActionsImpl implements DossierActions {
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
 					syncType, payloadObject.toJSONString(), serviceProcess.getServerNo(), state);
 			
+			if (state == DossierSyncTerm.STATE_NOT_SYNC
+					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+				publishEvent(dossier);
+			}
 		}
 				
 		//Do action hslt
@@ -2829,6 +2833,16 @@ public class DossierActionsImpl implements DossierActions {
 		indexer.reindex(dossier);
 		
 		return dossierAction;
+	}
+	
+	private void publishEvent(Dossier dossier) {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+
+		message.put("msgToEngine", msgData);
+		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
+		
+		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);		
 	}
 	
 	private JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
@@ -4909,6 +4923,43 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			_log.error(e);
 			return null;
 		}
+	}
+
+	@Override
+	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context)
+			throws PortalException {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		Date appIdDate = null;
+
+		try {
+			appIdDate = sdf.parse(applicantIdDate);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		Dossier dossier = null;
+
+		try {
+
+			//Process
+			dossier = DossierLocalServiceUtil.publishDossier(groupId, dossierId, referenceUid, counter, serviceCode,
+					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
+					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
+					postalCityName, postalTelNo, online, notification, applicantNote, originality, context);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return dossier;	
 	}
 
 }

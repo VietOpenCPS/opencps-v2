@@ -143,8 +143,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 					fileEntryId = fileEntry.getFileEntryId();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				throw new SystemException(e);
+//				e.printStackTrace();
+//				throw new SystemException(e);
 			}
 		}
 		_log.info("****End uploadFile file at:" + new Date());
