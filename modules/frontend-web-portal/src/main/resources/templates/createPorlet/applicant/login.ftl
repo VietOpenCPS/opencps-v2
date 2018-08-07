@@ -41,7 +41,7 @@
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-				<li><a href="/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
+				<li><a href="/web${(themeDisplay.getScopeGroup().getFriendlyURL())!}/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
 				<li><a href="/c/portal/logout"><i class="fa fa-arrow-right"></i> Đăng xuất</a></li>
 			</ul>
 		</div>
