@@ -795,7 +795,12 @@ public class ProcessUpdateDBUtils {
 					}
 				} else {
 					formScript = StringPool.BLANK;
-					formReport = StringPool.BLANK;
+					String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
+							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
+					File xmlFile = new File(filePathReport);
+					if (xmlFile.exists() && !xmlFile.isDirectory()) {
+						formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
+					}
 				}
 				//
 				actionTemp.updateDossierPartDB(userId, groupId, templateNo, partNo, partName, partTip, partType,
