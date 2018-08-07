@@ -422,6 +422,7 @@ public class ProcessUpdateDBUtils {
 				}
 				org.opencps.api.v21.model.UserManagement.Users users = userManagement.getUsers();
 				if (users != null) {
+					_log.info("Process Employee");
 					processUpdateEmployee(userId, groupId, users, serviceContext);
 				}
 			}
@@ -434,6 +435,7 @@ public class ProcessUpdateDBUtils {
 			org.opencps.api.v21.model.UserManagement.Users users, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException, PortalException {
 		List<Employee> employeeList = users.getEmployee();
 		if (employeeList != null && employeeList.size() > 0) {
+			_log.info("employeeList size: "+employeeList.size());
 			EmployeeInterface actionEmployee = new EmployeeActions();
 			String employeeNo = StringPool.BLANK;
 			String fullname = StringPool.BLANK;
@@ -457,6 +459,7 @@ public class ProcessUpdateDBUtils {
 				jobTitle = employee.getJobTitle();
 				roles = employee.getRoles();
 				if (Validator.isNotNull(employeeNo)) {
+					_log.info("employeeNo: "+employeeNo);
 					// Check record exits DB
 					actionEmployee.updateEmployeeDB(userId, groupId, employeeNo, fullname, title, gender, birthdate,
 							telNo, email, workingStatus, jobTitle, roles, serviceContext);
