@@ -2,6 +2,7 @@ package org.opencps.usermgt.action.impl;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -758,20 +759,31 @@ public class EmployeeActions implements EmployeeInterface {
 		return jsonObject;
 	}
 
+	private static final String DATE_PATTERN = "dd/MM/yyyy";
 	@Override
 	public void updateEmployeeDB(long userId, long groupId, String employeeNo, String fullName, String title,
 			Integer gender, String birthDate, String telNo, String email, Integer workingStatus, String jobTitle,
 			String roles, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException, PortalException {
 
+		// Convert String to Date
+		Date birthDay = null;
+		if (Validator.isNotNull(birthDate)) {
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+			try {
+				birthDay = sdf.parse(birthDate);
+			} catch (java.text.ParseException e) {
+			}
+		}
+		
 		Employee employee = EmployeeLocalServiceUtil.getEmployeeByEmpNo(groupId, employeeNo);
 		boolean isNew = false;
 
-		//TODO:birthDate = new Date();
+		//Update or create Employee
 		if (employee == null) {
 			employee = EmployeeLocalServiceUtil.addEmployee(
 					userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
-					new Date(), telNo, null, email, GetterUtil.get(workingStatus, 1),
+					birthDay, telNo, null, email, GetterUtil.get(workingStatus, 1),
 					0l, title, false, null, null, serviceContext);
 			isNew = true;
 		} else {
@@ -785,7 +797,7 @@ public class EmployeeActions implements EmployeeInterface {
 				employee.setGender(GetterUtil.get(gender, 0));
 			}
 			if (Validator.isNotNull(birthDate)) {
-				employee.setBirthdate(new Date());
+				employee.setBirthdate(birthDay);
 			}
 			if (Validator.isNotNull(telNo)) {
 				employee.setTelNo(telNo);
@@ -807,122 +819,174 @@ public class EmployeeActions implements EmployeeInterface {
 				employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
 		}
 
-		boolean isMain = false;
+		//Check exits account and create new account
+		if (isNew) {
+			createNewEmployeeAccount(userId, groupId, employee, StringPool.BLANK, email, serviceContext);
+		}
+		//Import employee JobPos
 		if (Validator.isNotNull(roles)) {
 			String[] roleArr = StringUtil.split(roles);
 			if (roleArr != null && roleArr.length > 0) {
-				int length = roleArr.length;
 				long employeeId = employee.getEmployeeId();
 				if (isNew) {
-					long jobPosId = 0;
-					String jobCode = StringPool.BLANK;
-					for (int i = 0; i < length; i++) {
-						jobCode = roleArr[i];
-						JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
-						if (job != null) {
-							jobPosId = job.getJobPosId();
-							EmployeeJobPosLocalServiceUtil.addEmployeeJobPos(
-									userId, groupId, employeeId, jobPosId, 0, serviceContext);
-							if (i == 0) {
-								employee.setMainJobPostId(jobPosId);
-								EmployeeLocalServiceUtil.updateEmployee(employee);
-							}
-						}
-					}
+					processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
 				} else {
 					List<EmployeeJobPos> empJobPosList =
 							EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
 
 					if (Validator.isNull(empJobPosList) || empJobPosList.isEmpty()) {
-						processUpdateEmpJobPos(userId, groupId, roleArr, employee, serviceContext);
+						processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
 					} else {
-						
+						processUpdateEmpJobPos(userId, groupId, roleArr, employee, empJobPosList, serviceContext);
 					}
 
 				}
 			}
 		}
 
-//		List<EmployeeJobPos> listJobPos =
-//			EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(id);
-
-//		if (Validator.isNull(listJobPos) || listJobPos.isEmpty()) {
-//
-//			processUpdateEmpJobPos(long userId, long groupId, String[] roleArr, Employee employee,
-//					ServiceContext serviceContext)
-//
-//		}
-
-//		ett = EmployeeJobPosLocalServiceUtil.addEmployeeJobPos(
-//			userId, groupId, id, jobPosId, workingUnitId, serviceContext);
-
-//		if (isMain) {
-//
-//			Employee employee =
-//				EmployeeLocalServiceUtil.fetchEmployee(ett.getEmployeeId());
-//
-//			employee.setMainJobPostId(jobPosId);
-//
-//			employee = EmployeeLocalServiceUtil.updateEmployee(
-//				userId, employee.getEmployeeId(), employee.getFullName(),
-//				employee.getEmployeeNo(), employee.getGender(),
-//				employee.getBirthdate(), employee.getTelNo(),
-//				employee.getMobile(), employee.getEmail(),
-//				employee.getWorkingStatus(), ett.getEmployeeJobPosId(),
-//				employee.getPhotoFileEntryId(), employee.getMappingUserId(),
-//				employee.getTitle(), employee.getRecruitDate(),
-//				employee.getLeaveDate(), serviceContext);
-//
-//		}
-
-	
-//	EmployeeJobPos ett = EmployeeJobPosLocalServiceUtil.fetchEmployeeJobPos(
-//			employeeJobPosId);
-//
-//		ett.setWorkingUnitId(workingUnitId);
-//		ett.setJobPostId(jobPosId);
-//
-//		ett = EmployeeJobPosLocalServiceUtil.updateEmployeeJobPos(
-//			userId, ett.getEmployeeJobPosId(), ett.getJobPostId(),
-//			ett.getWorkingUnitId(), serviceContext);
-//
-//		if (isMain) {
-//
-//			Employee employee =
-//				EmployeeLocalServiceUtil.fetchEmployee(ett.getEmployeeId());
-//
-//			employee.setMainJobPostId(jobPosId);
-//
-//			employee = EmployeeLocalServiceUtil.updateEmployee(
-//				userId, employee.getEmployeeId(), employee.getFullName(),
-//				employee.getEmployeeNo(), employee.getGender(),
-//				employee.getBirthdate(), employee.getTelNo(),
-//				employee.getMobile(), employee.getEmail(),
-//				employee.getWorkingStatus(), ett.getEmployeeJobPosId(),
-//				employee.getPhotoFileEntryId(), employee.getMappingUserId(),
-//				employee.getTitle(), employee.getRecruitDate(),
-//				employee.getLeaveDate(), serviceContext);
-//
-//		}
 	}
 
+	//Process add Employee JobPos
 	private void processUpdateEmpJobPos(long userId, long groupId, String[] roleArr, Employee employee,
-			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException, PortalException {
+			List<EmployeeJobPos> empJobPosList, ServiceContext serviceContext) throws PortalException {
 		long jobPosId = 0;
 		String jobCode = StringPool.BLANK;
-		for (int i = 0; i < roleArr.length; i++) {
-			jobCode = roleArr[i];
-			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
-			if (job != null) {
-				jobPosId = job.getJobPosId();
-				EmployeeJobPosLocalServiceUtil.addEmployeeJobPos(
-						userId, groupId, employee.getEmployeeId(), jobPosId, 0, serviceContext);
+		if (empJobPosList != null && empJobPosList.size() > 0) {
+			StringBuilder sb = new StringBuilder();
+			long jobPosEmpId = 0;
+			for (int i = 0; i < empJobPosList.size(); i++) {
+				EmployeeJobPos employeeJobPos = empJobPosList.get(i);
+				jobPosEmpId = employeeJobPos.getJobPostId();
+				JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosEmpId);
 				if (i == 0) {
-					employee.setMainJobPostId(jobPosId);
-					EmployeeLocalServiceUtil.updateEmployee(employee);
+					sb.append(job.getJobPosCode());
+				} else {
+					sb.append(StringPool.COMMA);
+					sb.append(job.getJobPosCode());
+				}
+			}
+			String strJobPos = sb.toString();
+			if (Validator.isNotNull(strJobPos)) {
+				for (int i = 0; i < roleArr.length; i++) {
+					jobCode = roleArr[i];
+					if (!strJobPos.contains(jobCode)) {
+						JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
+						if (job != null) {
+							jobPosId = job.getJobPosId();
+							EmployeeJobPosLocalServiceUtil.addEmployeeJobPos(
+									userId, groupId, employee.getEmployeeId(), jobPosId, 0, serviceContext);
+						}
+					}
+				}
+			}
+		} else {
+			for (int i = 0; i < roleArr.length; i++) {
+				jobCode = roleArr[i];
+				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
+				if (job != null) {
+					jobPosId = job.getJobPosId();
+					EmployeeJobPosLocalServiceUtil.addEmployeeJobPos(
+							userId, groupId, employee.getEmployeeId(), jobPosId, 0, serviceContext);
+					if (i == 0) {
+						employee.setMainJobPostId(jobPosId);
+						EmployeeLocalServiceUtil.updateEmployee(employee);
+					}
 				}
 			}
 		}
+	}
+
+	//Create account
+	private JSONObject createNewEmployeeAccount(long userId, long groupId, Employee employee, String screenName,
+			String email, ServiceContext serviceContext) throws PortalException {
+
+		if (Validator.isNull(screenName)) {
+			screenName = email.substring(0, email.indexOf("@"));
+		}
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		_log.info("companyId: " + serviceContext.getCompanyId());
+		long companyId = serviceContext.getCompanyId();
+
+		try {
+
+			long[] userGroupIds = {};
+			List<Long> roleIds = new ArrayList<>();
+			Role role = RoleLocalServiceUtil.fetchRole(companyId, "employee");
+			if (Validator.isNotNull(role)) {
+				roleIds.add(role.getRoleId());
+			}
+			long[] resultRoles = roleIds.stream().mapToLong(l -> l).toArray();
+			long[] organizationIds = new long[] {};
+			long[] groupIds = { groupId, 20143 };
+
+//			String passWord = PwdGenerator.getPassword();
+			String passWord = "12345";
+
+			String fullName = employee.getFullName();
+			String[] fml = new String[3];
+
+			String[] splitName = StringUtil.split(fullName, StringPool.SPACE);
+
+			if (splitName != null && splitName.length > 0) {
+				fml[0] = splitName[0];
+				fml[1] = splitName.length >= 3
+						? StringUtil.merge(ArrayUtil.subset(splitName, 1, splitName.length - 1), StringPool.SPACE)
+						: StringPool.BLANK;
+				fml[2] = splitName.length >= 2 ? splitName[splitName.length - 1] : splitName[0];
+			} else {
+				fml[0] = screenName;
+				fml[1] = StringPool.BLANK;
+				fml[2] = screenName;
+			}
+
+			_log.info("/////0" + fml[0]);
+			_log.info("//////1" + fml[1]);
+			_log.info("//////2" + fml[2]);
+
+			User newUser = UserLocalServiceUtil.addUser(0, companyId, false, passWord, passWord, false,
+					screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0], fml[1],
+					fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, StringPool.BLANK, groupIds, organizationIds,
+					resultRoles, userGroupIds, false, serviceContext);
+
+			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+			indexer.reindex(newUser);
+
+			employee.setMappingUserId(newUser.getUserId());
+
+			employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(), employee.getFullName(),
+					employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(), employee.getTelNo(),
+					employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(), employee.getMainJobPostId(),
+					employee.getPhotoFileEntryId(), employee.getMappingUserId(), employee.getTitle(),
+					employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
+
+			User fromUser = UserLocalServiceUtil.fetchUser(userId);
+
+			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+
+			payLoad.put("USERNAME", newUser.getScreenName());
+			payLoad.put("USEREMAIL", newUser.getEmailAddress());
+			payLoad.put("PASSWORD", passWord);
+
+			NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
+					User.class.getName(), String.valueOf(newUser.getUserId()), payLoad.toJSONString(),
+					fromUser.getFullName(), employee.getFullName(), employee.getMappingUserId(), employee.getEmail(),
+					employee.getTelNo(), new Date(), null, serviceContext);
+
+			jsonObject.put("screenName", newUser.getScreenName());
+			jsonObject.put("email", newUser.getEmailAddress());
+			jsonObject.put("exist", false);
+			jsonObject.put("duplicate", Boolean.FALSE.toString());
+
+		} catch (Exception e) {
+			jsonObject.put("screenName", StringPool.BLANK);
+			jsonObject.put("email", StringPool.BLANK);
+			jsonObject.put("exist", Boolean.TRUE);
+			jsonObject.put("duplicate", Boolean.TRUE.toString());
+		}
+
+		return jsonObject;
 	}
 
 }

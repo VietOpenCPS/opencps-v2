@@ -412,21 +412,21 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 				return responseBuilder.build();
 			}else{
-				ErrorMsg error = new ErrorMsg();
-				error.setMessage("file not found!");
-				error.setCode(404);
-				error.setDescription("file not found!");
-				return Response.status(404).entity(error).build();
+//				ErrorMsg error = new ErrorMsg();
+//				error.setMessage("file not found!");
+//				error.setCode(404);
+//				error.setDescription("file not found!");
+				return Response.status(404).entity("").build();
 			}
 
 		} catch (Exception e) {
 			_log.error("Can not get employee photo employeeId = " + id + " " + e);
 
-			ErrorMsg error = new ErrorMsg();
-			error.setMessage("file not found!");
-			error.setCode(404);
-			error.setDescription("file not found!");
-			return Response.status(404).entity(error).build();
+//			ErrorMsg error = new ErrorMsg();
+//			error.setMessage("file not found!");
+//			error.setCode(404);
+//			error.setDescription("file not found!");
+			return Response.status(404).entity("").build();
 		}
 	}
 
@@ -748,19 +748,16 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		EmployeeInterface actions = new EmployeeActions();
 		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
 		
-		try {
-			
-			_log.info("RESET USER ERROR");
-
-			Role adminRole = RoleLocalServiceUtil.getRole(20122);
-			
-			RoleLocalServiceUtil.addUserRole(
-					user.getUserId(), adminRole.getRoleId());
-		} catch (Exception e) {
-			_log.info("RESET USER ERROR");
-		}
-		
-
+//		try {
+//			_log.info("RESET USER ERROR");
+//
+//			Role adminRole = RoleLocalServiceUtil.getRole(20122);
+//			
+//			RoleLocalServiceUtil.addUserRole(
+//					user.getUserId(), adminRole.getRoleId());
+//		} catch (Exception e) {
+//			_log.info("RESET USER ERROR");
+//		}
 
 		try {
 

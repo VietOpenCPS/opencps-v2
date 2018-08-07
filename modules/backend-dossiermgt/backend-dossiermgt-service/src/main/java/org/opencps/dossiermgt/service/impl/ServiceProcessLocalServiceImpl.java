@@ -773,7 +773,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	//LamTV_Process output ServiceProcess to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceProcess updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
-			String description, Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
+			String description, Double durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
 			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
