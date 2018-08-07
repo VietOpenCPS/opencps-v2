@@ -83,7 +83,7 @@ public interface ServiceProcessActions {
 
 	//LamTV_Process output DB
 	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName, String description,
-			Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo, String serverName,
+			Double durationCount, Integer durationUnit, boolean generatePassword, String serverNo, String serverName,
 			String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException;
 
 	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId,

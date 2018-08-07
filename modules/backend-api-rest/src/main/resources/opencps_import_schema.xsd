@@ -686,7 +686,7 @@
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:element>
-				<xsd:element name="durationCount" type="xsd:int" />
+				<xsd:element name="durationCount" type="xsd:double" />
 				<xsd:element name="durationUnit" type="xsd:int" />
 				<xsd:element name="generatePassword" type="xsd:boolean" />
 				<xsd:element name="serverNo">
