@@ -62,13 +62,13 @@
 		</section>
 
 		<footer id="footer">
-			<div>
+			<div class="container align-middle-lg">
 				<div class="site-name">Cổng dịch vụ công trực tuyến <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
-			</div>
-			<div class="contact">
-				<p>Địa chỉ: <b>Đường Nguyễn Tất Thành, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</b></p>
-				<p>Điện thoại: <b>0210.3811486</b> | Fax: <b>0210.3811485</b></p>
-				<p>Email: <b>sotttt@phutho.gov.vn</b></p>
+				<div class="contact">
+					<p>Địa chỉ: <b>Đường Nguyễn Tất Thành, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</b></p>
+					<p>Điện thoại: <b>0210.3811486</b> | Fax: <b>0210.3811485</b></p>
+					<p>Email: <b>sotttt@phutho.gov.vn</b></p>
+				</div>
 			</div>
 		</footer>
 	</div>
