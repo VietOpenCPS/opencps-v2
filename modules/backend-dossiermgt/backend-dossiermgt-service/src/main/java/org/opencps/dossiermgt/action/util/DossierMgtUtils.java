@@ -4,15 +4,14 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -27,6 +26,52 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierMgtUtils {
+	public static JSONObject convertDossierToJSON(Dossier dossier) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		
+		obj.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
+		obj.put(DossierTerm.GROUP_ID, dossier.getGroupId());
+		obj.put(DossierTerm.SERVER_NO, dossier.getServerNo());
+		obj.put(DossierTerm.REFERENCE_UID, dossier.getReferenceUid());
+		obj.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+		obj.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+		obj.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+		obj.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+		obj.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
+		obj.put(DossierTerm.APPLICANT_ID_TYPE, dossier.getApplicantIdType());
+		obj.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
+		obj.put(DossierTerm.APPLICANT_ID_DATE, dossier.getApplicantIdDate() != null ? dossier.getApplicantIdDate().getTime() : 0l);
+		obj.put(DossierTerm.ADDRESS, dossier.getAddress());
+		obj.put(DossierTerm.CITY_CODE, dossier.getCityCode());
+		obj.put(DossierTerm.CITY_NAME, dossier.getCityName());
+		obj.put(DossierTerm.DISTRICT_CODE, dossier.getDistrictCode());
+		obj.put(DossierTerm.DISTRICT_NAME, dossier.getDistrictName());
+		obj.put(DossierTerm.WARD_CODE, dossier.getWardCode());
+		obj.put(DossierTerm.WARD_NAME, dossier.getWardName());
+		obj.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
+		obj.put(DossierTerm.CONTACT_TEL_NO, dossier.getContactTelNo());
+		obj.put(DossierTerm.CONTACT_EMAIL, dossier.getContactEmail());
+		obj.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+		obj.put(DossierTerm.BRIEF_NOTE, dossier.getBriefNote());
+		obj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+		obj.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0l);
+		obj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : 0l);
+		obj.put(DossierTerm.PROCESS_DATE, dossier.getProcessDate() != null ? dossier.getProcessDate().getTime() : 0l);
+		obj.put(DossierTerm.DUE_DATE, dossier.getDueDate() != null ? dossier.getDueDate().getTime() : 0l);
+		obj.put(DossierTerm.RELEASE_DATE, dossier.getReleaseDate() != null ? dossier.getReleaseDate().getTime() : 0l);
+		obj.put(DossierTerm.FINISH_DATE, dossier.getFinishDate() != null ? dossier.getFinishDate().getTime() : 0l);
+		obj.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate() != null ? dossier.getExtendDate().getTime() : 0l);
+		obj.put(DossierTerm.DOSSIER_STATUS, dossier.getDossierStatus());
+		obj.put(DossierTerm.DOSSIER_STATUS_TEXT, dossier.getDossierStatusText());
+		obj.put(DossierTerm.DOSSIER_SUB_STATUS, dossier.getDossierSubStatus());
+		obj.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, dossier.getDossierSubStatusText());
+		obj.put(DossierTerm.ONLINE, dossier.getOnline());
+		obj.put(DossierTerm.PASSWORD, dossier.getPassword());
+		
+		
+		return obj;
+	}
+	
 	public static boolean isDueDateEditable(String condition) {
 		try {
 			JSONObject obj = JSONFactoryUtil.createJSONObject(condition);

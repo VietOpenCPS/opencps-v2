@@ -286,4 +286,19 @@ public class OpenCPSRestClient {
 		return result;
 		
 	}		
+	
+	public DossierDetailModel publishDossier(DossierInputModel model) {
+		DossierDetailModel result = null;
+		InvokeREST callRest = new InvokeREST();
+		HashMap<String, String> properties = new HashMap<String, String>();
+		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
+		ServiceContext context = new ServiceContext();
+		
+		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
+				baseUrl,DOSSIERS_BASE_PATH + "/publish", username,
+				password, properties, params, context);
+		result = OpenCPSConverter.convertDossierDetail(resultObj);
+		
+		return result;
+	}	
 }

@@ -160,4 +160,7 @@ public class DossierTerm {
 	public static final String DOMAIN_NAME = "domainName";
 	public static final String ORIGIN_DOSSIER_ID = "originDossierId";
 
+	public static final int GARBAGE_COLLECTOR_TIME = 30; //minutes
+	
+	public static final String PUBLISH_DOSSIER_DESTINATION = "publish/dossier/in/destination";
 }

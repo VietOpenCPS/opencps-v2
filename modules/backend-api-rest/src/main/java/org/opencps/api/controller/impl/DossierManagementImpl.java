@@ -1,8 +1,6 @@
 package org.opencps.api.controller.impl;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,7 +9,6 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -26,6 +23,7 @@ import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierPublishModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
@@ -63,7 +61,6 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
@@ -75,7 +72,6 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessSequence;
@@ -96,7 +92,6 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -109,11 +104,9 @@ import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -2784,7 +2777,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response addDossierPublish(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DossierInputModel input) {
+			User user, ServiceContext serviceContext, DossierPublishModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
@@ -2796,54 +2789,24 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
-//			int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
-//			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
-//					input.getDossierTemplateNo(), groupId);
-//			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
-//				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
-//			Dossier checkDossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
-//			if (checkDossier != null) {
-//				DossierDetailModel result = DossierUtils.mappingForGetDetail(checkDossier, user.getUserId());
-//				return Response.status(200).entity(result).build();
-//			}
-			
-//			String password = StringPool.BLANK;
-//			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-//				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
-//			}
 			//Get input
 			String referenceUid = input.getReferenceUid();
 			int counter = 0;
 			String serviceCode = input.getServiceCode();
-			String serviceName = StringPool.BLANK;
-			if (Validator.isNotNull(serviceCode)) {
-				serviceName = getServiceName(input.getServiceCode(), groupId);
-			}
+			String serviceName = input.getServiceName();
 			String govAgencyCode = input.getGovAgencyCode();
-			String govAgencyName = StringPool.BLANK;
-			if (Validator.isNotNull(govAgencyCode)) {
-				govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, govAgencyCode);
-			}
+			String govAgencyName = input.getGovAgencyName();
 			String applicantName = input.getApplicantName();
 			String applicantType = input.getApplicantIdType();
 			String applicantIdNo = input.getApplicantIdNo();
 			String applicantIdDate = input.getApplicantIdDate();
 			String address = input.getAddress();
 			String cityCode = input.getCityCode();
-			String cityName = StringPool.BLANK;
-			if (Validator.isNotNull(cityCode)) {
-				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-			}
+			String cityName = input.getCityName();
 			String districtCode = input.getDistrictCode();
-			String districtName = StringPool.BLANK;
-			if (Validator.isNotNull(districtCode)) {
-				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-			}
+			String districtName = input.getDistrictName();
 			String wardCode = input.getWardCode();
-			String wardName = StringPool.BLANK;
-			if (Validator.isNotNull(wardCode)) {
-				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, wardCode);
-			}
+			String wardName = input.getWardName();
 			String contactName = input.getContactName();
 			String contactTelNo = input.getContactTelNo();
 			String contactEmail = input.getContactEmail();
@@ -2854,7 +2817,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int originality = 0;
 
 
-			Dossier dossier = actions.initDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType,
 					applicantIdNo, applicantIdDate, address, cityCode,
 						cityName, districtCode, districtName, wardCode, wardName,

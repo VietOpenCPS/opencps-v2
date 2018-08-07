@@ -2,13 +2,19 @@ package org.opencps.dossiermgt.listenner;
 
 import java.util.List;
 
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.Applicant;
@@ -38,6 +44,31 @@ import backend.utils.APIDateTimeUtils;
 
 @Component(immediate = true, service = ModelListener.class)
 public class DossierActionListenner extends BaseModelListener<DossierAction> {
+	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
+	
+	private JSONObject getStatusText(long groupId, String collectionCode, String curStatus, String curSubStatus) {
+
+		JSONObject jsonData = null;
+		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc) && Validator.isNotNull(curStatus)) {
+			jsonData = JSONFactoryUtil.createJSONObject();
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(curStatus, dc.getPrimaryKey(), groupId);
+			if (Validator.isNotNull(it)) {
+				jsonData.put(curStatus, it.getItemName());
+				if (Validator.isNotNull(curSubStatus)) {
+					DictItem dItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(curSubStatus, dc.getPrimaryKey(),
+							groupId);
+					if (Validator.isNotNull(dItem)) {
+						jsonData.put(curSubStatus, dItem.getItemName());
+					}
+				}
+			}
+		}
+
+		return jsonData;
+	}
+	
 	@Override
 	public void onAfterCreate(DossierAction model) throws ModelListenerException {
 
@@ -113,6 +144,12 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 				}
 
+				List<ProcessStep> lstProcessSteps = ProcessStepLocalServiceUtil.getBySC_SPID(model.getStepCode(), model.getServiceProcessId());
+				
+				if (lstProcessSteps.size() > 0) {
+					JSONObject jsonDataStatusText = getStatusText(model.getGroupId(), DOSSIER_SATUS_DC_CODE, lstProcessSteps.get(0).getDossierStatus(), lstProcessSteps.get(0).getDossierSubStatus());
+					payload.put("dossierStatusText", jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()));					
+				}
 				payload.put("jobPosName", jobPosName);
 				payload.put("stepName", model.getActionName());
 				payload.put("stepInstruction", model.getStepInstruction());
