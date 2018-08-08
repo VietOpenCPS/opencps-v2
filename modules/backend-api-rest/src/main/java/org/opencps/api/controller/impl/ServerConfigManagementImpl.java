@@ -186,7 +186,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			}
 
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, input.getGovAgencyCode(),
-					input.getServerNo(), input.getServerName(), input.getProtocol(), StringPool.BLANK, new Date(),
+					input.getServerNo(), input.getServerName(), input.getProtocol(), input.getConfigs(), new Date(),
 					serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
