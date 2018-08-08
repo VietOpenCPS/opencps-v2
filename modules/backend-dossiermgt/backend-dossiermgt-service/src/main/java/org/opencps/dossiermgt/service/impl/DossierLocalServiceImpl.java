@@ -194,6 +194,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setApplicantNote(applicantNote);
 			dossier.setServerNo(getServerNo(groupId));
 			dossier.setOriginality(originality);
+			//Update sampleCount
+			ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+			if (option != null) {
+				dossier.setSampleCount(option.getSampleCount());
+			}
 			
 			dossierPersistence.update(dossier);
 
@@ -225,20 +230,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
 				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
-				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
-
-				long serviceProcessId = option.getServiceProcessId();
-
-				ServiceProcess serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-
-				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-						dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-
-				dossier.setDossierNo(dossierRef.trim());
-				ServiceProcess process = null;
-				
+				ServiceProcess serviceProcess = null;
 				if (option != null) {
-					process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
+					long serviceProcessId = option.getServiceProcessId();
+					serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
+
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+							dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+
+					dossier.setDossierNo(dossierRef.trim());
 				}
 				
 				//Update submit date
@@ -246,9 +246,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				dossier.setSubmitDate(now);
 				Double durationCount = 0d;
 				Integer durationUnit = 0;
-				if (process != null ) {
-					durationCount = process.getDurationCount();
-					durationUnit = process.getDurationUnit();
+				if (serviceProcess != null ) {
+					durationCount = serviceProcess.getDurationCount();
+					durationUnit = serviceProcess.getDurationUnit();
 					_log.info("durationCount: "+durationCount);
 					_log.info("durationUnit: "+durationUnit);
 //					int durationDays = 0;
@@ -2410,7 +2410,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
-			String delegateWardCode, ServiceContext serviceContext) {
+			String delegateWardCode, Long sampleCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -2451,6 +2451,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setContactEmail(contactEmail);
 		if (Validator.isNotNull(contactTelNo))
 			dossier.setContactTelNo(contactTelNo);
+		if (Validator.isNotNull(sampleCount))
+			dossier.setSampleCount(sampleCount);
 
 		dossier.setViaPostal(viaPostal);
 		if (viaPostal == 1) {

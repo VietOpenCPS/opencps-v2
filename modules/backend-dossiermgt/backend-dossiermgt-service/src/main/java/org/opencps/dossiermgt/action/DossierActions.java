@@ -132,7 +132,7 @@ public interface DossierActions {
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote, boolean isSameAsApplicant,
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
-			ServiceContext serviceContext);
+			Long sampleCount, ServiceContext serviceContext);
 
 	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
