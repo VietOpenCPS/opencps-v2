@@ -28,8 +28,6 @@ public class DossierStatisticDomainUpdateServiceImpl
 
 			updateGovService.updateDossierStatistic(payload);
 
-			OpencpsDossierStatisticLocalServiceUtil.getByGovMonthYearDomain(payload.getGroupId(),
-					payload.getGovAgencyCode(), payload.getMonth(), payload.getYear(), payload.getDomainCode());
 
 		}
 

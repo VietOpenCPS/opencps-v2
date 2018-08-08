@@ -103,11 +103,12 @@ public class DossierStatisticConverter {
 				dossierStatisticData.setDoneCount(dossierStatistic.getDoneCount());
 				dossierStatisticData.setReleasingCount(dossierStatistic.getReleasingCount());
 				dossierStatisticData.setUnresolvedCount(dossierStatistic.getUnresolvedCount());
-				dossierStatisticData.setProcessCount(dossierStatistic.getProcessCount());
+				dossierStatisticData.setProcessingCount(dossierStatistic.getProcessingCount());
 				dossierStatisticData.setUndueCount(dossierStatistic.getUndueCount());
 				dossierStatisticData.setOverdueCount(dossierStatistic.getOverdueCount());
 				dossierStatisticData.setOntimePercentage(dossierStatistic.getOntimePercentage());
 				dossierStatisticData.setGovAgencyCode(dossierStatistic.getGovAgencyCode());
+				
 				dossierStatisticData.setGovAgencyName(dossierStatistic.getGovAgencyName());
 				dossierStatisticData.setDomainCode(dossierStatistic.getDomainCode());
 				dossierStatisticData.setDomainName(dossierStatistic.getDomainName());

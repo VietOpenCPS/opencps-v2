@@ -22,6 +22,7 @@ import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBas
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * The implementation of the opencps dossier statistic local service.
@@ -59,11 +60,12 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int overtimeOutside, int interoperatingCount, int waitingCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting) throws PortalException, SystemException {
 
-		OpencpsDossierStatistic dossierStatistic = null;
-
+		OpencpsDossierStatistic dossierStatistic = opencpsDossierStatisticPersistence.fetchByM_Y_DM_G(groupId,
+				govAgencyCode, month, year, domainCode, false);
+		
 		Date now = new Date();
-
-		if (dossierStatisticId == 0) {
+		
+		if (Validator.isNull(dossierStatistic)) {
 			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
@@ -109,7 +111,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setDomainName(domainName);
 			dossierStatistic.setReporting(reporting);
 		} else {
-			dossierStatistic = opencpsDossierStatisticPersistence.findByPrimaryKey(dossierStatisticId);
+			dossierStatistic = opencpsDossierStatisticPersistence.findByPrimaryKey(dossierStatistic.getDossierStatisticId());
 
 			dossierStatistic.setModifiedDate(now);
 

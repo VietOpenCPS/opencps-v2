@@ -74,6 +74,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			DossierStatisticUpdate dossierStatisticUpdateType1 = new DossierStatisticUpdate();
 			DossierStatisticUpdate dossierStatisticUpdateType2 = new DossierStatisticUpdate();
 			DossierStatisticUpdate dossierStatisticUpdateType3 = new DossierStatisticUpdate();
+			DossierStatisticUpdate dossierStatisticUpdateType4 = new DossierStatisticUpdate();
 
 			/* Run TYPE_1 */
 			dossierStatisticUpdateType1.calulateDossierStatistic(TYPE_1_ALL_GOV_ALL_DOMAIN, site.getGroupId(), company.getCompanyId());
@@ -81,9 +82,11 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			/* Run TYPE_2 */
 			dossierStatisticUpdateType2.calulateDossierStatistic(TYPE_2_EACH_GOV_ALL_DOMAIN_AND_EACH_GOV_EACH_DOMAIN, site.getGroupId(),
 					company.getCompanyId());
-
+			
+			dossierStatisticUpdateType3.calulateDossierStatistic(3, site.getGroupId(), company.getCompanyId());
+			
 			/* Run TYPE_3 */
-			dossierStatisticUpdateType3.calulateDossierStatistic(TYPE_4_ALL_GOV_EACH_DOMAIN, site.getGroupId(), company.getCompanyId());
+			dossierStatisticUpdateType4.calulateDossierStatistic(TYPE_4_ALL_GOV_EACH_DOMAIN, site.getGroupId(), company.getCompanyId());
 			
 			dossierStatisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), CUR_YEAR);
 		}
