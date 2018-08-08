@@ -133,4 +133,36 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 
 		    return dossierFile;
 		}
+
+	//
+	@SuppressWarnings("unchecked")
+	public List<Deliverable> findDeliverableByDateAndState(String syncDate, long deliverableState) {
+
+		Session session = null;
+		List<Deliverable> deliverableList = null;
+		try {
+			session = openSession();
+
+			Query q = session.createQuery("FROM Deliverable deli WHERE"
+					+ " deli.modifiedDate >= :syncDate AND"
+					+ " deli.deliverableState =:deliverableState"
+					+ " ORDER BY modifiedDate ASC LIMIT 20");
+			q.setCacheable(false);
+			q.setString("syncDate", syncDate);
+			q.setLong("deliverableState", deliverableState);
+
+			deliverableList = q.list();
+			// _log.info("SQL list deliverable: "+ deliverableList);
+		} catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				se.printStackTrace();
+			}
+		} finally {
+			closeSession(session);
+		}
+
+		return deliverableList;
+	}
 }
