@@ -86,6 +86,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
+import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.output.Java2DRenderer;
 
 @ApplicationPath("/v2")
@@ -183,6 +184,58 @@ public class BackendAPIRestApplication extends Application {
 			Graphics2D g2d = image.createGraphics();
 			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
+			String uuid = UUID.randomUUID().toString();
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + uuid + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {				
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}		
+	}
+	
+	@GET
+	@Path("/qrcode")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+
+	public Response getQRcode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("value") String value) {
+		try {
+			QrCode qrcode = new QrCode();
+			qrcode.setFontName("Monospaced");
+			qrcode.setFontSize(16);
+			qrcode.setModuleWidth(2);
+			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			qrcode.setContent(value);
+
+			int width = qrcode.getWidth();
+			int height = qrcode.getHeight();
+
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(qrcode);
 			String uuid = UUID.randomUUID().toString();
 			File destDir = new File("barcode");
 			if (!destDir.exists()) {
