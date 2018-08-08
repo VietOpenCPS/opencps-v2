@@ -184,11 +184,17 @@ public class BackendAPIRestApplication extends Application {
 			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
 			String uuid = UUID.randomUUID().toString();
-			
-			ImageIO.write(image, "png", new File("temp/" + uuid + ".png"));
-			File file = new File("temp/" + uuid + ".png");
-//			String fileType = Files.probeContentType(file.toPath());
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + uuid + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
 			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header("Content-Disposition",
@@ -196,11 +202,12 @@ public class BackendAPIRestApplication extends Application {
 				responseBuilder.header("Content-Type", "image/png");
 
 				return responseBuilder.build();
-			} else {
+			} else {				
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}		
 	}
