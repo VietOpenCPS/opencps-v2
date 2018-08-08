@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -15,40 +18,52 @@ import com.liferay.portal.kernel.util.StringPool;
 
 public class DossierStatisticGovUpdateServiceImpl implements DossierStatisticUpdateService<DossierStatisticData> {
 
+	private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticGovUpdateServiceImpl.class);
+
 	@Override
 	public void updateDossierStatistic(DossierStatisticData payload) throws PortalException, SystemException {
 
-		Optional<List<OpencpsDossierStatistic>> dossierStatistics = Optional
-				.ofNullable(OpencpsDossierStatisticLocalServiceUtil.searchDossierStatistic(payload.getGroupId(),
-						payload.getMonth(), payload.getYear(), payload.getDomainCode(), payload.getDomainCode(),
-						StringPool.BLANK, false, QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+		LOG.info("Ahihi, HA HA****>>>>");
 
-		dossierStatistics.ifPresent(source -> {
-			long dossierStatisticId = 0;
 
-			if (dossierStatistics.get().size() > 0) {
-				dossierStatisticId = source.get(0).getDossierStatisticId();
-			}
+		if (payload.getGroupId() != 0 && payload.getYear() != 0) {
+			
+			DossierStatisticUtils.logAsFormattedJson(LOG, payload);
 
-			int pausingCount = 0;
+			Optional<List<OpencpsDossierStatistic>> dossierStatistics = Optional
+					.ofNullable(OpencpsDossierStatisticLocalServiceUtil.searchDossierStatistic(payload.getGroupId(),
+							payload.getMonth(), payload.getYear(), payload.getDomainCode(), payload.getDomainCode(),
+							StringPool.BLANK, false, QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
-			try {
-				OpencpsDossierStatisticLocalServiceUtil.updateStatistic(dossierStatisticId, payload.getCompanyId(),
-						payload.getGroupId(), DossierStatisticConstants.STATISTIC_USER_ID,
-						DossierStatisticConstants.STATISTIC_USER_NAME, payload.getMonth(), payload.getYear(),
-						payload.getTotalCount(), payload.getDeniedCount(), payload.getCancelledCount(),
-						payload.getProcessCount(), payload.getRemainingCount(), payload.getReceivedCount(),
-						payload.getOnlineCount(), payload.getReleaseCount(), payload.getBetimesCount(),
-						payload.getOntimeCount(), payload.getOvertimeCount(), payload.getDoneCount(),
-						payload.getReleasingCount(), payload.getUnresolvedCount(), payload.getProcessingCount(),
-						payload.getUndueCount(), payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(),
-						payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),
-						payload.getWaitingCount(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
-						StringPool.BLANK, StringPool.BLANK, false);
-			} catch (SystemException | PortalException e) {
-				e.printStackTrace();
-			}
-		});
+			dossierStatistics.ifPresent(source -> {
+				long dossierStatisticId = 0;
+
+				if (source.size() > 0) {
+					LOG.info("***UPDATE >>>>");
+
+					dossierStatisticId = source.get(0).getDossierStatisticId();
+				}
+
+				int pausingCount = 0;
+
+				try {
+					OpencpsDossierStatisticLocalServiceUtil.updateStatistic(dossierStatisticId, payload.getCompanyId(),
+							payload.getGroupId(), DossierStatisticConstants.STATISTIC_USER_ID,
+							DossierStatisticConstants.STATISTIC_USER_NAME, payload.getMonth(), payload.getYear(),
+							payload.getTotalCount(), payload.getDeniedCount(), payload.getCancelledCount(),
+							payload.getProcessCount(), payload.getRemainingCount(), payload.getReceivedCount(),
+							payload.getOnlineCount(), payload.getReleaseCount(), payload.getBetimesCount(),
+							payload.getOntimeCount(), payload.getOvertimeCount(), payload.getDoneCount(),
+							payload.getReleasingCount(), payload.getUnresolvedCount(), payload.getProcessingCount(),
+							payload.getUndueCount(), payload.getOverdueCount(), pausingCount,
+							payload.getOntimePercentage(), payload.getOvertimeInside(), payload.getOvertimeOutside(),
+							payload.getInteroperatingCount(), payload.getWaitingCount(), payload.getGovAgencyCode(),
+							payload.getGovAgencyName(), StringPool.BLANK, StringPool.BLANK, false);
+				} catch (SystemException | PortalException e) {
+					e.printStackTrace();
+				}
+			});
+		}
 
 	}
 

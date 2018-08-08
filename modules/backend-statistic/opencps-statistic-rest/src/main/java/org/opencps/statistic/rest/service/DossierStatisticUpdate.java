@@ -82,7 +82,7 @@ public class DossierStatisticUpdate {
 				filterStatistic(domainStatisticData, govDossierStaticData, dossierResponse, month, year,
 						StringPool.BLANK, StringPool.BLANK, false, groupId, companyId);
 			}
-
+			
 			updateGovService.updateDossierStatistic(govDossierStaticData);
 		}
 

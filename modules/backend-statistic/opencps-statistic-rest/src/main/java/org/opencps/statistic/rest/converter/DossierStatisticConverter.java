@@ -70,8 +70,6 @@ public class DossierStatisticConverter {
 	public static Converter<List<OpencpsDossierStatistic>, DossierStatisticResponse> getDossierStatisticResponse() {
 		return (source) -> {
 
-			LOG.info("AXXXXXX*********source_" + source.size());
-
 			DossierStatisticResponse dossierStatisticResponse = new DossierStatisticResponse();
 
 			dossierStatisticResponse.setTotal(source.size());
