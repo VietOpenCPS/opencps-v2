@@ -1084,10 +1084,10 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), input.getViaPostal(),
 					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(),
-					input.getApplicantNote(), input.isSameAsApplicant(),
-					input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(),
-					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
-					input.getDelegateDistrictCode(), input.getDelegateWardCode(), serviceContext);
+					input.getApplicantNote(), input.isSameAsApplicant(), input.getDelegateName(),
+					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
+					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
+					input.getDelegateWardCode(), input.getSampleCount(), serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
