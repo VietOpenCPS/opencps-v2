@@ -226,11 +226,15 @@ public class BackendAPIRestApplication extends Application {
 			qrcode.setFontName("Monospaced");
 			qrcode.setFontSize(16);
 			qrcode.setModuleWidth(2);
+			qrcode.setBarHeight(128);
 			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
 			qrcode.setContent(value);
 
-			int width = qrcode.getWidth();
-			int height = qrcode.getHeight();
+//			int width = qrcode.getWidth();
+//			int height = qrcode.getHeight();
+
+			int width = 64;
+			int height = 64;
 
 			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
 			Graphics2D g2d = image.createGraphics();

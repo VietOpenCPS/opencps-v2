@@ -400,7 +400,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						_log.info("sequenceArr[i]: "+sequenceArr[i]);
 				}
 				Arrays.sort(sequenceArr);
-				for (int i = 0; i < sequenceArr.length; i++) {
+				for (int i = 0; i < sequenceArr.length - 1; i++) {
 					String seq = sequenceArr[i];
 					if (sequenceNo.equals(seq)) {
 						String nextSequenceNo = sequenceArr[i + 1];
