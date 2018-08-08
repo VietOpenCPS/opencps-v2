@@ -2877,11 +2877,15 @@ public class DossierManagementImpl implements DossierManagement {
 			Graphics2D g2d = image.createGraphics();
 			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + dossier.getDossierId() + ".png");
 
-			ImageIO.write(image, "png", new File("temp/" + dossier.getDossierId() + ".png"));
-			File file = new File("temp/" + dossier.getDossierId() + ".png");
-//			String fileType = Files.probeContentType(file.toPath());
 			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header("Content-Disposition",
