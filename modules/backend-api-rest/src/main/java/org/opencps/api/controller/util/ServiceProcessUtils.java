@@ -52,7 +52,7 @@ public class ServiceProcessUtils {
 			model.setProcessNo(doc.get(ServiceProcessTerm.PROCESS_NO));
 			model.setProcessName(doc.get(ServiceProcessTerm.PROCESS_NAME));
 			model.setDescription(doc.get(ServiceProcessTerm.DESCRIPTION));
-			model.setDurationCount(GetterUtil.getInteger(doc.get(ServiceProcessTerm.DURATION_COUNT)));
+			model.setDurationCount(GetterUtil.getDouble(doc.get(ServiceProcessTerm.DURATION_COUNT)));
 			model.setDurationUnit(GetterUtil.getInteger(doc.get(ServiceProcessTerm.DURATION_UNIT)));
 			model.setCounter(GetterUtil.getInteger(doc.get(ServiceProcessTerm.COUNTER)));
 			model.setGenerateDossierNo(doc.get(ServiceProcessTerm.GENERATE_DOSSIER_NO));
