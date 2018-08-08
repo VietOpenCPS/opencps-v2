@@ -2754,7 +2754,7 @@ public class DossierActionsImpl implements DossierActions {
 				String fromStepName = previousAction != null ? previousAction.getStepName() : StringPool.BLANK;
 				String fromSequenceNo = previousAction != null ? previousAction.getSequenceNo() : StringPool.BLANK;
 				
-				int state = DossierActionTerm.STATE_ALREADY_PROCESSED;
+				int state = DossierActionTerm.STATE_WAITING_PROCESSING;
 				int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
 
 				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId,
@@ -2778,6 +2778,7 @@ public class DossierActionsImpl implements DossierActions {
 				//Update previous action nextActionId
 				if (previousAction != null && dossierAction != null) {
 					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
+					previousAction = DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 				}
 				
 				if (actionConfig != null) {

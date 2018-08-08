@@ -230,11 +230,8 @@ public class BackendAPIRestApplication extends Application {
 			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
 			qrcode.setContent(value);
 
-//			int width = qrcode.getWidth();
-//			int height = qrcode.getHeight();
-
-			int width = 64;
-			int height = 64;
+			int width = qrcode.getWidth();
+			int height = qrcode.getHeight();
 
 			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
 			Graphics2D g2d = image.createGraphics();
