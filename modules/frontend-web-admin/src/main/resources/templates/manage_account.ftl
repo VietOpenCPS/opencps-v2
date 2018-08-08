@@ -158,7 +158,15 @@
 			data : "data",
 			total : "total",
 			model : {
-				id : "applicantId"
+				id : "applicantId",
+				fields: {
+					applicantName: {
+						type: 'string'
+					},
+					contactEmail: {
+						type: 'string'
+					}
+				}
 			}
 		}
 	});
@@ -190,7 +198,15 @@
 			data : "data",
 			total : "total",
 			model : {
-				id : "applicantId"
+				id : "applicantId",
+				fields: {
+					applicantName: {
+						type: 'string'
+					},
+					contactEmail: {
+						type: 'string'
+					}
+				}
 			}
 		}
 	});
@@ -205,8 +221,6 @@
 			}
 		},
 		template: function(data){
-
-
 			var _pageSize = dataSourceCitizen.pageSize();
 
 			localIndexCitizen++;
@@ -294,16 +308,17 @@
 			},
 			success : function(result){
 				var item = dataSourceCitizen.get(id);
-				if(item){
-					var mappingUser = item.mappingUser;
-					mappingUser.locking = true;
+				if(result){
+					dataSourceCitizen.pushUpdate(result);
+					// var mappingUser = item.mappingUser;
+					// mappingUser.locking = true;
 					
-					dataSourceCitizen.fetch(function(){
-						item.set("mappingUser",mappingUser);
-					});
+					// dataSourceCitizen.fetch(function(){
+					// 	item.set("mappingUser",mappingUser);
+					// });
 
-					$(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-citizen" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-citizen" type="button" data-pk="' + id + '">Xóa</button>');
-					$(that).closest("tr").find(".applicant-status").html("<span>Chưa kích hoạt</span>");
+					// $(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-citizen" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-citizen" type="button" data-pk="' + id + '">Xóa</button>');
+					// $(that).closest("tr").find(".applicant-status").html("<span>Chưa kích hoạt</span>");
 				}
 			},
 			error : function(xhr){
@@ -325,14 +340,15 @@
 			},
 			success : function(result){
 				var item = dataSourceCitizen.get(id);
-				if(item){
-					var mappingUser = item.mappingUser;
-					mappingUser.locking = false;
-					item.set("mappingUser",mappingUser);
+				if(result){
+					dataSourceCitizen.pushUpdate(result);
+					// var mappingUser = item.mappingUser;
+					// mappingUser.locking = false;
+					// item.set("mappingUser",mappingUser);
 				}
 
-				$(that).closest("td").html('<button class="btn btn-sm btn-lock-account-citizen" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
-				$(that).closest("tr").find(".applicant-status").html("<span>Hoàn thành</span>");
+				// $(that).closest("td").html('<button class="btn btn-sm btn-lock-account-citizen" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
+				// $(that).closest("tr").find(".applicant-status").html("<span>Hoàn thành</span>");
 			},
 			error : function(xhr){
 				showMessageByAPICode(xhr.status);
@@ -364,7 +380,7 @@
 		var that = this;
 		var id = $(this).attr("data-pk");
 		$.ajax({
-			url : "${api.server}/applicants/"+id+"/lock",
+			url : "${api.server}/applicants/" + id + "/lock",
 			dataType : "json",
 			type : "POST",
 			headers: {"groupId": ${groupId}},
@@ -374,14 +390,14 @@
 			success : function(result){
 				var item = dataSourceBusiness.get(id);
 
-				if(item){
-					var mappingUser = item.mappingUser;
-					mappingUser.locking = true;
-					item.set("mappingUser",mappingUser);
+				if(result){
+					dataSourceBusiness.pushUpdate(result)
+					// var mappingUser = item.mappingUser;
+					// mappingUser.locking = true;
+					// item.set("mappingUser",mappingUser);
 				}
-
-				$(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-business" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-business" type="button" data-pk="' + id + '">Xóa</button>');
-				$(that).closest("tr").find(".applicant-status").html("<span>Chưa kích hoạt</span>");
+				// $(that).closest("td").html('<button class="btn btn-sm btn-unlock-account-business" type="button" data-pk="' + id + '">Kích hoạt</button><button class="btn btn-sm btn-delete-account-business" type="button" data-pk="' + id + '">Xóa</button>');
+				// $(that).closest("tr").find(".applicant-status").html("<span>Chưa kích hoạt</span>");
 			},
 			error : function(xhr){
 				showMessageByAPICode(xhr.status);
@@ -402,14 +418,15 @@
 			},
 			success : function(result){
 				var item = dataSourceBusiness.get(id);
-				if(item){
-					var mappingUser = item.mappingUser;
-					mappingUser.locking = false;
-					item.set("mappingUser",mappingUser);
+				if(result){
+					dataSourceBusiness.pushUpdate(result)
+					// var mappingUser = item.mappingUser;
+					// mappingUser.locking = false;
+					// item.set("mappingUser",mappingUser);
 				}
 
-				$(that).closest("td").html('<button class="btn btn-sm btn-lock-account-business" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
-				$(that).closest("tr").find(".applicant-status").html("<span>Hoàn thành</span>");
+				// $(that).closest("td").html('<button class="btn btn-sm btn-lock-account-business" type="button" data-pk="' + id + '">Khóa tài khoản</button>');
+				// $(that).closest("tr").find(".applicant-status").html("<span>Hoàn thành</span>");
 			},
 			error : function(xhr){
 				showMessageByAPICode(xhr.status);
@@ -493,7 +510,15 @@
 				total : "total",
 				data : "data",
 				model : {
-					id : "applicantId"
+					id : "applicantId",
+					fields: {
+						applicantName: {
+							type: 'string'
+						},
+						contactEmail: {
+							type: 'string'
+						}
+					}
 				}
 			}
 		},
@@ -504,14 +529,28 @@
 
 	$("#btn-search-applicant").click(function(){
 		console.log("search");
-		dataSourceCitizen.read({
-			"lock" : $("#statusApplicant").val(),
-			"searchApplicant" : $("#searchApplicant").val()
-		});
-		dataSourceBusiness.read({
-			"lock" : $("#statusApplicant").val(),
-			"searchApplicant" : $("#searchApplicant").val()
-		});
+		var inputSearch = $("#searchApplicant").val();
+
+		var filters = [];
+		var filter = {};
+
+		filters.push({field: "applicantName", operator: "contains", value: inputSearch});
+		filters.push({field: "contactEmail", operator: "contains", value: inputSearch});
+
+		filter = {
+			logic: "or",
+			filters: filters
+		};
+		dataSourceCitizen.filter(filter);
+		dataSourceBusiness.filter(filter);
+		// dataSourceCitizen.read({
+		// 	"lock" : $("#statusApplicant").val(),
+		// 	"searchApplicant" : $("#searchApplicant").val()
+		// });
+		// dataSourceBusiness.read({
+		// 	"lock" : $("#statusApplicant").val(),
+		// 	"searchApplicant" : $("#searchApplicant").val()
+		// });
 	});
 
 	$(function() {
