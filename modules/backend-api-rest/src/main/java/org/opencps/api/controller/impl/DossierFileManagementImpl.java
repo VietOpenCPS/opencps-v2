@@ -150,6 +150,16 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					}
 				}
 			}
+			else {
+				List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
+				for (DossierPart dp : lstParts) {
+					if (dp.getPartNo().equals(dossierPartNo)) {
+						dossierTemplateNo = dossier.getDossierTemplateNo();
+						fileTemplateNo = dp.getFileTemplateNo();
+						
+					}
+				}
+			}
 			
 			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 

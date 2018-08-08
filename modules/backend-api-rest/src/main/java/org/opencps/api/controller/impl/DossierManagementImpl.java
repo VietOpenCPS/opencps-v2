@@ -1,5 +1,10 @@
 package org.opencps.api.controller.impl;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -8,9 +13,11 @@ import java.util.Locale;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -104,6 +111,8 @@ import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -113,6 +122,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -126,6 +136,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import uk.org.okapibarcode.backend.Code128;
+import uk.org.okapibarcode.backend.HumanReadableLocation;
+import uk.org.okapibarcode.output.Java2DRenderer;
 
 public class DossierManagementImpl implements DossierManagement {
 
@@ -2831,6 +2845,56 @@ public class DossierManagementImpl implements DossierManagement {
 
 		} catch (Exception e) {
 			_log.info(e);
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierBarcode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			long dossierId = GetterUtil.getLong(id);
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			Code128 barcode = new Code128();
+			barcode.setFontName("Monospaced");
+			barcode.setFontSize(16);
+			barcode.setModuleWidth(2);
+			barcode.setBarHeight(50);
+			barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			barcode.setContent(dossier.getDossierNo());
+
+			int width = barcode.getWidth();
+			int height = barcode.getHeight();
+
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(barcode);
+
+			ImageIO.write(image, "png", new File("temp/" + dossier.getDossierId() + ".png"));
+			File file = new File("temp/" + dossier.getDossierId() + ".png");
+//			String fileType = Files.probeContentType(file.toPath());
+			if (file.exists()) {
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 			return processException(e);
 		}
 	}
