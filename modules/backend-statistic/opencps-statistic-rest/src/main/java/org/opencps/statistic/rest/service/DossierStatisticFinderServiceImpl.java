@@ -7,16 +7,21 @@ import org.opencps.statistic.rest.converter.DossierStatisticConverter;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 
+
 public class DossierStatisticFinderServiceImpl implements DossierStatisticFinderService {
+	
+	private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticFinderServiceImpl.class);
 
 	@Override
 	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest)
 			throws PortalException, SystemException {
-
+		
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
 				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
 						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),

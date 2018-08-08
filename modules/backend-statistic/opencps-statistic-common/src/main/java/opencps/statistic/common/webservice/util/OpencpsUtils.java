@@ -168,9 +168,9 @@ public final class OpencpsUtils {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String contentFormatted = mapper.writeValueAsString(obj);
-            logger.debug("REST request: \n {}", contentFormatted);
+            //logger.debug("REST request: \n {}", contentFormatted);
         } catch (JsonProcessingException e) {
-            logger.debug("Error printing REST request! {}", e);
+            //logger.debug("Error printing REST request! {}", e);
         }
     }
 }
