@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessPlugin;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -84,6 +86,7 @@ import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -2660,8 +2663,10 @@ public class DossierActionsImpl implements DossierActions {
 											
 						//Generate PDF
 						String formData = dossierAction.getPayload();
+//						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 						JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
-//						_log.info("Dossier document form data: " + formDataObj.toJSONString());
+						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
+						_log.info("Dossier document form data: " + formDataObj.toJSONString());
 						Message message = new Message();
 //						_log.info("Document script: " + dt.getDocumentScript());
 						JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -2907,6 +2912,73 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
+		return jsonData;
+	}
+
+	//LamTV_ Mapping process dossier and formData
+	private JSONObject processMergeDossierProcessRole(Dossier dossier, int length, JSONObject jsonData,
+			DossierAction dAction) {
+		//
+		long groupId = dossier.getGroupId();
+		if (dAction != null) {
+			long serviceProcessId = dAction.getServiceProcessId();
+			jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+			jsonData.put(DossierTerm.TOTAL, length);
+			jsonData.put(DossierTerm.ACTION_USER, dAction.getActionUser());
+			String sequenceNo = dAction.getSequenceNo();
+			if (Validator.isNotNull(sequenceNo)) {
+				ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId,
+						sequenceNo);
+				if (sequence != null) {
+					jsonData.put(DossierTerm.SEQUENCE_ROLE, sequence.getSequenceRole());
+				} else {
+					jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+				}
+			} else {
+				jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
+			}
+			// Process get Next sequence Role
+			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+					serviceProcessId);
+			String[] sequenceArr = null;
+			if (sequenceList != null && !sequenceList.isEmpty()) {
+				int lengthSeq = sequenceList.size();
+				sequenceArr = new String[lengthSeq];
+				for (int i = 0; i < lengthSeq; i++) {
+					ProcessSequence processSequence = sequenceList.get(i);
+					if (processSequence != null) {
+						sequenceArr[i] = processSequence.getSequenceNo();
+					}
+				}
+			}
+
+			if (sequenceArr != null && sequenceArr.length > 0) {
+				for (int i = 0; i < sequenceArr.length; i++) {
+						_log.info("sequenceArr[i]: "+sequenceArr[i]);
+				}
+				Arrays.sort(sequenceArr);
+				for (int i = 0; i < sequenceArr.length; i++) {
+					String seq = sequenceArr[i];
+					if (sequenceNo.equals(seq)) {
+						String nextSequenceNo = sequenceArr[i + 1];
+						if (Validator.isNotNull(nextSequenceNo)) {
+							ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId,
+									serviceProcessId, nextSequenceNo);
+							if (sequence != null) {
+								jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, sequence.getSequenceRole());
+							} else {
+								jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+							}
+						} else {
+							jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+						}
+					}
+				}
+			} else {
+				jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
+			}
+		}
+
 		return jsonData;
 	}
 	
@@ -4911,7 +4983,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote, boolean isSameAsApplicant,
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
-			ServiceContext serviceContext) {
+			Long sampleCount, ServiceContext serviceContext) {
 
 		try {
 			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
@@ -4919,7 +4991,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
 					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
-					delegateWardCode, serviceContext);
+					delegateWardCode, sampleCount, serviceContext);
 
 		} catch (Exception e) {
 			_log.error(e);
