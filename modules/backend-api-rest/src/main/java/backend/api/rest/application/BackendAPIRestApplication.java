@@ -1,14 +1,31 @@
 
 package backend.api.rest.application;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.HttpURLConnection;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.opencps.api.context.provider.CompanyContextProvider;
 import org.opencps.api.context.provider.LocaleContextProvider;
@@ -54,9 +71,22 @@ import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
+import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
+import org.opencps.exception.model.ExceptionModel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import uk.org.okapibarcode.backend.Code128;
+import uk.org.okapibarcode.backend.HumanReadableLocation;
+import uk.org.okapibarcode.output.Java2DRenderer;
 
 @ApplicationPath("/v2")
 @Component(immediate = true, property={"jaxrs.application=true"}, service = Application.class)
@@ -127,6 +157,59 @@ public class BackendAPIRestApplication extends Application {
 	@Produces("text/plain")
 	public String working() {
 		return "It works!";
+	}
+
+	@GET
+	@Path("/barcode")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+
+	public Response getBarcode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("value") String value) {
+		try {
+			Code128 barcode = new Code128();
+			barcode.setFontName("Monospaced");
+			barcode.setFontSize(16);
+			barcode.setModuleWidth(2);
+			barcode.setBarHeight(50);
+			barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			barcode.setContent(value);
+
+			int width = barcode.getWidth();
+			int height = barcode.getHeight();
+
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(barcode);
+			String uuid = UUID.randomUUID().toString();
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + uuid + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {				
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}		
 	}
 	
 	@Reference
