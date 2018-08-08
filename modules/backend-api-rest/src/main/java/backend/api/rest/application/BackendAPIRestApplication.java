@@ -184,16 +184,14 @@ public class BackendAPIRestApplication extends Application {
 			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
 			String uuid = UUID.randomUUID().toString();
-			File curDir = new File(".");
-			System.out.println("Current dir: " + curDir.getAbsolutePath());
 			File destDir = new File("barcode");
-			System.out.println("Barcode folder exists: " + destDir.exists());
 			if (!destDir.exists()) {
 				destDir.mkdir();
-				System.out.println("Barcode folder: " + destDir.getName());
 			}
 			File file = new File("barcode/" + uuid + ".png");
-			System.out.println("File path: " + file.getAbsolutePath());
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
 			if (file.exists()) {
 				ImageIO.write(image, "png", file);
 	//			String fileType = Files.probeContentType(file.toPath());
@@ -204,7 +202,7 @@ public class BackendAPIRestApplication extends Application {
 				responseBuilder.header("Content-Type", "image/png");
 
 				return responseBuilder.build();
-			} else {
+			} else {				
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
 

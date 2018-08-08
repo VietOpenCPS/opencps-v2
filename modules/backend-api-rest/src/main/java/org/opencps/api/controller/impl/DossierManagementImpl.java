@@ -2882,6 +2882,9 @@ public class DossierManagementImpl implements DossierManagement {
 				destDir.mkdir();
 			}
 			File file = new File("barcode/" + dossier.getDossierId() + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
 
 			if (file.exists()) {
 				ImageIO.write(image, "png", file);
