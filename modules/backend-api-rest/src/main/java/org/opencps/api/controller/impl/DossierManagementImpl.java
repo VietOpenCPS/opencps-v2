@@ -142,6 +142,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
+import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.output.Java2DRenderer;
 
 public class DossierManagementImpl implements DossierManagement {
@@ -2922,6 +2923,61 @@ public class DossierManagementImpl implements DossierManagement {
 			Graphics2D g2d = image.createGraphics();
 			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + dossier.getDossierId() + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+
+			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierQRcode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			long dossierId = GetterUtil.getLong(id);
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			QrCode qrcode = new QrCode();
+			qrcode.setFontName("Monospaced");
+			qrcode.setFontSize(16);
+			qrcode.setModuleWidth(2);
+			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			qrcode.setContent(dossier.getDossierNo());
+
+			int width = qrcode.getWidth();
+			int height = qrcode.getHeight();
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(qrcode);
 			File destDir = new File("barcode");
 			if (!destDir.exists()) {
 				destDir.mkdir();
