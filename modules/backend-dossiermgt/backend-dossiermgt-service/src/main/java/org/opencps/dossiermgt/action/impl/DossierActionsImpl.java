@@ -2664,13 +2664,32 @@ public class DossierActionsImpl implements DossierActions {
 				
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), proAction.getCreateDossiers());
 				List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+				String createDossiers = proAction.getCreateDossiers();
 				
 				if (serviceConfig != null) {
-					if (lstOptions.size() > 0) {
-						ProcessOption processOption = lstOptions.get(0);
-						ServiceProcess ltProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+					ProcessOption foundOption = null;
+					if (createDossiers.contains(StringPool.POUND)) {
+						String[] splitCDs = createDossiers.split(StringPool.POUND);
+						if (splitCDs.length == 2) {
+							String dossierTemplateNo = splitCDs[1];
+							for (ProcessOption po : lstOptions) {
+								DossierTemplate dt = DossierTemplateLocalServiceUtil.fetchDossierTemplate(po.getDossierTemplateId());
+								if (dt.getTemplateNo().equals(dossierTemplateNo)) {
+									foundOption = po;
+									break;
+								}
+							}
+						}
+					}
+					else {
+						if (lstOptions.size() > 0) {
+							foundOption = lstOptions.get(0);
+						}
+					}
+					if (foundOption != null) {
+						ServiceProcess ltProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(foundOption.getServiceProcessId());
 						
-						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
+						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(foundOption.getDossierTemplateId());
 						
 						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
 								dossier.getCounter(), dossier.getServiceCode(),
