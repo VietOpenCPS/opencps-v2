@@ -112,9 +112,17 @@
 				serverconfigsMaserver = this.select().attr("data-maserver");
 				serverconfigsTenserver = this.select().attr("data-tenserver");
 				// registrationThamso = this.select().attr("data-thamso");
-				registrationGiaothuc = this.select().attr("data-giaothuc");
+				serverconfigsGiaothuc = this.select().attr("data-giaothuc");
 				$("#btn_save_serverconfigs").attr("data-pk", dataItem.id);
-				loadserverconfigsDetail(serverconfigId, serverconfigsMaserver, serverconfigsTenserver, serverconfigsGiaothuc);
+				// loadserverconfigsDetail(serverconfigId, serverconfigsMaserver, serverconfigsTenserver, serverconfigsGiaothuc);
+				var viewModel = kendo.observable({
+					serverName: serverconfigsTenserver,
+					serverNo: serverconfigsMaserver,
+					protocol: serverconfigsGiaothuc,
+					lastSync: dataItem['configs']
+				});
+				kendo.bind($("#serverconfigs_part_model"), viewModel);
+				$("#btn_save_serverconfigs_part").attr("data-pk", serverconfigId);
 				deleteServerconfigs();
 				$("#serverconfigs_pager .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 			}
@@ -199,33 +207,33 @@
 			$("#btn_save_serverconfigs_part").attr("data-pk", "");
 		});
 // ---------------------
-	  var loadserverconfigsDetail = function(serverconfigId, serverconfigsMaserver, serverconfigsTenserver, serverconfigsGiaothuc){
+	  // var loadserverconfigsDetail = function(serverconfigId, serverconfigsMaserver, serverconfigsTenserver, serverconfigsGiaothuc){
 	    
-	    var lastSync;
-	    $.ajax({
-	      // url: "${api.server}" + "/registrationtemplates/" + registrationTemplateId+"/formscript",
-	      // url: "http://localhost:3000/registrationformscript",
-	      url:"${api.server}/serverconfigs/"+serverconfigId+"/configs",
-	      type: "GET",
-	      dataType: "text",
-	      headers: {"groupId": ${groupId}},
-	      async: false,
-	      success: function(result) {
-	      	lastSync=result;
-	      }
-	    });
+	  //   var lastSync;
+	  //   $.ajax({
+	  //     // url: "${api.server}" + "/registrationtemplates/" + registrationTemplateId+"/formscript",
+	  //     // url: "http://localhost:3000/registrationformscript",
+	  //     url:"${api.server}/serverconfigs/"+serverconfigId,
+	  //     type: "GET",
+	  //     dataType: "text",
+	  //     headers: {"groupId": ${groupId}},
+	  //     async: false,
+	  //     success: function(result) {
+	  //     	lastSync=result;
+	  //     }
+	  //   });
 	    
 
-	    var viewModel = kendo.observable({
-	      serverName: serverconfigsTenserver,
-	      serverNo: serverconfigsMaserver,
-	      protocol: serverconfigsGiaothuc,
-	      lastSync: lastSync
-	    });
+	  //   var viewModel = kendo.observable({
+	  //     serverName: serverconfigsTenserver,
+	  //     serverNo: serverconfigsMaserver,
+	  //     protocol: serverconfigsGiaothuc,
+	  //     lastSync: lastSync
+	  //   });
 
-	    kendo.bind($("#serverconfigs_part_model"), viewModel);
-	    $("#btn_save_serverconfigs_part").attr("data-pk", serverconfigId);
+	  //   kendo.bind($("#serverconfigs_part_model"), viewModel);
+	  //   $("#btn_save_serverconfigs_part").attr("data-pk", serverconfigId);
 	   
-	  };
+	  // };
 
 </script>

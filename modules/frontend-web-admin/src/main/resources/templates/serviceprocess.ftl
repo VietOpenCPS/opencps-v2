@@ -58,12 +58,12 @@
 
 <script type="text/javascript">
 
-    $("#btn_import_service_process").click(function (event) {
-    	$("#input_import_service_process").click();
-    })
-    $("#input_import_service_process").change(function (event) {
-    	var url = '/o/rest/v2/dossiers/import/files'
-    	var data = new FormData();
+	$("#btn_import_service_process").click(function (event) {
+		$("#input_import_service_process").click();
+	})
+	$("#input_import_service_process").change(function (event) {
+		var url = '/o/rest/v2/dossiers/import/files'
+		var data = new FormData();
 		data.append( 'file', $(this)[0].files[0]);
 		$.ajax({
 			type : 'POST', 
@@ -86,7 +86,7 @@
 				$(this).val("");
 			}
 		});
-    })
+	})
 	var serviceProcessDataSource = new kendo.data.DataSource({
 		transport: {
 			read: function(options) {
@@ -174,7 +174,9 @@
 			listView.select(firstItem);
 
 				//  focus to the first servcie process
-				onSelectServiceProcess(firstItem.attr("data-pk"));
+				if (firstItem) {
+					onSelectServiceProcess(firstItem.attr("data-pk"));
+				}
 			},
 			remove: function(e) {
 				if(!confirm("Xác nhận quy trình: " + e.model.get("processNo") + "?")){
@@ -184,7 +186,6 @@
 			change: function() {
 				var index = this.select().index();
 				var dataItem = this.dataSource.view()[index];
-
 				var viewModel = kendo.observable({
 					processNo : dataItem.processNo,
 					processName : dataItem.processName,
@@ -314,17 +315,23 @@ $(document).on("click", ".service-process-item", function(event){
 });
 
 var onSelectServiceProcess = function(id){
-	$("#service_process_step_listview").getKendoListView().dataSource.read({
-		serviceProcessId: id
-	});
-	$("#service_process_action_listview").getKendoListView().dataSource.read({
-		serviceProcessId: id
-	});
+	if (id) {
+		$("#service_process_step_listview").getKendoListView().dataSource.read({
+			serviceProcessId: id
+		});
+		$("#service_process_action_listview").getKendoListView().dataSource.read({
+			serviceProcessId: id
+		});
+	}
 }
 
 $("#service_process_pager").kendoPager({
 	dataSource: serviceProcessDataSource,
 	buttonCount: 2,
+	messages: {
+		display: "Hiển thị {0}-{1} trong {2} kết quả",
+		empty: "Không có kết quả phù hợp!"
+	}
 });
 
 $("#input_search_service_process").keyup(function(e){
@@ -342,13 +349,12 @@ var serviceProcessFilter = function(){
 	var filter = {};
 
 	filters.push({field: "processNo", operator: "contains", value: inputSearch});
-	filters.push({field: "description", operator: "contains", value: inputSearch});
+	filters.push({field: "processName", operator: "contains", value: inputSearch});
 
 	filter = {
 		logic: "or",
 		filters: filters
 	};
-
 	serviceProcessDataSource.filter(filter);
 };
 
