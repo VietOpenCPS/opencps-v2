@@ -2847,6 +2847,7 @@ public class DossierActionsImpl implements DossierActions {
 //						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 						JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
 						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
+						formDataObj.put("url", context.getPortalURL());
 						_log.info("Dossier document form data: " + formDataObj.toJSONString());
 						Message message = new Message();
 //						_log.info("Document script: " + dt.getDocumentScript());

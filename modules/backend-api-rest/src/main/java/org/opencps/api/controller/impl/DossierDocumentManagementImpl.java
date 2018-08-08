@@ -91,6 +91,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
 					}
 					jsonData = DossierDucumentUtils.processMergeDossierFormData(dossier, jsonData);
+					jsonData.put("url", serviceContext.getPortalURL());
 					Message message = new Message();
 					message.put("formReport", documentScript);
 					message.put("formData", jsonData.toJSONString());

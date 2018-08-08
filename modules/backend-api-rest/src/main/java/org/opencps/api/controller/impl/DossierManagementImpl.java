@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -108,11 +107,16 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
+import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -122,7 +126,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -793,6 +796,50 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
+			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
+					input.getDossierTemplateNo(), groupId);
+			long serviceProcessId = 0;
+			if (option != null) {
+				serviceProcessId = option.getServiceProcessId();
+			}
+
+			boolean flag = false;
+			long userId = serviceContext.getUserId();
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (employee != null) {
+				long employeeId = employee.getEmployeeId();
+				if (employeeId > 0) {
+					List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+					if (empJobList != null && empJobList.size() > 0) {
+						for (EmployeeJobPos employeeJobPos : empJobList) {
+							long jobPosId = employeeJobPos.getJobPostId();
+							if (jobPosId > 0) {
+								JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
+								if (job != null) {
+									ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
+											job.getMappingRoleId());
+									ServiceProcessRole role = ServiceProcessRoleLocalServiceUtil
+											.fetchServiceProcessRole(pk);
+									if (role != null && role.getModerator()) {
+										flag = true;
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			} else {
+				//update application
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+				if (applicant != null) {
+					flag = true;
+				}
+			}
+
+			if (!flag) {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
+			}
 			// if (!auth.hasResource(serviceContext,
 			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 			// throw new UnauthorizationException();
@@ -803,9 +850,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
 			String referenceUid = input.getReferenceUid();
-
-			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
-					input.getDossierTemplateNo(), groupId);
+//			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
+//					input.getDossierTemplateNo(), groupId);
 
 			// Create dossierNote
 			ServiceProcess process = null;
@@ -819,7 +865,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			
 			if (option != null) {
-				long serviceProcessId = option.getServiceProcessId();
+//				long serviceProcessId = option.getServiceProcessId();
 				process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
 //				if (process.getServerNo().trim().length() != 0) {
 //					online = false;
@@ -941,7 +987,6 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
-				long userId = serviceContext.getUserId();
 				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
 			}
 			
