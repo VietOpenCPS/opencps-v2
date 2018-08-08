@@ -103,14 +103,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		_log.info("In dossier file create");
 		try {
 
-			_log.info("In dossier file create");
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
-			_log.info("In dossier file create");
 			long dossierId = GetterUtil.getLong(id);
-			_log.info("In dossier file create");
 			Dossier dossier = null;
 
 			if (dossierId != 0) {
@@ -156,7 +153,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if (dp.getPartNo().equals(dossierPartNo)) {
 						dossierTemplateNo = dossier.getDossierTemplateNo();
 						fileTemplateNo = dp.getFileTemplateNo();
-						
+						dossierTemplateNo = dossier.getDossierTemplateNo();
 					}
 				}
 			}
