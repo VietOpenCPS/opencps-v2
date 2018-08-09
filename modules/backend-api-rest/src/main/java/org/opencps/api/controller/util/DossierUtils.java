@@ -129,13 +129,13 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
+//			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
 			//Process OverDue
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
+//			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
@@ -168,7 +168,7 @@ public class DossierUtils {
 					ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStep, groupId, serviceProcessId);
 					if (step != null) {
 						Double durationCountStep = step.getDurationCount();
-						_log.info("durationCountStep: "+durationCountStep);
+//						_log.info("durationCountStep: "+durationCountStep);
 						Date dueDateStep = null;
 						if (Validator.isNotNull(durationCountStep) && durationCountStep > 0) {
 							dueDateStep = HolidayUtils.getDueDate(dAction.getCreateDate(), durationCountStep,
@@ -183,11 +183,11 @@ public class DossierUtils {
 								if (subTimeStepStamp > 0) {
 									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
 									model.setStepOverdue("Quá hạn "+stepOverDue);
-									_log.info("setStepOverdue Qua Han: "+model.getStepOverdue());
+//									_log.info("setStepOverdue Qua Han: "+model.getStepOverdue());
 								} else {
 									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
 									model.setStepOverdue("Còn "+stepOverDue);
-									_log.info("setStepOverdue Còn Han: "+model.getStepOverdue());
+//									_log.info("setStepOverdue Còn Han: "+model.getStepOverdue());
 								}
 							} else {
 								model.setStepOverdue(StringPool.BLANK);
@@ -606,7 +606,7 @@ public class DossierUtils {
 			model.setStepCode(dossierAction.getStepCode());
 			model.setStepName(dossierAction.getStepName());
 
-			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
 			if (dossierAction.getActionOverdue() != 0) {
 				model.setStepOverdue(StringPool.TRUE);

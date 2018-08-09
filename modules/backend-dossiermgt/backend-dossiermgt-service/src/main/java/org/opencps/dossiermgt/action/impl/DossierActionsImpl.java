@@ -3747,20 +3747,20 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		Double durationCount = processStep.getDurationCount();
-		_log.info("Calculate do action duration count: " + durationCount);
+//		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0) {
-			dueDate = HolidayUtils.getDueDate(now, durationCount, 0, dossier.getGroupId());
+			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, 0, dossier.getGroupId());
 		}			
-		_log.info("Due date in do action: " + dueDate);
+//		_log.info("Due date in do action: " + dueDate);
 		if (dossierAction != null) {
 			if (dueDate != null) {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
 				int durationUnit = 0;
 				int overdue = 0;
-				_log.info("Due date timestamp: " + dueDateTimeStamp);
+//				_log.info("Due date timestamp: " + dueDateTimeStamp);
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-					long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+					long subTimeStamp = dueDateTimeStamp - dateNowTimeStamp;
 					if (subTimeStamp > 0) {
 						overdue = calculatorOverDue(durationUnit, subTimeStamp);
 					} else {
@@ -3770,6 +3770,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				dossierAction.setActionOverdue(overdue);
+				dossierAction.setDueDate(dueDate);
 				
 				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
 			}
