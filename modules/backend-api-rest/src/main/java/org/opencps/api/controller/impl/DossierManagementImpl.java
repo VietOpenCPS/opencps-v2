@@ -659,7 +659,8 @@ public class DossierManagementImpl implements DossierManagement {
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
 			String dossierIdCTN = query.getDossierIdCTN();
-
+			String domain = query.getDomain();
+			
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
 			params.put(DossierTerm.AGENCY, agency);
@@ -684,6 +685,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			if (Validator.isNotNull(domain)) {
+				params.put(DossierTerm.DOMAIN_CODE, domain);
+			}
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
@@ -806,42 +810,40 @@ public class DossierManagementImpl implements DossierManagement {
 
 			boolean flag = false;
 			long userId = serviceContext.getUserId();
-			if (GetterUtil.getInteger(input.getOriginality()) != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				if (employee != null) {
-					long employeeId = employee.getEmployeeId();
-					if (employeeId > 0) {
-						List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
-						if (empJobList != null && empJobList.size() > 0) {
-							for (EmployeeJobPos employeeJobPos : empJobList) {
-								long jobPosId = employeeJobPos.getJobPostId();
-								if (jobPosId > 0) {
-									JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
-									if (job != null) {
-										ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (employee != null) {
+				long employeeId = employee.getEmployeeId();
+				if (employeeId > 0) {
+					List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+					if (empJobList != null && empJobList.size() > 0) {
+						for (EmployeeJobPos employeeJobPos : empJobList) {
+							long jobPosId = employeeJobPos.getJobPostId();
+							if (jobPosId > 0) {
+								JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
+								if (job != null) {
+									ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
 												job.getMappingRoleId());
-										ServiceProcessRole role = ServiceProcessRoleLocalServiceUtil
+									ServiceProcessRole role = ServiceProcessRoleLocalServiceUtil
 												.fetchServiceProcessRole(pk);
-										if (role != null && role.getModerator()) {
-											flag = true;
-											break;
-										}
+									if (role != null && role.getModerator()) {
+										flag = true;
+										break;
 									}
 								}
 							}
 						}
 					}
-				} else {
-					//update application
-					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
-					if (applicant != null) {
-						flag = true;
-					}
 				}
+			} else {
+				//update application
+//				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+//				if (applicant != null) {
+					flag = true;
+//				}
+			}
 	
-				if (!flag) {
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
-				}
+			if (!flag) {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
 			}
 			// if (!auth.hasResource(serviceContext,
 			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
