@@ -312,7 +312,7 @@ public class DossierUtils {
 		return ouputs;
 	}
 	
-	private static String calculatorOverDue(int durationUnit, long subTimeStamp) {
+	public static String calculatorOverDue(int durationUnit, long subTimeStamp) {
 		if (subTimeStamp < 0) {
 			subTimeStamp = Math.abs(subTimeStamp);
 		}
