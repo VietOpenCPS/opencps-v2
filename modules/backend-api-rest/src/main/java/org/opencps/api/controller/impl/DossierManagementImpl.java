@@ -700,7 +700,7 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, StringPool.BLANK);
 			}
 			//TODO
-			String permission = user.getUserId() + ":write";
+			String permission = user.getUserId() + StringPool.UNDERLINE + "write";
 			params.put(DossierTerm.MAPPING_PERMISSION, permission);
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);

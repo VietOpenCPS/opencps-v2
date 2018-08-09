@@ -366,11 +366,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							sb.append(userId);
 							if (dau.getModerator() == 1) {
 								sbPermission.append(userId);
-								sbPermission.append(StringPool.COLON);
+								sbPermission.append(StringPool.UNDERLINE);
 								sbPermission.append("write");
 							} else {
 								sbPermission.append(userId);
-								sbPermission.append(StringPool.COLON);
+								sbPermission.append(StringPool.UNDERLINE);
 								sbPermission.append("read");
 							}
 						} else {
@@ -379,11 +379,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							sbPermission.append(StringPool.SPACE);
 							if (dau.getModerator() == 1) {
 								sbPermission.append(userId);
-								sbPermission.append(StringPool.COLON);
+								sbPermission.append(StringPool.UNDERLINE);
 								sbPermission.append("write");
 							} else {
 								sbPermission.append(userId);
-								sbPermission.append(StringPool.COLON);
+								sbPermission.append(StringPool.UNDERLINE);
 								sbPermission.append("read");
 							}
 
@@ -391,9 +391,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				}
 			}
-//			_log.info("Mapping user:" + sb.toString());
+//			_log.info("Mapping user permission:" + sbPermission.toString());
 			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
-			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, sb.toString());
+			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, sbPermission.toString());
 
 			// Indexing DossierActionUsers
 			List<Long> actionUserIds = new ArrayList<>();

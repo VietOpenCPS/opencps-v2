@@ -2302,6 +2302,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+//		_log.info("Permission: " + permission);
 		if (Validator.isNotNull(permission)) {
 			MultiMatchQuery query = new MultiMatchQuery(permission);
 			query.addField(DossierTerm.MAPPING_PERMISSION);
