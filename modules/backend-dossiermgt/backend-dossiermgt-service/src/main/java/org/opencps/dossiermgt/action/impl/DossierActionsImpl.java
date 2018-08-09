@@ -2821,17 +2821,18 @@ public class DossierActionsImpl implements DossierActions {
 							assignedUsersArray);
 					} else {
 //						_log.info("PROCESS allowAssignUser");
-						dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
+						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 								proAction.getAssignUserId());
 					}
 				} else {
 //					_log.info("PROCESS subUsers == null");
 //					_log.info("Dossier action: " + dossierAction);
-					dossierActionUser.initDossierActionUser(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
+					dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
 					
 					//Process role as step
 					if (Validator.isNotNull(curStep.getRoleAsStep())) {
+						_log.info("Copy role as step: " + curStep.getRoleAsStep());
 						dossierActionUser.copyRoleAsStep(curStep, dossier);
 					}					
 				}
@@ -3970,7 +3971,7 @@ public class DossierActionsImpl implements DossierActions {
 				dossierActionUser.assignDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId, subUsersArray);
 			} else {
-				dossierActionUser.initDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
+				dossierActionUser.initDossierActionUser(processAction, dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
 
@@ -4033,7 +4034,7 @@ public class DossierActionsImpl implements DossierActions {
 						assignUserId, subUsersArray);
 			} else {
 				_log.info("PROCESS subUsers == null");
-				dossierActionUser.initDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
+				dossierActionUser.initDossierActionUser(processAction, dossier, processAction.getAllowAssignUser(), dossierAction.getDossierActionId(), userId, groupId,
 						assignUserId);
 			}
 			//_log.info("UPDATE DOSSIER STATUS************");

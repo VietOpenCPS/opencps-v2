@@ -124,7 +124,7 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 //				throw new UnauthenticationException();
 //			}
 			_log.info("groupId: "+groupId);
-			if (end == 0) {
+			if (end == null || end == 0) {
 				start = -1;
 				end = -1;
 			}

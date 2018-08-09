@@ -57,46 +57,9 @@ public class DossierActionUserImpl implements DossierActionUser {
 			DossierActionUserPK dossierActionUserPK) throws PortalException {
 		return DossierActionUserLocalServiceUtil.deleteDossierActionUser(dossierActionUserPK);
 	}
-
-	private ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
-			long serviceProcessId) throws PortalException {
-
-		ProcessAction action = null;
-
-		try {
-			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
-					serviceProcessId);
-
-			String dossierStatus = dossier.getDossierStatus();
-			String dossierSubStatus = dossier.getDossierSubStatus();
-			String preStepCode = StringPool.BLANK;
-			for (ProcessAction act : actions) {
-
-				preStepCode = act.getPreStepCode();
-
-				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-
-				if (Validator.isNull(step)) {
-					action = act;
-					break;
-				} else {
-					String stepStatus = step.getDossierStatus();
-					String stepSubStatus = step.getDossierSubStatus();
-					if (stepStatus.contentEquals(dossierStatus)
-							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)) {
-						action = act;
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-		}
-
-		return action;
-	}
 	
 	@Override
-	public void initDossierActionUser(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId)
+	public void initDossierActionUser(ProcessAction processAction, Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId)
 			throws PortalException {
 		// Delete record in dossierActionUser
 		List<org.opencps.dossiermgt.model.DossierActionUser> dossierActionUser = DossierActionUserLocalServiceUtil
@@ -117,15 +80,13 @@ public class DossierActionUserImpl implements DossierActionUser {
 		String actionCode = dossierAction.getActionCode();
 		long serviceProcessId = dossierAction.getServiceProcessId();
 		_log.info("serviceProcessId: "+dossierAction.getServiceProcessId());
-
-		// Get ProcessAction
-		ProcessAction processAction = getProcessAction(groupId, dossier, actionCode, serviceProcessId);
 		
 		String stepCode = processAction.getPostStepCode();
 
 //		_log.info("1");
 		// Get ProcessStep
 		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+		
 		long processStepId = processStep.getProcessStepId();
 
 //		_log.info("2");
@@ -413,6 +374,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		String[] stepCodeArr = StringUtil.split(curStep.getRoleAsStep());
 		if (stepCodeArr.length > 0) {
 			for (String stepCode : stepCodeArr) {
+				_log.info("Copy role from step: " + stepCode);
 				ServiceProcess serviceProcess = null;
 				try {
 					serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
@@ -422,6 +384,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 						if (processStep == null) continue;
 						List<ProcessStepRole> lstRoles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getProcessStepId());
 						for (ProcessStepRole psr : lstRoles) {
+							_log.info("Copy role from role: " + psr.getModerator());
 							List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
 							for (User u : users) {
 								DossierUserPK duPk = new DossierUserPK();
