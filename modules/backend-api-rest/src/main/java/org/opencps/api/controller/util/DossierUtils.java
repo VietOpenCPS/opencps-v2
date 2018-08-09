@@ -13,6 +13,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -778,7 +779,8 @@ public class DossierUtils {
 
 		_log.info("GET PROCESS ACTION____");
 		ProcessAction action = null;
-
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
@@ -800,10 +802,24 @@ public class DossierUtils {
 				} else {
 					String stepStatus = step.getDossierStatus();
 					String stepSubStatus = step.getDossierSubStatus();
+					boolean flagCheck = false;
+					
+					if (dossierAction != null) {
+						if (act.getPreStepCode().equals(dossierAction.getStepCode())) {
+							flagCheck = true;
+						}
+					}
+					else {
+						flagCheck = true;
+					}
+					
 					if (stepStatus.contentEquals(dossierStatus)
-							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)) {
-						action = act;
-						break;
+							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
+							&& flagCheck) {
+						if (DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+							action = act;
+							break;							
+						}
 					}
 				}
 			}

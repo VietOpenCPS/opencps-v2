@@ -57,9 +57,9 @@ public class DossierActionUserImpl implements DossierActionUser {
 			DossierActionUserPK dossierActionUserPK) throws PortalException {
 		return DossierActionUserLocalServiceUtil.deleteDossierActionUser(dossierActionUserPK);
 	}
-
+	
 	@Override
-	public void initDossierActionUser(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId)
+	public void initDossierActionUser(ProcessAction processAction, Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId)
 			throws PortalException {
 		// Delete record in dossierActionUser
 		List<org.opencps.dossiermgt.model.DossierActionUser> dossierActionUser = DossierActionUserLocalServiceUtil
@@ -80,14 +80,13 @@ public class DossierActionUserImpl implements DossierActionUser {
 		String actionCode = dossierAction.getActionCode();
 		long serviceProcessId = dossierAction.getServiceProcessId();
 		_log.info("serviceProcessId: "+dossierAction.getServiceProcessId());
-
-		// Get ProcessAction
-		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcessId, actionCode);
+		
 		String stepCode = processAction.getPostStepCode();
 
 //		_log.info("1");
 		// Get ProcessStep
 		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+		
 		long processStepId = processStep.getProcessStepId();
 
 //		_log.info("2");
@@ -375,6 +374,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		String[] stepCodeArr = StringUtil.split(curStep.getRoleAsStep());
 		if (stepCodeArr.length > 0) {
 			for (String stepCode : stepCodeArr) {
+				_log.info("Copy role from step: " + stepCode);
 				ServiceProcess serviceProcess = null;
 				try {
 					serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
@@ -384,6 +384,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 						if (processStep == null) continue;
 						List<ProcessStepRole> lstRoles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getProcessStepId());
 						for (ProcessStepRole psr : lstRoles) {
+							_log.info("Copy role from role: " + psr.getModerator());
 							List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
 							for (User u : users) {
 								DossierUserPK duPk = new DossierUserPK();

@@ -29,27 +29,30 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -2774,4 +2777,46 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossier;
 	}	
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier rollback(Dossier dossier, DossierAction dossierAction) {
+		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getFromStepCode(), dossier.getGroupId(), dossierAction.getServiceProcessId());
+		if (processStep != null) {
+			dossierAction.setState(DossierActionTerm.STATE_WAITING_PROCESSING);
+			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+			JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);
+
+			dossier.setDossierActionId(dossierAction.getDossierActionId());
+			dossier.setDossierStatus(processStep.getDossierStatus());
+			dossier.setDossierStatusText(jsonDataStatusText.getString(processStep.getDossierStatus()));
+			dossier.setDossierStatus(processStep.getDossierSubStatus());
+			dossier.setDossierStatusText(jsonDataStatusText.getString(processStep.getDossierSubStatus()));
+		}
+		return dossierPersistence.update(dossier);
+	}
+	
+	private JSONObject getStatusText(long groupId, String collectionCode, String curStatus, String curSubStatus) {
+
+		JSONObject jsonData = null;
+		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc) && Validator.isNotNull(curStatus)) {
+			jsonData = JSONFactoryUtil.createJSONObject();
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(curStatus, dc.getPrimaryKey(), groupId);
+			if (Validator.isNotNull(it)) {
+				jsonData.put(curStatus, it.getItemName());
+				if (Validator.isNotNull(curSubStatus)) {
+					DictItem dItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(curSubStatus, dc.getPrimaryKey(),
+							groupId);
+					if (Validator.isNotNull(dItem)) {
+						jsonData.put(curSubStatus, dItem.getItemName());
+					}
+				}
+			}
+		}
+
+		return jsonData;
+	}
+	
+	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 }
