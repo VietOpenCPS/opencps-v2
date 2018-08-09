@@ -22,14 +22,14 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 
 public class InvokeREST {
-
+	
 	public JSONObject callAPI(long groupId, String httpMethod, String accept, String pathBase, String endPoint,
 			String username, String password, HashMap<String, String> properties, ServiceContext serviceContext) {
 
 		JSONObject response = JSONFactoryUtil.createJSONObject();
 
 		try {
-
+			
 			URL url = new URL(pathBase + endPoint);
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -38,7 +38,7 @@ public class InvokeREST {
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
-
+			
 			conn.setRequestMethod(httpMethod);
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);

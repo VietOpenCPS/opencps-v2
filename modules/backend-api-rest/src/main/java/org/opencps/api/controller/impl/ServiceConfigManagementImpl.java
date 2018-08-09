@@ -1044,16 +1044,17 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 							if (partList != null && partList.size() > 0) {
 								JSONObject jsonPart = null;
 								for (DossierPart part : partList) {
-									if (part != null) {
+									if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
 										jsonPart = JSONFactoryUtil.createJSONObject();
 										jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
 										jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
 										jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
 										jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
 										jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
+
+										partArr.put(jsonPart);
 									}
 								}
-								partArr.put(jsonPart);
 							}
 							// Add key template in jsonOption
 							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);

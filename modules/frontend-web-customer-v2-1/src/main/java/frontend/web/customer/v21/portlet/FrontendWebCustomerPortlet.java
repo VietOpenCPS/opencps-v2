@@ -65,6 +65,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 				object.put("user", userObject);
 
 				object.put("menuConfigToDo", "/o/rest/v2_1/menuconfigs/todo");
+
 				object.put("counterMenuStep", "/o/rest/v2/statistics/dossiers/todo");
 				object.put("getListThuTucHanhChinh", "/o/rest/v2/onegate/serviceconfigs/processes");
 				

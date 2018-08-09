@@ -3,6 +3,12 @@ Bundle-SymbolicName: backend.api.rest
 Bundle-Version: 2.0.0
 ConfigurationPath: /configuration
 Include-Resource: configuration=src/main/resources/configuration
+
+Include-Resource: \
+	@okapibarcode-0.1.7.jar,\
+	@core-3.3.0.jar,\
+	@jcommander-1.48.jar
+	
 Export-Package: \
 	org.opencps.usermgt.action,\
 	com.fasterxml.jackson.annotation,\

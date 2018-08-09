@@ -1,5 +1,9 @@
 package org.opencps.api.controller.impl;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -8,9 +12,11 @@ import java.util.Locale;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -101,8 +107,15 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
+import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -126,6 +139,11 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import uk.org.okapibarcode.backend.Code128;
+import uk.org.okapibarcode.backend.HumanReadableLocation;
+import uk.org.okapibarcode.backend.QrCode;
+import uk.org.okapibarcode.output.Java2DRenderer;
 
 public class DossierManagementImpl implements DossierManagement {
 
@@ -779,6 +797,50 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 
+			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
+					input.getDossierTemplateNo(), groupId);
+			long serviceProcessId = 0;
+			if (option != null) {
+				serviceProcessId = option.getServiceProcessId();
+			}
+
+			boolean flag = false;
+			long userId = serviceContext.getUserId();
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (employee != null) {
+				long employeeId = employee.getEmployeeId();
+				if (employeeId > 0) {
+					List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+					if (empJobList != null && empJobList.size() > 0) {
+						for (EmployeeJobPos employeeJobPos : empJobList) {
+							long jobPosId = employeeJobPos.getJobPostId();
+							if (jobPosId > 0) {
+								JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
+								if (job != null) {
+									ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
+											job.getMappingRoleId());
+									ServiceProcessRole role = ServiceProcessRoleLocalServiceUtil
+											.fetchServiceProcessRole(pk);
+									if (role != null && role.getModerator()) {
+										flag = true;
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			} else {
+				//update application
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+				if (applicant != null) {
+					flag = true;
+				}
+			}
+
+			if (!flag) {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
+			}
 			// if (!auth.hasResource(serviceContext,
 			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 			// throw new UnauthorizationException();
@@ -789,9 +851,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
 			String referenceUid = input.getReferenceUid();
-
-			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
-					input.getDossierTemplateNo(), groupId);
+//			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
+//					input.getDossierTemplateNo(), groupId);
 
 			// Create dossierNote
 			ServiceProcess process = null;
@@ -805,7 +866,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			
 			if (option != null) {
-				long serviceProcessId = option.getServiceProcessId();
+//				long serviceProcessId = option.getServiceProcessId();
 				process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
 //				if (process.getServerNo().trim().length() != 0) {
 //					online = false;
@@ -927,7 +988,6 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
-				long userId = serviceContext.getUserId();
 				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
 			}
 			
@@ -1070,10 +1130,10 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), input.getViaPostal(),
 					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(),
-					input.getApplicantNote(), input.isSameAsApplicant(),
-					input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(),
-					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
-					input.getDelegateDistrictCode(), input.getDelegateWardCode(), serviceContext);
+					input.getApplicantNote(), input.isSameAsApplicant(), input.getDelegateName(),
+					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
+					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
+					input.getDelegateWardCode(), input.getSampleCount(), serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
@@ -2831,6 +2891,118 @@ public class DossierManagementImpl implements DossierManagement {
 
 		} catch (Exception e) {
 			_log.info(e);
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierBarcode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			long dossierId = GetterUtil.getLong(id);
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			Code128 barcode = new Code128();
+			barcode.setFontName("Monospaced");
+			barcode.setFontSize(16);
+			barcode.setModuleWidth(2);
+			barcode.setBarHeight(50);
+			barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			barcode.setContent(dossier.getDossierNo());
+
+			int width = barcode.getWidth();
+			int height = barcode.getHeight();
+
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(barcode);
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + dossier.getDossierId() + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+
+			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return processException(e);
+		}
+	}
+
+	@Override
+	public Response getDossierQRcode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			long dossierId = GetterUtil.getLong(id);
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			QrCode qrcode = new QrCode();
+			qrcode.setFontName("Monospaced");
+			qrcode.setFontSize(16);
+			qrcode.setModuleWidth(2);
+			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			qrcode.setContent(dossier.getDossierNo());
+
+			int width = qrcode.getWidth();
+			int height = qrcode.getHeight();
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(qrcode);
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + dossier.getDossierId() + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+
+			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 			return processException(e);
 		}
 	}

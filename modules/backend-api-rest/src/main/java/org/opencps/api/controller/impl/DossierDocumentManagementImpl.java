@@ -91,6 +91,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
 					}
 					jsonData = DossierDucumentUtils.processMergeDossierFormData(dossier, jsonData);
+					jsonData.put("url", serviceContext.getPortalURL());
 					Message message = new Message();
 					message.put("formReport", documentScript);
 					message.put("formData", jsonData.toJSONString());
@@ -399,7 +400,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						_log.info("sequenceArr[i]: "+sequenceArr[i]);
 				}
 				Arrays.sort(sequenceArr);
-				for (int i = 0; i < sequenceArr.length; i++) {
+				for (int i = 0; i < sequenceArr.length - 1; i++) {
 					String seq = sequenceArr[i];
 					if (sequenceNo.equals(seq)) {
 						String nextSequenceNo = sequenceArr[i + 1];

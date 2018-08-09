@@ -284,9 +284,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		employee.setExpandoBridgeAttributes(serviceContext);
 
-		employeePersistence.update(employee);
+		return employeePersistence.update(employee);
 
-		return employee;
 	}
 
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId) {

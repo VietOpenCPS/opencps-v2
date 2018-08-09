@@ -542,17 +542,15 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException {
 		validateRemove(serviceProcessId, groupId);
 		
-		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
+//		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
 
-		for (ServiceProcessRole processRole : processRoles) {
-			serviceProcessRolePersistence.remove(processRole);
-		}
+//		for (ServiceProcessRole processRole : processRoles) {
+//			serviceProcessRolePersistence.remove(processRole);
+//		}
 		
 		ServiceProcess serviceProcess = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
-		serviceProcessPersistence.remove(serviceProcess);
-
-		return serviceProcess;
+		return serviceProcessPersistence.remove(serviceProcess);
 
 	}
 

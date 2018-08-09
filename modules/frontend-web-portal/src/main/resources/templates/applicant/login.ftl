@@ -25,7 +25,7 @@
 				
 			</div>
 			<div class="col-sm-6">
-				<a class="btn btn-active btn-sm" href="/web/cong-tiep-nhan/register" style="float: left;margin-left: -12px;margin-right:2px; padding: 3px 7px;">Đăng ký</a>
+				<a class="btn btn-active btn-sm" href="/web${(Request.layoutfriendurl)!}/register" style="float: left;margin-left: -12px;margin-right:2px; padding: 3px 7px;">Đăng ký</a>
 				<button class="btn btn-active btn-sm">Đăng nhập</button>
 			</div>
 		</div>
@@ -50,7 +50,7 @@
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-				<li><a href="/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
+				<li><a href="/web${(themeDisplay.getScopeGroup().getFriendlyURL())!}/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a></li>
 				<li><a href="/c/portal/logout"><i class="fa fa-arrow-right"></i> Đăng xuất</a></li>
 			</ul>
 		</div>
@@ -61,6 +61,6 @@
 <script type="text/javascript">
 	$("#btn-register-applicant").click(function () {
 		alert("Bấm đăng ký");
-		window.location.href = "/web/cong-tiep-nhan/register";
+		window.location.href = "/web${(Request.layoutfriendurl)!}/register";
 	});
 </script>

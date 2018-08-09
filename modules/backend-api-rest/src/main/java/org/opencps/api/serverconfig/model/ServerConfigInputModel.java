@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
 	"govAgencyCode",
     "serverNo",
     "serverName",
-    "protocol"
+    "protocol",
+    "configs"
 })
 @XmlRootElement(name = "ServerConfigInputModel")
 public class ServerConfigInputModel {
@@ -53,6 +54,8 @@ public class ServerConfigInputModel {
     protected String serverName;
 	@FormParam("protocol")
     protected String protocol;
+	@FormParam("configs")
+    protected String configs;
 
     /**
      * Gets the value of the serverNo property.
@@ -132,6 +135,14 @@ public class ServerConfigInputModel {
 
 	public void setGovAgencyCode(String govAgencyCode) {
 		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getConfigs() {
+		return configs;
+	}
+
+	public void setConfigs(String configs) {
+		this.configs = configs;
 	}
 
 }
