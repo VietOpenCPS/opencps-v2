@@ -58,6 +58,43 @@ public class DossierActionUserImpl implements DossierActionUser {
 		return DossierActionUserLocalServiceUtil.deleteDossierActionUser(dossierActionUserPK);
 	}
 
+	private ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+			long serviceProcessId) throws PortalException {
+
+		ProcessAction action = null;
+
+		try {
+			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+					serviceProcessId);
+
+			String dossierStatus = dossier.getDossierStatus();
+			String dossierSubStatus = dossier.getDossierSubStatus();
+			String preStepCode = StringPool.BLANK;
+			for (ProcessAction act : actions) {
+
+				preStepCode = act.getPreStepCode();
+
+				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+
+				if (Validator.isNull(step)) {
+					action = act;
+					break;
+				} else {
+					String stepStatus = step.getDossierStatus();
+					String stepSubStatus = step.getDossierSubStatus();
+					if (stepStatus.contentEquals(dossierStatus)
+							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)) {
+						action = act;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+		}
+
+		return action;
+	}
+	
 	@Override
 	public void initDossierActionUser(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId)
 			throws PortalException {
@@ -82,7 +119,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 		_log.info("serviceProcessId: "+dossierAction.getServiceProcessId());
 
 		// Get ProcessAction
-		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcessId, actionCode);
+		ProcessAction processAction = getProcessAction(groupId, dossier, actionCode, serviceProcessId);
+		
 		String stepCode = processAction.getPostStepCode();
 
 //		_log.info("1");

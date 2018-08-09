@@ -2421,6 +2421,7 @@ public class DossierManagementImpl implements DossierManagement {
 					DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
 					try {
 						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
+						DossierLocalServiceUtil.rollback(dossier, previousAction);
 					} catch (PortalException e) {
 //						e.printStackTrace();
 						return processException(e);
