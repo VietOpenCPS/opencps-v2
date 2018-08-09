@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -14,6 +15,7 @@ import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierActionUtils;
 import org.opencps.api.dossier.model.ListContacts;
+import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
 import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
 import org.opencps.api.dossieraction.model.DossierNextActionResultsModel;
@@ -34,6 +36,7 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -42,6 +45,7 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -50,6 +54,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
@@ -65,6 +70,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionManagementImpl implements DossierActionManagement {
@@ -133,6 +139,66 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							result.setCheckInput(processStep.getCheckInput());
 						}
 					}
+	
+					ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
+							serviceProcessId);
+					List<User> lstUser = new ArrayList<>();
+
+					if (processStep != null) {	
+						List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+								.findByP_S_ID(processStep.getProcessStepId());
+						if (Validator.isNotNull(processStep.getRoleAsStep())) {
+							lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, stepCode, serviceProcessId));
+						}
+						if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+							lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
+						}
+						if (lstUser != null && !lstUser.isEmpty()) {
+						}
+					}
+					
+					List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
+					DossierActionNextActiontoUser modelUser = null;
+					if (lstUser != null && lstUser.size() > 0) {
+						boolean moderator = false;
+						int assigned = 0;
+						for (User u: lstUser) {
+							modelUser = new DossierActionNextActiontoUser();
+							Map<String, Object> attr = u.getModelAttributes();
+							long userId = GetterUtil.getLong(u.getUserId());
+
+							moderator = false;
+							assigned = 0;
+							if (attr != null) {
+								if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
+									moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
+								}
+								if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
+									assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
+								}
+							}
+
+							modelUser.setUserId(userId);
+							modelUser.setUserName(u.getFullName());
+							modelUser.setModerator(moderator);
+							modelUser.setAssigned(assigned);
+							boolean flag = true;
+							if (outputUsers != null && !outputUsers.isEmpty()) {
+								for (DossierActionNextActiontoUser doUserAct : outputUsers) {
+									if (userId == doUserAct.getUserId()) {
+										flag = false;
+										break;
+									}
+								}
+								if (flag) {
+									outputUsers.add(modelUser);
+								}
+							} else {
+								outputUsers.add(modelUser);
+							}
+						}
+					}
+					result.setUsers(outputUsers);					
 				}
 			} else {
 				result.setTotal(0);

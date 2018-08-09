@@ -1,6 +1,7 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,28 +26,101 @@ import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUtils {
 
 	private static Log _log = LogFactoryUtil.getLog(DossierActionUtils.class);
+	
+	public static List<User> processRoleAsStepListUser(Dossier dossier, String stepCode, long serviceProcessId) {
+		List<User> lstUser = null;
+		// Check roles
+		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
+		
+		lstUser = new ArrayList<User>();
+		for (DossierActionUser dau : lstDaus) {
+			User user = UserLocalServiceUtil.fetchUser(dau.getUserId());
+			
+			HashMap<String, Object> assigned = new HashMap<>();
+			assigned.put(ProcessStepRoleTerm.ASSIGNED, dau.getAssigned());
+			HashMap<String, Object> moderator = new HashMap<>();
+			moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator());
+			user.setModelAttributes(moderator);
+			user.setModelAttributes(assigned);
+					
+			lstUser.add(user);
+		}
+
+		return lstUser;
+	}
+	
+	public static List<User> processRoleListUser(List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
+		List<User> lstUser = null;
+		// Check roles
+		_log.info("processStepRoleList: "+processStepRoleList);
+		if (processStepRoleList != null && processStepRoleList.size() > 0) {
+			_log.info("processStepRoleList.size(): "+processStepRoleList.size());
+			lstUser = new ArrayList<User>();
+			for (ProcessStepRole processStepRole : processStepRoleList) {
+				List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
+				if (users != null && users.size() > 0) {
+					_log.info("users.size(): "+users.size());
+					HashMap<String, Object> assigned = new HashMap<>();
+					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
+					for (User user : users) {
+						HashMap<String, Object> moderator = new HashMap<>();
+						moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
+						user.setModelAttributes(moderator);
+						user.setModelAttributes(assigned);
+					}
+					lstUser.addAll(users);
+				}
+			}
+		} else {
+			// Search in ServiceProcessRole
+			List<ServiceProcessRole> serviceProcessRoleList = ServiceProcessRoleLocalServiceUtil
+					.findByS_P_ID(serviceProcessId);
+			if (serviceProcessRoleList != null && serviceProcessRoleList.size() > 0) {
+				lstUser = new ArrayList<User>();
+				for (ServiceProcessRole serviceProcessRole : serviceProcessRoleList) {
+					List<User> users = UserLocalServiceUtil
+							.getRoleUsers(serviceProcessRole.getRoleId());
+					if (users != null && users.size() > 0) {
+						for (User user : users) {
+							HashMap<String, Object> moderator = new HashMap<>();
+							moderator.put("moderator", serviceProcessRole.getModerator());
+							user.setModelAttributes(moderator);
+						}
+						lstUser.addAll(users);
+					}
+				}
+			}
+		}
+
+		return lstUser;
+	}
+	
 	public static List<DossierActionNextActionModel> mappingToDoListActions(List<ProcessAction> lstProcessAction,
 			List<User> lstUser) {
 
