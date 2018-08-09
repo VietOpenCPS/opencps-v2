@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierActionUtils;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
@@ -33,6 +35,7 @@ import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
@@ -137,6 +140,30 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 						if (processStep != null) {
 							result.setCheckInput(processStep.getCheckInput());
+							result.setStepCode(processStep.getStepCode());
+							result.setStepName(processStep.getStepName());
+							
+							Date now = new Date();
+							long dateNowTimeStamp = now.getTime();
+			
+							Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+
+							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
+							
+							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
+							int durationUnit = dossier.getDurationUnit();
+							if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+								long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+								if (subTimeStamp > 0) {
+									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+									result.setStepOverdue("Quá hạn "+strOverDue);
+								} else {
+									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+									result.setStepOverdue("Còn "+strOverDue);
+								}
+							} else {
+							}
+							
 						}
 					}
 	
