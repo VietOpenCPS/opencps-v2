@@ -223,7 +223,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				}
 //			}
 
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+//			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -272,7 +272,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //					dossier.setReceiveDate(now);
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
-				}
+//				}
 			}
 		} else {
 
@@ -1772,7 +1772,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
-
+		String domain = GetterUtil.getString(params.get(DossierTerm.DOMAIN_CODE));
+		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -1799,7 +1800,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, permission, booleanCommon);
+				assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1850,7 +1851,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String statusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_STATUS_STEP));
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
-
+		String domain = GetterUtil.getString(params.get(DossierTerm.DOMAIN_CODE));
+		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -1874,7 +1876,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, permission, booleanCommon);
+				assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1963,7 +1965,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
 			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
 			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
-			String statusStep, String subStatusStep, String permission, BooleanQuery booleanQuery) throws ParseException {
+			String statusStep, String subStatusStep, String permission, String domain, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2300,11 +2302,21 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+//		_log.info("Permission: " + permission);
 		if (Validator.isNotNull(permission)) {
 			MultiMatchQuery query = new MultiMatchQuery(permission);
 			query.addField(DossierTerm.MAPPING_PERMISSION);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
+		if (Validator.isNotNull(domain)) {
+			MultiMatchQuery query = new MultiMatchQuery(domain);
+
+			query.addFields(DossierTerm.DOMAIN_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
 		return booleanQuery;
 	}
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
@@ -2613,6 +2625,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (obj.has(DossierTerm.SUBMIT_DATE)) {
 			if (dossier.getSubmitDate() == null || obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime()) {
 				dossier.setSubmitDate(new Date(obj.getLong(DossierTerm.SUBMIT_DATE)));	
+			}
+		}
+		if (obj.has(DossierTerm.EXTEND_DATE)) {
+			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
+				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));	
 			}
 		}
 		

@@ -64,9 +64,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			_log.info("Dossier document: " + groupId + "," + dossierId + "," + referenceUid);
 			DossierDocument dossierDoc = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
-			_log.info("Dossier document: " + dossierDoc);
 //			// download file with dossierDocumentFileId
 			long documentFileId = 0;
 			if (dossierDoc != null) {
@@ -149,7 +147,6 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			_log.info("In create dossier doc");
 			Dossier dossier = null;
 			long dossierActionId = 0;
 
@@ -165,13 +162,11 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 			DossierDocument oldDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
 			
-			_log.info("After get dossier");
 			DataHandler dataHandler = upfileDetail.getDataHandler();
 
 			DossierDocumentActions action = new DossierDocumentActionsImpl();
 			
 			
-			_log.info("__Start add file at:" + new Date());
 			DossierDocument dossierDoc = null;
 			if (oldDocument == null) {
 				dossierDoc = action.addDossierDoc(groupId, dossier.getDossierId(), referenceUid, dossierActionId, documentType,
@@ -183,7 +178,6 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 						documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
 						StringPool.BLANK, context);				
 			}
-			_log.info("__End add file at:" + new Date());
 			
 //			if(Validator.isNotNull(formData)) {
 //				dossierFile.setFormData(formData);

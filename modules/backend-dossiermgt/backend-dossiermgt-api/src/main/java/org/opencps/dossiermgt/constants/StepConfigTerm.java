@@ -9,4 +9,8 @@ public class StepConfigTerm {
 	public static final String MENU_GROUP = "menuGroup";
 	public static final String MENU_STEP_NAME = "menuStepName";
 	public static final String BUTTON_CONFIG = "buttonConfig";
+	
+	public static final int STEP_TYPE_NOT_DISPLAY_MENU = 0;
+	public static final int STEP_TYPE_DISPLAY_MENU_BY_PROCESSED = 1;
+	public static final int STEP_TYPE_DISPLAY_MENU_BY_OWNER = 2;	
 }

@@ -659,7 +659,8 @@ public class DossierManagementImpl implements DossierManagement {
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
 			String dossierIdCTN = query.getDossierIdCTN();
-
+			String domain = query.getDomain();
+			
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
 			params.put(DossierTerm.AGENCY, agency);
@@ -684,6 +685,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+			if (Validator.isNotNull(domain)) {
+				params.put(DossierTerm.DOMAIN_CODE, domain);
+			}
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
@@ -696,7 +700,7 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, StringPool.BLANK);
 			}
 			//TODO
-			String permission = user.getUserId() + ":write";
+			String permission = user.getUserId() + StringPool.UNDERLINE + "write";
 			params.put(DossierTerm.MAPPING_PERMISSION, permission);
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
@@ -818,9 +822,9 @@ public class DossierManagementImpl implements DossierManagement {
 								JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
 								if (job != null) {
 									ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
-											job.getMappingRoleId());
+												job.getMappingRoleId());
 									ServiceProcessRole role = ServiceProcessRoleLocalServiceUtil
-											.fetchServiceProcessRole(pk);
+												.fetchServiceProcessRole(pk);
 									if (role != null && role.getModerator()) {
 										flag = true;
 										break;
@@ -832,12 +836,12 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			} else {
 				//update application
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
-				if (applicant != null) {
+//				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+//				if (applicant != null) {
 					flag = true;
-				}
+//				}
 			}
-
+	
 			if (!flag) {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
 			}
@@ -2974,6 +2978,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			int width = qrcode.getWidth();
 			int height = qrcode.getHeight();
+
 			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
 			Graphics2D g2d = image.createGraphics();
 			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);

@@ -39,6 +39,7 @@ import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
@@ -48,6 +49,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
+import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -69,6 +71,7 @@ import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
@@ -92,7 +95,10 @@ import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
@@ -2754,7 +2760,7 @@ public class DossierActionsImpl implements DossierActions {
 				String fromStepName = previousAction != null ? previousAction.getStepName() : StringPool.BLANK;
 				String fromSequenceNo = previousAction != null ? previousAction.getSequenceNo() : StringPool.BLANK;
 				
-				int state = DossierActionTerm.STATE_ALREADY_PROCESSED;
+				int state = DossierActionTerm.STATE_WAITING_PROCESSING;
 				int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
 
 				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId,
@@ -2778,6 +2784,7 @@ public class DossierActionsImpl implements DossierActions {
 				//Update previous action nextActionId
 				if (previousAction != null && dossierAction != null) {
 					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
+					previousAction = DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 				}
 				
 				if (actionConfig != null) {
@@ -3557,20 +3564,31 @@ public class DossierActionsImpl implements DossierActions {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
-							NotificationQueueLocalServiceUtil.addNotificationQueue(
-									userId, groupId, 
-									actionConfig.getNotificationType(), 
-									Dossier.class.getName(), 
-									String.valueOf(dossier.getDossierId()), 
-									dossierAction.getPayload(), 
-									u.getFullName(), 
-									dossier.getApplicantName(), 
-									0L, 
-									dossier.getContactEmail(), 
-									dossier.getContactTelNo(), 
-									now, 
-									expired, 
-									context);
+							StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getFromStepCode());
+							if (stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED) {
+								List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getFromStepCode());
+								for (DossierActionUser dau : lstDaus) {
+									if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
+										Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
+										String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+										String fullName = employee != null ? employee.getFullName() : u.getFullName();
+										NotificationQueueLocalServiceUtil.addNotificationQueue(
+												userId, groupId, 
+												actionConfig.getNotificationType(), 
+												Dossier.class.getName(), 
+												String.valueOf(dossier.getDossierId()), 
+												dossierAction.getPayload(), 
+												fullName, 
+												fullName, 
+												0L, 
+												u.getEmailAddress(), 
+												telNo, 
+												now, 
+												expired, 
+												context);																		
+									}
+								}
+							}
 						} catch (NoSuchUserException e) {
 							e.printStackTrace();
 						}
@@ -3729,20 +3747,20 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		Double durationCount = processStep.getDurationCount();
-		_log.info("Calculate do action duration count: " + durationCount);
+//		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0) {
-			dueDate = HolidayUtils.getDueDate(now, durationCount, 0, dossier.getGroupId());
+			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, 0, dossier.getGroupId());
 		}			
-		_log.info("Due date in do action: " + dueDate);
+//		_log.info("Due date in do action: " + dueDate);
 		if (dossierAction != null) {
 			if (dueDate != null) {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
 				int durationUnit = 0;
 				int overdue = 0;
-				_log.info("Due date timestamp: " + dueDateTimeStamp);
+//				_log.info("Due date timestamp: " + dueDateTimeStamp);
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-					long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+					long subTimeStamp = dueDateTimeStamp - dateNowTimeStamp;
 					if (subTimeStamp > 0) {
 						overdue = calculatorOverDue(durationUnit, subTimeStamp);
 					} else {
@@ -3752,6 +3770,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				dossierAction.setActionOverdue(overdue);
+				dossierAction.setDueDate(dueDate);
 				
 				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
 			}

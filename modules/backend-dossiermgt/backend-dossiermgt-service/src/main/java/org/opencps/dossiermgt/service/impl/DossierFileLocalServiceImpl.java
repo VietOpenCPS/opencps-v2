@@ -302,8 +302,16 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		if (Validator.isNotNull(dossierPart.getFormScript())) {
 			object.setFormScript(dossierPart.getFormScript());
 		}
-		if (Validator.isNotNull(dossierPart.getFormReport())) {
-			object.setFormReport(dossierPart.getFormReport());
+		if (Validator.isNull(dossierPart.getDeliverableType())) {
+			if (Validator.isNotNull(dossierPart.getFormReport())) {
+				object.setFormReport(dossierPart.getFormReport());
+			}			
+		}
+		else {
+			DeliverableType dt = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+			if (dt != null && Validator.isNotNull(dt.getFormReport())) {
+				object.setFormReport(dt.getFormReport());
+			}
 		}
 
 		_log.info("****Start autofill file at:" + new Date());
@@ -736,7 +744,15 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				throw new NoSuchDossierPartException();
 			}
 
-			jrxmlTemplate = dossierPart.getFormReport();
+			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+				DeliverableType dt = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+				if (dt != null && Validator.isNotNull(dt.getFormReport())) {
+					jrxmlTemplate = dt.getFormReport();
+				}
+			}
+			else {
+				jrxmlTemplate = dossierPart.getFormReport();				
+			}
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}
