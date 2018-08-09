@@ -271,11 +271,9 @@ public class OpenCPSRestClient {
 			InvokeREST callRest = new InvokeREST();
 			HashMap<String, String> properties = OpenCPSConverter.convertDossierDocumentHttpParams(model);
 			ServiceContext context = new ServiceContext();
-			_log.info("Base url: " + baseV21Url);
 			JSONObject jsonObj = callRest.callPostFileAPI(groupId, HttpMethod.POST, "application/json", 
 					baseV21Url, requestURL, username,
 					password, properties, file, context);
-			_log.info("Post dossier document: " + jsonObj);
 			result = OpenCPSConverter.convertDossierDocument(jsonObj);
 			
 			return result;

@@ -164,9 +164,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		}
 
-		dossierActionPersistence.update(object);
-
-		return object;
+		return dossierActionPersistence.update(object);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -284,9 +282,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		action.setModifiedDate(now);
 
-		dossierActionPersistence.update(action);
-
-		return action;
+		return dossierActionPersistence.update(action);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -299,9 +295,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		action.setModifiedDate(now);
 
-		dossierActionPersistence.update(action);
-
-		return action;		
+		return dossierActionPersistence.update(action);
 	}
 	
 	@Indexable(type = IndexableType.REINDEX)

@@ -95,7 +95,8 @@ import javax.xml.bind.annotation.XmlType;
     "keywordSearchLike",
     "online",
     "specialKey",
-    "assigned"
+    "assigned",
+    "domain"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -177,6 +178,8 @@ public class DossierSearchModel {
     protected String online;
     @QueryParam(value = "assigned")
     protected Integer assigned;
+    @QueryParam(value = "domain")
+    protected String domain;
 
     public Integer getAssigned() {
 		return assigned;
@@ -834,4 +837,11 @@ public class DossierSearchModel {
 		this.pendding = pendding;
 	}
 
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}	
 }

@@ -183,18 +183,17 @@ public class InvokeREST {
 			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
+			if (!properties.isEmpty()) {
+				for (Map.Entry m : properties.entrySet()) {
+					multipart.addFormField(m.getKey().toString(), m.getValue().toString());
+				}
+			}
+
 			if (file != null) {
 				multipart.addFilePart("file", file);				
 			}
 			else {
 				multipart.addFormField("file", StringPool.BLANK);
-			}
-
-			if (!properties.isEmpty()) {
-				for (Map.Entry m : properties.entrySet()) {
-					multipart.addFormField(m.getKey().toString(), m.getValue().toString());
-
-				}
 			}
 
 			List<String> res = multipart.finish();

@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
  "checkInput",
+ "users",
  "total",
  "data"
 })
@@ -46,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 public class DossierNextActionResultsModel {
 
  protected Integer checkInput;
+ protected List<DossierActionNextActiontoUser> users;
  protected Integer total;
  protected List<DossierNextActionModel> data;
 
@@ -126,4 +128,12 @@ public class DossierNextActionResultsModel {
      return this.data;
  }
 
+	public List<DossierActionNextActiontoUser> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<DossierActionNextActiontoUser> users) {
+		this.users = users;
+	}
+ 
 }
