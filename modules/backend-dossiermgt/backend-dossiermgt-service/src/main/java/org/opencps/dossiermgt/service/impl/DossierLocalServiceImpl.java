@@ -223,7 +223,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				}
 //			}
 
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
+//			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -272,7 +272,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //					dossier.setReceiveDate(now);
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
-				}
+//				}
 			}
 		} else {
 
@@ -2625,6 +2625,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (obj.has(DossierTerm.SUBMIT_DATE)) {
 			if (dossier.getSubmitDate() == null || obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime()) {
 				dossier.setSubmitDate(new Date(obj.getLong(DossierTerm.SUBMIT_DATE)));	
+			}
+		}
+		if (obj.has(DossierTerm.EXTEND_DATE)) {
+			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
+				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));	
 			}
 		}
 		

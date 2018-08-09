@@ -232,7 +232,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.FALSE);
 					}
 
-					Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+					Date stepDuedate = DossierOverDueUtils.getStepOverDue(object.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
 					// if (Validator.isNotNull(stepDuedate)) {
 					document.addTextSortable(DossierTerm.STEP_DUE_DATE,

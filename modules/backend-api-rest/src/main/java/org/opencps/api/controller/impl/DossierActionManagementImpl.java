@@ -146,7 +146,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							Date now = new Date();
 							long dateNowTimeStamp = now.getTime();
 			
-							Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+							Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
 
 							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
 							
