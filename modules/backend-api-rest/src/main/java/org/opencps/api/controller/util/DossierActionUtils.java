@@ -146,7 +146,7 @@ public class DossierActionUtils {
 						JSONObject createFile = createFiles.getJSONObject(f);
 						DossierActionNextActioncreateFiles dossierActionNextActioncreateFile = new DossierActionNextActioncreateFiles();
 						dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong("dossierPartId"));
-						dossierActionNextActioncreateFile.setEform(createFile.getBoolean("eform"));
+						dossierActionNextActioncreateFile.setEForm(createFile.getBoolean("eform"));
 						dossierActionNextActioncreateFile.setFormData(createFile.getString("formData"));
 						dossierActionNextActioncreateFile.setFormScript(createFile.getString("formScript"));
 						dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean("multiple"));
@@ -354,7 +354,7 @@ public class DossierActionUtils {
 					JSONObject createFile = createFiles.getJSONObject(j);
 					DossierActionNextActioncreateFiles dossierActionNextActioncreateFile = new DossierActionNextActioncreateFiles();
 					dossierActionNextActioncreateFile.setDossierPartId(createFile.getLong(DossierPartTerm.DOSSIERPART_ID));
-					dossierActionNextActioncreateFile.setEform(createFile.getBoolean(DossierPartTerm.EFORM));
+					dossierActionNextActioncreateFile.setEForm(createFile.getBoolean(DossierPartTerm.EFORM));
 					dossierActionNextActioncreateFile.setFormData(createFile.getString(DossierPartTerm.FORM_DATA));
 					dossierActionNextActioncreateFile.setFormScript(createFile.getString(DossierPartTerm.FORM_SCRIPT));
 					dossierActionNextActioncreateFile.setMultiple(createFile.getBoolean(DossierPartTerm.MULTIPLE));
