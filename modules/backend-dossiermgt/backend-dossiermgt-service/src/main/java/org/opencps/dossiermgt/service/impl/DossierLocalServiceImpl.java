@@ -2780,7 +2780,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier rollback(Dossier dossier, DossierAction dossierAction) {
-		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getFromStepCode(), dossier.getGroupId(), dossierAction.getServiceProcessId());
+		ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(), dossier.getGroupId(), dossierAction.getServiceProcessId());
 		if (processStep != null) {
 			dossierAction.setState(DossierActionTerm.STATE_WAITING_PROCESSING);
 			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
