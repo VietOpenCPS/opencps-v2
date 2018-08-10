@@ -61,7 +61,7 @@ public class DossierActionPaymentModel {
 	protected Long feeAmount;
 	protected Long serviceAmount;
 	protected Long shipAmount;
-	protected Boolean editable;
+	protected int editable;
 
 	public Integer getRequestPayment() {
 		return requestPayment;
@@ -93,10 +93,10 @@ public class DossierActionPaymentModel {
 	public void setShipAmount(Long shipAmount) {
 		this.shipAmount = shipAmount;
 	}
-	public Boolean getEditable() {
+	public int getEditable() {
 		return editable;
 	}
-	public void setEditable(Boolean editable) {
+	public void setEditable(int editable) {
 		this.editable = editable;
 	}
 	public void setPaymentFee(String paymentFee) {
