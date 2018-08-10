@@ -75,7 +75,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setInteroperatingCount(model.getInteroperatingCount());
 		soapModel.setWaitingCount(model.getWaitingCount());
 		soapModel.setOutsideCount(model.getOutsideCount());
-		soapModel.setReceivingCount(model.getReceivingCount());
+		soapModel.setInsideCount(model.getInsideCount());
 
 		return soapModel;
 	}
@@ -463,12 +463,12 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_outsideCount = outsideCount;
 	}
 
-	public int getReceivingCount() {
-		return _receivingCount;
+	public int getInsideCount() {
+		return _insideCount;
 	}
 
-	public void setReceivingCount(int receivingCount) {
-		_receivingCount = receivingCount;
+	public void setInsideCount(int insideCount) {
+		_insideCount = insideCount;
 	}
 
 	private String _uuid;
@@ -512,5 +512,5 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _interoperatingCount;
 	private int _waitingCount;
 	private int _outsideCount;
-	private int _receivingCount;
+	private int _insideCount;
 }

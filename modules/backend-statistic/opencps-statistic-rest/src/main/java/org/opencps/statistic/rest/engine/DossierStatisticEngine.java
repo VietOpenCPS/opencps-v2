@@ -14,9 +14,9 @@ import org.opencps.statistic.rest.dto.GetDossierRequest;
 import org.opencps.statistic.rest.dto.GetDossierResponse;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
+import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -93,12 +93,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 					engineFetch.fecthStatisticData(site.getGroupId(), statisticData, source);
 					
-					String type1 = "all@all";
-					
-					if (statisticData.containsKey(type1)) {
-						DossierStatisticUtils.logAsFormattedJson(LOG, statisticData.get(type1));
-					}
-					
 					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 					
 					statisticEngineUpdate.updateStatisticData(statisticData);
@@ -106,6 +100,12 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				}
 				
 			});
+			
+			/* Update summary */
+			
+			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
+			
+			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());
 
 		}
 
@@ -115,7 +115,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

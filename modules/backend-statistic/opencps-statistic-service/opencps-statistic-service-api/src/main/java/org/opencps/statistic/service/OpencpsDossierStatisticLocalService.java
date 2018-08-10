@@ -217,6 +217,14 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public OpencpsDossierStatistic addOpencpsDossierStatistic(
 		OpencpsDossierStatistic opencpsDossierStatistic);
 
+	public OpencpsDossierStatistic checkExsit(long groupId, int month,
+		int year, java.lang.String govAgency, java.lang.String domain,
+		boolean reporting);
+
+	public OpencpsDossierStatistic checkNotDuplicate(long groupId,
+		java.lang.String govAgencyCode, int month, int year,
+		java.lang.String domainCode);
+
 	/**
 	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
 	*
@@ -317,6 +325,6 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int waitingCount, java.lang.String govAgencyCode,
 		java.lang.String govAgencyName, java.lang.String domainCode,
 		java.lang.String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int receivingCount)
+		int outsideCount, int insideCount)
 		throws PortalException, SystemException;
 }

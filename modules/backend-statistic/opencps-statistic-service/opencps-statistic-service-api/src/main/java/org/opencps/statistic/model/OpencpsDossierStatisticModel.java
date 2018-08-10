@@ -685,18 +685,18 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	public void setOutsideCount(int outsideCount);
 
 	/**
-	 * Returns the receiving count of this opencps dossier statistic.
+	 * Returns the inside count of this opencps dossier statistic.
 	 *
-	 * @return the receiving count of this opencps dossier statistic
+	 * @return the inside count of this opencps dossier statistic
 	 */
-	public int getReceivingCount();
+	public int getInsideCount();
 
 	/**
-	 * Sets the receiving count of this opencps dossier statistic.
+	 * Sets the inside count of this opencps dossier statistic.
 	 *
-	 * @param receivingCount the receiving count of this opencps dossier statistic
+	 * @param insideCount the inside count of this opencps dossier statistic
 	 */
-	public void setReceivingCount(int receivingCount);
+	public void setInsideCount(int insideCount);
 
 	@Override
 	public boolean isNew();

@@ -114,6 +114,10 @@ public class DossierStatisticConverter {
 				dossierStatisticData.setDomainName(dossierStatistic.getDomainName());
 				dossierStatisticData.setReporting(dossierStatistic.getReporting());
 
+				dossierStatisticData.setOnegateCount(dossierStatistic.getOnegateCount());
+				dossierStatisticData.setInsideCount(dossierStatistic.getInsideCount());
+				dossierStatisticData.setOutsideCount(dossierStatistic.getOutsideCount());
+				
 				dossierStatisticDatas.add(dossierStatisticData);
 			}
 

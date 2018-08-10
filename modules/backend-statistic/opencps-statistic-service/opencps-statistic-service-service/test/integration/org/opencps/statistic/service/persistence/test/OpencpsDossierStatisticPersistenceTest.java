@@ -205,7 +205,7 @@ public class OpencpsDossierStatisticPersistenceTest {
 
 		newOpencpsDossierStatistic.setOutsideCount(RandomTestUtil.nextInt());
 
-		newOpencpsDossierStatistic.setReceivingCount(RandomTestUtil.nextInt());
+		newOpencpsDossierStatistic.setInsideCount(RandomTestUtil.nextInt());
 
 		_opencpsDossierStatistics.add(_persistence.update(
 				newOpencpsDossierStatistic));
@@ -296,8 +296,8 @@ public class OpencpsDossierStatisticPersistenceTest {
 			newOpencpsDossierStatistic.getWaitingCount());
 		Assert.assertEquals(existingOpencpsDossierStatistic.getOutsideCount(),
 			newOpencpsDossierStatistic.getOutsideCount());
-		Assert.assertEquals(existingOpencpsDossierStatistic.getReceivingCount(),
-			newOpencpsDossierStatistic.getReceivingCount());
+		Assert.assertEquals(existingOpencpsDossierStatistic.getInsideCount(),
+			newOpencpsDossierStatistic.getInsideCount());
 	}
 
 	@Test
@@ -350,6 +350,17 @@ public class OpencpsDossierStatisticPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_M_Y_G_D() throws Exception {
+		_persistence.countByG_M_Y_G_D(RandomTestUtil.nextLong(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
+			StringPool.BLANK, StringPool.BLANK);
+
+		_persistence.countByG_M_Y_G_D(0L, 0, 0, StringPool.NULL, StringPool.NULL);
+
+		_persistence.countByG_M_Y_G_D(0L, 0, 0, (String)null, (String)null);
+	}
+
+	@Test
 	public void testCountByM_Y_G() throws Exception {
 		_persistence.countByM_Y_G(RandomTestUtil.nextLong(), StringPool.BLANK,
 			RandomTestUtil.nextInt(), RandomTestUtil.nextInt());
@@ -397,7 +408,7 @@ public class OpencpsDossierStatisticPersistenceTest {
 			true, "groupAgencyCode", true, "govAgencyName", true, "domainCode",
 			true, "domainName", true, "reporting", true, "overtimeInside",
 			true, "overtimeOutside", true, "interoperatingCount", true,
-			"waitingCount", true, "outsideCount", true, "receivingCount", true);
+			"waitingCount", true, "outsideCount", true, "insideCount", true);
 	}
 
 	@Test
@@ -650,6 +661,29 @@ public class OpencpsDossierStatisticPersistenceTest {
 				existingOpencpsDossierStatistic.getGroupId()),
 			ReflectionTestUtil.<Long>invoke(existingOpencpsDossierStatistic,
 				"getOriginalGroupId", new Class<?>[0]));
+		Assert.assertEquals(Integer.valueOf(
+				existingOpencpsDossierStatistic.getMonth()),
+			ReflectionTestUtil.<Integer>invoke(
+				existingOpencpsDossierStatistic, "getOriginalMonth",
+				new Class<?>[0]));
+		Assert.assertEquals(Integer.valueOf(
+				existingOpencpsDossierStatistic.getYear()),
+			ReflectionTestUtil.<Integer>invoke(
+				existingOpencpsDossierStatistic, "getOriginalYear",
+				new Class<?>[0]));
+		Assert.assertTrue(Objects.equals(
+				existingOpencpsDossierStatistic.getGovAgencyCode(),
+				ReflectionTestUtil.invoke(existingOpencpsDossierStatistic,
+					"getOriginalGovAgencyCode", new Class<?>[0])));
+		Assert.assertTrue(Objects.equals(
+				existingOpencpsDossierStatistic.getDomainCode(),
+				ReflectionTestUtil.invoke(existingOpencpsDossierStatistic,
+					"getOriginalDomainCode", new Class<?>[0])));
+
+		Assert.assertEquals(Long.valueOf(
+				existingOpencpsDossierStatistic.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingOpencpsDossierStatistic,
+				"getOriginalGroupId", new Class<?>[0]));
 		Assert.assertTrue(Objects.equals(
 				existingOpencpsDossierStatistic.getGovAgencyCode(),
 				ReflectionTestUtil.invoke(existingOpencpsDossierStatistic,
@@ -752,7 +786,7 @@ public class OpencpsDossierStatisticPersistenceTest {
 
 		opencpsDossierStatistic.setOutsideCount(RandomTestUtil.nextInt());
 
-		opencpsDossierStatistic.setReceivingCount(RandomTestUtil.nextInt());
+		opencpsDossierStatistic.setInsideCount(RandomTestUtil.nextInt());
 
 		_opencpsDossierStatistics.add(_persistence.update(
 				opencpsDossierStatistic));

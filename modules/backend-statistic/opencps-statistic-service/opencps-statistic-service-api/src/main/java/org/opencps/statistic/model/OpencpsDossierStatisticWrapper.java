@@ -102,7 +102,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("interoperatingCount", getInteroperatingCount());
 		attributes.put("waitingCount", getWaitingCount());
 		attributes.put("outsideCount", getOutsideCount());
-		attributes.put("receivingCount", getReceivingCount());
+		attributes.put("insideCount", getInsideCount());
 
 		return attributes;
 	}
@@ -356,10 +356,10 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 			setOutsideCount(outsideCount);
 		}
 
-		Integer receivingCount = (Integer)attributes.get("receivingCount");
+		Integer insideCount = (Integer)attributes.get("insideCount");
 
-		if (receivingCount != null) {
-			setReceivingCount(receivingCount);
+		if (insideCount != null) {
+			setInsideCount(insideCount);
 		}
 	}
 
@@ -461,6 +461,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getDoneCount() {
 		return _opencpsDossierStatistic.getDoneCount();
+	}
+
+	/**
+	* Returns the inside count of this opencps dossier statistic.
+	*
+	* @return the inside count of this opencps dossier statistic
+	*/
+	@Override
+	public int getInsideCount() {
+		return _opencpsDossierStatistic.getInsideCount();
 	}
 
 	/**
@@ -611,16 +621,6 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getReceivedCount() {
 		return _opencpsDossierStatistic.getReceivedCount();
-	}
-
-	/**
-	* Returns the receiving count of this opencps dossier statistic.
-	*
-	* @return the receiving count of this opencps dossier statistic
-	*/
-	@Override
-	public int getReceivingCount() {
-		return _opencpsDossierStatistic.getReceivingCount();
 	}
 
 	/**
@@ -1035,6 +1035,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the inside count of this opencps dossier statistic.
+	*
+	* @param insideCount the inside count of this opencps dossier statistic
+	*/
+	@Override
+	public void setInsideCount(int insideCount) {
+		_opencpsDossierStatistic.setInsideCount(insideCount);
+	}
+
+	/**
 	* Sets the interoperating count of this opencps dossier statistic.
 	*
 	* @param interoperatingCount the interoperating count of this opencps dossier statistic
@@ -1212,16 +1222,6 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setReceivedCount(int receivedCount) {
 		_opencpsDossierStatistic.setReceivedCount(receivedCount);
-	}
-
-	/**
-	* Sets the receiving count of this opencps dossier statistic.
-	*
-	* @param receivingCount the receiving count of this opencps dossier statistic
-	*/
-	@Override
-	public void setReceivingCount(int receivingCount) {
-		_opencpsDossierStatistic.setReceivingCount(receivingCount);
 	}
 
 	/**

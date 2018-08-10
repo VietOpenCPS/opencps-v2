@@ -52,6 +52,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	 * access the opencps dossier statistic local service.
 	 */
 
+	public OpencpsDossierStatistic checkExsit(long groupId, int month, int year, String govAgency, String domain, boolean reporting) {
+		return opencpsDossierStatisticFinder.checkContains(groupId, month, year, domain, govAgency, reporting);
+	}
+
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId, long companyId, long groupId, long userId,
 			String userName, int month, int year, int totalCount, int deniedCount, int cancelledCount, int processCount,
 			int remainingCount, int receivedCount, int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
@@ -59,10 +63,16 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int undueCount, int overdueCount, int pausingCount, int ontimePercentage, int overtimeInside,
 			int overtimeOutside, int interoperatingCount, int waitingCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
-			int receivingCount) throws PortalException, SystemException {
+			int insideCount) throws PortalException, SystemException {
 
-		OpencpsDossierStatistic dossierStatistic = opencpsDossierStatisticPersistence.fetchByM_Y_DM_G(groupId,
-				govAgencyCode, month, year, domainCode, false);
+		if (Validator.isNull(govAgencyCode))
+			govAgencyCode = null;
+
+		if (Validator.isNull(domainCode))
+			domainCode = null;
+
+		OpencpsDossierStatistic dossierStatistic = opencpsDossierStatisticPersistence.fetchByG_M_Y_G_D(groupId, month,
+				year, govAgencyCode, domainCode);
 
 		Date now = new Date();
 
@@ -114,9 +124,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 			dossierStatistic.setOnegateCount(onegateCount);
 			dossierStatistic.setOutsideCount(outsideCount);
-			dossierStatistic.setReceivingCount(receivingCount);
-			
-			
+			dossierStatistic.setInsideCount(insideCount);
+
 		} else {
 			dossierStatistic = opencpsDossierStatisticPersistence
 					.findByPrimaryKey(dossierStatistic.getDossierStatisticId());
@@ -150,16 +159,16 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setWaitingCount(waitingCount);
 			dossierStatistic.setOnegateCount(onegateCount);
 			dossierStatistic.setOutsideCount(outsideCount);
-			dossierStatistic.setReceivingCount(receivingCount);
+			dossierStatistic.setInsideCount(insideCount);
 
 		}
-		
+
 		int ontimePercent = 0;
-		
+
 		if (releaseCount > 0) {
-			ontimePercent = (betimesCount + ontimeCount)/releaseCount;
+			ontimePercent = (betimesCount + ontimeCount) / releaseCount;
 		}
-		
+
 		dossierStatistic.setOntimePercentage(ontimePercent);
 
 		dossierStatistic = opencpsDossierStatisticLocalService.updateOpencpsDossierStatistic(dossierStatistic);
@@ -173,8 +182,13 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		return opencpsDossierStatisticPersistence.fetchByM_Y_G(groupId, govAgencyCode, month, year);
 	}
 
+	public OpencpsDossierStatistic checkNotDuplicate(long groupId, String govAgencyCode, int month, int year,
+			String domainCode) {
+		return opencpsDossierStatisticPersistence.fetchByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
+	}
+
 	public OpencpsDossierStatistic getByGovMonthYearDomain(long groupId, String govAgencyCode, int month, int year,
-			String domainCode, boolean reporting)  {
+			String domainCode, boolean reporting) {
 		return opencpsDossierStatisticPersistence.fetchByM_Y_DM_G(groupId, govAgencyCode, month, year, domainCode,
 				reporting);
 	}

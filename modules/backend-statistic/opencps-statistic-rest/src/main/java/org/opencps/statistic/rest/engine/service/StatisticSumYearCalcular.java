@@ -401,7 +401,9 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setYear(year);
 		dossierStatisticData.setDoneCount(doneCount);
 		dossierStatisticData.setRemainingCount(remainingCount);
-		
+		dossierStatisticData.setOnegateCount(onegateCount);
+		dossierStatisticData.setOvertimeInside(overtimeInside);
+		dossierStatisticData.setOvertimeOutside(overtimeOutside);
 		
 		dossierStatisticData.setDomainCode(domainCode);
 		dossierStatisticData.setDomainName(domainName);
@@ -411,6 +413,10 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setGroupId(groupId);
 
 		/* add to database */
+		
+		if (groupId == 393401) {
+			DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticData);
+		}
 
 		updateGovService.updateDossierStatistic(dossierStatisticData);
 	}

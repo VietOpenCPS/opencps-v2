@@ -19,8 +19,7 @@ import com.liferay.portal.kernel.util.Validator;
 public class StatisticEngineFetchEntry {
 
 	private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetchEntry.class);
-	
-	
+
 	/**
 	 * Update to StatisticData
 	 * 
@@ -29,11 +28,10 @@ public class StatisticEngineFetchEntry {
 	 */
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData) {
 		// check release date is null or
-		
-		
+
 		int month = LocalDate.now().getMonthValue();
 		int year = LocalDate.now().getYear();
-		
+
 		statisticData.setMonth(month);
 		statisticData.setYear(year);
 		statisticData.setGroupId(dossierData.getGroupId());
@@ -56,8 +54,6 @@ public class StatisticEngineFetchEntry {
 		} else if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_CANCELLED)) {
 			statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
 
-		} else if (Validator.isNull(receviedDate)) {
-			statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 		} else {
 
 			/* PROCESS */
@@ -87,7 +83,7 @@ public class StatisticEngineFetchEntry {
 					|| dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_POSTING)
 					|| dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_UNRESOLVED)) {
 
-				statisticData.setReleaseCount(statisticData.getReleaseCount());
+				statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);
 
 				/* DONE */
 				if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_DONE)
@@ -130,7 +126,7 @@ public class StatisticEngineFetchEntry {
 						if (isOvertimeInside) {
 							statisticData.setOvertimeInside(statisticData.getOvertimeInside() + 1);
 						} else {
-							statisticData.setOvertimeOutside(statisticData.getOvertimeOutside());
+							statisticData.setOvertimeOutside(statisticData.getOvertimeOutside() + 1);
 						}
 					}
 				}
@@ -139,13 +135,14 @@ public class StatisticEngineFetchEntry {
 				statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
 			} else {
 				/* PROCESSING */
-
 				statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
 
 				/* OUTSIDE COUNT */
 				if (!dossierData.getDossierStatus().equals(DossierStatusContants.DOSSIER_STATUS_PROCESING)) {
 					statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
 				} else {
+					/* INSIDE COUNT */
+					statisticData.setInsideCount(statisticData.getInsideCount() + 1);
 				}
 
 				/* UNDUE */
