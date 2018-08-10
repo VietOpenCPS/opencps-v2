@@ -78,6 +78,7 @@ import org.opencps.exception.model.ExceptionModel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -89,6 +90,7 @@ import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.output.Java2DRenderer;
+import uk.org.okapibarcode.backend.Symbol;
 
 @ApplicationPath("/v2")
 @Component(immediate = true, property={"jaxrs.application=true"}, service = Application.class)
@@ -230,6 +232,7 @@ public class BackendAPIRestApplication extends Application {
 			qrcode.setModuleWidth(2);
 			qrcode.setBarHeight(128);
 			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			qrcode.setDataType(Symbol.DataType.HIBC);
 			qrcode.setContent(value);
 
 			int width = qrcode.getWidth();
