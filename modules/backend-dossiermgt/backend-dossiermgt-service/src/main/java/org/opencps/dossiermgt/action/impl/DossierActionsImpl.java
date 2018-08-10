@@ -3018,7 +3018,7 @@ public class DossierActionsImpl implements DossierActions {
 			
 			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, payloadObject.toJSONString(), serviceProcess.getServerNo(), state);
+					syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serviceProcess.getServerNo(), state);
 			
 			if (state == DossierSyncTerm.STATE_NOT_SYNC
 					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {

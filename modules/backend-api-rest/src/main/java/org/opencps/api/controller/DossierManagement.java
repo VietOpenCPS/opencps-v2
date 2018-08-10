@@ -15,6 +15,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -34,6 +35,7 @@ import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.processsequence.model.DossierSequenceResultModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
+import org.opencps.api.v21.dossiersync.model.DossierSyncV21ResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
@@ -606,5 +608,20 @@ public interface DossierManagement {
 	public Response getDossierQRcode(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") String id);	
+	
+	@GET
+	@Path("/{id}/syncs")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get a DossierSync of dossier", response = DossierSyncV21ResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "The DossierSync has been synchronized", response = DossierSyncV21ResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response getDossierSyncsByDossier(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") String id, @QueryParam("info") int info,
+			@QueryParam("start") Integer start, @QueryParam("end") Integer end);	
 	
 }

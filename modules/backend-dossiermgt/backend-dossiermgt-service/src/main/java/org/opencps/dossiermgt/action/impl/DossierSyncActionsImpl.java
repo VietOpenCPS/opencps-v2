@@ -3,7 +3,9 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierSyncActions;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -12,6 +14,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 public class DossierSyncActionsImpl implements DossierSyncActions{
 
@@ -56,6 +59,53 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 			_log.info("total:"+total);
 			result.put("total", total);
 //			
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
+		return result;
+	}
+	@Override
+	public JSONObject getDossierSyncByDossierAndInfo(long groupId, String id, Integer info, Integer start,
+			Integer end, ServiceContext serviceContext) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			long dossierId = GetterUtil.getLong(id);
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			List<DossierSync> docList = DossierSyncLocalServiceUtil.findByDossierAndInfoType(dossier.getReferenceUid(), info, start, end);
+			if (docList != null && docList.size() > 0) {
+				_log.info("docList:"+docList);
+			}
+			result.put("data", docList);
+			
+			long total = DossierSyncLocalServiceUtil.countByDossierAndInfoType(dossier.getReferenceUid(), info);
+			result.put("total", total);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
+		return result;
+		
+	}
+	@Override
+	public JSONObject getDossierSyncByAction(long groupId, String actionCode, Integer start, Integer end,
+			ServiceContext serviceContext) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			List<DossierSync> docList = DossierSyncLocalServiceUtil.findForApplicantAndActionCode(groupId, actionCode, start, end);
+			if (docList != null && docList.size() > 0) {
+				_log.info("docList:"+docList);
+			}
+			result.put("data", docList);
+			
+			long total = DossierSyncLocalServiceUtil.countForApplicantAndActionCode(groupId, actionCode);
+			result.put("total", total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
