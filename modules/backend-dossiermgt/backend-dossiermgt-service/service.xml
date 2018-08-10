@@ -1924,6 +1924,7 @@
 		<column name="actionUser" type="String" />
 		<column name="actionNote" type="String" />
 		<column name="syncType" type="int" />
+		<column name="infoType" type="int" />
 		<column name="payload" type="String" />
 		<column name="serverNo" type="String" />
 		<column name="state" type="int" />
@@ -1936,6 +1937,16 @@
         </order>
         <finder name="ST" return-type="Collection">
             <finder-column name="state"></finder-column>
+        </finder>
+        <finder name="DRID_IT" return-type="Collection">
+            <finder-column name="dossierRefUid"></finder-column>
+            <finder-column name="infoType"></finder-column>
+        </finder>
+        <finder name="G_AC_ST_IT" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="actionCode"></finder-column>
+            <finder-column name="syncType"></finder-column>
+            <finder-column name="infoType" arrayable-operator="OR" comparator="="></finder-column>
         </finder>
 	</entity>
 	

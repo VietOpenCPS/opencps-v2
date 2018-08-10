@@ -767,7 +767,7 @@ paths:
       - applicantion/json
       - applicantion/xml
       parameters:
-        - $ref: '#/parameters/model'
+        - $ref: '#/parameters/info'
         - $ref: '#/parameters/id'
         - $ref: '#/parameters/start'
         - $ref: '#/parameters/end'
@@ -1346,13 +1346,13 @@ parameters:
     type: string
     required: true
     description: typeCode of Document
-  model:
-    name: model
+  info:
+    name: info
     in: query
     type: integer
     format: int32
     required: true
-    description: model in syncs service
+    description: info type in syncs
   action:
     name: action
     in: query

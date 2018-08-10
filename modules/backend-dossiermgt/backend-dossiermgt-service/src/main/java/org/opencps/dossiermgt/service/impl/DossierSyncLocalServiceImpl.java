@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.service.base.DossierSyncLocalServiceBaseImpl;
 
@@ -67,7 +68,7 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	
 	public DossierSync updateDossierSync(long groupId, long userId, long dossierId, String dossierReferenceUid, String syncRefUid,
 			long dossierActionId, String actionCode, String actionName, String  actionUser, String  actionNote,
-			int syncType, String  payload, String serverNo, int state) {
+			int syncType, int infoType, String  payload, String serverNo, int state) {
 
 		DossierSync dossierSync = null;
 
@@ -94,6 +95,8 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 			dossierSync.setActionUser(actionUser);
 			dossierSync.setActionNote(actionNote);
 			dossierSync.setSyncType(syncType);
+			dossierSync.setInfoType(infoType);
+			
 			dossierSync.setPayload(payload);
 			dossierSync.setServerNo(serverNo);
 			dossierSync.setState(state);
@@ -103,5 +106,22 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 //		}
 
 		return dossierSync;
+	}
+	
+	public List<DossierSync> findByDossierAndInfoType(String dossierRefUid, int infoType, int start, int end) {
+		return dossierSyncPersistence.findByDRID_IT(dossierRefUid, infoType, start, end);
+	}
+	
+	public long countByDossierAndInfoType(String dossierRefUid, int infoType) {
+		return dossierSyncPersistence.countByDRID_IT(dossierRefUid, infoType);
+	}
+	
+	public List<DossierSync> findForApplicantAndActionCode(long groupId, String actionCode, int start, int end) {
+		return dossierSyncPersistence.findByG_AC_ST_IT(groupId, actionCode, DossierSyncTerm.SYNCTYPE_INFORM, new int[] { 1, 2 }, start, end);
+	}
+
+
+	public long countForApplicantAndActionCode(long groupId, String actionCode) {
+		return dossierSyncPersistence.countByG_AC_ST_IT(groupId, actionCode, DossierSyncTerm.SYNCTYPE_INFORM, new int[] { 1, 2 });
 	}
 }

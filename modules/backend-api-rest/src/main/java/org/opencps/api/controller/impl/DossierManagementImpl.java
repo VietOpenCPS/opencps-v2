@@ -42,6 +42,8 @@ import org.opencps.api.processsequence.model.DossierSequenceModel;
 import org.opencps.api.processsequence.model.DossierSequenceResultModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
+import org.opencps.api.v21.dossiersync.model.DossierSyncV21DataModel;
+import org.opencps.api.v21.dossiersync.model.DossierSyncV21ResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
@@ -56,11 +58,13 @@ import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
+import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
+import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
@@ -76,6 +80,7 @@ import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -3013,4 +3018,83 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@Override
+	public Response getDossierSyncsByDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, int info, Integer start, Integer end) {
+		BackendAuth auth = new BackendAuthImpl();
+		DossierSyncActions actions = new DossierSyncActionsImpl();
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (start == null || start == 0) {
+				start = -1;
+				end = -1;
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			JSONObject jsonData = actions.getDossierSyncByDossierAndInfo(groupId, id, info, start, end, serviceContext);
+			DossierSyncV21ResultsModel results = new DossierSyncV21ResultsModel();
+			
+			results.setTotal(jsonData.getInt("total"));
+			if (jsonData != null && jsonData.getInt("total") > 0) {
+				List<DossierSyncV21DataModel> lstDatas = new ArrayList<>();
+				List<DossierSync> lstSyncs = (List<DossierSync>)jsonData.get("data");
+				for (DossierSync ds : lstSyncs) {
+					DossierSyncV21DataModel model = new DossierSyncV21DataModel();
+					model.setActionCode(ds.getActionCode());
+					model.setActionName(ds.getActionName());
+					model.setActionNote(ds.getActionNote());
+					model.setActionUser(ds.getActionUser());
+					model.setCreateDate(ds.getCreateDate().getTime());
+					model.setDossierId(ds.getDossierId());
+					model.setDossierRefUid(ds.getDossierRefUid());
+					model.setDossierSyncId(ds.getDossierSyncId());
+					model.setInfoType(ds.getInfoType());
+					model.setPayload(ds.getPayload());
+					model.setSyncRefUid(ds.getSyncRefUid());
+					model.setSyncType(ds.getSyncType());
+					model.setUserId(ds.getUserId());
+					
+					lstDatas.add(model);
+				}
+				results.getData().addAll(lstDatas);
+			}
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					error.setMessage("Internal Server Error");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+
+				}
+			}
+		}	
+	}
+	
 }
