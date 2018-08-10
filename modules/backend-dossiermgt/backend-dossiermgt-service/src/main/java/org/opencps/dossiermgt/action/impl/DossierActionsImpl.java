@@ -1425,7 +1425,7 @@ public class DossierActionsImpl implements DossierActions {
 					String shipAmount = StringPool.BLANK;
 					String paymentFee = StringPool.BLANK;
 					String paymentNote = StringPool.BLANK;
-					boolean editable = false;
+					int editable = 0;
 					
 					if (Validator.isNotNull(paymentFeeData)) {
 						JSONObject jsonPaymentFee = JSONFactoryUtil.createJSONObject(paymentFeeData);
@@ -1436,7 +1436,7 @@ public class DossierActionsImpl implements DossierActions {
 						shipAmount = jsonPaymentFee.getString(PaymentFileTerm.SHIP_AMOUNT);
 						paymentFee = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_FEE);
 						paymentNote = jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_NOTE);
-						editable = Boolean.valueOf(jsonPaymentFee.getString(PaymentFileTerm.EDITABLE));						
+						editable = GetterUtil.getInteger(jsonPaymentFee.getString(PaymentFileTerm.EDITABLE));						
 					}
 					if (paymentFile != null) {
 						payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
@@ -1467,7 +1467,7 @@ public class DossierActionsImpl implements DossierActions {
 							payment.put(PaymentFileTerm.SHIP_AMOUNT, 0);
 							payment.put(PaymentFileTerm.PAYMENT_FEE, 0);
 							payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
-							payment.put(PaymentFileTerm.EDITABLE, false);
+							payment.put(PaymentFileTerm.EDITABLE, editable);
 						}
 					}
 					
@@ -1570,6 +1570,7 @@ public class DossierActionsImpl implements DossierActions {
 					if (partList != null && partList.size() > 0) {
 						long fileEntryId = 0;
 						boolean eForm = false;
+						boolean multiple = false;
 						String formData = StringPool.BLANK;
 						String formScript = StringPool.BLANK;
 						String docFileReferenceUid = StringPool.BLANK;
@@ -1577,7 +1578,9 @@ public class DossierActionsImpl implements DossierActions {
 						long dossierFileId = 0;
 						for (DossierPart dossierPart : partList) {
 							String fileTemplateNo = dossierPart.getFileTemplateNo();
-
+							eForm = dossierPart.getEForm();
+							multiple = dossierPart.getMultiple();
+							
 							if (createFileTempNoList.contains(fileTemplateNo)) {
 								JSONObject createFile = JSONFactoryUtil.createJSONObject();
 								createFile.put(DossierPartTerm.DOSSIERPART_ID, dossierPart.getDossierPartId());
@@ -1587,6 +1590,9 @@ public class DossierActionsImpl implements DossierActions {
 								createFile.put(DossierPartTerm.MULTIPLE, dossierPart.getMultiple());
 								createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
 								createFile.put(DossierPartTerm.PART_TYPE, dossierPart.getPartType());
+								createFile.put(DossierPartTerm.EFORM, eForm);
+								createFile.put(DossierPartTerm.MULTIPLE, multiple);
+								
 								//Get dossierMark
 								DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId,
 										dossierId, dossierPart.getPartNo());
@@ -2607,6 +2613,9 @@ public class DossierActionsImpl implements DossierActions {
 //				_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				if (oldPaymentFile != null && (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
+					if (Validator.isNotNull(paymentNote))
+						oldPaymentFile.setPaymentNote(paymentNote);
+					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
 				}
 				else {

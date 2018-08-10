@@ -339,7 +339,7 @@ public class DossierActionUtils {
 						payment.setShipAmount(paymentObject.getLong("shipAmount"));
 					}
 					if (paymentObject.has("editable")) {
-						payment.setEditable(paymentObject.getBoolean("editable"));
+						payment.setEditable(paymentObject.getInt("editable"));
 					}
 				}
 				
