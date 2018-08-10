@@ -40,5 +40,6 @@ public class ConstantUtils {
 	public static final String ROLL_BACKABLE = "rollbackable";
 	public static final String NOTIFICATION_TYPE = "notificationType";
 	public static final String DOCUMENT_TYPE = "documentType";
-	
+	//
+	public static final String STATISTIC = "statistic";
 }
