@@ -148,6 +148,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
+import uk.org.okapibarcode.backend.Symbol;
 import uk.org.okapibarcode.output.Java2DRenderer;
 
 public class DossierManagementImpl implements DossierManagement {
@@ -2958,10 +2959,9 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			QrCode qrcode = new QrCode();
-			qrcode.setFontName("Monospaced");
-			qrcode.setFontSize(16);
-			qrcode.setModuleWidth(2);
 			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			qrcode.setDataType(Symbol.DataType.HIBC);
+			qrcode.setPreferredVersion(40);
 			qrcode.setContent(dossier.getDossierNo());
 
 			int width = qrcode.getWidth();
