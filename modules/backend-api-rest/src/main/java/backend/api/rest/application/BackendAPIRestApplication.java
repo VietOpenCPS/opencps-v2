@@ -87,6 +87,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import uk.org.okapibarcode.backend.Code128;
+import uk.org.okapibarcode.backend.Code3Of9;
+import uk.org.okapibarcode.backend.Code3Of9Extended;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.output.Java2DRenderer;
@@ -173,7 +175,7 @@ public class BackendAPIRestApplication extends Application {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @QueryParam("value") String value) {
 		try {
-			Code128 barcode = new Code128();
+			Code3Of9Extended barcode = new Code3Of9Extended();
 			barcode.setFontName("Monospaced");
 			barcode.setFontSize(16);
 			barcode.setModuleWidth(2);

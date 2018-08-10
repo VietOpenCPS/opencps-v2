@@ -146,6 +146,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import uk.org.okapibarcode.backend.Code128;
+import uk.org.okapibarcode.backend.Code3Of9;
+import uk.org.okapibarcode.backend.Code3Of9Extended;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.output.Java2DRenderer;
@@ -2918,7 +2920,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
-			Code128 barcode = new Code128();
+			Code3Of9Extended barcode = new Code3Of9Extended();
 			barcode.setFontName("Monospaced");
 			barcode.setFontSize(16);
 			barcode.setModuleWidth(2);
