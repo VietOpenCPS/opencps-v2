@@ -51,7 +51,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
 	private DossierFinderService dossierFinderService = new DossierFinderServiceImpl();
-	
+
 	public static final String ALL_MONTH = "-1";
 
 	public Set<Object> getSingletons() {
@@ -136,9 +136,11 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
-			@QueryParam("month")  @DefaultValue(ALL_MONTH) int month, @QueryParam("year") int year, @QueryParam("domain") @DefaultValue(StringPool.BLANK) String domain,
-			@QueryParam("agency") @DefaultValue(StringPool.BLANK) String govAgencyCode, @QueryParam("group") String groupAgencyCode,
-			@QueryParam("reporting") boolean reporting, @QueryParam("start") int start, @QueryParam("end") int end) {
+			@QueryParam("month") @DefaultValue(ALL_MONTH) int month, @QueryParam("year") int year,
+			@QueryParam("domain") @DefaultValue(StringPool.BLANK) String domain,
+			@QueryParam("agency") @DefaultValue(StringPool.BLANK) String govAgencyCode,
+			@QueryParam("group") String groupAgencyCode, @QueryParam("reporting") boolean reporting,
+			@QueryParam("start") int start, @QueryParam("end") int end) {
 
 		LOG.info("GET DossierStatisticResponse");
 
@@ -205,8 +207,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			throwException(new OpencpsServiceException(serviceExceptionDetails));
 
 		}
-		
-		if (month != -1){
+
+		if (month != -1) {
 			if (month < 0 || month > 12) {
 				serviceExceptionDetails.setFaultCode("400");
 				serviceExceptionDetails.setFaultMessage("Invalid month");

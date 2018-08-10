@@ -26,6 +26,7 @@
 		<column name="remainingCount" type="int" />
 		<column name="receivedCount" type="int" />
 		<column name="onlineCount" type="int" />
+		<column name="onegateCount" type="int" />
 		<column name="releaseCount" type="int" />
 		<column name="betimesCount" type="int" />
 		<column name="ontimeCount" type="int" />
@@ -48,6 +49,10 @@
 		<column name="overtimeOutside" type="int"/>
 		<column name="interoperatingCount" type="int"/>
 		<column name="waitingCount" type="int"/>
+		
+		<column name="outsideCount" type="int"/>
+		<column name="insideCount" type="int"/>
+		
 		<!-- Order -->
 
 		<!-- Filter -->
@@ -62,6 +67,15 @@
 			<finder-column name="govAgencyCode"/>
 			<finder-column name="month"/>
 			<finder-column name="year"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="reporting"/>
+		</finder>
+		
+		<finder return-type="OpencpsDossierStatistic" name="G_M_Y_G_D">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
 			<finder-column name="domainCode"/>
 		</finder>
 		

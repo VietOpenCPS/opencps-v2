@@ -78,6 +78,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("remainingCount", getRemainingCount());
 		attributes.put("receivedCount", getReceivedCount());
 		attributes.put("onlineCount", getOnlineCount());
+		attributes.put("onegateCount", getOnegateCount());
 		attributes.put("releaseCount", getReleaseCount());
 		attributes.put("betimesCount", getBetimesCount());
 		attributes.put("ontimeCount", getOntimeCount());
@@ -100,6 +101,8 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("overtimeOutside", getOvertimeOutside());
 		attributes.put("interoperatingCount", getInteroperatingCount());
 		attributes.put("waitingCount", getWaitingCount());
+		attributes.put("outsideCount", getOutsideCount());
+		attributes.put("insideCount", getInsideCount());
 
 		return attributes;
 	}
@@ -206,6 +209,12 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 
 		if (onlineCount != null) {
 			setOnlineCount(onlineCount);
+		}
+
+		Integer onegateCount = (Integer)attributes.get("onegateCount");
+
+		if (onegateCount != null) {
+			setOnegateCount(onegateCount);
 		}
 
 		Integer releaseCount = (Integer)attributes.get("releaseCount");
@@ -340,6 +349,18 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		if (waitingCount != null) {
 			setWaitingCount(waitingCount);
 		}
+
+		Integer outsideCount = (Integer)attributes.get("outsideCount");
+
+		if (outsideCount != null) {
+			setOutsideCount(outsideCount);
+		}
+
+		Integer insideCount = (Integer)attributes.get("insideCount");
+
+		if (insideCount != null) {
+			setInsideCount(insideCount);
+		}
 	}
 
 	@Override
@@ -443,6 +464,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the inside count of this opencps dossier statistic.
+	*
+	* @return the inside count of this opencps dossier statistic
+	*/
+	@Override
+	public int getInsideCount() {
+		return _opencpsDossierStatistic.getInsideCount();
+	}
+
+	/**
 	* Returns the interoperating count of this opencps dossier statistic.
 	*
 	* @return the interoperating count of this opencps dossier statistic
@@ -460,6 +491,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getMonth() {
 		return _opencpsDossierStatistic.getMonth();
+	}
+
+	/**
+	* Returns the onegate count of this opencps dossier statistic.
+	*
+	* @return the onegate count of this opencps dossier statistic
+	*/
+	@Override
+	public int getOnegateCount() {
+		return _opencpsDossierStatistic.getOnegateCount();
 	}
 
 	/**
@@ -490,6 +531,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getOntimePercentage() {
 		return _opencpsDossierStatistic.getOntimePercentage();
+	}
+
+	/**
+	* Returns the outside count of this opencps dossier statistic.
+	*
+	* @return the outside count of this opencps dossier statistic
+	*/
+	@Override
+	public int getOutsideCount() {
+		return _opencpsDossierStatistic.getOutsideCount();
 	}
 
 	/**
@@ -984,6 +1035,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the inside count of this opencps dossier statistic.
+	*
+	* @param insideCount the inside count of this opencps dossier statistic
+	*/
+	@Override
+	public void setInsideCount(int insideCount) {
+		_opencpsDossierStatistic.setInsideCount(insideCount);
+	}
+
+	/**
 	* Sets the interoperating count of this opencps dossier statistic.
 	*
 	* @param interoperatingCount the interoperating count of this opencps dossier statistic
@@ -1019,6 +1080,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the onegate count of this opencps dossier statistic.
+	*
+	* @param onegateCount the onegate count of this opencps dossier statistic
+	*/
+	@Override
+	public void setOnegateCount(int onegateCount) {
+		_opencpsDossierStatistic.setOnegateCount(onegateCount);
+	}
+
+	/**
 	* Sets the online count of this opencps dossier statistic.
 	*
 	* @param onlineCount the online count of this opencps dossier statistic
@@ -1046,6 +1117,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setOntimePercentage(int ontimePercentage) {
 		_opencpsDossierStatistic.setOntimePercentage(ontimePercentage);
+	}
+
+	/**
+	* Sets the outside count of this opencps dossier statistic.
+	*
+	* @param outsideCount the outside count of this opencps dossier statistic
+	*/
+	@Override
+	public void setOutsideCount(int outsideCount) {
+		_opencpsDossierStatistic.setOutsideCount(outsideCount);
 	}
 
 	/**
