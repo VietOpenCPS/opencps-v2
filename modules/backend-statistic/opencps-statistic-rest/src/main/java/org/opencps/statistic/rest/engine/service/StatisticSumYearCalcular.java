@@ -1,4 +1,4 @@
-package org.opencps.statistic.rest.service;
+package org.opencps.statistic.rest.engine.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +16,8 @@ import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
 import org.opencps.statistic.rest.facade.OpencpsCallGovAgencyRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
+import org.opencps.statistic.rest.service.DossierStatisticFinderService;
+import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.slf4j.Logger;
@@ -29,13 +31,13 @@ import com.liferay.portal.kernel.util.Validator;
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 
-public class DossierStatisticSumCalcular {
+public class StatisticSumYearCalcular {
 	
-	private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticSumCalcular.class);
+	private final static Logger LOG = LoggerFactory.getLogger(StatisticSumYearCalcular.class);
 
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
-	private DossierStatisticUpdateService<DossierStatisticData> updateGovService = new DossierStatisticGovUpdateServiceImpl();
+	private DossierStatisticUpdateService<DossierStatisticData> updateGovService = new DossierStatisticUpdateServiceImpl();
 
 	private OpencpsCallRestFacade<GovAgencyRequest, GovAgencyResponse> callService = new OpencpsCallGovAgencyRestFacadeImpl();
 
@@ -77,7 +79,7 @@ public class DossierStatisticSumCalcular {
 					dossierStatisticData.ifPresent(source -> {
 						if (source.size() > 0) {
 							
-							LOG.info("***DATA****" + source.size());
+							//LOG.info("***DATA****" + source.size());
 							DossierStatisticData latestMonthStatisticData = source.get(0);
 
 							try {
@@ -335,16 +337,11 @@ public class DossierStatisticSumCalcular {
 		int interoperatingCount = 0;
 		int waitingCount = 0;
 		int ontimePercentage = 0;
+		int onegateCount = 0;
 
 		for (DossierStatisticData data : source) {
 			
-			
-			if (groupId == 391920) {
-				
-				LOG.info("X-Men ! XX****XXX");
-				DossierStatisticUtils.logAsFormattedJson(LOG, data);
 
-			}
 			deniedCount = deniedCount + data.getDeniedCount();
 			cancelledCount = cancelledCount + data.getCancelledCount();
 			receivedCount = receivedCount + data.getReceivedCount();
@@ -357,13 +354,7 @@ public class DossierStatisticSumCalcular {
 			overtimeCount = overtimeCount + data.getOvertimeCount();
 			overtimeOutside = overtimeOutside + data.getOvertimeOutside();
 			overtimeInside = overtimeInside + data.getOvertimeInside();
-		}
-		
-		if (groupId == 391920) {
-			
-			LOG.info("X-Men XX****XXX");
-			DossierStatisticUtils.logAsFormattedJson(LOG, latest);
-
+			onegateCount = onegateCount + data.getOnegateCount();
 		}
 		
 
@@ -381,10 +372,11 @@ public class DossierStatisticSumCalcular {
 		remainingCount = processCount - receivedCount;
 
 		doneCount = releaseCount - (releasingCount + unresolvedCount);
-
-		ontimePercentage = (undueCount + betimesCount + ontimeCount) * 100
-				/ (undueCount + betimesCount + ontimeCount + overdueCount + overtimeCount);
-
+		
+		if (releaseCount > 0) {
+			ontimePercentage = (betimesCount + ontimeCount)*100/releaseCount;
+		}
+		
 		dossierStatisticData.setTotalCount(totalCount);
 		dossierStatisticData.setDeniedCount(deniedCount);
 		dossierStatisticData.setCancelledCount(cancelledCount);
@@ -407,14 +399,14 @@ public class DossierStatisticSumCalcular {
 		dossierStatisticData.setOntimePercentage(ontimePercentage);
 		dossierStatisticData.setMonth(month);
 		dossierStatisticData.setYear(year);
-		dossierStatisticData.setGovAgencyCode(govAgencyCode);
-		dossierStatisticData.setGovAgencyName(govAgencyName);
-
 		dossierStatisticData.setDoneCount(doneCount);
 		dossierStatisticData.setRemainingCount(remainingCount);
+		
+		
 		dossierStatisticData.setDomainCode(domainCode);
 		dossierStatisticData.setDomainName(domainName);
-
+		dossierStatisticData.setGovAgencyCode(govAgencyCode);
+		dossierStatisticData.setGovAgencyName(govAgencyName);
 		dossierStatisticData.setCompanyId(companyId);
 		dossierStatisticData.setGroupId(groupId);
 

@@ -299,12 +299,10 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
 		long groupId, java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+		java.lang.String domainCode, boolean reporting) {
 		return getService()
 				   .getByGovMonthYearDomain(groupId, govAgencyCode, month,
-			year, domainCode);
+			year, domainCode, reporting);
 	}
 
 	/**
@@ -359,7 +357,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		java.lang.String govAgencyCode, java.lang.String govAgencyName,
 		java.lang.String domainCode, java.lang.String domainName,
-		boolean reporting)
+		boolean reporting, int onegateCount, int outsideCount,
+		int receivingCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -371,7 +370,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			processingCount, undueCount, overdueCount, pausingCount,
 			ontimePercentage, overtimeInside, overtimeOutside,
 			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
-			domainCode, domainName, reporting);
+			domainCode, domainName, reporting, onegateCount, outsideCount,
+			receivingCount);
 	}
 
 	public static OpencpsDossierStatisticLocalService getService() {

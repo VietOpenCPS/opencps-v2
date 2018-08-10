@@ -1,13 +1,22 @@
 package org.opencps.statistic.rest.engine;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import org.opencps.statistic.rest.service.DossierStatisticSumYearService;
-import org.opencps.statistic.rest.service.DossierStatisticUpdate;
+import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.dto.GetDossierData;
+import org.opencps.statistic.rest.dto.GetDossierRequest;
+import org.opencps.statistic.rest.dto.GetDossierResponse;
+import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
+import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
+import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
+import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -39,23 +48,17 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
-	private DossierStatisticSumYearService dossierStatisticSumYearService = new DossierStatisticSumYearService();
-	
-	private int CUR_YEAR = LocalDate.now().getYear();
-	
-	public static final int TYPE_1_ALL_GOV_ALL_DOMAIN = 1;
-
-	public static final int TYPE_2_EACH_GOV_ALL_DOMAIN_AND_EACH_GOV_EACH_DOMAIN = 2;
-
-	public static final int TYPE_4_ALL_GOV_EACH_DOMAIN = 4;
-
 	public static final int GROUP_TYPE_SITE = 1;
+	
+	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
+	
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
 		LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
+		
+		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
 		List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
@@ -71,24 +74,39 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		for (Group site : sites) {
 			
-			DossierStatisticUpdate dossierStatisticUpdateType1 = new DossierStatisticUpdate();
-			DossierStatisticUpdate dossierStatisticUpdateType2 = new DossierStatisticUpdate();
-			DossierStatisticUpdate dossierStatisticUpdateType3 = new DossierStatisticUpdate();
-			DossierStatisticUpdate dossierStatisticUpdateType4 = new DossierStatisticUpdate();
+			GetDossierResponse dossierResponse = new GetDossierResponse();
+			
+			GetDossierRequest payload = new GetDossierRequest();
+			
+			payload.setGroupId(site.getGroupId());
+			
+			dossierResponse = callDossierRestService.callRestService(payload);
+			
+			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
+			
+			dossierData.ifPresent(source -> {
+				
+				if(source.size() > 0) {
+					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+					
+					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-			/* Run TYPE_1 */
-			dossierStatisticUpdateType1.calulateDossierStatistic(TYPE_1_ALL_GOV_ALL_DOMAIN, site.getGroupId(), company.getCompanyId());
+					engineFetch.fecthStatisticData(site.getGroupId(), statisticData, source);
+					
+					String type1 = "all@all";
+					
+					if (statisticData.containsKey(type1)) {
+						DossierStatisticUtils.logAsFormattedJson(LOG, statisticData.get(type1));
+					}
+					
+					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+					
+					statisticEngineUpdate.updateStatisticData(statisticData);
+					
+				}
+				
+			});
 
-			/* Run TYPE_2 */
-			dossierStatisticUpdateType2.calulateDossierStatistic(TYPE_2_EACH_GOV_ALL_DOMAIN_AND_EACH_GOV_EACH_DOMAIN, site.getGroupId(),
-					company.getCompanyId());
-			
-			dossierStatisticUpdateType3.calulateDossierStatistic(3, site.getGroupId(), company.getCompanyId());
-			
-			/* Run TYPE_3 */
-			dossierStatisticUpdateType4.calulateDossierStatistic(TYPE_4_ALL_GOV_EACH_DOMAIN, site.getGroupId(), company.getCompanyId());
-			
-			dossierStatisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), CUR_YEAR);
 		}
 
 	}

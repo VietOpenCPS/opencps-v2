@@ -51,6 +51,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setRemainingCount(model.getRemainingCount());
 		soapModel.setReceivedCount(model.getReceivedCount());
 		soapModel.setOnlineCount(model.getOnlineCount());
+		soapModel.setOnegateCount(model.getOnegateCount());
 		soapModel.setReleaseCount(model.getReleaseCount());
 		soapModel.setBetimesCount(model.getBetimesCount());
 		soapModel.setOntimeCount(model.getOntimeCount());
@@ -73,6 +74,8 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setOvertimeOutside(model.getOvertimeOutside());
 		soapModel.setInteroperatingCount(model.getInteroperatingCount());
 		soapModel.setWaitingCount(model.getWaitingCount());
+		soapModel.setOutsideCount(model.getOutsideCount());
+		soapModel.setReceivingCount(model.getReceivingCount());
 
 		return soapModel;
 	}
@@ -264,6 +267,14 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_onlineCount = onlineCount;
 	}
 
+	public int getOnegateCount() {
+		return _onegateCount;
+	}
+
+	public void setOnegateCount(int onegateCount) {
+		_onegateCount = onegateCount;
+	}
+
 	public int getReleaseCount() {
 		return _releaseCount;
 	}
@@ -444,6 +455,22 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_waitingCount = waitingCount;
 	}
 
+	public int getOutsideCount() {
+		return _outsideCount;
+	}
+
+	public void setOutsideCount(int outsideCount) {
+		_outsideCount = outsideCount;
+	}
+
+	public int getReceivingCount() {
+		return _receivingCount;
+	}
+
+	public void setReceivingCount(int receivingCount) {
+		_receivingCount = receivingCount;
+	}
+
 	private String _uuid;
 	private long _dossierStatisticId;
 	private long _companyId;
@@ -461,6 +488,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _remainingCount;
 	private int _receivedCount;
 	private int _onlineCount;
+	private int _onegateCount;
 	private int _releaseCount;
 	private int _betimesCount;
 	private int _ontimeCount;
@@ -483,4 +511,6 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _overtimeOutside;
 	private int _interoperatingCount;
 	private int _waitingCount;
+	private int _outsideCount;
+	private int _receivingCount;
 }

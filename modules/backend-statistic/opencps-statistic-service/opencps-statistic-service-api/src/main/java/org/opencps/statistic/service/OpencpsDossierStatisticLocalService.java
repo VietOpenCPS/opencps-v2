@@ -270,7 +270,7 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OpencpsDossierStatistic getByGovMonthYearDomain(long groupId,
 		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode) throws PortalException, SystemException;
+		java.lang.String domainCode, boolean reporting);
 
 	/**
 	* Returns the opencps dossier statistic with the primary key.
@@ -316,6 +316,7 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, java.lang.String govAgencyCode,
 		java.lang.String govAgencyName, java.lang.String domainCode,
-		java.lang.String domainName, boolean reporting)
+		java.lang.String domainName, boolean reporting, int onegateCount,
+		int outsideCount, int receivingCount)
 		throws PortalException, SystemException;
 }

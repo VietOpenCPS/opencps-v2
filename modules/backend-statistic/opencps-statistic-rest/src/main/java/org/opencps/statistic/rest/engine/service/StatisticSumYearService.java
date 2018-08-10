@@ -1,19 +1,23 @@
-package org.opencps.statistic.rest.service;
+package org.opencps.statistic.rest.engine.service;
+
+import java.time.LocalDate;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 
-public class DossierStatisticSumYearService {
+public class StatisticSumYearService {
 
-	public void caculateSumYear(long companyId, long groupId, int year)
+	public void caculateSumYear(long companyId, long groupId)
 			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
-		DossierStatisticSumCalcular calcular1 = new DossierStatisticSumCalcular();
-		DossierStatisticSumCalcular calcular2 = new DossierStatisticSumCalcular();
-		DossierStatisticSumCalcular calcular3 = new DossierStatisticSumCalcular();
-		DossierStatisticSumCalcular calcular4 = new DossierStatisticSumCalcular();
+		int year = LocalDate.now().getYear();
+		
+		StatisticSumYearCalcular calcular1 = new StatisticSumYearCalcular();
+		StatisticSumYearCalcular calcular2 = new StatisticSumYearCalcular();
+		StatisticSumYearCalcular calcular3 = new StatisticSumYearCalcular();
+		StatisticSumYearCalcular calcular4 = new StatisticSumYearCalcular();
 		
 		//LOG.info("RUN#1" + groupId + "year" + year);
 		/* filter all */

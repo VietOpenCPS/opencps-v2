@@ -337,6 +337,20 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	public void setOnlineCount(int onlineCount);
 
 	/**
+	 * Returns the onegate count of this opencps dossier statistic.
+	 *
+	 * @return the onegate count of this opencps dossier statistic
+	 */
+	public int getOnegateCount();
+
+	/**
+	 * Sets the onegate count of this opencps dossier statistic.
+	 *
+	 * @param onegateCount the onegate count of this opencps dossier statistic
+	 */
+	public void setOnegateCount(int onegateCount);
+
+	/**
 	 * Returns the release count of this opencps dossier statistic.
 	 *
 	 * @return the release count of this opencps dossier statistic
@@ -655,6 +669,34 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 * @param waitingCount the waiting count of this opencps dossier statistic
 	 */
 	public void setWaitingCount(int waitingCount);
+
+	/**
+	 * Returns the outside count of this opencps dossier statistic.
+	 *
+	 * @return the outside count of this opencps dossier statistic
+	 */
+	public int getOutsideCount();
+
+	/**
+	 * Sets the outside count of this opencps dossier statistic.
+	 *
+	 * @param outsideCount the outside count of this opencps dossier statistic
+	 */
+	public void setOutsideCount(int outsideCount);
+
+	/**
+	 * Returns the receiving count of this opencps dossier statistic.
+	 *
+	 * @return the receiving count of this opencps dossier statistic
+	 */
+	public int getReceivingCount();
+
+	/**
+	 * Sets the receiving count of this opencps dossier statistic.
+	 *
+	 * @param receivingCount the receiving count of this opencps dossier statistic
+	 */
+	public void setReceivingCount(int receivingCount);
 
 	@Override
 	public boolean isNew();

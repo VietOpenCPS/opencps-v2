@@ -1,4 +1,4 @@
-package org.opencps.statistic.rest.dto;
+package org.opencps.statistic.rest.engine.dto;
 
 public class DossierStatisticData {
 	public int getMonth() {
@@ -249,30 +249,6 @@ public class DossierStatisticData {
 		this.groupId = groupId;
 	}
 
-	public int getOnegateCount() {
-		return onegateCount;
-	}
-
-	public void setOnegateCount(int onegateCount) {
-		this.onegateCount = onegateCount;
-	}
-
-	public int getReceivingCount() {
-		return receivingCount;
-	}
-
-	public void setReceivingCount(int receivingCount) {
-		this.receivingCount = receivingCount;
-	}
-
-	public int getOutsideCount() {
-		return outsideCount;
-	}
-
-	public void setOutsideCount(int outsideCount) {
-		this.outsideCount = outsideCount;
-	}
-
 	private int month = 0;
 	private int year = 0;
 	private int totalCount = 0;
@@ -302,10 +278,6 @@ public class DossierStatisticData {
 	private String domainCode;
 	private String domainName;
 	private boolean reporting;
-	private int onegateCount;
-	private int receivingCount;
-	private int outsideCount;
-	
 	private long companyId;
 	private long groupId;
 }
