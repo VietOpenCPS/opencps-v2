@@ -608,27 +608,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
  			}
-//			_log.info("strStatusStep: "+strStatusStep.toString());
-//			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
-//			if (stepList != null && stepList.size() > 0) {
-//				_log.info("length: "+stepList.size());
-//				for (StepConfig step: stepList) {
-//					params.put(DossierTerm.STATUS, step.getDossierStatus());
-//					params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-//					_log.info("START");
-//					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
-//							null, serviceContext);
-//					_log.info("START");
-//					JSONObject statistic = JSONFactoryUtil.createJSONObject();
-//					statistic.put("stepCode", step.getStepCode());
-//					statistic.put("stepName", step.getStepName());
-//					statistic.put("dossierStatus", step.getDossierStatus());
-//					statistic.put("dossierSubStatus", step.getDossierSubStatus());
-//					statistic.put("totalCount", count);
-//					total += count;
-//					statistics.put(statistic);
-//				}
-//			}
+
 			String agency = query.getAgency();
 			String service = query.getService();
 			String template = query.getTemplate();
@@ -647,10 +627,12 @@ public class DossierManagementImpl implements DossierManagement {
 			String top = query.getTop();
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
+			_log.info("dossierIdNo: "+dossierIdNo);
 			String dossierNoSearch = StringPool.BLANK;
 			if (Validator.isNotNull(dossierIdNo)) {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierIdNo);
 			}
+			_log.info("dossierNoSearch: "+dossierNoSearch);
 			String soChungChi = query.getSoChungChi();
 			String certNo = StringPool.BLANK;
 			if (Validator.isNotNull(soChungChi)) {
