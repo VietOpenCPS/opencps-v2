@@ -71,7 +71,7 @@ public class StatisticSumYearCalcular {
 					DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
 					dossierStatisticResponse = dossierStatisticFinderService
-							.finderDossierStatistic(dossierStatisticRequest);
+							.finderDossierStatistics(dossierStatisticRequest);
 
 					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -115,7 +115,7 @@ public class StatisticSumYearCalcular {
 				dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.DOMAIN_AGENCY);
 				
 				dossierStatisticResponse = dossierStatisticFinderService
-						.finderDossierStatistic(dossierStatisticRequest);
+						.finderDossierStatistics(dossierStatisticRequest);
 
 				Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 						.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -162,7 +162,7 @@ public class StatisticSumYearCalcular {
 
 					try {
 						dossierStatisticResponse = dossierStatisticFinderService
-								.finderDossierStatistic(dossierStatisticRequest);
+								.finderDossierStatistics(dossierStatisticRequest);
 
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 								.ofNullable(dossierStatisticResponse.getDossierStatisticData());

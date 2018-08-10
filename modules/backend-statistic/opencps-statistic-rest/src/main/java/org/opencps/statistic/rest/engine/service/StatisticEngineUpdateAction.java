@@ -1,5 +1,7 @@
 package org.opencps.statistic.rest.engine.service;
 
+import java.util.Optional;
+
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
@@ -11,25 +13,30 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class StatisticEngineUpdateAction {
 	public OpencpsDossierStatistic updateStatistic(DossierStatisticData payload) {
-		
+
 		if (Validator.isNull(payload.getDomainCode())) {
 			payload.setDomainCode(null);
 		}
-		
+
 		if (Validator.isNull(payload.getGovAgencyCode())) {
 			payload.setGovAgencyCode(null);
 		}
-		
-		long dossierStatisticId = 0;
 
-		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsit(payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(), payload.getDomainCode(), false);
+		long dossierStatisticId = 0;
 		
-		if (Validator.isNotNull(dossierStatistic)) {
-			dossierStatisticId = dossierStatistic.getDossierStatisticId();
+		try {
+			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsit(
+					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
+					payload.getDomainCode(), false);
+			if (Validator.isNotNull(dossierStatistic)) {
+				dossierStatisticId = dossierStatistic.getDossierStatisticId();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+		
 
 		int pausingCount = 0;
-
 
 		try {
 			return OpencpsDossierStatisticLocalServiceUtil.updateStatistic(dossierStatisticId, payload.getCompanyId(),
@@ -48,7 +55,7 @@ public class StatisticEngineUpdateAction {
 		} catch (SystemException | PortalException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 }

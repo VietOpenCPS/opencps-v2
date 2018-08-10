@@ -105,7 +105,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 			
-			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());
+			//statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());
 
 		}
 
@@ -115,7 +115,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
