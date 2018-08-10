@@ -17,7 +17,6 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
@@ -72,25 +71,19 @@ import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
-import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
-import org.opencps.exception.model.ExceptionModel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
-import uk.org.okapibarcode.output.Java2DRenderer;
 import uk.org.okapibarcode.backend.Symbol;
+import uk.org.okapibarcode.output.Java2DRenderer;
 
 @ApplicationPath("/v2")
 @Component(immediate = true, property={"jaxrs.application=true"}, service = Application.class)
