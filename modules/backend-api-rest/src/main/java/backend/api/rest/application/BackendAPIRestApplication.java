@@ -220,12 +220,9 @@ public class BackendAPIRestApplication extends Application {
 			@Context ServiceContext serviceContext, @QueryParam("value") String value) {
 		try {
 			QrCode qrcode = new QrCode();
-			qrcode.setFontName("Monospaced");
-			qrcode.setFontSize(16);
-			qrcode.setModuleWidth(2);
-			qrcode.setBarHeight(128);
 			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
 			qrcode.setDataType(Symbol.DataType.HIBC);
+			qrcode.setPreferredVersion(40);
 			qrcode.setContent(value);
 
 			int width = qrcode.getWidth();
