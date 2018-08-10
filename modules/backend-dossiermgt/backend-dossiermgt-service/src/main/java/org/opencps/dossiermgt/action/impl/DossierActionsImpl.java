@@ -3748,16 +3748,17 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		Double durationCount = processStep.getDurationCount();
+		int durationUnit = serviceProcess.getDurationUnit();
+		
 //		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0) {
-			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, 0, dossier.getGroupId());
+			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
 		}			
 //		_log.info("Due date in do action: " + dueDate);
 		if (dossierAction != null) {
 			if (dueDate != null) {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
-				int durationUnit = 0;
 				int overdue = 0;
 //				_log.info("Due date timestamp: " + dueDateTimeStamp);
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
