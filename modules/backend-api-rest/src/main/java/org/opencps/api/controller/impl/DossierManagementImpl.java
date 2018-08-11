@@ -1323,17 +1323,13 @@ public class DossierManagementImpl implements DossierManagement {
 					String dossierTempNo = dossier.getDossierTemplateNo();
 					if (actConfig != null) {
 						boolean insideProcess = actConfig.getInsideProcess();
-						if (insideProcess) {
-							
-							ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode,
-									dossierTempNo, groupId);
-							_log.info("Option: " + option);
+						ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode,
+								dossierTempNo, groupId);
+						if (insideProcess) {							
 							if (option != null) {
 								long serviceProcessId = option.getServiceProcessId();
 								ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
-										serviceProcessId);
-								_log.info("Process action: " + proAction);
-								
+										serviceProcessId);								
 								if (proAction != null) {
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 											actionCode, input.getActionUser(), input.getActionNote(),
@@ -1344,7 +1340,7 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 							}
 						} else {
-							dossierResult = actions.doAction(groupId, userId, dossier, null, null, actionCode,
+							dossierResult = actions.doAction(groupId, userId, dossier, option, null, actionCode,
 									input.getActionUser(), input.getActionNote(), input.getPayload(),
 									input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
 									serviceContext);
@@ -2994,7 +2990,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response getDossierSyncsByDossier(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id, int info, Integer start, Integer end) {
+			Locale locale, User user, ServiceContext serviceContext, String id, Integer info, Integer start, Integer end) {
 		BackendAuth auth = new BackendAuthImpl();
 		DossierSyncActions actions = new DossierSyncActionsImpl();
 		
@@ -3009,8 +3005,14 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			JSONObject jsonData = actions.getDossierSyncByDossierAndInfo(groupId, id, info, start, end, serviceContext);
+			JSONObject jsonData = null;
+			
+			if (info == null) {
+				jsonData = actions.getDossierSyncByDossiers(groupId, id, start, end, serviceContext);
+			}
+			else {
+				jsonData = actions.getDossierSyncByDossierAndInfo(groupId, id, info, start, end, serviceContext);				
+			}
 			DossierSyncV21ResultsModel results = new DossierSyncV21ResultsModel();
 			
 			results.setTotal(jsonData.getInt("total"));
