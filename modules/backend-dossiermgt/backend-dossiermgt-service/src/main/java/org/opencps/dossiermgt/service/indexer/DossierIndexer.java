@@ -60,6 +60,9 @@ import com.liferay.portal.kernel.util.Validator;
 public class DossierIndexer extends BaseIndexer<Dossier> {
 	public static final String CLASS_NAME = Dossier.class.getName();
 
+	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
+	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+
 	@Override
 	public String getClassName() {
 		return CLASS_NAME;
@@ -99,12 +102,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.SUBMIT_DATE, StringPool.BLANK);
 			}
-			// document.addTextSortable(DossierTerm.SUBMIT_DATE,
-			// APIDateTimeUtils.convertDateToString(object.getSubmitDate(),
-			// APIDateTimeUtils._NORMAL_PARTTERN));
-			// document.addTextSortable(DossierTerm.RECEIVE_DATE,
-			// APIDateTimeUtils.convertDateToString(object.getReceiveDate(),
-			// APIDateTimeUtils._NORMAL_PARTTERN));
 
 			if (Validator.isNotNull(object.getReceiveDate())) {
 				document.addDateSortable(DossierTerm.RECEIVE_DATE, object.getReceiveDate());
@@ -167,6 +164,30 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.CORRECTING_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getCorrecttingDate()) ? object.getCorrecttingDate().getTime() : 0);
 			// }
+			// Index calculator statistic
+			long extendateTime = Validator.isNotNull(object.getCorrecttingDate()) ? object.getCorrecttingDate().getTime() : 0;
+			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
+			
+			if (extendateTime > dueDateTime) {
+				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
+			} else {
+				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 0);
+			}
+			double durationCount = object.getDurationCount();
+			double durationUnit = object.getDurationUnit();
+			long durationComing = 0;
+			if (durationCount > 0) {
+				if (durationUnit == 0 ) {
+					durationComing = (long) (durationComing * VALUE_CONVERT_DATE_TIMESTAMP / 5);
+				} else {
+					durationComing = (long) (durationComing * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
+				}
+				long dueDateComing = dueDateTime - durationComing;
+				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);
+			} else {
+				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
+			}
+			
 
 			// add number fields
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());

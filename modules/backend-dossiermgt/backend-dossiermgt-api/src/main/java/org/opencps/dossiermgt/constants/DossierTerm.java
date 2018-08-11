@@ -41,6 +41,7 @@ public class DossierTerm {
 	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";
 	public static final String DUE_DATE_TIMESTAMP = "dueDateTimestamp";
+	public static final String DUE_DATE_LUCENE = "dueDateLucene";
 	public static final String RELEASE_DATE = "releaseDate";
 	public static final String RELEASE_DATE_TIMESTAMP = "releaseDateTimestamp";
 	public static final String FINISH_DATE = "finishDate";
@@ -166,4 +167,9 @@ public class DossierTerm {
 	public static final String YEAR_FINISH = "yearFinish";
 	public static final String MONTH_FINISH = "monthFinish";
 	public static final String STATISTIC = "statistic";
+	public static final String COMPARE_DELAY_DATE = "deplayDate";
+	public static final String OVER_DUE = "overdue";
+	public static final String DEPLAY = "deplay";
+	public static final String COMING = "coming";
+	public static final String DUE_DATE_COMING = "dueDateComing";
 }

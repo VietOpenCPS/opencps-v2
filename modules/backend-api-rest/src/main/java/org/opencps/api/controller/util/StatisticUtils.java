@@ -3,6 +3,7 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.api.statistic.model.StatisticCountModel;
 import org.opencps.api.statistic.model.StatisticDossierModel;
 
 import com.liferay.portal.kernel.json.JSONArray;
@@ -29,6 +30,29 @@ public class StatisticUtils {
 					ett.setStepCode(statistic.getString("stepCode"));
 					ett.setStepName(statistic.getString("stepName"));
 					results.add(ett);
+				}
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return results;
+	}
+
+	public static List<StatisticCountModel> mapperStatisticDossierCountList(JSONArray statisticArr) {
+
+		List<StatisticCountModel> results = new ArrayList<StatisticCountModel>();
+
+		try {
+			if (statisticArr != null && statisticArr.length() > 0) {
+				for (int i = 0; i < statisticArr.length(); i++) {
+					JSONObject statistic = statisticArr.getJSONObject(i);
+					StatisticCountModel statisticCount = new StatisticCountModel();
+					statisticCount.setKey(statistic.getString("key"));
+					statisticCount.setTitle(statistic.getString("title"));
+					statisticCount.setCount(statistic.getString("count"));
+					results.add(statisticCount);
 				}
 			}
 
