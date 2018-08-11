@@ -2121,6 +2121,37 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNotNull(top)) {
+			// Dossier is delay
+			if (top.toLowerCase().equals(DossierTerm.DEPLAY)) {
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(1));
+				query.addFields(DossierTerm.COMPARE_DELAY_DATE);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			// Dossier is overDue
+			} else if (top.toLowerCase().equals(DossierTerm.OVER_DUE)) {
+				Date date = new Date();
+				long nowTime = date.getTime();
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+						String.valueOf(0), String.valueOf(nowTime), false, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			// Dossier is coming
+			} else if (top.toLowerCase().equals(DossierTerm.COMING)) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				//Check dossier is not dueDate
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+				query.addFields(DossierTerm.DUE_DATE_COMING);
+				subQuery.add(query, BooleanClauseOccur.MUST_NOT);
+				//Check dossier has dueDate
+				Date date = new Date();
+				long nowTime = date.getTime();
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_COMING,
+						String.valueOf(0), String.valueOf(nowTime), false, true);
+				subQuery.add(termRangeQuery, BooleanClauseOccur.SHOULD);
+				//
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+		}
+
 		if (Validator.isNotNull(dossierNo)) {
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
