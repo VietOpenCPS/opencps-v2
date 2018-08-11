@@ -2669,6 +2669,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));	
 			}
 		}
+		if (obj.has(DossierTerm.DOSSIER_NOTE)) {
+			if (dossier.getDossierNote() == null || !obj.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
+				dossier.setDossierNote(obj.getString(DossierTerm.DOSSIER_NOTE));
+			}
+		}
 		
 		return dossierPersistence.update(dossier);
 	}

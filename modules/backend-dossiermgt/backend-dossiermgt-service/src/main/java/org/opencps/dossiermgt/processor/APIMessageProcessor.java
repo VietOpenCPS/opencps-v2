@@ -245,6 +245,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
+		actionModel.setActionNote(dossierSync.getActionNote());
 		actionModel.setPayload(dossierSync.getPayload());
 		actionModel.setActionNote(dossierSync.getActionNote());
 		
