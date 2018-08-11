@@ -42,4 +42,7 @@ public class ConstantUtils {
 	public static final String DOCUMENT_TYPE = "documentType";
 	//
 	public static final String STATISTIC = "statistic";
+	public static final String OVER_DUE = "overdue";
+	public static final String DELAY = "deplay";
+	public static final String COMMNG = "coming";
 }
