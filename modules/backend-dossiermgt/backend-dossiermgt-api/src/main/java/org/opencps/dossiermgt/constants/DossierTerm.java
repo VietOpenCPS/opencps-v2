@@ -37,6 +37,7 @@ public class DossierTerm {
 	public static final String RECEIVE_DATE = "receiveDate";
 	public static final String PROCESS_DATE = "processDate";
 	public static final String EXTEND_DATE = "extendDate";
+	public static final String EXTEND_DATE_TIMESTAMP = "extendDateTimestamp";
 	public static final String RECEIVE_DATE_SORTABLE = "receiveDate_sortable";
 	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";
@@ -167,9 +168,11 @@ public class DossierTerm {
 	public static final String YEAR_FINISH = "yearFinish";
 	public static final String MONTH_FINISH = "monthFinish";
 	public static final String STATISTIC = "statistic";
-	public static final String COMPARE_DELAY_DATE = "deplayDate";
+	public static final String COMPARE_DELAY_DATE = "delayDate";
 	public static final String OVER_DUE = "overdue";
-	public static final String DEPLAY = "deplay";
+	public static final String DELAY = "delay";
 	public static final String COMING = "coming";
 	public static final String DUE_DATE_COMING = "dueDateComing";
+	public static final String PASSED = "passed";
+	public static final String USER_DOSSIER_ACTION_ID = "userIdAction";
 }

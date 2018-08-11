@@ -328,33 +328,56 @@ public class StatisticManagementImpl implements StatisticManagement {
 							statistic.put("title", dictItem.getItemName());
 							statistic.put("count", count);
 
+							_log.info("statistic: " + statistic.toJSONString());
 							statisticArr.put(statistic);
 						}
 					}
 				}
 			}
 
-			String top = query.getTop();
+			String top = StringPool.BLANK;
 			String topName = StringPool.BLANK;
-			if (top.toLowerCase().equals(DossierTerm.DEPLAY)) {
-				topName = "Chậm hạn";
-			} else if (top.toLowerCase().equals(DossierTerm.OVER_DUE)) {
-				topName = "Quá hạn";
-			} else if (top.toLowerCase().equals(DossierTerm.COMING)) {
-				topName = "Sắp đến hạn";
-			}
 			params.put(DossierTerm.STATUS, StringPool.BLANK);
-			params.put(DossierTerm.TOP, top);
-			long count = DossierLocalServiceUtil.countLucene(params, searchContext);
-			JSONObject jsonTop = JSONFactoryUtil.createJSONObject();
-			jsonTop.put("key", jsonTop);
-			jsonTop.put("title", topName);
-			jsonTop.put("count", count);
+			for (int i = 0; i < 3; i++) {
+				switch (i) {
+				case 0:
+					top = DossierTerm.DELAY;
+					topName = "Chậm hạn";
+					break;
+				case 1:
+					top = DossierTerm.OVER_DUE;
+					topName = "Quá hạn";
+					break;
+				case 2:
+					top = DossierTerm.COMING;
+					topName = "Sắp đến hạn";
+					break;
+
+				default:
+					break;
+				}
+				params.put(DossierTerm.TOP, top);
+				long count = DossierLocalServiceUtil.countLucene(params, searchContext);
+				JSONObject jsonTop = JSONFactoryUtil.createJSONObject();
+				jsonTop.put("key", top);
+				jsonTop.put("title", topName);
+				jsonTop.put("count", count);
+				statisticArr.put(jsonTop);
+				_log.info("top: " + top);
+				_log.info("title: " + topName);
+				_log.info("jsonTop: " + jsonTop.toJSONString());
+			}
 
 			StatisticCountResultModel results = new StatisticCountResultModel();
 
-			 results.setTotal(total);
-			results.getData().addAll(StatisticUtils.mapperStatisticDossierCountList(statisticArr));
+			_log.info("total: " + total);
+			_log.info("statisticArr: " + statisticArr.toJSONString());
+			if (total > 0) {
+				results.setTotal(total);
+				results.getData().addAll(StatisticUtils.mapperStatisticDossierCountList(statisticArr));
+			} else {
+				results.setTotal(0);
+			}
 
 			return Response.status(200).entity(results).build();
 
