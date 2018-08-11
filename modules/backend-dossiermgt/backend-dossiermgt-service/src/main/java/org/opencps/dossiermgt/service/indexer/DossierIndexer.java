@@ -139,6 +139,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.CORRECTING_DATE, StringPool.BLANK);
 			}
+			if (Validator.isNotNull(object.getExtendDate())) {
+				document.addTextSortable(DossierTerm.EXTEND_DATE, APIDateTimeUtils
+						.convertDateToString(object.getExtendDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				document.addTextSortable(DossierTerm.EXTEND_DATE, StringPool.BLANK);
+			}
 
 			// if (Validator.isNotNull(object.getReceiveDate())) {
 			document.addNumberSortable(DossierTerm.RECEIVE_DATE_TIMESTAMP,
@@ -163,9 +169,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			// if (Validator.isNotNull(object.getCorrecttingDate())) {
 			document.addNumberSortable(DossierTerm.CORRECTING_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getCorrecttingDate()) ? object.getCorrecttingDate().getTime() : 0);
+
+			document.addNumberSortable(DossierTerm.EXTEND_DATE_TIMESTAMP,
+					Validator.isNotNull(object.getExtendDate()) ? object.getExtendDate().getTime() : 0);
 			// }
 			// Index calculator statistic
-			long extendateTime = Validator.isNotNull(object.getCorrecttingDate()) ? object.getCorrecttingDate().getTime() : 0;
+			long extendateTime = Validator.isNotNull(object.getExtendDate()) ? object.getExtendDate().getTime() : 0;
 			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
 			
 			if (extendateTime > dueDateTime) {
@@ -278,7 +287,15 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					} else {
 						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
 					}
+					//Add userActionId
+					document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
+				} else {
+					//Add userActionId
+					document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, 0);
 				}
+			} else {
+				//Add userActionId
+				document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, 0);
 			}
 
 			// add text fields

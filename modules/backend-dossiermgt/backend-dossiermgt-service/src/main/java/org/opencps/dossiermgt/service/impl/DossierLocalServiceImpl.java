@@ -1801,9 +1801,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				template, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
-				top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
-				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
+				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
+				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
+				originality, assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1877,9 +1877,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				template, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
-				top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
-				fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg, originality,
-				assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
+				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
+				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
+				originality, assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1964,7 +1964,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private BooleanQuery processSearchInput(String status, String subStatus, String state, String online,
-			String submitting, String agency, String service, String top, int year, int month, String dossierNo,
+			String submitting, String agency, String service, long userId, String top, int year, int month, String dossierNo,
 			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
 			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
 			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
@@ -2122,38 +2122,46 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(top)) {
-			BooleanQuery subQuery = new BooleanQueryImpl();
+			if (DossierTerm.PASSED.equals(top.toLowerCase())) {
+				_log.info("top: "+top);
+				MultiMatchQuery queryAction = new MultiMatchQuery(String.valueOf(userId));
+				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
+				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
+				
+			} else {
+				BooleanQuery subQuery = new BooleanQueryImpl();
 
-			MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
-			queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
-			subQuery.add(queryRelease, BooleanClauseOccur.MUST);
-			// Dossier is delay
-			if (top.toLowerCase().equals(DossierTerm.DEPLAY)) {
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(1));
-				query.addFields(DossierTerm.COMPARE_DELAY_DATE);
-				subQuery.add(query, BooleanClauseOccur.MUST);
-			// Dossier is overDue
-			} else if (top.toLowerCase().equals(DossierTerm.OVER_DUE)) {
-				Date date = new Date();
-				long nowTime = date.getTime();
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
-						String.valueOf(0), String.valueOf(nowTime), false, false);
-				subQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			// Dossier is coming
-			} else if (top.toLowerCase().equals(DossierTerm.COMING)) {
-				//Check dossier is not dueDate
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-				query.addFields(DossierTerm.DUE_DATE_COMING);
-				subQuery.add(query, BooleanClauseOccur.MUST_NOT);
-				//Check dossier has dueDate
-				Date date = new Date();
-				long nowTime = date.getTime();
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_COMING,
-						String.valueOf(0), String.valueOf(nowTime), false, true);
-				subQuery.add(termRangeQuery, BooleanClauseOccur.SHOULD);
+				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+				queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+				subQuery.add(queryRelease, BooleanClauseOccur.MUST);
+				// Dossier is delay
+				if (top.toLowerCase().equals(DossierTerm.DELAY)) {
+					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(1));
+					query.addFields(DossierTerm.COMPARE_DELAY_DATE);
+					subQuery.add(query, BooleanClauseOccur.MUST);
+				// Dossier is overDue
+				} else if (top.toLowerCase().equals(DossierTerm.OVER_DUE)) {
+					Date date = new Date();
+					long nowTime = date.getTime();
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+							String.valueOf(0), String.valueOf(nowTime), false, false);
+					subQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				// Dossier is coming
+				} else if (top.toLowerCase().equals(DossierTerm.COMING)) {
+					//Check dossier is not dueDate
+					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+					query.addFields(DossierTerm.DUE_DATE_COMING);
+					subQuery.add(query, BooleanClauseOccur.MUST_NOT);
+					//Check dossier has dueDate
+					Date date = new Date();
+					long nowTime = date.getTime();
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_COMING,
+							String.valueOf(0), String.valueOf(nowTime), false, true);
+					subQuery.add(termRangeQuery, BooleanClauseOccur.SHOULD);
+				}
+				//
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			}
-			//
-			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(dossierNo)) {

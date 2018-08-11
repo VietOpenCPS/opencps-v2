@@ -177,7 +177,8 @@ import javax.xml.bind.annotation.XmlType;
     "sampleCount",
     "assigned",
     "domainCode",
-    "domainName"
+    "domainName",
+    "extendDate"
 })
 public class DossierDataModel {
 
@@ -261,6 +262,7 @@ public class DossierDataModel {
 	protected Integer assigned;
 	protected String domainCode;
 	protected String domainName;
+	protected String extendDate;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1910,6 +1912,14 @@ public class DossierDataModel {
 
 	public void setDomainName(String domainName) {
 		this.domainName = domainName;
+	}
+
+	public String getExtendDate() {
+		return extendDate;
+	}
+
+	public void setExtendDate(String extendDate) {
+		this.extendDate = extendDate;
 	}
 
 }

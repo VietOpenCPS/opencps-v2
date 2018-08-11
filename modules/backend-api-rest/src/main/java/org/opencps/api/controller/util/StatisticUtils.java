@@ -51,7 +51,7 @@ public class StatisticUtils {
 					StatisticCountModel statisticCount = new StatisticCountModel();
 					statisticCount.setKey(statistic.getString("key"));
 					statisticCount.setTitle(statistic.getString("title"));
-					statisticCount.setCount(statistic.getString("count"));
+					statisticCount.setCount(statistic.getLong("count"));
 					results.add(statisticCount);
 				}
 			}

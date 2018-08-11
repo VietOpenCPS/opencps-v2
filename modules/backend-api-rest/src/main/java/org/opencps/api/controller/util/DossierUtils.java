@@ -105,7 +105,6 @@ public class DossierUtils {
 			model.setSubmissionNote(doc.get(DossierTerm.SUBMISSION_NOTE));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
-			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 //			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 //			_log.info("SUBMIT_DATE: "+doc.get(DossierTerm.SUBMIT_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.SUBMIT_DATE))) {
@@ -130,6 +129,7 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
 //			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
 			//Process OverDue
