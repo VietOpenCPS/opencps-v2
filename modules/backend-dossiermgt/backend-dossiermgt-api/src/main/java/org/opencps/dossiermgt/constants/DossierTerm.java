@@ -163,4 +163,7 @@ public class DossierTerm {
 	public static final int GARBAGE_COLLECTOR_TIME = 30; //minutes
 	
 	public static final String PUBLISH_DOSSIER_DESTINATION = "publish/dossier/in/destination";
+	public static final String YEAR_FINISH = "yearFinish";
+	public static final String MONTH_FINISH = "monthFinish";
+	public static final String STATISTIC = "statistic";
 }

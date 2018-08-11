@@ -175,28 +175,36 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.VIA_POSTAL, object.getViaPostal());
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
 			document.addNumberSortable(DossierTerm.ORIGINALLITY, object.getOriginality());
-			
+			//Index month, year using search statistic
 			int yearDossier = 0;
-
 			int monthDossier = 0;
-
 			if (Validator.isNotNull(object.getReceiveDate())) {
 				Calendar cal = Calendar.getInstance();
-
 				cal.setTime(object.getReceiveDate());
-
 				yearDossier = cal.get(Calendar.YEAR);
 				monthDossier = cal.get(Calendar.MONTH) + 1;
-
 			}
-
 			document.addNumberSortable(DossierTerm.YEAR_DOSSIER, yearDossier);
 			document.addNumberSortable(DossierTerm.MONTH_DOSSIER, monthDossier);
+			_log.info("yearDossier: "+yearDossier);
+			_log.info("monthDossier: "+monthDossier);
+
+			int yearFinish = 0;
+			int monthFinish = 0;
+			if (Validator.isNotNull(object.getFinishDate())) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(object.getFinishDate());
+				yearFinish = cal.get(Calendar.YEAR);
+				monthFinish = cal.get(Calendar.MONTH) + 1;
+			}
+			document.addNumberSortable(DossierTerm.YEAR_FINISH, yearFinish);
+			document.addNumberSortable(DossierTerm.MONTH_FINISH, monthFinish);
+			_log.info("yearFinish: "+yearFinish);
+			_log.info("monthFinish: "+monthFinish);
 
 			// DossierAction fields
 			long dossierObjectActionId = object.getDossierActionId();
 			if (dossierObjectActionId != 0) {
-				// Date now = new Date();
 
 				DossierAction dossierAction = DossierActionLocalServiceUtil
 						.fetchDossierAction(dossierObjectActionId);

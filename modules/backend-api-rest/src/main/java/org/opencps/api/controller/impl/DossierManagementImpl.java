@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierFileUtils;
@@ -536,7 +538,7 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	//LamTV: Process dossierTodo
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	public Response getDossierProcessList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -609,32 +611,10 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
  			}
-//			_log.info("strStatusStep: "+strStatusStep.toString());
-//			_log.info("strSubStatusStep: "+strSubStatusStep.toString());
-//			if (stepList != null && stepList.size() > 0) {
-//				_log.info("length: "+stepList.size());
-//				for (StepConfig step: stepList) {
-//					params.put(DossierTerm.STATUS, step.getDossierStatus());
-//					params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-//					_log.info("START");
-//					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
-//							null, serviceContext);
-//					_log.info("START");
-//					JSONObject statistic = JSONFactoryUtil.createJSONObject();
-//					statistic.put("stepCode", step.getStepCode());
-//					statistic.put("stepName", step.getStepName());
-//					statistic.put("dossierStatus", step.getDossierStatus());
-//					statistic.put("dossierSubStatus", step.getDossierSubStatus());
-//					statistic.put("totalCount", count);
-//					total += count;
-//					statistics.put(statistic);
-//				}
-//			}
+
 			String agency = query.getAgency();
 			String service = query.getService();
 			String template = query.getTemplate();
-			int year = query.getYear();
-			int month = query.getMonth();
 			String owner = query.getOwner();
 			// If user is citizen then default owner true
 			if (isCitizen) {
@@ -645,13 +625,31 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			String follow = query.getFollow();
 			String submitting = query.getSubmitting();
+			//Process Top using statistic
+			int year = query.getYear();
+			int month = query.getMonth();
 			String top = query.getTop();
+			if (Validator.isNotNull(top) && ConstantUtils.STATISTIC.equals(top.toLowerCase())) {
+				Calendar baseDateCal = Calendar.getInstance();
+				baseDateCal.setTime(new Date());
+				if (month == 0) {
+					month = baseDateCal.get(Calendar.MONTH) + 1;
+				}
+				if (year == 0) {
+					year = baseDateCal.get(Calendar.YEAR);
+				}
+			}
+			_log.info("month: "+month);
+			_log.info("year: "+year);
+
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
+			_log.info("dossierIdNo: "+dossierIdNo);
 			String dossierNoSearch = StringPool.BLANK;
 			if (Validator.isNotNull(dossierIdNo)) {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierIdNo);
 			}
+			_log.info("dossierNoSearch: "+dossierNoSearch);
 			String soChungChi = query.getSoChungChi();
 			String certNo = StringPool.BLANK;
 			if (Validator.isNotNull(soChungChi)) {
@@ -672,13 +670,12 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.AGENCY, agency);
 			params.put(DossierTerm.SERVICE, service);
 			params.put(DossierTerm.TEMPLATE, template);
-			params.put(DossierTerm.YEAR, year);
-			params.put(DossierTerm.MONTH, month);
-//			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
 			params.put(DossierTerm.FOLLOW, follow);
 			params.put(DossierTerm.TOP, top);
+			params.put(DossierTerm.YEAR, year);
+			params.put(DossierTerm.MONTH, month);
 			params.put(DossierTerm.USER_ID, user.getUserId());
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
@@ -712,8 +709,6 @@ public class DossierManagementImpl implements DossierManagement {
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
 
 			Sort[] sorts = null;
-//			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-//					GetterUtil.getBoolean(query.getOrder())) };
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
@@ -753,35 +748,14 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject jsonData = actions.getDossierProcessList(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			// _log.info("6");
 			DossierResultsModel results = new DossierResultsModel();
-
 			if (jsonData != null && jsonData.getInt("total") > 0) {
 				results.setTotal(jsonData.getInt("total"));
 				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
-//				_log.info("7");
-//				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data")));
-
-//				List<Document> docs = (List<Document>) jsonData.get("data");
-//				if (docs != null && docs.size() > 0) {
-//					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
-//						results.getData().addAll(DossierUtils.mappingForGetList(docs));
-//					} else {
-//						// Process paging
-//						if (query.getEnd() == -1) {
-//							results.getData().addAll(DossierUtils.mappingForGetList(docs));
-//						} else {
-//							_log.info("669999");
-//							results.getData().addAll(
-//									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
-//						}
-//					}
-//				}
 			} else {
 				results.setTotal(0);
 			}
 
-			// _log.info("8");
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {

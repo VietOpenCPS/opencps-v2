@@ -56,6 +56,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, ApplicantInputModel input) {
 
+		_log.info("START");
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
@@ -65,6 +66,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 
 		try {
+			_log.info("START");
 			String cityName = StringPool.BLANK;
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
@@ -72,7 +74,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
-			
+			_log.info("START");
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 				
@@ -85,13 +87,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 				
 			}
-			
+			_log.info("START");
 			Applicant applicant = actions.register(serviceContext, groupId, input.getApplicantName(), input.getApplicantIdType(),
 					input.getApplicantIdNo(), input.getApplicantIdDate(), input.getContactEmail(), input.getAddress(),
 					input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getPassword());
-
+			_log.info("applicant: "+applicant);
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 			return Response.status(200).entity(result).build();
