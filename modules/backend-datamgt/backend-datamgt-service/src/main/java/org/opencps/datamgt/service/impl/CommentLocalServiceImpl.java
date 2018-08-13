@@ -401,10 +401,9 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		String className = GetterUtil.getString(params.get("className"));
 
 		String opinion = GetterUtil.getString(params.get(CommentTerm.OPINION));
-
-		if (Validator.isNull(opinion)) {
-			opinion = String.valueOf(false);
-		}
+//		if (Validator.isNull(opinion)) {
+//			opinion = String.valueOf(false);
+//		}
 
 		BooleanQuery booleanQuery = null;
 
