@@ -7,7 +7,10 @@ Include-Resource: configuration=src/main/resources/configuration
 Include-Resource: \
 	@okapibarcode-0.1.7.jar,\
 	@core-3.3.0.jar,\
-	@jcommander-1.48.jar
+	@jcommander-1.48.jar,\
+	@jjwt-api-0.10.2.jar,\
+	@jjwt-impl-0.10.2.jar,\
+	@jjwt-jackson-0.10.2.jar	
 	
 Export-Package: \
 	org.opencps.usermgt.action,\

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -39,6 +41,8 @@ import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
+import org.opencps.api.filter.KeyGenerator;
+import org.opencps.api.filter.OpenCPSKeyGenerator;
 import org.opencps.api.processsequence.model.ActionModel;
 import org.opencps.api.processsequence.model.DossierSequenceModel;
 import org.opencps.api.processsequence.model.DossierSequenceResultModel;
@@ -147,6 +151,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
+import io.jsonwebtoken.Jwts;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
@@ -2740,37 +2745,55 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
-		
-		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-		params.put(Field.GROUP_ID, String.valueOf(groupId));
+        String authorizationHeader = header.getHeaderString(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new NotAuthorizedException("Authorization header must be provided");
+        }
 
-		DossierResultsModel results = new DossierResultsModel();
+        String token = authorizationHeader.substring("Bearer".length()).trim();
+        KeyGenerator keyGenerator = new OpenCPSKeyGenerator();
+        try {
 
-		JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
-					-1, -1, serviceContext);
+            // Validate the token
+            Key key = keyGenerator.generateKey();
+            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+ 
 		
-		List<Dossier> lstInDbs = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		
-		long total = jsonData.getLong("total");
-		JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
-		
-		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
-			for (Document document : lstDocuments) {
-				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
-				Dossier oldDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-				if (oldDossier == null) {
-					JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
-					dossierObj.put(DossierTerm.DOSSIER_ID, dossierId);
-					dossierArr.put(dossierObj);
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+	
+			DossierResultsModel results = new DossierResultsModel();
+	
+			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
+						-1, -1, serviceContext);
+			
+			List<Dossier> lstInDbs = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
+			long total = jsonData.getLong("total");
+			JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+			
+			if (total > 0) {
+				List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+				for (Document document : lstDocuments) {
+					long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+					Dossier oldDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+					if (oldDossier == null) {
+						JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+						dossierObj.put(DossierTerm.DOSSIER_ID, dossierId);
+						dossierArr.put(dossierObj);
+					}
 				}
 			}
-		}
-		else {
+			else {
+				
+			}
 			
-		}
+			return Response.status(200).entity(dossierArr.toJSONString()).build();
+        } catch (Exception e) {
+        	_log.error(e);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 		
-		return Response.status(200).entity(dossierArr.toJSONString()).build();
 	}
 
 	@Override
