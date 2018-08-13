@@ -209,8 +209,6 @@ public class DossierManagementImpl implements DossierManagement {
 			String agency = query.getAgency();
 			String service = query.getService();
 			String template = query.getTemplate();
-			int year = query.getYear();
-			int month = query.getMonth();
 			String owner = query.getOwner();
 			// If user is citizen then default owner true
 			if (isCitizen) {
@@ -219,7 +217,22 @@ public class DossierManagementImpl implements DossierManagement {
 			String follow = query.getFollow();
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
+			//Process Top using statistic
+			int year = query.getYear();
+			int month = query.getMonth();
 			String top = query.getTop();
+			if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+				Calendar baseDateCal = Calendar.getInstance();
+				baseDateCal.setTime(new Date());
+				if (month == 0) {
+					month = baseDateCal.get(Calendar.MONTH) + 1;
+				}
+				if (year == 0) {
+					year = baseDateCal.get(Calendar.YEAR);
+				}
+			}
+			_log.info("month: "+month);
+			_log.info("year: "+year);
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
 			String dossierNoSearch = StringPool.BLANK;

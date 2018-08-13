@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -2076,20 +2077,48 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
 
 			if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+//				MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
+//				MultiMatchQuery queryFinish = new MultiMatchQuery(String.valueOf(0));
+//				BooleanQuery subQuery = new BooleanQueryImpl();
+//				//Check receiveDate != null
+//				queryReceive.addField(DossierTerm.YEAR_DOSSIER);
+//				subQuery.add(queryReceive, BooleanClauseOccur.MUST_NOT);
+//				//Check receiveDate and finishDate
+//				query.addFields(new String[] { DossierTerm.YEAR_DOSSIER, DossierTerm.YEAR_FINISH});
+//				subQuery.add(query, BooleanClauseOccur.SHOULD);
+//				//Check finishDate = null
+//				queryFinish.addField(DossierTerm.YEAR_FINISH);
+//				subQuery.add(queryFinish, BooleanClauseOccur.SHOULD);
+//				//
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 				MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
 				MultiMatchQuery queryFinish = new MultiMatchQuery(String.valueOf(0));
-				BooleanQuery subQuery = new BooleanQueryImpl();
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+				
 				//Check receiveDate != null
 				queryReceive.addField(DossierTerm.YEAR_DOSSIER);
-				subQuery.add(queryReceive, BooleanClauseOccur.MUST_NOT);
-				//Check receiveDate and finishDate
-				query.addFields(new String[] { DossierTerm.YEAR_DOSSIER, DossierTerm.YEAR_FINISH});
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
-				//Check finishDate = null
-				queryFinish.addField(DossierTerm.YEAR_FINISH);
-				subQuery.add(queryFinish, BooleanClauseOccur.SHOULD);
+				subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
+				//Check receiveDate
+				query.addFields(DossierTerm.YEAR_DOSSIER);
+				subQueryOne.add(query, BooleanClauseOccur.SHOULD);
+				/**Check receiveDate < now && finishDate = null or finishDate = now**/
+				// Check receiveDate < now
+//				Calendar calDate = Calendar.getInstance();
+//				calDate.setTime(new Date());
+//				int yearCurrent = calDate.get(Calendar.YEAR);
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.YEAR_DOSSIER,
+						String.valueOf(0), String.valueOf(year), false, true);
+				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
 				//
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+				queryFinish.addField(DossierTerm.YEAR_FINISH);
+				subQueryTwo.add(queryFinish, BooleanClauseOccur.SHOULD);
+				query.addFields(DossierTerm.YEAR_FINISH);
+				subQueryTwo.add(query, BooleanClauseOccur.SHOULD);
+				//
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+				//
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else {
 				query.addFields(DossierTerm.YEAR_DOSSIER);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
@@ -2103,18 +2132,32 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 				MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
 				MultiMatchQuery queryFinish = new MultiMatchQuery(String.valueOf(0));
-				BooleanQuery subQuery = new BooleanQueryImpl();
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+				
 				//Check receiveDate != null
-				queryReceive.addField(DossierTerm.YEAR_DOSSIER);
-				subQuery.add(queryReceive, BooleanClauseOccur.MUST_NOT);
-				//Check receiveDate and finishDate
-				query.addFields(new String[] { DossierTerm.MONTH_DOSSIER, DossierTerm.MONTH_FINISH});
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
-				//Check finishDate = null
-				queryFinish.addField(DossierTerm.MONTH_FINISH);
-				subQuery.add(queryFinish, BooleanClauseOccur.SHOULD);
+				queryReceive.addField(DossierTerm.MONTH_DOSSIER);
+				subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
+				//Check receiveDate
+				query.addFields(DossierTerm.MONTH_DOSSIER);
+				subQueryOne.add(query, BooleanClauseOccur.SHOULD);
+				/**Check receiveDate < now && finishDate = null or finishDate = now**/
+				// Check receiveDate < now
+//				Calendar calDate = Calendar.getInstance();
+//				calDate.setTime(new Date());
+//				int monthCurrent = calDate.get(Calendar.MONTH) + 1;
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.MONTH_DOSSIER,
+						String.valueOf(0), String.valueOf(month), false, false);
+				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
 				//
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+				queryFinish.addField(DossierTerm.MONTH_FINISH);
+				subQueryTwo.add(queryFinish, BooleanClauseOccur.SHOULD);
+				query.addFields(DossierTerm.MONTH_FINISH);
+				subQueryTwo.add(query, BooleanClauseOccur.SHOULD);
+				//
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+				//
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else {
 				query.addFields(DossierTerm.MONTH_DOSSIER);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
