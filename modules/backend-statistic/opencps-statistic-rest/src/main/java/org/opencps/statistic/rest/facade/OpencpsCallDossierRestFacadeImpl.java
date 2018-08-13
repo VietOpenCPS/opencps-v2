@@ -35,7 +35,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 		
-		buildUrlQueryParams(urlQueryParams, payload);
+		//buildUrlQueryParams(urlQueryParams, payload);
 		
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
 

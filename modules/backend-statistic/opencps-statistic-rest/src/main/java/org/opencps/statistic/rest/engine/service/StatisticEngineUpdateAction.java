@@ -1,7 +1,5 @@
 package org.opencps.statistic.rest.engine.service;
 
-import java.util.Optional;
-
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;

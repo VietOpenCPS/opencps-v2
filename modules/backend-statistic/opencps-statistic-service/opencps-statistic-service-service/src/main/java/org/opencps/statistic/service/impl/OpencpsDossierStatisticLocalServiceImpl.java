@@ -160,7 +160,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		int ontimePercent = 0;
 
 		if (releaseCount > 0) {
-			ontimePercent = (betimesCount + ontimeCount) / releaseCount;
+			ontimePercent = (betimesCount + ontimeCount)*100 / releaseCount;
 		}
 
 		dossierStatistic.setOntimePercentage(ontimePercent);

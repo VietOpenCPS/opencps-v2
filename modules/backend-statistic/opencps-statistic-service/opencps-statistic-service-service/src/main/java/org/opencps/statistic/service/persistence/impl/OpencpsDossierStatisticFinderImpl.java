@@ -117,13 +117,6 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			String domain, String govAgency, String groupAgencyCode, boolean reporting, int start, int end) {
 		Session session = null;
 		
-		LOG.info("*groupId***"+groupId);
-		LOG.info("*year***"+year);
-		LOG.info("*domain***"+domain);
-		LOG.info("*govAgency***"+govAgency);
-		LOG.info("**groupAgencyCode**"+groupAgencyCode);
-		LOG.info("**reporting**"+reporting);
-
 		try {
 			session = openSession();
 
@@ -131,15 +124,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			sql = StringUtil.replace(sql, CONDITION_MONTH, CONDITION_MONTH_REPLACE);
 		
-			if (Validator.isNull(domain)) {
-				sql = StringUtil.replace(sql, CONDITION_DOMAIN, StringPool.BLANK);
-			} else if (domain.contains("total")){
+			if (domain.contains("total")){
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (Validator.isNull(govAgency)) {
-				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY, StringPool.BLANK);
-			} else if (govAgency.contains("total")){
+			if (govAgency.contains("total")){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
@@ -161,12 +150,12 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			qPos.add(year);
 
 			/* add domain parameter */
-			if (Validator.isNotNull(domain) && !domain.contentEquals(TOTAL)) {
+			if (!domain.contentEquals(TOTAL)) {
 				qPos.add(domain);
 			}
 
 			/* add govAgency parameter */
-			if (Validator.isNotNull(govAgency) && !govAgency.contentEquals(TOTAL)) {
+			if (!govAgency.contentEquals(TOTAL)) {
 				qPos.add(govAgency);
 			}
 
@@ -221,7 +210,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			if (Validator.isNull(govAgency)) {
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY, StringPool.BLANK);
-			} else {
+			} else if (govAgency.contentEquals(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			

@@ -33,7 +33,7 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 
 public class StatisticSumYearCalcular {
 	
-	private final static Logger LOG = LoggerFactory.getLogger(StatisticSumYearCalcular.class);
+	//private final static Logger LOG = LoggerFactory.getLogger(StatisticSumYearCalcular.class);
 
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
@@ -60,7 +60,7 @@ public class StatisticSumYearCalcular {
 
 			List<DomainResponse> domainResponses = getDomain(groupId);
 			
-			DossierStatisticUtils.logAsFormattedJson(LOG, domainResponses);
+			//DossierStatisticUtils.logAsFormattedJson(LOG, domainResponses);
 
 			for (DomainResponse domainResponse : domainResponses) {
 
@@ -68,7 +68,7 @@ public class StatisticSumYearCalcular {
 					dossierStatisticRequest.setDomain(domainResponse.getItemCode());
 					dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.DOMAIN_AGENCY);
 					
-					DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
 					dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
@@ -411,12 +411,6 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setGovAgencyName(govAgencyName);
 		dossierStatisticData.setCompanyId(companyId);
 		dossierStatisticData.setGroupId(groupId);
-
-		/* add to database */
-		
-		if (groupId == 393401) {
-			DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticData);
-		}
 
 		updateGovService.updateDossierStatistic(dossierStatisticData);
 	}
