@@ -69,26 +69,24 @@
 <div class="mWrapper">
 	<header id="banner">		
 		<div class="container align-middle hide-title">
-			<div class="logo align-middle">
-				<a href="${site_default_url}">
-					<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
-					<div class="text-logo">
-						Cổng dịch vụ công trực tuyến
-						<span>${site_name}</span>
-					</div>
-				</a>
-			</div>
+			<a href="${site_default_url}" class="logo align-middle">
+				<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
+				<div class="text-logo">
+					Cổng dịch vụ công trực tuyến
+					<span>${site_name}</span>
+				</div>
+			</a>
 			<@liferay_portlet["runtime"]
               defaultPreferences="${freeMarkerPortletPreferences}"
               portletProviderAction=portletProviderAction.VIEW
               instanceId="FrontendWebPortal_LoginPortlet_1"
               portletName="FrontendWebPortal_LoginPortlet"/>
 		</div>
-		
-		<#if has_navigation && is_setup_complete>
-			<#include "${full_templates_path}/navigation.ftl" />
-		</#if>
 	</header>
+		
+	<#if has_navigation && is_setup_complete>
+		<#include "${full_templates_path}/navigation.ftl" />
+	</#if>
 
 	<section id="main-content">
 		<div class="container-fluid">
@@ -107,14 +105,21 @@
 	</section>
 
 	<footer id="footer">
-		<div class="container align-middle-lg">
-			<div>
-				<div class="site-name">Cổng dịch vụ công trực tuyến <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
+		<div class="container">
+			<div class="left">
+				<div class="site-name"><!--Cổng dịch vụ công trực tuyến--> <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
+				<div class="contact">
+					<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
+					<p><i class="fa fa-phone"></i> 0210.3846647 - 0210.3847393</p>
+					<p><i class="fa fa-envelope"></i> vpub@phutho.gov.vn</p>
+				</div>
 			</div>
-			<div class="contact">
-				<p>Địa chỉ: <b>Đường Nguyễn Tất Thành, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</b></p>
-				<p>Điện thoại: <b>0210.3811486</b> | Fax: <b>0210.3811485</b></p>
-				<p>Email: <b>sotttt@phutho.gov.vn</b></p>
+			<div class="right">
+				<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
+				<p class="align-middle">
+					<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
+					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội Viettel trên nền OpenCPS
+				</p>
 			</div>
 		</div>
 	</footer>

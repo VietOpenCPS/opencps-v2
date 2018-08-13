@@ -1,8 +1,5 @@
-/*----- Support -----*/
-@import url(font-awesome.min.css?t=1531972017152);              /* Font Icons */
-@import url(animate.css?t=1531972017152);                       /* Animate css */
-@import url(support-class.css?t=1531972017152);                 /* Support css */
-
+@import url(font-awesome.min.css);
+@import url(support-class.css);
 
 * {
 	margin: 0;
@@ -16,8 +13,9 @@ body {
 	font-family: 'Roboto', sans-serif;
 	color: #2a2a2a;
 	overflow-x: hidden;
-	font-size: 14px;
 	background-color: #f6f6f6;
+	min-width: 1200px;
+	font-size: 14px;
 }
 body a, body a:hover, body a:focus {
 	color: inherit;
@@ -31,148 +29,25 @@ body ul {
 
 .container {
 	width: 100%;
-	padding: 0 30px;
+	padding: 0 15px;
 	margin: 0 auto;
+	max-width: 1200px;
 }
 .text-center {
 	text-align: center;
 }
 
 
-
-/*----- Header -----*/
-/* #banner {
-	padding: 10px 0;
-	background-color: white;
-}
-
-#banner .logo {
-    color: #f26522;
-    white-space: nowrap;
-    font-weight: bold;
-    font-size: 18px;
-}
-#banner img {
-	margin-right: 15px;
-}
-#banner .logo .text-logo {
-	color: #f26522;
-	white-space: nowrap;
-	text-shadow: -1px -1px 0 white, 
-	             1px -1px 0 white, 
-	             -1px 1px 0 white,  
-	             1px 1px 0 white;
-	
-}
-#banner .logo span {
-	font-size: 22px;
-    color: #0054a6;
-    display: block;
-} */
-
-
-
-/*----- Footer -----*/
-/* .mBody footer {
-	color: white;
-	background: #071d30 ;
-	background: url("../images/bg-footer.png") center center repeat-y;
-	background-size: 100% auto;
-}
-footer .site-name {
-	text-transform: uppercase;
-}
-footer .site-name span {
-	display: block;
-	font-weight: bold;
-	font-size: 18px;
-	line-height: 26px;
-	margin-bottom: 20px;
-}
-footer .contact {
-	margin-left: auto;
-}
-footer .contact p {
-	margin-bottom: 0;
-}
-footer .contact p i {
-	width: 14px;
-	margin-right: 5px;
-	text-align: center;
-}
-footer .address i {
-	margin: 2px 5px 0 0;
-}
-footer .last {
-	padding: 10px 15px;
-	background-color: #0d2434;
-	font-size: 12px;
-}
-footer > div:first-child {
-	padding-top: 30px;
-	padding-bottom: 20px;
-} */
-
-
-
-/*----- Navbar -----*/
-/* #navigation {
-	background-color: white;
-	border: 0;
-	min-height: inherit;
-	margin-bottom: 0;
-	border-top: 3px solid #ebebeb;
-	-webkit-box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
-    box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
-}
-#navigation ul li {
-	float: left;
-}
-#navigation ul li a {
-	display: block;
-	line-height: 36px;
-	white-space: nowrap;
-	position: relative;
-	padding: 0 25px;
-	color: #2a2a2a;
-}
-#navigation ul li a:focus {
-	outline: none;
-}
-#navigation ul li.active a, #navigation ul li:hover a {
-	background-color: #14bef0;
-	color: white;
-}
-#navigation ul li.active > a:after, #navigation ul body li.active > a:hover:after, #navigation ul body li.active > a:focus:after, #navigation ul li:hover > a:after, #navigation ul body li:hover > a:hover:after, #navigation ul body li:hover > a:focus:after {
-	content: "";
-	position: absolute;
-	bottom: 100%;
-	left: 0;
-	width: 50%;
-	height: 3px;
-	background-color: #0b72ba;
-} */
-
-
 /*----- Header -----*/
 #banner {
-	background: url("../images/bg-header.png") center center no-repeat;
-	padding: 15px 0 0;
-	background-size: cover;
-}
-#banner > .container {
-	margin-bottom: 15px;
-}
-#banner .logo + div {
-	margin-left: auto;
+	background: url("../images/bg-banner.jpg") center center no-repeat;
+	padding: 10px 0;
+	background-size: auto 100%;
 }
 #banner .logo {
 	text-transform: uppercase;
 	font-weight: bold;
-	font-size: 18px;
-}
-#banner .logo > a {
-	display: block;
+	font-size: 20px;
 }
 #banner img {
 	margin-right: 15px;
@@ -180,21 +55,98 @@ footer > div:first-child {
 }
 #banner .logo .text-logo {
 	margin-top: 5px;
-	color: #f26522;
+	color: #00204a;
 	white-space: nowrap;
-	text-shadow: -1px -1px 0 white, 
-	             1px -1px 0 white, 
-	             -1px 1px 0 white,  
-	             1px 1px 0 white;
-    font-weight: bold;
-    font-size: 18px;
-	
 }
 #banner .logo span {
 	font-size: 24px;
-	color: #0054a6;
+	color: #005792;
 	display: block;
-	margin-top: 10px;
+}
+
+#banner .logo + div {
+	margin-left: auto;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ .visible-xs {
+	display: none;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg {
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+	max-width: 400px;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg > .row {
+	width: 100%;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(2) .col-sm-6 {
+	width: 50%;
+	float: left;
+	padding: 0 3px;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(2) > div {
+	position: relative;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(2) > div:before {
+	content: "";
+	font-family: FontAwesome;
+	position: absolute;
+	top: 7px;
+	left: 15px;
+	font-size: 14px;
+	color: #005692;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(2) > div:first-child:before {
+	content: "\f007";
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(2) > div:last-child:before {
+	content: "\f023";
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(2) > div:after {
+	content: "";
+	position: absolute;
+	width: 1px;
+	height: 60%;
+	top: 20%;
+	left: 33px;
+	background-color: #e1e1e1;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg input {
+	height: 26px;
+    border-radius: 30px;
+    padding: 0 0 0 37px;
+    width: 100%;
+    border: 1px solid #005792;
+    font-size: 12px;
+    background: #fff;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg input:focus {
+	outline: none;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(3) .col-sm-6:first-child {
+	display: none;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(3) .col-sm-6:last-child {
+	float: right;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .btn {
+	margin: 8px 10px 0 0 !important;
+    color: white;
+    background-color: #0072bc;
+    text-transform: none;
+    font-size: 12px;
+    height: 26px;
+    min-width: inherit;
+    padding: 5px 10px !important;
+    border: 0;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg a.btn {
+	background-color: #fdb44b;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg a.btn:hover {
+	background-color: #0072bc;
+}
+#banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg button.btn:hover {
+	background-color: #00204a;
 }
 
 #banner .account-section {
@@ -212,7 +164,8 @@ footer > div:first-child {
 	color: #790000;
 }
 #banner .account-section .btn-reset {
-	color: #2a2a2a;
+	border: 0;
+	background-color: transparent;
 }
 #banner .account-section .btn-reset:hover {
 	color: #14bef0;
@@ -235,6 +188,10 @@ footer > div:first-child {
     border: 1px solid #e1e1e1;
 	display: none;
 	border-radius: 4px;
+	margin-top: 15px;
+}
+#banner .account-section .dropdown.open .dropdown-menu {
+    display: block;
 }
 #banner .account-section .dropdown-menu.show {
 	display: block;
@@ -258,12 +215,6 @@ footer > div:first-child {
 	height: 40px;
 	margin: 0 5px 0 0;
 }
-#banner .account-section .dropdown button {
-	color: white;
-}
-#banner .account-section .dropdown-menu {
-	margin-top: 5px;
-}
 
 
 
@@ -272,8 +223,16 @@ footer > div:first-child {
 	color: white;
 	margin-top: 20px;
 	background: #071d30 ;
-	background: url("../images/bg-footer.png") center center repeat-y;
-	background-size: 100% auto;
+	background: url("../images/bg-footer.png") center center no-repeat;
+	background-size: auto 100%;
+}
+#footer .container {
+	padding: 15px;
+	overflow: hidden;
+}
+#footer .container > div {
+	float: left;
+	width: 50%;
 }
 #footer .site-name {
 	text-transform: uppercase;
@@ -285,9 +244,6 @@ footer > div:first-child {
 	line-height: 26px;
 	margin-bottom: 20px;
 }
-#footer .contact, #footer .hotline {
-	margin-left: auto;
-}
 #footer .contact p {
 	margin-bottom: 0;
 }
@@ -296,41 +252,27 @@ footer > div:first-child {
 	margin-right: 5px;
 	text-align: center;
 }
-#footer .address i {
-	margin: 2px 5px 0 0;
+#footer .right {
+	text-align: right;
 }
-#footer .last {
-	padding: 10px 15px;
-	background-color: #0d2434;
-	font-size: 12px;
+#footer .right p {
+	margin-top: 5px;
+	color: #00bbf0;
+	-webkit-justify-content: flex-end;
+	justify-content: flex-end;
 }
-#footer > div:first-child {
-	padding: 20px 15px 15px;
-}
-#footer .hotline  {
-	color: #fa711f;
-}
-#footer .hotline img {
-	margin-right: 15px;
-}
-#footer .hotline p {
-	margin-bottom: 0;
-	text-transform: uppercase;
-}
-#footer .hotline span {
-	font-size: 18px;
+#footer .right p img {
+	margin-right: 5px;
 }
 
 
 
 /*----- Navbar -----*/
 #navigation {
-	background-color: transparent;
-	font-family: 'Roboto', sans-serif;
+	background-color: #00204a;
 	border: 0;
     border-radius: 0;
 	margin-bottom: 0;
-	border-top: 1px solid #00497f;
 	min-height: inherit;
 }
 #navigation ul li {
@@ -339,17 +281,27 @@ footer > div:first-child {
 #navigation ul li a {
 	color: white;
 	display: block;
-	line-height: 40px;
+	line-height: 45px;
 	white-space: nowrap;
     position: relative;
-    padding: 0 20px;
+    padding: 0 25px;
+	position: relative;
 }
 #navigation ul li a:focus {
 	outline: none;
 }
 #navigation ul li.active a, #navigation ul li:hover a {
-	background-color: #00497f;
 	color: white;
+	font-weight: bold;
+}
+#navigation ul li.active a:before, #navigation ul li:hover a:before {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-bottom: 3px solid #fdb44b;
 }
 
 
@@ -374,4 +326,32 @@ body .control-menu + div {
 
 body .navigation-drawer--fixed {
     position: absolute;
+}
+
+
+.dialog.dialog--active {
+	overflow: hidden;
+}
+body .tabs__items {
+    overflow: inherit;
+}
+body .datepicker-header {
+    display: none;
+}
+body .datepicker {
+    box-shadow: 0 2px 1px 0px rgba(0,0,0,.2), 0 1px 20px 0 rgba(0,0,0,.14), 0 1px 20px 0 rgba(0,0,0,.12) !important;
+}
+body .datepicker .datetimepicker-container {
+    border-radius: 4px;
+}
+body .timepicker-container .time-container .time-label {
+	background: #0d71bb;
+    color: #fff !important;
+    font-weight: bold;
+}
+#banner .container {
+  padding: 0 15px;
+}
+body .account-section button.btn {
+	box-shadow: none;
 }
