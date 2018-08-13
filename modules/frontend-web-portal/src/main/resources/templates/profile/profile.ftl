@@ -7,18 +7,22 @@
 			
 			<#if userType?has_content && userType == "employee">
 				<input type="file" id="avatar_file_profile" accept="image/*"  onchange="profile_changeAvatarFileEntry(this)" style="display: none;" />
-				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
+				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded" style="width: 100%; height: auto;">
 				<div class="text-center"><a id="change_avatar_profile" data-pk="${(employee.employeeId)!}" href="#" class="text-light-gray">Thay đổi avatar</a></div>
 				<p class="name text-bold text-center" data-bind="text:fullnameEmployee" id="">${(employee.fullName)!}</p>
 				<div>Thư điện tử: <span class="text-bold" data-bind="text:emailEmployee" id="">${(employee.email)!}</span></div>
 				<div>Ngày sinh: <span class="text-bold" data-bind="text:birthdateEmployee" id="">${(employee.birthdate)!}</span></div>
 				<div>Số điện thoại: <span class="text-bold" data-bind="text:mobileEmployee" id="">${(employee.telNo)!}</span></div>
 			<#elseif userType?has_content && userType == "applicant">
-				<input type="file" id="avatar_file_profile" accept="image/*"  onchange="profile_changeAvatarFileEntry(this)" style="display: none;" />
-				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded">
+				<input type="file" id="avatar_file_profile" accept="image/*"  onchange="profile_changeAvatarFileEntry(this)" style="display: none;"/>
+				<img id="profile_avatar_thumbnail" src="/o/frontend.web.portal/images/default_avatar.png" class="img-responsive max-width-100 img-rounded" style="width: 100%; height: auto;">
 				<div class="text-center"><a id="change_avatar_profile" data-pk="${(applicantId)!}" href="#" class="text-light-gray">Thay đổi avatar</a></div>
 				<p class="name text-bold text-center" data-bind="text:applicantName" id="profileName"></p>
-				<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				<#if applicantIdType == 'business' >
+					<div>Mã số thuế: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				<#else>
+					<div>Số CMND/Hộ chiếu: <span class="text-bold" data-bind="text:applicantIdNo" id="profileIdNo"></span></div>
+				</#if>
 				<div>Ngày cấp: <span class="text-bold" data-bind="text:applicantIdDate" id="profileDate"></span></div>
 				<div>Thư điện tử: <span class="text-bold" data-bind="text:contactEmail" id="profileEmail"></span></div>
 			</#if>
@@ -1152,6 +1156,20 @@
 		
 		$("#avatar_file_profile").trigger({ type: "click" });
 	});
+	
+	window.onload = function(){
+		var urlReadFile = fileAttachmentUrl({
+			method : "GET",
+			url : "${api.server}/users/${userId}/photo",
+			async : false,
+			success: function(options){
+				var urlOut = options.url;
+				$('#profile_avatar_thumbnail').attr('src', urlOut);
+
+			},
+			error: function(){}
+		});
+	}
 
 	function profile_changeAvatarFileEntry(fileInput) {
 		
@@ -1187,46 +1205,33 @@
 				
 				reader.readAsDataURL(file);
 
-				// call ajax
+				var data = new FormData();
+				data.append( 'fileName', $(fileInput)[0].files[0].name);
+				data.append( 'fileType', $(fileInput)[0].files[0].type);
+				data.append( 'fileSize', $(fileInput)[0].files[0].size);
+				data.append( 'file', $(fileInput)[0].files[0]);
 
-				// var fileName= file.name;
-				// var fileType= file.type;
-				// var fileSize= file.size;
-				// var className= "${(constants.className)!}";
-				// var classPK= $("#change_avatar_profile").attr("data-pk");
-				// var formData = new FormData();
-
-				// formData.append('file', file);
-				// formData.append('fileName', fileName);
-				// formData.append('fileType', fileType);
-				// formData.append('fileSize', fileSize);
-				// formData.append('className', className);
-				// formData.append('classPK', classPK);
-
-				// $.ajax({
-
-				// 	url: employeeUpdateBaseUrl + "/"+ classPK + "/photo" ,
-
-				// 	type: 'PUT',
-				// 	headers: {
-				// 		"groupId": ${groupId}
-				// 	},
-				// 	async: false,
-				// 	contentType: false,
-				// 	processData: false, 
-				// 	data: formData,
-				// 	success: function(result) {
-
-				// 		showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-
-				// 	},
-				// 	error: function(xhr, textStatus, errorThrown) {
-
-				// 		showMessageByAPICode(xhr.status);
-
-				// 	}
-
-				// });
+				$.ajax({
+					type : 'PUT', 
+					url  : '${api.server}/users/${userId}/photo', 
+					data : data,
+					processData: false,
+					contentType: false,
+					cache: false,
+					headers: {
+						groupId: ${groupId}
+					},
+					success :  function(result){ 
+						notification.show({
+							message: "Upload ảnh thành công!"
+						}, "success");
+					},
+					error:function(result){
+						notification.show({
+							message: "Yêu cầu không thành công, xin vui lòng thử lại."
+						}, "error");
+					}
+				});
 				
 			}
 
