@@ -48,11 +48,13 @@ public class CommentTerm {
 	
 	public static final String UPVOTE_COUNT = "upvoteCount";
 	
-	public static final String USER_HAS_UPVOTED = "userHasUpvoted";
+	public static final String USER_HAS_UPVOTED = "upvotedUsers";
 	
 	public static final String CREATED_BY_CURRENT_USER = "createdByCurrentUser";
 	
 	public static final String PINGS = "pings";
+	
+	public static final String OPINION = "opinion"; 
 	
 	// sortable
 	public static final String COMMENT_ID_SORTABLE = "commentId_sortable";
@@ -85,7 +87,7 @@ public class CommentTerm {
 	
 	public static final String UPVOTE_COUNT_SORTABLE = "upvoteCount_sortable";
 	
-	public static final String USER_HAS_UPVOTED_SORTABLE = "userHasUpvoted_sortable";
+	public static final String USER_HAS_UPVOTED_SORTABLE = "upvotedUsers_sortable";
 	
 	public static final String CREATED_BY_CURRENT_USER_SORTABLE = "createdByCurrentUser_sortable";
 
