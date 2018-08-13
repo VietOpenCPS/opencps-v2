@@ -538,13 +538,14 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	//LamTV: Process dossierTodo
-	@SuppressWarnings({ "unchecked", "deprecation" })
+	@SuppressWarnings({ "unchecked"})
 	@Override
 	public Response getDossierProcessList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
+		_log.info("userId: "+userId);
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -629,7 +630,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int year = query.getYear();
 			int month = query.getMonth();
 			String top = query.getTop();
-			if (Validator.isNotNull(top) && ConstantUtils.STATISTIC.equals(top.toLowerCase())) {
+			if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 				Calendar baseDateCal = Calendar.getInstance();
 				baseDateCal.setTime(new Date());
 				if (month == 0) {

@@ -45,8 +45,7 @@ import javax.xml.bind.annotation.XmlType;
     "level",
     "notStatusReg",
     "step",
-    "top",
-    "owner"
+    "top"
 })
 @XmlRootElement(name = "StatisticDossierSearchModel")
 public class StatisticDossierSearchModel {
@@ -62,9 +61,7 @@ public class StatisticDossierSearchModel {
 	@QueryParam(value = "step")
     protected String step;
 	@QueryParam(value = "top")
-    protected String top;
-	@QueryParam(value = "owner")
-    protected String owner;
+    protected String top;;
 
 	/**
      * Gets the value of the dossierStatus property.
@@ -176,14 +173,6 @@ public class StatisticDossierSearchModel {
 
 	public void setTop(String top) {
 		this.top = top;
-	}
-
-	public String getOwner() {
-		return owner;
-	}
-
-	public void setOwner(String owner) {
-		this.owner = owner;
 	}
 
 }

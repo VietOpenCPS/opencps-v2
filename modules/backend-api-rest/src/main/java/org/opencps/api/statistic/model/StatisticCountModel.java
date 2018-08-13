@@ -44,15 +44,12 @@ import javax.xml.bind.annotation.XmlType;
 	"title",
 	"count"
 })
-@XmlRootElement(name = "StatisticCountModel")
+
 public class StatisticCountModel {
 
-	@XmlElement(required = true)
 	protected String key;
-	@XmlElement(required = true)
 	protected String title;
-	@XmlElement(required = true)
-	protected String count;
+	protected Long count;
 
 	public String getKey() {
 		return key;
@@ -66,10 +63,10 @@ public class StatisticCountModel {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getCount() {
+	public Long getCount() {
 		return count;
 	}
-	public void setCount(String count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
 
