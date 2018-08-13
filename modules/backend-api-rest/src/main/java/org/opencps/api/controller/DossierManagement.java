@@ -32,6 +32,7 @@ import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
+import org.opencps.api.filter.JWTOpenCPSToken;
 import org.opencps.api.processsequence.model.DossierSequenceResultModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
@@ -540,6 +541,7 @@ public interface DossierManagement {
 	@GET
 	@Path("/lucene/searchconflict")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@JWTOpenCPSToken
 	@ApiOperation(value = "Get a Dossier by its id", response = DossierDetailModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was removed", response = DossierDetailModel.class),
