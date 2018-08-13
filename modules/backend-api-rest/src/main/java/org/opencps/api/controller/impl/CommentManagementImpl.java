@@ -66,7 +66,7 @@ public class CommentManagementImpl implements CommentManagement {
 			Comment comment = CommentLocalServiceUtil.addComment(userId, groupId, commentInputModel.getClassName(),
 					commentInputModel.getClassPK(), commentInputModel.getFullname(), commentInputModel.getEmail(),
 					commentInputModel.getParent(), commentInputModel.getContent(), 0, null, StringPool.BLANK,
-					StringPool.BLANK, 0, commentInputModel.getPings(), serviceContext);
+					StringPool.BLANK, 0, commentInputModel.getPings(), commentInputModel.getOpinion(), serviceContext);
 
 			CommentModel commentModel = new CommentModel();
 
@@ -121,7 +121,7 @@ public class CommentManagementImpl implements CommentManagement {
 	@Override
 	public Response addCommentAttachment(Attachment attachment, HttpServletRequest request, HttpHeaders header,
 			ServiceContext serviceContext, String className, String classPK, long parent, String fileName,
-			String fileType, long fileSize, String pings, String email, String fullname) {
+			String fileType, long fileSize, String pings, String email, String fullname, Boolean opinion) {
 
 		InputStream inputStream = null;
 
@@ -136,7 +136,7 @@ public class CommentManagementImpl implements CommentManagement {
 			inputStream = dataHandler.getInputStream();
 
 			Comment comment = CommentLocalServiceUtil.addComment(userId, groupId, className, classPK, fullname, email,
-					parent, StringPool.BLANK, fileSize, inputStream, fileName, fileType, 0, pings, serviceContext);
+					parent, StringPool.BLANK, fileSize, inputStream, fileName, fileType, 0, pings, opinion, serviceContext);
 
 			CommentModel commentModel = new CommentModel();
 
@@ -326,7 +326,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 		try {
 
-			CommentLocalServiceUtil.deleteComment(commentId, serviceContext);
+			CommentLocalServiceUtil.deleteComment(commentId);
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
