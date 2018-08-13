@@ -165,38 +165,42 @@
         serverNo: $("#serverNo").val(),
         serverName: $("#serverName").val(),
         protocol: $("#protocol").val(),
+        configs: $('#lastSync').val()
       },
       success: function(result) {
         
-         var h = result.serverConfigId;
+        notification.show({
+          message: "Yêu cầu được thực hiện thành công"
+        }, "success");
+        //  var h = result.serverConfigId;
 
-        var upFormscriptSuccess = false, upFormReportSuccess = false, upSampleDataSuccess = false;
-        $.ajax({
-          // url: "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk +"/formscript",
-          url:"${api.server}/serverconfigs/"+h+"/configs",
-          type: "PUT",
-          dataType: "json",
-          headers: {"groupId": ${groupId}},
-          async: false,
-          data: {
-            lastSync: $("#lastSync").val()
-          },
-          success: function(result) {
-            upFormscriptSuccess = true;
-          }
-        });
-        if (upFormscriptSuccess && upFormReportSuccess && upSampleDataSuccess){
-          notification.show({
-            message: "Yêu cầu được thực hiện thành công"
-          }, "success");
+        // var upFormscriptSuccess = false, upFormReportSuccess = true, upSampleDataSuccess = true;
+        // $.ajax({
+        //   // url: "${api.server}" + "/registrationtemplates/" + registrationTemplatePartDataPk +"/formscript",
+        //   url:"${api.server}/serverconfigs/"+h+"/configs",
+        //   type: "PUT",
+        //   dataType: "json",
+        //   headers: {"groupId": ${groupId}},
+        //   async: false,
+        //   data: {
+        //     lastSync: $("#lastSync").val()
+        //   },
+        //   success: function(result) {
+        //     upFormscriptSuccess = true;
+        //   }
+        // });
+        // if (upFormscriptSuccess && upFormReportSuccess && upSampleDataSuccess){
+        //   notification.show({
+        //     message: "Yêu cầu được thực hiện thành công"
+        //   }, "success");
 
-          $("#serverconfigs_list_view").getKendoListView().dataSource.read();
+        //   $("#serverconfigs_list_view").getKendoListView().dataSource.read();
           
-        } else {
-          notification.show({
-            message: "Xảy ra lỗi, vui lòng thử lại"
-          }, "error");
-        }
+        // } else {
+        //   notification.show({
+        //     message: "Xảy ra lỗi, vui lòng thử lại"
+        //   }, "error");
+        // }
       },
       error: function(result) {
         notification.show({

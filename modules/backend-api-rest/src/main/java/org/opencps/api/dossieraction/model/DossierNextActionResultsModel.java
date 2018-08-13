@@ -39,6 +39,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
  "checkInput",
+ "users",
+ "stepCode",
+ "stepName",
+ "stepDueDate",
+ "stepOverdue",
  "total",
  "data"
 })
@@ -46,6 +51,11 @@ import javax.xml.bind.annotation.XmlType;
 public class DossierNextActionResultsModel {
 
  protected Integer checkInput;
+ protected List<DossierActionNextActiontoUser> users;
+ protected String stepCode;
+ protected String stepName;
+ protected long stepDueDate;
+ protected String stepOverdue;
  protected Integer total;
  protected List<DossierNextActionModel> data;
 
@@ -126,4 +136,37 @@ public class DossierNextActionResultsModel {
      return this.data;
  }
 
+	public List<DossierActionNextActiontoUser> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<DossierActionNextActiontoUser> users) {
+		this.users = users;
+	}
+ 
+	public String getStepCode() {
+		return stepCode;
+	}
+	public void setStepCode(String value) {
+		this.stepCode = value;
+	}
+	public String getStepName() {
+		return stepName;
+	}
+	public void setStepName(String value) {
+		this.stepName = value;
+	}
+	public long getStepDueDate() {
+		return stepDueDate;
+	}
+	public void setStepDueDate(long value) {
+		this.stepDueDate = value;
+	}
+	public String getStepOverdue() {
+		return stepOverdue;
+	}
+	public void setStepOverdue(String value) {
+		this.stepOverdue = value;
+	}
+	
 }

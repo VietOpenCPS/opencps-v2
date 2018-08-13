@@ -109,7 +109,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="row" v-if="allowAssignUser != 0">
+				<div class="row">
 					<div class="col-xs-12 col-sm-12">
 						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId">
 							<option></option>

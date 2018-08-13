@@ -72,8 +72,18 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	}
 
 	@Override
-	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException {
-		return ServiceProcessLocalServiceUtil.removeServiceProcess(serviceProcessId, groupId);
+	public ServiceProcess removeServiceProcess(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) throws PortalException {
+
+		boolean flagProRole = deleteAllProcessRole(userId, groupId, serviceProcessId, serviceContext);
+		boolean flagStep = deleteAllProcessStep(userId, groupId, serviceProcessId, serviceContext);
+		boolean flagProAction = deleteAllProcessAction(userId, groupId, serviceProcessId, serviceContext);
+		boolean flagSequence = deleteAllProcessSequence(userId, groupId, serviceProcessId, serviceContext);
+		
+		if (flagProRole && flagStep && flagProAction && flagSequence) {
+			return ServiceProcessLocalServiceUtil.removeServiceProcess(serviceProcessId, groupId);
+		}
+		return null;
 	}
 
 	@Override

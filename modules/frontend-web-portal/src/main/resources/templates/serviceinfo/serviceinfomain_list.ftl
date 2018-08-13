@@ -227,6 +227,15 @@
     var serviceInfoDataSource = new kendo.data.DataSource({
      transport: {
       read: function(options) {
+        var page = options.data.page;
+        var pageSize = options.data.pageSize;
+        var start = (page - 1) * pageSize;
+        var end = (page - 1) * pageSize + pageSize;
+        var level = 0;
+        console.log('options.data.level-------', options.data.level)
+        if ($("#levelSearch").val()) {
+          level = $("#levelSearch").data('kendoComboBox').value();
+        }
        $.ajax({
         url: "${api.server}" + "/serviceinfos",
         type: "GET",
@@ -236,12 +245,12 @@
           req.setRequestHeader('groupId', ${groupId});
         },
         data: {
-          keyword: options.data.keywords,
-          page: options.data.page,
-          pageSize: options.data.pageSize,
-          administration: options.data.administration,
-          domain: options.data.domain,
-          level: options.data.level
+          keyword: options.data.keywords ? options.data.keywords : $("#input_search_service_info").val(),
+          administration: options.data.administration ? options.data.administration : $("#administrationCodeSearch").data('kendoComboBox').value(),
+          domain: options.data.domain ? options.data.domain : $("#domainCodeSearch").data('kendoComboBox').value(),
+          level: options.data.level ? options.data.level: level,
+          start: start,
+          end: end
         },
         success: function(result) {
           options.success(result);
@@ -284,9 +293,9 @@
   model : { id: "serviceInfoId" }
 },
 pageSize: 15,
-serverPaging: false,
-serverSorting: false,
-serverFiltering: false
+serverPaging: true,
+serverSorting: true,
+serverFiltering: true
 });
 
     $("#service_info_list_view").kendoListView({

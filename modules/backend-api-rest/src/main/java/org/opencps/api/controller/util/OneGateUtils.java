@@ -172,7 +172,7 @@ public class OneGateUtils {
 			model.setStepCode(dossierAction.getStepCode());
 			model.setStepName(dossierAction.getStepName());
 
-			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
 			if (dossierAction.getActionOverdue() != 0) {
 				model.setStepOverdue(StringPool.TRUE);

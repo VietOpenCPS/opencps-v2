@@ -280,6 +280,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
 
 		try {
 
@@ -291,7 +292,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServiceProcess serviceProcess = actions.removeServiceProcess(id, groupId);
+			ServiceProcess serviceProcess = actions.removeServiceProcess(userId, groupId, id, serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 

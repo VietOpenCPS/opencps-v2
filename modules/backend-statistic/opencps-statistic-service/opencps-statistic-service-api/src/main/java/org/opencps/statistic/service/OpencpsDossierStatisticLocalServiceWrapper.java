@@ -247,6 +247,22 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		return _opencpsDossierStatisticLocalService.addOpencpsDossierStatistic(opencpsDossierStatistic);
 	}
 
+	@Override
+	public org.opencps.statistic.model.OpencpsDossierStatistic checkExsit(
+		long groupId, int month, int year, java.lang.String govAgency,
+		java.lang.String domain, boolean reporting) {
+		return _opencpsDossierStatisticLocalService.checkExsit(groupId, month,
+			year, govAgency, domain, reporting);
+	}
+
+	@Override
+	public org.opencps.statistic.model.OpencpsDossierStatistic checkNotDuplicate(
+		long groupId, java.lang.String govAgencyCode, int month, int year,
+		java.lang.String domainCode) {
+		return _opencpsDossierStatisticLocalService.checkNotDuplicate(groupId,
+			govAgencyCode, month, year, domainCode);
+	}
+
 	/**
 	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
 	*
@@ -317,11 +333,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
 		long groupId, java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+		java.lang.String domainCode, boolean reporting) {
 		return _opencpsDossierStatisticLocalService.getByGovMonthYearDomain(groupId,
-			govAgencyCode, month, year, domainCode);
+			govAgencyCode, month, year, domainCode, reporting);
 	}
 
 	/**
@@ -379,7 +393,7 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		java.lang.String govAgencyCode, java.lang.String govAgencyName,
 		java.lang.String domainCode, java.lang.String domainName,
-		boolean reporting)
+		boolean reporting, int onegateCount, int outsideCount, int insideCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsDossierStatisticLocalService.updateStatistic(dossierStatisticId,
@@ -390,7 +404,8 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 			unresolvedCount, processingCount, undueCount, overdueCount,
 			pausingCount, ontimePercentage, overtimeInside, overtimeOutside,
 			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
-			domainCode, domainName, reporting);
+			domainCode, domainName, reporting, onegateCount, outsideCount,
+			insideCount);
 	}
 
 	@Override

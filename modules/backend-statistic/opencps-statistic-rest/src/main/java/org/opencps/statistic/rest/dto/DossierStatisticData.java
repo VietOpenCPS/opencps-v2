@@ -248,6 +248,30 @@ public class DossierStatisticData {
 	public void setGroupId(long groupId) {
 		this.groupId = groupId;
 	}
+	
+	public int getOnegateCount() {
+		return onegateCount;
+	}
+
+	public void setOnegateCount(int onegateCount) {
+		this.onegateCount = onegateCount;
+	}
+
+	public int getOutsideCount() {
+		return outsideCount;
+	}
+
+	public void setOutsideCount(int outsideCount) {
+		this.outsideCount = outsideCount;
+	}
+
+	public int getInsideCount() {
+		return insideCount;
+	}
+
+	public void setInsideCount(int insideCount) {
+		this.insideCount = insideCount;
+	}
 
 	private int month = 0;
 	private int year = 0;
@@ -258,6 +282,10 @@ public class DossierStatisticData {
 	private int remainingCount = 0;
 	private int receivedCount = 0;
 	private int onlineCount = 0;
+
+	private int onegateCount = 0;
+	private int outsideCount = 0;
+	private int insideCount = 0;
 	private int releaseCount = 0;
 	private int betimesCount = 0;
 	private int ontimeCount = 0;
@@ -278,7 +306,6 @@ public class DossierStatisticData {
 	private String domainCode;
 	private String domainName;
 	private boolean reporting;
-	
 	private long companyId;
 	private long groupId;
 }

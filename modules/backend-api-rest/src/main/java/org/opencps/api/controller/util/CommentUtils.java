@@ -153,6 +153,7 @@ public class CommentUtils {
 		commentModel.setUpvoteCount(comment.getUpvoteCount());
 		commentModel.setUserHasUpvoted(hasUpvoted);
 		commentModel.setUserId(userId);
+		commentModel.setOpinion(comment.getOpinion());
 
 		return commentModel;
 	}
@@ -287,7 +288,12 @@ public class CommentUtils {
 		commentModel.setUpvoteCount(GetterUtil.getInteger(document.get(CommentTerm.UPVOTE_COUNT)));
 		commentModel.setUserHasUpvoted(hasUpvoted);
 		commentModel.setUserId(userId);
+		commentModel.setOpinion(
+				Validator.isNotNull(document.get(CommentTerm.OPINION))
+					? Boolean.parseBoolean(document.get(CommentTerm.OPINION))
+					: false);
 
+		
 		return commentModel;
 	}
 

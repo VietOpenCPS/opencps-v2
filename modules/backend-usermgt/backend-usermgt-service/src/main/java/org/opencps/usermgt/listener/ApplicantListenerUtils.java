@@ -29,6 +29,7 @@ public class ApplicantListenerUtils {
 			payload.put("toAddress", object.get("toAddress"));
 			payload.put("subject", subject);
 			payload.put("body", body);
+			_log.info("payload"+payload);
 		} catch (Exception e) {
 			_log.error(e);
 		}

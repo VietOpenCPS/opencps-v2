@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="DossierSyncV21DataModel">
+		<xsd:sequence>
+			<!-- default -->
+			<xsd:element name="dossierSyncId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="userId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="createDate" type="xsd:long" minOccurs="0" />
+			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="dossierRefUid" type="xsd:string" minOccurs="0" />
+			<xsd:element name="syncRefUid" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionUser" type="xsd:string" minOccurs="0" />
+			<xsd:element name="actionNote" type="xsd:string" minOccurs="0" />
+			<xsd:element name="syncType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="infoType" type="xsd:int" minOccurs="0" />
+			<xsd:element name="payload" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="DossierSyncV21ResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="DossierSyncV21DataModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>

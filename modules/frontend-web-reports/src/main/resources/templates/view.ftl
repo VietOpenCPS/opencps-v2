@@ -4,7 +4,7 @@
 
 <div id="app"></div>
 
-<script type="text/javascript" src="/o/frontend-web-reports/js/manifest.02df783b980c8b66cc7a.js"></script>
+<script type="text/javascript" src="/o/frontend-web-reports/js/manifest.4e58cc2f4ef316ffec90.js"></script>
 <script type="text/javascript" src="/o/frontend-web-reports/js/vendor.f27d147cbb8af2d6898a.js"></script>
 <script type="text/javascript" src="/o/frontend-web-reports/js/app.27256468035db56dd65e.js"></script>
 

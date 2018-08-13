@@ -26,7 +26,8 @@ public interface ServiceProcessActions {
 			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
 			ServiceContext context) throws PortalException;
 
-	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException;
+	public ServiceProcess removeServiceProcess(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) throws PortalException;
 
 	public JSONObject getServiceProcessRoles(long serviceProcessId) throws PortalException;
 

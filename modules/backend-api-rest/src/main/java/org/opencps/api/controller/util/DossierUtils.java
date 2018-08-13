@@ -13,6 +13,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -104,7 +105,6 @@ public class DossierUtils {
 			model.setSubmissionNote(doc.get(DossierTerm.SUBMISSION_NOTE));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
-			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 //			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 //			_log.info("SUBMIT_DATE: "+doc.get(DossierTerm.SUBMIT_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.SUBMIT_DATE))) {
@@ -129,13 +129,14 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
+			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+//			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
 			//Process OverDue
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
+//			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
@@ -168,7 +169,7 @@ public class DossierUtils {
 					ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStep, groupId, serviceProcessId);
 					if (step != null) {
 						Double durationCountStep = step.getDurationCount();
-						_log.info("durationCountStep: "+durationCountStep);
+//						_log.info("durationCountStep: "+durationCountStep);
 						Date dueDateStep = null;
 						if (Validator.isNotNull(durationCountStep) && durationCountStep > 0) {
 							dueDateStep = HolidayUtils.getDueDate(dAction.getCreateDate(), durationCountStep,
@@ -183,11 +184,11 @@ public class DossierUtils {
 								if (subTimeStepStamp > 0) {
 									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
 									model.setStepOverdue("Quá hạn "+stepOverDue);
-									_log.info("setStepOverdue Qua Han: "+model.getStepOverdue());
+//									_log.info("setStepOverdue Qua Han: "+model.getStepOverdue());
 								} else {
 									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
 									model.setStepOverdue("Còn "+stepOverDue);
-									_log.info("setStepOverdue Còn Han: "+model.getStepOverdue());
+//									_log.info("setStepOverdue Còn Han: "+model.getStepOverdue());
 								}
 							} else {
 								model.setStepOverdue(StringPool.BLANK);
@@ -312,7 +313,7 @@ public class DossierUtils {
 		return ouputs;
 	}
 	
-	private static String calculatorOverDue(int durationUnit, long subTimeStamp) {
+	public static String calculatorOverDue(int durationUnit, long subTimeStamp) {
 		if (subTimeStamp < 0) {
 			subTimeStamp = Math.abs(subTimeStamp);
 		}
@@ -606,7 +607,7 @@ public class DossierUtils {
 			model.setStepCode(dossierAction.getStepCode());
 			model.setStepName(dossierAction.getStepName());
 
-			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
 			if (dossierAction.getActionOverdue() != 0) {
 				model.setStepOverdue(StringPool.TRUE);
@@ -778,7 +779,8 @@ public class DossierUtils {
 
 		_log.info("GET PROCESS ACTION____");
 		ProcessAction action = null;
-
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
@@ -800,10 +802,24 @@ public class DossierUtils {
 				} else {
 					String stepStatus = step.getDossierStatus();
 					String stepSubStatus = step.getDossierSubStatus();
+					boolean flagCheck = false;
+					
+					if (dossierAction != null) {
+						if (act.getPreStepCode().equals(dossierAction.getStepCode())) {
+							flagCheck = true;
+						}
+					}
+					else {
+						flagCheck = true;
+					}
+					
 					if (stepStatus.contentEquals(dossierStatus)
-							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)) {
-						action = act;
-						break;
+							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
+							&& flagCheck) {
+						if (DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+							action = act;
+							break;							
+						}
 					}
 				}
 			}

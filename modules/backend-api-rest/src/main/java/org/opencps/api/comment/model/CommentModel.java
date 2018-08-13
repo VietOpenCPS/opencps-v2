@@ -82,6 +82,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "isNew",
     "upvoteCount",
     "userHasUpvoted",
+    "opinion",
     "createdByCurrentUser",
     "isAdmin"
 })
@@ -109,7 +110,8 @@ public class CommentModel {
     protected Boolean userHasUpvoted;
     protected Boolean createdByCurrentUser;
     protected Boolean isAdmin;
-
+    protected Boolean opinion;
+    
     /**
      * Gets the value of the commentId property.
      * 
@@ -614,4 +616,11 @@ public class CommentModel {
         this.isAdmin = value;
     }
 
+    public Boolean isOpinion() {
+    	return opinion;
+    }
+    
+    public void setOpinion(Boolean value) {
+    	this.opinion = value;
+    }
 }
