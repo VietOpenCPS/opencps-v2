@@ -2685,10 +2685,21 @@ public class DossierActionsImpl implements DossierActions {
 				String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 				
 				String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
-				
-				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), proAction.getCreateDossiers());
-				List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
 				String createDossiers = proAction.getCreateDossiers();
+				String govAgencyCode = StringPool.BLANK;
+				
+				if (createDossiers.contains(StringPool.POUND)) {
+					String[] splitCDs = createDossiers.split(StringPool.POUND);
+					if (splitCDs.length == 2) {
+						govAgencyCode = splitCDs[0];
+					}
+				}
+				else {
+					govAgencyCode = createDossiers;
+				}
+				
+				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
+				List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
 				
 				if (serviceConfig != null) {
 					ProcessOption foundOption = null;
