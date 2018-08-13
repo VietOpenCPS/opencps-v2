@@ -77,8 +77,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			
 			JSONObject resultObject = doGetFormData(code, body);
 			
-			System.out.println("StatisticReportApiImpl.statisticReportPrint()" + resultObject);
-			System.out.println("StatisticReportApiImpl.statisticReportPrint()" + resultObject.toJSONString());
+//			System.out.println("StatisticReportApiImpl.statisticReportPrint()" + resultObject);
+//			System.out.println("StatisticReportApiImpl.statisticReportPrint()" + resultObject.toJSONString());
 			
 			message.put("formData", resultObject);
 
