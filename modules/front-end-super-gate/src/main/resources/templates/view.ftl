@@ -1,9 +1,9 @@
 <#include "init.ftl">
 
-<link type="text/css" href="/o/front-end-super-gate/css/app.300a4f4840999b35afe1353b285eefad.css" rel="stylesheet">
+<link type="text/css" href="/o/front-end-super-gate/css/app.ade3aebbaa99b5dc96e7df0c57735bb4.css" rel="stylesheet">
 
 <div id="app"></div>
 
-<script type="text/javascript" src="/o/front-end-super-gate/js/manifest.2c5a28d0b6117b0007a2.js"></script>
-<script type="text/javascript" src="/o/front-end-super-gate/js/vendor.ec198c21fe042afac234.js"></script>
-<script type="text/javascript" src="/o/front-end-super-gate/js/app.2ecfc8d364f08ef75b39.js"></script>
+<script type="text/javascript" src="/o/front-end-super-gate/js/manifest.0feffcf2db4c695b5293.js"></script>
+<script type="text/javascript" src="/o/front-end-super-gate/js/vendor.e70e24065f2df2c9f5fd.js"></script>
+<script type="text/javascript" src="/o/front-end-super-gate/js/app.8c8a1fe1fa2ab2ef9d22.js"></script>
