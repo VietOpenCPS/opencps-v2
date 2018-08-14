@@ -149,13 +149,9 @@ public class DossierUtils {
 				}
 			} else {
 				model.setDossierOverdue(StringPool.BLANK);
-			}
-			if (Validator.isNotNull(doc.get(DossierTerm.FINISH_DATE))) {
-				Date finishDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.FINISH_DATE), APIDateTimeUtils._LUCENE_PATTERN);
-				model.setFinishDate(APIDateTimeUtils.convertDateToString(finishDate, APIDateTimeUtils._NORMAL_PARTTERN));
-			} else {
-				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
-			}
+			}			
+			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
 			//Process StepOverDue
 //			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0.0;
 //			if (Double.compare(durationCount, 0.0) != 0) {
