@@ -167,6 +167,8 @@ public class DossierTerm {
 	public static final String PUBLISH_DOSSIER_DESTINATION = "publish/dossier/in/destination";
 	public static final String YEAR_FINISH = "yearFinish";
 	public static final String MONTH_FINISH = "monthFinish";
+	public static final String YEAR_RELEASE = "yearRelease";
+	public static final String MONTH_RELEASE = "monthRelease";
 	public static final String STATISTIC = "statistic";
 	public static final String COMPARE_DELAY_DATE = "delayDate";
 	public static final String OVER_DUE = "overdue";
