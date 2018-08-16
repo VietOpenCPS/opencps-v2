@@ -15,4 +15,12 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
+	<xsd:element name="CountEntity">
+		<xsd:complexType>
+			<xsd:sequence >
+				<xsd:element name="database" type="xsd:long"></xsd:element>
+				<xsd:element name="lucene" type="xsd:long"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>

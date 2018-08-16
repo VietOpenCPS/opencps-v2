@@ -162,7 +162,7 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 
 			String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
-			_log.info("status: "+status);
+//			_log.info("status: "+status);
 			if (Validator.isNotNull(status)) {
 				if (!status.contains(StringPool.COMMA)) {
 					if (!status.equals("done") && !status.equals("cancelled")) {

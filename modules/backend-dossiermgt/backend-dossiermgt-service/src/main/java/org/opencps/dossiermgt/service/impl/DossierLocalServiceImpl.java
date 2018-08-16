@@ -2946,5 +2946,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return jsonData;
 	}
 	
+	public long countDossierByGroup(long groupId) {
+		return dossierPersistence.countByG(groupId);
+	}
+	
+	public List<Dossier> findDossierByGroup(long groupId) {
+		return dossierPersistence.findByG(groupId);
+	}
+	
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 }

@@ -19,14 +19,37 @@
 			<div id="site" class="tab-pane fade in active MT15">
 				<div class="row">
 					<div class="form-group">
-						<button id="btn-deletesite" type="button" class="btn-active btn btn-danger">Xoá dữ liệu Site</button>
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmDeleteSite">
+						  Xoá site
+						</button>
+						
+						<!-- Modal -->
+						<div class="modal fade" id="confirmDeleteSite" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteSite" aria-hidden="true">
+						  <div class="modal-dialog modal-dialog-centered" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title" id="confirmDeleteTitle">Bạn có chắc chắn muốn xoá ?</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body">
+						      	Bạn có chắc chắn muốn xoá site này ?
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng lại</button>
+						        <button data-dismiss="modal" id="btn-deletesite" type="button" class="btn-active btn btn-danger">Xoá dữ liệu Site</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>								
 					</div>
 				</div>
 				<div class="row">
 					<div id="progressDeleteSite" class="progress fade out">
-					  <div class="progress-bar progress-bar-striped active" role="progressbar"
-					  aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-					    40%
+					  <div id="progressSite" class="progress-bar progress-bar-striped active" role="progressbar"
+					  aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+					    0%
 					  </div>
 					</div>
 				</div>
@@ -217,8 +240,8 @@
 				<div class="row">
 					<div class="progress fade out">
 					  <div class="progress-bar progress-bar-striped" role="progressbar"
-					  aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-					    40%
+					  aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+					    0%
 					  </div>
 					</div>
 				</div>
@@ -232,6 +255,8 @@
 </div>
 <script type="text/javascript">
 	(function($){
+		var backgroundTaskId = 0;
+		
 		$('#progressDeleteSite').attr('class', 'progress fade out');
 		$('#btn-searchconflict').click(function() {
 			$.ajax({
@@ -247,9 +272,46 @@
 				}
 			});			
 		});
+		
+		var checkProgress = function timeout() {
+		    setTimeout(function () {
+				$.ajax({
+					url: "${api.server}" + "/system/progress/" + backgroundTaskId,
+					type: "GET",
+					dataType: "json",
+					headers: {"groupId": ${groupId}},
+					data: {
+								
+					},
+					success: function(result) {
+						$('.progress-bar').css('width', result.percentage +'%').attr('aria-valuenow', result.percentage);
+						$('#progressSite').text(result.percentage + "% " + result.executionLog);
+						if (result.percentage == 100) {
+							$('#progressDeleteSite').attr('class', 'progress fade out');			
+						}
+						else {
+					        timeout();			
+						}
+					}
+				});
+		    }, 1000);
+		};
+		
 		$('#btn-deletesite').click(function() {
-			console.log($('#selectSite').val());
-			$('#progressDeleteSite').attr('class', 'progress');
+			$.ajax({
+				url: "${api.server}" + "/system/clean/" + $('#selectSite').val(),
+				type: "POST",
+				dataType: "json",
+				headers: {"groupId": ${groupId}},
+				data: {
+							
+				},
+				success: function(result) {
+					backgroundTaskId = result.backgroundTaskId;
+					$('#progressDeleteSite').attr('class', 'progress');	
+					checkProgress();		
+				}
+			});			
 		});
 	})(jQuery);
 </script>

@@ -11,6 +11,9 @@ public class SiteCleanBackgroundTaskStatusMessageTranslator implements Backgroun
     	backgroundTaskStatus.setAttribute(
     			"percentage",
     			message.getInteger("percentage"));	
+    	backgroundTaskStatus.setAttribute(
+    			"executionLog",
+    			message.getString("executionLog"));	
 	}
 
 }

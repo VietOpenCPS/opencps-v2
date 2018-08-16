@@ -236,8 +236,8 @@ public class DossierManagementImpl implements DossierManagement {
 					year = baseDateCal.get(Calendar.YEAR);
 				}
 			}
-			_log.info("month: "+month);
-			_log.info("year: "+year);
+//			_log.info("month: "+month);
+//			_log.info("year: "+year);
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
 			String dossierNoSearch = StringPool.BLANK;

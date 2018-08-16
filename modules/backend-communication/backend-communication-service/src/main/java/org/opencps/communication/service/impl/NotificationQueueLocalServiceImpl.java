@@ -123,4 +123,8 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 		return NotificationQueue;
 
 	}
+
+	public void deleteByGroup(long groupId) {
+		notificationQueuePersistence.removeByG(groupId);
+	}
 }
