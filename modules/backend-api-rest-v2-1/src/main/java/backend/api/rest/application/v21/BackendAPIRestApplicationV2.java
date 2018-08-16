@@ -27,9 +27,11 @@ import com.liferay.portal.kernel.model.User;
 
 import backend.api.rest.application.v21.impl.ActionConfigApiImpl;
 import backend.api.rest.application.v21.impl.DocumentTypeApiImpl;
+import backend.api.rest.application.v21.impl.DossierDocumentApiImpl;
 import backend.api.rest.application.v21.impl.DossierSyncApiImpl;
 import backend.api.rest.application.v21.impl.MenuConfigApiImpl;
 import backend.api.rest.application.v21.impl.StatisticApiImpl;
+import backend.api.rest.application.v21.impl.StatisticReportApiImpl;
 import backend.api.rest.application.v21.impl.StepConfigApiImpl;
 
 /**
@@ -66,6 +68,8 @@ public class BackendAPIRestApplicationV2 extends Application {
 		singletons.add(new DocumentTypeApiImpl());
 		singletons.add(new StatisticApiImpl());
 		singletons.add(new DossierSyncApiImpl());
+		singletons.add(new DossierDocumentApiImpl());
+		singletons.add(new StatisticReportApiImpl());
 		
 		return singletons;	
 	}

@@ -30,17 +30,25 @@ public class ProcessActionTerm {
 	public static final String ESIGNATURE = "eSignature";
 	public static final String CONFIG_NOTE = "configNote";
 	public static final String ENABLE = "enable";
+	public static final String FIELD_LABEL = "fieldLabel";
+	public static final String FIELD_NAME = "fieldName";
+	public static final String FIELD_TYPE = "fieldType";
+	public static final String VALUE = "value";
 
 	public static final int NOT_ASSIGNED = 0;
 	public static final int ASSIGNED_TH = 1;
 	public static final int ASSIGNED_TH_PH = 2;
 	public static final int ASSIGNED_TH_PH_TD = 3;
 	
-	public static final int REQUEST_PAYMENT_1 = 1;
-	public static final int REQUEST_PAYMENT_2 = 2;
-	public static final int REQUEST_PAYMENT_3 = 3;
-	public static final int REQUEST_PAYMENT_4 = 4;
-	public static final int REQUEST_PAYMENT_5 = 5;
+	public static final int REQUEST_PAYMENT_KHONG_THAY_DOI = 0;
+	public static final int REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG = 1;
+	public static final int REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI = 2;
+	public static final int REQUEST_PAYMENT_BAO_DA_NOP_PHI = 3;
+	public static final int REQUEST_PAYMENT_YEU_CAU_NOP_LAI_PHI_TRUC_TUYEN = 4;
+	public static final int REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI = 5;
 	
 	public static final String ACTION_CREATE_HSLT = "3200";
+	
+	public static final String DUE_DATE_EDITABLE = "editable";
+	public static final String DUE_DATE_HOUR = "hour";
 }

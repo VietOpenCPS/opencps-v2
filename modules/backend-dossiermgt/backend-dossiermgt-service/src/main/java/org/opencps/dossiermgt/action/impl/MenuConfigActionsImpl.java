@@ -7,12 +7,17 @@ import javax.naming.AuthenticationException;
 import org.opencps.dossiermgt.action.MenuConfigActions;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.BackendAuthImpl;
 
@@ -75,11 +80,15 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 	}
 
 	@Override
-	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
+	public long updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
 			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
 
-		return MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
+		MenuConfig menuConfig = MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
 				menuType, queryParams, tableConfig, buttonConfig);
+		if (menuConfig != null) {
+			return menuConfig.getMenuConfigId();
+		}
+		return 0;
 	}
 
 	//LamTV_ Process all list MenuConfig
@@ -96,6 +105,23 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 			flag = true;
 		}
 		return flag;
+	}
+
+	@Override
+	public void updateMenuRoles(long groupId, long menuConfigId, String roles) {
+
+		if (Validator.isNotNull(roles)) {
+			String[] roleArr = StringUtil.split(roles);
+			for (String role: roleArr) {
+				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, role);
+				if (job != null) {
+					long roleId = job.getMappingRoleId();
+					if (roleId > 0) {
+						MenuRoleLocalServiceUtil.updateMenuRoleDB(menuConfigId, roleId);
+					}
+				}
+			}
+		}
 	}
 
 }

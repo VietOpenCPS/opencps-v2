@@ -1,0 +1,314 @@
+swagger: '2.0'
+info:
+  description: OpenCPS là phần mềm lõi dịch vụ công trực tuyến nguồn mở đầu tiên và duy nhất tại Việt Nam tính đến thời điểm này.
+  version: 2.0.1
+  title: OpenCPS API
+  # put the contact info for your development or API team
+  contact:
+    email: opencps@lists.opencps.vn
+
+  license:
+    name: GNU Affero General Public License v3+.
+    url: http://www.gnu.org/licenses
+
+# tags are used for organizing operations
+tags:
+- name: ActionConfig
+  description: Định nghĩa các thao tác xử lý hồ sơ chuẩn trong hệ thống, dùng làm cơ sở để tạo ra cá dữ liệu DossierAction, DossierSync và DossierDocument
+
+paths:
+  /actionconfigs:
+    post:
+      tags:
+      - ActionConfig
+      summary: Thêm định nghĩa thao tác xử lý hồ sơ
+      operationId: addActionConfig
+      description: Thêm định nghĩa thao tác xử lý hồ sơ
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của ActionConfig 
+        schema:
+          $ref: '#/definitions/ActionConfigItem'
+      responses:
+        200:
+          description: ActionConfig thêm mới thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: ActionConfig đã tồn tại trong hệ thống
+  /actionconfigs/{id}:
+    get:
+      tags:
+      - ActionConfig
+      summary: Lấy danh sách các định nghĩa thao tác theo id Hoặc actionCode
+      operationId: getActionConfigByCode
+      description: Lấy danh sách các định nghĩa thao tác theo actionCode
+      consumes:
+        $ref: 'Users/GIAHUY/Documents/FDS_CODING/OPENCPSV2.1/opencps-v2/modules/swagger-generate/src/main/resources/mediatypes.yaml#/default'
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id hoặc actionCode của ActionConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy thao tác thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+
+# Define model
+definitions:
+  ActionConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/ActionConfigItem'
+  ActionConfigItem:
+    type: object
+    required:
+    - actionCode
+    properties:
+      actionConfigId:
+        type: integer
+        format: int64
+      actionCode:
+        type: string
+        example: "1100"
+      actionName:
+        type: string
+        example: "Nhận hồ sơ tại một cửa"
+      extraForm:
+        type: boolean
+        example: true
+      formScript:
+        type: string
+        example: '{"schema": {"title": "Example ?","type": "object","properties": {"name": {"type": "string","title": "Name"}}}}'
+      sampleData:
+        type: string
+        example: '{"name": "example"}'
+      insideProcess:
+        type: boolean
+        example: true
+      syncType:
+        type: integer
+        example: 0
+      pending:
+        type: boolean
+        example: true
+      rollbackable:
+        type: boolean
+        example: true
+      notificationType:
+        type: string
+        example: "Mã tạo thông báo email/SMS request: gửi cán bộ một cửa inform: gửi người làm thủ tục"
+      documentType:
+        type: string
+        example: "0001"
+      userNote:
+        type: integer
+        example: 0
+  StepConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/StepConfigItem'
+  StepConfigItem:
+    type: object
+    required:
+    - stepCode
+    properties:
+      stepConfigId:
+        type: integer
+        format: int64
+      createDate:
+        type: string
+        example: "2018-06-11T08:04:12.129Z"
+      stepCode:
+        type: string
+        example: "001"
+      stepName:
+        type: string
+        example: 'step name 001'
+      stepType:
+        type: integer
+        example: 0
+      dossierStatus:
+        type: string
+        example: 'dossierStatus 001'
+      dossierSubStatus:
+        type: string
+        example: 'dossierSubStatus 001'
+      menuGroup:
+        type: string
+        example: 'menuGroup 001'
+      menuStepName:
+        type: string
+        example: 'menuStepName 001'
+      buttonConfig:
+        type: string
+        example: "0001"
+  MenuConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigItem'
+  MenuConfigItem:
+    type: object
+    properties:
+      menuConfigId:
+        type: integer
+        format: int64
+      createDate:
+        type: string
+        example: "2018-06-11T08:04:12.129Z"
+      menuGroup:
+        type: string
+        example: "001"
+      menuName:
+        type: string
+        example: 'step name 001'
+      order:
+        type: integer
+        example: 0
+      menuType:
+        type: integer
+        example: 0
+      queryParams:
+        type: string
+        example: 'queryParams'
+      tableConfig:
+        type: string
+        example: 'tableConfig'
+      buttonConfig:
+        type: string
+        example: 'buttonConfig'
+      steps:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigStepsItem'
+  MenuConfigStepsItem:
+    type: object
+    properties:
+      stepCode:
+        type: string
+        example: ""
+      stepName:
+        type: string
+        example: "001"
+      menuStepName:
+        type: string
+        example: 'step name 001'
+  MenuConfigCountItemResults:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigCountItem'
+  MenuConfigCountItem:
+    type: object
+    properties:
+      menuGroup:
+        type: string
+        example: ""
+      menuName:
+        type: string
+        example: "001"
+      counter:
+        type: integer
+        format: int64
+# Parameter declare
+parameters:
+  id:
+    name: id
+    in: path
+    type: string
+    required: true
+    description: id or code of DocumentType
+  typeCode:
+    name: typeCode
+    in: path
+    type: string
+    required: true
+    description: typeCode of Document
+  keyword:
+    name: keyword
+    in: query
+    type: string
+    description: key search
+  start:
+    name: start
+    in: query
+    type: integer
+    format: int32
+    description: Record start
+  end:
+    name: end
+    in: query
+    type: integer
+    format: int32
+    description: Record end
+  sort:
+    name: sort
+    in: query
+    type: string
+    description: field sort
+  order:
+    name: order
+    in: query
+    type: string
+    description: field order
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /binhthgc/opencps/1.0.0
+schemes:
+ - https
+ - http

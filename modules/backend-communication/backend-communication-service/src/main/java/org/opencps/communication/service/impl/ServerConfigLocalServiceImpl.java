@@ -82,7 +82,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	public ServerConfig updateServerConfig(long groupId, long serverConfigId, String govAgencyCode, String serverNo, String serverName,
 			String protocol, String configs, Date lastSync, ServiceContext context) throws PortalException {
 
-		validateAdd(serverConfigId, serverNo, serverName, protocol, configs, lastSync);
+		validateAdd(groupId, serverConfigId, serverNo, serverName, protocol, configs, lastSync);
 
 		Date now = new Date();
 		long userId = context.getUserId();
@@ -129,7 +129,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 	}
 
-	private void validateAdd(long serverConfigId, String serverNo, String serverName, String protocol,
+	private void validateAdd(long groupId, long serverConfigId, String serverNo, String serverName, String protocol,
 			String configs, Date lastSync) throws PortalException {
 		if (Validator.isNull(serverName)) {
 			throw new ServerNoException("ServerNameIsNull");
@@ -141,16 +141,16 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 		if (serverConfigId == 0) {
 
-			ServerConfig serverConfigNo = serverConfigPersistence.fetchByCF_CD(serverNo);
+			ServerConfig serverConfigNo = serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
 
 			if (Validator.isNotNull(serverConfigNo)) {
 				throw new ServerNoDuplicateException("ServerNoDuplicateException");
 			}
-			ServerConfig serverConfigName = serverConfigPersistence.fetchByCF_NM(serverName);
-
-			if (Validator.isNotNull(serverConfigName)) {
-				throw new ServerNameDuplicateException("ServerNameDuplicateException");
-			}
+//			ServerConfig serverConfigName = serverConfigPersistence.fetchByCF_NM(serverName);
+//
+//			if (Validator.isNotNull(serverConfigName)) {
+//				throw new ServerNameDuplicateException("ServerNameDuplicateException");
+//			}
 		} else {
 
 			ServerConfig oldSC = serverConfigPersistence.fetchByPrimaryKey(serverConfigId);
@@ -159,17 +159,17 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 				throw new NotFoundException("ServerConfigNotFoundException");
 			} else {
 
-				ServerConfig scByNo = serverConfigPersistence.fetchByCF_CD(serverNo);
+				ServerConfig scByNo = serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
 
 				if (Validator.isNotNull(scByNo) && (scByNo.getPrimaryKey() != serverConfigId)) {
 					throw new ServerNoDuplicateException("ServerNoDuplicateException");
 				}
 
-				ServerConfig scByName = serverConfigPersistence.fetchByCF_NM(serverName);
+//				ServerConfig scByName = serverConfigPersistence.fetchByCF_NM(serverName);
 
-				if (Validator.isNotNull(scByName) && scByName.getPrimaryKey() != serverConfigId) {
-					throw new ServerNameDuplicateException("ServerNameDuplicateException");
-				}
+//				if (Validator.isNotNull(scByName) && scByName.getPrimaryKey() != serverConfigId) {
+//					throw new ServerNameDuplicateException("ServerNameDuplicateException");
+//				}
 			}
 		}
 
@@ -190,4 +190,17 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		serverConfigPersistence.removeAll();
 	}
 
+	//LamTV_Remove all record by groupId
+	public void deleteByGroupId(long groupId, long userId, ServiceContext serviceContext) {
+		serverConfigPersistence.removeByCF_GID(groupId);
+	}
+
+
+	public ServerConfig getByCode(long groupId, String serverNo) {
+		return serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
+	}
+	
+	public List<ServerConfig> getByProtocol(long groupId, String protocol) {
+		return serverConfigPersistence.findByG_P(groupId, protocol);
+	}
 }

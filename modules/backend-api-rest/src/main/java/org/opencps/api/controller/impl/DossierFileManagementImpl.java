@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -35,8 +36,16 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -99,7 +108,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			long dossierId = GetterUtil.getLong(id);
-
 			Dossier dossier = null;
 
 			if (dossierId != 0) {
@@ -111,20 +119,62 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 
+			_log.info("dossier:"+dossier);
+			_log.info("dossier:"+dossier.getOriginDossierId());
 			if (Validator.isNull(referenceUid)) {
 				referenceUid = UUID.randomUUID().toString();
 			}
 
-			DataHandler dataHandler = file.getDataHandler();
+			if (dossier.getOriginDossierId() != 0) {
+				//HSLT
+				Dossier hsltDossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+				
+				dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), hsltDossier.getGovAgencyCode());
+				List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+				
+				if (serviceConfig != null) {
+					if (lstOptions.size() > 0) {
+						ProcessOption processOption = lstOptions.get(0);
+						
+						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
+						List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
+						for (DossierPart dp : lstParts) {
+							if (dp.getPartNo().equals(dossierPartNo) && dp.getFileTemplateNo().equals(fileTemplateNo)) {
+								dossierTemplateNo = dp.getTemplateNo();
+							}
+						}
+					}
+				}
+			}
+			else {
+				List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
+				for (DossierPart dp : lstParts) {
+					if (dp.getPartNo().equals(dossierPartNo)) {
+						dossierTemplateNo = dossier.getDossierTemplateNo();
+						fileTemplateNo = dp.getFileTemplateNo();
+						dossierTemplateNo = dossier.getDossierTemplateNo();
+					}
+				}
+			}
+			
+			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 
 			DossierFileActions action = new DossierFileActionsImpl();
 			
 			
 			_log.info("__Start add file at:" + new Date());
-
-			DossierFile dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
-					dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
-					dataHandler.getInputStream(), fileType, isSync, serviceContext);
+			DossierFile dossierFile =  null;
+			
+			if (dataHandler != null && dataHandler.getInputStream() != null) {
+				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+						dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
+						dataHandler.getInputStream(), fileType, isSync, serviceContext);
+			} else {
+				dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+						dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
+						serviceContext);
+			}
 			
 			_log.info("__End add file at:" + new Date());
 			
@@ -235,6 +285,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getDossierId();
+				}
+			}
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			DossierFile dossierFile = action.updateDossierFile(groupId, id, referenceUid, dataHandle.getName(),
@@ -261,6 +318,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getOriginDossierId();
+				}
+			}
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(id, referenceUid);
 
 			return Response.status(200).entity(dossierFile.getFormData()).build();
@@ -305,6 +369,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getOriginDossierId();
+				}
+			}
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			DossierFile dossierFile = action.updateDossierFileFormData(groupId, id, referenceUid, formdata,
@@ -513,6 +584,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				if (dossier.getOriginDossierId() != 0) {
+					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					id = dossier.getOriginDossierId();
+				}
+			}
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			DossierFile dossierFile = action.resetDossierFileFormData(groupId, id, referenceUid, formdata,
@@ -746,11 +824,18 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			//Process FILE
 			String fileName = dataHandle.getName();
 			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
-			_log.info("LamTV_pathFolder: "+pathFolder);
+//			//delete folder if exits
+			File fileOld = new File(pathFolder);
+			if (fileOld.exists()) {
+				boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
+				_log.info("LamTV_Delete DONE: "+flag);
+			}
+//			_log.info("LamTV_pathFolder: "+pathFolder);
 			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
 			File fileList = new File(pathFolder);
-			_log.info("LamTV_fileList: "+fileList.getPath());
+//			_log.info("LamTV_fileList: "+fileList.getPath());
 			ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
+			_log.info("LamTV_IMPORT DONE");
 
 			return Response.status(200).entity(result).build();
 

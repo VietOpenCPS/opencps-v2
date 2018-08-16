@@ -53,7 +53,7 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 					body.getSampleData(), body.getInsideProcess(),
 					body.getUserNote(), body.getSyncType(), body.getPending(),
 					body.getRollbackable(), body.getNotificationType(),
-					body.getDocumentType(), serviceContext);
+					body.getDocumentType(), body.getMappingAction(), serviceContext);
 
 			body = parsing.getModel(ett);
 
@@ -100,7 +100,7 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 					body.getSampleData(), body.getInsideProcess(),
 					body.getUserNote(), body.getSyncType(), body.getPending(),
 					body.getRollbackable(), body.getNotificationType(),
-					body.getDocumentType(), serviceContext);
+					body.getDocumentType(), body.getMappingAction(), serviceContext);
 
 			body = parsing.getModel(ett);
 

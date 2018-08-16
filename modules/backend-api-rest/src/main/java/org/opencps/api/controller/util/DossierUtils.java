@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
-import org.opencps.api.dossier.model.DossierSearchDetailModel;
-import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -33,7 +35,6 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -56,7 +57,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class DossierUtils {
 
-	public static List<DossierDataModel> mappingForGetList(List<Document> docs) {
+	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
+	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+
+	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 
 		for (Document doc : docs) {
@@ -64,8 +68,18 @@ public class DossierUtils {
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-			model.setCreateDate(doc.get(Field.CREATE_DATE));
-			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.CREATE_DATE))) {
+				Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setCreateDate(APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setCreateDate(doc.get(DossierTerm.CREATE_DATE));
+			}
+			if (Validator.isNotNull(doc.get(DossierTerm.MODIFIED_DATE))) {
+				Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.MODIFIED_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setModifiedDate(APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+			model.setModifiedDate(doc.get(DossierTerm.MODIFIED_DATE));
+			}
 			model.setReferenceUid(doc.get(DossierTerm.REFERENCE_UID));
 			model.setCounter(GetterUtil.getInteger(doc.get(DossierTerm.COUNTER)));
 			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
@@ -91,7 +105,6 @@ public class DossierUtils {
 			model.setSubmissionNote(doc.get(DossierTerm.SUBMISSION_NOTE));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
-			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 //			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 //			_log.info("SUBMIT_DATE: "+doc.get(DossierTerm.SUBMIT_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.SUBMIT_DATE))) {
@@ -101,26 +114,127 @@ public class DossierUtils {
 				model.setSubmitDate(APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //				_log.info("SUBMIT_DATE_CONVERT: "+APIDateTimeUtils.convertDateToString(submitDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
-			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
+				model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 			}
 //			_log.info("RECEIVE_DATE: "+doc.get(DossierTerm.RECEIVE_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
 				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
-			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
+//			_log.info("DUE_DATE: "+doc.get(DossierTerm.DUE_DATE));
+//			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
+//				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+//			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
+//			}
+			//Process OverDue
+			Date now = new Date();
+			long dateNowTimeStamp = now.getTime();
+			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
+//			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
+			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
+			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+				if (subTimeStamp > 0) {
+					String strOverDue = calculatorOverDue(durationUnit, subTimeStamp);
+					model.setDossierOverdue("Quá hạn "+strOverDue);
+				} else {
+					String strOverDue = calculatorOverDue(durationUnit, subTimeStamp);
+					model.setDossierOverdue("Còn "+strOverDue);
+				}
+			} else {
+				model.setDossierOverdue(StringPool.BLANK);
+			}			
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+			//Process StepOverDue
+//			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0.0;
+//			if (Double.compare(durationCount, 0.0) != 0) {
+				long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
+				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				if (dAction != null) {
+					long serviceProcessId = dAction.getServiceProcessId();
+					long groupId = dAction.getGroupId();
+					String postStep = dAction.getStepCode();
+				if (Validator.isNotNull(postStep)) {
+					ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(postStep, groupId, serviceProcessId);
+					if (step != null) {
+						Double durationCountStep = step.getDurationCount();
+//						_log.info("durationCountStep: "+durationCountStep);
+						Date dueDateStep = null;
+						if (Validator.isNotNull(durationCountStep) && durationCountStep > 0) {
+							dueDateStep = HolidayUtils.getDueDate(dAction.getCreateDate(), durationCountStep,
+									durationUnit, groupId);
+						} else {
+							model.setStepOverdue(StringPool.BLANK);
+						}
+						if (dueDateStep != null) {
+							long dueDateStepTimeStamp = dueDateStep.getTime();
+							if (dueDateStepTimeStamp > 0) {
+								long subTimeStepStamp = dateNowTimeStamp - dueDateStepTimeStamp;
+								if (subTimeStepStamp > 0) {
+									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
+									model.setStepOverdue("Quá hạn "+stepOverDue);
+//									_log.info("setStepOverdue Qua Han: "+model.getStepOverdue());
+								} else {
+									String stepOverDue = calculatorOverDue(durationUnit, subTimeStepStamp);
+									model.setStepOverdue("Còn "+stepOverDue);
+//									_log.info("setStepOverdue Còn Han: "+model.getStepOverdue());
+								}
+							} else {
+								model.setStepOverdue(StringPool.BLANK);
+							}
+						}  else {
+							model.setStepOverdue(StringPool.BLANK);
+						}
+					}
+				}  else {
+					model.setStepOverdue(StringPool.BLANK);
+				}
+			} else {
+				model.setStepOverdue(StringPool.BLANK);
+			}
+			//LamTV: Process Assigned dossier
+			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
+//			_log.info("ASSIGNED" + dau);
+			if (dau != null) {
+				model.setAssigned(dau.getAssigned());
+			} else {
+				model.setAssigned(ConstantsTerm.NO_ASSINED);
+			}
+			
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
-			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
+//			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
-			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
+//			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
+			String strPermission = GetterUtil.getString(doc.get(DossierTerm.MAPPING_PERMISSION));
+			if (Validator.isNotNull(strPermission)) {
+				String[] permissionArr = strPermission.split(StringPool.SPACE);
+				if (permissionArr != null) {
+					for (String permission: permissionArr) {
+						if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
+							model.setPermission(permission);
+						} else {
+							model.setPermission(StringPool.BLANK);
+						}
+					}
+				} else {
+					model.setPermission(StringPool.BLANK);
+				}
+			} else {
+				model.setPermission(StringPool.BLANK);
+			}
+
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
 			model.setLastActionCode(doc.get(DossierTerm.LAST_ACTION_CODE));
 			model.setLastActionName(doc.get(DossierTerm.LAST_ACTION_NAME));
@@ -129,7 +243,7 @@ public class DossierUtils {
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
-			model.setStepOverdue(doc.get(DossierTerm.STEP_OVER_DUE));
+//			model.setStepOverdue(StringPool.BLANK);
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
@@ -153,32 +267,69 @@ public class DossierUtils {
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
 			model.setLockState(doc.get(DossierTerm.LOCK_STATE));
 			model.setStatusReg(doc.get(DossierTerm.STATUS_REG));
-			
-			
-			int processBlock = 0;
-			int processUnit = 0;
-			
-			try {
-				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(GetterUtil.getLong(doc.get(DossierTerm.GROUP_ID)), doc.get(DossierTerm.SERVICE_CODE) ,doc.get(DossierTerm.GOV_AGENCY_CODE));
-				
-				ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(GetterUtil.getLong(doc.get(DossierTerm.GROUP_ID)), doc.get(DossierTerm.DOSSIER_TEMPLATE_NO), serviceConfig.getServiceConfigId());
-				
-				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
-				
-				processBlock = serviceProcess.getDurationCount();
-				
-				processUnit = serviceProcess.getDurationUnit();
-				
-			} catch (Exception e) {
+
+//			int processBlock = 0;
+//			int processUnit = 0;
+//			try {
+//				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(GetterUtil.getLong(doc.get(DossierTerm.GROUP_ID)), doc.get(DossierTerm.SERVICE_CODE) ,doc.get(DossierTerm.GOV_AGENCY_CODE));
+//				
+//				ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(GetterUtil.getLong(doc.get(DossierTerm.GROUP_ID)), doc.get(DossierTerm.DOSSIER_TEMPLATE_NO), serviceConfig.getServiceConfigId());
+//				
+//				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+//				
+//				processBlock = serviceProcess.getDurationCount();
+//				
+//				processUnit = serviceProcess.getDurationUnit();
+//				
+//			} catch (Exception e) {
+//			}
+//			model.setProcessBlock(processBlock);
+//			model.setProcessUnit(processUnit);
+			model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
+			model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
+
+			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
+				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
 			}
+			else {
+				model.setDurationCount(0d);
+			}
+			model.setDurationUnit(durationUnit);
 			
-			model.setProcessBlock(processBlock);
-			model.setProcessUnit(processUnit);
+			if (Validator.isNotNull(doc.get(DossierTerm.SAMPLE_COUNT))) {
+				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+			}
+			else {
+				model.setSampleCount(0l);
+			}
 
 			ouputs.add(model);
 		}
 
 		return ouputs;
+	}
+	
+	public static String calculatorOverDue(int durationUnit, long subTimeStamp) {
+		if (subTimeStamp < 0) {
+			subTimeStamp = Math.abs(subTimeStamp);
+		}
+		String strOverDue = StringPool.BLANK;
+		double dueCount = 0d;
+		double overDue = 0d;
+		int retval = Double.compare(durationUnit, 1.0);
+		if (retval < 0) {
+			strOverDue = " ngày";
+			dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
+			double subDueCount = (double) Math.round(dueCount * 100) / 100;
+			overDue = (double) Math.ceil(subDueCount * 4) / 4;
+			return overDue + strOverDue;
+		} else {
+			strOverDue = " giờ";
+			dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
+			overDue = (double) Math.round(dueCount);
+		}
+
+		return (int)overDue + strOverDue;
 	}
 
 	//TODO: Process get list Paging
@@ -199,8 +350,18 @@ public class DossierUtils {
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-			model.setCreateDate(doc.get(Field.CREATE_DATE));
-			model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+			if (Validator.isNotNull(doc.get(DossierTerm.CREATE_DATE))) {
+				Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setSubmitDate(APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setSubmitDate(doc.get(DossierTerm.CREATE_DATE));
+			}
+			if (Validator.isNotNull(doc.get(DossierTerm.MODIFIED_DATE))) {
+				Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.MODIFIED_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setSubmitDate(APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setSubmitDate(doc.get(DossierTerm.MODIFIED_DATE));
+			}
 			model.setReferenceUid(doc.get(DossierTerm.REFERENCE_UID));
 			model.setCounter(GetterUtil.getInteger(doc.get(DossierTerm.COUNTER)));
 			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
@@ -245,15 +406,25 @@ public class DossierUtils {
 			} else {
 			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
+//			if (Validator.isNotNull(doc.get(DossierTerm.DUE_DATE))) {
+//				Date dueDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				model.setReceiveDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.FINISH_DATE))) {
+				Date finishDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.FINISH_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(finishDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.FINISH_DATE));
+			}
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
-			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
+//			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
 			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
@@ -264,7 +435,25 @@ public class DossierUtils {
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
-			model.setStepOverdue(doc.get(DossierTerm.STEP_OVER_DUE));
+			//Process OverDue
+			Date now = new Date();
+			long dateNowTimeStamp = now.getTime();
+			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
+			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
+//			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
+			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+				if (subTimeStamp > 0) {
+					String strOverDue = calculatorOverDue(durationUnit, subTimeStamp);
+					model.setDossierOverdue("Quá hạn "+strOverDue);
+				} else {
+					String strOverDue = calculatorOverDue(durationUnit, subTimeStamp);
+					model.setDossierOverdue("Còn "+strOverDue);
+				}
+			} else {
+				model.setDossierOverdue(StringPool.BLANK);
+			}
+			model.setStepOverdue(StringPool.BLANK);
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
@@ -289,6 +478,40 @@ public class DossierUtils {
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
 			model.setLockState(doc.get(DossierTerm.LOCK_STATE));
 			model.setStatusReg(doc.get(DossierTerm.STATUS_REG));
+//			model.setDelegateAddress(DossierTerm.getDelegateAddress());
+//			model.setDelegateCityCode(DossierTerm.getDelegateCityCode());
+//			model.setDelegateCityName(DossierTerm.getDelegateCityName());
+//			model.setDelegateDistrictCode(DossierTerm.getDelegateDistrictCode());
+//			model.setDelegateDistrictName(DossierTerm.getDelegateDistrictName());
+//			model.setDelegateEmail(DossierTerm.getDelegateEmail());
+//			model.setDelegateIdNo(DossierTerm.getDelegateIdNo());
+//			model.setDelegateName(DossierTerm.getDelegateName());
+//			model.setDelegateTelNo(DossierTerm.getDelegateTelNo());
+//			model.setDelegateWardCode(DossierTerm.getDelegateWardCode());
+//			model.setDelegateWardName(DossierTerm.getDelegateWardName());
+//			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
+//				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
+				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
+			}
+			else {
+				model.setDurationCount(0d);
+			}
+
+			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
+				model.setDurationUnit(durationUnit);				
+			}
+//			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
+//				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+//			}
+			if (Validator.isNotNull(doc.get(DossierTerm.SAMPLE_COUNT))) {
+				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
+			}
+			else {
+				model.setSampleCount(0l);
+			}
+			model.setAssigned(GetterUtil.getInteger(doc.get(DossierTerm.ASSIGNED)));
 
 			ouputs.add(model);
 		}
@@ -380,7 +603,7 @@ public class DossierUtils {
 			model.setStepCode(dossierAction.getStepCode());
 			model.setStepName(dossierAction.getStepName());
 
-			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getActionOverdue(), new Date());
+			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
 			if (dossierAction.getActionOverdue() != 0) {
 				model.setStepOverdue(StringPool.TRUE);
@@ -455,21 +678,24 @@ public class DossierUtils {
 		model.setDelegateTelNo(input.getDelegateTelNo());
 		model.setDelegateWardCode(input.getDelegateWardCode());
 		model.setDelegateWardName(input.getDelegateWardName());
+		model.setDurationCount(input.getDurationCount());
+		model.setDurationUnit(input.getDurationUnit());
+		model.setSampleCount(input.getSampleCount());
 
-		try {
-			long groupId = input.getGroupId();
-			ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, input.getServiceCode(), input.getGovAgencyCode());
-			ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,input.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
-			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
-
-			double durationCount = serviceProcess.getDurationCount();
-			double durationUnit = serviceProcess.getDurationUnit();
-			model.setDurationCount(durationCount);
-			model.setDurationUnit(durationUnit);
-		} catch (Exception e) {
-			model.setDurationCount(0d);
-			model.setDurationUnit(0d);
-		}
+//		try {
+//			long groupId = input.getGroupId();
+//			ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, input.getServiceCode(), input.getGovAgencyCode());
+//			ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,input.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
+//			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+//
+//			double durationCount = serviceProcess.getDurationCount();
+//			double durationUnit = serviceProcess.getDurationUnit();
+//			model.setDurationCount(durationCount);
+//			model.setDurationUnit(durationUnit);
+//		} catch (Exception e) {
+//			model.setDurationCount(0d);
+//			model.setDurationUnit(0d);
+//		}
 
 		return model;
 	}
@@ -549,7 +775,8 @@ public class DossierUtils {
 
 		_log.info("GET PROCESS ACTION____");
 		ProcessAction action = null;
-
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
@@ -571,10 +798,24 @@ public class DossierUtils {
 				} else {
 					String stepStatus = step.getDossierStatus();
 					String stepSubStatus = step.getDossierSubStatus();
+					boolean flagCheck = false;
+					
+					if (dossierAction != null) {
+						if (act.getPreStepCode().equals(dossierAction.getStepCode())) {
+							flagCheck = true;
+						}
+					}
+					else {
+						flagCheck = true;
+					}
+					
 					if (stepStatus.contentEquals(dossierStatus)
-							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)) {
-						action = act;
-						break;
+							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
+							&& flagCheck) {
+						if (DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+							action = act;
+							break;							
+						}
 					}
 				}
 			}
@@ -597,7 +838,9 @@ public class DossierUtils {
 				List<Employee> lstEmployees = new ArrayList<>();
 				for (EmployeeJobPos ejp : lstEJPs) {
 					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(ejp.getEmployeeId());
-					lstEmployees.add(employee);					
+					if (employee != null) {
+						lstEmployees.add(employee);
+					}
 				}
 				
 				for (Employee e : lstEmployees) {
@@ -618,4 +861,22 @@ public class DossierUtils {
 			}
 		}
 	}
+
+	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
+		DossierActionDetailModel model = new DossierActionDetailModel();
+
+		model.setDossierActionId(dAction.getDossierActionId());
+		model.setDossierId(dAction.getDossierId());
+		model.setDossierDocumentId(dossierDocumentId);
+		model.setFromStepCode(dAction.getFromStepCode());
+		model.setNextActionId(dAction.getNextActionId());
+		model.setGroupId(dAction.getGroupId());
+		model.setPreviousActionId(dAction.getPreviousActionId());
+		model.setSequenceNo(dAction.getSequenceNo());
+		model.setServiceProcessId(dAction.getServiceProcessId());
+		model.setRollbackable(dAction.getRollbackable());
+
+		return model;
+	}
+
 }

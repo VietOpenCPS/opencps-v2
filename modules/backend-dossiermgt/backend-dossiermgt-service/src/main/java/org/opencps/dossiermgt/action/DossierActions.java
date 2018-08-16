@@ -110,9 +110,9 @@ public interface DossierActions {
 	public JSONObject getDossierProcessList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
 
-	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
-			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, String payment, int syncType,
-			ServiceContext serviceContext) throws PortalException;
+	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option,
+			ProcessAction proAction, String actionCode, String actionUser, String actionNote, String payload,
+			String assignUsers, String payment, int syncType, ServiceContext serviceContext) throws PortalException;
 
 	public JSONArray getNextActionList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
@@ -121,7 +121,7 @@ public interface DossierActions {
 			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
 			ServiceContext serviceContext);
 
-	public JSONObject getPayloadNextActions(long userId, long companyId, long groupId,
+	public JSONArray getPayloadNextActions(long userId, long companyId, long groupId,
 			LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end,
 			ServiceContext serviceContext);
 
@@ -129,7 +129,17 @@ public interface DossierActions {
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
-			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
-			ServiceContext serviceContext);
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
+			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
+			Long sampleCount, ServiceContext serviceContext);
 
+	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException;
+	
 }

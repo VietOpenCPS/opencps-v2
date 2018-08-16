@@ -150,8 +150,11 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 					date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
 				}
 
+//				model.put("createDate", date != null
+//						? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP) : strDate);
+
 				model.put("createDate", date != null
-						? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP) : strDate);
+				? date.getTime() : 0l);
 
 				model.put("notificationType", document.get(DossierLogTerm.NOTIFICATION_TYPE));
 

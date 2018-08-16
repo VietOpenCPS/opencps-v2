@@ -3,11 +3,15 @@ package org.opencps.dossiermgt.rest.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
+import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
@@ -40,14 +44,18 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getDossierTemplateNo())) {
 		    params.put(DossierTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());	    	
 	    }
+	    params.put(DossierTerm.SERVICE_NAME, model.getServiceName());
 	    params.put(DossierTerm.APPLICANT_NAME, model.getApplicantName());
 	    params.put(DossierTerm.APPLICANT_ID_TYPE, model.getApplicantIdType());
 	    params.put(DossierTerm.APPLICANT_ID_NO, model.getApplicantIdNo());
 	    params.put(DossierTerm.APPLICANT_ID_DATE, model.getApplicantIdDate());
 	    params.put(DossierTerm.ADDRESS, model.getAddress());
 	    params.put(DossierTerm.CITY_CODE, model.getCityCode());
+	    params.put(DossierTerm.CITY_NAME, model.getCityName());
 	    params.put(DossierTerm.DISTRICT_CODE, model.getDistrictCode());
+	    params.put(DossierTerm.DISTRICT_NAME, model.getDistrictName());
 	    params.put(DossierTerm.WARD_CODE, model.getWardCode());
+	    params.put(DossierTerm.WARD_NAME, model.getWardName());
 	    params.put(DossierTerm.CONTACT_NAME, model.getContactName());
 	    params.put(DossierTerm.CONTACT_TEL_NO, model.getContactTelNo());
 	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
@@ -94,8 +102,14 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.SERVICE_CODE)) {
 			model.setServiceCode(jsonObj.getString(DossierTerm.SERVICE_CODE));
 		}
+		if (jsonObj.has(DossierTerm.SERVICE_NAME)) {
+			model.setServiceName(jsonObj.getString(DossierTerm.SERVICE_NAME));
+		}
 		if (jsonObj.has(DossierTerm.GOV_AGENCY_CODE)) {
 			model.setGovAgencyCode(jsonObj.getString(DossierTerm.GOV_AGENCY_CODE));
+		}
+		if (jsonObj.has(DossierTerm.GOV_AGENCY_NAME)) {
+			model.setGovAgencyName(jsonObj.getString(DossierTerm.GOV_AGENCY_NAME));
 		}
 		if (jsonObj.has(DossierTerm.DOSSIER_TEMPLATE_NO)) {
 			model.setDossierTemplateNo(jsonObj.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
@@ -118,11 +132,20 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.CITY_CODE)) {
 			model.setCityCode(jsonObj.getString(DossierTerm.CITY_CODE));
 		}
+		if (jsonObj.has(DossierTerm.CITY_NAME)) {
+			model.setCityName(jsonObj.getString(DossierTerm.CITY_NAME));
+		}
 		if (jsonObj.has(DossierTerm.DISTRICT_CODE)) {
 			model.setDistrictCode(jsonObj.getString(DossierTerm.DISTRICT_CODE));
 		}
+		if (jsonObj.has(DossierTerm.DISTRICT_NAME)) {
+			model.setDistrictName(jsonObj.getString(DossierTerm.DISTRICT_NAME));
+		}
 		if (jsonObj.has(DossierTerm.WARD_CODE)) {
 			model.setWardCode(jsonObj.getString(DossierTerm.WARD_CODE));
+		}
+		if (jsonObj.has(DossierTerm.WARD_NAME)) {
+			model.setWardName(jsonObj.getString(DossierTerm.WARD_NAME));
 		}
 		if (jsonObj.has(DossierTerm.CONTACT_NAME)) {
 			model.setContactName(jsonObj.getString(DossierTerm.CONTACT_NAME));
@@ -181,8 +204,7 @@ public class OpenCPSConverter {
 		if (!jsonObj.has("message")) {
 			return model;
 		}
-		
-		_log.info("jsonObj1: "+jsonObj);
+
 		String strMessage = jsonObj.getString("message");
 		_log.info("strMessage: "+strMessage);
 		if (Validator.isNotNull(strMessage)) {
@@ -339,6 +361,12 @@ public class OpenCPSConverter {
 		return params;
 	}
 	
+	public static HashMap<String, String> convertDossierFileEFormHttpParams(DossierFileModel model) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
+		return params;
+	}
+
 	public static Map<String, Object> convertPaymentFileInputHttpParams(PaymentFileInputModel model) {
 	    Map<String, Object> params = new HashMap<>();
 	    
@@ -415,4 +443,80 @@ public class OpenCPSConverter {
 		return result;
 	}
 	
+	public static JSONObject convertFileInputModelToJSON(DossierFileModel model) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put(DossierFileTerm.SIGN_INFO, model.getSignInfo());
+		obj.put(DossierFileTerm.SIGN_CHECK, model.getSignCheck());
+		obj.put(DossierFileTerm.CREATE_DATE, model.getCreateDate());
+		obj.put(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
+		obj.put(DossierFileTerm.DOSSIER_FILE_ID, model.getDossierFileId());
+		obj.put(DossierFileTerm.DOSSIER_PART_NO, model.getDossierPartNo());
+		obj.put(DossierFileTerm.DOSSIER_PART_TYPE, model.getDossierPartType());
+		obj.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());
+		obj.put(DossierFileTerm.FILE_TEMPLATE_NO, model.getFileTemplateNo());
+		return obj;
+	}
+	
+	public static JSONObject convertExecuteOneActionToJSON(ExecuteOneAction model) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put(DossierActionTerm.ACTION_CODE, model.getActionCode());
+		obj.put(DossierActionTerm.ACTION_NOTE, model.getActionNote());
+		obj.put(DossierActionTerm.ACTION_USER, model.getActionUser());
+		obj.put(DossierActionTerm.PAYLOAD, model.getPayload());
+		return obj;
+	}
+	
+	public static JSONObject convertDossierToJSON(DossierDetailModel model) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put(DossierTerm.ADDRESS, model.getAddress());
+		obj.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
+		obj.put(DossierTerm.DOSSIER_ID, model.getDossierId());
+		return obj;
+	}
+	
+	public static HashMap<String, String> convertDossierDocumentHttpParams(DossierDocumentModel model) {
+		HashMap<String, String> params = new HashMap<>();
+	    
+	    if (Validator.isNotNull(model.getReferenceUid())) {
+		    params.put(DossierDocumentTerm.REFERENCE_UID, model.getReferenceUid());	    	
+	    }
+	    if (Validator.isNotNull(model.getDocumentType())) {
+		    params.put(DossierDocumentTerm.DOCUMENT_TYPE, model.getDocumentType());	    	
+	    }
+	    if (Validator.isNotNull(model.getDocumentName())) {
+		    params.put(DossierDocumentTerm.DOCUMENT_NAME, model.getDocumentName());	    	
+	    }
+	    if (Validator.isNotNull(model.getDocumentCode())) {
+		    params.put(DossierDocumentTerm.DOCUMENT_CODE, model.getDocumentCode());	    	
+	    }
+	    
+	    return params;
+	}		
+	
+	public static DossierDocumentModel convertDossierDocument(JSONObject jsonObj) {
+		DossierDocumentModel result = new DossierDocumentModel();
+		
+		if (jsonObj.has(DossierDocumentTerm.REFERENCE_UID)) {
+			result.setReferenceUid(jsonObj.getString(DossierDocumentTerm.REFERENCE_UID));
+		}
+		if (jsonObj.has(DossierDocumentTerm.DOCUMENT_NAME)) {
+			result.setDocumentName(jsonObj.getString(DossierDocumentTerm.DOCUMENT_NAME));
+		}
+		if (jsonObj.has(DossierDocumentTerm.DOCUMENT_TYPE)) {
+			result.setDocumentType(jsonObj.getString(DossierDocumentTerm.DOCUMENT_TYPE));
+		}
+		if (jsonObj.has(DossierDocumentTerm.DOCUMENT_CODE)) {
+			result.setDocumentCode(jsonObj.getString(DossierDocumentTerm.DOCUMENT_CODE));
+		}
+		return result;
+	}
+	
+	public static DossierDocumentModel convertDossierDocument(DossierDocument dossierDocument) {
+		DossierDocumentModel result = new DossierDocumentModel();
+		result.setDocumentCode(dossierDocument.getDocumentCode());
+		result.setDocumentName(dossierDocument.getDocumentName());
+		result.setDocumentType(dossierDocument.getDocumentType());
+		result.setReferenceUid(dossierDocument.getReferenceUid());
+		return result;
+	}
 }

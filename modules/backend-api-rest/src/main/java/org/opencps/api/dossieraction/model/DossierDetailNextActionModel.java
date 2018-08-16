@@ -61,9 +61,12 @@ import javax.xml.bind.annotation.XmlType;
  "extraForm",
  "userNote",
  "payment",
+ "receiving",
  "toUsers",
  "createFiles",
  "returnFiles",
+ "checkInput",
+ "configNote"
 })
 @XmlRootElement(name = "DossierDetailNextActionModel")
 public class DossierDetailNextActionModel {
@@ -81,10 +84,12 @@ public class DossierDetailNextActionModel {
 	protected Boolean extraForm;
 	protected Integer userNote;
 	protected DossierActionPaymentModel payment;
+	protected ReceivingModel receiving;
 	protected List<DossierActionNextActiontoUser> toUsers;
 	protected List<DossierActionNextActioncreateFiles> createFiles;
 	protected List<DossierActionNextActionReturnFiles> returnFiles;
-	
+	protected Integer checkInput;
+	protected String configNote;
 
 	public Long getProcessActionId() {
 		return processActionId;
@@ -242,36 +247,6 @@ public class DossierDetailNextActionModel {
 	}
 
 	/**
-	 * Gets the value of the toUsers property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a
-	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the toUsers property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
-	 * getToUsers().add(newItem);
-	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link DossierActionNextActiontoUser }
-	 * 
-	 * 
-	 */
-	public List<DossierActionNextActiontoUser> getToUsers() {
-		if (toUsers == null) {
-			toUsers = new ArrayList<DossierActionNextActiontoUser>();
-		}
-		return this.toUsers;
-	}
-
-	/**
 	 * Gets the value of the createFiles property.
 	 * 
 	 * <p>
@@ -361,4 +336,35 @@ public class DossierDetailNextActionModel {
 		return this.returnFiles;
 	}
 
+	public Integer getCheckInput() {
+		return checkInput;
+	}
+
+	public void setCheckInput(Integer checkInput) {
+		this.checkInput = checkInput;
+	}
+
+	public String getConfigNote() {
+		return configNote;
+	}
+
+	public void setConfigNote(String configNote) {
+		this.configNote = configNote;
+	}
+
+	public List<DossierActionNextActiontoUser> getToUsers() {
+		return toUsers;
+	}
+
+	public void setToUsers(List<DossierActionNextActiontoUser> toUsers) {
+		this.toUsers = toUsers;
+	}
+
+	public ReceivingModel getReceiving() {
+		return receiving;
+	}
+	
+	public void setReceiving(ReceivingModel value) {
+		this.receiving = value;
+	}
 }

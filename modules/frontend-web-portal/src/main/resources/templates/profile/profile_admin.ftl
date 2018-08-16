@@ -12,7 +12,7 @@
 		<div class="col-sm-8 ">
 			<div class="row MB10 MT20">	
 				<div class="col-sm-4 PT5">
-					<span>Tên đăng kiểm viên </span> <span class="red">(*)</span>
+					<span>Tên người dùng </span> <span class="red">(*)</span>
 				</div>
 				<div class="col-sm-8">
 					<input class="form-control input-sm" id="fullnameEmployee" name="fullnameEmployee" value="${(employee.fullName)!}">

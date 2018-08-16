@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="partTip" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="partName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="templateFileNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="eform" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="eForm" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
  *         &lt;element name="multiple" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
  *         &lt;element name="formScript" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="formData" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -48,13 +48,14 @@ import javax.xml.bind.annotation.XmlType;
     "partTip",
     "partName",
     "templateFileNo",
-    "eform",
+    "eForm",
     "multiple",
     "formScript",
     "formData",
     "counter",
     "returned",
-    "dossierFileId"
+    "dossierFileId",
+    "partType"
 })
 public class DossierActionNextActioncreateFiles {
 
@@ -63,7 +64,7 @@ public class DossierActionNextActioncreateFiles {
     protected String partTip;
     protected String partName;
     protected String templateFileNo;
-    protected Boolean eform;
+    protected Boolean eForm;
     protected Boolean multiple;
     protected String formScript;
     protected String formData;
@@ -71,6 +72,7 @@ public class DossierActionNextActioncreateFiles {
     protected Integer counter;
     protected Boolean returned;
     protected Long dossierFileId;
+    protected Integer partType;
     
     /**
      * Gets the value of the dossierFileId property.
@@ -290,27 +292,27 @@ public class DossierActionNextActioncreateFiles {
     }
 
     /**
-     * Gets the value of the eform property.
+     * Gets the value of the eForm property.
      * 
      * @return
      *     possible object is
      *     {@link Boolean }
      *     
      */
-    public Boolean isEform() {
-        return eform;
+    public Boolean isEForm() {
+        return eForm;
     }
 
     /**
-     * Sets the value of the eform property.
+     * Sets the value of the eForm property.
      * 
      * @param value
      *     allowed object is
      *     {@link Boolean }
      *     
      */
-    public void setEform(Boolean value) {
-        this.eform = value;
+    public void setEForm(Boolean value) {
+        this.eForm = value;
     }
 
     /**
@@ -384,5 +386,13 @@ public class DossierActionNextActioncreateFiles {
     public void setFormData(String value) {
         this.formData = value;
     }
+
+	public Integer getPartType() {
+		return partType;
+	}
+
+	public void setPartType(Integer partType) {
+		this.partType = partType;
+	}
 
 }

@@ -42,7 +42,8 @@ import javax.xml.bind.annotation.XmlType;
     "govAgencyName",
     "serviceInstruction",
     "serviceLevel",
-    "serviceUrl"
+    "serviceUrl",
+    "serviceConfigId"
 })
 public class ServiceInfoServiceConfig {
 
@@ -51,7 +52,8 @@ public class ServiceInfoServiceConfig {
     protected String serviceInstruction;
     protected Integer serviceLevel;
     protected String serviceUrl;
-
+    protected Long serviceConfigId;
+    
     /**
      * Gets the value of the govAgencyCode property.
      * 
@@ -171,5 +173,13 @@ public class ServiceInfoServiceConfig {
     public void setServiceUr(String value) {
         this.serviceUrl = value;
     }
+
+	public Long getServiceConfigId() {
+		return serviceConfigId;
+	}
+
+	public void setServiceConfigId(Long serviceConfigId) {
+		this.serviceConfigId = serviceConfigId;
+	}
 
 }

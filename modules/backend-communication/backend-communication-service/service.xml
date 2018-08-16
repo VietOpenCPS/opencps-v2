@@ -155,6 +155,10 @@
 			<finder-column name="groupId"/>
 		</finder>
 		
+		<finder return-type="Collection" name="G_P">
+			<finder-column name="groupId"/>
+			<finder-column name="protocol"/>
+		</finder>
 	</entity>
 	
 	<exceptions>

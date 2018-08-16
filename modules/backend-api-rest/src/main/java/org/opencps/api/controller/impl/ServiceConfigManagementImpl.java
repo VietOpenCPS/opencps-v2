@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ServiceConfigManagement;
@@ -38,13 +40,26 @@ import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.indexer.RegistrationIndexer;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -52,6 +67,9 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusException;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -652,27 +670,32 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 							JSONArray arrService = JSONFactoryUtil.createJSONArray();
 
 							for (Document doc : docs) {
+								int level = GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+								if (level > 2) {
+									JSONObject srvElm = JSONFactoryUtil.createJSONObject();
 
-								JSONObject srvElm = JSONFactoryUtil.createJSONObject();
+									srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
+									srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
+									srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
+									srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
 
-								srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
-								srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
-								srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
-								srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
-
-								arrService.put(srvElm);
+									arrService.put(srvElm);									
+								}
 							}
 
-							domElm.put("serviceConfigs", arrService);
+							if (arrService.length() > 0) {
+								domElm.put("serviceConfigs", arrService);								
+								arrDomain.put(domElm);
+							}
 
-							arrDomain.put(domElm);
 						}
 
 					}
 
-					govElm.put("domains", arrDomain);
-					
-					arrGovAgency.put(govElm);
+					if (arrDomain.length() > 0) {
+						govElm.put("domains", arrDomain);						
+						arrGovAgency.put(govElm);						
+					}
 
 				}
 
@@ -966,6 +989,151 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		}
 
 		return serviceConfigs;
+	}
+
+	@Override
+	public Response getGuide(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, String id, ServiceConfigSearchModel search) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long serviceConfigId = GetterUtil.getLong(id);
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.fetchServiceConfig(serviceConfigId);
+			JSONObject jsonGuide = JSONFactoryUtil.createJSONObject();
+			jsonGuide.put(ServiceConfigTerm.SERVICE_CODE, search.getServiceCode());
+			jsonGuide.put(ServiceConfigTerm.SERVICE_NAME, search.getServiceName());
+			jsonGuide.put(ServiceConfigTerm.ACTION_USER, user.getFullName());
+			if (serviceConfig != null) {
+				jsonGuide.put(ServiceConfigTerm.SERVICE_INSTRUCTION, serviceConfig.getServiceInstruction());
+			}
+
+			List<ProcessOption> optionList = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfigId);
+			JSONArray optionArr = JSONFactoryUtil.createJSONArray();
+			if (optionList != null && optionList.size() > 0) {
+				JSONObject jsonOption = null;
+				JSONArray partArr = null;
+				for (ProcessOption option : optionList) {
+					if (option != null) {
+						jsonOption = JSONFactoryUtil.createJSONObject();
+						jsonOption.put(ProcessOptionTerm.INSTRUCTION_NOTE, option.getInstructionNote());
+						// Get serviceProcess by optionId
+						ServiceProcess process = ServiceProcessLocalServiceUtil
+								.fetchServiceProcess(option.getServiceProcessId());
+						if (process != null) {
+							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, process.getDurationCount());
+							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, process.getDurationUnit());
+						} else {
+							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, StringPool.BLANK);
+							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, StringPool.BLANK);
+						}
+						// Get dossierTemplate by dossierTemplateId
+						DossierTemplate template = DossierTemplateLocalServiceUtil
+								.fetchDossierTemplate(option.getDossierTemplateId());
+						partArr = JSONFactoryUtil.createJSONArray();
+						if (template != null) {
+							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, template.getTemplateName());
+							// Get list part by templateNo
+							List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+									template.getTemplateNo());
+							if (partList != null && partList.size() > 0) {
+								JSONObject jsonPart = null;
+								for (DossierPart part : partList) {
+									if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
+										jsonPart = JSONFactoryUtil.createJSONObject();
+										jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
+										jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
+										jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
+										jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
+										jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
+
+										partArr.put(jsonPart);
+									}
+								}
+							}
+							// Add key template in jsonOption
+							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
+						} else {
+							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, StringPool.BLANK);
+							// Add key template in jsonOption
+							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
+						}
+						// add array process option
+						optionArr.put(jsonOption);
+					}
+				}
+			}
+			jsonGuide.put(ServiceConfigTerm.PROCESSES, optionArr);
+
+			DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, search.getTypeCode());
+			String documentScript = StringPool.BLANK;
+			if (docType != null) {
+				documentScript = docType.getDocumentScript();
+			}
+			_log.info("documentScript: "+documentScript);
+
+			Message message = new Message();
+			message.put("formReport", documentScript);
+			message.put("formData", jsonGuide.toJSONString());
+
+			try {
+				String previewResponse = (String) MessageBusUtil
+						.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+
+				if (Validator.isNotNull(previewResponse)) {
+				}
+
+				File file = new File(previewResponse);
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "application/pdf");
+
+				return responseBuilder.build();
+
+			} catch (MessageBusException e) {
+				throw new Exception("Preview rendering not avariable");
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
+
+		}
+	}
+
+	private Response processException(Exception e) {
+		ErrorMsg error = new ErrorMsg();
+
+		if (e instanceof UnauthenticationException) {
+			error.setMessage("Non-Authoritative Information.");
+			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+			error.setDescription("Non-Authoritative Information.");
+
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+		} else {
+			if (e instanceof UnauthorizationException) {
+				error.setMessage("Unauthorized.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Unauthorized.");
+
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+			} else {
+
+				error.setMessage("No Content.");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription(e.getMessage());
+
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+
+			}
+		}
 	}
 
 }

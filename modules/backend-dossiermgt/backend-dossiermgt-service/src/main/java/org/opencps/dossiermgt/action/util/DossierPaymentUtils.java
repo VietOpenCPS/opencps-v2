@@ -17,11 +17,12 @@ import javax.script.ScriptException;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
@@ -94,23 +95,22 @@ public class DossierPaymentUtils {
 	}
 
 	// call processPaymentFile create paymentFile
-	public static void processPaymentFile(String pattern, long groupId, long dossierId, long userId,
+	public static void processPaymentFile(ProcessAction processAction, String pattern, long groupId, long dossierId, long userId,
 			ServiceContext serviceContext, String serverNo) throws JSONException {
 
 		// get total payment amount
-
-		int payment = getTotalPayment(pattern, dossierId, userId, serviceContext);
+		JSONObject patternObj = JSONFactoryUtil.createJSONObject(pattern);
+		
+//		int payment = getTotalPayment(pattern, dossierId, userId, serviceContext);
 
 		// get PaymentFee
-		List<String> messages = getMessagePayment(pattern);
+//		List<String> messages = getMessagePayment(pattern);
 
-		// TODO paymentNote
 		String paymentNote = StringPool.BLANK;
-		String paymentFee = StringPool.BLANK;
 
-		if (messages.size() > 0) {
-			paymentFee = messages.get(0);
-		}
+//		if (messages.size() > 0) {
+//			paymentFee = messages.get(0);
+//		}
 
 		// create paymentFile
 		PaymentFileActions actions = new PaymentFileActionsImpl();
@@ -120,17 +120,45 @@ public class DossierPaymentUtils {
 
 		PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
 				dossier.getGovAgencyCode());
-
+		String paymentFee = StringPool.BLANK;
+		long advanceAmount = 0;
+		
+		if (patternObj.has(PaymentFileTerm.PAYMENT_FEE)) {
+			paymentFee = patternObj.getString(PaymentFileTerm.PAYMENT_FEE);			
+		}
+		if (patternObj.has(PaymentFileTerm.ADVANCE_AMOUNT)) {
+			advanceAmount = patternObj.getLong(PaymentFileTerm.ADVANCE_AMOUNT);
+		}
+		
 		try {
 
 			// generator epaymentProfile
-			JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
-
-			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
-					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
-					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
-					serviceContext);
+			JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
 			
+			PaymentFile paymentFile = actions.createPaymentFile(
+					userId, 
+					groupId, 
+					dossierId, 
+					null, 
+					paymentFee, 
+					advanceAmount, 
+					0, 
+					0, 
+					0, 
+					0, 
+					paymentNote, 
+					StringPool.BLANK, 
+					StringPool.BLANK, 
+					processAction.getRequestPayment(), 
+					StringPool.BLANK, 
+					serviceContext);
+
+			
+//			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
+//					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
+//					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
+//					serviceContext);
+//			
 			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
 			
 			Calendar cal = Calendar.getInstance();
@@ -183,12 +211,12 @@ public class DossierPaymentUtils {
 				}
 
 			}
-
-			// Create paymentfile sync
-			if (Validator.isNotNull(serverNo)) {
-//				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-//						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
-			}
+//
+//			// Create paymentfile sync
+//			if (Validator.isNotNull(serverNo)) {
+////				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
+////						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
+//			}
 
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block

@@ -56,6 +56,7 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 		// add number fields
 		document.addNumberSortable(ServiceConfigTerm.SERVICE_LEVEL, object.getServiceLevel());
 		document.addNumberSortable(ServiceConfigTerm.SERVICEINFO_ID, object.getServiceInfoId());
+		document.addNumberSortable(ServiceConfigTerm.SERVICECONFIG_ID, object.getServiceConfigId());
 
 		// add text fields
 		document.addTextSortable(ServiceConfigTerm.GOVAGENCY_CODE, object.getGovAgencyCode());
@@ -66,6 +67,7 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 		document.addTextSortable(ServiceConfigTerm.FOR_BUSINESS, Boolean.toString(object.getForBusiness()));
 		document.addTextSortable(ServiceConfigTerm.POSTAL_SERVICE, Boolean.toString(object.getPostService()));
 		document.addTextSortable(ServiceConfigTerm.REGISTRATION, Boolean.toString(object.getRegistration()));
+		
 
 		// add extend fields
 

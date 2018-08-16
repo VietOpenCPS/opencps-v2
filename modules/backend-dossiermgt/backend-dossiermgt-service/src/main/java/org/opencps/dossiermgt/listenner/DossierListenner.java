@@ -1,39 +1,22 @@
 package org.opencps.dossiermgt.listenner;
 
-import java.util.List;
+import java.util.Date;
 
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierLog;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
-import org.opencps.usermgt.action.impl.EmployeeActions;
-import org.opencps.usermgt.action.impl.JobposActions;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-
-import backend.utils.APIDateTimeUtils;
 
 @Component(immediate = true, service = ModelListener.class)
 public class DossierListenner extends BaseModelListener<Dossier> {
+
+	private static final String ORIGINAL_TODO = "2,3";
 
 	@Override
 	public void onAfterCreate(Dossier model) throws ModelListenerException {
@@ -43,6 +26,30 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		 * add doossier log use DossierListennerUtils
 		 */
 		DossierListennerUltils.createDossierLog(model, false, false);
+		//Add Applicant
+		if (ORIGINAL_TODO.contains(String.valueOf(model.getOriginality()))) {
+			long groupId = model.getGroupId();
+			long userId = model.getUserId();
+			long companyId = model.getCompanyId();
+			String applicantIdNo = model.getApplicantIdNo();
+			String applicantName = model.getApplicantName();
+			String applicantIdType = model.getApplicantIdType();
+			Date applicantIdDate = model.getApplicantIdDate();
+			String address = model.getAddress();
+			String cityCode = model.getCityCode();
+			String cityName = model.getCityName();
+			String districtCode = model.getDistrictCode();
+			String districtName = model.getDistrictName();
+			String wardCode = model.getWardCode();
+			String wardName = model.getWardName();
+			String contactName = model.getContactName();
+			String contactTelNo = model.getContactTelNo();
+			String contactEmail = model.getContactEmail();
+			
+			ApplicantLocalServiceUtil.updateApplicant(groupId, userId, companyId, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail);
+		}
 	
 	}
 
@@ -110,6 +117,29 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		}
 		
 	*/
+		if (ORIGINAL_TODO.contains(String.valueOf(model.getOriginality()))) {
+			long groupId = model.getGroupId();
+			long userId = model.getUserId();
+			long companyId = model.getCompanyId();
+			String applicantIdNo = model.getApplicantIdNo();
+			String applicantName = model.getApplicantName();
+			String applicantIdType = model.getApplicantIdType();
+			Date applicantIdDate = model.getApplicantIdDate();
+			String address = model.getAddress();
+			String cityCode = model.getCityCode();
+			String cityName = model.getCityName();
+			String districtCode = model.getDistrictCode();
+			String districtName = model.getDistrictName();
+			String wardCode = model.getWardCode();
+			String wardName = model.getWardName();
+			String contactName = model.getContactName();
+			String contactTelNo = model.getContactTelNo();
+			String contactEmail = model.getContactEmail();
+			
+			ApplicantLocalServiceUtil.updateApplicant(groupId, userId, companyId, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail);
+		}
 	}
 
 	@Override

@@ -74,7 +74,7 @@ public class UserManagementImpl implements UserManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-			_log.error(e);
+//			_log.error(e);
 
 			ErrorMsg error = new ErrorMsg();
 			error.setMessage("file not found!");

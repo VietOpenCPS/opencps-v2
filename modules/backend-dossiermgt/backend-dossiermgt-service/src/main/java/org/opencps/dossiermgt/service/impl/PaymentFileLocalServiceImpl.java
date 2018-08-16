@@ -23,6 +23,8 @@ import java.util.List;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -352,8 +354,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile createPaymentFiles(long userId, long groupId, long dossierId, String referenceUid,
-			String govAgencyCode, String govAgencyName, String applicantName, String applicantIdNo, String paymentFee,
+			String paymentFee, long advanceAmount, long feeAmount, long serviceAmount, long shipAmount,
 			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo,
+			int paymentStatus, String paymentMethod,
 			ServiceContext serviceContext) throws PortalException {
 
 		// validate(groupId, serviceConfigId, serviceInfoId, govAgencyCode,
@@ -376,13 +379,17 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		paymentFile.setDossierId(dossierId);
 		paymentFile.setReferenceUid(referenceUid);
-//		paymentFile.setGovAgencyCode(govAgencyCode);
-//		paymentFile.setGovAgencyName(govAgencyName);
 		paymentFile.setPaymentFee(paymentFee);
+		paymentFile.setAdvanceAmount(advanceAmount);
+		paymentFile.setFeeAmount(feeAmount);
+		paymentFile.setServiceAmount(serviceAmount);
+		paymentFile.setShipAmount(shipAmount);
 		paymentFile.setPaymentAmount(GetterUtil.getLong(paymentAmount));
 		paymentFile.setPaymentNote(paymentNote);
 		paymentFile.setEpaymentProfile(epaymentProfile);
 		paymentFile.setBankInfo(bankInfo);
+		paymentFile.setPaymentStatus(paymentStatus);
+		paymentFile.setPaymentMethod(paymentMethod);
 
 		paymentFilePersistence.update(paymentFile);
 
@@ -397,7 +404,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 */
 	public PaymentFile getEpaymentProfile(long dossierId, String referenceUid) {
 
-//		return (PaymentFile) paymentFilePersistence.findByF_DUID(dossierId, referenceUid);
+		try {
+			PaymentFile paymentFile = paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
+			
+			return paymentFile;
+		} catch (NoSuchPaymentFileException e) {
+//			e.printStackTrace();
+		}
+		
 		return null;
 
 	}
@@ -666,4 +680,28 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		}
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile updateApplicantFeeAmount(long paymentFileId, int requestPayment, Long feeAmount, Long serviceAmount, Long shipAmount) {
+		try {
+			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(paymentFileId);
+			paymentFile.setFeeAmount(feeAmount);
+			paymentFile.setServiceAmount(serviceAmount);
+			paymentFile.setShipAmount(shipAmount);
+			if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG) {
+				paymentFile.setAdvanceAmount(feeAmount + serviceAmount + shipAmount);
+			}
+			else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
+				
+			}
+			else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
+				paymentFile.setPaymentAmount(feeAmount + serviceAmount + shipAmount - paymentFile.getAdvanceAmount());
+			}
+			
+			return paymentFilePersistence.update(paymentFile);
+		} catch (NoSuchPaymentFileException e) {
+
+		}
+		
+		return null;
+	}
 }

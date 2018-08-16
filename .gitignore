@@ -1,3 +1,4 @@
+**/.metadata/
 **/!bnd.bnd
 **/!build.gradle
 **/indexes.sql
@@ -37,7 +38,7 @@ test-results
 gradle-local.properties
 
 **/.DS_Store
-**/wars
+
 
 ##Ignore tracking in service layer
 **/model/impl/

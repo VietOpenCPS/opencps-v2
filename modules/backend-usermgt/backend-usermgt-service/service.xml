@@ -159,13 +159,16 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="employeeNo"></finder-column>
 		</finder>
-		
+		<finder return-type="Employee" name="F_GID_EMPNO">
+			<finder-column name="groupId" />
+			<finder-column name="employeeNo" />
+		</finder>
 		<finder return-type="Collection" name="F_email">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="email"></finder-column>
 		</finder>
 		
-<finder return-type="Collection" name="G_UID">
+		<finder return-type="Collection" name="G_UID">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="userId"></finder-column>
 		</finder>
@@ -186,6 +189,7 @@
 		<column name="modifiedDate" type="Date" />
 
 		<!-- Other fields -->
+		<column name="jobPosCode" type="String" />
 		<column name="title" type="String" />
 		<column name="description" type="String" />
 		<column name="mappingRoleId" type="long" />
@@ -202,6 +206,10 @@
 		<finder return-type="JobPos" name="F_mappingRoleId">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="mappingRoleId"></finder-column>
+		</finder>
+		<finder return-type="JobPos" name="F_CODE">
+			<finder-column name="groupId" />
+			<finder-column name="jobPosCode" />
 		</finder>
 		
 	</entity>
@@ -520,6 +528,11 @@
 		</order>
 		
 		<finder return-type="Applicant" name="F_APLC_ID" unique="true">
+			<finder-column name="applicantIdNo"/>
+		</finder>
+
+		<finder return-type="Applicant" name="F_APLC_GID" >
+			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo"/>
 		</finder>
 

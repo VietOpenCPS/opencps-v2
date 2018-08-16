@@ -56,6 +56,13 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="mappingAction">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -163,6 +170,13 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="buttonConfig">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="roles">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
 										<xsd:maxLength value="255"></xsd:maxLength>
@@ -493,6 +507,7 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="seqOrder" type="xsd:int" />
+							<xsd:element name="sampleCount" type="xsd:int" />
 							<xsd:element name="autoSelect">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
@@ -639,6 +654,7 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="fileMark" type="xsd:int" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -670,7 +686,7 @@
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:element>
-				<xsd:element name="durationCount" type="xsd:int" />
+				<xsd:element name="durationCount" type="xsd:double" />
 				<xsd:element name="durationUnit" type="xsd:int" />
 				<xsd:element name="generatePassword" type="xsd:boolean" />
 				<xsd:element name="serverNo">
@@ -707,7 +723,13 @@
 							<xsd:element name="ProcessRole" minOccurs="1" maxOccurs="unbounded">
 								<xsd:complexType>
 									<xsd:sequence>
-										<xsd:element name="roleId" type="xsd:int" />
+										<xsd:element name="roleCode">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
 										<xsd:element name="roleName">
 											<xsd:simpleType>
 												<xsd:restriction base="xsd:string">
@@ -756,7 +778,13 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
-							<xsd:element name="sequenceNo" type="xsd:int" />
+							<xsd:element name="sequenceNo">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 							<xsd:element name="groupName">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
@@ -800,13 +828,20 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="checkInput" type="xsd:int" />
 							<xsd:element name="roles" >
 								<xsd:complexType>
 									<xsd:sequence >
 										<xsd:element name="StepRole" minOccurs="1" maxOccurs="unbounded">
 											<xsd:complexType>
 												<xsd:sequence>
-													<xsd:element name="roleId" type="xsd:int" />
+													<xsd:element name="roleCode">
+														<xsd:simpleType>
+															<xsd:restriction base="xsd:string">
+																<xsd:maxLength value="255"></xsd:maxLength>
+															</xsd:restriction>
+														</xsd:simpleType>
+													</xsd:element>
 													<xsd:element name="roleName">
 														<xsd:simpleType>
 															<xsd:restriction base="xsd:string">
@@ -1316,80 +1351,72 @@
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
-				<xsd:element name="users"/>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-
-	<xsd:element name="users">
-		<xsd:complexType>
-			<xsd:sequence >
-				<xsd:element name="Employee" minOccurs="1" maxOccurs="unbounded">
+				<xsd:element name="users">
 					<xsd:complexType>
 						<xsd:sequence >
-							<xsd:element name="employeeNo">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="fullname">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="title">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="1000"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="gender" type="xsd:int" />
-							<xsd:element name="birthdate">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="telNo">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="email">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="workingStatus">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="jobTitle">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="roles">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
+							<xsd:element name="Employee" minOccurs="1" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:sequence >
+										<xsd:element name="employeeNo">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="fullname">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="title">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="1000"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="gender" type="xsd:int" />
+										<xsd:element name="birthdate">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="telNo">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="email">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="workingStatus" type="xsd:int" />
+										<xsd:element name="jobTitle">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="roles">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="255"></xsd:maxLength>
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>

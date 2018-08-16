@@ -84,6 +84,7 @@ public class DossierTemplateUtils {
 				elm.setRequired(Boolean.toString(dp.getRequired()));
 				elm.setEsign(Boolean.toString(dp.getESign()));
 				elm.setFileTemplateNo(dp.getFileTemplateNo());
+				elm.setFileMark(dp.getFileMark());
 
 				boolean hasForm = false;
 
@@ -100,7 +101,7 @@ public class DossierTemplateUtils {
 
 		}
 
-		output.getDossierParts_0020().addAll(inputs);
+		output.getDossierParts().addAll(inputs);
 
 		return output;
 	}

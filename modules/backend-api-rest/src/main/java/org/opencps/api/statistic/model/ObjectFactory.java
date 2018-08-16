@@ -60,4 +60,19 @@ public class ObjectFactory {
         return new StatisticDossierResults();
     }
 
+    /**
+     * Create an instance of {@link StatisticDossierModel }
+     * 
+     */
+    public StatisticCountModel createStatisticCountModel() {
+        return new StatisticCountModel();
+    }
+
+    /**
+     * Create an instance of {@link StatisticDossierResults }
+     * 
+     */
+    public StatisticCountResultModel createStatisticCountResultModel() {
+        return new StatisticCountResultModel();
+    }
 }

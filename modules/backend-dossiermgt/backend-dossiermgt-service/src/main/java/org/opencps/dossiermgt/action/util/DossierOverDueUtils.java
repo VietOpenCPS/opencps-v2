@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 
@@ -30,10 +31,8 @@ public class DossierOverDueUtils {
 
 	public static final int END_NAP_MINUTE_OF_DAY = 0;
 
-	public static Date getStepOverDue(int overDuePoint, Date date) {
-
-		// TODO add logic here
-		return null;
+	public static Date getStepOverDue(long groupId, int overDuePoint, Date date) {
+		return HolidayUtils.getDueDate(date, overDuePoint, 0, groupId);
 	}
 	
 	public static String getEstimateDate(int processingDay) {
@@ -106,7 +105,7 @@ public class DossierOverDueUtils {
 		return workDays;
 	}
 	
-	private boolean isHoliday(Date checkDate) {
+	private static boolean isHoliday(Date checkDate) {
 
 		boolean isHoliday = false;
 
@@ -125,11 +124,11 @@ public class DossierOverDueUtils {
 		return isHoliday;
 	}
 
-	private int equalDay(Date date1, Date date2) {
+	private static int equalDay(Date date1, Date date2) {
 		return truncateToDay(date1).compareTo(date2);
 	}
 
-	private Date truncateToDay(Date date) {
+	private static Date truncateToDay(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -139,6 +138,24 @@ public class DossierOverDueUtils {
 		return calendar.getTime();
 	}
 	
+	public static Date calculateEndDateUsingHoliday(Date startDate, int duration) {
+		Calendar startCal = Calendar.getInstance();
+
+		startCal.setTime(startDate);
+		
+		for (int i = 1; i < duration; i++) {
+			while (startCal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+					|| startCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+				startCal.add(Calendar.DAY_OF_MONTH, 1);
+			}
+			while (isHoliday(startCal.getTime())) {
+				startCal.add(Calendar.DAY_OF_MONTH, 1);
+			}
+			startCal.add(Calendar.DAY_OF_MONTH, 1);
+		}
+
+		return startCal.getTime();
+	}
 	
 
 	private static final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");

@@ -157,9 +157,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		employee.setExpandoBridgeAttributes(serviceContext);
 
-		employeePersistence.update(employee);
+		return employeePersistence.update(employee);
 
-		return employee;
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -285,9 +284,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		employee.setExpandoBridgeAttributes(serviceContext);
 
-		employeePersistence.update(employee);
+		return employeePersistence.update(employee);
 
-		return employee;
 	}
 
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId) {
@@ -688,5 +686,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		
 	public List<Employee> getLstEmployee(long groupId, long userId){
 		return employeePersistence.findByG_UID(groupId, userId);
+	}
+
+	public Employee getEmployeeByEmpNo(long groupId, String employeeNo){
+		return employeePersistence.fetchByF_GID_EMPNO(groupId, employeeNo);
 	}
 }

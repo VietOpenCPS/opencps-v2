@@ -7,6 +7,7 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -21,13 +22,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 @Path("/statistics")
 
 public interface StatisticManagement {
-
-//	@GET
-//	@Path("/dossiers/todo")
-//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-//	public Response getDossierTodo(@Context HttpServletRequest request, @Context HttpHeaders header,
-//			@Context Company company, @Context Locale locale, @Context User user,
-//			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
 
 	@GET
 	@Path("/dossiers/todoTest")
@@ -47,6 +41,13 @@ public interface StatisticManagement {
 	@Path("/dossiers/todo")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getDossierTodoTest(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query, @QueryParam("owner") String owner);
+
+	@GET
+	@Path("/dossiers/counting")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDossierCounting(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
 }

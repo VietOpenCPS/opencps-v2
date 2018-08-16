@@ -1,9 +1,11 @@
 package org.opencps.api.controller.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -13,11 +15,13 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierActionUtils;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.ListContacts;
-import org.opencps.api.dossieraction.model.DossierActionResultsModel;
+import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
 import org.opencps.api.dossieraction.model.DossierDetailNextActionModel;
 import org.opencps.api.dossieraction.model.DossierNextActionResultsModel;
+import org.opencps.api.dossieraction.model.DossierResultPayLoadModel;
 import org.opencps.api.processsequence.model.ActionModel;
 import org.opencps.api.processsequence.model.DossierActionResult21Model;
 import org.opencps.api.processsequence.model.ProcessSequenceModel;
@@ -31,23 +35,29 @@ import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONArray;
@@ -57,13 +67,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionManagementImpl implements DossierActionManagement {
@@ -110,6 +120,125 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			if (jsonData != null && jsonData.length() > 0) {
 				result.setTotal(jsonData.length());
 				result.getData().addAll(DossierActionUtils.mappingToNextActions(jsonData));
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				DossierAction dossierAction = null;
+				
+				if (dossier != null) {
+					long serviceProcessId = 0;
+					String stepCode = StringPool.BLANK;
+					long dossierActionId = dossier.getDossierActionId();
+					if (dossierActionId > 0) {
+						dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					}
+
+					if (dossierAction != null) {
+						serviceProcessId = dossierAction.getServiceProcessId();
+						stepCode = dossierAction.getStepCode();
+					}
+
+					if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
+						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+						if (processStep != null) {
+							result.setCheckInput(processStep.getCheckInput());
+							result.setStepCode(processStep.getStepCode());
+							result.setStepName(processStep.getStepName());
+							
+							Date now = new Date();
+							long dateNowTimeStamp = now.getTime();
+			
+							Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
+
+							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
+							
+							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
+							int durationUnit = dossier.getDurationUnit();
+							if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+								long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+								if (subTimeStamp > 0) {
+									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+									result.setStepOverdue("Quá hạn "+strOverDue);
+								} else {
+									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+									result.setStepOverdue("Còn "+strOverDue);
+								}
+							} else {
+							}
+							
+						}
+					}
+	
+					ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
+							serviceProcessId);
+					List<User> lstUser = new ArrayList<>();
+
+					if (processStep != null) {	
+						List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+								.findByP_S_ID(processStep.getProcessStepId());
+						if (Validator.isNotNull(processStep.getRoleAsStep())) {
+							String[] steps = StringUtil.split(processStep.getRoleAsStep());
+							for (String sc : steps) {
+								if (sc.startsWith("!")) {
+									int index = sc.indexOf("!");
+									String stepCodePunc = sc.substring(index + 1);
+									lstUser.addAll(DossierActionUtils.processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep));
+								}
+								else {
+									lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, sc, serviceProcessId, processStep));								
+								}
+							}							
+						}
+						else {
+							if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+								lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
+							}							
+						}
+						if (lstUser != null && !lstUser.isEmpty()) {
+						}
+					}
+					
+					List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
+					DossierActionNextActiontoUser modelUser = null;
+					if (lstUser != null && lstUser.size() > 0) {
+						boolean moderator = false;
+						int assigned = 0;
+						for (User u: lstUser) {
+							modelUser = new DossierActionNextActiontoUser();
+							Map<String, Object> attr = u.getModelAttributes();
+							long userId = GetterUtil.getLong(u.getUserId());
+
+							moderator = false;
+							assigned = 0;
+							if (attr != null) {
+								if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
+									moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
+								}
+								if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
+									assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
+								}
+							}
+
+							modelUser.setUserId(userId);
+							modelUser.setUserName(u.getFullName());
+							modelUser.setModerator(moderator);
+							modelUser.setAssigned(assigned);
+							boolean flag = true;
+							if (outputUsers != null && !outputUsers.isEmpty()) {
+								for (DossierActionNextActiontoUser doUserAct : outputUsers) {
+									if (userId == doUserAct.getUserId()) {
+										flag = false;
+										break;
+									}
+								}
+								if (flag) {
+									outputUsers.add(modelUser);
+								}
+							} else {
+								outputUsers.add(modelUser);
+							}
+						}
+					}
+					result.setUsers(outputUsers);					
+				}
 			} else {
 				result.setTotal(0);
 			}
@@ -172,13 +301,15 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				query.setStart(-1);
 				query.setEnd(-1);
 			}
-
+			ProcessAction proAction = ProcessActionLocalServiceUtil.fetchProcessAction(GetterUtil.getInteger(actionId));
+			String actionCode = (proAction != null) ? proAction.getActionCode() : StringPool.BLANK;
+			
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossierId));
 			params.put(ProcessActionTerm.PROCESS_ACTION_ID, actionId);
-			params.put(DossierActionTerm.ACTION_CODE, query.getActionCode());
+			params.put(DossierActionTerm.ACTION_CODE, actionCode);
 			params.put(DossierActionTerm.AUTO, query.getAuto());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -186,10 +317,16 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 			DossierActions actions = new DossierActionsImpl();
 
-			JSONObject jsonData = actions.getPayloadNextActions(user.getUserId(), company.getCompanyId(), groupId, params,
+			JSONArray jsonData = actions.getPayloadNextActions(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			DossierDetailNextActionModel result = DossierActionUtils.mappingToDetailNextActions(jsonData);
+			DossierResultPayLoadModel result = new DossierResultPayLoadModel();
+			if (jsonData != null && jsonData.length() > 0) {
+				result.setTotal(jsonData.length());
+				result.getData().addAll(DossierActionUtils.mappingToPayLoadNextActions(jsonData));
+			} else {
+				result.setTotal(0);
+			}
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {

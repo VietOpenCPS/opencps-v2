@@ -185,6 +185,129 @@ public class DossierDocumentLocalServiceImpl
 		object.setDocSync(docSync);
 
 		return dossierDocumentPersistence.update(object);
-	}	
+	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierDocument addDossierDoc(long groupId, Long dossierId, String referenceUid, long dossierActionId, String documentType,
+			String documentName, String documentCode, String sourceFileName, long fileSize, InputStream inputStream, String fileType,
+			ServiceContext serviceContext) {
+		long userId = serviceContext.getUserId();
+		
+//		_log.info("****Start add file at:" + new Date());
+
+//		validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo);
+		
+//		_log.info("****End validator file at:" + new Date());
+
+//		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
+
+		long fileEntryId = 0;
+
+		try {
+			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
+					fileType, fileSize, serviceContext);
+
+			if (fileEntry != null) {
+				fileEntryId = fileEntry.getFileEntryId();
+			}
+		} catch (Exception e) {
+			throw new SystemException(e);
+		}
+//		_log.info("****End uploadFile file at:" + new Date());
+
+		Date now = new Date();
+
+//		User userAction = null;
+
+//		if (userId != 0) {
+//			userAction = userLocalService.getUser(userId);
+//		}
+
+		long dossierDocId = counterLocalService.increment(DossierDocument.class.getName());
+
+		DossierDocument object = dossierDocumentPersistence.create(dossierDocId);
+
+		// Add audit fields
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(userId);
+
+		// Add other fields
+		object.setReferenceUid(referenceUid);
+		object.setDossierId(dossierId);
+		object.setDossierActionId(dossierActionId);
+		object.setDocumentType(documentType);
+		object.setDocumentName(documentName);
+		object.setDocumentCode(documentCode);
+		object.setDocumentFileId(fileEntryId);
+		//TODO: docSync
+
+		return dossierDocumentPersistence.update(object);
+	}
+	
+	public DossierDocument getByActiocId(long groupId, long dossierActionId) {
+		return dossierDocumentPersistence.fetchByF_GID_DID(groupId, dossierActionId);
+	}
+
+	public DossierDocument getDocByReferenceUid(long groupId, long dossierId, String referenceUid) {
+		return dossierDocumentPersistence.fetchByF_GID_DID_REF(groupId, dossierId, referenceUid);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierDocument updateDossierDoc(long groupId, long dossierDocId, Long dossierId, String referenceUid, long dossierActionId, String documentType,
+			String documentName, String documentCode, String sourceFileName, long fileSize, InputStream inputStream, String fileType,
+			ServiceContext serviceContext) {
+		long userId = serviceContext.getUserId();
+		
+//		_log.info("****Start add file at:" + new Date());
+
+//		validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo);
+		
+//		_log.info("****End validator file at:" + new Date());
+
+//		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
+
+		long fileEntryId = 0;
+
+		try {
+			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
+					fileType, fileSize, serviceContext);
+
+			if (fileEntry != null) {
+				fileEntryId = fileEntry.getFileEntryId();
+			}
+		} catch (Exception e) {
+			throw new SystemException(e);
+		}
+//		_log.info("****End uploadFile file at:" + new Date());
+
+		Date now = new Date();
+
+//		User userAction = null;
+
+//		if (userId != 0) {
+//			userAction = userLocalService.getUser(userId);
+//		}
+
+		DossierDocument object = dossierDocumentPersistence.fetchByPrimaryKey(dossierDocId);
+		if (object != null) {
+			// Add audit fields
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userId);
+	
+			// Add other fields
+			object.setReferenceUid(referenceUid);
+			object.setDossierId(dossierId);
+			object.setDossierActionId(dossierActionId);
+			object.setDocumentType(documentType);
+			object.setDocumentName(documentName);
+			object.setDocumentCode(documentCode);
+			object.setDocumentFileId(fileEntryId);
+		}
+
+		return dossierDocumentPersistence.update(object);
+	}	
 }

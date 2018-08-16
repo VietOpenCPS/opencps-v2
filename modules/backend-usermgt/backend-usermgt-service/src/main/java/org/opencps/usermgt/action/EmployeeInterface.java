@@ -75,4 +75,9 @@ public interface EmployeeInterface {
 	void deleteEmployeeJobPos(long id, long employeeJobPosId, ServiceContext serviceContext)
 			throws NoSuchUserException, DuplicateEmployeeEmailException, DuplicateEmployeeNoException, PortalException;
 
+	void updateEmployeeDB(long userId, long groupId, String employeeNo, String fullname, String title, Integer gender,
+			String birthdate, String telNo, String email, Integer workingStatus, String jobTitle, String roles,
+			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException, PortalException;
+
 }

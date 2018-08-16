@@ -25,6 +25,7 @@ import org.opencps.api.comment.model.CommentTopList;
 import org.opencps.api.controller.CommentManagement;
 import org.opencps.api.controller.util.CommentUtils;
 import org.opencps.api.error.model.ErrorMsg;
+import org.opencps.datamgt.constants.CommentTerm;
 import org.opencps.datamgt.model.Comment;
 import org.opencps.datamgt.service.CommentLocalServiceUtil;
 
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
@@ -66,7 +68,7 @@ public class CommentManagementImpl implements CommentManagement {
 			Comment comment = CommentLocalServiceUtil.addComment(userId, groupId, commentInputModel.getClassName(),
 					commentInputModel.getClassPK(), commentInputModel.getFullname(), commentInputModel.getEmail(),
 					commentInputModel.getParent(), commentInputModel.getContent(), 0, null, StringPool.BLANK,
-					StringPool.BLANK, 0, commentInputModel.getPings(), serviceContext);
+					StringPool.BLANK, 0, commentInputModel.getPings(), commentInputModel.getOpinion(), serviceContext);
 
 			CommentModel commentModel = new CommentModel();
 
@@ -121,7 +123,7 @@ public class CommentManagementImpl implements CommentManagement {
 	@Override
 	public Response addCommentAttachment(Attachment attachment, HttpServletRequest request, HttpHeaders header,
 			ServiceContext serviceContext, String className, String classPK, long parent, String fileName,
-			String fileType, long fileSize, String pings, String email, String fullname) {
+			String fileType, long fileSize, String pings, String email, String fullname, Boolean opinion) {
 
 		InputStream inputStream = null;
 
@@ -136,7 +138,7 @@ public class CommentManagementImpl implements CommentManagement {
 			inputStream = dataHandler.getInputStream();
 
 			Comment comment = CommentLocalServiceUtil.addComment(userId, groupId, className, classPK, fullname, email,
-					parent, StringPool.BLANK, fileSize, inputStream, fileName, fileType, 0, pings, serviceContext);
+					parent, StringPool.BLANK, fileSize, inputStream, fileName, fileType, 0, pings, opinion, serviceContext);
 
 			CommentModel commentModel = new CommentModel();
 
@@ -264,7 +266,10 @@ public class CommentManagementImpl implements CommentManagement {
 			params.put("keywords", query.getKeywords());
 			params.put("className", className);
 			params.put("classPK", String.valueOf(classPK));
-
+			if (Validator.isNotNull(query.getOpinion())) {
+				params.put(CommentTerm.OPINION, query.getOpinion());				
+			}
+			
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, query.isOrder()) };
 
@@ -326,7 +331,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 		try {
 
-			CommentLocalServiceUtil.deleteComment(commentId, serviceContext);
+			CommentLocalServiceUtil.deleteComment(commentId);
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 

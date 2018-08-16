@@ -92,7 +92,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 
 			} else if (resourceID.equals("getActionConfigs")) {
 				
-				List<ActionConfig> actionConfigs = ActionConfigLocalServiceUtil.getActionConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				List<ActionConfig> actionConfigs = ActionConfigLocalServiceUtil.getByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
 				
 				object.put("total", actionConfigs.size());
@@ -102,7 +102,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 			} else if (resourceID.equals("getMenuConfigs")) {
 				
-				List<MenuConfig> actionConfigs = MenuConfigLocalServiceUtil.getMenuConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				List<MenuConfig> actionConfigs = MenuConfigLocalServiceUtil.getByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
 				
 				object.put("total", actionConfigs.size());
@@ -112,7 +112,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 			} else if (resourceID.equals("getStepConfigs")) {
 				
-				List<StepConfig> actionConfigs = StepConfigLocalServiceUtil.getStepConfigs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				List<StepConfig> actionConfigs = StepConfigLocalServiceUtil.getStepByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
 				
 				object.put("total", actionConfigs.size());

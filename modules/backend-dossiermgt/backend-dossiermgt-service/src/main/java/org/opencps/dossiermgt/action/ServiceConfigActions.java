@@ -40,5 +40,6 @@ public interface ServiceConfigActions {
 
 	public void updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
 			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
-			String templateName, String processNo, String processName, String registerBookCode, ServiceContext context);
+			String templateName, String processNo, String processName, String registerBookCode, Integer sampleCount,
+			ServiceContext context);
 }

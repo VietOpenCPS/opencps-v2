@@ -182,6 +182,7 @@
 		<column name="deliverableType" type="String"/>
 		<column name="deliverableAction" type="int"/>
 		<column name="eForm" type="boolean" />
+		<column name="fileMark" type="int" />
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -291,6 +292,7 @@
 		<column name="serviceProcessId" type="long" />
 		<column name="instructionNote" type="String" />
 		<column name="submissionNote" type="String" />
+		<column name="sampleCount" type="long" />
 
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId" />
@@ -408,6 +410,9 @@
 		<column name="lockState" type="String" />
 		<column name="originality" type="int" />
 		<column name="originDossierId" type="long" />
+		<column name="sampleCount" type="long" />
+		<column name="durationUnit" type="int" />
+		<column name="durationCount" type="double" />
 		<!-- Order -->
 		
 		<!-- Finder methods -->
@@ -469,6 +474,10 @@
             <finder-column name="serviceCode"></finder-column>
             <finder-column name="govAgencyCode"></finder-column>
         </finder>
+		<finder return-type="Collection" name="G_O_DID">
+			<finder-column name="groupId" />
+			<finder-column name="originDossierId" />
+		</finder>
 
 	</entity>
 
@@ -781,7 +790,7 @@
 		<column name="processNo" type="String" />
 		<column name="processName" type="String" />
 		<column name="description" type="String" />
-		<column name="durationCount" type="int" />
+		<column name="durationCount" type="double" />
 		<column name="durationUnit" type="int" />
 		<column name="counter" type="long" />
 		<column name="generateDossierNo" type="boolean" />
@@ -828,12 +837,16 @@
 
 		<column name="serviceProcessId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
+		<column name="roleCode" type="String" />
 		<column name="roleName" type="String" />
 		<column name="moderator" type="boolean" />
 		<column name="condition" type="String" />
 
 		<finder return-type="Collection" name="P_S_ID">
 			<finder-column name="serviceProcessId" />
+		</finder>
+		<finder return-type="ServiceProcessRole" name="F_CODE">
+			<finder-column name="roleCode" />
 		</finder>
 
 	</entity>
@@ -856,7 +869,7 @@
 		<column name="sequenceNo" type="String" />
 		<column name="dossierStatus" type="String" />
 		<column name="dossierSubStatus" type="String" />
-		<column name="durationCount" type="int" />
+		<column name="durationCount" type="double" />
 		<column name="customProcessUrl" type="String" />
 		<column name="stepInstruction" type="String" />
 		<column name="briefNote" type="String" />
@@ -865,6 +878,7 @@
 		<column name="lockState" type="String" />
 		<column name="groupName" type="String" />
 		<column name="roleAsStep" type="String" />
+		<column name="checkInput" type="int" />
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
@@ -909,6 +923,7 @@
 		<column name="stepCode" type="String" />
 		<column name="serviceProcessId" type="long" />
 		<column name="pluginName" type="String" />
+		<column name="pluginType" type="int" />
 		<column name="sequenceNo" type="String" />
 		<column name="pluginForm" type="String" />
 		<column name="sampleData" type="String" />
@@ -925,6 +940,7 @@
 
 		<column name="processStepId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
+		<column name="roleCode" type="String" />
 		<column name="roleName" type="String" />
 		<column name="moderator" type="boolean" />
 		<column name="condition" type="String" />
@@ -935,6 +951,9 @@
 		<finder return-type="ProcessStepRole" name="F_STEP_ROLE">
 			<finder-column name="processStepId" />
 			<finder-column name="roleId" />
+		</finder>
+		<finder return-type="ProcessStepRole" name="F_CODE">
+			<finder-column name="roleCode" />
 		</finder>
 
 	</entity>
@@ -957,8 +976,8 @@
 		<column name="sequenceRole" type="String" />
 		<column name="durationCount" type="double" />
 		
-		<order by="desc">
-			<order-column name="modifiedDate" order-by="desc" />
+		<order by="asc">
+			<order-column name="sequenceNo" order-by="asc" />
 		</order>
         <finder name="G_SN" return-type="Collection">
             <finder-column name="groupId"></finder-column>
@@ -967,6 +986,11 @@
         <finder name="F_GID_SID" return-type="Collection">
             <finder-column name="groupId" />
             <finder-column name="serviceProcessId" />
+        </finder>
+        <finder name="F_GID_SID_SNO" return-type="ProcessSequence">
+            <finder-column name="groupId" />
+            <finder-column name="serviceProcessId" />
+            <finder-column name="sequenceNo" />
         </finder>
 	</entity>	
 	
@@ -1046,10 +1070,8 @@
 		<column name="dossierTemplateNo" type="String"/>
 		<column name="signatureType" type="String"/>
 		<column name="createDossiers" type="String"/>
-		<column name="assignUserName" type="String" />
-		<column name="extraForm" type="boolean" />
-<!-- 		<column name="userNote" type="int" /> -->
-		
+		<column name="checkInput" type="int" />
+
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
 		</finder>
@@ -1105,7 +1127,11 @@
 			<finder-column name="actionCode" />
 			<finder-column name="actionName" />
 		</finder>
-
+		<finder return-type="Collection" name="F_GID_SID_PRE">
+			<finder-column name="groupId" />
+			<finder-column name="serviceProcessId" />
+            <finder-column name="preStepCode" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierAction"
@@ -1143,6 +1169,9 @@
 		<column name="stepInstruction" type="String" />
 		<column name="state" type="int" />
 		<column name="eventStatus" type="int" />
+        <order by="asc">
+            <order-column name="createDate" order-by="asc"></order-column>
+        </order>
 
 		<finder return-type="DossierAction" name="DID_DPG">
 			<finder-column name="dossierId" />
@@ -1174,6 +1203,20 @@
             <finder-column name="dossierId"></finder-column>
             <finder-column name="fromSequenceNo"></finder-column>
         </finder>
+        <finder name="G_DID_SN" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="sequenceNo"></finder-column>
+        </finder>
+        <finder name="G_DID_FSN" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="fromSequenceNo"></finder-column>
+        </finder>
+     	<finder return-type="Collection" name="DID_STEP">
+			<finder-column name="dossierId" />
+			<finder-column name="fromStepCode" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
@@ -1667,8 +1710,9 @@
 		<!-- Other fields -->
 		<column name="dossierId" type="long" />
 		<column name="dossierPartNo" type="String" />
-		<column name="fileCheck" type="boolean" />
-		<column name="fileType" type="int" />
+		<column name="fileCheck" type="int" />
+		<column name="fileMark" type="int" />
+		<column name="fileComment" type="String" />
 
 		<finder return-type="DossierMark" name="G_DID_PN">
 			<finder-column name="groupId" />
@@ -1679,6 +1723,11 @@
 		<finder return-type="Collection" name="G_DID">
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
+		</finder>
+		<finder return-type="Collection" name="G_DID_MARK">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="fileMark" comparator="!="/>
 		</finder>
 	</entity>
 	
@@ -1709,6 +1758,7 @@
 		<column name="rollbackable" type="boolean" />
 		<column name="notificationType" type="String" />
 		<column name="documentType" type="String" />
+		<column name="mappingAction" type="String" />
 		
         <order by="asc">
             <order-column name="actionCode" order-by="asc" case-sensitive="true"></order-column>
@@ -1761,6 +1811,12 @@
 		<finder return-type="Collection" name="F_GID">
 			<finder-column name="groupId" />
 		</finder>
+
+		<finder return-type="Collection" name="F_MS_SS">
+			<finder-column name="groupId" />
+			<finder-column name="dossierStatus" />
+			<finder-column name="dossierSubStatus" />
+		</finder>
 		
 	</entity>
 	
@@ -1795,7 +1851,27 @@
 		<finder return-type="MenuConfig" name="F_BY_menuGroup">
 			<finder-column name="menuGroup"></finder-column>
 		</finder>
+        <finder name="F_A_MID" return-type="Collection">
+            <finder-column name="menuConfigId" arrayable-operator="OR"></finder-column>
+        </finder>
 		
+	</entity>
+	
+	<entity local-service="true" name="MenuRole" remote-service="false"
+		table="opencps_menurole" uuid="true">
+
+		<column name="menuConfigId" type="long" primary="true" />
+
+		<column name="roleId" type="long" primary="true" />
+        <finder name="F_RID" return-type="Collection">
+            <finder-column name="roleId" arrayable-operator="OR"></finder-column>
+        </finder>		
+
+		<finder return-type="MenuRole" name="F_MENU_ROLE">
+			<finder-column name="menuConfigId" />
+			<finder-column name="roleId" />
+		</finder>
+
 	</entity>
 
 	<entity local-service="true" name="DocumentType" remote-service="false"
@@ -1848,6 +1924,7 @@
 		<column name="actionUser" type="String" />
 		<column name="actionNote" type="String" />
 		<column name="syncType" type="int" />
+		<column name="infoType" type="int" />
 		<column name="payload" type="String" />
 		<column name="serverNo" type="String" />
 		<column name="state" type="int" />
@@ -1860,6 +1937,17 @@
         </order>
         <finder name="ST" return-type="Collection">
             <finder-column name="state"></finder-column>
+        </finder>
+        <finder name="DRID_IT" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="dossierRefUid"></finder-column>
+            <finder-column name="infoType" arrayable-operator="OR" comparator="="></finder-column>
+        </finder>
+        <finder name="G_AC_ST_IT" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="actionCode"></finder-column>
+            <finder-column name="syncType"></finder-column>
+            <finder-column name="infoType" arrayable-operator="OR" comparator="="></finder-column>
         </finder>
 	</entity>
 	
@@ -1891,10 +1979,15 @@
 		<finder return-type="Collection" name="F_DOSSIERID">
 			<finder-column name="dossierId" />
 		</finder>
-<!-- 		<finder return-type="DossierDocument" name="F_DID_CODE"> -->
-<!-- 			<finder-column name="dossierId" /> -->
-<!-- 			<finder-column name="dossierId" /> -->
-<!-- 		</finder> -->
+		<finder return-type="DossierDocument" name="F_GID_DID">
+			<finder-column name="groupId" />
+			<finder-column name="dossierActionId" />
+		</finder>
+		<finder return-type="DossierDocument" name="F_GID_DID_REF">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="referenceUid" />
+		</finder>
 	</entity>
 
 	<exceptions>

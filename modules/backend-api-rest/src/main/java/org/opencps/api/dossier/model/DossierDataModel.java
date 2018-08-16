@@ -8,9 +8,6 @@
 
 package org.opencps.api.dossier.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -175,8 +172,13 @@ import javax.xml.bind.annotation.XmlType;
     "endorsementDate",
     "lockState",
     "statusReg",
-    "processBlock",
-    "processUnit"
+    "durationCount",
+    "durationUnit",
+    "sampleCount",
+    "assigned",
+    "domainCode",
+    "domainName",
+    "extendDate"
 })
 public class DossierDataModel {
 
@@ -254,25 +256,13 @@ public class DossierDataModel {
 	protected String endorsementDate;
 	protected String lockState;
 	protected String statusReg;
-
-	public int getProcessBlock() {
-		return processBlock;
-	}
-
-	public void setProcessBlock(int processBlock) {
-		this.processBlock = processBlock;
-	}
-
-	public int getProcessUnit() {
-		return processUnit;
-	}
-
-	public void setProcessUnit(int processUnit) {
-		this.processUnit = processUnit;
-	}
-
-	protected int processBlock;
-    protected int processUnit;
+	protected Double durationCount;
+	protected Integer durationUnit;
+	protected Long sampleCount;
+	protected Integer assigned;
+	protected String domainCode;
+	protected String domainName;
+	protected String extendDate;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1876,33 +1866,60 @@ public class DossierDataModel {
 		this.certDate = certDate;
 	}
 
-    /**
-     * Gets the value of the data property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the data property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getCertNumber().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DossierDataModel }
-     * 
-     * 
-     */
-//	public List<CertNumberModel> getCertNumber() {
-//		if (certNumber == null) {
-//			certNumber = new ArrayList<CertNumberModel>();
-//        }
-//        return this.certNumber;
-//	}
+	public Double getDurationCount() {
+		return durationCount;
+	}
+
+	public void setDurationCount(Double durationCount) {
+		this.durationCount = durationCount;
+	}
+
+	public Integer getDurationUnit() {
+		return durationUnit;
+	}
+
+	public void setDurationUnit(Integer durationUnit) {
+		this.durationUnit = durationUnit;
+	}
+
+	public Long getSampleCount() {
+		return sampleCount;
+	}
+
+	public void setSampleCount(Long sampleCount) {
+		this.sampleCount = sampleCount;
+	}
+
+	public Integer getAssigned() {
+		return assigned;
+	}
+
+	public void setAssigned(Integer assigned) {
+		this.assigned = assigned;
+	}
+
+	public String getDomainCode() {
+		return domainCode;
+	}
+
+	public void setDomainCode(String domainCode) {
+		this.domainCode = domainCode;
+	}
+
+	public String getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+
+	public String getExtendDate() {
+		return extendDate;
+	}
+
+	public void setExtendDate(String extendDate) {
+		this.extendDate = extendDate;
+	}
 
 }
