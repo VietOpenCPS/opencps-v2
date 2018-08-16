@@ -76,6 +76,7 @@ import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.SignatureManagementImpl;
 import org.opencps.api.controller.impl.StatisticManagementImpl;
+import org.opencps.api.controller.impl.SystemManagementImpl;
 import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
@@ -156,6 +157,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new OneGateControllerImpl());
 		singletons.add(new DossierDocumentManagementImpl());
 		singletons.add(new DossierSyncManagementImpl());
+		
+		singletons.add(new SystemManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);
