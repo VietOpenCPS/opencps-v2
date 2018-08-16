@@ -15,6 +15,7 @@ public class ConstantUtils {
 	public static final String SOURCE_SERVICES = "/services";
 	public static final String SOURCE_TEMPLATES = "/templates";
 	public static final String SOURCE_PROCESSES = "/processes";
+	public static final String SOURCE_VALIDATE = "services, processes, processes, dicts";
 	//
 	public static final String PREFIX_ACTIONCONFIG = "ACTION_";
 	//Declare file xml

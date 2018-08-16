@@ -193,6 +193,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 	}
 
+	private static Log _log = LogFactoryUtil.getLog(EmployeeLocalServiceImpl.class);
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Employee updateEmployee(long userId, long employeeId, String fullName, String employeeNo, int gender,
@@ -231,7 +232,10 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new DuplicateEmployeeNoException();
 		}
 
+		_log.info("employeeId:"+employeeId);
 		employeeCheck = employeePersistence.findByF_email(employee.getGroupId(), email);
+		_log.info("employeeCheck:"+employeeCheck.size() +"| employeeCheckId: "+employeeCheck.get(0).getEmployeeId());
+		_log.info("employeeCheck:"+employeeCheck.get(0));
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
 				&& employeeCheck.get(0).getEmployeeId() != employeeId) {

@@ -19,7 +19,8 @@ public interface StepConfigActions {
 	public void deleteStepConfig(Long stepConfigId, ServiceContext serviceContext) throws PortalException, AuthenticationException;
 
 	public StepConfig updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
-			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig);
+			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig)
+			throws PortalException;
 
 	public boolean deleteAllStepConfig(long groupId, long userId, ServiceContext serviceContext);
 }

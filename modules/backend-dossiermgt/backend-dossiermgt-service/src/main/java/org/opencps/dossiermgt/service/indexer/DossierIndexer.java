@@ -216,8 +216,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 			document.addNumberSortable(DossierTerm.YEAR_DOSSIER, yearDossier);
 			document.addNumberSortable(DossierTerm.MONTH_DOSSIER, monthDossier);
-			_log.info("yearDossier: "+yearDossier);
-			_log.info("monthDossier: "+monthDossier);
+//			_log.info("yearDossier: "+yearDossier);
+//			_log.info("monthDossier: "+monthDossier);
 
 			int yearFinish = 0;
 			int monthFinish = 0;
@@ -229,8 +229,21 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 			document.addNumberSortable(DossierTerm.YEAR_FINISH, yearFinish);
 			document.addNumberSortable(DossierTerm.MONTH_FINISH, monthFinish);
-			_log.info("yearFinish: "+yearFinish);
-			_log.info("monthFinish: "+monthFinish);
+//			_log.info("yearFinish: "+yearFinish);
+//			_log.info("monthFinish: "+monthFinish);
+
+			int yearRelease = 0;
+			int monthRelease = 0;
+			if (Validator.isNotNull(object.getReleaseDate())) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(object.getReleaseDate());
+				yearRelease = cal.get(Calendar.YEAR);
+				monthRelease = cal.get(Calendar.MONTH) + 1;
+			}
+//			_log.info("yearRelease: "+yearRelease);
+//			_log.info("monthRelease: "+monthRelease);
+			document.addNumberSortable(DossierTerm.YEAR_RELEASE, yearRelease);
+			document.addNumberSortable(DossierTerm.MONTH_RELEASE, monthRelease);
 
 			// DossierAction fields
 			long dossierObjectActionId = object.getDossierActionId();

@@ -616,7 +616,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 //			result.setValue(content);
 
-//			return Response.status(200).entity(result.toString()).build();
+//			return Response.status(200).entity(JSONFactoryUtil.createJSONObject(content).toJSONString()).build();
 			return Response.status(200).entity(content).build();
 
 		} catch (Exception e) {

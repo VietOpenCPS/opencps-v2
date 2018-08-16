@@ -801,9 +801,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DictItem updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
-			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling, String metadata) {
+			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling,
+			String metadata) throws NoSuchUserException {
 
-		try{
 			Date now = new Date();
 			User user = userPersistence.findByPrimaryKey(userId);
 	//		DictItem dictItemParent = dictItemPersistence.fetchByIC_DCI(parent, dictCollectionId);
@@ -846,10 +846,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 	//		dictItem.setExpandoBridgeAttributes(baseModel);
 	
 			return dictItemPersistence.update(dictItem);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DictItemLocalServiceImpl.class);

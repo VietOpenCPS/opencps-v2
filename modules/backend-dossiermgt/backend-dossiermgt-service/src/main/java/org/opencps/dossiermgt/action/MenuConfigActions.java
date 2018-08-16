@@ -21,7 +21,7 @@ public interface MenuConfigActions {
 			throws PortalException, AuthenticationException;
 
 	public long updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order, Integer menuType,
-			String queryParams, String tableConfig, String buttonConfig);
+			String queryParams, String tableConfig, String buttonConfig) throws PortalException;
 
 	public boolean deleteAllMenuConfig(long groupId, long userId, ServiceContext serviceContext);
 

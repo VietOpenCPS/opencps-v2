@@ -81,7 +81,6 @@ import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 
-import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -91,40 +90,36 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-import backend.auth.api.exception.UnauthenticationException;
-import backend.auth.api.exception.UnauthorizationException;
-
 public class ProcessUpdateDBUtils {
 
 	private static Log _log = LogFactoryUtil.getLog(ProcessUpdateDBUtils.class);
 	//LamTV_Update ActionConfig to DB
 	public static void processUpdateActionConfig(ActionConfigList actList, String folderPath, long groupId,
-			long userId, ServiceContext serviceContext) {
-		try {
-			ActionConfigActions actions = new ActionConfigActionsImpl();
-			//Delete all table ActionConfig
-			boolean flagAct = actions.deleteAllActionConfig(groupId, userId, serviceContext);
-			//Update table ActionConfig
-			if (actList != null && flagAct) {
-				List<ActionConfig> actConfigList = actList.getActionConfig();
-				if (actConfigList != null && actConfigList.size() > 0) {
-					for (ActionConfig actConfig : actConfigList) {
-						String actionCode = actConfig.getActionCode();
-						String actionName = actConfig.getActionName();
-						Boolean extraForm = actConfig.isExtraForm();
-						String formConfig = actConfig.getFormConfig();
-						String sampleData = actConfig.getSampleData();
-						Boolean insideProcess = actConfig.isInsideProcess();
-						Integer userNote = actConfig.getUserNote();
-						Integer syncType = actConfig.getSyncType();
-						Integer eventType = actConfig.getEventType();
-						Integer infoType = actConfig.getInfoType();
-						Boolean rollbackable = actConfig.isRollbackable();
-						String notificationType = actConfig.getNotificationType();
-						String documentType = actConfig.getDocumentType();
-						String mappingAction = actConfig.getMappingAction();
-						
-						if (Validator.isNotNull(actionCode)) {
+			long userId, ServiceContext serviceContext) throws PortalException {
+		ActionConfigActions actions = new ActionConfigActionsImpl();
+		//Delete all table ActionConfig
+		boolean flagAct = actions.deleteAllActionConfig(groupId, userId, serviceContext);
+		//Update table ActionConfig
+		if (actList != null && flagAct) {
+			List<ActionConfig> actConfigList = actList.getActionConfig();
+			if (actConfigList != null && actConfigList.size() > 0) {
+				for (ActionConfig actConfig : actConfigList) {
+					String actionCode = actConfig.getActionCode();
+					String actionName = actConfig.getActionName();
+					Boolean extraForm = actConfig.isExtraForm();
+					String formConfig = actConfig.getFormConfig();
+					String sampleData = actConfig.getSampleData();
+					Boolean insideProcess = actConfig.isInsideProcess();
+					Integer userNote = actConfig.getUserNote();
+					Integer syncType = actConfig.getSyncType();
+					Integer eventType = actConfig.getEventType();
+					Integer infoType = actConfig.getInfoType();
+					Boolean rollbackable = actConfig.isRollbackable();
+					String notificationType = actConfig.getNotificationType();
+					String documentType = actConfig.getDocumentType();
+					String mappingAction = actConfig.getMappingAction();
+					
+					if (Validator.isNotNull(actionCode)) {
 //							String filePath = folderPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH + ConstantUtils.PREFIX_ACTIONCONFIG
 //									+ actionCode + ConstantUtils.EXTENTION_JSON;
 //							File jsonfile = new File(filePath);
@@ -132,278 +127,250 @@ public class ProcessUpdateDBUtils {
 //							if (jsonfile.exists() && !jsonfile.isDirectory()) {
 //								formConfig = ReadXMLFileUtils.convertFiletoString(jsonfile);
 //							}
-							// Check record exits DB
-							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
-									insideProcess, userNote, syncType, eventType, infoType, rollbackable,
-									notificationType, documentType, formConfig, mappingAction);
-						}
+						// Check record exits DB
+						actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
+								insideProcess, userNote, syncType, eventType, infoType, rollbackable,
+								notificationType, documentType, formConfig, mappingAction);
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	//LamTV_Update StepConfig to DB
 	public static void processUpdateStepConfig(StepConfigList stepList, long groupId,
-			long userId, ServiceContext serviceContext) {
-		try {
-			StepConfigActions actions = new StepConfigActionsImpl();
-			//Delete all record StepConfig
-			boolean flagStep = actions.deleteAllStepConfig(groupId, userId, serviceContext);
-			//Insert StepConfig
-			if (stepList != null && flagStep) {
-				List<StepConfig> stepConfigList = stepList.getStepConfig();
-				if (stepConfigList != null && stepConfigList.size() > 0) {
-					for (StepConfig stepConfig : stepConfigList) {
-						String stepCode = stepConfig.getStepCode();
-						String stepName = stepConfig.getStepName();
-						Integer stepType = stepConfig.getStepType();
-						String dossierStatus = stepConfig.getDossierStatus();
-						String dossierSubStatus = stepConfig.getDossierSubStatus();
-						String menuGroup = stepConfig.getMenuGroup();
-						String menuStepName = stepConfig.getMenuStepName();
-						String buttonConfig = stepConfig.getButtonConfig();
-						if (Validator.isNotNull(stepCode)) {
-							// Check record exits DB
-							actions.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType, dossierStatus, dossierSubStatus,
-									menuGroup, menuStepName, buttonConfig);
-						}
+			long userId, ServiceContext serviceContext) throws PortalException {
+
+		StepConfigActions actions = new StepConfigActionsImpl();
+		//Delete all record StepConfig
+		boolean flagStep = actions.deleteAllStepConfig(groupId, userId, serviceContext);
+		//Insert StepConfig
+		if (stepList != null && flagStep) {
+			List<StepConfig> stepConfigList = stepList.getStepConfig();
+			if (stepConfigList != null && stepConfigList.size() > 0) {
+				for (StepConfig stepConfig : stepConfigList) {
+					String stepCode = stepConfig.getStepCode();
+					String stepName = stepConfig.getStepName();
+					Integer stepType = stepConfig.getStepType();
+					String dossierStatus = stepConfig.getDossierStatus();
+					String dossierSubStatus = stepConfig.getDossierSubStatus();
+					String menuGroup = stepConfig.getMenuGroup();
+					String menuStepName = stepConfig.getMenuStepName();
+					String buttonConfig = stepConfig.getButtonConfig();
+					if (Validator.isNotNull(stepCode)) {
+						// Check record exits DB
+						actions.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType, dossierStatus, dossierSubStatus,
+								menuGroup, menuStepName, buttonConfig);
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	//LamTV_Update MenuConfig to DB
 	public static void processUpdateMenuConfig(MenuConfigList menuList, long groupId,
-			long userId, ServiceContext serviceContext) {
-		try {
-			MenuConfigActions actions = new MenuConfigActionsImpl();
-			//Delete all table ActionConfig
-			boolean flagMenu = actions.deleteAllMenuConfig(groupId, userId, serviceContext);
-			//Update table ActionConfig
-			if (menuList != null && flagMenu) {
-				List<MenuConfig> menuConfigList = menuList.getMenuConfig();
-				if (menuConfigList != null && menuConfigList.size() > 0) {
-					for (MenuConfig menuConfig : menuConfigList) {
-						String menuGroup = menuConfig.getMenuGroup();
-						String menuName = menuConfig.getMenuName();
-						Integer order = menuConfig.getOrder();
-						Integer menuType = menuConfig.getMenuType();
-						String queryParams = menuConfig.getQueryParams();
-						String tableConfig = menuConfig.getTableConfig();
-						String buttonConfig = menuConfig.getButtonConfig();
-						String roles = menuConfig.getRoles();
-						if (Validator.isNotNull(menuGroup)) {
-							// Check record exits DB
-							long menuConfigId = actions.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order, menuType, queryParams,
-									tableConfig, buttonConfig);
-							if (menuConfigId > 0) {
-								actions.updateMenuRoles(groupId, menuConfigId, roles);
-							}
+			long userId, ServiceContext serviceContext) throws PortalException {
+
+		MenuConfigActions actions = new MenuConfigActionsImpl();
+		//Delete all table ActionConfig
+		boolean flagMenu = actions.deleteAllMenuConfig(groupId, userId, serviceContext);
+		//Update table ActionConfig
+		if (menuList != null && flagMenu) {
+			List<MenuConfig> menuConfigList = menuList.getMenuConfig();
+			if (menuConfigList != null && menuConfigList.size() > 0) {
+				for (MenuConfig menuConfig : menuConfigList) {
+					String menuGroup = menuConfig.getMenuGroup();
+					String menuName = menuConfig.getMenuName();
+					Integer order = menuConfig.getOrder();
+					Integer menuType = menuConfig.getMenuType();
+					String queryParams = menuConfig.getQueryParams();
+					String tableConfig = menuConfig.getTableConfig();
+					String buttonConfig = menuConfig.getButtonConfig();
+					String roles = menuConfig.getRoles();
+					if (Validator.isNotNull(menuGroup)) {
+						// Check record exits DB
+						long menuConfigId = actions.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order, menuType, queryParams,
+								tableConfig, buttonConfig);
+						if (menuConfigId > 0) {
+							actions.updateMenuRoles(groupId, menuConfigId, roles);
 						}
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	//LamTV_Update DocumentType to DB
 	public static void processUpdateDocumentType(DocumentTypeList docList, String folderPath, long groupId,
 			long userId, ServiceContext serviceContext) {
-		try {
-			if (docList != null) {
-				List<DocumentType> docTypeList = docList.getDocumentType();
-				if (docTypeList != null && docTypeList.size() > 0) {
-					for (DocumentType docType : docTypeList) {
-						String typeCode = docType.getTypeCode();
-						String documentName = docType.getDocumentName();
-						String codePattern = docType.getCodePattern();
-						Integer docSync = docType.getDocSync();
-						if (Validator.isNotNull(typeCode)) {
-							String filePath = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-									+ typeCode + ConstantUtils.EXTENTION_XML;
-							File xmlfile = new File(filePath);
-							String documentScript = StringPool.BLANK;
-							if (xmlfile.exists() && !xmlfile.isDirectory()) {
-								documentScript = ReadXMLFileUtils.convertFiletoString(xmlfile);
-							}
-							// Check record exits DB
-							DocumentTypeActions actions = new DocumentTypeActionsImpl();
-							actions.updateDocumentTypeDB(userId, groupId, typeCode, 0, documentName, codePattern, docSync,
-									documentScript);
+
+		if (docList != null) {
+			List<DocumentType> docTypeList = docList.getDocumentType();
+			if (docTypeList != null && docTypeList.size() > 0) {
+				for (DocumentType docType : docTypeList) {
+					String typeCode = docType.getTypeCode();
+					String documentName = docType.getDocumentName();
+					String codePattern = docType.getCodePattern();
+					Integer docSync = docType.getDocSync();
+					if (Validator.isNotNull(typeCode)) {
+						String filePath = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
+								+ typeCode + ConstantUtils.EXTENTION_XML;
+						File xmlfile = new File(filePath);
+						String documentScript = StringPool.BLANK;
+						if (xmlfile.exists() && !xmlfile.isDirectory()) {
+							documentScript = ReadXMLFileUtils.convertFiletoString(xmlfile);
 						}
+						// Check record exits DB
+						DocumentTypeActions actions = new DocumentTypeActionsImpl();
+						actions.updateDocumentTypeDB(userId, groupId, typeCode, 0, documentName, codePattern, docSync,
+								documentScript);
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	//LamTV_Update DeliverableType to DB
 	public static void processUpdateDeliverableType(DeliverableTypeList deliTypeList, String folderPath, long groupId,
 			long userId, ServiceContext serviceContext) {
-		try {
-			if (deliTypeList != null) {
-				List<DeliverableType> deliverableTypeList = deliTypeList.getDeliverableType();
-				if (deliverableTypeList != null && deliverableTypeList.size() > 0) {
-					for (DeliverableType deliType : deliverableTypeList) {
-						String typeCode = deliType.getTypeCode();
-						String typeName = deliType.getTypeName();
-						String codePattern = deliType.getCodePattern();
-						Integer docSync = deliType.getDocSync();
-						String mappingData = deliType.getMappingData();
-						String govAgencies = deliType.getGovAgencies();
-						if (Validator.isNotNull(typeCode)) {
-							String filePathReport = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-									+ typeCode + ConstantUtils.EXTENTION_XML;
-							String filePathForm = folderPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
-									+ typeCode + ConstantUtils.EXTENTION_JSON;
-							File xmlFile = new File(filePathReport);
-							File jsonFile = new File(filePathForm);
-							String formScript = StringPool.BLANK;
-							String formReport = StringPool.BLANK;
-							if (xmlFile.exists() && !xmlFile.isDirectory()) {
-								formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
-							}
-							if (jsonFile.exists() && !jsonFile.isDirectory()) {
-								formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
-							}
-							// Check record exits DB
-							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
-							actions.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern, docSync, mappingData,
-									govAgencies, formReport, formScript);
+
+		if (deliTypeList != null) {
+			List<DeliverableType> deliverableTypeList = deliTypeList.getDeliverableType();
+			if (deliverableTypeList != null && deliverableTypeList.size() > 0) {
+				for (DeliverableType deliType : deliverableTypeList) {
+					String typeCode = deliType.getTypeCode();
+					String typeName = deliType.getTypeName();
+					String codePattern = deliType.getCodePattern();
+					Integer docSync = deliType.getDocSync();
+					String mappingData = deliType.getMappingData();
+					String govAgencies = deliType.getGovAgencies();
+					if (Validator.isNotNull(typeCode)) {
+						String filePathReport = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
+								+ typeCode + ConstantUtils.EXTENTION_XML;
+						String filePathForm = folderPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
+								+ typeCode + ConstantUtils.EXTENTION_JSON;
+						File xmlFile = new File(filePathReport);
+						File jsonFile = new File(filePathForm);
+						String formScript = StringPool.BLANK;
+						String formReport = StringPool.BLANK;
+						if (xmlFile.exists() && !xmlFile.isDirectory()) {
+							formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
 						}
+						if (jsonFile.exists() && !jsonFile.isDirectory()) {
+							formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
+						}
+						// Check record exits DB
+						DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
+						actions.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern, docSync, mappingData,
+								govAgencies, formReport, formScript);
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	//LamTV_Update PaymentConfig to DB
 	public static void processUpdatePaymentConfig(PaymentConfigList paymentList, long groupId, long userId,
-			ServiceContext serviceContext) {
+			ServiceContext serviceContext) throws PortalException {
 
-		try {
-			PaymentConfigActions actions = new PaymentConfigActionsImpl();
-			//Delete all table PaymentConfig
-			boolean flagPayment = actions.deleteAllPaymentConfig(groupId, userId, serviceContext);
-			//Update table PaymentConfig
-			if (paymentList != null && flagPayment) {
-				List<PaymentConfig> paymentConfigList = paymentList.getPaymentConfig();
-				if (paymentConfigList != null && paymentConfigList.size() > 0) {
-					String govAgencyCode = StringPool.BLANK;
-					String govAgencyName = StringPool.BLANK;
-					String govAgencyTaxNo = StringPool.BLANK;
-					String invoiceTemplateNo = StringPool.BLANK;
-					String invoiceIssueNo = StringPool.BLANK;
-					String invoiceLastNo = StringPool.BLANK;
-					String bankInfo = StringPool.BLANK;
-					String epaymentConfig = StringPool.BLANK;
-					for (PaymentConfig paymentConfig : paymentConfigList) {
-						govAgencyCode = paymentConfig.getGovAgencyCode();
-						govAgencyName = paymentConfig.getGovAgencyName();
-						govAgencyTaxNo = paymentConfig.getGovAgencyTaxNo();
-						invoiceTemplateNo = paymentConfig.getInvoiceTemplateNo();
-						invoiceIssueNo = paymentConfig.getInvoiceIssueNo();
-						invoiceLastNo = paymentConfig.getInvoiceLastNo();
-						bankInfo = paymentConfig.getBankInfo();
-						epaymentConfig = paymentConfig.getEpaymentConfig();
-						if (Validator.isNotNull(govAgencyCode)) {
-							// Check record exits DB
-							actions.updatePaymentConfigDB(userId, groupId, govAgencyCode, govAgencyName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo,
-									invoiceLastNo, bankInfo, epaymentConfig, serviceContext);
-						}
+		PaymentConfigActions actions = new PaymentConfigActionsImpl();
+		//Delete all table PaymentConfig
+		boolean flagPayment = actions.deleteAllPaymentConfig(groupId, userId, serviceContext);
+		//Update table PaymentConfig
+		if (paymentList != null && flagPayment) {
+			List<PaymentConfig> paymentConfigList = paymentList.getPaymentConfig();
+			if (paymentConfigList != null && paymentConfigList.size() > 0) {
+				String govAgencyCode = StringPool.BLANK;
+				String govAgencyName = StringPool.BLANK;
+				String govAgencyTaxNo = StringPool.BLANK;
+				String invoiceTemplateNo = StringPool.BLANK;
+				String invoiceIssueNo = StringPool.BLANK;
+				String invoiceLastNo = StringPool.BLANK;
+				String bankInfo = StringPool.BLANK;
+				String epaymentConfig = StringPool.BLANK;
+				for (PaymentConfig paymentConfig : paymentConfigList) {
+					govAgencyCode = paymentConfig.getGovAgencyCode();
+					govAgencyName = paymentConfig.getGovAgencyName();
+					govAgencyTaxNo = paymentConfig.getGovAgencyTaxNo();
+					invoiceTemplateNo = paymentConfig.getInvoiceTemplateNo();
+					invoiceIssueNo = paymentConfig.getInvoiceIssueNo();
+					invoiceLastNo = paymentConfig.getInvoiceLastNo();
+					bankInfo = paymentConfig.getBankInfo();
+					epaymentConfig = paymentConfig.getEpaymentConfig();
+					if (Validator.isNotNull(govAgencyCode)) {
+						// Check record exits DB
+						actions.updatePaymentConfigDB(userId, groupId, govAgencyCode, govAgencyName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo,
+								invoiceLastNo, bankInfo, epaymentConfig, serviceContext);
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	//LamTV_Update ServerConfig to DB
 	public static void processUpdateServerConfig(ServerConfigList serverList, long groupId, long userId,
-			ServiceContext serviceContext) {
+			ServiceContext serviceContext) throws PortalException {
 
-		try {
-			//Delete all table ServerConfig
-			ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
-			//Update table ServerConfig
-			if (serverList != null) {
-				List<ServerConfig> serverConfigList = serverList.getServerConfig();
-				if (serverConfigList != null && serverConfigList.size() > 0) {
-					String govAgencyCode = StringPool.BLANK;
-					String serverNo = StringPool.BLANK;
-					String serverName = StringPool.BLANK;
-					String protocol = StringPool.BLANK;
-					String configs = StringPool.BLANK;
-					for (ServerConfig serverConfig : serverConfigList) {
-						govAgencyCode = serverConfig.getGovAgencyCode();
-						serverNo = serverConfig.getServerNo();
-						serverName = serverConfig.getServerName();
-						protocol = serverConfig.getProtocol();
-						configs = serverConfig.getConfigs();
-						if (Validator.isNotNull(serverNo)) {
-							// Check record exits DB
-							ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0, govAgencyCode, serverNo,
-									serverName, protocol, configs, null, serviceContext);
-						}
+		//Delete all table ServerConfig
+		ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
+		//Update table ServerConfig
+		if (serverList != null) {
+			List<ServerConfig> serverConfigList = serverList.getServerConfig();
+			if (serverConfigList != null && serverConfigList.size() > 0) {
+				String govAgencyCode = StringPool.BLANK;
+				String serverNo = StringPool.BLANK;
+				String serverName = StringPool.BLANK;
+				String protocol = StringPool.BLANK;
+				String configs = StringPool.BLANK;
+				for (ServerConfig serverConfig : serverConfigList) {
+					govAgencyCode = serverConfig.getGovAgencyCode();
+					serverNo = serverConfig.getServerNo();
+					serverName = serverConfig.getServerName();
+					protocol = serverConfig.getProtocol();
+					configs = serverConfig.getConfigs();
+					if (Validator.isNotNull(serverNo)) {
+						// Check record exits DB
+						ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0, govAgencyCode, serverNo,
+								serverName, protocol, configs, null, serviceContext);
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
-		
 	}
 
 	//LamTV_Update NotificationTemplate to DB
 	public static void processUpdateNotificationTemplate(NotificationTemplateList notiTempList, long groupId,
-			long userId, ServiceContext serviceContext) {
+			long userId, ServiceContext serviceContext) throws NoSuchUserException {
 
-		try {
-			NotificationTemplateInterface actions = new NotificationTemplateActions();
-			//Delete all table NotificationTemplate
-			boolean flagTemp = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
-			//Update table NotificationTemplate
-			if (notiTempList != null && flagTemp) {
-				List<NotificationTemplate> notiTemplateList = notiTempList.getNotificationTemplate();
-				if (notiTemplateList != null && notiTemplateList.size() > 0) {
-					String notificationType = StringPool.BLANK;
-					Boolean sendEmail = false;
-					String emailSubject = StringPool.BLANK;
-					String emailBody = StringPool.BLANK;
-					String textMessage = StringPool.BLANK;
-					Boolean sendSMS = false;
-					Integer expireDuration = 0;
-					for (NotificationTemplate notiTemplate : notiTemplateList) {
-						notificationType = notiTemplate.getNotificationType();
-						sendEmail = notiTemplate.isSendEmail();
-						emailSubject = notiTemplate.getEmailSubject();
-						emailBody = notiTemplate.getEmailBody();
-						textMessage = notiTemplate.getTextMessage();
-						sendSMS = notiTemplate.isSendSMS();
-						expireDuration = notiTemplate.getExpireDuration();
-						if (Validator.isNotNull(notificationType)) {
-							// Check record exits DB
-							actions.updateNotificationTemplateDB(userId, groupId, notificationType, sendEmail, emailSubject, emailBody, textMessage,
-									sendSMS, expireDuration, serviceContext);
-						}
+		NotificationTemplateInterface actions = new NotificationTemplateActions();
+		//Delete all table NotificationTemplate
+		boolean flagTemp = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
+		//Update table NotificationTemplate
+		if (notiTempList != null && flagTemp) {
+			List<NotificationTemplate> notiTemplateList = notiTempList.getNotificationTemplate();
+			if (notiTemplateList != null && notiTemplateList.size() > 0) {
+				String notificationType = StringPool.BLANK;
+				Boolean sendEmail = false;
+				String emailSubject = StringPool.BLANK;
+				String emailBody = StringPool.BLANK;
+				String textMessage = StringPool.BLANK;
+				Boolean sendSMS = false;
+				Integer expireDuration = 0;
+				for (NotificationTemplate notiTemplate : notiTemplateList) {
+					notificationType = notiTemplate.getNotificationType();
+					sendEmail = notiTemplate.isSendEmail();
+					emailSubject = notiTemplate.getEmailSubject();
+					emailBody = notiTemplate.getEmailBody();
+					textMessage = notiTemplate.getTextMessage();
+					sendSMS = notiTemplate.isSendSMS();
+					expireDuration = notiTemplate.getExpireDuration();
+					if (Validator.isNotNull(notificationType)) {
+						// Check record exits DB
+						actions.updateNotificationTemplateDB(userId, groupId, notificationType, sendEmail, emailSubject, emailBody, textMessage,
+								sendSMS, expireDuration, serviceContext);
 					}
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 
 	}
@@ -432,7 +399,8 @@ public class ProcessUpdateDBUtils {
 	}
 
 	private static void processUpdateEmployee(long userId, long groupId,
-			org.opencps.api.v21.model.UserManagement.Users users, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException, UnauthorizationException, DuplicateCategoryException, PortalException {
+			org.opencps.api.v21.model.UserManagement.Users users, ServiceContext serviceContext)
+			throws PortalException {
 		List<Employee> employeeList = users.getEmployee();
 		if (employeeList != null && employeeList.size() > 0) {
 			_log.info("employeeList size: "+employeeList.size());
@@ -491,140 +459,128 @@ public class ProcessUpdateDBUtils {
 	}
 
 	//LamTV_Update Dictcollection to DB
-	public static void processUpdateDictCollection(DictCollection dicts, long groupId, long userId, ServiceContext serviceContext) {
-		try {
-			if (dicts != null) {
-				String collectionCode = dicts.getCollectionCode();
-				_log.info("collectionCode: "+collectionCode);
-				String collectionName = dicts.getCollectionName();
-				String collectionNameEN = dicts.getCollectionNameEN();
-				String description = dicts.getDescription();
-				DictcollectionInterface actionCollection = new DictCollectionActions();
-				long dictCollectionId = actionCollection.updateDictCollectionDB(userId, groupId, collectionCode,
-						collectionName, collectionNameEN, description);
-				if (dictCollectionId > 0) {
-					processUpdateDictItem(userId, groupId, dictCollectionId, dicts, actionCollection);
-					processUpdateDictGroup(userId, groupId, dictCollectionId, dicts, actionCollection, serviceContext);
-				}
+	public static void processUpdateDictCollection(DictCollection dicts, long groupId, long userId, ServiceContext serviceContext) throws NoSuchUserException {
+		if (dicts != null) {
+			String collectionCode = dicts.getCollectionCode();
+			_log.info("collectionCode: "+collectionCode);
+			String collectionName = dicts.getCollectionName();
+			String collectionNameEN = dicts.getCollectionNameEN();
+			String description = dicts.getDescription();
+			DictcollectionInterface actionCollection = new DictCollectionActions();
+			long dictCollectionId = actionCollection.updateDictCollectionDB(userId, groupId, collectionCode,
+					collectionName, collectionNameEN, description);
+			if (dictCollectionId > 0) {
+				processUpdateDictItem(userId, groupId, dictCollectionId, dicts, actionCollection);
+				processUpdateDictGroup(userId, groupId, dictCollectionId, dicts, actionCollection, serviceContext);
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	//LamTV_ Process service to DB
 	public static void processUpdateServiceInfo(ServiceInfo service, String folderPath, String folderParentPath,
-			long groupId, long userId, ServiceContext serviceContext) {
-		try {
-			if (service != null) {
-				String serviceCode = service.getServiceCode();
-				String serviceName = service.getServiceName();
-				String processText = service.getProcessText();
-				String methodText = service.getMethodText();
-				String dossierText = service.getDossierText();
-				String conditionText = service.getConditionText();
-				String durationText = service.getDurationText();
-				String applicantText = service.getApplicantText();
-				String resultText = service.getResultText();
-				String regularText = service.getRegularText();
-				String feeText = service.getFeeText();
-				String administrationCode = service.getAdministrationCode();
-				String administrationName = service.getAdministrationName();
-				String domainCode = service.getDomainCode();
-				String domainName = service.getDomainName();
-				Integer maxLevel = service.getMaxLevel();
-				// Update serviceInfo
-				ServiceInfoActions actionService = new ServiceInfoActionsImpl();
-				long serviceInfoId = actionService.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText, methodText,
-						dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
-						administrationCode, administrationName, domainCode, domainName, maxLevel);
-				// Update fileName
-				FileTemplates fileTemplate = service.getFileTemplates();
-				if (fileTemplate != null) {
-					processFileTemplate(userId, groupId, serviceInfoId, fileTemplate, folderParentPath, actionService, serviceContext);
-				}
-				// Add serviceConfig
-				Configs configs = service.getConfigs();
-				if (configs != null) {
-					processServiceConfig(userId, groupId, serviceInfoId, configs, actionService, serviceContext);
-				}
+			long groupId, long userId, ServiceContext serviceContext) throws Exception {
+
+		if (service != null) {
+			String serviceCode = service.getServiceCode();
+			String serviceName = service.getServiceName();
+			String processText = service.getProcessText();
+			String methodText = service.getMethodText();
+			String dossierText = service.getDossierText();
+			String conditionText = service.getConditionText();
+			String durationText = service.getDurationText();
+			String applicantText = service.getApplicantText();
+			String resultText = service.getResultText();
+			String regularText = service.getRegularText();
+			String feeText = service.getFeeText();
+			String administrationCode = service.getAdministrationCode();
+			String administrationName = service.getAdministrationName();
+			String domainCode = service.getDomainCode();
+			String domainName = service.getDomainName();
+			Integer maxLevel = service.getMaxLevel();
+			// Update serviceInfo
+			ServiceInfoActions actionService = new ServiceInfoActionsImpl();
+			long serviceInfoId = actionService.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText, methodText,
+					dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
+					administrationCode, administrationName, domainCode, domainName, maxLevel);
+			// Update fileName
+			FileTemplates fileTemplate = service.getFileTemplates();
+			if (fileTemplate != null) {
+				processFileTemplate(userId, groupId, serviceInfoId, fileTemplate, folderParentPath, actionService, serviceContext);
 			}
-		} catch (Exception e) {
-			_log.error(e);
+			// Add serviceConfig
+			Configs configs = service.getConfigs();
+			if (configs != null) {
+				processServiceConfig(userId, groupId, serviceInfoId, configs, actionService, serviceContext);
+			}
 		}
+
 	}
 
 	//LamTV_Process service to DB
 	public static void processUpdateDossierTemplate(DossierTemplate template, String folderPath, String folderParentPath, long groupId,
-			long userId, ServiceContext serviceContext) {
-		try {
-			if (template != null) {
-				String templateNo = template.getTemplateNo();
-				String templateName = template.getTemplateName();
-				String description = template.getDescription();
-				// Update serviceInfo
-				DossierTemplateActions actionTemp = new DossierTemplateActionsImpl();
-				actionTemp.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, serviceContext);
-				// Update fileName
-				Parts parts = template.getParts();
-				if (parts != null) {
-					processDossierPart(userId, groupId, parts, actionTemp, folderParentPath, templateNo,
-							serviceContext);
-				}
+			long userId, ServiceContext serviceContext) throws PortalException {
+
+		if (template != null) {
+			String templateNo = template.getTemplateNo();
+			String templateName = template.getTemplateName();
+			String description = template.getDescription();
+			// Update serviceInfo
+			DossierTemplateActions actionTemp = new DossierTemplateActionsImpl();
+			actionTemp.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, serviceContext);
+			// Update fileName
+			Parts parts = template.getParts();
+			if (parts != null) {
+				processDossierPart(userId, groupId, parts, actionTemp, folderParentPath, templateNo,
+						serviceContext);
 			}
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
 	public static void processUpdateServiceProcess(ServiceProcess process, String folderPath, long groupId,
-			long userId, ServiceContext serviceContext) {
-		try {
-			if (process != null) {
-				String processNo = process.getProcessNo();
-				String processName = process.getProcessName();
-				String description = process.getDescription();
-				Double durationCount = process.getDurationCount();
-				Integer durationUnit = process.getDurationUnit();
-				boolean generatePassword = process.isGeneratePassword();
-				String serverNo = process.getServerNo();
-				String serverName = process.getServerName();
-				String dossierNoPattern = process.getDossierNoPattern();
-				String dueDatePattern = process.getDueDatePattern();
-				// Update serviceInfo
-				ServiceProcessActions actionService = new ServiceProcessActionsImpl();
-				long serviceProcessId = actionService.updateServiceProcessDB(userId, groupId, processNo, processName,
-						description, durationCount, durationUnit, generatePassword, serverNo, serverName,
-						dossierNoPattern, dueDatePattern, serviceContext);
-				//Delete all record ServiceFileTemplate with serviceInfoId
-				Roles processRoles = process.getRoles();
-				if (processRoles != null) {
-					processProcessRole(userId, groupId, serviceProcessId, processRoles, actionService, serviceContext);
-				}
-				// Process step
-				Steps steps = process.getSteps();
-				if (steps != null) {
-					processProcessStep(userId, groupId, serviceProcessId, steps, actionService, serviceContext);
-				}
-				// Process actions
-				Actions actions = process.getActions();
-				if (actions != null) {
-					processProcessAction(userId, groupId, serviceProcessId, actions, actionService, serviceContext);
-				}
-				// Process processsequence
-				Sequences sequences = process.getSequences();
-				if (sequences != null) {
-					processProcessSequence(userId, groupId, serviceProcessId, sequences, actionService, serviceContext);
-				}
+			long userId, ServiceContext serviceContext) throws PortalException {
+
+		if (process != null) {
+			String processNo = process.getProcessNo();
+			String processName = process.getProcessName();
+			String description = process.getDescription();
+			Double durationCount = process.getDurationCount();
+			Integer durationUnit = process.getDurationUnit();
+			boolean generatePassword = process.isGeneratePassword();
+			String serverNo = process.getServerNo();
+			String serverName = process.getServerName();
+			String dossierNoPattern = process.getDossierNoPattern();
+			String dueDatePattern = process.getDueDatePattern();
+			// Update serviceInfo
+			ServiceProcessActions actionService = new ServiceProcessActionsImpl();
+			long serviceProcessId = actionService.updateServiceProcessDB(userId, groupId, processNo, processName,
+					description, durationCount, durationUnit, generatePassword, serverNo, serverName,
+					dossierNoPattern, dueDatePattern, serviceContext);
+			//Delete all record ServiceFileTemplate with serviceInfoId
+			Roles processRoles = process.getRoles();
+			if (processRoles != null) {
+				processProcessRole(userId, groupId, serviceProcessId, processRoles, actionService, serviceContext);
 			}
-		} catch (Exception e) {
-			_log.error(e);
+			// Process step
+			Steps steps = process.getSteps();
+			if (steps != null) {
+				processProcessStep(userId, groupId, serviceProcessId, steps, actionService, serviceContext);
+			}
+			// Process actions
+			Actions actions = process.getActions();
+			if (actions != null) {
+				processProcessAction(userId, groupId, serviceProcessId, actions, actionService, serviceContext);
+			}
+			// Process processsequence
+			Sequences sequences = process.getSequences();
+			if (sequences != null) {
+				processProcessSequence(userId, groupId, serviceProcessId, sequences, actionService, serviceContext);
+			}
 		}
 	}
 
 	//LamTV_ Process output ServiceFileTemplate to DB
 	private static void processFileTemplate(long userId, long groupId, long serviceInfoId, FileTemplates fileTemplate,
-			String folderParentPath, ServiceInfoActions actionService, ServiceContext serviceContext) {
+			String folderParentPath, ServiceInfoActions actionService, ServiceContext serviceContext) throws Exception {
 		// Delete all ServiceFileTemplate with serviceInfoId
 		boolean flagTemplate = actionService.deleteAllFileTemplate(userId, groupId, serviceInfoId, serviceContext);
 		_log.info("flagTemplate: "+flagTemplate);
@@ -645,11 +601,7 @@ public class ProcessUpdateDBUtils {
 					File file = new File(filePathTemplate);
 					FileEntry fileEntry = null;
 					if (file.exists() && !file.isDirectory()) {
-						try {
-							fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, file, fileName, serviceContext);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, file, fileName, serviceContext);
 					}
 					if (fileEntry != null) {
 						long fileEntryId = fileEntry.getFileEntryId();
@@ -786,23 +738,44 @@ public class ProcessUpdateDBUtils {
 					_log.info("eform: "+eForm);
 					String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
 							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
+					String filePathReportTemp = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
+							+ fileTemplateNo + ConstantUtils.EXTENTION_XML;
 					String filePathForm = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
 							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_JSON;
+					String filePathFormTemp = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
+							+ fileTemplateNo + ConstantUtils.EXTENTION_JSON;
 					File xmlFile = new File(filePathReport);
 					File jsonFile = new File(filePathForm);
 					if (xmlFile.exists() && !xmlFile.isDirectory()) {
 						formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
+					} else {
+						File xmlFileTemp = new File(filePathReportTemp);
+						if (xmlFileTemp.exists() && !xmlFileTemp.isDirectory()) {
+							formReport = ReadXMLFileUtils.convertFiletoString(xmlFileTemp);
+						}
 					}
 					if (jsonFile.exists() && !jsonFile.isDirectory()) {
 						formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
+					} else {
+						File jsonFileTemp = new File(filePathFormTemp);
+						if (jsonFileTemp.exists() && !jsonFileTemp.isDirectory()) {
+							formScript = ReadXMLFileUtils.convertFiletoString(jsonFileTemp);
+						}
 					}
 				} else {
 					formScript = StringPool.BLANK;
 					String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
 							+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
+					String filePathReportTemp = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
+							+ fileTemplateNo + ConstantUtils.EXTENTION_XML;
 					File xmlFile = new File(filePathReport);
 					if (xmlFile.exists() && !xmlFile.isDirectory()) {
 						formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);
+					} else {
+						File xmlFileTemp = new File(filePathReportTemp);
+						if (xmlFileTemp.exists() && !xmlFileTemp.isDirectory()) {
+							formReport = ReadXMLFileUtils.convertFiletoString(xmlFileTemp);
+						}
 					}
 				}
 				//
@@ -988,7 +961,7 @@ public class ProcessUpdateDBUtils {
 
 	//LamTV_ Process DictItem
 	private static void processUpdateDictItem(long userId, long groupId, long dictCollectionId, DictCollection dicts,
-			DictcollectionInterface actionCollection) {
+			DictcollectionInterface actionCollection) throws NoSuchUserException {
 		Items itemList = dicts.getItems();
 		if (itemList != null) {
 			// Delete all DictItem with dictCollectionId
@@ -1025,7 +998,7 @@ public class ProcessUpdateDBUtils {
 
 	//LamTV_ Process DictGroup
 	private static void processUpdateDictGroup(long userId, long groupId, long dictCollectionId, DictCollection dicts,
-			DictcollectionInterface actionCollection, ServiceContext serviceContext) {
+			DictcollectionInterface actionCollection, ServiceContext serviceContext) throws NoSuchUserException {
 		Groups groupList = dicts.getGroups();
 		if (groupList != null) {
 			// Delete all DictItem with dictCollectionId
