@@ -1,9 +1,8 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierFileManagementImpl implements DossierFileManagement {
@@ -797,51 +798,94 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response uploadFileEntry(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file) {
 		BackendAuth auth = new BackendAuthImpl();
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 		DataHandler dataHandle = file.getDataHandler();
 		InputStream fileInputStream = null;
-		try {
-			fileInputStream = dataHandle.getInputStream();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			_log.error(e1);
-		}
 
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			if (!auth2.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("User not permission process!").build();
+			}
 
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			action.uploadFileEntry(dataHandle.getName(), dataHandle.getInputStream(), serviceContext);
 
-			DossierFileModel result = null;
+			String result = StringPool.BLANK;
 
 			//Process FILE
+			fileInputStream = dataHandle.getInputStream();
 			String fileName = dataHandle.getName();
-			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
-//			//delete folder if exits
-			File fileOld = new File(pathFolder);
-			if (fileOld.exists()) {
-				boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-				_log.info("LamTV_Delete DONE: "+flag);
+			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
+			_log.info("extFile: "+extFile);
+			if (Validator.isNotNull(extFile)) {
+				if (extFile.toLowerCase().equals("zip")) {
+					String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
+//					//delete folder if exits
+					File fileOld = new File(pathFolder);
+					_log.info("fileOld: "+fileOld);
+					if (fileOld.exists()) {
+						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
+						_log.info("LamTV_Delete DONE: "+flag);
+					}
+//					_log.info("LamTV_pathFolder: "+pathFolder);
+					ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
+					File fileList = new File(pathFolder);
+//					//Validate xml
+					String strError = ReadXMLFileUtils.validateXML(fileList, true);
+					if (Validator.isNotNull(strError)) {
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
+					}
+
+					String errorCheck = ReadXMLFileUtils.getStrError();
+					if (Validator.isNotNull(errorCheck)) {
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(errorCheck).build();
+					}
+					result = ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
+					if (Validator.isNull(result)) {
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("Folder is not structure").build();
+					}
+					_log.info("LamTV_IMPORT DONE_ZIP");
+				} else if (extFile.toLowerCase().equals("xml")) {
+					String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
+//					//delete folder if exits
+					File fileOld = new File(pathFile);
+					_log.info("fileOld: "+fileOld.getAbsolutePath());
+					if (fileOld.exists()) {
+						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
+						_log.info("LamTV_Delete DONE: "+flag);
+					}
+					_log.info("LamTV_pathFolder: "+pathFile);
+					File fileList = new File(pathFile);
+					FileOutputStream out = new FileOutputStream(fileList);
+					IOUtils.copy(fileInputStream, out);
+//					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
+					_log.info("fileList: "+fileList);
+//					_log.info("LamTV_fileList: "+fileList.getPath());
+					String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+					if (Validator.isNotNull(subFileName)) {
+						String strError = ReadXMLFileUtils.validateXML(fileList, false);
+						if (Validator.isNotNull(strError)) {
+							return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
+						}
+						String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
+						result = ReadXMLFileUtils.compareParentFile(ConstantUtils.DEST_DIRECTORY, fileName, xmlString, groupId, userId, serviceContext);
+					}
+					_log.info("LamTV_IMPORT DONE_FILE");
+				}
 			}
-//			_log.info("LamTV_pathFolder: "+pathFolder);
-			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
-			File fileList = new File(pathFolder);
-//			_log.info("LamTV_fileList: "+fileList.getPath());
-			ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
-			_log.info("LamTV_IMPORT DONE");
 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e.getMessage()).build();
 		}
 	}
 

@@ -78,7 +78,8 @@ public class StepConfigActionsImpl implements StepConfigActions {
 
 	@Override
 	public StepConfig updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
-			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig) {
+			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig)
+			throws PortalException {
 
 		return StepConfigLocalServiceUtil.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType,
 				dossierStatus, dossierSubStatus, menuGroup, menuStepName, buttonConfig);

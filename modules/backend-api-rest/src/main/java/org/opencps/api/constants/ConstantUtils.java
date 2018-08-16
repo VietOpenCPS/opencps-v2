@@ -15,6 +15,7 @@ public class ConstantUtils {
 	public static final String SOURCE_SERVICES = "/services";
 	public static final String SOURCE_TEMPLATES = "/templates";
 	public static final String SOURCE_PROCESSES = "/processes";
+	public static final String SOURCE_VALIDATE = "services, processes, processes, dicts";
 	//
 	public static final String PREFIX_ACTIONCONFIG = "ACTION_";
 	//Declare file xml
@@ -45,4 +46,7 @@ public class ConstantUtils {
 	public static final String OVER_DUE = "overdue";
 	public static final String DELAY = "deplay";
 	public static final String COMMNG = "coming";
+	//
+	public static final String HTML_NEW_LINE = "<br/>";
+	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";
 }

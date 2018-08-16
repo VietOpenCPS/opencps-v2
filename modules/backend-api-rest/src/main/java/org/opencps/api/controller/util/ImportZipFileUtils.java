@@ -80,6 +80,16 @@ public class ImportZipFileUtils {
 		return subNameFile;
 	}
 
+	//LamTV_Process get sub fileName
+	public static String getExtendFileName(String fileName) {
+		String subNameFile = StringPool.BLANK;
+		if (Validator.isNotNull(fileName)) {
+			int index = fileName.lastIndexOf(StringPool.PERIOD);
+			subNameFile = fileName.substring(index + 1);
+		}
+		return subNameFile;
+	}
+
     /**
      * Extracts a zip entry (file entry)
      * @param zipIn

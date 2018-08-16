@@ -1204,7 +1204,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 	@Override
 	public void updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
-			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling, String metadata) {
+			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling,
+			String metadata) throws NoSuchUserException {
 
 		DictItemLocalServiceUtil.updateDictItemDB(userId, groupId, dictCollectionId, itemCode, itemName, itemNameEN,
 				itemDescription, dictItemParentId, level, sibling, metadata);
@@ -1253,7 +1254,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 	@Override
 	public void updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
-			String groupNameEN, String groupDescription, ServiceContext serviceContext) {
+			String groupNameEN, String groupDescription, ServiceContext serviceContext) throws NoSuchUserException {
 
 		DictGroupLocalServiceUtil.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName,
 				groupNameEN, groupDescription, serviceContext);
