@@ -82,11 +82,13 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 				object.put("regionApi", "/o/rest/v2/dictcollections");
 				object.put("postDossierApi", "/o/rest/v2/dossiers");
 				object.put("dossierTemplatesApi", "/o/rest/v2/dossiertemplates");
-				object.put("applicantApi", "/o/rest/v2/applicant");
+				object.put("applicantApi", "/o/rest/v2/applicants");
 				object.put("dossierlogsApi", "/o/rest/v2/dossierlogs");
 				object.put("dossierApi", "/o/rest/v2/dossiers");
-				
+				object.put("commentApi", "/o/rest/v2/comments");
 				object.put("getNextAction", "/o/rest/v2/dossiers");
+				object.put("documentApi", "/o/rest/v2_1/dossiers");
+				object.put("stepConfigApi", "/o/rest/v2_1/stepconfigs");
 				object.put("getServiceConfigs", "/o/rest/v2/serviceconfigs");
 				
 				String token = pullToken(themeDisplay);

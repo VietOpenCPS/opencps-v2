@@ -4,11 +4,13 @@ import frontend.web.evaluation.constants.FrontendWebEvaluationPortletKeys;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
+// import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -19,9 +21,13 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
+// import javax.portlet.RenderRequest;
+// import javax.portlet.RenderResponse;
+//
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+import javax.servlet.http.HttpServletRequest;
+//
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -31,56 +37,62 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"com.liferay.portlet.css-class-wrapper=portlet-freemarker",
+		// "com.liferay.portlet.display-category=category.evaluation",
 		"com.liferay.portlet.display-category=category.evaluation",
-		"com.liferay.portlet.header-portlet-css=/css/styles.css",
-		"com.liferay.portlet.instanceable=true",
+		// "com.liferay.portlet.header-portlet-css=/css/styles.css",
+		"com.liferay.portlet.header-portlet-css=/css/main.css",
+		// "com.liferay.portlet.instanceable=true",
+		"com.liferay.portlet.instanceable=false",
 		"javax.portlet.display-name=frontend-web-evaluation Portlet",
 		"javax.portlet.init-param.template-path=/",
-		"javax.portlet.init-param.view-template=/templates/evaluationView.ftl",
+		// "javax.portlet.init-param.view-template=/templates/evaluationView.ftl",
+		"javax.portlet.init-param.view-template=/templates/view.ftl",
 		"javax.portlet.name=" + FrontendWebEvaluationPortletKeys.FrontendWebEvaluation,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
 	},
 	service = Portlet.class
 )
+
 public class FrontendWebEvaluationPortlet extends FreeMarkerPortlet {
-	public void render(RenderRequest renderRequest, RenderResponse renderResponse)
-			throws IOException, PortletException {
-		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-		String portletId = portletDisplay.getId();
-//		HttpServletRequest httpRequest = PortalUtil.getHttpServletRequest(renderRequest);
+	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+			throws PortletException {
+		try {
 
-		renderRequest.setAttribute("api", generateApiJsonObject(themeDisplay));
-		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
-		
-		String govAgencyCode =
-				ParamUtil.getString(renderRequest, "govAgencyCode");
-		// url
-		PortletURL resultmainlistURL = PortletURLFactoryUtil.create(
-			renderRequest, portletId, themeDisplay.getPlid(),
-			PortletRequest.RENDER_PHASE);
-	
-		resultmainlistURL.setPortletMode(PortletMode.VIEW);
-		resultmainlistURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		resultmainlistURL.setParameter(
-			"mvcPath", "/templates/evaluationMainList.ftl");
-	
-		urlObject.put("evaluationMainList", resultmainlistURL.toString());
-		
-		renderRequest.setAttribute("ajax", urlObject);
-		renderRequest.setAttribute("govAgencyCode", govAgencyCode);
-		
-		super.render(renderRequest, renderResponse);
-	}
+			String resourceID = resourceRequest.getResourceID();
 
-	private JSONObject generateApiJsonObject(ThemeDisplay themeDisplay) {
+			ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
+			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
 
-		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
-		apiObject.put("portletNamespace", themeDisplay.getPortletDisplay().getNamespace());
+			if (resourceID.equals("renderURLInit")) {
 
-		return apiObject;
+				User user = themeDisplay.getUser();
+
+				JSONObject object = JSONFactoryUtil.createJSONObject();
+
+				object.put("groupId", themeDisplay.getScopeGroupId());
+
+				JSONObject userObject = JSONFactoryUtil.createJSONObject();
+
+				userObject.put("userName", user.getFullName());
+				userObject.put("userEmail", user.getEmailAddress());
+				userObject.put("userId", user.getUserId());
+				userObject.put("defaultUser", user.getDefaultUser());
+				object.put("user", userObject);
+
+				writeJSON(resourceRequest, resourceResponse, object);
+
+			} else {
+
+				super.serveResource(resourceRequest, resourceResponse);
+
+			}
+		} catch (Exception e) {
+
+			throw new PortletException((Throwable) e);
+
+		}
 	}
 }
