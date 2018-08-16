@@ -11,6 +11,7 @@
 }
 html .k-block, html .k-draghandle, html .k-inline-block, html .k-widget {
     border-width: 0;
+	background-color: transparent;
 }
 html body .k-multiselect {
     border: 1px solid #ddd;
@@ -194,11 +195,14 @@ html .k-pager-input {
 .full-width-pager {
     position: relative;
 }
-.full-width-pager .k-link {
+body .full-width-pager .k-link {
     border-radius: 0;
     margin-right: -1px;
     border-color: #ddd;
-    line-height: 26px;
+    line-height: 24px;
+}
+body .full-width-pager .k-link > span {
+	vertical-align: sub;
 }
 .full-width-pager .k-pager-sizes .k-widget.k-dropdown {
     margin-top: -5px;

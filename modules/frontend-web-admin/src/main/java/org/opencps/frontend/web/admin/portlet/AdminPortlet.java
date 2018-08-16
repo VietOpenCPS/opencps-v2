@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -67,6 +68,7 @@ import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
@@ -282,7 +284,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		certNumberURL.setParameter(
 			"mvcPath", "/templates/certNumber.ftl");
 		
-		
+		PortletURL systemURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		systemURL.setPortletMode(PortletMode.VIEW);
+		systemURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		systemURL.setParameter(
+				"mvcPath", "/templates/system.ftl");
+
 		urlObject.put("registrationtemplates", registrationTemplatesURL.toString());
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
@@ -312,6 +321,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("dictcollectiontemp_index", dataTempMgtURL.toString());
 		urlObject.put("serverconfigs", serverConfigsURL.toString());
 		urlObject.put("certnumber", certNumberURL.toString());
+		urlObject.put("system", systemURL.toString());
 		
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");
@@ -342,7 +352,21 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			themeDisplay.getPortletDisplay().getNamespace());
 		apiObject.put("roles", roles);
 
+		List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(themeDisplay.getCompanyId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		// define a new list ONLY for sites, 
+		List<Group> sites = new ArrayList<Group>();
+
+		// filter the original list and populate the new list
+		for (Group group: groups) {
+			if (group.getType() == 1 && group.isSite()) {
+				sites.add(group);
+		    }
+		}
+		
+//		_log.info("Sites: " + sites);
 		// set varible
+		renderRequest.setAttribute("sites", sites);
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
 		renderRequest.setAttribute(

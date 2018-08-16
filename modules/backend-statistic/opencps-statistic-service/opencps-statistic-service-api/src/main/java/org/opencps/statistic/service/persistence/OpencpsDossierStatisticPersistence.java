@@ -533,77 +533,153 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	public int countByG_UID_Y(long groupId, long userId, int year);
 
 	/**
-	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.
+	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.
 	*
 	* @param groupId the group ID
 	* @param govAgencyCode the gov agency code
 	* @param month the month
 	* @param year the year
 	* @param domainCode the domain code
+	* @param reporting the reporting
 	* @return the matching opencps dossier statistic
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByM_Y_DM_G(long groupId,
 		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode)
+		java.lang.String domainCode, boolean reporting)
 		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
-	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	*
 	* @param groupId the group ID
 	* @param govAgencyCode the gov agency code
 	* @param month the month
 	* @param year the year
 	* @param domainCode the domain code
+	* @param reporting the reporting
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode);
+		java.lang.String domainCode, boolean reporting);
 
 	/**
-	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param groupId the group ID
 	* @param govAgencyCode the gov agency code
 	* @param month the month
 	* @param year the year
 	* @param domainCode the domain code
+	* @param reporting the reporting
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode, boolean retrieveFromCache);
+		java.lang.String domainCode, boolean reporting,
+		boolean retrieveFromCache);
 
 	/**
-	* Removes the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; from the database.
+	* Removes the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; from the database.
 	*
 	* @param groupId the group ID
 	* @param govAgencyCode the gov agency code
 	* @param month the month
 	* @param year the year
 	* @param domainCode the domain code
+	* @param reporting the reporting
 	* @return the opencps dossier statistic that was removed
 	*/
 	public OpencpsDossierStatistic removeByM_Y_DM_G(long groupId,
 		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode)
+		java.lang.String domainCode, boolean reporting)
 		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
-	* Returns the number of opencps dossier statistics where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63;.
+	* Returns the number of opencps dossier statistics where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63;.
 	*
 	* @param groupId the group ID
 	* @param govAgencyCode the gov agency code
 	* @param month the month
 	* @param year the year
 	* @param domainCode the domain code
+	* @param reporting the reporting
 	* @return the number of matching opencps dossier statistics
 	*/
 	public int countByM_Y_DM_G(long groupId, java.lang.String govAgencyCode,
-		int month, int year, java.lang.String domainCode);
+		int month, int year, java.lang.String domainCode, boolean reporting);
+
+	/**
+	* Returns the opencps dossier statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @return the matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public OpencpsDossierStatistic findByG_M_Y_G_D(long groupId, int month,
+		int year, java.lang.String govAgencyCode, java.lang.String domainCode)
+		throws NoSuchOpencpsDossierStatisticException;
+
+	/**
+	* Returns the opencps dossier statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public OpencpsDossierStatistic fetchByG_M_Y_G_D(long groupId, int month,
+		int year, java.lang.String govAgencyCode, java.lang.String domainCode);
+
+	/**
+	* Returns the opencps dossier statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public OpencpsDossierStatistic fetchByG_M_Y_G_D(long groupId, int month,
+		int year, java.lang.String govAgencyCode, java.lang.String domainCode,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the opencps dossier statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @return the opencps dossier statistic that was removed
+	*/
+	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month,
+		int year, java.lang.String govAgencyCode, java.lang.String domainCode)
+		throws NoSuchOpencpsDossierStatisticException;
+
+	/**
+	* Returns the number of opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @return the number of matching opencps dossier statistics
+	*/
+	public int countByG_M_Y_G_D(long groupId, int month, int year,
+		java.lang.String govAgencyCode, java.lang.String domainCode);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.

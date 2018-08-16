@@ -44,7 +44,7 @@
 
 
 /*----- Login -----*/
-.portlet-boundary_FrontendWebPortal_LoginPortlet_ {
+/* .portlet-boundary_FrontendWebPortal_LoginPortlet_ {
 	margin-left: auto;
 }
 .portlet-boundary_FrontendWebPortal_LoginPortlet_ .portlet {
@@ -61,11 +61,11 @@
 }
 .portlet-boundary_FrontendWebPortal_LoginPortlet_ form > div:nth-child(3) {
 	margin-top: 5px;
-}
+} */
 .portlet-boundary_FrontendWebPortal_LoginPortlet_ form > div:nth-child(3) button:first-child {
 	/* display: none; */
 }
-.portlet-boundary_FrontendWebPortal_LoginPortlet_ .text-hover-blue {
+/* .portlet-boundary_FrontendWebPortal_LoginPortlet_ .text-hover-blue {
 	display: block;
 	white-space: nowrap;
 	margin-top: 5px;
@@ -90,13 +90,13 @@
 		top: 26px;
 		z-index: 5;
 	}
-}
+} */
 
 
 /* .page-theme.signed-out .mLogo + div {
 	display: none;
 } */
-.page-theme.signed-out #main-content .portlet-boundary_FrontendWebPortal_LoginPortlet_ {
+/* .page-theme.signed-out #main-content .portlet-boundary_FrontendWebPortal_LoginPortlet_ {
 	max-width: 350px;
     margin: auto;
     background-color: #0b72ba;
@@ -158,7 +158,7 @@
 		width: 100%;
 		bottom: 0;
 	}
-}
+} */
 
 
 

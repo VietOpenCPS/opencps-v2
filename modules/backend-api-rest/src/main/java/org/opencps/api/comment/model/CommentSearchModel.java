@@ -8,6 +8,8 @@
 
 package org.opencps.api.comment.model;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -50,26 +52,33 @@ import javax.xml.bind.annotation.XmlType;
     "end",
     "className",
     "classPK",
-    "email"
+    "email",
+    "opinion"
 })
 @XmlRootElement(name = "CommentSearchModel")
 public class CommentSearchModel {
 
-    @XmlElement(required = true)
+	@FormParam(value = "keywords")
     protected String keywords;
-    @XmlElement(required = true, defaultValue = "name")
+	@FormParam(value = "sort")
     protected String sort;
-    @XmlElement(defaultValue = "false")
+	@FormParam(value = "order")
     protected boolean order;
-    @XmlElement(defaultValue = "-1")
+	@FormParam(value = "start")
+	@DefaultValue(value="-1")
     protected int start;
-    @XmlElement(defaultValue = "-1")
+	@FormParam(value = "end")
+	@DefaultValue(value="-1")
     protected int end;
-    @XmlElement(required = true)
+	@FormParam(value = "className")
     protected String className;
+	@FormParam(value = "classPK")
     protected long classPK;
-    @XmlElement(required = true)
+	@FormParam(value = "email")
     protected String email;
+	@FormParam(value = "opinion")
+    protected String opinion;
+    
 
     /**
      * Gets the value of the keywords property.
@@ -231,4 +240,28 @@ public class CommentSearchModel {
         this.email = value;
     }
 
+    /**
+     * Gets the value of the opinion property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getOpinion() {
+        return opinion;
+    }
+
+    /**
+     * Sets the value of the opinion property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setOpinion(String value) {
+        this.opinion = value;
+    }
+    
 }

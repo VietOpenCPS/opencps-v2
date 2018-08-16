@@ -175,10 +175,22 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 								.findByP_S_ID(processStep.getProcessStepId());
 						if (Validator.isNotNull(processStep.getRoleAsStep())) {
-							lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, stepCode, serviceProcessId));
+							String[] steps = StringUtil.split(processStep.getRoleAsStep());
+							for (String sc : steps) {
+								if (sc.startsWith("!")) {
+									int index = sc.indexOf("!");
+									String stepCodePunc = sc.substring(index + 1);
+									lstUser.addAll(DossierActionUtils.processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep));
+								}
+								else {
+									lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, sc, serviceProcessId, processStep));								
+								}
+							}							
 						}
-						if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
-							lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
+						else {
+							if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+								lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
+							}							
 						}
 						if (lstUser != null && !lstUser.isEmpty()) {
 						}

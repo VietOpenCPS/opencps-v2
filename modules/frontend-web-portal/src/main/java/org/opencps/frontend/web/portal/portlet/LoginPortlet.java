@@ -48,12 +48,23 @@ public class LoginPortlet extends FreeMarkerPortlet {
 	public void render(
 		RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
-
+		JSONObject urlObject = JSONFactoryUtil.createJSONObject();
+		JSONObject apiObject = JSONFactoryUtil.createJSONObject();
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 		
 		renderRequest.setAttribute("layoutfriendurl", themeDisplay.getScopeGroup().getFriendlyURL());
+		long userId = themeDisplay.getUser().getUserId();
 
+		// api
+		apiObject.put("server", themeDisplay.getPortalURL() + "/o/rest/v2");
+		apiObject.put(
+			"portletNamespace",
+			themeDisplay.getPortletDisplay().getNamespace());
+		// set varible
+		renderRequest.setAttribute("ajax", urlObject);
+		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute("userId", userId);
 		super.render(renderRequest, renderResponse);
 
 	}

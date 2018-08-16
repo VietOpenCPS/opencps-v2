@@ -1,7 +1,5 @@
 package org.opencps.statistic.rest.dto;
 
-import java.util.Date;
-
 public class GetDossierData {
 	public String getDossierStatus() {
 		return dossierStatus;
@@ -43,14 +41,6 @@ public class GetDossierData {
 		this.groupId = groupId;
 	}
 
-	public Date getReceiveDate() {
-		return receiveDate;
-	}
-
-	public void setReceiveDate(Date receiveDate) {
-		this.receiveDate = receiveDate;
-	}
-
 	public boolean getOnline() {
 		return online;
 	}
@@ -59,29 +49,6 @@ public class GetDossierData {
 		this.online = online;
 	}
 
-	public Date getDueDate() {
-		return dueDate;
-	}
-
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
-
-	public Date getExtendDate() {
-		return extendDate;
-	}
-
-	public void setExtendDate(Date extendDate) {
-		this.extendDate = extendDate;
-	}
-
-	public Date getReleaseDate() {
-		return releaseDate;
-	}
-
-	public void setReleaseDate(Date releaseDate) {
-		this.releaseDate = releaseDate;
-	}
 
 	public String getGovAgencyName() {
 		return govAgencyName;
@@ -91,16 +58,66 @@ public class GetDossierData {
 		this.govAgencyName = govAgencyName;
 	}
 
+	public String getReceiveDate() {
+		return receiveDate;
+	}
+
+	public void setReceiveDate(String receiveDate) {
+		this.receiveDate = receiveDate;
+	}
+
+	public String getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public String getExtendDate() {
+		return extendDate;
+	}
+
+	public void setExtendDate(String extendDate) {
+		this.extendDate = extendDate;
+	}
+
+	public String getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
+	public String getDomainCode() {
+		return domainCode;
+	}
+
+	public void setDomainCode(String domainCode) {
+		this.domainCode = domainCode;
+	}
+
+	public String getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+
 	private String dossierStatus;
 	private String dossierSubStatus;
-	private Date receiveDate;
+	private String receiveDate;
 	private boolean online;
-	private Date dueDate;
-	private Date extendDate;
-	private Date releaseDate;
+	private String dueDate;
+	private String extendDate;
+	private String releaseDate;
 	private String serviceCode;
 	private String govAgencyCode;
 	private String govAgencyName;
 	private long groupId;
+	private String domainCode;
+	private String domainName;
 	
 }

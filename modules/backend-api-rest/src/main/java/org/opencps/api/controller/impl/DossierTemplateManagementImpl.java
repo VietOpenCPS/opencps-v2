@@ -602,7 +602,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 		_log.info("dossierTempId: "+dossierTempId+"|id: "+id+"|partNo: "+partNo);
 		
 
-		DossierPartContentInputUpdateModel result = new DossierPartContentInputUpdateModel();
+//		DossierPartContentInputUpdateModel result = new DossierPartContentInputUpdateModel();
 
 		try {
 
@@ -614,12 +614,14 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 			String content = actions.getFormScript(groupId, dossierTempId, partNo);
 
-			result.setValue(content);
+//			result.setValue(content);
 
 //			return Response.status(200).entity(result.toString()).build();
-			return Response.status(200).entity(JSONFactoryUtil.createJSONObject(content).toJSONString()).build();
+//			return Response.status(200).entity(JSONFactoryUtil.createJSONObject(content).toJSONString()).build();
+			return Response.status(200).entity(content).build();
 
 		} catch (Exception e) {
+			_log.info(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");

@@ -6,5 +6,6 @@ package frontend.web.chartjs.constants;
 public class FrontendWebChartjsPortletKeys {
 
 	public static final String FrontendWebChartjs = "FrontendWebChartjs";
+	public static final String FrontendPublicChartjs = "FrontendPublicChartjs";
 
 }
