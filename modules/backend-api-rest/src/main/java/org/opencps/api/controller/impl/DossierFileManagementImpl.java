@@ -844,7 +844,14 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
 					}
 
+					String errorCheck = ReadXMLFileUtils.getStrError();
+					if (Validator.isNotNull(errorCheck)) {
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(errorCheck).build();
+					}
 					result = ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
+					if (Validator.isNull(result)) {
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("Folder is not structure").build();
+					}
 					_log.info("LamTV_IMPORT DONE_ZIP");
 				} else if (extFile.toLowerCase().equals("xml")) {
 					String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;

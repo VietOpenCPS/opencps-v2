@@ -46,4 +46,7 @@ public class ConstantUtils {
 	public static final String OVER_DUE = "overdue";
 	public static final String DELAY = "deplay";
 	public static final String COMMNG = "coming";
+	//
+	public static final String HTML_NEW_LINE = "<br/>";
+	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";
 }
