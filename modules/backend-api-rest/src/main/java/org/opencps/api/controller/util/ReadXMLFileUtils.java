@@ -104,18 +104,21 @@ public class ReadXMLFileUtils {
 							serviceContext);
 					//
 					strFileSucess.append(strChidFile);
-					strFileSucess.append(StringPool.NEW_LINE);
+					strFileSucess.append(StringPool.RETURN_NEW_LINE);
 				} else {
 					String fileName = fileEntry.getName();
 					String subFileName = ImportZipFileUtils.getSubFileName(fileName);
 					if (Validator.isNotNull(subFileName)) {
 						String xmlString = convertFiletoString(fileEntry);
-						compareParentFile(folderParentPath, fileName, xmlString, groupId, userId, serviceContext);
+						String strParentFile = compareParentFile(folderParentPath, fileName, xmlString, groupId, userId, serviceContext);
+						//
+						strFileSucess.append(strParentFile);
+						strFileSucess.append(StringPool.RETURN_NEW_LINE);
 					}
 				}
 			}
 		}
-
+		_log.info("strFileSucess: "+strFileSucess.toString());
 		return strFileSucess.toString();
 	}
 
@@ -134,13 +137,13 @@ public class ReadXMLFileUtils {
 					strFile = processListFileDict(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICES:
-					processListFileService(fileEntry, folderParentPath, groupId, userId, serviceContext);
+					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_TEMPLATES:
-					processListFileTemplate(fileEntry, folderParentPath, groupId, userId, serviceContext);
+					strFile =processListFileTemplate(fileEntry, folderParentPath, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_PROCESSES:
-					processListFileProcess(fileEntry, groupId, userId, serviceContext);
+					strFile = processListFileProcess(fileEntry, groupId, userId, serviceContext);
 					break;
 				default:
 					break;
@@ -150,52 +153,71 @@ public class ReadXMLFileUtils {
 		return strFile;
 	}
 
-	public static void compareParentFile(String folderPath, String fileName, String xmlString, long groupId,
+	public static String compareParentFile(String folderPath, String fileName, String xmlString, long groupId,
 			long userId, ServiceContext serviceContext) throws PortalException, JAXBException {
 
+		StringBuilder sbParentFile = new StringBuilder();
 		if (Validator.isNotNull(fileName)) {
 			switch (fileName) {
 			case ConstantUtils.XML_ACTION_CONFIG:
 				ActionConfigList actList = convertXMLToActionConfig(xmlString);
 				ProcessUpdateDBUtils.processUpdateActionConfig(actList, folderPath, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_STEP_CONFIG:
 				StepConfigList stepList = convertXMLToStepConfig(xmlString);
 				ProcessUpdateDBUtils.processUpdateStepConfig(stepList, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_MENU_CONFIG:
 				MenuConfigList menuList = convertXMLToMenuConfig(xmlString);
 				ProcessUpdateDBUtils.processUpdateMenuConfig(menuList, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_DOCUMENT_TYPE:
 				DocumentTypeList docList = convertXMLToDocumentType(xmlString);
 				ProcessUpdateDBUtils.processUpdateDocumentType(docList, folderPath, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_DELIVERABLE_TYPE:
 				DeliverableTypeList deliTypeList = convertXMLToDeliverableType(xmlString);
 				ProcessUpdateDBUtils.processUpdateDeliverableType(deliTypeList, folderPath, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_PAYMENT_CONFIG:
 				PaymentConfigList paymentList = convertXMLToPaymentConfig(xmlString);
 				ProcessUpdateDBUtils.processUpdatePaymentConfig(paymentList, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_SERVER_CONFIG:
 				ServerConfigList serverList = convertXMLToServerConfig(xmlString);
 				ProcessUpdateDBUtils.processUpdateServerConfig(serverList, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_NOTIFICATION_TEMPLATE:
 				NotificationTemplateList notiTempList = convertXMLToNotificationTemplate(xmlString);
 				ProcessUpdateDBUtils.processUpdateNotificationTemplate(notiTempList, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			case ConstantUtils.XML_USERS:
 				UserManagement userManagement = convertXMLToUser(xmlString);
 				ProcessUpdateDBUtils.processUpdateUser(userManagement, groupId, userId, serviceContext);
+				sbParentFile.append(fileName);
+				sbParentFile.append(StringPool.NEW_LINE);
 				break;
 			default:
 				break;
 			}
 		}
-
+		return sbParentFile.toString();
 	}
 
 	/** Process output object to DB - START 
@@ -206,24 +228,32 @@ public class ReadXMLFileUtils {
 		StringBuilder sbDictFile = new StringBuilder();
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
+			sbDictFile.append(fileEntry.getName());
+			sbDictFile.append(StringPool.NEW_LINE);
 			for (File file : files) {
-				String xmlString = convertFiletoString(file);
-				DictCollection dicts = convertXMLToDictCollection(xmlString);
-				ProcessUpdateDBUtils.processUpdateDictCollection(dicts, groupId, userId, serviceContext);
-				//Append file success
-				sbDictFile.append(fileEntry.getName());
-				sbDictFile.append(StringPool.SLASH);
-				sbDictFile.append(file.getName());
-				sbDictFile.append(StringPool.NEW_LINE);
+				String fileName = file.getName();
+				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+				if (Validator.isNotNull(subFileName)) {
+					String xmlString = convertFiletoString(file);
+					DictCollection dicts = convertXMLToDictCollection(xmlString);
+					ProcessUpdateDBUtils.processUpdateDictCollection(dicts, groupId, userId, serviceContext);
+					//Append file success
+					sbDictFile.append(StringPool.FOUR_SPACES);
+					sbDictFile.append(file.getName());
+					sbDictFile.append(StringPool.NEW_LINE);
+				}
 			}
 		}
 		return sbDictFile.toString();
 	}
 
-	private static void processListFileService(File fileEntry, String folderParentPath, long groupId, long userId,
+	private static String processListFileService(File fileEntry, String folderParentPath, long groupId, long userId,
 			ServiceContext serviceContext) throws Exception {
+		StringBuilder sbServiceFile = new StringBuilder();
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
+			sbServiceFile.append(fileEntry.getName());
+			sbServiceFile.append(StringPool.NEW_LINE);
 			for (File file : files) {
 				String fileName = file.getName();
 				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
@@ -233,15 +263,23 @@ public class ReadXMLFileUtils {
 					ServiceInfo service = convertXMLToServiceInfo(xmlString);
 					ProcessUpdateDBUtils.processUpdateServiceInfo(service, filePath, folderParentPath, groupId, userId,
 							serviceContext);
+					//Append file success
+					sbServiceFile.append(StringPool.FOUR_SPACES);
+					sbServiceFile.append(file.getName());
+					sbServiceFile.append(StringPool.NEW_LINE);
 				}
 			}
 		}
+		return sbServiceFile.toString();
 	}
 
-	private static void processListFileTemplate(File fileEntry, String folderParentPath, long groupId, long userId,
+	private static String processListFileTemplate(File fileEntry, String folderParentPath, long groupId, long userId,
 			ServiceContext serviceContext) throws PortalException, JAXBException {
+		StringBuilder sbTemplateFile = new StringBuilder();
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
+			sbTemplateFile.append(fileEntry.getName());
+			sbTemplateFile.append(StringPool.NEW_LINE);
 			for (File file : files) {
 				String fileName = file.getName();
 				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
@@ -251,15 +289,23 @@ public class ReadXMLFileUtils {
 					DossierTemplate template = convertXMLToDossierTemplate(xmlString);
 					ProcessUpdateDBUtils.processUpdateDossierTemplate(template, filePath, folderParentPath, groupId, userId,
 							serviceContext);
+					//Append file success
+					sbTemplateFile.append(StringPool.FOUR_SPACES);
+					sbTemplateFile.append(file.getName());
+					sbTemplateFile.append(StringPool.NEW_LINE);
 				}
 			}
 		}
+		return sbTemplateFile.toString();
 	}
 
-	private static void processListFileProcess(File fileEntry, long groupId, long userId,
+	private static String processListFileProcess(File fileEntry, long groupId, long userId,
 			ServiceContext serviceContext) throws PortalException, JAXBException {
+		StringBuilder sbProcessFile = new StringBuilder();
 		File[] files = fileEntry.listFiles();
 		if (files != null && files.length > 0) {
+			sbProcessFile.append(fileEntry.getName());
+			sbProcessFile.append(StringPool.NEW_LINE);
 			for (File file : files) {
 				String fileName = file.getName();
 				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
@@ -268,9 +314,14 @@ public class ReadXMLFileUtils {
 					String xmlString = convertFiletoString(file);
 					ServiceProcess process = convertXMLToServiceProcess(xmlString);
 					ProcessUpdateDBUtils.processUpdateServiceProcess(process, filePath, groupId, userId, serviceContext);
+					//Append file success
+					sbProcessFile.append(StringPool.FOUR_SPACES);
+					sbProcessFile.append(file.getName());
+					sbProcessFile.append(StringPool.NEW_LINE);
 				}
 			}
 		}
+		return sbProcessFile.toString();
 	}
 	/** Process output object to DB - END */
 
