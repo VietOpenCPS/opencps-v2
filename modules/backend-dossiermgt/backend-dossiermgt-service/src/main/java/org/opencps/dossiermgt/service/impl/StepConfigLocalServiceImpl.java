@@ -175,9 +175,9 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	public StepConfig updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
-			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig) {
+			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig)
+			throws PortalException {
 
-		try {
 			User user = userLocalService.getUser(userId);
 			Date now = new Date();
 
@@ -200,10 +200,6 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			object.setButtonConfig(buttonConfig);
 
 			return stepConfigPersistence.update(object);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public List<StepConfig> getStepByGroupId(long groupId) {

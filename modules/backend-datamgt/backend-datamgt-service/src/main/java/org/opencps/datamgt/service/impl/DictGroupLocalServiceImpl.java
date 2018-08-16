@@ -539,9 +539,8 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	//LamTV_Process output DB
 	@Indexable(type = IndexableType.REINDEX)
 	public DictGroup updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
-			String groupNameEN, String groupDescription, ServiceContext serviceContext) {
+			String groupNameEN, String groupDescription, ServiceContext serviceContext) throws NoSuchUserException {
 
-		try {
 			Date now = new Date();
 			User user = userPersistence.findByPrimaryKey(userId);
 
@@ -568,10 +567,6 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			dictGroup.setGroupDescription(groupDescription);
 
 			return dictGroupPersistence.update(dictGroup);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 }

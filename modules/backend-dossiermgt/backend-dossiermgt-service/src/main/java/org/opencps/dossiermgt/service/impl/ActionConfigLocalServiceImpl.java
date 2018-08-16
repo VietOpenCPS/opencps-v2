@@ -198,39 +198,36 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String sampleData, Boolean insideProcess, Integer userNote, Integer syncType,
 			Integer eventType, Integer infoType, Boolean rollbackable, String notificationType, String documentType,
-			String formConfig, String mappingAction) {
-		try {
-			User user = userLocalService.getUser(userId);
-			Date now = new Date();
-			long actionConfigId = counterLocalService.increment(ActionConfig.class.getName());
-			ActionConfig actionConfig = actionConfigPersistence.create(actionConfigId);
+			String formConfig, String mappingAction) throws PortalException {
 
-			actionConfig.setGroupId(groupId);
-			actionConfig.setCompanyId(user.getCompanyId());
-			actionConfig.setUserId(user.getUserId());
-			actionConfig.setCreateDate(now);
-			actionConfig.setModifiedDate(now);
+		User user = userLocalService.getUser(userId);
+		Date now = new Date();
+		long actionConfigId = counterLocalService.increment(ActionConfig.class.getName());
+		ActionConfig actionConfig = actionConfigPersistence.create(actionConfigId);
 
-			actionConfig.setActionCode(actionCode);
-			actionConfig.setActionName(actionName);
-			actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
-			actionConfig.setFormConfig(formConfig);
-			actionConfig.setSampleData(sampleData);
-			actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? insideProcess : Boolean.FALSE);
-			actionConfig.setUserNote(Validator.isNotNull(userNote) ? userNote : 0);
-			actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);
-			actionConfig.setEventType(Validator.isNotNull(eventType) ? eventType : 0);
-			actionConfig.setInfoType(Validator.isNotNull(infoType) ? infoType : 0);
-			actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
-			actionConfig.setNotificationType(notificationType);
-			actionConfig.setDocumentType(documentType);
-			actionConfig.setMappingAction(mappingAction);
-			
-			 return actionConfigPersistence.update(actionConfig);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		actionConfig.setGroupId(groupId);
+		actionConfig.setCompanyId(user.getCompanyId());
+		actionConfig.setUserId(user.getUserId());
+		actionConfig.setCreateDate(now);
+		actionConfig.setModifiedDate(now);
+
+		actionConfig.setActionCode(actionCode);
+		actionConfig.setActionName(actionName);
+		actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
+		actionConfig.setFormConfig(formConfig);
+		actionConfig.setSampleData(sampleData);
+		actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? insideProcess : Boolean.FALSE);
+		actionConfig.setUserNote(Validator.isNotNull(userNote) ? userNote : 0);
+		actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);
+		actionConfig.setEventType(Validator.isNotNull(eventType) ? eventType : 0);
+		actionConfig.setInfoType(Validator.isNotNull(infoType) ? infoType : 0);
+		actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
+		actionConfig.setNotificationType(notificationType);
+		actionConfig.setDocumentType(documentType);
+		actionConfig.setMappingAction(mappingAction);
+		
+		return actionConfigPersistence.update(actionConfig);
+
 	}
 
 	//LamTV_Add

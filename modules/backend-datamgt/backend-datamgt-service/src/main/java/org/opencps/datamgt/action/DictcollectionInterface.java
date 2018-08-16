@@ -125,12 +125,12 @@ public interface DictcollectionInterface {
 
 	public void updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
 			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling,
-			String metadata);
+			String metadata) throws NoSuchUserException;
 
 	public boolean deleteAllDictItem(long userId, long groupId, long dictCollectionId);
 
 	public boolean deleteAllDictGroup(long userId, long groupId, long dictCollectionId);
 
 	public void updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
-			String groupNameEN, String groupDescription, ServiceContext serviceContext);
+			String groupNameEN, String groupDescription, ServiceContext serviceContext) throws NoSuchUserException;
 }

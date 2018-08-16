@@ -26,6 +26,8 @@ import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -405,6 +407,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	}
 
 	//LamTV_ADD
+	private static Log _log = LogFactoryUtil.getLog(JobPosLocalServiceImpl.class);
 	@Indexable(type = IndexableType.REINDEX)
 	public JobPos updateJobPosDB(long userId, long groupId, String jobPosCode, String title, String description,
 			ServiceContext serviceContext) throws PortalException {
@@ -438,6 +441,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			role_name = title + jobPosId;
 
 			// add role
+			_log.info("role_name:"+role_name);
 			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
 					role_name, null, null, 1, "", serviceContext);
 

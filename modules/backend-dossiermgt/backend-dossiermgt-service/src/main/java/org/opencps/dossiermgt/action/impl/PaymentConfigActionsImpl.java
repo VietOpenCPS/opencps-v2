@@ -6,6 +6,7 @@ import org.opencps.dossiermgt.action.PaymentConfigActions;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public class PaymentConfigActionsImpl implements PaymentConfigActions{
@@ -28,7 +29,7 @@ public class PaymentConfigActionsImpl implements PaymentConfigActions{
 	@Override
 	public void updatePaymentConfigDB(long userId, long groupId, String govAgencyCode, String govAgencyName,
 			String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo, String invoiceLastNo,
-			String bankInfo, String epaymentConfig, ServiceContext serviceContext) {
+			String bankInfo, String epaymentConfig, ServiceContext serviceContext) throws PortalException {
 
 		PaymentConfigLocalServiceUtil.updatePaymentConfigDB(userId, groupId, govAgencyCode, govAgencyName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo,
 				invoiceLastNo, bankInfo, epaymentConfig, serviceContext);

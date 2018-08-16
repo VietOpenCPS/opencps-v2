@@ -307,9 +307,7 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentConfig updatePaymentConfigDB(long userId, long groupId, String govAgencyCode, String govAgencyName,
 			String govAgencyTaxNo, String invoiceTemplateNo, String invoiceIssueNo, String invoiceLastNo,
-			String bankInfo, String epaymentConfig, ServiceContext serviceContext){
-
-		try {
+			String bankInfo, String epaymentConfig, ServiceContext serviceContext) throws PortalException{
 
 			Date now = new Date();
 			User userAction = userLocalService.getUser(userId);
@@ -335,9 +333,6 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 			object.setEpaymentConfig(epaymentConfig);
 
 			return paymentConfigPersistence.update(object);
-		} catch (Exception e) {
-			return null;
-		}
 
 	}
 
