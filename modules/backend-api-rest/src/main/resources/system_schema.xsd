@@ -1,0 +1,18 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="BackgroundTaskResult">
+		<xsd:complexType>
+			<xsd:sequence >
+				<xsd:element name="backgroundTaskId" type="xsd:long"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="BackgroundTaskProgress">
+		<xsd:complexType>
+			<xsd:sequence >
+				<xsd:element name="backgroundTaskId" type="xsd:long"></xsd:element>
+				<xsd:element name="percentage" type="xsd:int"></xsd:element>
+				<xsd:element name="executionLog" type="xsd:string"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
