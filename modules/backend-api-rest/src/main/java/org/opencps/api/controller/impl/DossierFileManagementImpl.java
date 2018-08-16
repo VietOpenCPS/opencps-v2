@@ -869,7 +869,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 							return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
 						}
 						String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
-						ReadXMLFileUtils.compareParentFile(ConstantUtils.DEST_DIRECTORY, fileName, xmlString, groupId, userId, serviceContext);
+						result = ReadXMLFileUtils.compareParentFile(ConstantUtils.DEST_DIRECTORY, fileName, xmlString, groupId, userId, serviceContext);
 					}
 					_log.info("LamTV_IMPORT DONE_FILE");
 				}
