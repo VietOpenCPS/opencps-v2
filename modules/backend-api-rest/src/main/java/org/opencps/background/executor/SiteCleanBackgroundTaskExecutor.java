@@ -3,6 +3,7 @@ package org.opencps.background.executor;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.opencps.api.controller.util.SystemUtils;
 import org.opencps.background.siteclean.BackgroundSiteClean;
 import org.osgi.service.component.annotations.Component;
 
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
@@ -40,21 +42,57 @@ public class SiteCleanBackgroundTaskExecutor extends BaseBackgroundTaskExecutor 
 
         Long siteId = (Long)taskContextMap.get("groupId") ;
         Group site = GroupLocalServiceUtil.fetchGroup(GetterUtil.getLong(siteId));
+        int progress = 0;
         
     	if(LOGGER.isDebugEnabled()){
     		LOGGER.debug("Site Name : "+ site.getName());
     	}
 
 		BackgroundSiteClean messageContent = new BackgroundSiteClean();
-		messageContent.setExecutionLog(StringPool.BLANK);
-		messageContent.setPercentage(0);
+		messageContent.setExecutionLog("Chuẩn bị làm sạch dữ liệu trên " + site.getName());
+		messageContent.setPercentage(progress);
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setCompanyId(site.getCompanyId());
+		
+		// Clean notification template
+		SystemUtils.cleanNotificationTemplate(siteId, 0l, serviceContext);
+		SystemUtils.cleanNotificationQueue(siteId);
+		
+		LOGGER.info("Clean notification complete!");
+
+		progress += 3;		
+    	SiteCleanDataHandlerStatusMessageSenderUtil.sendStatusMessage(messageContent);
+		messageContent.setExecutionLog("Đã làm sạch mẫu thông báo");
+		messageContent.setPercentage(progress);
+
+		progress += 3;
+		SystemUtils.cleanDossierFile(siteId, 0l, serviceContext);
+		LOGGER.info("Clean dossierfile complete!");
+		messageContent.setExecutionLog("Đã làm sạch thành phần hồ sơ");
+		messageContent.setPercentage(progress);
+		SiteCleanDataHandlerStatusMessageSenderUtil.sendStatusMessage(messageContent);
+
+		progress += 3;
+		SystemUtils.cleanDossierLog(siteId, 0l, serviceContext);
+		LOGGER.info("Clean dossierlog complete!");
+		messageContent.setExecutionLog("Đã làm sạch nhật ký hồ sơ");
+		messageContent.setPercentage(progress);
+		SiteCleanDataHandlerStatusMessageSenderUtil.sendStatusMessage(messageContent);
+		
+		progress += 3;
+		SystemUtils.cleanDossier(siteId, 0l, serviceContext);
+		LOGGER.info("Clean dossier complete!");
+		messageContent.setExecutionLog("Đã làm sạch hồ sơ");
+		messageContent.setPercentage(progress);
+		SiteCleanDataHandlerStatusMessageSenderUtil.sendStatusMessage(messageContent);
+		
+		messageContent.setExecutionLog("Hoàn thành làm sạch dữ liệu");
+		messageContent.setPercentage(100);
 
 		// Sending the data to util for MessageBus
     	SiteCleanDataHandlerStatusMessageSenderUtil.sendStatusMessage(messageContent);
 
-    	Thread.sleep(20000);
-    	
-		// Telling the system if, background task is successful or not
+    	// Telling the system if, background task is successful or not
     	BackgroundTaskResult backgroundTaskResult = new BackgroundTaskResult(
 				BackgroundTaskConstants.STATUS_SUCCESSFUL);
 		backgroundTaskResult.setStatusMessage("Success!");

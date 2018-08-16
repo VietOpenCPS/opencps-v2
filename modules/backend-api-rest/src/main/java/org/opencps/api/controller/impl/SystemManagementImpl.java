@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 public class SystemManagementImpl implements SystemManagement {
 
@@ -57,9 +59,19 @@ public class SystemManagementImpl implements SystemManagement {
 			    BackgroundTaskStatusRegistryUtil.getBackgroundTaskStatus(
 			            backgroundTaskId);
 		
-		result.setPercentage((int)backgroundTaskStatus.getAttribute("percentage"));
+		if (backgroundTaskStatus != null && Validator.isNotNull(backgroundTaskStatus.getAttribute("percentage"))) {
+			result.setPercentage((int)backgroundTaskStatus.getAttribute("percentage"));			
+		}
+		else {
+			result.setPercentage(100);
+		}
 		result.setBackgroundTaskId(backgroundTaskId);
-		result.setExecutionLog((String)backgroundTaskStatus.getAttribute("executionLog"));
+		if (backgroundTaskStatus != null) {
+			result.setExecutionLog((String)backgroundTaskStatus.getAttribute("executionLog"));			
+		}
+		else {
+			result.setExecutionLog(StringPool.BLANK);
+		}
 		
 		return Response.status(200).entity(result).build();
 	}

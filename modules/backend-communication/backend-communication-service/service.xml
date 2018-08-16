@@ -99,6 +99,9 @@
 			<order-column name="createDate" />
 		</order>
 
+		<finder name="G" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
 
 	</entity>
 	

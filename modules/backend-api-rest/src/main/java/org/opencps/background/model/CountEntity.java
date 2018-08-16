@@ -24,7 +24,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="backgroundTaskId" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="database" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="lucene" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,27 +36,45 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "backgroundTaskId"
+    "database",
+    "lucene"
 })
-@XmlRootElement(name = "BackgroundTaskResult")
-public class BackgroundTaskResult {
+@XmlRootElement(name = "CountEntity")
+public class CountEntity {
 
-    protected long backgroundTaskId;
+    protected long database;
+    protected long lucene;
 
     /**
-     * Gets the value of the backgroundTaskId property.
+     * Gets the value of the database property.
      * 
      */
-    public long getBackgroundTaskId() {
-        return backgroundTaskId;
+    public long getDatabase() {
+        return database;
     }
 
     /**
-     * Sets the value of the backgroundTaskId property.
+     * Sets the value of the database property.
      * 
      */
-    public void setBackgroundTaskId(long value) {
-        this.backgroundTaskId = value;
+    public void setDatabase(long value) {
+        this.database = value;
+    }
+
+    /**
+     * Gets the value of the lucene property.
+     * 
+     */
+    public long getLucene() {
+        return lucene;
+    }
+
+    /**
+     * Sets the value of the lucene property.
+     * 
+     */
+    public void setLucene(long value) {
+        this.lucene = value;
     }
 
 }

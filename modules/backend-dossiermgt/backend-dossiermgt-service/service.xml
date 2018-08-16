@@ -478,6 +478,9 @@
 			<finder-column name="groupId" />
 			<finder-column name="originDossierId" />
 		</finder>
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
+		</finder>
 
 	</entity>
 
@@ -603,6 +606,9 @@
          <finder return-type="Collection" name="REF_UID">
         	<finder-column name="referenceUid" />
        	</finder>
+        <finder return-type="Collection" name="G">
+        	<finder-column name="groupId" />
+        </finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -647,6 +653,9 @@
 	
 		<!-- References -->
 
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
+		</finder>
 	</entity>
 
 	<entity name="PaymentFile" table="opencps_paymentfile"
