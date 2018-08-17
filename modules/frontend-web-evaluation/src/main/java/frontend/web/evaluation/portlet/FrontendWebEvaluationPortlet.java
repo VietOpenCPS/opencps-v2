@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Component;
 		// "com.liferay.portlet.display-category=category.evaluation",
 		"com.liferay.portlet.display-category=category.evaluation",
 		// "com.liferay.portlet.header-portlet-css=/css/styles.css",
-		"com.liferay.portlet.header-portlet-css=/css/main.css",
+		// "com.liferay.portlet.header-portlet-css=/css/main.css",
 		// "com.liferay.portlet.instanceable=true",
 		"com.liferay.portlet.instanceable=false",
 		"javax.portlet.display-name=frontend-web-evaluation Portlet",
