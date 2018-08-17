@@ -64,8 +64,8 @@
 			</div>
 			<div class="row MB15">
 				<div class="col-sm-12 text-center">
-					<button class="btn btn-sm btn-active" data-bind="attr : { data-pk : certId}" id="btn-update-cert">Đồng ý</button>
-					<button class="btn btn-sm" id="btn-back-certnumber">Quay lại</button>
+					<button class="btn btn-sm btn-active" type="button" data-bind="attr : { data-pk : certId}" id="btn-update-cert">Đồng ý</button>
+					<button class="btn btn-sm" type="button" id="btn-back-certnumber">Quay lại</button>
 				</div>
 			</div>
 		</form>
@@ -192,9 +192,9 @@
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 				}
-				$("#certNumBerDetail").show();
-				$("#viewLsCertNumber").hide();
-
+				$("#certNumBerDetail").hide();
+				$("#viewLsCertNumber").show();
+				dataSourceCertNumber.read();
 			},
 			error : function(result){
 				notification.show({
