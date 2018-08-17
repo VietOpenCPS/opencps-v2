@@ -541,7 +541,7 @@ public interface DossierManagement {
 	@GET
 	@Path("/lucene/searchconflict")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@JWTOpenCPSToken
+//	@JWTOpenCPSToken
 	@ApiOperation(value = "Get a Dossier by its id", response = DossierDetailModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was removed", response = DossierDetailModel.class),

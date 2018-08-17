@@ -49,27 +49,27 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 
 			result.put("total", total);
 
-			if (NotificationtemplateLocalServiceUtil.initTemplate(groupId)) {
+//			if (NotificationtemplateLocalServiceUtil.initTemplate(groupId)) {
 
 				// create init Templates
-				Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
-
-				for (String key : initTemplates.keySet()) {
-
-					try {
-
-						NotificationtemplateLocalServiceUtil.addNotificationTemplate(userId, groupId, key,
-								initTemplates.get(key), initTemplates.get(key), initTemplates.get(key), Boolean.TRUE,
-								Boolean.FALSE, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, Boolean.FALSE,
-								serviceContext);
-
-					} catch (Exception e) {
-						_log.error(e);
-					}
-
-				}
-
-			}
+//				Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+//
+//				for (String key : initTemplates.keySet()) {
+//
+//					try {
+//
+//						NotificationtemplateLocalServiceUtil.addNotificationTemplate(userId, groupId, key,
+//								initTemplates.get(key), initTemplates.get(key), initTemplates.get(key), Boolean.TRUE,
+//								Boolean.FALSE, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, Boolean.FALSE,
+//								serviceContext);
+//
+//					} catch (Exception e) {
+//						_log.error(e);
+//					}
+//
+//				}
+//
+//			}
 
 		} catch (ParseException e) {
 			_log.error(e);

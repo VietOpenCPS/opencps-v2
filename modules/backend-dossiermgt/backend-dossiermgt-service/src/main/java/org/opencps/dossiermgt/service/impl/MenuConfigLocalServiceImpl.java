@@ -168,9 +168,8 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	//LamTV_ Process ouput MenuConfig to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
-			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig) throws PortalException {
 
-		try {
 			User user = userLocalService.getUser(userId);
 			Date now = new Date();
 
@@ -193,10 +192,6 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			object.setButtonConfig(buttonConfig);
 
 			return menuConfigPersistence.update(object);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public List<MenuConfig> getByGroupId(long groupId) {

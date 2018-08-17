@@ -13,6 +13,7 @@
 
 <#assign ajax = (Request.ajax)!>
 <#assign api = (Request.api)!>
+<#assign sites = (Request.sites)!>
 <#assign serviceInfoStatuses = (Request.serviceInfoStatuses)!>
 <#assign serviceInfo = (Request.SERVICE_INFO)!>
 <#assign portletNamespace = (Request.portletNamespace)!>

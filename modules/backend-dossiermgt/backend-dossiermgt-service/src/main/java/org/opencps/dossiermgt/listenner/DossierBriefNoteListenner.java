@@ -59,32 +59,36 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 //			_log.info("dossier.getServiceCode(): " + dossier.getServiceCode());
 //			_log.info("dossier.getGovAgencyCode(): " + dossier.getGovAgencyCode());
 //			_log.info("dossier.getDossierTemplateNo(): " + dossier.getDossierTemplateNo());
-			option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-					dossier.getDossierTemplateNo(), groupId);
-
-			long serviceProcessId = option.getServiceProcessId();
-//			_log.info("serviceProcessId: " + serviceProcessId);
-			
-			String briefNote = StringPool.BLANK;
-			if (Validator.isNotNull(serviceProcessId)) {
-				List<ProcessStep> processStepList = ProcessStepLocalServiceUtil
-						.getProcessStepbyServiceProcessId(serviceProcessId);
-				if (processStepList != null && processStepList.size() > 0) {
-					for (ProcessStep processStep : processStepList) {
-						String briefNoteStep = processStep.getBriefNote();
-//						_log.info("briefNoteStep: " + briefNoteStep);
-						if (Validator.isNotNull(briefNoteStep)) {
-							briefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, briefNoteStep);
-//							_log.info("briefNote: " + briefNote);
-							break;
+			if (dossier != null) {
+				option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+						dossier.getDossierTemplateNo(), groupId);
+	
+				long serviceProcessId = option.getServiceProcessId();
+	//			_log.info("serviceProcessId: " + serviceProcessId);
+				
+				String briefNote = StringPool.BLANK;
+				if (Validator.isNotNull(serviceProcessId)) {
+					List<ProcessStep> processStepList = ProcessStepLocalServiceUtil
+							.getProcessStepbyServiceProcessId(serviceProcessId);
+					if (processStepList != null && processStepList.size() > 0) {
+						for (ProcessStep processStep : processStepList) {
+							String briefNoteStep = processStep.getBriefNote();
+	//						_log.info("briefNoteStep: " + briefNoteStep);
+							if (Validator.isNotNull(briefNoteStep)) {
+								briefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, briefNoteStep);
+	//							_log.info("briefNote: " + briefNote);
+								break;
+							}
 						}
 					}
 				}
+		
+				if (Validator.isNotNull(briefNote)) {
+					DossierLocalServiceUtil.updateDossierBriefNote(dossierId, briefNote);
+				}
+			
 			}
-	
-			if (Validator.isNotNull(briefNote)) {
-				DossierLocalServiceUtil.updateDossierBriefNote(dossierId, briefNote);
-			}
+
 		} catch (PortalException e) {
 			e.printStackTrace();
 		}

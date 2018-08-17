@@ -341,5 +341,8 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
         return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
     }
     
+    public List<DossierLog> findByGroup(long groupId) {
+    	return dossierLogPersistence.findByG(groupId);
+    }
     public static final String CLASS_NAME = DossierLog.class.getName();
 }

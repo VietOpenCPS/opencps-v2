@@ -1182,5 +1182,14 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.findByDID_(dossierId);
 	}
 	
+	public List<DossierFile> findByGroup(long groupId) {
+		return dossierFilePersistence.findByG(groupId);
+	}
+	
+	@Indexable(type = IndexableType.DELETE)
+	public DossierFile permanentDeleteDossierFile(long dossierFileId) throws PortalException {
+		return dossierFilePersistence.remove(dossierFileId);
+	}
+	
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

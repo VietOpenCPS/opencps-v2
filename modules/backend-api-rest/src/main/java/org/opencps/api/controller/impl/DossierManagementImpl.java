@@ -236,8 +236,8 @@ public class DossierManagementImpl implements DossierManagement {
 					year = baseDateCal.get(Calendar.YEAR);
 				}
 			}
-			_log.info("month: "+month);
-			_log.info("year: "+year);
+//			_log.info("month: "+month);
+//			_log.info("year: "+year);
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
 			String dossierNoSearch = StringPool.BLANK;
@@ -2758,18 +2758,18 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
-        String authorizationHeader = header.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new NotAuthorizedException("Authorization header must be provided");
-        }
-
-        String token = authorizationHeader.substring("Bearer".length()).trim();
-        KeyGenerator keyGenerator = new OpenCPSKeyGenerator();
+//        String authorizationHeader = header.getHeaderString(HttpHeaders.AUTHORIZATION);
+//        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+//            throw new NotAuthorizedException("Authorization header must be provided");
+//        }
+//
+//        String token = authorizationHeader.substring("Bearer".length()).trim();
+//        KeyGenerator keyGenerator = new OpenCPSKeyGenerator();
         try {
 
             // Validate the token
-            Key key = keyGenerator.generateKey();
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+//            Key key = keyGenerator.generateKey();
+//            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
  
 		
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();

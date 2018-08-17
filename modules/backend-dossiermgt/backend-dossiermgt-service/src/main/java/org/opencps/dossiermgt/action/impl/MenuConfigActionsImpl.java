@@ -81,7 +81,7 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 
 	@Override
 	public long updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
-			Integer menuType, String queryParams, String tableConfig, String buttonConfig) {
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig) throws PortalException {
 
 		MenuConfig menuConfig = MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
 				menuType, queryParams, tableConfig, buttonConfig);

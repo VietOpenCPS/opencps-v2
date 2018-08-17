@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
@@ -76,6 +78,7 @@ import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.SignatureManagementImpl;
 import org.opencps.api.controller.impl.StatisticManagementImpl;
+import org.opencps.api.controller.impl.SystemManagementImpl;
 import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
@@ -85,13 +88,28 @@ import org.opencps.api.filter.OpenCPSKeyGenerator;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.background.model.CountEntity;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierTemplateActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -156,6 +174,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new OneGateControllerImpl());
 		singletons.add(new DossierDocumentManagementImpl());
 		singletons.add(new DossierSyncManagementImpl());
+		
+		singletons.add(new SystemManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);
@@ -323,6 +343,54 @@ public class BackendAPIRestApplication extends Application {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
     
+	@GET
+	@Path("/count/{className}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+
+	public Response countEntity(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("className") String className) {
+		CountEntity result = new CountEntity();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long countDatabase = 0;
+		long countLucene = 0;
+		
+		if (Notificationtemplate.class.getName().equals(className)) {
+			countDatabase = NotificationtemplateLocalServiceUtil.countNotificationTemplateByGroupId(groupId);
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			DossierTemplateActions actions = new DossierTemplateActionsImpl();
+			
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+			Sort[] sorts = new Sort[] { };
+
+			JSONObject jsonData;
+			try {
+				jsonData = actions.getDossierTemplates(user.getUserId(), serviceContext.getCompanyId(), groupId,
+						params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+				countLucene = jsonData.getInt("total");
+			} catch (PortalException e) {
+			}
+			
+		}
+		else if (Dossier.class.getName().equals(className)) {
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			DossierActions actions = new DossierActionsImpl();
+				
+			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
+						-1, -1, serviceContext);
+						
+			countLucene = jsonData.getLong("total");	
+			countDatabase = DossierLocalServiceUtil.countDossierByGroup(groupId);
+		}
+		
+		result.setDatabase(countDatabase);
+		result.setLucene(countLucene);
+		
+		return Response.status(200).entity(result).build();
+	}
     @Context
     private UriInfo uriInfo;
     
