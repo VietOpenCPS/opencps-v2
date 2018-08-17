@@ -282,6 +282,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		certNumberURL.setParameter(
 			"mvcPath", "/templates/certNumber.ftl");
 		
+		PortletURL impoartURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		impoartURL.setPortletMode(PortletMode.VIEW);
+		impoartURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		impoartURL.setParameter(
+				"mvcPath", "/templates/import.ftl");
+		
 		
 		urlObject.put("registrationtemplates", registrationTemplatesURL.toString());
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
@@ -312,6 +320,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("dictcollectiontemp_index", dataTempMgtURL.toString());
 		urlObject.put("serverconfigs", serverConfigsURL.toString());
 		urlObject.put("certnumber", certNumberURL.toString());
+		urlObject.put("import", impoartURL.toString());
 		
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");

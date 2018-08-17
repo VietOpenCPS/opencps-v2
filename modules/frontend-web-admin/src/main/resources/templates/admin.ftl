@@ -133,6 +133,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Danh sách tham số hệ thống</div>
 			</li>
+			<li class="clearfix" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Import</div>
+			</li>
 		</ul>
 	</div>
 </div>
@@ -158,6 +166,7 @@
 			'${ajax.registrationtemplates}',
 			'${ajax.serverconfigs}',
 			'${ajax.certnumber}',
+			'${ajax.import}'
 		]
 	}).data('kendoTabStrip');
 
