@@ -30,15 +30,12 @@ import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.api.v21.model.UserManagement;
-import org.springframework.web.util.HtmlUtils;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Html;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
