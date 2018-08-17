@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,8 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.HttpConnection;
 import org.opencps.api.controller.CertNumberManagement;
 import org.opencps.dossiermgt.constants.ConstantsUtils;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
@@ -24,16 +28,14 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class CertNumberManagementImpl implements CertNumberManagement{
-
-//	public static final String PRE_FIX_CERT = "TCDB_CERT@";
-//	public static final String PRE_FIX_CERT_CURR = "TCDB_CERT_CURR@";
-//	public static final String PRE_FIX_CERT_ELM = "TCDB_CERT_ELM@";
 
 	Log _log = LogFactoryUtil.getLog(CertNumberManagementImpl.class);
 
@@ -41,8 +43,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 	public Response getCertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
 
-		// long groupId =
-		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			List<Counter> counters = CounterLocalServiceUtil.getCounters(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
@@ -55,13 +56,14 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			for (Counter cnt : counters) {
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				if (cnt.getName().contains(ConstantsUtils.PRE_FIX_CERT)) {
+				String valueCheck = StringPool.AT + groupId;
+				if (cnt.getName().contains(valueCheck)) {
 
 					String[] splitPattern = StringUtil.split(cnt.getName(), StringPool.AT);
 
 					elm.put("certId", cnt.getName());
 					elm.put("pattern", splitPattern[1]);
-					elm.put("year", splitPattern[2]);
+					elm.put("groupId", splitPattern[2]);
 					elm.put("initNumber", cnt.getCurrentId());
 
 					jsArr.put(elm);
@@ -74,6 +76,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
+			_log.error(e);
 			return Response.status(500).entity("error").build();
 		}
 	}
@@ -99,33 +102,75 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			return Response.status(200).entity(elm.toString()).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return Response.status(500).entity("error").build();
 		}
 	}
 
 	@Override
 	public Response addCertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String pattern, int year, int initNumber) {
+			User user, ServiceContext serviceContext, String pattern, int initNumber) {
 
-		// long groupId =
-		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		// CounterLocalServiceUtil.increment();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 		
 		try {
 
-			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
-			
-			Counter counterInit = CounterLocalServiceUtil.createCounter(certId);
-			counterInit.setCurrentId(initNumber);
+			if (Validator.isNotNull(pattern)) {
+				String[] patternArr = StringUtil.split(pattern);
+				_log.info("pattern: "+pattern);
+				_log.info("patternArr: "+patternArr);
+				if (patternArr != null && patternArr.length > 0) {
+					for (String strPattern : patternArr) {
+						_log.info("strPattern: "+strPattern);
+						String certId = ConstantsUtils.PRE_FIX_CERT + strPattern + StringPool.AT + groupId;
+						_log.info("strPattern: "+strPattern);
+						Counter counter = null;
+						try {
+							counter = CounterLocalServiceUtil.getCounter(certId);
+						} catch (Exception e) {
+						}
+						if (counter != null) {
+							String contentError = certId + "đã tồn tại trong hệ thống";
+							return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(contentError).build(); 
+						}
+						_log.info("counter: "+counter);
+						Counter counterInit = CounterLocalServiceUtil.createCounter(certId);
+						counterInit.setCurrentId(initNumber);
 
-			CounterLocalServiceUtil.updateCounter(counterInit);
-			
-			jsObj.put("status", "done");
+						CounterLocalServiceUtil.updateCounter(counterInit);
+					}
+					jsObj.put("status", "done");
+				}
+			} else {
+				if (initNumber == 0) {
+					List<ServiceProcess> processList = ServiceProcessLocalServiceUtil.getByG_ID(groupId);
+					if (processList != null && processList.size() > 0) {
+						for (ServiceProcess serviceProcess : processList) {
+							String servicePattern = serviceProcess.getProcessNo();
+							if (Validator.isNotNull(servicePattern)) {
+								String certId = ConstantsUtils.PRE_FIX_CERT + servicePattern + StringPool.AT + groupId;
+								Counter counter = null;
+								try {
+									counter = CounterLocalServiceUtil.getCounter(certId);
+								} catch (Exception e) {
+								}
+								if (counter != null) continue;
+								Counter counterInit = CounterLocalServiceUtil.createCounter(certId);
+								counterInit.setCurrentId(1);
+
+								CounterLocalServiceUtil.updateCounter(counterInit);
+							}
+						}
+						jsObj.put("status", "done");
+					}
+				}
+			}
 
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
+			_log.error(e);
 			jsObj.put("status", "error");
 
 			return Response.status(500).entity(jsObj.toString()).build();
@@ -134,14 +179,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 	@Override
 	public Response updateSertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long certid, String pattern, int year, int initNumber) {
+			User user, ServiceContext serviceContext, long certid, String pattern, int initNumber) {
 
-		// long groupId =
-		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
 		try {
-			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
+			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
 
 			Counter counter = CounterLocalServiceUtil.getCounter(certId);
 
@@ -281,6 +325,36 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			jsObj.put("status", "done");
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
+			_log.error(e);
+			jsObj.put("status", "error");
+
+			return Response.status(500).entity(jsObj.toString()).build();
+		}
+	}
+
+	@Override
+	public Response removeAllCertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
+
+		try {
+			List<Counter> counters = CounterLocalServiceUtil.getCounters(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			String counterCheck = StringPool.AT + groupId;
+			if (counters != null && counters.size() > 0) {
+				for (Counter counter : counters) {
+					String certName = counter.getName();
+					if (Validator.isNotNull(certName) && certName.contains(counterCheck)) {
+						CounterLocalServiceUtil.deleteCounter(certName);
+					}
+				}
+				jsObj.put("status", "done");
+			}
+
+			return Response.status(200).entity(jsObj.toString()).build();
+		} catch (Exception e) {
+			_log.error(e);
 			jsObj.put("status", "error");
 
 			return Response.status(500).entity(jsObj.toString()).build();
