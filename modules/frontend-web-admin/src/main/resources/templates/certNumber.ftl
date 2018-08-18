@@ -4,8 +4,8 @@
 
 <div class="row box MT10">
 	<div class="col-sm-12 MT15" id="viewLsCertNumber">
-		<button class="btn btn-active MB15" id="btn-add-certnumber">Thêm tham số hệ thống</button>
-		<button class="btn btn-active MB15 ML15" id="btn-add-certnumber-list">Thêm danh sách tham số hệ thống</button> 
+		<button class="btn btn-active MB15" id="btn-add-certnumber"><i class="glyphicon glyphicon-plus"></i> Thêm tham số hệ thống</button>
+		<button class="btn btn-active MB15 ML15" id="btn-add-certnumber-list"><i class="glyphicon glyphicon-plus"></i> Thêm danh sách tham số hệ thống</button> 
 		<button class="btn MB15 pull-right" id="btn-delete-certnumber" style="background-color:#e63434 !important; color:#fff !important"><i class="fa fa-trash"></i> Xóa danh sách tham số hệ thống</button> <br>
 		<table class="table table-bordered">
 			<thead>
@@ -64,8 +64,8 @@
 			</div>
 			<div class="row MB15">
 				<div class="col-sm-12 text-center">
-					<button class="btn btn-sm btn-active" data-bind="attr : { data-pk : certId}" id="btn-update-cert">Đồng ý</button>
-					<button class="btn btn-sm" id="btn-back-certnumber">Quay lại</button>
+					<button class="btn btn-sm btn-active" type="button" data-bind="attr : { data-pk : certId}" id="btn-update-cert">Đồng ý</button>
+					<button class="btn btn-sm" type="button" id="btn-back-certnumber">Quay lại</button>
 				</div>
 			</div>
 		</form>
@@ -73,7 +73,7 @@
 </div>
 
 <script type="text/javascript">
-
+	var indexCertNumber;
 	var dataSourceCertNumber = new kendo.data.DataSource({
 		transport : {
 			read : function(options){
@@ -83,6 +83,7 @@
 					type : "GET",
 					headers: {"groupId": ${(groupId)!}},
 					success : function(result){
+						indexCertNumber = 0
 						if(result.data){
 							options.success(result);
 						}else {
@@ -108,7 +109,6 @@
 		}
 	});
 
-	var indexCertNumber = 0;
 	$("#certNumberListView").kendoListView({
 		dataSource : dataSourceCertNumber,
 		template : function(data){
@@ -186,18 +186,15 @@
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
-					$("#certNumBerDetail").hide();
-					$("#viewLsCertNumber").show();
-					dataSourceCertNumber.read();
 				}else {
 					//dataSourceCertNumber.pushCreate(result);
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 				}
-				$("#certNumBerDetail").show();
-				$("#viewLsCertNumber").hide();
-
+				$("#certNumBerDetail").hide();
+				$("#viewLsCertNumber").show();
+				dataSourceCertNumber.read();
 			},
 			error : function(result){
 				notification.show({
@@ -260,9 +257,7 @@
 		if (checkFormValidate.validate()) {
 			var id = $(this).attr("data-pk");
 			console.log("certId=========>",id);
-			fnCertDetailFormCtr(id);
-		} else {
-			return
+			fnCertDetailFormCtr(id)
 		}
 	});
 	$("#btn-add-certnumber-list").click(function(){
