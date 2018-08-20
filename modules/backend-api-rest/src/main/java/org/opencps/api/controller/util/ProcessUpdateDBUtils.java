@@ -629,7 +629,25 @@ public class ProcessUpdateDBUtils {
 				String processNo = process.getProcessNo();
 				String processName = process.getProcessName();
 				String description = process.getDescription();
-				Double durationCount = process.getDurationCount();
+//				Double durationCount = process.getDurationCount();
+//				_log.info("durationCount: "+durationCount);
+//				Double durationCountConvert = 0d;
+//				if (Validator.isNotNull(durationCount)) {
+//					String strDurationCount = String.valueOf(durationCount).replaceAll(StringPool.COMMA,
+//							StringPool.PERIOD);
+//					_log.info("strDurationCount: "+strDurationCount);
+//					durationCountConvert = Double.valueOf(strDurationCount);
+//					_log.info("durationCountConvert: "+durationCountConvert);
+//				}
+				String durationCount = process.getDurationCount();
+				_log.info("durationCount: "+durationCount);
+				Double durationCountConvert = 0d;
+				if (Validator.isNotNull(durationCount)) {
+					durationCount = durationCount.replaceAll(StringPool.COMMA, StringPool.PERIOD);
+					_log.info("strDurationCount: "+durationCount);
+					durationCountConvert = Double.valueOf(durationCount);
+					_log.info("durationCountConvert: "+durationCountConvert);
+				}
 				Integer durationUnit = process.getDurationUnit();
 				boolean generatePassword = process.isGeneratePassword();
 				String serverNo = process.getServerNo();
@@ -639,7 +657,7 @@ public class ProcessUpdateDBUtils {
 				// Update serviceInfo
 				ServiceProcessActions actionService = new ServiceProcessActionsImpl();
 				long serviceProcessId = actionService.updateServiceProcessDB(userId, groupId, processNo, processName,
-						description, durationCount, durationUnit, generatePassword, serverNo, serverName,
+						description, durationCountConvert, durationUnit, generatePassword, serverNo, serverName,
 						dossierNoPattern, dueDatePattern, serviceContext);
 				//Delete all record ServiceFileTemplate with serviceInfoId
 				Roles processRoles = process.getRoles();
@@ -1021,7 +1039,8 @@ public class ProcessUpdateDBUtils {
 				String groupName = StringPool.BLANK;
 				String dossierStatus = StringPool.BLANK;
 				String dossierSubStatus = StringPool.BLANK;
-				Integer durationCount = 0;
+//				Double durationCount = 0d;
+				String durationCount = StringPool.BLANK;
 				String instructionNote = StringPool.BLANK;
 				String briefNote = StringPool.BLANK;
 				String roleAsStep = StringPool.BLANK;
@@ -1033,14 +1052,32 @@ public class ProcessUpdateDBUtils {
 					groupName = step.getGroupName();
 					dossierStatus = step.getDossierStatus();
 					dossierSubStatus = step.getDossierSubStatus();
+//					durationCount = step.getDurationCount();
+//					_log.info("durationCount: "+durationCount);
+//					Double durationCountConvert = 0d;
+//					if (Validator.isNotNull(durationCount)) {
+//						String strDurationCount = String.valueOf(durationCount).replaceAll(StringPool.COMMA,
+//								StringPool.PERIOD);
+//						_log.info("strDurationCount: "+strDurationCount);
+//						durationCountConvert = Double.valueOf(strDurationCount);
+//						_log.info("durationCountConvert: "+durationCountConvert);
+//					}
 					durationCount = step.getDurationCount();
+					_log.info("durationCount: "+durationCount);
+					Double durationCountConvert = 0d;
+					if (Validator.isNotNull(durationCount)) {
+						durationCount = durationCount.replaceAll(StringPool.COMMA, StringPool.PERIOD);
+						_log.info("strDurationCount: "+durationCount);
+						durationCountConvert = Double.valueOf(durationCount);
+						_log.info("durationCountConvert: "+durationCountConvert);
+					}
 					instructionNote = step.getInstructionNote();
 					briefNote = step.getBriefNote();
 					roleAsStep = step.getRoleAsStep();
 					checkInput = step.getCheckInput();
 					//
 					long processStepId = actionService.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode,
-							stepName, sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount,
+							stepName, sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCountConvert,
 							instructionNote, briefNote, roleAsStep, checkInput, serviceContext);
 					//
 					org.opencps.api.v21.model.Steps.ProcessStep.Roles stepRoles = step.getRoles();
