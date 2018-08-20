@@ -840,11 +840,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					File fileList = new File(pathFolder);
 //					//Validate xml
 					String strError = ReadXMLFileUtils.validateXML(fileList, true);
+					_log.info("strError: "+strError);
 					if (Validator.isNotNull(strError)) {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
 					}
 
 					String errorCheck = ReadXMLFileUtils.getStrError();
+					_log.info("errorCheck: "+errorCheck);
 					if (Validator.isNotNull(errorCheck)) {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(errorCheck).build();
 					}
