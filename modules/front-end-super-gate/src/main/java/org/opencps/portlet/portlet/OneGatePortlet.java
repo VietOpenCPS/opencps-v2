@@ -91,8 +91,9 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 				object.put("stepConfigApi", "/o/rest/v2_1/stepconfigs");
 				object.put("commentApi", "/o/rest/v2/comments");
 				object.put("documentApi", "/o/rest/v2_1/dossiers");
-				
 				object.put("getNextAction", "/o/rest/v2/dossiers");
+				object.put("documentApi", "/o/rest/v2_1/dossiers");
+				object.put("stepConfigApi", "/o/rest/v2_1/stepconfigs");
 				object.put("getServiceConfigs", "/o/rest/v2/serviceconfigs");
 				object.put("stepConfigAPI", "/o/rest/v2/stepconfigs");
 				object.put("commentApi", "/o/rest/v2/comments");    

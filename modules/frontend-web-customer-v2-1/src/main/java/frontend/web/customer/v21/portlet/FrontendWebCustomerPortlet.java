@@ -81,7 +81,11 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 				object.put("serviceConfigApi", "/o/rest/v2/serviceconfigs");
 				object.put("serviceConfigByGovApi", "/o/rest/v2/serviceconfigs/govagencies");
 				object.put("commentApi", "/o/rest/v2/comments");
+<<<<<<< HEAD
+				object.put("documentApi", "/o/rest/v2/dossiers");
+=======
 				object.put("documentApi", "/o/rest/v2_1/dossiers");
+>>>>>>> fds-opencps/release-candidate-2.1
 				object.put("stepConfigApi", "/o/rest/v2_1/stepconfigs");
 				
 				object.put("getNextAction", "/o/rest/v2/dossiers");

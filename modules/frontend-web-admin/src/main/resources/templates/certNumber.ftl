@@ -4,13 +4,14 @@
 
 <div class="row box MT10">
 	<div class="col-sm-12 MT15" id="viewLsCertNumber">
-		<button class="btn btn-active MB15" id="btn-add-certnumber">Thêm tham số hệ thống</button> <br>
+		<button class="btn btn-active MB15" id="btn-add-certnumber"><i class="glyphicon glyphicon-plus"></i> Thêm tham số hệ thống</button>
+		<button class="btn btn-active MB15 ML15" id="btn-add-certnumber-list"><i class="glyphicon glyphicon-plus"></i> Thêm danh sách tham số hệ thống</button> 
+		<button class="btn MB15 pull-right" id="btn-delete-certnumber" style="background-color:#e63434 !important; color:#fff !important"><i class="fa fa-trash"></i> Xóa danh sách tham số hệ thống</button> <br>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th class="text-center">STT</th>
 					<th class="text-center">Tên tham số</th>
-					<th class="text-center">Năm</th>
 					<th class="text-center">Pattern</th>
 					<th class="text-center">Số khởi tạo </th>
 					<th class="text-center">Hành động</th>
@@ -27,7 +28,6 @@
 				<td class="text-center hover-pointer item-certnumber" data-pk="#:id#" style="width: 25%;">
 					#:id#
 				</td>
-				<td class="text-center">#:year#</td>
 				<td class="text-center" style="width: 25%;">#:pattern#</td>
 				<td class="text-center">#:initNumber#</td>
 				<td class="text-center"><a class="certNumberItemDelete" href="javascript:;" data-pk="#:id#"><i class="fa fa-trash"></i> Xóa</a></td>
@@ -35,52 +35,45 @@
 		</script>
 	</div>
 	<div class="col-sm-12 MT15" style="display: none;" id="certNumBerDetail">
-		<div class="row MB15">
-			<div class="col-sm-3 text-right">
-				<span class="text-bold">Tên tham số:</span>
+		<form id="certnumber-create-form">
+			<div class="row MB15">
+				<div class="col-sm-3 text-right">
+					<span class="text-bold">Tên tham số:</span>
+				</div>
+				<div class="col-sm-9">
+					<input  name="certId" id="certId" class="form-control" data-bind="value : certId" readonly>
+				</div>
+			</div> 
+			<div class="row MB15">
+				<div class="col-sm-3 text-right">
+					<span class="text-bold">Pattern:</span>
+				</div>
+				<div class="col-sm-9">
+					<input  name="pattern" id="pattern" class="form-control" data-bind="value : pattern" required="required" validationMessage="Bạn phải điền pattern">
+					<span data-for="pattern" class="k-invalid-msg"></span> 
+				</div>
 			</div>
-			<div class="col-sm-9">
-				<input  name="certId" id="certId" class="form-control" data-bind="value : certId" readonly>
+			<div class="row MB15">
+				<div class="col-sm-3 text-right">
+					<span class="text-bold">Số khởi tạo:</span>
+				</div>
+				<div class="col-sm-9">
+					<input  name="initNumber" id="initNumber" class="form-control" data-bind="value : initNumber" required="required" validationMessage="Bạn phải điền số khởi tạo">
+					<span data-for="initNumber" class="k-invalid-msg"></span> 
+				</div>
 			</div>
-		</div> 
-		<div class="row MB15">
-			<div class="col-sm-3 text-right">
-				<span class="text-bold">Năm:</span>
+			<div class="row MB15">
+				<div class="col-sm-12 text-center">
+					<button class="btn btn-sm btn-active" type="button" data-bind="attr : { data-pk : certId}" id="btn-update-cert">Đồng ý</button>
+					<button class="btn btn-sm" type="button" id="btn-back-certnumber">Quay lại</button>
+				</div>
 			</div>
-			<div class="col-sm-9">
-				<input  name="year" id="year" class="form-control" data-bind="value : year" required="required" validationMessage="Bạn phải chọn năm">
-				<span data-for="year" class="k-invalid-msg"></span> 
-			</div>
-		</div>
-		<div class="row MB15">
-			<div class="col-sm-3 text-right">
-				<span class="text-bold">Pattern:</span>
-			</div>
-			<div class="col-sm-9">
-				<input  name="pattern" id="pattern" class="form-control" data-bind="value : pattern" required="required" validationMessage="Bạn phải điền pattern">
-				<span data-for="pattern" class="k-invalid-msg"></span> 
-			</div>
-		</div>
-		<div class="row MB15">
-			<div class="col-sm-3 text-right">
-				<span class="text-bold">Số khởi tạo:</span>
-			</div>
-			<div class="col-sm-9">
-				<input  name="initNumber" id="initNumber" class="form-control" data-bind="value : initNumber" required="required" validationMessage="Bạn phải điền số khởi tạo">
-				<span data-for="initNumber" class="k-invalid-msg"></span> 
-			</div>
-		</div>
-		<div class="row MB15">
-			<div class="col-sm-12 text-center">
-				<button class="btn btn-sm btn-active" data-bind="attr : { data-pk : certId}" id="btn-update-cert">Đồng ý</button>
-				<button class="btn btn-sm" id="btn-back-certnumber">Quay lại</button>
-			</div>
-		</div>
+		</form>
 	</div>
 </div>
 
 <script type="text/javascript">
-
+	var indexCertNumber;
 	var dataSourceCertNumber = new kendo.data.DataSource({
 		transport : {
 			read : function(options){
@@ -90,6 +83,7 @@
 					type : "GET",
 					headers: {"groupId": ${(groupId)!}},
 					success : function(result){
+						indexCertNumber = 0
 						if(result.data){
 							options.success(result);
 						}else {
@@ -115,7 +109,6 @@
 		}
 	});
 
-	var indexCertNumber = 0;
 	$("#certNumberListView").kendoListView({
 		dataSource : dataSourceCertNumber,
 		template : function(data){
@@ -149,7 +142,6 @@
 				success : function(result){
 					var viewModel = kendo.observable({
 						certId : result.certId,
-						year : result.year,
 						pattern : result.pattern,
 						initNumber : result.initNumber
 					});
@@ -177,7 +169,6 @@
 			type = "POST";
 		}
 		var certId = $("#certId").val();
-		var year = $("#year").val();
 		var pattern = $("#pattern").val();
 		var initNumber = $("#initNumber").val();
 		$.ajax({
@@ -186,7 +177,6 @@
 			type : type,
 			headers: {"groupId": ${groupId}},
 			data : {
-				year : year,
 				pattern : pattern,
 				initNumber : initNumber
 			},
@@ -202,9 +192,9 @@
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 				}
-				$("#certNumBerDetail").show();
-				$("#viewLsCertNumber").hide();
-
+				$("#certNumBerDetail").hide();
+				$("#viewLsCertNumber").show();
+				dataSourceCertNumber.read();
 			},
 			error : function(result){
 				notification.show({
@@ -213,7 +203,35 @@
 			}
 		});
 	}
-
+	var fnCertDetailFormCtrList = function(){
+		var url = "";
+		var type = "";
+		url = "/o/rest/v2/vr-app/certnumbers";
+		type = "POST";
+		$.ajax({
+			url : url,
+			dataType : "json",
+			type : type,
+			headers: {"groupId": ${groupId}},
+			data : {
+				year : 0,
+				pattern : null,
+				initNumber : 0
+			},
+			success : function(result){
+				//dataSourceCertNumber.pushCreate(result);
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
+				dataSourceCertNumber.read()
+			},
+			error : function(result){
+				notification.show({
+					message: "Xẩy ra lỗi, vui lòng thử lại"
+				}, "error");
+			}
+		});
+	}
 	$("#btn-back-certnumber").click(function(){
 		$("#certNumBerDetail").hide();
 		$("#viewLsCertNumber").show();
@@ -235,14 +253,46 @@
 	});
 
 	$("#btn-update-cert").click(function(){
-		var id = $(this).attr("data-pk");
-		console.log("certId=========>",id);
-		fnCertDetailFormCtr(id);
+		var checkFormValidate = $("#certnumber-create-form").kendoValidator().data("kendoValidator");
+		if (checkFormValidate.validate()) {
+			var id = $(this).attr("data-pk");
+			console.log("certId=========>",id);
+			fnCertDetailFormCtr(id)
+		}
+	});
+	$("#btn-add-certnumber-list").click(function(){
+		var cf = confirm("Bạn có muốn thêm danh sách tham số hệ thống!");
+		if(cf){
+			$("#certNumBerDetail").hide();
+			$("#viewLsCertNumber").show();
+			fnCertDetailFormCtrList();
+		}
+	});
+	$("#btn-delete-certnumber").click(function(){
 		$("#certNumBerDetail").hide();
 		$("#viewLsCertNumber").show();
-		dataSourceCertNumber.read();
+		var cf = confirm("Bạn có muốn xóa tất cả tham số hệ thống!");
+		if(cf){
+			$.ajax({
+				url : "/o/rest/v2/vr-app/certnumbers",
+				dataType : "json",
+				type : "DELETE",
+				headers: {"groupId": ${groupId}},
+				data: {},
+				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+					dataSourceCertNumber.read();
+				},
+				error : function(result){
+					notification.show({
+						message: "Xẩy ra lỗi, vui lòng thử lại"
+					}, "error");
+				}
+			});
+		}
 	});
-
 	$("#year").kendoComboBox({
 		placeholder: "Chọn năm",
 		dataSource : [
