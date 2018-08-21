@@ -47,6 +47,65 @@
 		</xsd:complexType>
 	</xsd:element>
 	
+	<xsd:element name="DossierPublishModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="address" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="cityName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="wardName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateAddress" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateWardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="password" type="xsd:string" minOccurs="0" />
+				<xsd:element name="online" type="xsd:string" minOccurs="0" />
+				<xsd:element name="notification" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="viaPostal" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalServiceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalAddress" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalWardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
+				<xsd:element name="createDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="modifiedDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="submitDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="receiveDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="dueDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="releaseDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="finishDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="cancellingDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="correcttingDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="endorsementDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="extendDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="processDate" type="xsd:long" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+		
 	<xsd:element name="DossierDetailModel">
 		<xsd:complexType>
 			<xsd:sequence>

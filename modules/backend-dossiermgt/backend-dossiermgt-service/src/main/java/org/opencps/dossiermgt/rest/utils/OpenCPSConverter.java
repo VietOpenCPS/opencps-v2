@@ -14,6 +14,7 @@ import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 
@@ -93,6 +94,105 @@ public class OpenCPSConverter {
 	    return params;
 	}
 	
+	public static Map<String, Object> convertPublishHttpParams(DossierPublishModel model) {
+	    Map<String, Object> params = new HashMap<>();
+	    
+	    if (Validator.isNotNull(model.getReferenceUid())) {
+		    params.put(DossierTerm.REFERENCE_UID, model.getReferenceUid());	    	
+	    }
+	    if (Validator.isNotNull(model.getServiceCode())) {
+		    params.put(DossierTerm.SERVICE_CODE, model.getServiceCode());	    	
+	    }
+	    if (Validator.isNotNull(model.getGovAgencyCode())) {
+		    params.put(DossierTerm.GOV_AGENCY_CODE, model.getGovAgencyCode());	    	
+	    }
+	    if (Validator.isNotNull(model.getDossierTemplateNo())) {
+		    params.put(DossierTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());	    	
+	    }
+	    params.put(DossierTerm.SERVICE_NAME, model.getServiceName());
+	    params.put(DossierTerm.APPLICANT_NAME, model.getApplicantName());
+	    params.put(DossierTerm.APPLICANT_ID_TYPE, model.getApplicantIdType());
+	    params.put(DossierTerm.APPLICANT_ID_NO, model.getApplicantIdNo());
+	    params.put(DossierTerm.APPLICANT_ID_DATE, model.getApplicantIdDate());
+	    params.put(DossierTerm.ADDRESS, model.getAddress());
+	    params.put(DossierTerm.CITY_CODE, model.getCityCode());
+	    params.put(DossierTerm.CITY_NAME, model.getCityName());
+	    params.put(DossierTerm.DISTRICT_CODE, model.getDistrictCode());
+	    params.put(DossierTerm.DISTRICT_NAME, model.getDistrictName());
+	    params.put(DossierTerm.WARD_CODE, model.getWardCode());
+	    params.put(DossierTerm.WARD_NAME, model.getWardName());
+	    params.put(DossierTerm.CONTACT_NAME, model.getContactName());
+	    params.put(DossierTerm.CONTACT_TEL_NO, model.getContactTelNo());
+	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
+	    if (Validator.isNotNull(model.getPassword())) {
+		    params.put(DossierTerm.PASSWORD, model.getPassword());	    	
+	    }
+	    if (Validator.isNotNull(model.getOnline())) {
+		    params.put(DossierTerm.ONLINE, model.getOnline());	    	
+	    }
+	    if (Validator.isNotNull(model.getViaPostal())) {
+	    	params.put(DossierTerm.VIA_POSTAL, model.getViaPostal());
+	    }
+	    if (Validator.isNotNull(model.getPostalServiceCode())) {
+	    	params.put(DossierTerm.POSTAL_SERVICE_CODE, model.getPostalServiceCode());	    	
+	    }
+	    if (Validator.isNotNull(model.getPostalCityCode())) {
+	    	params.put(DossierTerm.POSTAL_CITY_CODE, model.getPostalCityCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalDistrictCode())) {
+	    	params.put(DossierTerm.POSTAL_DISTRICT_CODE, model.getPostalDistrictCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalWardCode())) {
+	    	params.put(DossierTerm.POSTAL_WARD_CODE, model.getPostalWardCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalTelNo())) {
+	    	params.put(DossierTerm.POSTAL_TEL_NO, model.getPostalTelNo());	    		    		    	
+	    }
+	    if (Validator.isNotNull(model.getApplicantNote())) {
+	    	params.put(DossierTerm.APPLICANT_NOTE, model.getApplicantNote());	    		    		    		    	
+	    }
+	    if (Validator.isNotNull(model.getOriginality())) {
+	    	params.put(DossierTerm.ORIGINALLITY, model.getOriginality().toString());
+	    }
+	    if (Validator.isNotNull(model.getCreateDate())) {
+	    	params.put(DossierTerm.CREATE_DATE, model.getCreateDate());
+	    }
+	    if (Validator.isNotNull(model.getModifiedDate())) {
+	    	params.put(DossierTerm.MODIFIED_DATE, model.getModifiedDate());
+	    }
+	    if (Validator.isNotNull(model.getSubmitDate())) {
+	    	params.put(DossierTerm.SUBMIT_DATE, model.getSubmitDate());
+	    }
+	    if (Validator.isNotNull(model.getReceiveDate())) {
+	    	params.put(DossierTerm.RECEIVE_DATE, model.getReceiveDate());
+	    }
+	    if (Validator.isNotNull(model.getDueDate())) {
+	    	params.put(DossierTerm.DUE_DATE, model.getDueDate());
+	    }
+	    if (Validator.isNotNull(model.getReleaseDate())) {
+	    	params.put(DossierTerm.RELEASE_DATE, model.getReleaseDate());
+	    }
+	    if (Validator.isNotNull(model.getFinishDate())) {
+	    	params.put(DossierTerm.FINISH_DATE, model.getFinishDate());
+	    }
+	    if (Validator.isNotNull(model.getCancellingDate())) {
+	    	params.put(DossierTerm.CANCELLING_DATE, model.getCancellingDate());
+	    }
+	    if (Validator.isNotNull(model.getCorrecttingDate())) {
+	    	params.put(DossierTerm.CORRECTING_DATE, model.getCorrecttingDate());
+	    }
+	    if (Validator.isNotNull(model.getEndorsementDate())) {
+	    	params.put(DossierTerm.ENDORSEMENT_DATE, model.getEndorsementDate());
+	    }
+	    if (Validator.isNotNull(model.getExtendDate())) {
+	    	params.put(DossierTerm.EXTEND_DATE, model.getExtendDate());
+	    }
+	    if (Validator.isNotNull(model.getProcessDate())) {
+	    	params.put(DossierTerm.PROCESS_DATE, model.getProcessDate());
+	    }
+	    
+	    return params;
+	}	
 	public static DossierInputModel convertDossierSummary(JSONObject jsonObj) {
 		DossierInputModel model = new DossierInputModel();
 	
@@ -193,6 +293,141 @@ public class OpenCPSConverter {
 		return model;
 	}
 	
+	public static DossierPublishModel convertDossierPublish(JSONObject jsonObj) {
+		DossierPublishModel model = new DossierPublishModel();
+	
+		if (jsonObj.has(DossierTerm.REFERENCE_UID)) {
+			model.setReferenceUid(jsonObj.getString(DossierTerm.REFERENCE_UID));
+		}
+		if (jsonObj.has(DossierTerm.SERVICE_CODE)) {
+			model.setServiceCode(jsonObj.getString(DossierTerm.SERVICE_CODE));
+		}
+		if (jsonObj.has(DossierTerm.SERVICE_NAME)) {
+			model.setServiceName(jsonObj.getString(DossierTerm.SERVICE_NAME));
+		}
+		if (jsonObj.has(DossierTerm.GOV_AGENCY_CODE)) {
+			model.setGovAgencyCode(jsonObj.getString(DossierTerm.GOV_AGENCY_CODE));
+		}
+		if (jsonObj.has(DossierTerm.GOV_AGENCY_NAME)) {
+			model.setGovAgencyName(jsonObj.getString(DossierTerm.GOV_AGENCY_NAME));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_TEMPLATE_NO)) {
+			model.setDossierTemplateNo(jsonObj.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
+		}
+		if (jsonObj.has(DossierTerm.APPLICANT_NAME)) {
+			model.setApplicantName(jsonObj.getString(DossierTerm.APPLICANT_NAME));
+		}
+		if (jsonObj.has(DossierTerm.APPLICANT_ID_TYPE)) {
+			model.setApplicantIdType(jsonObj.getString(DossierTerm.APPLICANT_ID_TYPE));
+		}
+		if (jsonObj.has(DossierTerm.APPLICANT_ID_NO)) {
+			model.setApplicantIdNo(jsonObj.getString(DossierTerm.APPLICANT_ID_NO));
+		}
+		if (jsonObj.has(DossierTerm.APPLICANT_ID_DATE)) {
+			model.setApplicantIdDate(jsonObj.getString(DossierTerm.APPLICANT_ID_DATE));
+		}
+		if (jsonObj.has(DossierTerm.ADDRESS)) {
+			model.setAddress(jsonObj.getString(DossierTerm.ADDRESS));
+		}
+		if (jsonObj.has(DossierTerm.CITY_CODE)) {
+			model.setCityCode(jsonObj.getString(DossierTerm.CITY_CODE));
+		}
+		if (jsonObj.has(DossierTerm.CITY_NAME)) {
+			model.setCityName(jsonObj.getString(DossierTerm.CITY_NAME));
+		}
+		if (jsonObj.has(DossierTerm.DISTRICT_CODE)) {
+			model.setDistrictCode(jsonObj.getString(DossierTerm.DISTRICT_CODE));
+		}
+		if (jsonObj.has(DossierTerm.DISTRICT_NAME)) {
+			model.setDistrictName(jsonObj.getString(DossierTerm.DISTRICT_NAME));
+		}
+		if (jsonObj.has(DossierTerm.WARD_CODE)) {
+			model.setWardCode(jsonObj.getString(DossierTerm.WARD_CODE));
+		}
+		if (jsonObj.has(DossierTerm.WARD_NAME)) {
+			model.setWardName(jsonObj.getString(DossierTerm.WARD_NAME));
+		}
+		if (jsonObj.has(DossierTerm.CONTACT_NAME)) {
+			model.setContactName(jsonObj.getString(DossierTerm.CONTACT_NAME));
+		}
+		if (jsonObj.has(DossierTerm.CONTACT_TEL_NO)) {
+			model.setContactTelNo(jsonObj.getString(DossierTerm.CONTACT_TEL_NO));
+		}
+		if (jsonObj.has(DossierTerm.CONTACT_EMAIL)) {
+			model.setContactEmail(jsonObj.getString(DossierTerm.CONTACT_EMAIL));
+		}
+		if (jsonObj.has(DossierTerm.PASSWORD)) {
+			model.setPassword(jsonObj.getString(DossierTerm.PASSWORD));
+		}
+		if (jsonObj.has(DossierTerm.ONLINE)) {
+			model.setOnline(jsonObj.getString(DossierTerm.ONLINE));
+		}
+		if (jsonObj.has(DossierTerm.VIA_POSTAL)) {
+			model.setViaPostal(jsonObj.getString(DossierTerm.VIA_POSTAL));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_SERVICE_CODE)) {
+			model.setPostalServiceCode(jsonObj.getString(DossierTerm.POSTAL_SERVICE_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_ADDRESS)) {
+			model.setPostalAddress(jsonObj.getString(DossierTerm.POSTAL_ADDRESS));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_CITY_CODE)) {
+			model.setPostalCityCode(jsonObj.getString(DossierTerm.POSTAL_CITY_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_DISTRICT_CODE)) {
+			model.setPostalDistrictCode(jsonObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_WARD_CODE)) {
+			model.setPostalWardCode(jsonObj.getString(DossierTerm.POSTAL_WARD_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_TEL_NO)) {
+			model.setPostalTelNo(jsonObj.getString(DossierTerm.POSTAL_TEL_NO));
+		}
+		if (jsonObj.has(DossierTerm.APPLICANT_NOTE)) {
+			model.setApplicantNote(jsonObj.getString(DossierTerm.APPLICANT_NOTE));
+		}
+		if (jsonObj.has(DossierTerm.NOTIFICATION)) {
+			model.setNotification(jsonObj.getString(DossierTerm.NOTIFICATION));
+		}
+		if (jsonObj.has(DossierTerm.CREATE_DATE)) {
+			model.setCreateDate(jsonObj.getLong(DossierTerm.CREATE_DATE));
+		}
+		if (jsonObj.has(DossierTerm.MODIFIED_DATE)) {
+			model.setModifiedDate(jsonObj.getLong(DossierTerm.MODIFIED_DATE));
+		}
+		if (jsonObj.has(DossierTerm.SUBMIT_DATE)) {
+			model.setSubmitDate(jsonObj.getLong(DossierTerm.SUBMIT_DATE));
+		}
+		if (jsonObj.has(DossierTerm.RECEIVE_DATE)) {
+			model.setReceiveDate(jsonObj.getLong(DossierTerm.RECEIVE_DATE));
+		}
+		if (jsonObj.has(DossierTerm.DUE_DATE)) {
+			model.setDueDate(jsonObj.getLong(DossierTerm.DUE_DATE));
+		}
+		if (jsonObj.has(DossierTerm.RELEASE_DATE)) {
+			model.setReleaseDate(jsonObj.getLong(DossierTerm.RELEASE_DATE));
+		}
+		if (jsonObj.has(DossierTerm.FINISH_DATE)) {
+			model.setFinishDate(jsonObj.getLong(DossierTerm.FINISH_DATE));
+		}
+		if (jsonObj.has(DossierTerm.CANCELLING_DATE)) {
+			model.setCancellingDate(jsonObj.getLong(DossierTerm.CANCELLING_DATE));
+		}
+		if (jsonObj.has(DossierTerm.CORRECTING_DATE)) {
+			model.setCorrecttingDate(jsonObj.getLong(DossierTerm.CORRECTING_DATE));
+		}
+		if (jsonObj.has(DossierTerm.ENDORSEMENT_DATE)) {
+			model.setEndorsementDate(jsonObj.getLong(DossierTerm.ENDORSEMENT_DATE));
+		}
+		if (jsonObj.has(DossierTerm.EXTEND_DATE)) {
+			model.setExtendDate(jsonObj.getLong(DossierTerm.EXTEND_DATE));
+		}
+		if (jsonObj.has(DossierTerm.PROCESS_DATE)) {
+			model.setProcessDate(jsonObj.getLong(DossierTerm.PROCESS_DATE));
+		}
+		
+		return model;
+	}	
 	private static Log _log = LogFactoryUtil.getLog(OpenCPSConverter.class);
 	public static DossierDetailModel convertDossierDetail(JSONObject jsonObj) {
 		DossierDetailModel model = new DossierDetailModel();
