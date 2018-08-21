@@ -61,6 +61,11 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.RELEASE_DATE, dossier.getReleaseDate() != null ? dossier.getReleaseDate().getTime() : 0l);
 		obj.put(DossierTerm.FINISH_DATE, dossier.getFinishDate() != null ? dossier.getFinishDate().getTime() : 0l);
 		obj.put(DossierTerm.EXTEND_DATE, dossier.getExtendDate() != null ? dossier.getExtendDate().getTime() : 0l);
+		obj.put(DossierTerm.ENDORSEMENT_DATE, dossier.getEndorsementDate() != null ? dossier.getEndorsementDate().getTime() : 0l);
+		obj.put(DossierTerm.CREATE_DATE, dossier.getCreateDate() != null ? dossier.getCreateDate().getTime() : 0l);
+		obj.put(DossierTerm.MODIFIED_DATE, dossier.getModifiedDate() != null ? dossier.getModifiedDate().getTime() : 0l);
+		obj.put(DossierTerm.CANCELLING_DATE, dossier.getCancellingDate() != null ? dossier.getCancellingDate().getTime() : 0l);
+		obj.put(DossierTerm.CORRECTING_DATE, dossier.getCorrecttingDate() != null ? dossier.getCorrecttingDate().getTime() : 0l);
 		obj.put(DossierTerm.DOSSIER_STATUS, dossier.getDossierStatus());
 		obj.put(DossierTerm.DOSSIER_STATUS_TEXT, dossier.getDossierStatusText());
 		obj.put(DossierTerm.DOSSIER_SUB_STATUS, dossier.getDossierSubStatus());

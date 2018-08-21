@@ -73,18 +73,27 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 		DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, code);
 		String documentScript = StringPool.BLANK;
-
+		String reportType = "pdf";
+		try {
+			JSONObject bodyObj = JSONFactoryUtil.createJSONObject(body);
+			if (bodyObj.has("reportType")) {
+				reportType = bodyObj.getString("reportType");
+			}
+		} catch (JSONException e) {
+		}
+		
 		if (docType != null) {
 
 			documentScript = docType.getDocumentScript();
 
 			Message message = new Message();
 			message.put("formReport", documentScript);
-			
+			message.put("reportType", reportType);
+
 			JSONObject resultObject = doGetFormData(code, body, siteName);
 			
 			message.put("formData", resultObject);
-
+			
 			try {
 				String previewResponse = (String) MessageBusUtil
 						.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
@@ -94,10 +103,21 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + docType.getDocumentName()+ ".pdf\"");
-					responseBuilder.header("Content-Type", "application/pdf");
-
+					if (reportType.equals("excel")) {
+						responseBuilder.header("Content-Disposition",
+								"attachment; filename=\"" + docType.getDocumentName()+ ".xlsx\"");
+						responseBuilder.header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");						
+					}
+					else if (reportType.equals("word")) {
+						responseBuilder.header("Content-Disposition",
+								"attachment; filename=\"" + docType.getDocumentName()+ ".docx\"");
+						responseBuilder.header("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");												
+					}
+					else {
+						responseBuilder.header("Content-Disposition",
+								"attachment; filename=\"" + docType.getDocumentName()+ ".pdf\"");
+						responseBuilder.header("Content-Type", "application/pdf");						
+					}
 					return responseBuilder.build();
 				}
 

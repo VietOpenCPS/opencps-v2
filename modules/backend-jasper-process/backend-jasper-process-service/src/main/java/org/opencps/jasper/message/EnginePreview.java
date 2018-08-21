@@ -83,47 +83,26 @@ public class EnginePreview implements MessageListener {
 				_log.error("Generate file exception.........");
 				}
 		} else {
+			String reportType = message.contains("reportType") ? message.getString("reportType") : "pdf";
+			
 			if (isJsonObject(formData)) {
-			try {
-				//create file
-				JRReportUtil.createReportFile(formReport,
-						formData, null, file.getCanonicalPath());
-				
-				Message responseMessage = MessageBusUtil.createResponseMessage(message);
-				
-				//JSONObject payload = JSONFactoryUtil.createJSONObject();
-				
-				//payload.put("status", "DONE");
-				//.put("", value)
-	
-				responseMessage.setPayload(file.getCanonicalPath());
-				responseMessage.put("fileDes", file.getCanonicalPath());
-				
-				MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
-	
-			} catch (Exception e) {
-				_log.error("Generate file exception.........");
-				}			
-			}
-			else {
-				_log.info("JSON Array generate list of deliverable");
 				try {
 					//create file
 					JRReportUtil.createReportFile(formReport,
-							formData, null, file.getCanonicalPath());
-					
+							formData, null, file.getCanonicalPath(), reportType);
+						
 					Message responseMessage = MessageBusUtil.createResponseMessage(message);
-					
+						
 					//JSONObject payload = JSONFactoryUtil.createJSONObject();
-					
+						
 					//payload.put("status", "DONE");
 					//.put("", value)
-	
+			
 					responseMessage.setPayload(file.getCanonicalPath());
 					responseMessage.put("fileDes", file.getCanonicalPath());
-			
+						
 					MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
-	
+			
 				} catch (Exception e) {
 					_log.error("Generate file exception.........");
 				}			
