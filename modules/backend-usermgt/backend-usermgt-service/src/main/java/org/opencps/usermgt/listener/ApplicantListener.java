@@ -7,15 +7,12 @@ import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.model.OfficeSite;
-import org.opencps.usermgt.model.WorkingUnit;
-import org.opencps.usermgt.model.impl.OfficeSiteImpl;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -23,7 +20,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = ModelListener.class)
 public class ApplicantListener extends BaseModelListener<Applicant>{
@@ -125,10 +121,21 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
 			object.put("toName", model.getApplicantName());
 			object.put("toAddress", model.getContactEmail());
-			
-			String payload = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
-			
-			queue.setPayload(payload);
+//			
+			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
+			_log.info("payloadTest1: "+payload1);
+			JSONObject payload = JSONFactoryUtil.createJSONObject();
+			try {
+				_log.info("START PAYLOAD: ");
+				payload.put(
+					"Applicant", JSONFactoryUtil.createJSONObject(
+						JSONFactoryUtil.looseSerialize(model)));
+			}
+			catch (JSONException parse) {
+				_log.error(parse);
+			}
+			_log.info("payloadTest: "+payload.toJSONString());
+			queue.setPayload(payload.toJSONString());
 			
 			queue.setExpireDate(cal.getTime());
 			
@@ -139,7 +146,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			long userId = model.getMappingUserId();
 			
 			GroupLocalServiceUtil.addUserGroup(userId, model.getGroupId());
-			
+
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -159,6 +166,56 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 
 	
 	public static Applicant modelBefore;
+
+	
+	
+//	protected void _doAddMessageQueue(
+//			Activity model, List<String[]> lstInfo, String code) {
+//
+//			JSONObject payload = JSONFactoryUtil.createJSONObject();
+//
+//			try {
+//				payload.put(
+//					"Activity", JSONFactoryUtil.createJSONObject(
+//						JSONFactoryUtil.looseSerialize(model)));
+//			}
+//			catch (JSONException parse) {
+//				_log.error(parse);
+//			}
+
+//			if (lstInfo != null && model != null) {
+//				for (String[] info : lstInfo) {
+//					try {
+//						NotificationQueueBusinessFactoryUtil.create(
+//							model.getUserId(), model.getGroupId(), code,
+//							Activity.class.getName(),
+//							String.valueOf(model.getActivityId()),
+//							payload.toJSONString(), model.getUserName(), info[1],
+//							GetterUtil.getLong(info[3]), info[0], info[2], null,
+//							null,
+//							MBServiceContextFactoryUtil.create(
+//								model.getCompanyId(), model.getGroupId(),
+//								model.getUserId()));
+//					}
+//					catch (Exception e) {
+//						// Nothing todo
+//					}
+//				}
+//			}
+//		}
+
+//		protected void doAddMessageQueue(Activity model) {
+//
+//			List<String[]> lstInfo =
+//				ResourceBusinessFactoryUtil.getJoinResourceInfo(
+//					model.getGroupId(), Activity.class.getName(),
+//					String.valueOf(model.getActivityId()));
+//
+//			_doAddMessageQueue(
+//				model, lstInfo,
+//				NotificationUtil.NotificationType.ACTIVITY.getCode());
+//
+//		}
 
 	Log _log = LogFactoryUtil.getLog(ApplicantListener.class);
 
