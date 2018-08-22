@@ -14,28 +14,20 @@
 
 package org.opencps.communication.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-import backend.auth.api.BackendAuthImpl;
-import backend.auth.api.exception.NotFoundException;
-import backend.auth.api.exception.UnauthenticationException;
-import backend.auth.api.exception.UnauthorizationException;
-import backend.auth.api.keys.ActionKeys;
-import backend.auth.api.keys.ModelNameKeys;
-
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.communication.exception.NoSuchNotificationQueueException;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.base.NotificationQueueLocalServiceBaseImpl;
 
-import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the notification queue local service.
@@ -122,6 +114,20 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 
 		return NotificationQueue;
 
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	public void deleteExpiredNotificationQueue(Date date) {
+
+		notificationQueuePersistence.removeByF_GreaterThan_ExpireDate(date);
+	}
+
+	@Override
+	public List<NotificationQueue> findByF_notificationType_LessThanExpireDate(
+		String notificationType, Date date) {
+
+		return notificationQueuePersistence.findByF_notificationType_LessThanExpireDate(
+			notificationType, date);
 	}
 
 	public void deleteByGroup(long groupId) {

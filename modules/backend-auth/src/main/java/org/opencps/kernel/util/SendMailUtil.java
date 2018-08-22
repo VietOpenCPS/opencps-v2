@@ -15,12 +15,14 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>
 */
 
-package org.opencps.communication.action.impl;
+package org.opencps.kernel.util;
 
+import javax.mail.internet.InternetAddress;
+
+import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -30,20 +32,17 @@ import com.liferay.portal.kernel.util.Validator;
 /**
  * 
  * @author binhth
- * @see SendMailUtils
+ * @see SendMailUtil
  */
-public class SendMailUtils {
+public class SendMailUtil {
 
-	private static Log _log = LogFactoryUtil.getLog(SendMailUtils.class);
 	public static void sendEmailNotification(JSONObject payLoad, ServiceContext serviceContext) throws SystemException {
 
 		if(Validator.isNotNull(payLoad)){
 //			String fromName = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_NAME);
-			String fromName = "He thong dich vu cong truc tuyen";
-			_log.info("payLoad: "+payLoad);
+			String fromName = "MOBILINK Mail System";
+			
 			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
-
-			//String fromAddress = "khoavd@fds.vn";
 
 			String toName = payLoad.getString("toName");
 
@@ -52,7 +51,18 @@ public class SendMailUtils {
 			String subject = payLoad.getString("subject");
 
 			String body = payLoad.getString("body");
-			_log.info("body: "+body);
+			
+			MailMessage mailMessage = new MailMessage();
+			
+			
+			
+			//mailMessage.setTo(InternetAddress);
+			
+			//InternetAddress d;
+			
+			//mailMessage.setFr
+			
+			//MailServiceUtil.sendEmail(mailMessage);
 
 			SubscriptionSender subscriptionSender = new SubscriptionSender();
 
@@ -73,23 +83,27 @@ public class SendMailUtils {
 			subscriptionSender.setMailId("user", payLoad.getLong("userId"));
 
 			subscriptionSender.addRuntimeSubscribers(toAddress, toName);
-			
-			//subscriptionSender.addRuntimeSubscribers("khoavd@fds.vn", "khoafds");
-
+		
 			subscriptionSender.flushNotificationsAsync();
 			
-//			//SendUserNotification
-//			try {
-//				long toUserId = payLoad.getLong("toUserId");
-//				long activityId = payLoad.getLong("activityId");
-//	        	JSONObject payloadJSON = JSONFactoryUtil.createJSONObject();
-//		        payloadJSON.put("userId", payLoad.getLong("userId"));
-//		        payloadJSON.put("toUserId", toUserId);
-//		        payloadJSON.put("activityId", activityId);
-//		        payloadJSON.put("contentNotification", payLoad.getString("contentNotification"));
-//		        payloadJSON.put("subject", payLoad.getString("subject"));
+			//subscriptionSender.
+			
+			//UserNotificationEventLocalServiceUtil
+			
+			//SendUserNotification
+			try {
+				long toUserId = payLoad.getLong("toUserId");
+				long activityId = payLoad.getLong("activityId");
+	        	JSONObject payloadJSON = JSONFactoryUtil.createJSONObject();
+		        payloadJSON.put("userId", payLoad.getLong("userId"));
+		        payloadJSON.put("toUserId", toUserId);
+		        payloadJSON.put("activityId", activityId);
+		        payloadJSON.put("contentNotification", payLoad.getString("contentNotification"));
+		        payloadJSON.put("subject", payLoad.getString("subject"));
+		       // NotificationEvent event = NotificationEventFactoryUtil.createNotificationEvent(timestamp, type, payloadJSONObject)
+		        //UserNotificationEventLocalServiceUtil.
 //		        if(toUserId == 0){
-//		        	List<MParticipant> listMParticipants = MParticipantLocalServiceUtil.findByF_activityId(activityId);
+//		        	List<Participant> listMParticipants = ParticipantLocalServiceUtil.findByF_activityId(activityId);
 //		        	for (MParticipant mParticipant : listMParticipants) {
 //		        		UserNotificationEventLocalServiceUtil.addUserNotificationEvent(mParticipant.getUserMappingId(), 
 //								ActivitiesConstants.MEETUP_MGT_CENTER, 
@@ -106,11 +120,11 @@ public class SendMailUtils {
 //							payloadJSON.toString(),
 //							false, serviceContext);
 //		        }
-//		        
-//			} catch (PortalException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}		
+		        
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
 		}
 		
 	}
