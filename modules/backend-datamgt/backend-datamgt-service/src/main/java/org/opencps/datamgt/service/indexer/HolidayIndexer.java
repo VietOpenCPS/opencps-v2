@@ -11,6 +11,7 @@ import org.opencps.datamgt.constants.HolidayTerm;
 import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.utils.DateTimeUtils;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -30,6 +31,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class HolidayIndexer extends BaseIndexer<Holiday> {
 
 	public static final String CLASS_NAME = Holiday.class.getName();

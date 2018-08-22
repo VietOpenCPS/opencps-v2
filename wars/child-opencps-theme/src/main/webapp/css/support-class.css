@@ -559,7 +559,7 @@
 			OTHER
 ------------------------------*/
 .text-bold {
-	font-weight: bold; !important;
+	font-weight: bold !important;
 }
 .text-normal {
 	font-weight: normal !important;

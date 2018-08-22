@@ -39,7 +39,7 @@ public class SendMailUtils {
 //			String fromName = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_NAME);
 			String fromName = "MOBILINK Mail System";
 			
-			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
+			String fromAddress = "no-reply@cntt.gov.vn"; // PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 
 			String toName = payLoad.getString("toName");
 

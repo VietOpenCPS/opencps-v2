@@ -1,43 +1,22 @@
-/*----- Fonts -----*/
-@font-face {
-	font-family: 'Roboto-Regular';
-	src: url("../fonts/Roboto-Regular.ttf");
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'Roboto-Bold';
-	src: url("../fonts/Roboto-Bold.ttf");
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'Roboto-Medium';
-	src: url("../fonts/Roboto-Medium.ttf");
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'Roboto-Light';
-	src: url("../fonts/Roboto-Light.ttf");
-	font-weight: normal;
-	font-style: normal;
-}
-
-
-
-/*----- Support -----*/
+@import url(font-awesome.min.css);
+@import url(support-class.css);
+@import url(style-home.css);
+@import url(clay.css);
 * {
 	margin: 0;
 	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 body {
-	font-family: 'Roboto-Regular';
+	font-family: 'Roboto', sans-serif;
 	color: #2a2a2a;
 	overflow-x: hidden;
 	background-color: #f6f6f6;
-	font-size: 13px;
+	min-width: 1200px;
+	font-size: 14px;
 }
 body a, body a:hover, body a:focus {
 	color: inherit;
@@ -49,14 +28,15 @@ body ul {
 	list-style: none;
 }
 
-
-@media (min-width: 768px) {
-	#banner > .container-fluid, #navigation > .container-fluid, #main-content > .container-fluid, #footer > .container-fluid {
-		padding: 0 30px;
-		max-width: 1366px;
-	}
+.container {
+	width: 100%;
+	padding: 0 15px;
+	margin: 0 auto;
+	max-width: 1200px;
 }
-
+.text-center {
+	text-align: center;
+}
 
 
 /*----- Header -----*/
@@ -67,15 +47,15 @@ body ul {
 }
 #banner .logo {
 	text-transform: uppercase;
-	font-family: 'Roboto-Bold';
-	font-size: 18px;
+	font-weight: bold;
+	font-size: 20px;
 }
 #banner img {
 	margin-right: 15px;
 	float: left;
 }
 #banner .logo .text-logo {
-	margin-top: 10px;
+	margin-top: 5px;
 	color: #00204a;
 	white-space: nowrap;
 }
@@ -83,15 +63,10 @@ body ul {
 	font-size: 24px;
 	color: #005792;
 	display: block;
-	margin-top: 8px;
 }
 
 #banner .logo + div {
 	margin-left: auto;
-	width: 400px;
-}
-.signed-in #banner .logo + div {
-	width: auto;
 }
 #banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ .visible-xs {
 	display: none;
@@ -103,7 +78,6 @@ body ul {
 }
 #banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg > .row {
 	width: 100%;
-	margin: 0;
 }
 #banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(2) .col-sm-6 {
 	width: 50%;
@@ -117,7 +91,7 @@ body ul {
 	content: "";
 	font-family: FontAwesome;
 	position: absolute;
-	top: 4px;
+	top: 7px;
 	left: 15px;
 	font-size: 14px;
 	color: #005692;
@@ -144,6 +118,7 @@ body ul {
     width: 100%;
     border: 1px solid #005792;
     font-size: 12px;
+    background: #fff;
 }
 #banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg input:focus {
 	outline: none;
@@ -153,18 +128,16 @@ body ul {
 }
 #banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .row:nth-child(3) .col-sm-6:last-child {
 	float: right;
-	width: auto;
-	padding: 0;
 }
 #banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg .btn {
-	margin: 8px 0 0 10px !important;
+	margin: 8px 10px 0 0 !important;
     color: white;
     background-color: #0072bc;
     text-transform: none;
     font-size: 12px;
     height: 26px;
     min-width: inherit;
-    padding: 4px 10px !important;
+    padding: 5px 10px !important;
     border: 0;
 }
 #banner .portlet-boundary_FrontendWebPortal_LoginPortlet_ form.eq-height-lg a.btn {
@@ -214,8 +187,12 @@ body ul {
     background-color: white;
     padding: 10px;
     border: 1px solid #e1e1e1;
+	display: none;
 	border-radius: 4px;
-	margin-top: 10px;
+	margin-top: 15px;
+}
+#banner .account-section .dropdown.open .dropdown-menu {
+    display: block;
 }
 #banner .account-section .dropdown-menu.show {
 	display: block;
@@ -263,7 +240,7 @@ body ul {
 }
 #footer .site-name span {
 	display: block;
-	font-family: 'Roboto-Bold';
+	font-weight: bold;
 	font-size: 18px;
 	line-height: 26px;
 	margin-bottom: 20px;
@@ -310,15 +287,13 @@ body ul {
     position: relative;
     padding: 0 25px;
 	position: relative;
-	font-size: 14px;
-	background-color: transparent;
 }
 #navigation ul li a:focus {
 	outline: none;
 }
 #navigation ul li.active a, #navigation ul li:hover a {
 	color: white;
-	font-family: 'Roboto-Bold';
+	font-weight: bold;
 }
 #navigation ul li.active a:before, #navigation ul li:hover a:before {
 	content: "";
@@ -334,7 +309,9 @@ body ul {
 
 /*----- Other -----*/
 body section#main-content {
-	padding: 20px 0;
+	padding: 10px 0 0 0;
+	min-height: -webkit-calc(100vh - 304px);
+	min-height: calc(100vh - 304px);
 }
 body .portlet .portlet-content {
 	border: 0;
@@ -347,6 +324,41 @@ body .portlet-title-text {
 body .control-menu + div {
 	margin-top: 73px;
 }
-body .btn {
-	font-size: 13px;
+
+body .navigation-drawer--fixed {
+    position: absolute;
+}
+
+
+.dialog.dialog--active {
+	overflow: hidden;
+}
+body .tabs__items {
+    overflow: inherit;
+}
+body .datepicker-header {
+    display: none;
+}
+body .datepicker {
+    box-shadow: 0 2px 1px 0px rgba(0,0,0,.2), 0 1px 20px 0 rgba(0,0,0,.14), 0 1px 20px 0 rgba(0,0,0,.12) !important;
+}
+body .datepicker .datetimepicker-container {
+    border-radius: 4px;
+}
+body .timepicker-container .time-container .time-label {
+	background: #0d71bb;
+    color: #fff !important;
+    font-weight: bold;
+}
+#banner .container {
+  padding: 0 15px;
+}
+body .account-section button.btn {
+	box-shadow: none;
+}
+#footer .align-middle > a {
+    padding: 0 5px;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: underline;
 }

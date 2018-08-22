@@ -47,7 +47,7 @@ public class EvaluationLocalServiceWrapper implements EvaluationLocalService,
 
 	@Override
 	public backend.feedback.model.Evaluation addEvaluation(long groupId,
-		long employeeId, java.lang.String employeeName, int score,
+		long employeeId, String employeeName, int score,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
@@ -91,87 +91,6 @@ public class EvaluationLocalServiceWrapper implements EvaluationLocalService,
 		return _evaluationLocalService.deleteEvaluation(evaluationId);
 	}
 
-	@Override
-	public backend.feedback.model.Evaluation fetchEvaluation(long evaluationId) {
-		return _evaluationLocalService.fetchEvaluation(evaluationId);
-	}
-
-	/**
-	* Returns the evaluation matching the UUID and group.
-	*
-	* @param uuid the evaluation's UUID
-	* @param groupId the primary key of the group
-	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
-	*/
-	@Override
-	public backend.feedback.model.Evaluation fetchEvaluationByUuidAndGroupId(
-		java.lang.String uuid, long groupId) {
-		return _evaluationLocalService.fetchEvaluationByUuidAndGroupId(uuid,
-			groupId);
-	}
-
-	/**
-	* Returns the evaluation with the primary key.
-	*
-	* @param evaluationId the primary key of the evaluation
-	* @return the evaluation
-	* @throws PortalException if a evaluation with the primary key could not be found
-	*/
-	@Override
-	public backend.feedback.model.Evaluation getEvaluation(long evaluationId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _evaluationLocalService.getEvaluation(evaluationId);
-	}
-
-	/**
-	* Returns the evaluation matching the UUID and group.
-	*
-	* @param uuid the evaluation's UUID
-	* @param groupId the primary key of the group
-	* @return the matching evaluation
-	* @throws PortalException if a matching evaluation could not be found
-	*/
-	@Override
-	public backend.feedback.model.Evaluation getEvaluationByUuidAndGroupId(
-		java.lang.String uuid, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _evaluationLocalService.getEvaluationByUuidAndGroupId(uuid,
-			groupId);
-	}
-
-	/**
-	* Updates the evaluation in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
-	*
-	* @param evaluation the evaluation
-	* @return the evaluation that was updated
-	*/
-	@Override
-	public backend.feedback.model.Evaluation updateEvaluation(
-		backend.feedback.model.Evaluation evaluation) {
-		return _evaluationLocalService.updateEvaluation(evaluation);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
-		return _evaluationLocalService.getActionableDynamicQuery();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
-		return _evaluationLocalService.dynamicQuery();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
-		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
-		return _evaluationLocalService.getExportActionableDynamicQuery(portletDataContext);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
-		return _evaluationLocalService.getIndexableActionableDynamicQuery();
-	}
-
 	/**
 	* @throws PortalException
 	*/
@@ -183,30 +102,8 @@ public class EvaluationLocalServiceWrapper implements EvaluationLocalService,
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
-		java.io.Serializable primaryKeyObj)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _evaluationLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	/**
-	* Returns the number of evaluations.
-	*
-	* @return the number of evaluations
-	*/
-	@Override
-	public int getEvaluationsCount() {
-		return _evaluationLocalService.getEvaluationsCount();
-	}
-
-	/**
-	* Returns the OSGi service identifier.
-	*
-	* @return the OSGi service identifier
-	*/
-	@Override
-	public java.lang.String getOSGiServiceIdentifier() {
-		return _evaluationLocalService.getOSGiServiceIdentifier();
+	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
+		return _evaluationLocalService.dynamicQuery();
 	}
 
 	/**
@@ -262,6 +159,70 @@ public class EvaluationLocalServiceWrapper implements EvaluationLocalService,
 			orderByComparator);
 	}
 
+	/**
+	* Returns the number of rows matching the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @return the number of rows matching the dynamic query
+	*/
+	@Override
+	public long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
+		return _evaluationLocalService.dynamicQueryCount(dynamicQuery);
+	}
+
+	/**
+	* Returns the number of rows matching the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows matching the dynamic query
+	*/
+	@Override
+	public long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection) {
+		return _evaluationLocalService.dynamicQueryCount(dynamicQuery,
+			projection);
+	}
+
+	@Override
+	public backend.feedback.model.Evaluation fetchEvaluation(long evaluationId) {
+		return _evaluationLocalService.fetchEvaluation(evaluationId);
+	}
+
+	/**
+	* Returns the evaluation matching the UUID and group.
+	*
+	* @param uuid the evaluation's UUID
+	* @param groupId the primary key of the group
+	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
+	*/
+	@Override
+	public backend.feedback.model.Evaluation fetchEvaluationByUuidAndGroupId(
+		String uuid, long groupId) {
+		return _evaluationLocalService.fetchEvaluationByUuidAndGroupId(uuid,
+			groupId);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
+		return _evaluationLocalService.getActionableDynamicQuery();
+	}
+
+	/**
+	* Returns the evaluation with the primary key.
+	*
+	* @param evaluationId the primary key of the evaluation
+	* @return the evaluation
+	* @throws PortalException if a evaluation with the primary key could not be found
+	*/
+	@Override
+	public backend.feedback.model.Evaluation getEvaluation(long evaluationId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _evaluationLocalService.getEvaluation(evaluationId);
+	}
+
 	@Override
 	public java.util.List<backend.feedback.model.Evaluation> getEvaluationbyEmployeeId(
 		long employeeId) {
@@ -273,6 +234,22 @@ public class EvaluationLocalServiceWrapper implements EvaluationLocalService,
 		long employeeId, int score) {
 		return _evaluationLocalService.getEvaluationbyEmployeeIdScore(employeeId,
 			score);
+	}
+
+	/**
+	* Returns the evaluation matching the UUID and group.
+	*
+	* @param uuid the evaluation's UUID
+	* @param groupId the primary key of the group
+	* @return the matching evaluation
+	* @throws PortalException if a matching evaluation could not be found
+	*/
+	@Override
+	public backend.feedback.model.Evaluation getEvaluationByUuidAndGroupId(
+		String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _evaluationLocalService.getEvaluationByUuidAndGroupId(uuid,
+			groupId);
 	}
 
 	/**
@@ -301,7 +278,7 @@ public class EvaluationLocalServiceWrapper implements EvaluationLocalService,
 	*/
 	@Override
 	public java.util.List<backend.feedback.model.Evaluation> getEvaluationsByUuidAndCompanyId(
-		java.lang.String uuid, long companyId) {
+		String uuid, long companyId) {
 		return _evaluationLocalService.getEvaluationsByUuidAndCompanyId(uuid,
 			companyId);
 	}
@@ -318,37 +295,60 @@ public class EvaluationLocalServiceWrapper implements EvaluationLocalService,
 	*/
 	@Override
 	public java.util.List<backend.feedback.model.Evaluation> getEvaluationsByUuidAndCompanyId(
-		java.lang.String uuid, long companyId, int start, int end,
+		String uuid, long companyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<backend.feedback.model.Evaluation> orderByComparator) {
 		return _evaluationLocalService.getEvaluationsByUuidAndCompanyId(uuid,
 			companyId, start, end, orderByComparator);
 	}
 
 	/**
-	* Returns the number of rows matching the dynamic query.
+	* Returns the number of evaluations.
 	*
-	* @param dynamicQuery the dynamic query
-	* @return the number of rows matching the dynamic query
+	* @return the number of evaluations
 	*/
 	@Override
-	public long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
-		return _evaluationLocalService.dynamicQueryCount(dynamicQuery);
+	public int getEvaluationsCount() {
+		return _evaluationLocalService.getEvaluationsCount();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
+		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
+		return _evaluationLocalService.getExportActionableDynamicQuery(portletDataContext);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
+		return _evaluationLocalService.getIndexableActionableDynamicQuery();
 	}
 
 	/**
-	* Returns the number of rows matching the dynamic query.
+	* Returns the OSGi service identifier.
 	*
-	* @param dynamicQuery the dynamic query
-	* @param projection the projection to apply to the query
-	* @return the number of rows matching the dynamic query
+	* @return the OSGi service identifier
 	*/
 	@Override
-	public long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
-		com.liferay.portal.kernel.dao.orm.Projection projection) {
-		return _evaluationLocalService.dynamicQueryCount(dynamicQuery,
-			projection);
+	public String getOSGiServiceIdentifier() {
+		return _evaluationLocalService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _evaluationLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	/**
+	* Updates the evaluation in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	*
+	* @param evaluation the evaluation
+	* @return the evaluation that was updated
+	*/
+	@Override
+	public backend.feedback.model.Evaluation updateEvaluation(
+		backend.feedback.model.Evaluation evaluation) {
+		return _evaluationLocalService.updateEvaluation(evaluation);
 	}
 
 	@Override

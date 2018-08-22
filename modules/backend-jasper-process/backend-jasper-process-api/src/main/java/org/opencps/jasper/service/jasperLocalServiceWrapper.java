@@ -32,19 +32,52 @@ public class jasperLocalServiceWrapper implements jasperLocalService,
 		_jasperLocalService = jasperLocalService;
 	}
 
+	/**
+	* Adds the jasper to the database. Also notifies the appropriate model listeners.
+	*
+	* @param jasper the jasper
+	* @return the jasper that was added
+	*/
 	@Override
-	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
-		return _jasperLocalService.getActionableDynamicQuery();
+	public org.opencps.jasper.model.jasper addjasper(
+		org.opencps.jasper.model.jasper jasper) {
+		return _jasperLocalService.addjasper(jasper);
 	}
 
+	/**
+	* Creates a new jasper with the primary key. Does not add the jasper to the database.
+	*
+	* @param jasperId the primary key for the new jasper
+	* @return the new jasper
+	*/
 	@Override
-	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
-		return _jasperLocalService.dynamicQuery();
+	public org.opencps.jasper.model.jasper createjasper(long jasperId) {
+		return _jasperLocalService.createjasper(jasperId);
 	}
 
+	/**
+	* Deletes the jasper from the database. Also notifies the appropriate model listeners.
+	*
+	* @param jasper the jasper
+	* @return the jasper that was removed
+	*/
 	@Override
-	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
-		return _jasperLocalService.getIndexableActionableDynamicQuery();
+	public org.opencps.jasper.model.jasper deletejasper(
+		org.opencps.jasper.model.jasper jasper) {
+		return _jasperLocalService.deletejasper(jasper);
+	}
+
+	/**
+	* Deletes the jasper with the primary key from the database. Also notifies the appropriate model listeners.
+	*
+	* @param jasperId the primary key of the jasper
+	* @return the jasper that was removed
+	* @throws PortalException if a jasper with the primary key could not be found
+	*/
+	@Override
+	public org.opencps.jasper.model.jasper deletejasper(long jasperId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _jasperLocalService.deletejasper(jasperId);
 	}
 
 	/**
@@ -58,30 +91,8 @@ public class jasperLocalServiceWrapper implements jasperLocalService,
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
-		java.io.Serializable primaryKeyObj)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _jasperLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	/**
-	* Returns the number of jaspers.
-	*
-	* @return the number of jaspers
-	*/
-	@Override
-	public int getjaspersCount() {
-		return _jasperLocalService.getjaspersCount();
-	}
-
-	/**
-	* Returns the OSGi service identifier.
-	*
-	* @return the OSGi service identifier
-	*/
-	@Override
-	public java.lang.String getOSGiServiceIdentifier() {
-		return _jasperLocalService.getOSGiServiceIdentifier();
+	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
+		return _jasperLocalService.dynamicQuery();
 	}
 
 	/**
@@ -138,23 +149,6 @@ public class jasperLocalServiceWrapper implements jasperLocalService,
 	}
 
 	/**
-	* Returns a range of all the jaspers.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.jasper.model.impl.jasperModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
-	* </p>
-	*
-	* @param start the lower bound of the range of jaspers
-	* @param end the upper bound of the range of jaspers (not inclusive)
-	* @return the range of jaspers
-	*/
-	@Override
-	public java.util.List<org.opencps.jasper.model.jasper> getjaspers(
-		int start, int end) {
-		return _jasperLocalService.getjaspers(start, end);
-	}
-
-	/**
 	* Returns the number of rows matching the dynamic query.
 	*
 	* @param dynamicQuery the dynamic query
@@ -180,57 +174,19 @@ public class jasperLocalServiceWrapper implements jasperLocalService,
 		return _jasperLocalService.dynamicQueryCount(dynamicQuery, projection);
 	}
 
-	/**
-	* Adds the jasper to the database. Also notifies the appropriate model listeners.
-	*
-	* @param jasper the jasper
-	* @return the jasper that was added
-	*/
-	@Override
-	public org.opencps.jasper.model.jasper addjasper(
-		org.opencps.jasper.model.jasper jasper) {
-		return _jasperLocalService.addjasper(jasper);
-	}
-
-	/**
-	* Creates a new jasper with the primary key. Does not add the jasper to the database.
-	*
-	* @param jasperId the primary key for the new jasper
-	* @return the new jasper
-	*/
-	@Override
-	public org.opencps.jasper.model.jasper createjasper(long jasperId) {
-		return _jasperLocalService.createjasper(jasperId);
-	}
-
-	/**
-	* Deletes the jasper with the primary key from the database. Also notifies the appropriate model listeners.
-	*
-	* @param jasperId the primary key of the jasper
-	* @return the jasper that was removed
-	* @throws PortalException if a jasper with the primary key could not be found
-	*/
-	@Override
-	public org.opencps.jasper.model.jasper deletejasper(long jasperId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _jasperLocalService.deletejasper(jasperId);
-	}
-
-	/**
-	* Deletes the jasper from the database. Also notifies the appropriate model listeners.
-	*
-	* @param jasper the jasper
-	* @return the jasper that was removed
-	*/
-	@Override
-	public org.opencps.jasper.model.jasper deletejasper(
-		org.opencps.jasper.model.jasper jasper) {
-		return _jasperLocalService.deletejasper(jasper);
-	}
-
 	@Override
 	public org.opencps.jasper.model.jasper fetchjasper(long jasperId) {
 		return _jasperLocalService.fetchjasper(jasperId);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
+		return _jasperLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
+		return _jasperLocalService.getIndexableActionableDynamicQuery();
 	}
 
 	/**
@@ -244,6 +200,50 @@ public class jasperLocalServiceWrapper implements jasperLocalService,
 	public org.opencps.jasper.model.jasper getjasper(long jasperId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _jasperLocalService.getjasper(jasperId);
+	}
+
+	/**
+	* Returns a range of all the jaspers.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.jasper.model.impl.jasperModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of jaspers
+	* @param end the upper bound of the range of jaspers (not inclusive)
+	* @return the range of jaspers
+	*/
+	@Override
+	public java.util.List<org.opencps.jasper.model.jasper> getjaspers(
+		int start, int end) {
+		return _jasperLocalService.getjaspers(start, end);
+	}
+
+	/**
+	* Returns the number of jaspers.
+	*
+	* @return the number of jaspers
+	*/
+	@Override
+	public int getjaspersCount() {
+		return _jasperLocalService.getjaspersCount();
+	}
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	@Override
+	public String getOSGiServiceIdentifier() {
+		return _jasperLocalService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _jasperLocalService.getPersistedModel(primaryKeyObj);
 	}
 
 	/**

@@ -137,13 +137,148 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 	}
 
 	@Override
-	public backend.feedback.model.Evaluation toEscapedModel() {
-		return new EvaluationWrapper(_evaluation.toEscapedModel());
+	public Object clone() {
+		return new EvaluationWrapper((Evaluation)_evaluation.clone());
 	}
 
 	@Override
-	public backend.feedback.model.Evaluation toUnescapedModel() {
-		return new EvaluationWrapper(_evaluation.toUnescapedModel());
+	public int compareTo(Evaluation evaluation) {
+		return _evaluation.compareTo(evaluation);
+	}
+
+	/**
+	* Returns the company ID of this evaluation.
+	*
+	* @return the company ID of this evaluation
+	*/
+	@Override
+	public long getCompanyId() {
+		return _evaluation.getCompanyId();
+	}
+
+	/**
+	* Returns the create date of this evaluation.
+	*
+	* @return the create date of this evaluation
+	*/
+	@Override
+	public Date getCreateDate() {
+		return _evaluation.getCreateDate();
+	}
+
+	/**
+	* Returns the employee ID of this evaluation.
+	*
+	* @return the employee ID of this evaluation
+	*/
+	@Override
+	public long getEmployeeId() {
+		return _evaluation.getEmployeeId();
+	}
+
+	/**
+	* Returns the employee name of this evaluation.
+	*
+	* @return the employee name of this evaluation
+	*/
+	@Override
+	public String getEmployeeName() {
+		return _evaluation.getEmployeeName();
+	}
+
+	/**
+	* Returns the evaluation ID of this evaluation.
+	*
+	* @return the evaluation ID of this evaluation
+	*/
+	@Override
+	public long getEvaluationId() {
+		return _evaluation.getEvaluationId();
+	}
+
+	@Override
+	public ExpandoBridge getExpandoBridge() {
+		return _evaluation.getExpandoBridge();
+	}
+
+	/**
+	* Returns the group ID of this evaluation.
+	*
+	* @return the group ID of this evaluation
+	*/
+	@Override
+	public long getGroupId() {
+		return _evaluation.getGroupId();
+	}
+
+	/**
+	* Returns the modified date of this evaluation.
+	*
+	* @return the modified date of this evaluation
+	*/
+	@Override
+	public Date getModifiedDate() {
+		return _evaluation.getModifiedDate();
+	}
+
+	/**
+	* Returns the primary key of this evaluation.
+	*
+	* @return the primary key of this evaluation
+	*/
+	@Override
+	public long getPrimaryKey() {
+		return _evaluation.getPrimaryKey();
+	}
+
+	@Override
+	public Serializable getPrimaryKeyObj() {
+		return _evaluation.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the score of this evaluation.
+	*
+	* @return the score of this evaluation
+	*/
+	@Override
+	public int getScore() {
+		return _evaluation.getScore();
+	}
+
+	/**
+	* Returns the user ID of this evaluation.
+	*
+	* @return the user ID of this evaluation
+	*/
+	@Override
+	public long getUserId() {
+		return _evaluation.getUserId();
+	}
+
+	/**
+	* Returns the user uuid of this evaluation.
+	*
+	* @return the user uuid of this evaluation
+	*/
+	@Override
+	public String getUserUuid() {
+		return _evaluation.getUserUuid();
+	}
+
+	/**
+	* Returns the uuid of this evaluation.
+	*
+	* @return the uuid of this evaluation
+	*/
+	@Override
+	public String getUuid() {
+		return _evaluation.getUuid();
+	}
+
+	@Override
+	public int hashCode() {
+		return _evaluation.hashCode();
 	}
 
 	@Override
@@ -159,166 +294,6 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 	@Override
 	public boolean isNew() {
 		return _evaluation.isNew();
-	}
-
-	@Override
-	public ExpandoBridge getExpandoBridge() {
-		return _evaluation.getExpandoBridge();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.CacheModel<backend.feedback.model.Evaluation> toCacheModel() {
-		return _evaluation.toCacheModel();
-	}
-
-	@Override
-	public int compareTo(backend.feedback.model.Evaluation evaluation) {
-		return _evaluation.compareTo(evaluation);
-	}
-
-	/**
-	* Returns the score of this evaluation.
-	*
-	* @return the score of this evaluation
-	*/
-	@Override
-	public int getScore() {
-		return _evaluation.getScore();
-	}
-
-	@Override
-	public int hashCode() {
-		return _evaluation.hashCode();
-	}
-
-	@Override
-	public Serializable getPrimaryKeyObj() {
-		return _evaluation.getPrimaryKeyObj();
-	}
-
-	@Override
-	public java.lang.Object clone() {
-		return new EvaluationWrapper((Evaluation)_evaluation.clone());
-	}
-
-	/**
-	* Returns the employee name of this evaluation.
-	*
-	* @return the employee name of this evaluation
-	*/
-	@Override
-	public java.lang.String getEmployeeName() {
-		return _evaluation.getEmployeeName();
-	}
-
-	/**
-	* Returns the user uuid of this evaluation.
-	*
-	* @return the user uuid of this evaluation
-	*/
-	@Override
-	public java.lang.String getUserUuid() {
-		return _evaluation.getUserUuid();
-	}
-
-	/**
-	* Returns the uuid of this evaluation.
-	*
-	* @return the uuid of this evaluation
-	*/
-	@Override
-	public java.lang.String getUuid() {
-		return _evaluation.getUuid();
-	}
-
-	@Override
-	public java.lang.String toString() {
-		return _evaluation.toString();
-	}
-
-	@Override
-	public java.lang.String toXmlString() {
-		return _evaluation.toXmlString();
-	}
-
-	/**
-	* Returns the create date of this evaluation.
-	*
-	* @return the create date of this evaluation
-	*/
-	@Override
-	public Date getCreateDate() {
-		return _evaluation.getCreateDate();
-	}
-
-	/**
-	* Returns the modified date of this evaluation.
-	*
-	* @return the modified date of this evaluation
-	*/
-	@Override
-	public Date getModifiedDate() {
-		return _evaluation.getModifiedDate();
-	}
-
-	/**
-	* Returns the company ID of this evaluation.
-	*
-	* @return the company ID of this evaluation
-	*/
-	@Override
-	public long getCompanyId() {
-		return _evaluation.getCompanyId();
-	}
-
-	/**
-	* Returns the employee ID of this evaluation.
-	*
-	* @return the employee ID of this evaluation
-	*/
-	@Override
-	public long getEmployeeId() {
-		return _evaluation.getEmployeeId();
-	}
-
-	/**
-	* Returns the evaluation ID of this evaluation.
-	*
-	* @return the evaluation ID of this evaluation
-	*/
-	@Override
-	public long getEvaluationId() {
-		return _evaluation.getEvaluationId();
-	}
-
-	/**
-	* Returns the group ID of this evaluation.
-	*
-	* @return the group ID of this evaluation
-	*/
-	@Override
-	public long getGroupId() {
-		return _evaluation.getGroupId();
-	}
-
-	/**
-	* Returns the primary key of this evaluation.
-	*
-	* @return the primary key of this evaluation
-	*/
-	@Override
-	public long getPrimaryKey() {
-		return _evaluation.getPrimaryKey();
-	}
-
-	/**
-	* Returns the user ID of this evaluation.
-	*
-	* @return the user ID of this evaluation
-	*/
-	@Override
-	public long getUserId() {
-		return _evaluation.getUserId();
 	}
 
 	@Override
@@ -367,7 +342,7 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 	* @param employeeName the employee name of this evaluation
 	*/
 	@Override
-	public void setEmployeeName(java.lang.String employeeName) {
+	public void setEmployeeName(String employeeName) {
 		_evaluation.setEmployeeName(employeeName);
 	}
 
@@ -382,14 +357,14 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 	}
 
 	@Override
-	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge) {
-		_evaluation.setExpandoBridgeAttributes(expandoBridge);
-	}
-
-	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
 		_evaluation.setExpandoBridgeAttributes(baseModel);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge) {
+		_evaluation.setExpandoBridgeAttributes(expandoBridge);
 	}
 
 	@Override
@@ -463,7 +438,7 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 	* @param userUuid the user uuid of this evaluation
 	*/
 	@Override
-	public void setUserUuid(java.lang.String userUuid) {
+	public void setUserUuid(String userUuid) {
 		_evaluation.setUserUuid(userUuid);
 	}
 
@@ -473,8 +448,33 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 	* @param uuid the uuid of this evaluation
 	*/
 	@Override
-	public void setUuid(java.lang.String uuid) {
+	public void setUuid(String uuid) {
 		_evaluation.setUuid(uuid);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.CacheModel<Evaluation> toCacheModel() {
+		return _evaluation.toCacheModel();
+	}
+
+	@Override
+	public Evaluation toEscapedModel() {
+		return new EvaluationWrapper(_evaluation.toEscapedModel());
+	}
+
+	@Override
+	public String toString() {
+		return _evaluation.toString();
+	}
+
+	@Override
+	public Evaluation toUnescapedModel() {
+		return new EvaluationWrapper(_evaluation.toUnescapedModel());
+	}
+
+	@Override
+	public String toXmlString() {
+		return _evaluation.toXmlString();
 	}
 
 	@Override

@@ -31,10 +31,9 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ReflectionUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -49,6 +48,7 @@ import org.opencps.datamgt.service.persistence.CommentPersistence;
 import java.io.Serializable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 
 import java.util.Collections;
 import java.util.Date;
@@ -228,7 +228,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -316,7 +316,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -365,7 +365,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -457,7 +457,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_UUID_3);
 		}
 		else {
@@ -593,7 +593,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -672,7 +672,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			msg.append(", groupId=");
 			msg.append(groupId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -735,7 +735,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -775,13 +775,6 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 					result = comment;
 
 					cacheResult(comment);
-
-					if ((comment.getUuid() == null) ||
-							!comment.getUuid().equals(uuid) ||
-							(comment.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-							finderArgs, comment);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -842,7 +835,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -1039,7 +1032,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1135,7 +1128,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -1190,7 +1183,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -1284,7 +1277,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 		}
 		else {
@@ -1426,7 +1419,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1686,7 +1679,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append("groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -1735,7 +1728,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append("groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -2041,7 +2034,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			msg.append(", opinion=");
 			msg.append(opinion);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -2104,7 +2097,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 					(userId != comment.getUserId()) ||
 					!Objects.equals(className, comment.getClassName()) ||
 					!Objects.equals(classPK, comment.getClassPK()) ||
-					(opinion != comment.getOpinion())) {
+					(opinion != comment.isOpinion())) {
 				result = null;
 			}
 		}
@@ -2123,7 +2116,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (className == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSNAME_1);
 			}
-			else if (className.equals(StringPool.BLANK)) {
+			else if (className.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSNAME_3);
 			}
 			else {
@@ -2137,7 +2130,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (classPK == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSPK_1);
 			}
-			else if (classPK.equals(StringPool.BLANK)) {
+			else if (classPK.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSPK_3);
 			}
 			else {
@@ -2196,17 +2189,6 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 					result = comment;
 
 					cacheResult(comment);
-
-					if ((comment.getGroupId() != groupId) ||
-							(comment.getUserId() != userId) ||
-							(comment.getClassName() == null) ||
-							!comment.getClassName().equals(className) ||
-							(comment.getClassPK() == null) ||
-							!comment.getClassPK().equals(classPK) ||
-							(comment.getOpinion() != opinion)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION,
-							finderArgs, comment);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -2283,7 +2265,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (className == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSNAME_1);
 			}
-			else if (className.equals(StringPool.BLANK)) {
+			else if (className.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSNAME_3);
 			}
 			else {
@@ -2297,7 +2279,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (classPK == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSPK_1);
 			}
-			else if (classPK.equals(StringPool.BLANK)) {
+			else if (classPK.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION_CLASSPK_3);
 			}
 			else {
@@ -2540,7 +2522,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (className == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSNAME_1);
 			}
-			else if (className.equals(StringPool.BLANK)) {
+			else if (className.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSNAME_3);
 			}
 			else {
@@ -2554,7 +2536,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (classPK == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSPK_1);
 			}
-			else if (classPK.equals(StringPool.BLANK)) {
+			else if (classPK.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSPK_3);
 			}
 			else {
@@ -2658,7 +2640,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append(", classPK=");
 		msg.append(classPK);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -2721,7 +2703,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		msg.append(", classPK=");
 		msg.append(classPK);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCommentException(msg.toString());
 	}
@@ -2825,7 +2807,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		if (className == null) {
 			query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSNAME_1);
 		}
-		else if (className.equals(StringPool.BLANK)) {
+		else if (className.equals("")) {
 			query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSNAME_3);
 		}
 		else {
@@ -2839,7 +2821,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		if (classPK == null) {
 			query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSPK_1);
 		}
-		else if (classPK.equals(StringPool.BLANK)) {
+		else if (classPK.equals("")) {
 			query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSPK_3);
 		}
 		else {
@@ -2989,7 +2971,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (className == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSNAME_1);
 			}
-			else if (className.equals(StringPool.BLANK)) {
+			else if (className.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSNAME_3);
 			}
 			else {
@@ -3003,7 +2985,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			if (classPK == null) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSPK_1);
 			}
-			else if (classPK.equals(StringPool.BLANK)) {
+			else if (classPK.equals("")) {
 				query.append(_FINDER_COLUMN_F_GROUPID_CLASSNAME_CLASSPK_CLASSPK_3);
 			}
 			else {
@@ -3069,8 +3051,10 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		setModelClass(Comment.class);
 
 		try {
-			Field field = ReflectionUtil.getDeclaredField(BasePersistenceImpl.class,
+			Field field = BasePersistenceImpl.class.getDeclaredField(
 					"_dbColumnNames");
+
+			field.setAccessible(true);
 
 			Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -3102,7 +3086,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			new Object[] {
 				comment.getGroupId(), comment.getUserId(),
 				comment.getClassName(), comment.getClassPK(),
-				comment.getOpinion()
+				comment.isOpinion()
 			}, comment);
 
 		comment.resetOriginalValues();
@@ -3186,7 +3170,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		args = new Object[] {
 				commentModelImpl.getGroupId(), commentModelImpl.getUserId(),
 				commentModelImpl.getClassName(), commentModelImpl.getClassPK(),
-				commentModelImpl.getOpinion()
+				commentModelImpl.isOpinion()
 			};
 
 		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION,
@@ -3221,7 +3205,7 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 			Object[] args = new Object[] {
 					commentModelImpl.getGroupId(), commentModelImpl.getUserId(),
 					commentModelImpl.getClassName(),
-					commentModelImpl.getClassPK(), commentModelImpl.getOpinion()
+					commentModelImpl.getClassPK(), commentModelImpl.isOpinion()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPID_USERID_CLASSNAME_CLASSPK_OPINION,
@@ -3322,8 +3306,6 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 
 	@Override
 	protected Comment removeImpl(Comment comment) {
-		comment = toUnwrappedModel(comment);
-
 		Session session = null;
 
 		try {
@@ -3354,9 +3336,23 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 
 	@Override
 	public Comment updateImpl(Comment comment) {
-		comment = toUnwrappedModel(comment);
-
 		boolean isNew = comment.isNew();
+
+		if (!(comment instanceof CommentModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(comment.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(comment);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in comment proxy " +
+					invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom Comment implementation " +
+				comment.getClass());
+		}
 
 		CommentModelImpl commentModelImpl = (CommentModelImpl)comment;
 
@@ -3543,40 +3539,6 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		return comment;
 	}
 
-	protected Comment toUnwrappedModel(Comment comment) {
-		if (comment instanceof CommentImpl) {
-			return comment;
-		}
-
-		CommentImpl commentImpl = new CommentImpl();
-
-		commentImpl.setNew(comment.isNew());
-		commentImpl.setPrimaryKey(comment.getPrimaryKey());
-
-		commentImpl.setUuid(comment.getUuid());
-		commentImpl.setCommentId(comment.getCommentId());
-		commentImpl.setCompanyId(comment.getCompanyId());
-		commentImpl.setGroupId(comment.getGroupId());
-		commentImpl.setUserId(comment.getUserId());
-		commentImpl.setUserName(comment.getUserName());
-		commentImpl.setCreateDate(comment.getCreateDate());
-		commentImpl.setModifiedDate(comment.getModifiedDate());
-		commentImpl.setClassName(comment.getClassName());
-		commentImpl.setClassPK(comment.getClassPK());
-		commentImpl.setFullname(comment.getFullname());
-		commentImpl.setEmail(comment.getEmail());
-		commentImpl.setParent(comment.getParent());
-		commentImpl.setContent(comment.getContent());
-		commentImpl.setFileEntryId(comment.getFileEntryId());
-		commentImpl.setPings(comment.getPings());
-		commentImpl.setUpvoteCount(comment.getUpvoteCount());
-		commentImpl.setUserHasUpvoted(comment.getUserHasUpvoted());
-		commentImpl.setUpvotedUsers(comment.getUpvotedUsers());
-		commentImpl.setOpinion(comment.isOpinion());
-
-		return commentImpl;
-	}
-
 	/**
 	 * Returns the comment with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
 	 *
@@ -3727,12 +3689,12 @@ public class CommentPersistenceImpl extends BasePersistenceImpl<Comment>
 		for (Serializable primaryKey : uncachedPrimaryKeys) {
 			query.append((long)primaryKey);
 
-			query.append(StringPool.COMMA);
+			query.append(",");
 		}
 
 		query.setIndex(query.index() - 1);
 
-		query.append(StringPool.CLOSE_PARENTHESIS);
+		query.append(")");
 
 		String sql = query.toString();
 

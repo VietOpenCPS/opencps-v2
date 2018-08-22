@@ -31,10 +31,9 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ReflectionUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -49,6 +48,7 @@ import org.opencps.datamgt.service.persistence.DictCollectionPersistence;
 import java.io.Serializable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 
 import java.sql.Timestamp;
 
@@ -235,7 +235,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -324,7 +324,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -373,7 +373,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -465,7 +465,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_UUID_3);
 		}
 		else {
@@ -601,7 +601,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -681,7 +681,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			msg.append(", groupId=");
 			msg.append(groupId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -744,7 +744,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -784,13 +784,6 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 					result = dictCollection;
 
 					cacheResult(dictCollection);
-
-					if ((dictCollection.getUuid() == null) ||
-							!dictCollection.getUuid().equals(uuid) ||
-							(dictCollection.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-							finderArgs, dictCollection);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -851,7 +844,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -1051,7 +1044,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1148,7 +1141,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -1204,7 +1197,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -1299,7 +1292,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 		}
 		else {
@@ -1441,7 +1434,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1528,7 +1521,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			msg.append(", groupId=");
 			msg.append(groupId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -1593,7 +1586,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (collectionCode == null) {
 				query.append(_FINDER_COLUMN_F_DICTCOLLECTIONCODE_COLLECTIONCODE_1);
 			}
-			else if (collectionCode.equals(StringPool.BLANK)) {
+			else if (collectionCode.equals("")) {
 				query.append(_FINDER_COLUMN_F_DICTCOLLECTIONCODE_COLLECTIONCODE_3);
 			}
 			else {
@@ -1644,14 +1637,6 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 					result = dictCollection;
 
 					cacheResult(dictCollection);
-
-					if ((dictCollection.getCollectionCode() == null) ||
-							!dictCollection.getCollectionCode()
-											   .equals(collectionCode) ||
-							(dictCollection.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_F_DICTCOLLECTIONCODE,
-							finderArgs, dictCollection);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -1714,7 +1699,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 			if (collectionCode == null) {
 				query.append(_FINDER_COLUMN_F_DICTCOLLECTIONCODE_COLLECTIONCODE_1);
 			}
-			else if (collectionCode.equals(StringPool.BLANK)) {
+			else if (collectionCode.equals("")) {
 				query.append(_FINDER_COLUMN_F_DICTCOLLECTIONCODE_COLLECTIONCODE_3);
 			}
 			else {
@@ -1986,7 +1971,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append("groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -2037,7 +2022,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append("groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -2381,7 +2366,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 
 		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_DICTCOLLECTIONNEWERTHAN;
 		finderArgs = new Object[] {
-				modifiedDate, groupId,
+				_getTime(modifiedDate), groupId,
 				
 				start, end, orderByComparator
 			};
@@ -2518,7 +2503,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append(", groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -2576,7 +2561,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		msg.append(", groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictCollectionException(msg.toString());
 	}
@@ -2802,7 +2787,7 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 	public int countByF_dictCollectionNewerThan(Date modifiedDate, long groupId) {
 		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_DICTCOLLECTIONNEWERTHAN;
 
-		Object[] finderArgs = new Object[] { modifiedDate, groupId };
+		Object[] finderArgs = new Object[] { _getTime(modifiedDate), groupId };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -2869,8 +2854,10 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		setModelClass(DictCollection.class);
 
 		try {
-			Field field = ReflectionUtil.getDeclaredField(BasePersistenceImpl.class,
+			Field field = BasePersistenceImpl.class.getDeclaredField(
 					"_dbColumnNames");
+
+			field.setAccessible(true);
 
 			Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -3124,8 +3111,6 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 
 	@Override
 	protected DictCollection removeImpl(DictCollection dictCollection) {
-		dictCollection = toUnwrappedModel(dictCollection);
-
 		Session session = null;
 
 		try {
@@ -3156,9 +3141,23 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 
 	@Override
 	public DictCollection updateImpl(DictCollection dictCollection) {
-		dictCollection = toUnwrappedModel(dictCollection);
-
 		boolean isNew = dictCollection.isNew();
+
+		if (!(dictCollection instanceof DictCollectionModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(dictCollection.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(dictCollection);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in dictCollection proxy " +
+					invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom DictCollection implementation " +
+				dictCollection.getClass());
+		}
 
 		DictCollectionModelImpl dictCollectionModelImpl = (DictCollectionModelImpl)dictCollection;
 
@@ -3317,33 +3316,6 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		return dictCollection;
 	}
 
-	protected DictCollection toUnwrappedModel(DictCollection dictCollection) {
-		if (dictCollection instanceof DictCollectionImpl) {
-			return dictCollection;
-		}
-
-		DictCollectionImpl dictCollectionImpl = new DictCollectionImpl();
-
-		dictCollectionImpl.setNew(dictCollection.isNew());
-		dictCollectionImpl.setPrimaryKey(dictCollection.getPrimaryKey());
-
-		dictCollectionImpl.setUuid(dictCollection.getUuid());
-		dictCollectionImpl.setDictCollectionId(dictCollection.getDictCollectionId());
-		dictCollectionImpl.setCompanyId(dictCollection.getCompanyId());
-		dictCollectionImpl.setGroupId(dictCollection.getGroupId());
-		dictCollectionImpl.setUserId(dictCollection.getUserId());
-		dictCollectionImpl.setUserName(dictCollection.getUserName());
-		dictCollectionImpl.setCreateDate(dictCollection.getCreateDate());
-		dictCollectionImpl.setModifiedDate(dictCollection.getModifiedDate());
-		dictCollectionImpl.setCollectionCode(dictCollection.getCollectionCode());
-		dictCollectionImpl.setCollectionName(dictCollection.getCollectionName());
-		dictCollectionImpl.setCollectionNameEN(dictCollection.getCollectionNameEN());
-		dictCollectionImpl.setDescription(dictCollection.getDescription());
-		dictCollectionImpl.setDataForm(dictCollection.getDataForm());
-
-		return dictCollectionImpl;
-	}
-
 	/**
 	 * Returns the dict collection with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
 	 *
@@ -3495,12 +3467,12 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 		for (Serializable primaryKey : uncachedPrimaryKeys) {
 			query.append((long)primaryKey);
 
-			query.append(StringPool.COMMA);
+			query.append(",");
 		}
 
 		query.setIndex(query.index() - 1);
 
-		query.append(StringPool.CLOSE_PARENTHESIS);
+		query.append(")");
 
 		String sql = query.toString();
 
@@ -3754,6 +3726,15 @@ public class DictCollectionPersistenceImpl extends BasePersistenceImpl<DictColle
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_DICTCOLLECTION = "SELECT dictCollection FROM DictCollection dictCollection";
 	private static final String _SQL_SELECT_DICTCOLLECTION_WHERE_PKS_IN = "SELECT dictCollection FROM DictCollection dictCollection WHERE dictCollectionId IN (";
 	private static final String _SQL_SELECT_DICTCOLLECTION_WHERE = "SELECT dictCollection FROM DictCollection dictCollection WHERE ";

@@ -40,6 +40,11 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js?t=124"></script>
 	
+	<!-- Slider -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.js"></script>
+	
 	<script>
         window.define = window.__define;
         window.require = window.__require;
@@ -118,7 +123,7 @@
 				<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
 				<p class="align-middle">
 					<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
-					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội Viettel trên nền OpenCPS
+					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a> trên nền <a href="https://github.com/VietOpenCPS/opencps-v2" target="_blank">OpenCPS</a>
 				</p>
 			</div>
 		</div>

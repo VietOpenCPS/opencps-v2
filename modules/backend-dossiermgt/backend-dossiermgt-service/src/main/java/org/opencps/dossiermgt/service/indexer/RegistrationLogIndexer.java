@@ -8,6 +8,7 @@ import javax.portlet.PortletResponse;
 import org.opencps.dossiermgt.constants.RegistrationLogTerm;
 import org.opencps.dossiermgt.model.RegistrationLog;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -22,6 +23,10 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class RegistrationLogIndexer extends BaseIndexer<RegistrationLog> {
 	public static final String CLASS_NAME = RegistrationLog.class.getName();
 

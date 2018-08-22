@@ -75,7 +75,7 @@ public interface EvaluationLocalService extends BaseLocalService,
 	public Evaluation addEvaluation(Evaluation evaluation);
 
 	public Evaluation addEvaluation(long groupId, long employeeId,
-		java.lang.String employeeName, int score, ServiceContext serviceContext)
+		String employeeName, int score, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 
 	/**
@@ -84,6 +84,7 @@ public interface EvaluationLocalService extends BaseLocalService,
 	* @param evaluationId the primary key for the new evaluation
 	* @return the new evaluation
 	*/
+	@Transactional(enabled = false)
 	public Evaluation createEvaluation(long evaluationId);
 
 	/**
@@ -106,64 +107,6 @@ public interface EvaluationLocalService extends BaseLocalService,
 	public Evaluation deleteEvaluation(long evaluationId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Evaluation fetchEvaluation(long evaluationId);
-
-	/**
-	* Returns the evaluation matching the UUID and group.
-	*
-	* @param uuid the evaluation's UUID
-	* @param groupId the primary key of the group
-	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
-	*/
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Evaluation fetchEvaluationByUuidAndGroupId(java.lang.String uuid,
-		long groupId);
-
-	/**
-	* Returns the evaluation with the primary key.
-	*
-	* @param evaluationId the primary key of the evaluation
-	* @return the evaluation
-	* @throws PortalException if a evaluation with the primary key could not be found
-	*/
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Evaluation getEvaluation(long evaluationId)
-		throws PortalException;
-
-	/**
-	* Returns the evaluation matching the UUID and group.
-	*
-	* @param uuid the evaluation's UUID
-	* @param groupId the primary key of the group
-	* @return the matching evaluation
-	* @throws PortalException if a matching evaluation could not be found
-	*/
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Evaluation getEvaluationByUuidAndGroupId(java.lang.String uuid,
-		long groupId) throws PortalException;
-
-	/**
-	* Updates the evaluation in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
-	*
-	* @param evaluation the evaluation
-	* @return the evaluation that was updated
-	*/
-	@Indexable(type = IndexableType.REINDEX)
-	public Evaluation updateEvaluation(Evaluation evaluation);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ActionableDynamicQuery getActionableDynamicQuery();
-
-	public DynamicQuery dynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
-		PortletDataContext portletDataContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
-
 	/**
 	* @throws PortalException
 	*/
@@ -171,25 +114,7 @@ public interface EvaluationLocalService extends BaseLocalService,
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
 
-	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException;
-
-	/**
-	* Returns the number of evaluations.
-	*
-	* @return the number of evaluations
-	*/
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getEvaluationsCount();
-
-	/**
-	* Returns the OSGi service identifier.
-	*
-	* @return the OSGi service identifier
-	*/
-	public java.lang.String getOSGiServiceIdentifier();
+	public DynamicQuery dynamicQuery();
 
 	/**
 	* Performs a dynamic query on the database and returns the matching rows.
@@ -230,12 +155,69 @@ public interface EvaluationLocalService extends BaseLocalService,
 	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
 		int end, OrderByComparator<T> orderByComparator);
 
+	/**
+	* Returns the number of rows matching the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @return the number of rows matching the dynamic query
+	*/
+	public long dynamicQueryCount(DynamicQuery dynamicQuery);
+
+	/**
+	* Returns the number of rows matching the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows matching the dynamic query
+	*/
+	public long dynamicQueryCount(DynamicQuery dynamicQuery,
+		Projection projection);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Evaluation fetchEvaluation(long evaluationId);
+
+	/**
+	* Returns the evaluation matching the UUID and group.
+	*
+	* @param uuid the evaluation's UUID
+	* @param groupId the primary key of the group
+	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Evaluation fetchEvaluationByUuidAndGroupId(String uuid, long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	/**
+	* Returns the evaluation with the primary key.
+	*
+	* @param evaluationId the primary key of the evaluation
+	* @return the evaluation
+	* @throws PortalException if a evaluation with the primary key could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Evaluation getEvaluation(long evaluationId)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Evaluation> getEvaluationbyEmployeeId(long employeeId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Evaluation> getEvaluationbyEmployeeIdScore(long employeeId,
 		int score);
+
+	/**
+	* Returns the evaluation matching the UUID and group.
+	*
+	* @param uuid the evaluation's UUID
+	* @param groupId the primary key of the group
+	* @return the matching evaluation
+	* @throws PortalException if a matching evaluation could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Evaluation getEvaluationByUuidAndGroupId(String uuid, long groupId)
+		throws PortalException;
 
 	/**
 	* Returns a range of all the evaluations.
@@ -259,8 +241,8 @@ public interface EvaluationLocalService extends BaseLocalService,
 	* @return the matching evaluations, or an empty list if no matches were found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Evaluation> getEvaluationsByUuidAndCompanyId(
-		java.lang.String uuid, long companyId);
+	public List<Evaluation> getEvaluationsByUuidAndCompanyId(String uuid,
+		long companyId);
 
 	/**
 	* Returns a range of evaluations matching the UUID and company.
@@ -273,25 +255,43 @@ public interface EvaluationLocalService extends BaseLocalService,
 	* @return the range of matching evaluations, or an empty list if no matches were found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Evaluation> getEvaluationsByUuidAndCompanyId(
-		java.lang.String uuid, long companyId, int start, int end,
+	public List<Evaluation> getEvaluationsByUuidAndCompanyId(String uuid,
+		long companyId, int start, int end,
 		OrderByComparator<Evaluation> orderByComparator);
 
 	/**
-	* Returns the number of rows matching the dynamic query.
+	* Returns the number of evaluations.
 	*
-	* @param dynamicQuery the dynamic query
-	* @return the number of rows matching the dynamic query
+	* @return the number of evaluations
 	*/
-	public long dynamicQueryCount(DynamicQuery dynamicQuery);
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getEvaluationsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
+		PortletDataContext portletDataContext);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
-	* Returns the number of rows matching the dynamic query.
+	* Returns the OSGi service identifier.
 	*
-	* @param dynamicQuery the dynamic query
-	* @param projection the projection to apply to the query
-	* @return the number of rows matching the dynamic query
+	* @return the OSGi service identifier
 	*/
-	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection);
+	public String getOSGiServiceIdentifier();
+
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	/**
+	* Updates the evaluation in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	*
+	* @param evaluation the evaluation
+	* @return the evaluation that was updated
+	*/
+	@Indexable(type = IndexableType.REINDEX)
+	public Evaluation updateEvaluation(Evaluation evaluation);
 }
