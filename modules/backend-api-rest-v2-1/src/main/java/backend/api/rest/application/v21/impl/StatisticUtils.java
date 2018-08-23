@@ -1,0 +1,43 @@
+package backend.api.rest.application.v21.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+import io.swagger.model.DossierStatisticModel;
+
+
+public class StatisticUtils {
+
+	static Log _log = LogFactoryUtil.getLog(StatisticUtils.class);
+
+	public static List<DossierStatisticModel> mapperStatisticDossierList(JSONArray statistics) {
+
+		List<DossierStatisticModel> results = new ArrayList<DossierStatisticModel>();
+
+		try {
+			if (statistics != null && statistics.length() > 0) {
+				for (int i = 0; i < statistics.length(); i++) {
+					JSONObject statistic = statistics.getJSONObject(i);
+					DossierStatisticModel ett = new DossierStatisticModel();
+					ett.setTotalCount(statistic.getLong("totalCount"));
+					ett.setDossierStatus(statistic.getString("dossierStatus"));
+					ett.setDossierSubStatus(statistic.getString("dossierSubStatus"));
+					ett.setStepCode(statistic.getString("stepCode"));
+					ett.setStepName(statistic.getString("stepName"));
+					results.add(ett);
+				}
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return results;
+	}
+
+}

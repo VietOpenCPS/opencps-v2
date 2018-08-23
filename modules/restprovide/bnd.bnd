@@ -1,5 +1,0 @@
-Bundle-Name: restprovide
-Bundle-SymbolicName: restprovide
-Bundle-Version: 1.0.0
-Liferay-Configuration-Path: /configuration
-Include-Resource:configuration=src/main/resources/configuration
