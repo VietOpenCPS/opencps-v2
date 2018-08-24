@@ -406,6 +406,20 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		return applicant;
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant lockApplicant(long applicantId, ServiceContext context) throws PortalException {
+
+		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
+
+		User user = userPersistence.fetchByPrimaryKey(applicant.getMappingUserId());
+
+		userLocalService.updateStatus(user.getUserId(), WorkflowConstants.STATUS_DENIED, context);
+
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
 
 	@Indexable(type = IndexableType.DELETE)
 	public Applicant removeApplicant(long applicantId) throws PortalException, SystemException {

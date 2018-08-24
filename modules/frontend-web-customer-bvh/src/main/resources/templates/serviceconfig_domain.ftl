@@ -38,10 +38,10 @@
 								<div class="eq-height border-bottom">
 									<div class="col-xs-12 col-sm-11 align-middle PT5 PB5">
 										<a class="link-govAgency" data-pk="#:serviceConfig.serviceConfigId#" admt-pk="#:govAgency.govAgencyCode#" href="\\#">
-											#
+											<#-- #
 											var stt = j + 1;
-											#
-											<span class="text-bold">#:stt#.</span>&nbsp;#:serviceConfig.serviceName#
+											# -->
+											<#-- <span class="text-bold">#:stt#.</span> -->&nbsp;#:serviceConfig.serviceName#
 										</a>
 									</div>
 

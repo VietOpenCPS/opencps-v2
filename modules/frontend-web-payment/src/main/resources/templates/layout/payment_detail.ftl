@@ -38,15 +38,36 @@
 				<v-layout wrap class="px-3 py-2">
 
 					<v-flex xs12 >
-						<span class="text-bold">Tên tổ chức/cá nhân: </span> {{detailModel.applicantName}}
+						<span class="text-bold">Tên thủ tục: </span> {{detailModel.serviceName}}
+					</v-flex>
+
+					<v-flex xs12 >
+						<span class="text-bold">Tên doanh nghiệp: </span> {{detailModel.applicantName}}
 					</v-flex>
 					
 					<v-flex xs12 >
 						<span class="text-bold">Tổng tiền: </span> <span class="red--text"> {{detailModel.paymentAmount | money}} VNĐ </span>
 					</v-flex>
-					
+
+					<v-flex xs12 >
+						<span class="text-bold">Tình trạng thanh toán: 
+							<span v-if="detailModel.paymentStatus === 0"> Chờ nộp</span>
+							<span v-else-if="detailModel.paymentStatus === 1"> Báo đã nộp</span>
+							<span v-else-if="detailModel.paymentStatus === 2"> Hoàn Thành</span>
+							<span v-else-if="detailModel.paymentStatus === 3"> Báo không hợp lệ</span>
+						</span> 
+					</v-flex>
+
+					<v-flex xs12 >
+						<span class="text-bold">Hình thức thanh toán: </span> {{detailModel.paymentMethod}}
+					</v-flex>
+
 					<v-flex xs12 >
 						<span class="text-bold">Số phiếu: </span> {{detailModel.invoiceTemplateNo}}
+					</v-flex>
+
+					<v-flex xs12 >
+						<span class="text-bold">Ngày xác nhận thu phí: </span> {{detailModel.approveDatetime}}
 					</v-flex>
 					
 					<v-flex xs12 >

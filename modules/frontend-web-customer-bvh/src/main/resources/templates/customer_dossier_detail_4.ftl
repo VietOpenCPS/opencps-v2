@@ -366,6 +366,20 @@
 						<div class="col-sm-10" data-bind="text:paymentStatus"></div>
 					</div>
 
+					<div class="row MB5">
+						<div class="col-sm-2">								
+							<span class="text-bold">Hình thức thanh toán</span>	
+						</div>
+						<div class="col-sm-10" data-bind="text:paymentMethod"></div>
+					</div>
+
+					<div class="row MB5">
+						<div class="col-sm-2">								
+							<span class="text-bold">Người thực hiện</span>	
+						</div>
+						<div class="col-sm-10" data-bind="text:accountUserName"></div>
+					</div>
+
 					<div class="row MB10">
 						<div class="col-sm-2">								
 							<span class="text-bold">Ngày thanh toán</span>	
@@ -373,16 +387,37 @@
 						<div class="col-sm-10" data-bind="text:paymentApproveDatetime"></div>
 					</div>
 
+					<div class="row MB5">
+						<div class="col-sm-2">								
+							<span class="text-bold">Mã hóa đơn điện tử</span>	
+						</div>
+						<div class="col-sm-10" data-bind="text:invoiceTemplateNo"></div>
+					</div>
+
+					<div class="row MB5">
+						<div class="col-sm-2">								
+							<span class="text-bold">Số hóa đơn điện tử</span>	
+						</div>
+						<div class="col-sm-10" data-bind="text:invoiceNo"></div>
+					</div>
+
+					<div class="row MB5">
+						<div class="col-sm-2">								
+							<span class="text-bold">Mã tra cứu trên hệ thống HĐĐT</span>	
+						</div>
+						<div class="col-sm-10" data-bind="text:invoiceNo"></div>
+					</div>
+
 					<div id="unpaid">
 						<div class="row MB10">
 							<div class="col-sm-12">
-								<button class="btn btn-sm btn-border-color MR10 text-light-blue" id="dossier-payment-online" data-bind="attr : {data-pk : referenceUid}">Thanh toán trực tuyến</button> 
-								<button class="btn btn-sm btn-border-color MR10 text-light-blue" data-bind="attr : {data-pk : referenceUid}" id="dossier-payment-confirm">Thông báo đã nộp chuyển khoản</button>
-								<button class="btn btn-sm btn-border-color id="" text-light-blue" onclick="">Xem phiếu thanh toán</button>
+								<button class="btn btn-sm btn-border-color MR10 text-light-blue" id="dossier-payment-online" data-bind="attr : {data-pk : referenceUid}" disabled="true">Thanh toán trực tuyến</button> 
+								<button class="btn btn-sm btn-border-color MR10 text-light-blue" data-bind="attr : {data-pk : referenceUid}" id="dossier-payment-confirm" disabled="true">Thông báo đã nộp chuyển khoản</button>
+								<button class="btn btn-sm btn-border-color text-light-blue" id="dossier-payment-viewpdf" data-bind="attr : {data-pk : referenceUid}">Xem phiếu thanh toán</button>
 							</div>
 						</div>
 
-						<div class="row MB20 MT20" data-bind="value: isPay">
+						<div class="row MB20 MT20" data-bind="value: isPay" style="display: none;">
 							<div class="col-sm-12 text-center">
 								<div class="row">
 									<div class="col-sm-4">
@@ -1188,6 +1223,12 @@
 								}
 								return "";
 							},
+							referenceUid : function(e){
+								if(this.get('paymentDossier').referenceUid){
+									return this.get('paymentDossier').referenceUid;
+								}
+								return "";
+							},
 							paymentGovAgencyName : function(e){
 								if(this.get('paymentDossier')){
 									if(this.get('paymentDossier').govAgencyName){
@@ -1207,16 +1248,16 @@
 							paymentStatus : function(e){
 								if(this.get('paymentDossier')){
 									if(this.get('paymentDossier').paymentStatus === 0){
-										$("#dossier-payment-confirm").prop("disabled",false);
+										$("#dossier-payment-confirm").prop("disabled",true);
 										return "Chờ nộp";
 									}else if(this.get('paymentDossier').paymentStatus === 1){
 										$("#dossier-payment-confirm").prop("disabled",true);
 										return "Báo đã nộp";
 									}else if(this.get('paymentDossier').paymentStatus === 2){
-										$("#dossier-payment-confirm").prop("disabled",false);
+										$("#dossier-payment-confirm").prop("disabled",true);
 										return "Hoàn thành";
 									}else {
-										$("#dossier-payment-confirm").prop("disabled",false);
+										$("#dossier-payment-confirm").prop("disabled",true);
 										return "Không hợp lệ";
 									}
 								}
@@ -1968,6 +2009,32 @@ $("#guide-toggle").click(function(event){
 	}
 
 });
+
+$("#dossier-payment-viewpdf").click(function(){
+	var referenceUid = $(this).attr("data-pk");
+	console.log('test');
+	if(referenceUid){
+		$.ajax({
+			url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/invoicefile",
+			dataType : "json",
+			type : "GET",
+			headers : {"groupId": ${groupId}},
+			responseType: 'blob',
+			data : {
+
+			},
+			success : function(result){
+				var urlblob = window.URL.createObjectURL(response);
+				window.open(urlblob, '_blank');
+			},
+			error :  function(result){
+				
+			}
+
+		});
+	}
+});
+
 </script>
 
 <style type="text/css" media="screen">

@@ -312,34 +312,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								value: 'stt'
 							},
 							{
-								text: 'Tên thủ tục',
+								text: 'Tên thủ tục / Tên doanh nghiệp',
 								align: 'left',
 								sortable: true,
 								value: 'serviceName'
-							},
-							{
-								text: 'Số phiếu tính tiền',
-								align: 'left',
-								sortable: true,
-								value: 'dossierNo'
-							},
-							{
-								text: 'Ngày lập phiếu',
-								align: 'center',
-								sortable: true,
-								value: 'createDate'
-							},
-							{
-								text: 'Tổng tiền',
-								align: 'center',
-								sortable: true,
-								value: 'paymentAmount'
-							},
-							{
-								text: 'Tên doanh nghiệp',
-								align: 'center',
-								sortable: true,
-								value: 'applicantName'
 							},
 							{
 								text: 'Mã hồ sơ / Số hồ sơ',
@@ -348,10 +324,28 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								value: 'dossierId'
 							},
 							{
-								text: 'Thông tin sản phẩm',
+								text: 'Tổng tiền',
 								align: 'center',
-								sortable: false,
-								value: 'action'
+								sortable: true,
+								value: 'paymentAmount'
+							},
+							{
+								text: 'Tình trạng thanh toán',
+								align: 'left',
+								sortable: true,
+								value: 'dossierNo'
+							},
+							{
+								text: 'Hình thức thanh toán',
+								align: 'center',
+								sortable: true,
+								value: 'createDate'
+							},
+							{
+								text: 'Ngày xác nhận thu phí',
+								align: 'center',
+								sortable: true,
+								value: 'confirmDatetime'
 							}
 						];
 						
