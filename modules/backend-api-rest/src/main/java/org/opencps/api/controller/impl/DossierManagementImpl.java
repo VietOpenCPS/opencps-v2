@@ -273,7 +273,12 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			
 			String online = query.getOnline();
-			
+			String domain = query.getDomain();
+			String domainName = query.getDomainName();
+			String applicantName = query.getApplicantName();
+			String applicantIdNo = query.getApplicantIdNo();
+			String serviceName = query.getServiceName();
+
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -305,6 +310,13 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 			params.put(DossierTerm.STATUS_REG, statusRegNo);
 			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
+			if (Validator.isNotNull(domain)) {
+				params.put(DossierTerm.DOMAIN_CODE, domain);
+			}
+			params.put(DossierTerm.DOMAIN_NAME, domainName);
+			params.put(DossierTerm.APPLICANT_NAME, applicantName);
+			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
+			params.put(DossierTerm.SERVICE_NAME, serviceName);
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -683,6 +695,10 @@ public class DossierManagementImpl implements DossierManagement {
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
 			String dossierIdCTN = query.getDossierIdCTN();
 			String domain = query.getDomain();
+			String domainName = query.getDomainName();
+			String applicantName = query.getApplicantName();
+			String applicantIdNo = query.getApplicantIdNo();
+			String serviceName = query.getServiceName();
 			
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -710,6 +726,10 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(domain)) {
 				params.put(DossierTerm.DOMAIN_CODE, domain);
 			}
+			params.put(DossierTerm.DOMAIN_NAME, domainName);
+			params.put(DossierTerm.APPLICANT_NAME, applicantName);
+			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
+			params.put(DossierTerm.SERVICE_NAME, serviceName);
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
