@@ -1,5 +1,0 @@
-sourceRoot: templates
-outputRoot: build
-data: {tdd(datasource/opencps.tdd), tdd(datasource/customprocess.tdd)}
-datetimeFormat: "MMM d, yyyy hh:mm a zzz"
-caseSensitive
