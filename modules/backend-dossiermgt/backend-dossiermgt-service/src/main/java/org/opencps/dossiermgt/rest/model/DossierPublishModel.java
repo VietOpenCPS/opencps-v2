@@ -64,6 +64,18 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="postalWardCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="postalTelNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="originality" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="modifiedDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="submitDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="receiveDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="dueDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="releaseDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="finishDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="cancellingDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="correcttingDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="endorsementDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="extendDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="processDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -113,10 +125,22 @@ import javax.xml.bind.annotation.XmlType;
     "postalDistrictCode",
     "postalWardCode",
     "postalTelNo",
-    "originality"
+    "originality",
+    "createDate",
+    "modifiedDate",
+    "submitDate",
+    "receiveDate",
+    "dueDate",
+    "releaseDate",
+    "finishDate",
+    "cancellingDate",
+    "correcttingDate",
+    "endorsementDate",
+    "extendDate",
+    "processDate"
 })
-@XmlRootElement(name = "DossierInputModel")
-public class DossierInputModel {
+@XmlRootElement(name = "DossierPublishModel")
+public class DossierPublishModel {
 
     protected String referenceUid;
     protected String serviceCode;
@@ -158,6 +182,18 @@ public class DossierInputModel {
     protected String postalWardCode;
     protected String postalTelNo;
     protected Integer originality;
+    protected Long createDate;
+    protected Long modifiedDate;
+    protected Long submitDate;
+    protected Long receiveDate;
+    protected Long dueDate;
+    protected Long releaseDate;
+    protected Long finishDate;
+    protected Long cancellingDate;
+    protected Long correcttingDate;
+    protected Long endorsementDate;
+    protected Long extendDate;
+    protected Long processDate;
 
     /**
      * Gets the value of the referenceUid property.
@@ -1117,6 +1153,294 @@ public class DossierInputModel {
      */
     public void setOriginality(Integer value) {
         this.originality = value;
+    }
+
+    /**
+     * Gets the value of the createDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getCreateDate() {
+        return createDate;
+    }
+
+    /**
+     * Sets the value of the createDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setCreateDate(Long value) {
+        this.createDate = value;
+    }
+
+    /**
+     * Gets the value of the modifiedDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getModifiedDate() {
+        return modifiedDate;
+    }
+
+    /**
+     * Sets the value of the modifiedDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setModifiedDate(Long value) {
+        this.modifiedDate = value;
+    }
+
+    /**
+     * Gets the value of the submitDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getSubmitDate() {
+        return submitDate;
+    }
+
+    /**
+     * Sets the value of the submitDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setSubmitDate(Long value) {
+        this.submitDate = value;
+    }
+
+    /**
+     * Gets the value of the receiveDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getReceiveDate() {
+        return receiveDate;
+    }
+
+    /**
+     * Sets the value of the receiveDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setReceiveDate(Long value) {
+        this.receiveDate = value;
+    }
+
+    /**
+     * Gets the value of the dueDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getDueDate() {
+        return dueDate;
+    }
+
+    /**
+     * Sets the value of the dueDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setDueDate(Long value) {
+        this.dueDate = value;
+    }
+
+    /**
+     * Gets the value of the releaseDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getReleaseDate() {
+        return releaseDate;
+    }
+
+    /**
+     * Sets the value of the releaseDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setReleaseDate(Long value) {
+        this.releaseDate = value;
+    }
+
+    /**
+     * Gets the value of the finishDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getFinishDate() {
+        return finishDate;
+    }
+
+    /**
+     * Sets the value of the finishDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setFinishDate(Long value) {
+        this.finishDate = value;
+    }
+
+    /**
+     * Gets the value of the cancellingDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getCancellingDate() {
+        return cancellingDate;
+    }
+
+    /**
+     * Sets the value of the cancellingDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setCancellingDate(Long value) {
+        this.cancellingDate = value;
+    }
+
+    /**
+     * Gets the value of the correcttingDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getCorrecttingDate() {
+        return correcttingDate;
+    }
+
+    /**
+     * Sets the value of the correcttingDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setCorrecttingDate(Long value) {
+        this.correcttingDate = value;
+    }
+
+    /**
+     * Gets the value of the endorsementDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getEndorsementDate() {
+        return endorsementDate;
+    }
+
+    /**
+     * Sets the value of the endorsementDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setEndorsementDate(Long value) {
+        this.endorsementDate = value;
+    }
+
+    /**
+     * Gets the value of the extendDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getExtendDate() {
+        return extendDate;
+    }
+
+    /**
+     * Sets the value of the extendDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setExtendDate(Long value) {
+        this.extendDate = value;
+    }
+
+    /**
+     * Gets the value of the processDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getProcessDate() {
+        return processDate;
+    }
+
+    /**
+     * Sets the value of the processDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setProcessDate(Long value) {
+        this.processDate = value;
     }
 
 }

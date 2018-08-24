@@ -2838,9 +2838,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException {
-
-		Date now = new Date();
+			boolean online, boolean notification, String applicantNote, int originality, 
+			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
+			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate,
+			Date endorsementDate, Date extendDate,
+			Date processDate,
+			ServiceContext context) throws PortalException {
 
 		long userId = context.getUserId();
 
@@ -2860,8 +2863,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			dossier = dossierPersistence.create(dossierId);
 
-			dossier.setCreateDate(now);
-			dossier.setModifiedDate(now);
+			dossier.setCreateDate(createDate);
+			dossier.setModifiedDate(modifiedDate);
+			dossier.setSubmitDate(submitDate);
+			dossier.setReceiveDate(receiveDate);
+			dossier.setDueDate(dueDate);
+			dossier.setReleaseDate(releaseDate);
+			dossier.setFinishDate(finishDate);
+			dossier.setCancellingDate(cancellingDate);
+			dossier.setCorrecttingDate(correctingDate);
+			dossier.setEndorsementDate(endorsementDate);
+			dossier.setExtendDate(extendDate);
+			dossier.setProcessDate(processDate);
+			
 			dossier.setCompanyId(context.getCompanyId());
 			dossier.setGroupId(groupId);
 			dossier.setUserId(userId);
@@ -2910,7 +2924,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 
-			dossier.setModifiedDate(now);
+			dossier.setModifiedDate(modifiedDate);
+			dossier.setSubmitDate(submitDate);
+			dossier.setReceiveDate(receiveDate);
+			dossier.setDueDate(dueDate);
+			dossier.setReleaseDate(releaseDate);
+			dossier.setFinishDate(finishDate);
+			dossier.setCancellingDate(cancellingDate);
+			dossier.setCorrecttingDate(correctingDate);
+			dossier.setEndorsementDate(endorsementDate);
+			dossier.setExtendDate(extendDate);
+			dossier.setProcessDate(processDate);
 
 			if (Validator.isNotNull(address))
 				dossier.setAddress(address);

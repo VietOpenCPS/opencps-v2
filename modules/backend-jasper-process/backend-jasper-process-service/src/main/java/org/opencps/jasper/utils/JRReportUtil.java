@@ -16,11 +16,8 @@ package org.opencps.jasper.utils;
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +31,18 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.export.SimpleDocxReportConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 /**
  * @author trungnt
@@ -115,9 +115,9 @@ public class JRReportUtil {
 			// fix json enter char
 			//hot fix
 //			jsonData = quoteHTML(jsonData);
-			_log.info("JASPER JSON DATA: " + jsonData);
+//			_log.info("JASPER JSON DATA: " + jsonData);
 			if (isJsonObject(jsonData)) {
-				_log.info("JSON Object");
+//				_log.info("JSON Object");
 			JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
 			JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonData);
 
@@ -248,7 +248,51 @@ public class JRReportUtil {
 		return destFileName;
 
 	}
-	
+
+	/**
+	 * @param jasperPrint
+	 * @param destFileName
+	 * @return
+	 * @throws JRException
+	 */
+	protected static String exportExcelFile(JasperPrint jasperPrint, String destFileName) throws JRException {
+
+		JRXlsExporter exporter = new JRXlsExporter();
+		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFileName));
+		SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+		configuration.setOnePagePerSheet(true);
+		configuration.setDetectCellType(true);
+		configuration.setCollapseRowSpan(false);
+		exporter.setConfiguration(configuration);
+
+		exporter.exportReport();
+
+		return destFileName;
+
+	}
+
+	/**
+	 * @param jasperPrint
+	 * @param destFileName
+	 * @return
+	 * @throws JRException
+	 */
+	protected static String exportDocFile(JasperPrint jasperPrint, String destFileName) throws JRException {
+		JRDocxExporter export = new JRDocxExporter();
+		export.setExporterInput(new SimpleExporterInput(jasperPrint));
+		export.setExporterOutput(new SimpleOutputStreamExporterOutput(destFileName));
+
+		SimpleDocxReportConfiguration config = new SimpleDocxReportConfiguration();
+		config.setFlexibleRowHeight(true); //Set desired configuration
+
+		export.setConfiguration(config);            
+		export.exportReport();
+		
+		return destFileName;
+
+	}
+
 	/**
 	 * @param jasperPrints
 	 * @param destFileName
@@ -301,6 +345,12 @@ public class JRReportUtil {
 		case PDF:
 			sourceFileName = exportPdfFile(jasperPrint, sourceFileName);
 			break;
+		case XLSX:
+			sourceFileName = exportExcelFile(jasperPrint, sourceFileName);
+			break;	
+		case DOCX:
+			sourceFileName = exportDocFile(jasperPrint, sourceFileName);
+			break;				
 		default:
 			break;
 		}
@@ -334,5 +384,74 @@ public class JRReportUtil {
 		return JasperFillManager.fillReport(jrReportTemplate, null, dataSource);
 	}
 
+	public static String createReportFile(String jrxmlTemplate, String jsonData, Map<String, Object> parameters,
+			String destFileName, String reportType) {
+
+		try {
+				// fix json enter char
+				//hot fix
+	//			jsonData = quoteHTML(jsonData);
+	//			_log.info("JASPER JSON DATA: " + jsonData);
+				if (isJsonObject(jsonData)) {
+	//				_log.info("JSON Object");
+				JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+				JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonData);
+	
+				JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
+
+				if (reportType.equals("excel")) {
+					return exportReport(jasperPrint, destFileName, DocType.XLSX);						
+				}
+				else if (reportType.equals("word")) {
+					return exportReport(jasperPrint, destFileName, DocType.DOCX);	
+				}
+				else {
+					return exportReport(jasperPrint, destFileName, DocType.PDF);
+				}
+			}
+			else {
+//				_log.info("JSON array");
+				List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
+				
+				JSONArray jsonArrData = JSONFactoryUtil.createJSONArray(jsonData);
+//				_log.info("JSON Array data object: " + jsonArrData.toJSONString());
+//				if (jsonArrData.length() > 0) {
+//					JSONObject jsonDataObj = jsonArrData.getJSONObject(0);
+//					
+//					JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+//					JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonDataObj.toJSONString());
+//
+//					JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);	
+//					return exportReport(jasperPrint, destFileName, DocType.PDF);									
+//				}
+//				else {
+//					return StringPool.BLANK;
+//				}
+				JasperPrint jasperPrint = null;
+				JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+				JRJSONDataSource dataSource = null;
+				
+				for (int i = 0; i < jsonArrData.length(); i++) {
+					JSONObject jsonDataObj = jsonArrData.getJSONObject(i);
+//					_log.info("JASPER ONE JSON: " + jsonDataObj.toJSONString());
+					
+					dataSource = JRJSONDataSource.getInstance(jsonDataObj.toJSONString());
+
+					jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);	
+					jasperPrints.add(jasperPrint);
+
+				}
+//				return exportReport(jasperPrint, destFileName, DocType.PDF);				
+				
+				return exportPdfFile(jasperPrints, destFileName);
+			}
+		} catch (Exception e) {
+			_log.error(e);
+
+			return StringPool.BLANK;
+
+		}
+	}
+	
 	private static Log _log = LogFactoryUtil.getLog(JRReportUtil.class.getName());
 }

@@ -82,9 +82,18 @@ import javax.xml.bind.annotation.XmlType;
     "postalTelNo",
     "originality",
     "dossierNo",
+    "createDate",
+    "modifiedDate",
     "submitDate",
     "receiveDate",
     "dueDate",
+    "releaseDate",
+    "finishDate",
+    "cancellingDate",
+    "correcttingDate",
+    "endorsementDate",
+    "extendDate",
+    "processDate",
     "dossierStatus",
     "dossierStatusText",
     "dossierSubStatus",
@@ -162,12 +171,30 @@ public class DossierPublishModel {
 	protected String originality;
 	@FormParam(value = "dossierNo")
 	protected String dossierNo;
+	@FormParam(value = "createDate")
+	protected String createDate;
+	@FormParam(value = "modifiedDate")
+	protected String modifiedDate;	
 	@FormParam(value = "submitDate")
 	protected String submitDate;
 	@FormParam(value = "receiveDate")
 	protected String receiveDate;
 	@FormParam(value = "dueDate")
 	protected String dueDate;
+	@FormParam(value = "releaseDate")
+	protected String releaseDate;
+	@FormParam(value = "finishDate")
+	protected String finishDate;
+	@FormParam(value = "cancellingDate")
+	protected String cancellingDate;
+	@FormParam(value = "correcttingDate")
+	protected String correcttingDate;
+	@FormParam(value = "endorsementDate")
+	protected String endorsementDate;
+	@FormParam(value = "extendDate")
+	protected String extendDate;
+	@FormParam(value = "processDate")
+	protected String processDate;	
 	@FormParam(value = "dossierStatus")
 	protected String dossierStatus;
 	@FormParam(value = "dossierStatusText")
@@ -819,6 +846,22 @@ public class DossierPublishModel {
         this.dossierNo = value;
     } 
 
+    public String getCreateDate() {
+    	return createDate;
+    }
+    
+    public void setCreateDate(String value) {
+    	this.createDate = value;
+    }
+    
+    public String getModifiedDate() {
+    	return modifiedDate;
+    }
+    
+    public void setModifiedDate(String value) {
+    	this.modifiedDate = value;
+    }
+
     /**
      * Gets the value of the submitDate property.
      * 
@@ -891,6 +934,62 @@ public class DossierPublishModel {
         this.dueDate = value;
     }
 
+    public String getReleaseDate() {
+    	return releaseDate;
+    }
+    
+    public void setReleaseDate(String value) {
+    	this.releaseDate = value;
+    }
+    
+    public String getFinishDate() {
+    	return finishDate;
+    }
+    
+    public void setFinishDate(String value) {
+    	this.finishDate = value;
+    }
+    
+    public String getCancellingDate() {
+    	return cancellingDate;
+    }
+    
+    public void setCancellingDate(String value) {
+    	this.cancellingDate = value;
+    }
+    
+    public String getCorrecttingDate() {
+    	return correcttingDate;
+    }
+    
+    public void setCorrectingDate(String value) {
+    	this.correcttingDate = value;
+    }
+    
+    public String getEndorsementDate() {
+    	return endorsementDate;
+    }
+    
+    public void setEndorsementDate(String value) {
+    	this.createDate = value;
+    }
+    
+    public String getExtendDate() {
+    	return extendDate;
+    }
+    
+    public void setExtendDate(String value) {
+    	this.extendDate = value;
+    }
+    
+    public String getProcessDate() {
+    	return processDate;
+    }
+    
+    public void setProcessDate(String value) {
+    	this.processDate = value;
+    }
+    
 	public String getDossierStatus() {
 		return dossierStatus;
 	}
