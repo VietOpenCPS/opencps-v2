@@ -36,7 +36,7 @@ public class PublishEvent implements MessageListener {
 		for (ServerConfig sc : lstServers) {
 			try {
 				OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-				client.publishDossier(OpenCPSConverter.convertDossierSummary(dossierObj));
+				client.publishDossier(OpenCPSConverter.convertDossierPublish(dossierObj));
 			} catch (JSONException e) {
 			}			
 		}

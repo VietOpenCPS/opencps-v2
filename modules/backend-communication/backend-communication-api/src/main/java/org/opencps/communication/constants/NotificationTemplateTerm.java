@@ -17,6 +17,34 @@ package org.opencps.communication.constants;
 import java.util.Date;
 
 public class NotificationTemplateTerm {
+	
+	public static final String SHARING = "SHARING";
+	public static final String ACTIVITY_01 = "ACTIVITY_01";
+	public static final String ACTIVITY_02 = "ACTIVITY_02";
+	public static final String ACTIVITY_03 = "ACTIVITY_03";
+	public static final String ACTIVITY_04 = "ACTIVITY_04";
+	public static final String ACTIVITY_05 = "ACTIVITY_05";
+	public static final String FILEATTACH = "FILEATTACH";
+	public static final String ALBUMFILE = "ALBUMFILE";
+	public static final String COMMENT = "COMMENT";
+	public static final String VOTING_01 = "VOTING-01";
+	public static final String VOTING_02 = "VOTING-02";
+	public static final String APPROVAL_01 = "APPROVAL-01";
+	public static final String APPROVAL_02 = "APPROVAL-02";
+	public static final String DOCUMENT_01 = "DOCUMENT-01";
+	public static final String DOCUMENT_02 = "DOCUMENT-02";
+	public static final String DOCUMENT_03 = "DOCUMENT-03";
+	public static final String ARCHIVE_01 = "ARCHIVE-01";
+	public static final String ARCHIVE_02 = "ARCHIVE-02";
+	public static final String CHECKLIST_01 = "CHECKLIST-01";
+	public static final String CHECKLIST_02 = "CHECKLIST-02";
+
+	public static final String MINUTELY = "minutely";
+	public static final String FIVE_MINUTES = "5-mins";
+	public static final String FIFTEEN_MINUTES = "15-mins";
+	public static final String THIRTY_MINUTES = "30-mins";
+	public static final String HOURLY = "hourly";
+	public static final String DAILY = "daily";
 
 	public static final String NOTIFICATIONTEMPLATE_ID = "notificationTemplateId";
 

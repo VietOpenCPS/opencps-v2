@@ -13,8 +13,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.opencps.auth.api.BackendAuth;
-import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.dossiermgt.action.DossierDocumentActions;
 import org.opencps.dossiermgt.action.impl.DossierDocumentActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
@@ -96,6 +94,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 //		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public DossierDocumentResultModel getDocumentList(String id, Integer start, Integer end) {
 		// TODO: check user is loged or password for access dossier file
@@ -133,7 +132,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	@Override
 	public DossierDocumentModel createDossierDoc(String id, Attachment upfileDetail, String referenceUid, String documentType,
 			String documentName, String documentCode) {
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
@@ -152,12 +151,14 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 			if (dossierId != 0) {
 				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			}
-			else {
+			} else {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			if (dossier != null) {
 				dossierActionId = dossier.getDossierActionId();
+				dossierId = dossier.getDossierId();
+			} else {
+				dossierId = 0l;
 			}
 
 			DossierDocument oldDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
@@ -169,14 +170,14 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 			
 			DossierDocument dossierDoc = null;
 			if (oldDocument == null) {
-				dossierDoc = action.addDossierDoc(groupId, dossier.getDossierId(), referenceUid, dossierActionId, documentType,
-					documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
-					StringPool.BLANK, context);
-			}
-			else {
-				dossierDoc = DossierDocumentLocalServiceUtil.updateDossierDoc(groupId, oldDocument.getDossierDocumentId(), dossier.getDossierId(), referenceUid, dossierActionId, documentType,
+				dossierDoc = action.addDossierDoc(groupId, dossierId, referenceUid, dossierActionId, documentType,
 						documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
-						StringPool.BLANK, context);				
+						StringPool.BLANK, context);
+			} else {
+				dossierDoc = DossierDocumentLocalServiceUtil.updateDossierDoc(groupId,
+						oldDocument.getDossierDocumentId(), dossierId, referenceUid, dossierActionId, documentType,
+						documentName, documentCode, dataHandler.getName(), 0, dataHandler.getInputStream(),
+						StringPool.BLANK, context);
 			}
 			
 //			if(Validator.isNotNull(formData)) {

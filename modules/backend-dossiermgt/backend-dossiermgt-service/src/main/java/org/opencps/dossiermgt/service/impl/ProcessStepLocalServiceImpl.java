@@ -381,7 +381,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessStep updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode,
 			String stepName, String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus,
-			Integer durationCount, String instructionNote, String briefNote, String roleAsStep, Integer checkInput,
+			Double durationCount, String instructionNote, String briefNote, String roleAsStep, Integer checkInput,
 			ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();

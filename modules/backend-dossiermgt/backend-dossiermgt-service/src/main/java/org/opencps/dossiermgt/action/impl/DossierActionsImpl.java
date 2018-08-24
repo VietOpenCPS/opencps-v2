@@ -5401,7 +5401,11 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context)
+			boolean online, boolean notification, String applicantNote, int originality, 
+			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
+			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
+			Date endorsementDate, Date extendDate,
+			Date processDate, ServiceContext context)
 			throws PortalException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		Date appIdDate = null;
@@ -5422,7 +5426,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
 					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-					postalCityName, postalTelNo, online, notification, applicantNote, originality, context);
+					postalCityName, postalTelNo, online, notification, applicantNote, originality, createDate, modifiedDate, submitDate, receiveDate, dueDate,
+					releaseDate, finishDate, cancellingDate, correctingDate, 
+					endorsementDate, extendDate,
+					processDate, context);
 
 		} catch (Exception e) {
 			_log.error(e);

@@ -448,6 +448,11 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 	public long countNotificationTemplateByGroupId(long groupId) {
 		return notificationtemplatePersistence.countByF_NotificationtemplateByGroup(groupId);
 	}
-	
+
+	@Override
+	public List<Notificationtemplate> findByInterval(String interval) {
+		return notificationtemplatePersistence.findByF_interval(interval);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(NotificationtemplateLocalServiceImpl.class);
 }
