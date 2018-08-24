@@ -20,7 +20,7 @@ import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
 public class OpencpsCallGovAgencyRestFacadeImpl extends OpencpsRestFacade<GovAgencyRequest, GovAgencyResponse>
 		implements OpencpsCallRestFacade<GovAgencyRequest, GovAgencyResponse> {
 
-	private final static Logger LOG = LoggerFactory.getLogger(OpencpsCallGovAgencyRestFacadeImpl.class);
+	//private final static Logger LOG = LoggerFactory.getLogger(OpencpsCallGovAgencyRestFacadeImpl.class);
 	
 	@Override
 	public GovAgencyResponse callRestService(GovAgencyRequest payload)
@@ -36,7 +36,7 @@ public class OpencpsCallGovAgencyRestFacadeImpl extends OpencpsRestFacade<GovAge
 		
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.GOV_AGENCY_ENDPOINT);
 		
-		LOG.info(endPoint);
+		//LOG.info(endPoint);
 		
 		// get the params for EE
 		HashMap<String, String> urlPathSegments = new HashMap<>();
