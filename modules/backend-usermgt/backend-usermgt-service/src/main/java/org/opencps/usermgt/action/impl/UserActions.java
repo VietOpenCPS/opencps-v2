@@ -5,12 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.DigestException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
+import org.opencps.usermgt.listener.ApplicantListenerUtils;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.OfficeSite;
@@ -21,6 +26,7 @@ import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -325,14 +331,25 @@ public class UserActions implements UserInterface {
 		long mappingUserId = Validator.isNotNull(user) ? user.getUserId() : 0;
 		String userName = Validator.isNotNull(user) ? user.getFullName() : StringPool.BLANK;
 
-		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, mappingUserId);
+		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(mappingUserId);
 
-		document.addTextSortable("userId", String.valueOf(mappingUserId));
-		document.addTextSortable("userName", Validator.isNotNull(employee) ? employee.getFullName() : userName);
-		document.addTextSortable("contactEmail",
-				Validator.isNotNull(employee) ? employee.getEmail() : StringPool.BLANK);
-		document.addTextSortable("contactTelNo",
-				Validator.isNotNull(employee) ? employee.getTelNo() : StringPool.BLANK);
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+		if (employee != null) {
+			document.addTextSortable("userId", String.valueOf(mappingUserId));
+			document.addTextSortable("userName", Validator.isNotNull(employee) ? employee.getFullName() : userName);
+			document.addTextSortable("contactEmail",
+					Validator.isNotNull(employee) ? employee.getEmail() : StringPool.BLANK);
+			document.addTextSortable("contactTelNo",
+					Validator.isNotNull(employee) ? employee.getTelNo() : StringPool.BLANK);
+		} else {
+			document.addTextSortable("userId", String.valueOf(mappingUserId));
+			document.addTextSortable("userName",
+					Validator.isNotNull(applicant) ? applicant.getContactName() : userName);
+			document.addTextSortable("contactEmail",
+					Validator.isNotNull(applicant) ? applicant.getContactEmail() : StringPool.BLANK);
+			document.addTextSortable("contactTelNo",
+					Validator.isNotNull(applicant) ? applicant.getContactTelNo() : StringPool.BLANK);
+		}
 
 		// changePassWord
 		String passWord = PwdGenerator.getPassword();
@@ -345,14 +362,76 @@ public class UserActions implements UserInterface {
 
 			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-			payLoad.put("USERNAME", user.getScreenName());
+			payLoad.put(ApplicantListenerMessageKeys.USER_NAME, user.getScreenName());
 			payLoad.put("USEREMAIL", user.getEmailAddress());
-			payLoad.put("PASSWORD_CODE", passWord);
+			payLoad.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, passWord);
+			
+			JSONObject object = JSONFactoryUtil.createJSONObject();
+			
+			
+			
+			
 
-			NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_03,
-					User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
-					employee.getFullName(), employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(),
-					new Date(), null, serviceContext);
+			if (employee != null) {
+				object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, passWord);
+				object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, "/confirm-account?active_user_id="+ employee.getEmployeeId());
+				object.put(ApplicantListenerMessageKeys.USER_NAME, user.getScreenName());
+				object.put("toName", user.getScreenName());
+				object.put("toAddress", employee.getEmail());
+				String payload = ApplicantListenerUtils.getPayload(NotificationType.REGISTRATION_02, object, employee.getGroupId()).toString();
+				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, NotificationType.REGISTRATION_02,
+						User.class.getName(), String.valueOf(user.getUserId()), payload, "SYSTEM",
+						employee.getFullName(), employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(),
+						new Date(), null, serviceContext);
+			}else{
+				NotificationQueue queue = null;
+				
+				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+				
+				queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+				
+				Date now = new Date();
+				
+				Calendar cal = Calendar.getInstance();
+				
+				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+				
+				queue.setCreateDate(now);
+				queue.setModifiedDate(now);
+				queue.setGroupId(applicant.getGroupId());
+				queue.setCompanyId(applicant.getCompanyId());
+				
+				queue.setNotificationType(NotificationType.REGISTRATION_02);
+				queue.setClassName(Applicant.class.getName());
+				queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
+				queue.setToUsername(applicant.getApplicantName());
+				queue.setToUserId(applicant.getUserId());
+				queue.setToEmail(applicant.getContactEmail());
+				queue.setToTelNo(applicant.getContactTelNo());
+				
+				object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, passWord);
+				object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, "/confirm-account?active_user_id="+ applicant.getApplicantId());
+				object.put(ApplicantListenerMessageKeys.USER_NAME, user.getScreenName());
+				object.put("toName", user.getScreenName());
+				object.put("toAddress", applicant.getContactEmail());
+				
+				String payload = ApplicantListenerUtils.getPayload(NotificationType.REGISTRATION_02, object, applicant.getGroupId()).toString();
+				
+				queue.setPayload(payload);
+				
+				queue.setExpireDate(cal.getTime());
+				
+				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+				
+				long userId = applicant.getMappingUserId();
+				
+				GroupLocalServiceUtil.addUserGroup(userId, applicant.getGroupId());
+				
+//				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, NotificationType.REGISTRATION_02,
+//						User.class.getName(), String.valueOf(user.getUserId()), payload, "SYSTEM",
+//						applicant.getContactName(), applicant.getMappingUserId(), applicant.getContactEmail(), applicant.getContactTelNo(),
+//						new Date(), null, serviceContext);
+			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -393,25 +472,44 @@ public class UserActions implements UserInterface {
 
 			}
 
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, mappingUserId);
+			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(mappingUserId);
+			
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
 
-			document.addTextSortable("userId", String.valueOf(mappingUserId));
-			document.addTextSortable("userName", Validator.isNotNull(employee) ? employee.getFullName() : userName);
-			document.addTextSortable("contactEmail",
-					Validator.isNotNull(employee) ? employee.getEmail() : StringPool.BLANK);
-			document.addTextSortable("contactTelNo",
-					Validator.isNotNull(employee) ? employee.getTelNo() : StringPool.BLANK);
+			
 
 			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
 			payLoad.put("USERNAME", user.getScreenName());
 			payLoad.put("USEREMAIL", user.getEmailAddress());
 			payLoad.put("PASSWORD", passWord);
-
-			NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
-					User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
-					employee.getFullName(), employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(),
-					new Date(), null, serviceContext);
+			if(employee!= null){
+				document.addTextSortable("userId", String.valueOf(mappingUserId));
+				document.addTextSortable("userName", Validator.isNotNull(employee) ? employee.getFullName() : userName);
+				document.addTextSortable("contactEmail",
+						Validator.isNotNull(employee) ? employee.getEmail() : StringPool.BLANK);
+				document.addTextSortable("contactTelNo",
+						Validator.isNotNull(employee) ? employee.getTelNo() : StringPool.BLANK);
+				
+				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
+						User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
+						employee.getFullName(), employee.getMappingUserId(), employee.getEmail(), employee.getTelNo(),
+						new Date(), null, serviceContext);
+			}else {
+				
+				document.addTextSortable("userId", String.valueOf(mappingUserId));
+				document.addTextSortable("userName", Validator.isNotNull(applicant) ? applicant.getUserName() : userName);
+				document.addTextSortable("contactEmail",
+						Validator.isNotNull(applicant) ? applicant.getContactEmail() : StringPool.BLANK);
+				document.addTextSortable("contactTelNo",
+						Validator.isNotNull(applicant) ? applicant.getContactTelNo() : StringPool.BLANK);
+				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
+						User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
+						applicant.getUserName(), applicant.getMappingUserId(), applicant.getContactEmail(), applicant.getContactTelNo(),
+						new Date(), null, serviceContext);
+			}
+			
+			
 
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
@@ -439,31 +537,32 @@ public class UserActions implements UserInterface {
 			ServiceContext serviceContext) {
 		int flagNo = 0;
 		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
-		_log.info("flag: "+flag);
+		_log.info("flag: " + flag);
 
 		if (flag) {
 			try {
 
 				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
-				_log.info("user: "+user);
+				_log.info("user: " + user);
 				if (user != null) {
 					String email = StringPool.BLANK;
-					//update employee
+					// update employee
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 					if (employee != null) {
 						email = employee.getEmail();
-						_log.info("emailEmployee: "+email);
+						_log.info("emailEmployee: " + email);
 					} else {
-						//update application
+						// update application
 						Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
 						if (applicant != null) {
 							email = applicant.getContactEmail();
-							_log.info("emailApplicant: "+email);
+							_log.info("emailApplicant: " + email);
 						}
 					}
 
 					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
-					_log.info("user.getScreenName(): "+user.getScreenName()+"|user.getEmailAddress(): "+user.getEmailAddress());
+					_log.info("user.getScreenName(): " + user.getScreenName() + "|user.getEmailAddress(): "
+							+ user.getEmailAddress());
 					payLoad.put("USERNAME", user.getScreenName());
 					payLoad.put("USEREMAIL", user.getEmailAddress());
 					payLoad.put("PASSWORD", newPassword);
@@ -486,34 +585,36 @@ public class UserActions implements UserInterface {
 
 		return flagNo;
 	}
-	
+
 	@Override
-	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword, int type,
-			ServiceContext serviceContext) {
-			
+	public boolean addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,
+			int type, ServiceContext serviceContext) {
+
 		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
-		_log.info("flag: "+flag);
+		_log.info("flag: " + flag);
 
 		if (flag) {
 			try {
 
 				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
-				_log.info("User: "+user);
+				_log.info("User: " + user);
 				String email = StringPool.BLANK;
-				
+
 				if (type == 1) {
-					//update application
-//					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
-					
+					// update application
+					// Employee employee =
+					// EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId,
+					// id);
+
 					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(id);
-				
+
 					email = employee.getEmail();
 				} else {
-					//update employee
+					// update employee
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
-				
+
 					email = applicant.getContactEmail();
-					_log.info("email: "+email);
+					_log.info("email: " + email);
 				}
 
 				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
@@ -531,13 +632,12 @@ public class UserActions implements UserInterface {
 
 			} catch (PortalException e) {
 				flag = false;
-				_log.info("BUGGGG: "+e);
+				_log.info("BUGGGG: " + e);
 			}
 		}
 
 		return flag;
 	}
-
 
 	@Override
 	public File uploadEsign(long userId, long companyId, long groupId, long id, InputStream inputStream,

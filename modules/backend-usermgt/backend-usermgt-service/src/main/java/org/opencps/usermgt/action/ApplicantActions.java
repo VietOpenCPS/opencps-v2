@@ -50,4 +50,6 @@ public interface ApplicantActions {
 
 	public Applicant getApplicantByMappingUserId(long userId) throws PortalException;
 
+	public Applicant resendActivateCodeApplicant(long applicantId) throws PortalException;
+
 }

@@ -189,5 +189,13 @@ public interface ApplicantManagement {
 	public Response activeApplicantWithoutCode(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
+	
+	@GET
+	@Path("/{id}/resendActivateCode")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Get ActivateCode of applicant", response = JSONObject.class)
+	public Response resendActivateCodeApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
 
 }
