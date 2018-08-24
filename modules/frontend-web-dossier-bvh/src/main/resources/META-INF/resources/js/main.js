@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function (event) {
+var funLoadVue = function(govAgencyCode) {
 	const config = {
 		headers: {
 			'groupId': themeDisplay.getScopeGroupId(),
@@ -865,6 +865,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								headers : {
 									'groupId': themeDisplay.getScopeGroupId(),
 								},
+								data:{
+									"agency" : govAgencyCode
+								},
 								success : function(result){
 									var serializable = result;
 
@@ -911,7 +914,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 							var url = '/o/rest/v2/statistics/dossiers/todo';
 							
-							axios.get(url, config).then(function (response) {
+							/*axios.get(url, config).then(function (response) {
 								var serializable = response.data;
 
 								var indexTree = -1;
@@ -920,7 +923,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									
 									if ( serializable.data[key].level === 0) {
 										
-										/*if (serializable.data[key].dossierStatus === 'cancelling' ||
+										if (serializable.data[key].dossierStatus === 'cancelling' ||
 											serializable.data[key].dossierStatus === 'cancelled' ||
 											serializable.data[key].dossierStatus === 'processing' ||
 											serializable.data[key].dossierStatus === 'paid') {
@@ -936,28 +939,69 @@ document.addEventListener('DOMContentLoaded', function (event) {
 											items: [],
 											index: index
 										});
-									}*/
+									}
 
-								} else {
+									} else {
+										
+										vm.listgroupHoSoFilterItems.push({
+											id: serializable.data[key].dossierSubStatus,
+											idSub: serializable.data[key].dossierStatus,
+											title: serializable.data[key].statusName,
+											level: serializable.data[key].level,
+											count: serializable.data[key].count,
+											action: 'folder',
+											action_active: 'folder_open',
+											items: [],
+											index: index
+										});
+									}
 									
-									vm.listgroupHoSoFilterItems.push({
-										id: serializable.data[key].dossierSubStatus,
-										idSub: serializable.data[key].dossierStatus,
-										title: serializable.data[key].statusName,
-										level: serializable.data[key].level,
-										count: serializable.data[key].count,
-										action: 'folder',
-										action_active: 'folder_open',
-										items: [],
-										index: index
-									});
 								}
-								
-							}
 
-						})
+							})
 							.catch(function (error) {
 								
+							});*/
+
+							$.ajax({
+								url : url,
+								type : 'GET',
+								dataType : "json",
+								headers: {
+									'groupId': themeDisplay.getScopeGroupId(),
+									Accept : "application/json"
+								},
+								data:{
+									"agency" : govAgencyCode
+								},
+								success : function(result){
+									var serializable = result;
+
+									var indexTree = -1;
+									var index = 0;
+									for (var key in serializable.data) {
+										
+										if ( serializable.data[key].level === 0) {
+
+										} else {
+											
+											vm.listgroupHoSoFilterItems.push({
+												id: serializable.data[key].dossierSubStatus,
+												idSub: serializable.data[key].dossierStatus,
+												title: serializable.data[key].statusName,
+												level: serializable.data[key].level,
+												count: serializable.data[key].count,
+												action: 'folder',
+												action_active: 'folder_open',
+												items: [],
+												index: index
+											});
+										}
+										
+									}
+								},
+								error : function(result){
+								}
 							});
 							return false; 
 						}
@@ -1132,19 +1176,50 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					"events": {
 						_initServiceInfoFilterData: function(){
 							var vm = this;
-							
+							const config_serviceinfos = {
+								headers: {
+									'groupId': 55217,
+									Accept : "application/json"
+								}
+							};
 							//TODO: API
 							var url = '/o/rest/v2/serviceinfos';
 							
-							axios.get(url, config).then(function (response) {
-								var serializable = response.data;
+							// axios.get(url, config_serviceinfos).then(function (response) {
+							// 	var serializable = response.data;
 
-								vm.serviceInfoFilterItems = serializable.data;
+							// 	vm.serviceInfoFilterItems = serializable.data;
 
-							})
-								.catch(function (error) {
+							// })
+							// 	.catch(function (error) {
 									
-								});
+							// 	});
+							$.ajax({
+								url : url,
+								type : 'GET',
+								dataType : "json",
+								headers: {
+									'groupId': 55217,
+									Accept : "application/json"
+								},
+								success : function(result){
+									var data = result.data;
+									 // console.log('govAgencyCode = ' + govAgencyCode);
+									for (var i = 0; i < data.length; i++) {
+										var serviceConfigItems = data[i].serviceConfigs;
+										// console.log('serviceConfigItems = ' + serviceConfigItems);
+										if(serviceConfigItems){
+											if(govAgencyCode === serviceConfigItems.govAgencyCode){
+												vm.serviceInfoFilterItems.push(data[i]);
+											}
+										}
+									}
+								},
+								error : function(result){
+									vm.serviceInfoFilterItems = [];
+								}
+							});
+
 							return false; 
 							
 						},
@@ -1891,7 +1966,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 								follow: vm.stateFollow,
 								specialKey: !vm.stateFollow,
 								substatus: substatusParam,
-								sort: 'modified',
+								sort: 'submitDate',
 								order: 'false'
 							};
 						
@@ -2603,4 +2678,4 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 			}, 10000);
 		}*/
-	});
+	};

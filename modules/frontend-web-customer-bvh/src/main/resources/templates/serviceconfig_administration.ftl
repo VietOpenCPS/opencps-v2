@@ -121,7 +121,7 @@
 				headers : {"groupId": ${groupId}},
 				success : function(result){
 					if(result){
-						fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode);
+						fnCreateDossier(dossierTemplateNo, result.serviceCode, result.govAgencyCode, result.postalService);
 					}
 				},
 				error : function(result){
@@ -133,7 +133,7 @@
 		} 
 	};
 
-	var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode){
+	var fnCreateDossier = function(dossierTemplateNo,serviceCode,govAgencyCode,postalService){
 
 		$.ajax({
 			url : "${api.server}/dossiers",
@@ -160,7 +160,7 @@
 			success : function(result){
 				$("#choiseProcessForDossier").modal("hide");
 
-				manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId);
+				manageDossier.navigate("/taohosomoi/chuanbihoso/"+result.dossierId+"?postalService="+postalService);
 
 			},
 			error : function(result){
