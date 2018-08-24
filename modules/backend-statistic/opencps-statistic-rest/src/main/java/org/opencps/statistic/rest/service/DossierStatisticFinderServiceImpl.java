@@ -32,17 +32,4 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
 	}
 
-	@Override
-	public DossierStatisticResponse finderDossierStatistics(DossierStatisticRequest dossierStatisticRequest)
-			throws PortalException {
-		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
-				.fetchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
-						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
-						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getGroupAgencyCode(),
-						dossierStatisticRequest.isReporting(), dossierStatisticRequest.getStart(),
-						dossierStatisticRequest.getEnd());
-
-		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
-	}
-
 }
