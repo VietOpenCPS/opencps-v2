@@ -1,14 +1,39 @@
 
 package backend.api.rest.application;
 
-import java.util.HashSet;
-import java.util.Set;
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.HttpURLConnection;
+import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.opencps.api.context.provider.CompanyContextProvider;
 import org.opencps.api.context.provider.LocaleContextProvider;
@@ -27,6 +52,7 @@ import org.opencps.api.controller.impl.DossierDocumentManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
+import org.opencps.api.controller.impl.DossierSyncManagementImpl;
 import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
 import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.FileAttachManagementImpl;
@@ -54,9 +80,26 @@ import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
+import org.opencps.api.filter.KeyGenerator;
+import org.opencps.api.filter.OpenCPSKeyGenerator;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import uk.org.okapibarcode.backend.Code128;
+import uk.org.okapibarcode.backend.HumanReadableLocation;
+import uk.org.okapibarcode.backend.QrCode;
+import uk.org.okapibarcode.backend.Symbol;
+import uk.org.okapibarcode.output.Java2DRenderer;
 
 @ApplicationPath("/v2")
 @Component(immediate = true, property={"jaxrs.application=true"}, service = Application.class)
@@ -112,6 +155,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new CertNumberManagementImpl());
 		singletons.add(new OneGateControllerImpl());
 		singletons.add(new DossierDocumentManagementImpl());
+		singletons.add(new DossierSyncManagementImpl());
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);
@@ -128,7 +172,160 @@ public class BackendAPIRestApplication extends Application {
 	public String working() {
 		return "It works!";
 	}
+
+	@GET
+	@Path("/barcode")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+
+	public Response getBarcode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("value") String value) {
+		try {
+			Code128 barcode = new Code128();
+			barcode.setFontName("Monospaced");
+			barcode.setFontSize(16);
+			barcode.setModuleWidth(2);
+			barcode.setBarHeight(50);
+			barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			barcode.setContent(value);
+
+			int width = barcode.getWidth();
+			int height = barcode.getHeight();
+
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(barcode);
+			String uuid = UUID.randomUUID().toString();
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + uuid + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {				
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}		
+	}
 	
+	@GET
+	@Path("/qrcode")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+
+	public Response getQRcode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("value") String value) {
+		try {
+			QrCode qrcode = new QrCode();
+			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			qrcode.setDataType(Symbol.DataType.HIBC);
+			qrcode.setPreferredVersion(40);
+			qrcode.setContent(value);
+
+			int width = qrcode.getWidth();
+			int height = qrcode.getHeight();
+
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			Graphics2D g2d = image.createGraphics();
+			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
+			renderer.render(qrcode);
+			String uuid = UUID.randomUUID().toString();
+			File destDir = new File("barcode");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("barcode/" + uuid + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+			if (file.exists()) {
+				ImageIO.write(image, "png", file);
+	//			String fileType = Files.probeContentType(file.toPath());
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			} else {				
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}		
+	}
+	
+    @POST
+    @Path("/login")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public Response authenticateUser(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+            // Issue a token for the user
+            String token = issueToken(user.getEmailAddress());
+
+            // Return the token on the response
+            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+
+        } catch (Exception e) {
+        	e.printStackTrace();
+            return Response.status(UNAUTHORIZED).build();
+        }
+    }
+    
+	private String issueToken(String login) {
+    	KeyGenerator keyGenerator = new OpenCPSKeyGenerator();
+    	
+        Key key = keyGenerator.generateKey();
+        String jwtToken = Jwts.builder()
+                .setSubject(login)
+                .setIssuer(uriInfo.getAbsolutePath().toString())
+                .setIssuedAt(new Date())
+                .setExpiration(toDate(LocalDateTime.now().plusMinutes(15L)))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+        return jwtToken;
+
+    }
+    
+    private Date toDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+    
+    @Context
+    private UriInfo uriInfo;
+    
 	@Reference
 	private CompanyContextProvider _companyContextProvider;
 

@@ -36,7 +36,16 @@ dependencies {
 	compileOnly project(":modules:backend-synchronization:backend-synchronization-service")
 	
 	compileOnly project(":modules:backend-auth")
-	
+	// https://mvnrepository.com/artifact/uk.org.okapibarcode/okapibarcode
+	compile group: 'uk.org.okapibarcode', name: 'okapibarcode', version: '0.1.7'	
+	compile group: 'com.beust', name: 'jcommander', version: '1.48'
+	// https://mvnrepository.com/artifact/com.google.zxing/core
+	compile group: 'com.google.zxing', name: 'core', version: '3.3.0'
+    compile 'io.jsonwebtoken:jjwt-api:0.10.2'
+    runtime 'io.jsonwebtoken:jjwt-impl:0.10.2',
+            //'org.bouncycastle:bcprov-jdk15on:1.60',
+            'io.jsonwebtoken:jjwt-jackson:0.10.2'
+            	
 	testCompile group: "junit", name: "junit", version: "4.12"
 }	
 

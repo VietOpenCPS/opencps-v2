@@ -27,6 +27,7 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 	public ActionConfig addActionConfig(long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
 			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType,
+			String mappingAction,
 			ServiceContext serviceContext) throws PortalException, AuthenticationException {
 
 		BackendAuthImpl authImpl = new BackendAuthImpl();
@@ -37,7 +38,7 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 			if (Validator.isNotNull(actionCode)) {
 				object = ActionConfigLocalServiceUtil.addActionConfig(userId, groupId, actionCode, actionName, extraForm,
 						formScript, sampleData, insideProcess, userNote, syncType, pending, rollbackable, notificationType,
-						documentType);
+						documentType, mappingAction);
 			}
 			return object;
 		} else {
@@ -50,7 +51,7 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 	public ActionConfig updateActionConfig(Long actionConfigId, long userId, long groupId, String actionCode,
 			String actionName, Boolean extraForm, String formScript, String sampleData, Boolean insideProcess,
 			Integer userNote, Integer syncType, Boolean pending, Boolean rollbackable, String notificationType,
-			String documentType, ServiceContext serviceContext) throws PortalException, AuthenticationException {
+			String documentType, String mappingAction, ServiceContext serviceContext) throws PortalException, AuthenticationException {
 
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -60,7 +61,7 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 
 			object = ActionConfigLocalServiceUtil.updateActionConfig(object.getActionConfigId(), userId, groupId, actionCode,
 					actionName, extraForm, formScript, sampleData, insideProcess, userNote, syncType, pending,
-					rollbackable, notificationType, documentType);
+					rollbackable, notificationType, documentType, mappingAction);
 
 			return object;
 		} else {
@@ -84,13 +85,14 @@ public class ActionConfigActionsImpl implements ActionConfigActions {
 	}
 
 	@Override
-	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName, Boolean extraForm,
-			String sampleData, Boolean insideProcess, Integer userNote, Integer syncType, Integer eventType,
-			Integer infoType, Boolean rollbackable, String notificationType, String formConfig) {
+	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName,
+			Boolean extraForm, String sampleData, Boolean insideProcess, Integer userNote, Integer syncType,
+			Integer eventType, Integer infoType, Boolean rollbackable, String notificationType, String documentType,
+			String formConfig, String mappingAction) {
 
 		return ActionConfigLocalServiceUtil.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm,
 				sampleData, insideProcess, userNote, syncType, eventType, infoType, rollbackable, notificationType,
-				formConfig);
+				documentType, formConfig, mappingAction);
 	}
 
 	@Override

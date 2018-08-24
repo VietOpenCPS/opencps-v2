@@ -13,7 +13,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.opencps.dossiermgt.action.DossierFileActions;
-import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -32,7 +31,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -334,4 +332,16 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			throw new SystemException(e);
 		}
 	}
+
+	@Override
+	public DossierFile addDossierFileEForm(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
+			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
+			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext)
+			throws SystemException, PortalException {
+
+		return DossierFileLocalServiceUtil.addDossierFileEForm(groupId, dossierId, referenceUid, dossierTemplateNo,
+				dossierPartNo, fileTemplateNo, displayName, sourceFileName, fileSize, inputStream, fileType, isSync,
+				serviceContext);
+	}
+
 }

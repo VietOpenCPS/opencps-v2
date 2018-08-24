@@ -11,10 +11,11 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<base href="/">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=3453492221199533232" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=9992112222911" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=1" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=1" rel="stylesheet">
 	
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
 	<script type="text/javascript" src="http://code.cloudcms.com/alpaca/1.5.24/bootstrap/alpaca.min.js"></script>
 	
@@ -23,27 +24,29 @@
 <body class="${css_class} mBody">
 	<div class="mWrapper">
 		<header id="banner">		
-			<div class="container align-middle" style="padding: 0;">
+			<div class="container align-middle">
 				<div class="logo">
 					<a href="${site_default_url}" class="align-middle">
 						<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
 						<div class="text-logo">
-							Hệ thống Một cửa điện tử liên thông
+							Cổng Dịch vụ công trực tuyến
 							<span>${site_name}</span>
 						</div>
 					</a>
 				</div>
+				
 			<@liferay_portlet["runtime"]
               defaultPreferences="${freeMarkerPortletPreferences}"
               portletProviderAction=portletProviderAction.VIEW
               instanceId="FrontendWebPortal_LoginPortlet_1"
               portletName="FrontendWebPortal_LoginPortlet"/>
+
 			</div>
-		
-			<#if has_navigation && is_setup_complete>
-				<#include "${full_templates_path}/navigation.ftl" />
-			</#if>
 		</header>
+		
+		<#if has_navigation && is_setup_complete>
+			<#include "${full_templates_path}/navigation.ftl" />
+		</#if>
 
 		<section id="main-content">
 			<div class="container-fluid">
@@ -62,13 +65,22 @@
 		</section>
 
 		<footer id="footer">
-			<div>
-				<div class="site-name">Cổng dịch vụ công trực tuyến <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
-			</div>
-			<div class="contact">
-				<p>Địa chỉ: <b>Đường Nguyễn Tất Thành, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</b></p>
-				<p>Điện thoại: <b>0210.3811486</b> | Fax: <b>0210.3811485</b></p>
-				<p>Email: <b>sotttt@phutho.gov.vn</b></p>
+			<div class="container">
+				<div class="left">
+					<div class="site-name"><!--Cổng dịch vụ công trực tuyến--> <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
+					<div class="contact">
+						<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
+						<p><i class="fa fa-phone"></i> 0210.3846647 - 0210.3847393</p>
+						<p><i class="fa fa-envelope"></i> vpub@phutho.gov.vn</p>
+					</div>
+				</div>
+				<div class="right">
+					<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
+					<p class="align-middle">
+						<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
+						Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội Viettel trên nền OpenCPS
+					</p>
+				</div>
 			</div>
 		</footer>
 	</div>

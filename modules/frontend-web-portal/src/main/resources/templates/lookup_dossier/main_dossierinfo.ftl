@@ -17,6 +17,7 @@
 <!--Render thông tin hồ sơ cơ bản-->
 <div class="row">
 	<div id="detailView"></div>
+	<div id="detailViewNodata"></div>
 </div>
 <!-- Template thông tin hồ sơ chi tiết -->
 <div id="detailView2">
@@ -73,6 +74,7 @@
 		$("#input_search_dossierinfo").val("${(keyword)!}");
 		var paramKeyword = $("#input_search_dossierinfo").val().toLowerCase();
 		$("#detailView2").hide();
+		$("#detailViewNodata").hide();
 		// dataSource thông tin hồ sơ cơ bản
 		var dataSourceDossierResultSearch = new kendo.data.DataSource({
 			transport: {
@@ -109,10 +111,12 @@
 			        					kendo.bind($("#DossiersDetailInfo"), viewModel);
 			        					$(".panel").css("border-radius","0");
 			        				}
-			        				);
+			        			);
 			        			$("#detailView2").hide()
 			        		}else{
-			        			$("#detailView").html("Hồ sơ với mã hồ sơ đã nhập không tồn tại trong hệ thống");
+										$("#detailViewNodata").show();
+										$("#detailView").hide();
+			        			$("#detailViewNodata").html("Hồ sơ với mã hồ sơ đã nhập không tồn tại trong hệ thống");
 			        		}
 			        	},
 			        	error : function(xhr){
@@ -143,6 +147,7 @@
 			function(){
 				var paraValue = $("#input_search_dossierinfo").val();
 				$("#detailView").hide();
+				$("#detailViewNodata").hide();
 				$("#detailView2").hide();
 				if (paraValue == "") {
 					$("#lvDossierResultSearch").hide();
@@ -256,11 +261,11 @@
 						pullDataDetail(dossierId)
 					}
 				);
+				$("#detailViewNodata").hide();
 				$("#detailView2").hide()
 			})
 		}
 	});
 </script>
-
 
 

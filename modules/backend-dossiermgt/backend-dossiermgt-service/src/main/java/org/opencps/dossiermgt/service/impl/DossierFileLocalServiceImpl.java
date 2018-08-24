@@ -134,16 +134,18 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
 		long fileEntryId = 0;
 
-		try {
-			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
-					fileType, fileSize, serviceContext);
-
-			if (fileEntry != null) {
-				fileEntryId = fileEntry.getFileEntryId();
+		if (inputStream != null) {
+			try {
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
+						fileType, fileSize, serviceContext);
+	
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			} catch (Exception e) {
+//				e.printStackTrace();
+//				throw new SystemException(e);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new SystemException(e);
 		}
 		_log.info("****End uploadFile file at:" + new Date());
 
@@ -185,14 +187,133 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			displayName = sourceFileName;
 		}
 
-		if (Validator.isNotNull(dossierPart.getFormScript())) {
-			object.setEForm(true);
-			object.setFormScript(dossierPart.getFormScript());
+		_log.info("****Start autofill file at:" + new Date());
+
+		_log.info("****End autofill file at:" + new Date());
+
+		object.setDisplayName(displayName);
+		object.setOriginal(true);
+		
+		if (Boolean.parseBoolean(isSync)) {
+			object.setIsNew(true);
+		}
+		
+//		String deliverableCode = PwdGenerator.getPassword(10);
+//		
+//		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+//			object.setDeliverableCode(deliverableCode);
+//		}
+		String deliverableCode = StringPool.BLANK;
+		
+		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+			
+			deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, serviceContext.getCompanyId(), deliverableType.getDeliverableTypeId());
+			object.setDeliverableCode(deliverableCode);
 		}
 
-		if (Validator.isNotNull(dossierPart.getFormReport())) {
-			object.setFormReport(dossierPart.getFormReport());
+		if (Validator.isNotNull(dossierPart.getSampleData())) {
+			String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, serviceContext);
+			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
+			formDataObj.put("LicenceNo", deliverableCode);
+			formData = formDataObj.toJSONString();
+			object.setFormData(
+					formData
+					);
 		}
+
+		return dossierFilePersistence.update(object);
+	}
+
+	//Process EForm
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile addDossierFileEForm(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
+			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
+			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
+		long userId = serviceContext.getUserId();
+		
+		_log.info("****Start add file at:" + new Date());
+
+		validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo);
+		
+		_log.info("****End validator file at:" + new Date());
+
+		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo + ", groupId: " + groupId);
+		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
+		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
+		long fileEntryId = 0;
+
+		if (inputStream != null) {
+			try {
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
+						fileType, fileSize, serviceContext);
+	
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			} catch (Exception e) {
+//				e.printStackTrace();
+//				throw new SystemException(e);
+			}
+		}
+		_log.info("****End uploadFile file at:" + new Date());
+
+		Date now = new Date();
+
+		User userAction = null;
+
+		if (userId != 0) {
+			userAction = userLocalService.getUser(userId);
+		}
+
+		long dossierFileId = counterLocalService.increment(DossierFile.class.getName());
+
+		DossierFile object = dossierFilePersistence.create(dossierFileId);
+
+		// Add audit fields
+		object.setCompanyId(serviceContext.getCompanyId());
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(Validator.isNotNull(userAction) ? userAction.getUserId() : 0l);
+		object.setUserName(Validator.isNotNull(userAction) ? userAction.getFullName() : StringPool.BLANK);
+
+		// Add other fields
+
+		object.setDossierId(dossierId);
+		if (Validator.isNull(referenceUid)) {
+			referenceUid = PortalUUIDUtil.generate();
+		}
+
+		object.setReferenceUid(referenceUid);
+		object.setDossierTemplateNo(dossierTemplateNo);
+		object.setFileEntryId(fileEntryId);
+		object.setDossierPartNo(dossierPartNo);
+		object.setFileTemplateNo(fileTemplateNo);
+		object.setDossierPartType(dossierPart.getPartType());
+
+		if (Validator.isNull(displayName)) {
+			displayName = sourceFileName;
+		}
+
+		object.setEForm(true);
+		if (Validator.isNotNull(dossierPart.getFormScript())) {
+			object.setFormScript(dossierPart.getFormScript());
+		}
+		if (Validator.isNull(dossierPart.getDeliverableType())) {
+			if (Validator.isNotNull(dossierPart.getFormReport())) {
+				object.setFormReport(dossierPart.getFormReport());
+			}			
+		}
+		else {
+			DeliverableType dt = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+			if (dt != null && Validator.isNotNull(dt.getFormReport())) {
+				object.setFormReport(dt.getFormReport());
+			}
+		}
+
 		_log.info("****Start autofill file at:" + new Date());
 
 		_log.info("****End autofill file at:" + new Date());
@@ -623,7 +744,15 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				throw new NoSuchDossierPartException();
 			}
 
-			jrxmlTemplate = dossierPart.getFormReport();
+			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+				DeliverableType dt = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+				if (dt != null && Validator.isNotNull(dt.getFormReport())) {
+					jrxmlTemplate = dt.getFormReport();
+				}
+			}
+			else {
+				jrxmlTemplate = dossierPart.getFormReport();				
+			}
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}

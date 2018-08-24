@@ -21,12 +21,13 @@ public interface ServiceProcessActions {
 	public ServiceProcess getServiceProcessDetail(long serviceProcessId) throws PortalException;
 
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
-			String processName, String description, int durationCount, int durationUnit, long counter,
+			String processName, String description, Double durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
 			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
 			ServiceContext context) throws PortalException;
 
-	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException;
+	public ServiceProcess removeServiceProcess(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) throws PortalException;
 
 	public JSONObject getServiceProcessRoles(long serviceProcessId) throws PortalException;
 
@@ -83,7 +84,7 @@ public interface ServiceProcessActions {
 
 	//LamTV_Process output DB
 	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName, String description,
-			Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo, String serverName,
+			Double durationCount, Integer durationUnit, boolean generatePassword, String serverNo, String serverName,
 			String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException;
 
 	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId,
@@ -91,8 +92,8 @@ public interface ServiceProcessActions {
 
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
-			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
-			throws PortalException;
+			String instructionNote, String briefNote, String roleAsStep, Integer checkInput,
+			ServiceContext serviceContext) throws PortalException;
 
 	public void updateProcessStepRoleDB(long userId, long groupId, long processStepId, long roleId, String roleCode,
 			String roleName, boolean moderator, String condition, ServiceContext serviceContext);

@@ -61,7 +61,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 
 	@Override
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
-			String processName, String description, int durationCount, int durationUnit, long counter,
+			String processName, String description, Double durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
 			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
 			ServiceContext context) throws PortalException {
@@ -72,8 +72,18 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	}
 
 	@Override
-	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException {
-		return ServiceProcessLocalServiceUtil.removeServiceProcess(serviceProcessId, groupId);
+	public ServiceProcess removeServiceProcess(long userId, long groupId, long serviceProcessId,
+			ServiceContext serviceContext) throws PortalException {
+
+		boolean flagProRole = deleteAllProcessRole(userId, groupId, serviceProcessId, serviceContext);
+		boolean flagStep = deleteAllProcessStep(userId, groupId, serviceProcessId, serviceContext);
+		boolean flagProAction = deleteAllProcessAction(userId, groupId, serviceProcessId, serviceContext);
+		boolean flagSequence = deleteAllProcessSequence(userId, groupId, serviceProcessId, serviceContext);
+		
+		if (flagProRole && flagStep && flagProAction && flagSequence) {
+			return ServiceProcessLocalServiceUtil.removeServiceProcess(serviceProcessId, groupId);
+		}
+		return null;
 	}
 
 	@Override
@@ -258,7 +268,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 
 	@Override
 	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
-			String description, Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
+			String description, Double durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
 			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext)
 			throws PortalException {
 
@@ -282,12 +292,12 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	@Override
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
 			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
-			String instructionNote, String briefNote, String roleAsStep, ServiceContext serviceContext)
-			throws PortalException {
+			String instructionNote, String briefNote, String roleAsStep, Integer checkInput,
+			ServiceContext serviceContext) throws PortalException {
 
-		ProcessStep processStep = ProcessStepLocalServiceUtil.updateProcessStepDB(userId, groupId, serviceProcessId, stepCode, stepName,
-				sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount, instructionNote, briefNote,
-				roleAsStep, serviceContext);
+		ProcessStep processStep = ProcessStepLocalServiceUtil.updateProcessStepDB(userId, groupId, serviceProcessId,
+				stepCode, stepName, sequenceNo, groupName, dossierStatus, dossierSubStatus, durationCount,
+				instructionNote, briefNote, roleAsStep, checkInput, serviceContext);
 		if (processStep != null) {
 			return processStep.getProcessStepId();
 		}
@@ -365,15 +375,15 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		try {
 			List<ProcessStep> stepList = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
 			if (stepList != null && stepList.size() > 0) {
-				_log.info("stepList: "+stepList.size());
+//				_log.info("stepList: "+stepList.size());
 				long stepId = 0;
 				for (ProcessStep step : stepList) {
 					stepId = step.getProcessStepId();
-					_log.info("stepId: "+stepId);
+//					_log.info("stepId: "+stepId);
 					if (stepId > 0) {
 						List<ProcessStepRole> stepRoleList = ProcessStepRoleLocalServiceUtil
 								.findByP_S_ID(stepId);
-						_log.info("stepRoleList: "+stepRoleList.size());
+//						_log.info("stepRoleList: "+stepRoleList.size());
 						if (stepRoleList != null && stepRoleList.size() > 0) {
 							for (ProcessStepRole stepRole : stepRoleList) {
 								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(stepRole);
@@ -384,7 +394,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 						}
 					}
 					if (flag) {
-						_log.info("STARTTT: ");
+//						_log.info("STARTTT: ");
 						ProcessStep processStep = ProcessStepLocalServiceUtil.deleteProcessStep(step);
 						if (processStep == null) {
 							flag = false;

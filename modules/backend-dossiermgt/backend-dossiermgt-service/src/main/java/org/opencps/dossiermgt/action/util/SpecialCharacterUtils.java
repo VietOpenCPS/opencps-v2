@@ -18,7 +18,7 @@ public class SpecialCharacterUtils {
 	private static Log _log = LogFactoryUtil.getLog(SpecialCharacterUtils.class);
 	
 	public static String splitSpecial(String value) {
-		String[] charSpecialArr = new String[]{"+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":","\\", "/"};
+		String[] charSpecialArr = new String[]{"+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":","\\", "/","."};
 		String valueSplit = StringPool.BLANK;
 		for (int i = 0; i < charSpecialArr.length; i++) {
 			String specialCharacter = charSpecialArr[i];

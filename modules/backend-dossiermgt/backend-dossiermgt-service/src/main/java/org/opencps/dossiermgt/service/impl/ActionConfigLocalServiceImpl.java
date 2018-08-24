@@ -60,7 +60,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 	@Indexable(type = IndexableType.REINDEX)
 	public ActionConfig addActionConfig(long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
-			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType)
+			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType, String mappingAction)
 			throws PortalException {
 
 		validate(groupId, actionCode, 0);
@@ -92,6 +92,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
 		actionConfig.setNotificationType(notificationType);
 		actionConfig.setDocumentType(documentType);
+		actionConfig.setMappingAction(mappingAction);
 
 		actionConfigPersistence.update(actionConfig);
 
@@ -102,7 +103,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 	@Indexable(type = IndexableType.REINDEX)
 	public ActionConfig updateActionConfig(long actionConfigId, long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
-			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType) throws PortalException {
+			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType, String mappingAction) throws PortalException {
 
 		validate(groupId, actionCode, actionConfigId);
 
@@ -154,6 +155,9 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		if (documentType != null) {
 			actionConfig.setDocumentType(documentType);
 		}
+		if (mappingAction != null) {
+			actionConfig.setMappingAction(mappingAction);
+		}
 
 		actionConfigPersistence.update(actionConfig);
 
@@ -191,9 +195,10 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 	//LamTV_ Process Update DB ActionConfig
 	@Indexable(type = IndexableType.REINDEX)
-	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName, Boolean extraForm,
-			String sampleData, Boolean insideProcess, Integer userNote, Integer syncType, Integer eventType,
-			Integer infoType, Boolean rollbackable, String notificationType, String formConfig) {
+	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName,
+			Boolean extraForm, String sampleData, Boolean insideProcess, Integer userNote, Integer syncType,
+			Integer eventType, Integer infoType, Boolean rollbackable, String notificationType, String documentType,
+			String formConfig, String mappingAction) {
 		try {
 			User user = userLocalService.getUser(userId);
 			Date now = new Date();
@@ -218,7 +223,9 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 			actionConfig.setInfoType(Validator.isNotNull(infoType) ? infoType : 0);
 			actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
 			actionConfig.setNotificationType(notificationType);
-
+			actionConfig.setDocumentType(documentType);
+			actionConfig.setMappingAction(mappingAction);
+			
 			 return actionConfigPersistence.update(actionConfig);
 		} catch (Exception e) {
 			e.printStackTrace();

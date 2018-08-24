@@ -464,7 +464,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
-			String processName, String description, int durationCount, int durationUnit, long counter,
+			String processName, String description, Double durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
 			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
 			ServiceContext context) throws PortalException {
@@ -542,17 +542,15 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException {
 		validateRemove(serviceProcessId, groupId);
 		
-		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
+//		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
 
-		for (ServiceProcessRole processRole : processRoles) {
-			serviceProcessRolePersistence.remove(processRole);
-		}
+//		for (ServiceProcessRole processRole : processRoles) {
+//			serviceProcessRolePersistence.remove(processRole);
+//		}
 		
 		ServiceProcess serviceProcess = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
-		serviceProcessPersistence.remove(serviceProcess);
-
-		return serviceProcess;
+		return serviceProcessPersistence.remove(serviceProcess);
 
 	}
 
@@ -773,7 +771,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	//LamTV_Process output ServiceProcess to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceProcess updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
-			String description, Integer durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
+			String description, Double durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
 			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();

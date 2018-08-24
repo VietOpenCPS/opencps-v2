@@ -79,7 +79,22 @@ import javax.xml.bind.annotation.XmlType;
     "dossierNo",
     "submitDate",
     "receiveDate",
-    "dueDate"
+    "dueDate",
+    "dossierStatus",
+    "dossierStatusText",
+    "dossierSubStatus",
+    "dossierSubStatusText",
+    "isSameAsApplicant",
+    "delegateName",
+    "delegateIdNo",
+    "delegateTelNo",
+    "delegateEmail",
+	"delegateAddress",
+	"delegateCityCode",
+	"delegateDistrictCode",
+	"delegateWardCode",
+	"sampleCount"
+
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -139,6 +154,34 @@ public class DossierInputModel {
 	protected String receiveDate;
 	@FormParam(value = "dueDate")
 	protected String dueDate;
+	@FormParam(value = "dossierStatus")
+	protected String dossierStatus;
+	@FormParam(value = "dossierStatusText")
+	protected String dossierStatusText;
+	@FormParam(value = "dossierSubStatus")
+	protected String dossierSubStatus;
+	@FormParam(value = "dossierSubStatusText")
+	protected String dossierSubStatusText;
+	@FormParam(value = "isSameAsApplicant")
+	private boolean isSameAsApplicant;
+	@FormParam(value = "delegateName")
+	private String delegateName;
+	@FormParam(value = "delegateIdNo")
+	private String delegateIdNo;
+	@FormParam(value = "delegateTelNo")
+	private String delegateTelNo;
+	@FormParam(value = "delegateEmail")
+	private String delegateEmail;
+	@FormParam(value = "delegateAddress")
+	private String delegateAddress;
+	@FormParam(value = "delegateCityCode")
+	private String delegateCityCode;
+	@FormParam(value = "delegateDistrictCode")
+	private String delegateDistrictCode;
+	@FormParam(value = "delegateWardCode")
+	private String delegateWardCode;
+	@FormParam(value = "sampleCount")
+	private Long sampleCount;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -714,5 +757,118 @@ public class DossierInputModel {
      */
     public void setDueDate(String value) {
         this.dueDate = value;
-    } 
+    }
+
+	public String getDossierStatus() {
+		return dossierStatus;
+	}
+
+	public void setDossierStatus(String dossierStatus) {
+		this.dossierStatus = dossierStatus;
+	}
+
+	public String getDossierStatusText() {
+		return dossierStatusText;
+	}
+
+	public void setDossierStatusText(String dossierStatusText) {
+		this.dossierStatusText = dossierStatusText;
+	}
+
+	public String getDossierSubStatus() {
+		return dossierSubStatus;
+	}
+
+	public void setDossierSubStatus(String dossierSubStatus) {
+		this.dossierSubStatus = dossierSubStatus;
+	}
+
+	public String getDossierSubStatusText() {
+		return dossierSubStatusText;
+	}
+
+	public void setDossierSubStatusText(String dossierSubStatusText) {
+		this.dossierSubStatusText = dossierSubStatusText;
+	}
+
+	public boolean isSameAsApplicant() {
+		return isSameAsApplicant;
+	}
+
+	public void setSameAsApplicant(boolean isSameAsApplicant) {
+		this.isSameAsApplicant = isSameAsApplicant;
+	}
+
+	public String getDelegateName() {
+		return delegateName;
+	}
+
+	public void setDelegateName(String delegateName) {
+		this.delegateName = delegateName;
+	}
+
+	public String getDelegateIdNo() {
+		return delegateIdNo;
+	}
+
+	public void setDelegateIdNo(String delegateIdNo) {
+		this.delegateIdNo = delegateIdNo;
+	}
+
+	public String getDelegateTelNo() {
+		return delegateTelNo;
+	}
+
+	public void setDelegateTelNo(String delegateTelNo) {
+		this.delegateTelNo = delegateTelNo;
+	}
+
+	public String getDelegateEmail() {
+		return delegateEmail;
+	}
+
+	public void setDelegateEmail(String delegateEmail) {
+		this.delegateEmail = delegateEmail;
+	}
+
+	public String getDelegateAddress() {
+		return delegateAddress;
+	}
+
+	public void setDelegateAddress(String delegateAddress) {
+		this.delegateAddress = delegateAddress;
+	}
+
+	public String getDelegateCityCode() {
+		return delegateCityCode;
+	}
+
+	public void setDelegateCityCode(String delegateCityCode) {
+		this.delegateCityCode = delegateCityCode;
+	}
+
+	public String getDelegateDistrictCode() {
+		return delegateDistrictCode;
+	}
+
+	public void setDelegateDistrictCode(String delegateDistrictCode) {
+		this.delegateDistrictCode = delegateDistrictCode;
+	}
+
+	public String getDelegateWardCode() {
+		return delegateWardCode;
+	}
+
+	public void setDelegateWardCode(String delegateWardCode) {
+		this.delegateWardCode = delegateWardCode;
+	}
+
+	public Long getSampleCount() {
+		return sampleCount;
+	}
+
+	public void setSampleCount(Long sampleCount) {
+		this.sampleCount = sampleCount;
+	} 
+
 }

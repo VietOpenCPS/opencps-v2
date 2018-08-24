@@ -46,15 +46,15 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 
 		addSearchTerm(
 			searchQuery, searchContext, CommentTerm.COMMENT_ID, false);
-		addSearchTerm(searchQuery, searchContext, CommentTerm.GROUP_ID, false);
+		addSearchTerm(searchQuery, searchContext, Field.GROUP_ID, false);
 		addSearchTerm(
 			searchQuery, searchContext, CommentTerm.COMPANY_ID, false);
-		addSearchTerm(searchQuery, searchContext, CommentTerm.USER_ID, false);
-		addSearchTerm(searchQuery, searchContext, CommentTerm.USER_NAME, false);
+		addSearchTerm(searchQuery, searchContext, Field.USER_ID, false);
+		addSearchTerm(searchQuery, searchContext, Field.USER_NAME, false);
 		addSearchTerm(
-			searchQuery, searchContext, CommentTerm.CREATE_DATE, false);
+			searchQuery, searchContext, Field.CREATE_DATE, false);
 		addSearchTerm(
-			searchQuery, searchContext, CommentTerm.MODIFIED_DATE, false);
+			searchQuery, searchContext, Field.MODIFIED_DATE, false);
 
 		addSearchTerm(searchQuery, searchContext, CommentTerm.CLASS_NAME, true);
 		addSearchTerm(searchQuery, searchContext, CommentTerm.CLASS_PK, true);
@@ -72,7 +72,6 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 		// addSearchTerm(searchQuery, searchContext,
 		// CommentTerm.CREATED_BY_CURRENT_USER, false);
 
-		@SuppressWarnings("unchecked")
 		LinkedHashMap<String, Object> params =
 			(LinkedHashMap<String, Object>) searchContext.getAttribute(
 				"params");
@@ -124,34 +123,19 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 		document.addNumberSortable(
 			CommentTerm.UPVOTE_COUNT, comment.getUpvoteCount());
 		document.addTextSortable(
-			CommentTerm.USER_HAS_UPVOTED, comment.getUserHasUpvoted());
+			CommentTerm.USER_HAS_UPVOTED, comment.getUpvotedUsers());
+		
+		document.addTextSortable(
+			CommentTerm.OPINION, String.valueOf(comment.getOpinion()));
 
-		document.setSortableTextFields(new String[] {
+		/*document.setSortableTextFields(new String[] {
 			CommentTerm.CREATE_DATE
-		});
+		});*/
 
 		return document;
 	}
 
-	@Override
-	protected String doGetSortField(String orderByCol) {
-
-		if (orderByCol.equals("email-address")) {
-			return "emailAddress";
-		}
-		else if (orderByCol.equals("first-name")) {
-			return "firstName";
-		}
-		else if (orderByCol.equals("job-title")) {
-			return "jobTitle";
-		}
-		else if (orderByCol.equals("last-name")) {
-			return "lastName";
-		}
-		else {
-			return orderByCol;
-		}
-	}
+	
 
 	@Override
 	protected Summary doGetSummary(

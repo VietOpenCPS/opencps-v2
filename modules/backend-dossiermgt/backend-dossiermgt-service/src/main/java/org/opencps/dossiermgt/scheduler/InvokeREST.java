@@ -19,16 +19,17 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class InvokeREST {
-
+	
 	public JSONObject callAPI(long groupId, String httpMethod, String accept, String pathBase, String endPoint,
 			String username, String password, HashMap<String, String> properties, ServiceContext serviceContext) {
 
 		JSONObject response = JSONFactoryUtil.createJSONObject();
 
 		try {
-
+			
 			URL url = new URL(pathBase + endPoint);
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -37,7 +38,7 @@ public class InvokeREST {
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
-
+			
 			conn.setRequestMethod(httpMethod);
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);
@@ -182,13 +183,17 @@ public class InvokeREST {
 			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
-			multipart.addFilePart("file", file);
-
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
 					multipart.addFormField(m.getKey().toString(), m.getValue().toString());
-
 				}
+			}
+
+			if (file != null) {
+				multipart.addFilePart("file", file);				
+			}
+			else {
+				multipart.addFormField("file", StringPool.BLANK);
 			}
 
 			List<String> res = multipart.finish();

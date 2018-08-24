@@ -704,10 +704,14 @@ paths:
       - application/xml
       parameters:
         - $ref: '#/parameters/id'
-        - name: upfile
+        - name: file
           in: formData 
           type: file
           description: The file to upload
+        - name: referenceUid
+          in: formData 
+          type: string
+          description: reference uid of document
         - name: documentType
           in: formData 
           type: string
@@ -727,13 +731,13 @@ paths:
             $ref: '#/definitions/DossierDocumentModel'
         400:
           description: DossierDocument has not data
-  /dossiers/{id}/documents/{typeCode}:
+  /dossiers/{id}/documents/{referenceUid}:
     get:
       tags:
       - DossierDocuments
-      summary: Download file document by typeCode
-      operationId: downloadDocByTypeCode
-      description: Download file document by typeCode
+      summary: Download file document by referenceUid
+      operationId: downloadDocByReferenceUid
+      description: Download file document by referenceUid
       consumes:
       - applicantion/json
       - applicantion/xml
@@ -742,7 +746,7 @@ paths:
       - applicantion/xml
       parameters:
         - $ref: '#/parameters/id'
-        - $ref: '#/parameters/typeCode'
+        - $ref: '#/parameters/referenceUid'
       responses:
         200:
           description: Download file is success
@@ -763,7 +767,7 @@ paths:
       - applicantion/json
       - applicantion/xml
       parameters:
-        - $ref: '#/parameters/model'
+        - $ref: '#/parameters/info'
         - $ref: '#/parameters/id'
         - $ref: '#/parameters/start'
         - $ref: '#/parameters/end'
@@ -820,6 +824,40 @@ paths:
             $ref: '#/definitions/DossierStatisticResultModel'
         400:
           description: Get list dossierSync is not success
+# List API statistics report
+  /statistics/report/{code}:
+    put:
+      tags:
+      - StatisticReport
+      summary: Get report file
+      operationId: statisticReportPrint
+      description: Get report file
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: code
+        in: path
+        description: code documenttype
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào
+        schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          schema:
+            type: object
+        400:
+          description: Get report file is not success
 # Define model
 definitions:
   ActionConfigItemResult:
@@ -879,6 +917,9 @@ definitions:
       userNote:
         type: integer
         example: 0
+      mappingAction:
+        type: string
+        example: "1200"        
   StepConfigItemResult:
     type: object
     required:
@@ -1147,6 +1188,9 @@ definitions:
         type: integer
         format: int64
         example: 0
+      referenceUid:
+        type: string
+        example: referenceUid
       createDate:
         type: string
         format: date-time
@@ -1290,19 +1334,25 @@ parameters:
     type: string
     required: true
     description: id or code of DocumentType
+  referenceUid:
+    name: referenceUid
+    in: path
+    type: string
+    required: true
+    description: referenceUid of Document
   typeCode:
     name: typeCode
     in: path
     type: string
     required: true
     description: typeCode of Document
-  model:
-    name: model
+  info:
+    name: info
     in: query
     type: integer
     format: int32
     required: true
-    description: model in syncs service
+    description: info type in syncs
   action:
     name: action
     in: query

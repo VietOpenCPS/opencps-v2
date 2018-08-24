@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.DossierMark;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierMarkLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -53,28 +54,48 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(userId);
+		DossierMark object = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId,
+				dossierPartNo);
+		if (object != null) {
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
 
-		long dossierMarkId = counterLocalService.increment(DossierMark.class.getName());
-
-		DossierMark object = dossierMarkPersistence.create(dossierMarkId);
-
-		/// Add audit fields
-		object.setCompanyId(serviceContext.getCompanyId());
-		object.setGroupId(groupId);
-		object.setCreateDate(now);
-		object.setModifiedDate(now);
-		object.setUserId(userAction.getUserId());
-
-		// Add other fields
-		object.setDossierId(dossierId);
-		object.setDossierPartNo(dossierPartNo);
-		if (Validator.isNotNull(fileCheck)) {
-			object.setFileCheck(fileCheck);
+			// Add other fields
+			if (Validator.isNotNull(fileCheck)) {
+				object.setFileCheck(fileCheck);
+			}
+			if (Validator.isNotNull(fileMark)) {
+				object.setFileMark(fileMark);
+			}
+			object.setFileComment(fileComment);
 		} else {
-			object.setFileCheck(0);
+			long dossierMarkId = counterLocalService.increment(DossierMark.class.getName());
+			object = dossierMarkPersistence.create(dossierMarkId);
+
+			/// Add audit fields
+			object.setCompanyId(serviceContext.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+
+			// Add other fields
+			object.setDossierId(dossierId);
+			object.setDossierPartNo(dossierPartNo);
+			if (Validator.isNotNull(fileCheck)) {
+				object.setFileCheck(fileCheck);
+			} else {
+				object.setFileCheck(0);
+			}
+			if (Validator.isNotNull(fileMark)) {
+				object.setFileMark(fileMark);
+			} else {
+				object.setFileMark(0);
+			}
+			
+			object.setFileComment(fileComment);
 		}
-		object.setFileMark(fileMark);
-		object.setFileComment(fileComment);
 
 		return dossierMarkPersistence.update(object);
 	}
@@ -87,5 +108,9 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 	public List<DossierMark> getDossierMarks(long groupId, long dossierId) {
 
 		return dossierMarkPersistence.findByG_DID(groupId, dossierId);
+	}
+
+	public List<DossierMark> getDossierMarksByFileMark(long groupId, long dossierId, int fileMark) {
+		return dossierMarkPersistence.findByG_DID_MARK(groupId, dossierId, fileMark);
 	}
 }

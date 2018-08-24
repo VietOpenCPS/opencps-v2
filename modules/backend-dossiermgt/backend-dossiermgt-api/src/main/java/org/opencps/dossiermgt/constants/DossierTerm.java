@@ -37,10 +37,12 @@ public class DossierTerm {
 	public static final String RECEIVE_DATE = "receiveDate";
 	public static final String PROCESS_DATE = "processDate";
 	public static final String EXTEND_DATE = "extendDate";
+	public static final String EXTEND_DATE_TIMESTAMP = "extendDateTimestamp";
 	public static final String RECEIVE_DATE_SORTABLE = "receiveDate_sortable";
 	public static final String RECEIVE_DATE_TIMESTAMP = "receiveDateTimestamp";
 	public static final String DUE_DATE = "dueDate";
 	public static final String DUE_DATE_TIMESTAMP = "dueDateTimestamp";
+	public static final String DUE_DATE_LUCENE = "dueDateLucene";
 	public static final String RELEASE_DATE = "releaseDate";
 	public static final String RELEASE_DATE_TIMESTAMP = "releaseDateTimestamp";
 	public static final String FINISH_DATE = "finishDate";
@@ -154,5 +156,25 @@ public class DossierTerm {
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
 	public static final String ACTION_USER = "actionUser";
 	public static final String MAPPING_PERMISSION = "permission";
+	public static final String MAPPING_DOSSIER = "dossiers";
 
+	public static final String DOMAIN_CODE = "domainCode";
+	public static final String DOMAIN_NAME = "domainName";
+	public static final String ORIGIN_DOSSIER_ID = "originDossierId";
+
+	public static final int GARBAGE_COLLECTOR_TIME = 30; //minutes
+	
+	public static final String PUBLISH_DOSSIER_DESTINATION = "publish/dossier/in/destination";
+	public static final String YEAR_FINISH = "yearFinish";
+	public static final String MONTH_FINISH = "monthFinish";
+	public static final String YEAR_RELEASE = "yearRelease";
+	public static final String MONTH_RELEASE = "monthRelease";
+	public static final String STATISTIC = "statistic";
+	public static final String COMPARE_DELAY_DATE = "delayDate";
+	public static final String OVER_DUE = "overdue";
+	public static final String DELAY = "delay";
+	public static final String COMING = "coming";
+	public static final String DUE_DATE_COMING = "dueDateComing";
+	public static final String PASSED = "passed";
+	public static final String USER_DOSSIER_ACTION_ID = "userIdAction";
 }
