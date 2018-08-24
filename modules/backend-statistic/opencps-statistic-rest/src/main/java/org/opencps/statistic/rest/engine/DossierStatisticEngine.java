@@ -44,7 +44,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 @Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
-	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
+	private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
@@ -74,7 +74,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		for (Group site : sites) {
 			
-			//LOG.info("START getDossierStatistic(): " + site.getGroupId());
+			LOG.info("START getDossierStatistic(): " + site.getGroupId());
 
 			GetDossierResponse dossierResponse = new GetDossierResponse();
 			
@@ -88,7 +88,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			dossierData.ifPresent(source -> {
 				
-				//LOG.info("***** " + site.getGroupId() + source.size());
+				LOG.info("***** " + site.getGroupId() + source.size());
 				
 				if(source.size() > 0) {
 					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -119,7 +119,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 10, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

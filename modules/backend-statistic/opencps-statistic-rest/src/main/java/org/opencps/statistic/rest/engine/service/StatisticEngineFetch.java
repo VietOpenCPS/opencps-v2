@@ -23,7 +23,7 @@ public class StatisticEngineFetch {
 
 			// all site, all domain
 			
-			String type1 = "all@all";
+			String type1 = "all@all@" + groupId;
 
 			DossierStatisticData dataType1 = new DossierStatisticData();
 
@@ -37,7 +37,7 @@ public class StatisticEngineFetch {
 			
 
 			// all site each domain
-			String type2 = "all@" + dossierData.getDomainCode();
+			String type2 = "all@" + dossierData.getDomainCode() + "@" + groupId;
 			
 			DossierStatisticData dataType2 = new DossierStatisticData();
 
@@ -55,7 +55,7 @@ public class StatisticEngineFetch {
 
 			// each site all domain
 			
-			String type3 = dossierData.getGovAgencyCode() + "@all";
+			String type3 = dossierData.getGovAgencyCode() + "@all@" + groupId;
 
 
 			DossierStatisticData dataType3 = new DossierStatisticData();
@@ -73,7 +73,7 @@ public class StatisticEngineFetch {
 
 			// each site each domain
 			
-			String type4 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode();
+			String type4 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() + "@" + groupId;
 			
 			DossierStatisticData dataType4 = new DossierStatisticData();
 			dataType4.setGovAgencyCode(dossierData.getGovAgencyCode());
