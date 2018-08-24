@@ -1,5 +1,7 @@
 package org.opencps.statistic.rest.engine.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ public class StatisticEngineFetch {
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
 			List<GetDossierData> lsDossierData) {
 
-		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
 		for (GetDossierData dossierData : lsDossierData) {
 
@@ -23,7 +25,7 @@ public class StatisticEngineFetch {
 
 			// all site, all domain
 			
-			String type1 = "all@all@" + groupId;
+			String type1 = "all@all";
 
 			DossierStatisticData dataType1 = new DossierStatisticData();
 
@@ -37,7 +39,7 @@ public class StatisticEngineFetch {
 			
 
 			// all site each domain
-			String type2 = "all@" + dossierData.getDomainCode() + "@" + groupId;
+			String type2 = "all@" + dossierData.getDomainCode();
 			
 			DossierStatisticData dataType2 = new DossierStatisticData();
 
@@ -55,7 +57,7 @@ public class StatisticEngineFetch {
 
 			// each site all domain
 			
-			String type3 = dossierData.getGovAgencyCode() + "@all@" + groupId;
+			String type3 = dossierData.getGovAgencyCode() + "@all";
 
 
 			DossierStatisticData dataType3 = new DossierStatisticData();
@@ -73,7 +75,7 @@ public class StatisticEngineFetch {
 
 			// each site each domain
 			
-			String type4 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() + "@" + groupId;
+			String type4 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode();
 			
 			DossierStatisticData dataType4 = new DossierStatisticData();
 			dataType4.setGovAgencyCode(dossierData.getGovAgencyCode());

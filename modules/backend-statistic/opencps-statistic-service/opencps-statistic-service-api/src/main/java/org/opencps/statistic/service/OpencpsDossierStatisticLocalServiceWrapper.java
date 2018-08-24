@@ -146,18 +146,6 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 			start, end, orderByComparator);
 	}
 
-	@Override
-	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> fetchDossierStatistic(
-		long groupId, int month, int year, java.lang.String domain,
-		java.lang.String govAgencyCode, java.lang.String groupAgenvyCode,
-		boolean reporting, int start, int end)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _opencpsDossierStatisticLocalService.fetchDossierStatistic(groupId,
-			month, year, domain, govAgencyCode, groupAgenvyCode, reporting,
-			start, end);
-	}
-
 	/**
 	* Returns a range of all the opencps dossier statistics.
 	*

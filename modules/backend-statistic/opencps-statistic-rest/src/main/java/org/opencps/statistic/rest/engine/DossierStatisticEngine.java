@@ -56,7 +56,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
-		//LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		
 		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -74,8 +74,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		for (Group site : sites) {
 			
-			LOG.info("START getDossierStatistic(): " + site.getGroupId());
-
 			GetDossierResponse dossierResponse = new GetDossierResponse();
 			
 			GetDossierRequest payload = new GetDossierRequest();
@@ -87,8 +85,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
 			
 			dossierData.ifPresent(source -> {
-				
-				LOG.info("***** " + site.getGroupId() + source.size());
 				
 				if(source.size() > 0) {
 					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -119,7 +115,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
