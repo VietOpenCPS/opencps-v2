@@ -12,7 +12,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -96,7 +95,11 @@ import javax.xml.bind.annotation.XmlType;
     "online",
     "specialKey",
     "assigned",
-    "domain"
+    "domain",
+    "domainName",
+    "applicantName",
+    "applicantIdNo",
+    "serviceName"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -180,6 +183,12 @@ public class DossierSearchModel {
     protected Integer assigned;
     @QueryParam(value = "domain")
     protected String domain;
+    @QueryParam(value = "domainName")
+    protected String domainName;
+    @QueryParam(value = "applicantName")
+    protected String applicantName;
+    @QueryParam(value = "serviceName")
+    protected String serviceName;
 
     public Integer getAssigned() {
 		return assigned;
@@ -843,5 +852,30 @@ public class DossierSearchModel {
 
 	public void setDomain(String domain) {
 		this.domain = domain;
-	}	
+	}
+
+	public String getApplicantName() {
+		return applicantName;
+	}
+
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
+
+	public String getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
 }

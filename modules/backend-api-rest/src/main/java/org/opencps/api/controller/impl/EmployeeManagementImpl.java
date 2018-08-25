@@ -27,6 +27,9 @@ import org.opencps.api.employee.model.EmployeeJobposResults;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
 import org.opencps.api.error.model.ErrorMsg;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.constants.EmployeeJobPosTerm;
@@ -65,6 +68,7 @@ import backend.auth.api.exception.UnauthorizationException;
 public class EmployeeManagementImpl implements EmployeeManagement {
 
 	private static final Log _log = LogFactoryUtil.getLog(EmployeeManagementImpl.class);
+	private static final String SERVER = "SERVER_";
 
 	@Override
 	public Response getEmployees(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -994,4 +998,68 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(404).entity(error).build();
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response getEmployeesByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String itemCode, DataSearchModel query) {
+		EmployeeInterface actions = new EmployeeActions();
+		EmployeeResults result = new EmployeeResults();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			String serverNo = SERVER + itemCode;
+			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+
+			long groupIdEmp = 0;
+			if (serverConfig != null) {
+				String config = serverConfig.getConfigs();
+				if (Validator.isNotNull(config)) {
+					JSONObject jsonConfig = JSONFactoryUtil.createJSONObject(config);
+					if (jsonConfig != null) {
+						groupIdEmp = GetterUtil.getLong(jsonConfig.getString("groupId"));
+					}
+				}
+			}
+			if (groupIdEmp > 0) {
+				if (query.getEnd() == 0) {
+					query.setStart(-1);
+					query.setEnd(-1);
+				}
+
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+				params.put("groupId", String.valueOf(groupIdEmp));
+				params.put("keywords", query.getKeywords());
+				params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
+				params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
+				params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
+				params.put(EmployeeTerm.FULL_NAME, query.getEmployeeName());
+
+				Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+						Boolean.valueOf(query.getOrder())) };
+
+				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+						query.getStart(), query.getEnd(), serviceContext);
+
+				result.setTotal(jsonData.getLong("total"));
+				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+			} else {
+				result.setTotal(0);
+			}
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("not found!");
+			error.setCode(404);
+			error.setDescription("not found!");
+
+			return Response.status(404).entity(error).build();
+		}
+	}
+
 }

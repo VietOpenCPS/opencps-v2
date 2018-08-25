@@ -155,10 +155,12 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 								long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 								if (subTimeStamp > 0) {
-									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+//									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+									String strOverDue = StringPool.BLANK;
 									result.setStepOverdue("Quá hạn "+strOverDue);
 								} else {
-									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+//									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
+									String strOverDue = StringPool.BLANK;
 									result.setStepOverdue("Còn "+strOverDue);
 								}
 							} else {

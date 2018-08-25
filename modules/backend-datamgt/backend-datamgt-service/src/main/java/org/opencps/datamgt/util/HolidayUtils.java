@@ -517,18 +517,22 @@ public class HolidayUtils {
 	 * @param endDate
 	 * @return minutesGoing
 	 */
-	public static int getCountDateByHoliday(Date startDate, Date endDate, int numberDate, List<Holiday> holidayList) {
+	public static int getCountDateByHoliday(long startDate, long endDate, int numberDate, long groupId) {
 
 		int count = 0;
 		Calendar startDateCal = Calendar.getInstance();
-		startDateCal.setTime(startDate);
+		startDateCal.setTimeInMillis(startDate);
 
 		Calendar endDateCal = Calendar.getInstance();
-		endDateCal.setTime(endDate);
+		endDateCal.setTimeInMillis(endDate);
 
 		boolean flagCompareDate = false;
 		for (int i = 0; i < numberDate; i++) {
-			boolean isHoliday = isHoliday(startDateCal, holidayList);
+			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
+			boolean isHoliday = false;
+			if (holidayList != null && holidayList.size() > 0) {
+				isHoliday = isHoliday(startDateCal, holidayList);
+			}
 			if (isHoliday) {
 				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
 					startDateCal.add(Calendar.DAY_OF_MONTH, 2);
