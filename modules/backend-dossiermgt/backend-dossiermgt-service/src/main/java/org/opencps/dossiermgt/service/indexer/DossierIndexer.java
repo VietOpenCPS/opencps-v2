@@ -319,31 +319,31 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			if (Validator.isNotNull(object.getReferenceUid())) {
 				document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
 			}
-			if (Validator.isNotNull(object.getServiceCode())) {
+//			if (Validator.isNotNull(object.getServiceCode())) {
 				document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
-			}
-			if (Validator.isNotNull(object.getServiceName())) {
+//			}
+//			if (Validator.isNotNull(object.getServiceName())) {
 				document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
-			}
-			if (Validator.isNotNull(object.getGovAgencyCode())) {
+//			}
+//			if (Validator.isNotNull(object.getGovAgencyCode())) {
 				document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
-			}
-			if (Validator.isNotNull(object.getGovAgencyName())) {
+//			}
+//			if (Validator.isNotNull(object.getGovAgencyName())) {
 				document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
-			}
-			if (Validator.isNotNull(object.getApplicantName())) {
+//			}
+//			if (Validator.isNotNull(object.getApplicantName())) {
 				document.addTextSortable(DossierTerm.APPLICANT_NAME, object.getApplicantName());
-			}
+//			}
 
-			if (Validator.isNotNull(object.getApplicantIdType())) {
+//			if (Validator.isNotNull(object.getApplicantIdType())) {
 				document.addTextSortable(DossierTerm.APPLICANT_ID_TYPE, object.getApplicantIdType());
-			}
-			if (Validator.isNotNull(object.getApplicantIdNo())) {
+//			}
+//			if (Validator.isNotNull(object.getApplicantIdNo())) {
 				document.addTextSortable(DossierTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
-			}
-			if (Validator.isNotNull(object.getAddress())) {
+//			}
+//			if (Validator.isNotNull(object.getAddress())) {
 				document.addTextSortable(DossierTerm.ADDRESS, object.getAddress());
-			}
+//			}
 			document.addTextSortable(DossierTerm.CITY_CODE, object.getCityCode());
 			document.addTextSortable(DossierTerm.CITY_NAME, object.getCityName());
 			document.addTextSortable(DossierTerm.DISTRICT_CODE, object.getDistrictCode());
@@ -450,7 +450,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				}
 			}
-//			_log.info("Mapping user permission:" + sbPermission.toString());
 			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
 			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, sbPermission.toString());
 

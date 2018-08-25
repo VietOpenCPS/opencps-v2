@@ -9,4 +9,13 @@ Export-Package: \
 	backend.auth.api,\
 	backend.auth.api.exception,\
 	backend.auth.api.keys,\
-	backend.utils
+	backend.utils,\
+	org.opencps.kernel.prop,\
+	org.opencps.kernel.template,\
+	org.opencps.kernel.template.freemarker,\
+	org.opencps.kernel.message,\
+	org.opencps.kernel.message.email,\
+	org.opencps.kernel.message.keys,\
+	org.opencps.kernel.message.notification,\
+	org.opencps.kernel.util,\
+	org.opencps.kernel.context

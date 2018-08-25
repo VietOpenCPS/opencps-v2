@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.HttpConnection;
 import org.opencps.api.controller.CertNumberManagement;
 import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -35,6 +34,9 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.auth.api.BackendAuth;
+import backend.auth.api.BackendAuthImpl;
+
 public class CertNumberManagementImpl implements CertNumberManagement{
 
 	Log _log = LogFactoryUtil.getLog(CertNumberManagementImpl.class);
@@ -44,14 +46,18 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			User user, ServiceContext serviceContext) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		BackendAuth auth = new BackendAuthImpl();
 
 		try {
+			if (!auth.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+						.entity("User not permission process action!!!").build();
+			}
 			List<Counter> counters = CounterLocalServiceUtil.getCounters(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
 			JSONArray jsArr = JSONFactoryUtil.createJSONArray();
-
 
 			for (Counter cnt : counters) {
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
@@ -88,7 +94,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		// long groupId =
 		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
+		BackendAuth auth = new BackendAuthImpl();
+
 		try {
+			if (!auth.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+						.entity("User not permission process action!!!").build();
+			}
 			Counter counter = CounterLocalServiceUtil.getCounter(certid);
 			String[] splitPattern = StringUtil.split(counter.getName(), StringPool.AT);
 
@@ -115,7 +127,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 		
+		BackendAuth auth = new BackendAuthImpl();
+
 		try {
+			if (!auth.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+						.entity("User not permission process action!!!").build();
+			}
 
 			if (Validator.isNotNull(pattern)) {
 				String[] patternArr = StringUtil.split(pattern);
@@ -184,7 +202,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
+		BackendAuth auth = new BackendAuthImpl();
+
 		try {
+			if (!auth.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+						.entity("User not permission process action!!!").build();
+			}
 			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
 
 			Counter counter = CounterLocalServiceUtil.getCounter(certId);
@@ -211,7 +235,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		
 		String certNumber;
 
+		BackendAuth auth = new BackendAuthImpl();
+
 		try {
+			if (!auth.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+						.entity("User not permission process action!!!").build();
+			}
 
 			long _counterNumber = 0;
 
@@ -317,7 +347,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 		_log.info("certId: "+certId);
 
+		BackendAuth auth = new BackendAuthImpl();
+
 		try {
+			if (!auth.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+						.entity("User not permission process action!!!").build();
+			}
 //			String nameCounter = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
 
 			CounterLocalServiceUtil.deleteCounter(certId);
@@ -338,7 +374,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
+		BackendAuth auth = new BackendAuthImpl();
+
 		try {
+			if (!auth.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+						.entity("User not permission process action!!!").build();
+			}
 			List<Counter> counters = CounterLocalServiceUtil.getCounters(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			String counterCheck = StringPool.AT + groupId;

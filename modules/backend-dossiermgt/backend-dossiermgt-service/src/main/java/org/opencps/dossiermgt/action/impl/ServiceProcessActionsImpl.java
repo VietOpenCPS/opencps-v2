@@ -291,7 +291,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 
 	@Override
 	public long updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode, String stepName,
-			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Integer durationCount,
+			String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus, Double durationCount,
 			String instructionNote, String briefNote, String roleAsStep, Integer checkInput,
 			ServiceContext serviceContext) throws PortalException {
 

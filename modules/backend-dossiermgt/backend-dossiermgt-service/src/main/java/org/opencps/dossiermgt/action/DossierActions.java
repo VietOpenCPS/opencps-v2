@@ -140,6 +140,10 @@ public interface DossierActions {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException;
+			boolean online, boolean notification, String applicantNote, int originality, 
+			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
+			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
+			Date endorsementDate, Date extendDate,
+			Date processDate, ServiceContext context) throws PortalException;
 	
 }

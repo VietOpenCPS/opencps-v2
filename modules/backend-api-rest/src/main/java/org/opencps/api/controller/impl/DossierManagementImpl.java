@@ -273,7 +273,12 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			
 			String online = query.getOnline();
-			
+			String domain = query.getDomain();
+			String domainName = query.getDomainName();
+			String applicantName = query.getApplicantName();
+			String applicantIdNo = query.getApplicantIdNo();
+			String serviceName = query.getServiceName();
+
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -305,6 +310,13 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 			params.put(DossierTerm.STATUS_REG, statusRegNo);
 			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
+			if (Validator.isNotNull(domain)) {
+				params.put(DossierTerm.DOMAIN_CODE, domain);
+			}
+			params.put(DossierTerm.DOMAIN_NAME, domainName);
+			params.put(DossierTerm.APPLICANT_NAME, applicantName);
+			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
+			params.put(DossierTerm.SERVICE_NAME, serviceName);
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -683,6 +695,10 @@ public class DossierManagementImpl implements DossierManagement {
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
 			String dossierIdCTN = query.getDossierIdCTN();
 			String domain = query.getDomain();
+			String domainName = query.getDomainName();
+			String applicantName = query.getApplicantName();
+			String applicantIdNo = query.getApplicantIdNo();
+			String serviceName = query.getServiceName();
 			
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -710,6 +726,10 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(domain)) {
 				params.put(DossierTerm.DOMAIN_CODE, domain);
 			}
+			params.put(DossierTerm.DOMAIN_NAME, domainName);
+			params.put(DossierTerm.APPLICANT_NAME, applicantName);
+			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
+			params.put(DossierTerm.SERVICE_NAME, serviceName);
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
@@ -2893,8 +2913,19 @@ public class DossierManagementImpl implements DossierManagement {
 			String online = input.getOnline();
 			String applicantNote = input.getApplicantNote();
 			int originality = 0;
-
-
+			long createDateLong = GetterUtil.getLong(input.getCreateDate());
+			long modifiedDateLong = GetterUtil.getLong(input.getModifiedDate());
+			long submitDateLong = GetterUtil.getLong(input.getSubmitDate());
+			long receiveDateLong = GetterUtil.getLong(input.getReceiveDate());
+			long dueDateLong = GetterUtil.getLong(input.getDueDate());
+			long releaseDateLong = GetterUtil.getLong(input.getReleaseDate());
+			long finishDateLong = GetterUtil.getLong(input.getFinishDate());
+			long cancellingDateLong = GetterUtil.getLong(input.getCancellingDate());
+			long correcttingDateLong = GetterUtil.getLong(input.getCorrecttingDate());
+			long endorsementDateLong = GetterUtil.getLong(input.getEndorsementDate());
+			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
+			long processDateLong = GetterUtil.getLong(input.getProcessDate());
+			
 			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType,
 					applicantIdNo, applicantIdDate, address, cityCode,
@@ -2902,7 +2933,20 @@ public class DossierManagementImpl implements DossierManagement {
 						contactName, contactTelNo, contactEmail,
 						dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 						StringPool.BLANK, Boolean.valueOf(online), false, applicantNote,
-						originality, serviceContext);
+						originality, 
+						createDateLong != 0 ? new Date(createDateLong) : null,
+						modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
+						submitDateLong != 0 ? new Date(submitDateLong) : null,
+						receiveDateLong != 0 ? new Date(receiveDateLong) : null,
+						dueDateLong != 0 ? new Date(dueDateLong) : null,
+						releaseDateLong != 0 ? new Date(releaseDateLong) : null,
+						finishDateLong != 0 ? new Date(finishDateLong) : null,
+						cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
+						correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
+						endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
+						extendDateLong != 0 ? new Date(extendDateLong) : null,
+						processDateLong != 0 ? new Date(processDateLong) : null,
+						serviceContext);
 
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();

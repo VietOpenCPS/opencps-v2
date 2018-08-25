@@ -160,4 +160,12 @@ public interface EmployeeManagement {
 	public Response getEmployeesByRole(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("roleId") long roleId, @BeanParam DataSearchModel query);
+
+	@GET
+	@Path("/publish/{itemCode}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getEmployeesByItemCode(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("itemCode") String itemCode, @BeanParam DataSearchModel query);
 }
