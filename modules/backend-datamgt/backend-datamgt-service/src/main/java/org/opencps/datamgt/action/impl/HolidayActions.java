@@ -1,5 +1,6 @@
 package org.opencps.datamgt.action.impl;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.opencps.datamgt.action.HolidayInterface;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import org.opencps.auth.api.exception.NotFoundException;
@@ -83,7 +85,7 @@ public class HolidayActions implements HolidayInterface {
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException {
 		Holiday ett = null;
 
-		ett = HolidayLocalServiceUtil.addHoliday(userId, groupId, DateTimeUtils.convertStringToDateAPI(holidayDate),
+		ett = HolidayLocalServiceUtil.addHoliday(userId, groupId, new Date(GetterUtil.getLong(holidayDate)),
 				description, serviceContext);
 
 		return ett;
@@ -97,7 +99,7 @@ public class HolidayActions implements HolidayInterface {
 
 		if(Validator.isNotNull(holidayDate)){
 			
-			holiday.setHolidayDate(DateTimeUtils.convertStringToDateAPI(holidayDate));
+			holiday.setHolidayDate(new Date(GetterUtil.getLong(holidayDate)));
 			
 		}
 				
