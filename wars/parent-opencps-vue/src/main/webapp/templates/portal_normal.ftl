@@ -14,13 +14,14 @@
 	<@liferay_util["include"] page=top_head_include />
 	
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=2" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=11" rel="stylesheet">
 	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=1" rel="stylesheet">
 	
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
 	<script type="text/javascript" src="http://code.cloudcms.com/alpaca/1.5.24/bootstrap/alpaca.min.js"></script>
+	<script type="text/javascript" src="${themeDisplay.getPathThemeRoot()}/js/jquery_comment.js"></script>
 	
 </head>
 
@@ -35,8 +36,8 @@
 					<a href="${site_default_url}" class="align-middle">
 						<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
 						<div class="text-logo">
-							Cổng Dịch vụ công trực tuyến
-							<span>${site_name}</span>
+							${site_name}
+							<span>HỆ THỐNG MỘT CỬA ĐIỆN TỬ VÀ DỊCH VỤ CÔNG TRỰC TUYẾN</span>
 						</div>
 					</a>
 				</div>

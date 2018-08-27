@@ -57,9 +57,10 @@ body ul {
 	margin-top: 5px;
 	color: #00204a;
 	white-space: nowrap;
+    line-height: 30px;
 }
 #banner .logo span {
-	font-size: 24px;
+	font-size: 20px;
 	color: #005792;
 	display: block;
 }
@@ -355,9 +356,75 @@ body .timepicker-container .time-container .time-label {
 body .account-section button.btn {
 	box-shadow: none;
 }
-#footer .align-middle > a {
+
+.portlet-body #root img {
+	margin-right: 0;
+}
+
+.user-profile-menu-react > div[class*='MuiPopover-paper'] {
+    top: 5px !important;
+    right: 0 !important;
+    left: unset !important;
+    position: absolute !important;
+}
+
+.user-profile-menu-react > div > ul {
+	padding: 0 !important;
+}
+.user-profile-menu-react > div > ul > li {
+    border-bottom: 1px dashed #adabab !important;
+    padding: 5px 10px !important;
+    font-size: 13px !important;
+}
+
+.user-profile-menu-react > div > ul > li:last-child {
+	border: none !important;	
+}
+
+#menu-collapse ul.child-menu {
+	    display: none;
+}
+
+#footer .align-middle>a {
     padding: 0 5px;
     color: #fff;
     font-weight: bold;
     text-decoration: underline;
+}
+
+.portlet-boundary_npmreactlogin_ #root span {
+     font-size: 13px !important;
+ }
+ 
+ .alert-danger.liferayalert svg,
+ .alert-success.liferayalert {
+	display: none;
+}
+
+.alert-danger.liferayalert > div.yui3-widget-bd {
+	    width: auto;
+    max-width: 450px;
+    padding: 15px;
+    border: 1px solid #ad2424;
+    border-radius: 5px;
+    background: #ad242494;
+    position: absolute;
+    top: 0;
+    color: whitesmoke;
+    left: 15px;
+}
+
+body .lfr-alert-container {
+	    left: 0;
+    position: absolute;
+    right: auto;
+    top: auto;
+    width: auto;
+    z-index: 0;
+    min-width: 450px;
+    pointer-events: none;
+}
+body .alert-danger.liferayalert, .portlet-msg-error.liferayalert {
+	    width: 0;
+    padding: 0;
 }

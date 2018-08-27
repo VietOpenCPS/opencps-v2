@@ -18,3 +18,10 @@
 @import url(override-kendoui.css);              /* Override Kendo css */
 @import url(modern_component.css);              /* Components style css */
 @import url(custom-style.css);                  /* Custom style for non-components */
+
+
+body .navbar-default .navbar-nav > .active > a,
+body .navbar-default .navbar-nav > .active > a:hover,
+body .navbar-default .navbar-nav > .active > a:focus {
+	background-color: transparent;
+}

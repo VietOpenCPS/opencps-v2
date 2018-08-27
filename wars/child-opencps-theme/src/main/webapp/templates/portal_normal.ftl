@@ -77,15 +77,11 @@
 			<a href="${site_default_url}" class="logo align-middle">
 				<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
 				<div class="text-logo">
-					Hệ thống Một cửa điện tử liên thông
+					HỆ THỐNG MỘT CỬA ĐIỆN TỬ LIÊN THÔNG
 					<span>${site_name}</span>
 				</div>
 			</a>
-			<@liferay_portlet["runtime"]
-              defaultPreferences="${freeMarkerPortletPreferences}"
-              portletProviderAction=portletProviderAction.VIEW
-              instanceId="FrontendWebPortal_LoginPortlet_1"
-              portletName="FrontendWebPortal_LoginPortlet"/>
+			<@liferay_portlet["runtime"] portletName="npmreactlogin"/>
 		</div>
 	</header>
 		
@@ -112,7 +108,7 @@
 	<footer id="footer">
 		<div class="container">
 			<div class="left">
-				<div class="site-name">Hệ thống một cửa điện tử liên thông Tỉnh Phú Thọ</div>
+				<div class="site-name"><span>HỆ THỐNG MỘT CỬA ĐIỆN TỬ LIÊN THÔNG TỈNH PHÚ THỌ</span> </div>
 				<div class="contact">
 					<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
 					<p><i class="fa fa-phone"></i> 0986 997 029</p>

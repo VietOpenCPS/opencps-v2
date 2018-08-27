@@ -5,9 +5,9 @@
 </@>
 
 <form action="${loginURL}" method="post" name="login_form">
-<div id="root"></div>
+<div id="root" style="float: right;"></div>
 </form>
-<script type="text/javascript" src="/o/react-login/js/bundle.js?t=10"></script>
+<script type="text/javascript" src="/o/react-login/js/bundle.js?t=18"></script>
 
 <style type="text/css">
 	.hidden__temp {
@@ -145,6 +145,7 @@
 	.login-wrapper button {
 	    margin: 5px 0 0 5px;
 	    height: 26px;
+	    line-height: 26px;
 	    padding: 0 12px;
 	    color: white;
 	    -webkit-box-shadow: none;

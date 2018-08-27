@@ -77,15 +77,11 @@
 			<a href="${site_default_url}" class="logo align-middle">
 				<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
 				<div class="text-logo">
-					Cổng dịch vụ công trực tuyến
-					<span>${site_name}</span>
+					${site_name}
+					<span>HỆ THỐNG MỘT CỬA ĐIỆN TỬ VÀ DỊCH VỤ CÔNG TRỰC TUYẾN</span>
 				</div>
 			</a>
-			<@liferay_portlet["runtime"]
-              defaultPreferences="${freeMarkerPortletPreferences}"
-              portletProviderAction=portletProviderAction.VIEW
-              instanceId="FrontendWebPortal_LoginPortlet_1"
-              portletName="FrontendWebPortal_LoginPortlet"/>
+			<@liferay_portlet["runtime"] portletName="npmreactlogin"/>
 		</div>
 	</header>
 		
@@ -115,7 +111,7 @@
 				<div class="site-name"><!--Cổng dịch vụ công trực tuyến--> <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
 				<div class="contact">
 					<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
-					<p><i class="fa fa-phone"></i> 0210.3846647 - 0210.3847393</p>
+					<p><i class="fa fa-phone"></i> 0986 997 029</p>
 					<p><i class="fa fa-envelope"></i> vpub@phutho.gov.vn</p>
 				</div>
 			</div>
