@@ -1123,7 +1123,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 			String postalCityName = StringPool.BLANK;
-
+			
 			if (Validator.isNotNull(input.getCityCode()))
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 			if (Validator.isNotNull(input.getDistrictCode()))
@@ -1134,7 +1134,6 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(input.getPostalCityCode())) {
 				postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
 			}
-
 //			boolean online = true;
 //
 //			String password = StringPool.BLANK;
@@ -1158,7 +1157,10 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
 					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
 					input.getDelegateWardCode(), input.getSampleCount(), serviceContext);
-
+			if (Validator.isNotNull(input.getBriefNote())) {
+				dossier.setBriefNote(input.getBriefNote());
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
+			}
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
