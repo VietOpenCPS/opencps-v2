@@ -4,7 +4,7 @@
 
 <div class="row panel">
     <div class="row-header align-middle">
-        <div class="background-triangle-big">CHI TIÊT THỦ TỤC HÀNH CHÍNH</div>
+        <div class="background-triangle-big">CHI TIẾT THỦ TỤC HÀNH CHÍNH</div>
         <div class="pull-right group-icons align-middle-lg">
             <a href="javascript:;" onclick="fnBack();">
                 <i class="fa fa-reply" aria-hidden="true"></i>
