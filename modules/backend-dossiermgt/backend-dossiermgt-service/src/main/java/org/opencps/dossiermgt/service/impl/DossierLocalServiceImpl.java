@@ -2151,11 +2151,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				BooleanQuery subQueryThree = new BooleanQueryImpl();
 				
 				//Check receiveDate != null
-				queryReceive.addField(DossierTerm.MONTH_RELEASE);
+				queryReceive.addField(DossierTerm.MONTH_DOSSIER);
 				subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
 				//Check receiveDate
-				queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
-				subQueryOne.add(queryMonthTwo, BooleanClauseOccur.MUST);
+				queryMonthTwo.addFields(DossierTerm.MONTH_DOSSIER);
+				subQueryOne.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
 				/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
 				// Check receiveDate < now
 //				Calendar calDate = Calendar.getInstance();
@@ -2164,15 +2164,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.MONTH_DOSSIER,
 						String.valueOf(0), String.valueOf(month), false, false);
 				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+				
 				queryRelease.addField(DossierTerm.MONTH_RELEASE);
-				subQueryThree.add(queryRelease, BooleanClauseOccur.SHOULD);
+				subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
 				
 				subQueryThree.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
 				
 				queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
 				subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
+				//
 				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
-
+				//
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else {
 				query.addFields(DossierTerm.MONTH_DOSSIER);

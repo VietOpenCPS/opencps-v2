@@ -131,6 +131,7 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
 			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
 //			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
@@ -161,11 +162,14 @@ public class DossierUtils {
 			} else {
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 					long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+					_log.info("subTimeStamp: "+subTimeStamp);
 					if (subTimeStamp > 0) {
+						_log.info("START Qua han: ");
 						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId);
 						model.setDossierOverdue("Quá hạn " + strOverDue);
 					} else {
+						_log.info("START Con han: ");
 						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId);
 						model.setDossierOverdue("Còn " + strOverDue);
@@ -183,35 +187,31 @@ public class DossierUtils {
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			if (dAction != null) {
-				Integer state = dAction.getState();
-				if (state != null) {
-					if (state > 0) {
-						int actionOverDue = dAction.getActionOverdue();
-						if (actionOverDue > 0) {
-							model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
-						} else {
-							model.setStepOverdue(StringPool.BLANK);
-						}
+				int state = dAction.getState();
+				if (state > 0) {
+					int actionOverDue = dAction.getActionOverdue();
+					if (actionOverDue > 0) {
+						model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
 					} else {
-						Date dueDate = dAction.getDueDate();
-						if (dueDate != null) {
-							long dueDateActionTimeStamp = dueDate.getTime();
-							long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
-							if (subTimeStamp > 0) {
-								String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
-										dueDateTimeStamp, groupId);
-								model.setDossierOverdue("Quá hạn " + stepOverDue);
-							} else {
-								String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
-										dueDateTimeStamp, groupId);
-								model.setDossierOverdue("Còn " + strOverDue);
-							}
-						} else {
-							model.setStepOverdue(StringPool.BLANK);
-						}
+						model.setStepOverdue(StringPool.BLANK);
 					}
 				} else {
-					model.setStepOverdue(StringPool.BLANK);
+					Date dueDate = dAction.getDueDate();
+					if (dueDate != null) {
+						long dueDateActionTimeStamp = dueDate.getTime();
+						long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
+						if (subTimeStamp > 0) {
+							String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+									dueDateTimeStamp, groupId);
+							model.setStepOverdue("Quá hạn " + stepOverDue);
+						} else {
+							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+									dueDateTimeStamp, groupId);
+							model.setStepOverdue("Còn " + strOverDue);
+						}
+					} else {
+						model.setStepOverdue(StringPool.BLANK);
+					}
 				}
 			} else {
 				model.setStepOverdue(StringPool.BLANK);
