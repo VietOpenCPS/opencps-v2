@@ -8,7 +8,7 @@
 		
 		<div class="panel-body">
 	
-			<span id="_jobpos_editLabel" class="btn btn-active btn-block"> 
+			<span id="_holiday_editLabel" class="btn btn-active btn-block"> 
 				<i class="fa fa-calendar" aria-hidden="true"></i>
 				<span class="p-xxs" >Tổng số</span> 
 				<span id="_holiday_CounterList">0</span>
@@ -277,30 +277,41 @@
 				return data[$(item).index()];
 			
 			});
-			var viewModel = kendo.observable({
-				holidayDescription: selected[0].description,
-				holidayDate: function (e) {
-					var holidayDate_temp = new Date(selected[0].holidayDate);
-					var formatted_date = holidayDate_temp.getDate() + "/" + holidayDate_temp.getMonth() + 1 + "/" + holidayDate_temp.getFullYear()
-					return formatted_date;
-				}
-			});
-			kendo.bind($("#_holidayDetail_form"), viewModel);
-			$("#_holiday_hidden_new_id").val(selected[0].holidayDate);
+			var viewModel = {};
+			if (selected[0].hasOwnProperty('holidayDate') && selected[0]['holidayDate'] !== null && selected[0]['holidayDate'] !== undefined) {
+				viewModel = kendo.observable({
+					holidayDescription: selected[0].description,
+					holidayDate: function (e) {
+						var holidayDate_temp = new Date(selected[0].holidayDate);
+						var formatted_date = holidayDate_temp.getDate() + "/" + holidayDate_temp.getMonth() + 1 + "/" + holidayDate_temp.getFullYear()
+						return formatted_date;
+					}
+				});
+				$("#_holidayDetail_submitBtn > span").html('Lưu lại');
+				$("#_holiday_hidden_new_id").val(selected[0].holidayDate);
+			} else {
+				viewModel = kendo.observable({
+					holidayDescription: '',
+					holidayDate: ''
+				});
+				$("#_holidayDetail_submitBtn > span").html('Thêm mới');
+				$("#_holiday_hidden_new_id").val(0);
+			}
 			
+			kendo.bind($("#_holidayDetail_form"), viewModel);
 		}
 
-		$(document).on('click', '#_holiday_autocompleteSearch', function(event){
+		$(document).on('click', '#_holiday_editLabel', function(event){
 		
-			// event.preventDefault();
-			// event.stopPropagation();
-			// event.stopImmediatePropagation();
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
 			
 			// $("#_jobpos_right-page").load(
 			// 	'${url.adminJobPosPortlet.jobpos_detail}'
 			// 	);
-			
-			// $("#_jobpos_listView").getKendoListView().clearSelection();
+			$("#_holidayDetail_submitBtn > span").html('Thêm mới');
+			$("#_jobpos_listView").getKendoListView().clearSelection();
 		});
 		
 	})(jQuery);
