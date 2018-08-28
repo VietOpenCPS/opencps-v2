@@ -43,7 +43,7 @@
 					
 					<a href="javascript:;" >
 						
-						<i class="fa fa-graduation-cap fs26 P5" aria-hidden="true"></i>
+						<i class="fa fa-calendar fs26 P5" aria-hidden="true"></i>
 							
 					</a>
 						
@@ -282,7 +282,8 @@
 					holidayDescription: selected[0].description,
 					holidayDate: function (e) {
 						var holidayDate_temp = new Date(selected[0].holidayDate);
-						var formatted_date = holidayDate_temp.getDate() + "/" + holidayDate_temp.getMonth() + 1 + "/" + holidayDate_temp.getFullYear()
+						var formatted_date = holidayDate_temp.getDate() + "/" + (holidayDate_temp.getMonth() + 1) + "/" + holidayDate_temp.getFullYear()
+						console.log('formatted_date------------', formatted_date)
 						return formatted_date;
 					}
 				});
@@ -291,7 +292,12 @@
 			} else {
 				viewModel = kendo.observable({
 					holidayDescription: '',
-					holidayDate: ''
+					holidayDate: function (e) {
+						var holidayDate_temp = new Date();
+						var formatted_date = holidayDate_temp.getDate() + "/" + (holidayDate_temp.getMonth() + 1) + "/" + holidayDate_temp.getFullYear()
+						console.log('formatted_date------------', formatted_date)
+						return formatted_date;
+					}
 				});
 				$("#_holidayDetail_submitBtn > span").html('Thêm mới');
 				$("#_holiday_hidden_new_id").val(0);
@@ -310,7 +316,7 @@
 			// 	'${url.adminJobPosPortlet.jobpos_detail}'
 			// 	);
 			$("#_holidayDetail_submitBtn > span").html('Thêm mới');
-			$("#_jobpos_listView").getKendoListView().clearSelection();
+			$("#_holiday_listView").getKendoListView().clearSelection();
 		});
 		
 	})(jQuery);

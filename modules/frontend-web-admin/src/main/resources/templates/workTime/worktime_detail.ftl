@@ -176,9 +176,9 @@
 
 			var dataSource = $("#_worktime_listView").getKendoListView().dataSource;
 			var datas = dataSource.data();
-			if (data.length > 0) {
-				for (var i = 0; i < data.length; i++) {
-					if (data[i]['day'] == $("#worktimeDay").val()) {
+			if (datas.length > 0) {
+				for (var i = 0; i < datas.length; i++) {
+					if (datas[i]['day'] == $("#worktimeDay").val()) {
 						notification.show({
 							message: "Ngày này đã có trong hệ thống, không thể thêm mới!"
 						}, "error");
@@ -249,23 +249,19 @@
 	})
 	$('#worktimeStartMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
-		value: new Date(2018, 0, 1, 06, 00)
+		format: "HH.mm"
 	});
 	$('#worktimeEndMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
-		value: new Date(2018, 0, 1, 12, 00)
+		format: "HH.mm"
 	});
 	$('#worktimeStartAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
-		value: new Date(2018, 0, 1, 12, 30)
+		format: "HH.mm"
 	});
 	$('#worktimeEndAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
-		value: new Date(2018, 0, 1, 18, 00)
+		format: "HH.mm"
 	});
 	$("#worktimeDay").kendoComboBox({
 		placeholder : "Chọn ngày làm việc",

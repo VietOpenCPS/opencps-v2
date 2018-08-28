@@ -13,7 +13,7 @@
 				Thêm ngày làm việc
 			</span>
 
-			<div class="input-group MT15">
+			<div class="form-group MT15 MB0">
 				
 				<input type="text" class="form-control" id="_worktime_keySearch"
 					placeholder="Tìm kiếm theo ngày làm việc">
@@ -39,7 +39,7 @@
 					
 					<a href="javascript:;" >
 						
-						<i class="fa fa-graduation-cap fs26 P5" aria-hidden="true"></i>
+						<i class="fa fa-clock-o fs26 P5" aria-hidden="true"></i>
 							
 					</a>
 						
@@ -53,7 +53,7 @@
 					#
 						} else {
 					#
-						<strong class="btn-block">Thứ #= day + 1 #</strong>
+						<strong class="btn-block">Thứ #= parseInt(day) + 1 #</strong>
 					#
 						}
 					#
@@ -192,7 +192,12 @@
 				data: "data",
 				total: "total",
 				model: {
-					id:"day"
+					id:"day",
+					fields: {
+						day: {
+							type: "string"
+						}
+					}
 				}
 			},
 			error: function(e) {
