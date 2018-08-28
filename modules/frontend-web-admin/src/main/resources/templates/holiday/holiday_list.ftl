@@ -277,7 +277,7 @@
 			
 			});
 			var viewModel = {};
-			if (selected[0].hasOwnProperty('holidayDate') && selected[0]['holidayDate'] !== null && selected[0]['holidayDate'] !== undefined) {
+			if (selected[0]) {
 				viewModel = kendo.observable({
 					holidayDescription: selected[0].description,
 					holidayDate: function (e) {
