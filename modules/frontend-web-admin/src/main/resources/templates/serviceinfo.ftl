@@ -118,6 +118,7 @@
 		selectable : "single",
 		dataBound : function(){
 			if(loadFirst){
+				console.log('ccccc')
 				if(dataSourceTTHC.view()[0]){
 					var id = dataSourceTTHC.view()[0].id;
 

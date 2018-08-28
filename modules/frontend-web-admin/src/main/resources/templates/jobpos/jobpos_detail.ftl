@@ -18,6 +18,19 @@
 	<div class="panel-body">
 
 		<form id="_jobposDetail_form">
+
+			<div class="form-group">
+			
+				<label for="_jobposDetail_jobPosCode">Mã chức vụ
+				
+					<span class="icon-asterisk text-warning"></span>
+				
+				</label>
+				
+				<input type="text" id="_jobposDetail_jobPosCode" name="_jobposDetail_jobPosCode" class="form-control"
+					placeholder="Tên chức vụ" required validationMessage="Nhập tên chức vụ" value="${(jobPos.jobPosCode)!}"  />
+				
+			</div>
 			
 			<div class="form-group">
 			
@@ -32,7 +45,7 @@
 				
 			</div>
 			
-			<div class="form-group">
+			<#-- <div class="form-group">
 			
 				<label for="_jobposDetail_leader">Vị trí :</label>
 				<input id="_jobposDetail_leader" name="_jobposDetail_leader" class="form-control" data-vl="${(jobPos.leader)!}" />
@@ -44,7 +57,7 @@
 				<label for="_jobposDetail_permissions">Quyền hạn :</label>
 				<input id="_jobposDetail_permissions" name="_jobposDetail_permissions" class="form-control" />
 				
-			</div>
+			</div> -->
 
 			<div class="form-group">
 			
@@ -62,7 +75,13 @@
 			</div>
 				
 			<div class="form-group text-right">
-			
+				<button class="btn btn-sm btn-active" 
+					id="_jobposDetail_AddBtn" name="_jobposDetail_AddBtn" type="button"
+					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
+					<i class="fa fa-check-circle"></i>
+					<span class="lfr-btn-label">Lưu và thêm mới</span>
+				</button>
+
 				<button class="btn btn-sm btn-active" 
 					id="_jobposDetail_submitBtn" name="_jobposDetail_submitBtn" type="button" data-pk="${(param.jobPos_jobPosId)!}"
 					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
@@ -113,13 +132,12 @@
 				type: 'POST',
 				url: _jobposDetail_BaseUrl +"&${portletNamespace}jobPosId="+ _jobposDetail_jobPosId,
 				data: {
-
+					${portletNamespace}jobPosCode: $( "#_jobposDetail_jobPosCode" ).val().trim(),
 					${portletNamespace}title: $( "#_jobposDetail_title" ).val().trim(),
 					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
 					${portletNamespace}description: $( "#_jobposDetail_description" ).val().trim(),
 					${portletNamespace}permissions: permissions,
 					${portletNamespace}works: works
-
 				},
 				dataType: 'json',
 				beforeSend: function( xhr ) {
@@ -128,26 +146,20 @@
 				success: function(data) {
 
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
-
 						showMessageByAPICode(data.statusCode);
-
 					} else {
-
+						$("#_jobpos_hidden_new_id").val(data.jobPosId);
 						var dataSource = $("#_jobpos_listView").getKendoListView().dataSource;
 						dataSource.pushUpdate(data);
 
-						$.map( dataSource.data(), function( obj, i ) {
+						// $.map( dataSource.data(), function( obj, i ) {
 							
-							if(obj.jobPosId == data.jobPosId) {
-								
-								var listView = $("#_jobpos_listView").data("kendoListView");
-								listView.select(listView.element.children()[i]);
-
-							}
-						});
-
+						// 	if(obj.jobPosId == data.jobPosId) {
+						// 		var listView = $("#_jobpos_listView").data("kendoListView");
+						// 		listView.select(listView.element.children()[i]);
+						// 	}
+						// });
 						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-
 					}
 					$(event.currentTarget).button('reset');
 				},
@@ -164,7 +176,7 @@
 				type: 'POST',
 				url: _jobposDetail_BaseUrl,
 				data: {
-
+					${portletNamespace}jobPosCode: $( "#_jobposDetail_jobPosCode" ).val().trim(),
 					${portletNamespace}title: $( "#_jobposDetail_title" ).val().trim(),
 					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
 					${portletNamespace}description: $( "#_jobposDetail_description" ).val().trim(),
@@ -182,14 +194,13 @@
 
 					} else {
 
-						$("#_jobpos_hidden_new_id").val(data.jobPosId);
+						// $("#_jobpos_hidden_new_id").val(data.jobPosId);
 
 						var dataSource = $("#_jobpos_listView").getKendoListView().dataSource;
 						
 						dataSource.pushUpdate(data);
 						$('#_jobpos_CounterList').html(dataSource.total());
 						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-
 					}
 
 				},
@@ -204,6 +215,28 @@
 		
 
 	});
+	function clearJobpos(argument) {
+		$( "#_jobposDetail_title" ).val('');
+		$( "#_jobposDetail_jobPosCode" ).val('');
+		$( "#_jobposDetail_leader" ).val('');
+		$( "#_jobposDetail_description" ).val('');
+		$("#_jobposDetail_permissions").data("kendoMultiSelect").value('');
+		$("#_jobposDetail_works").data("kendoMultiSelect").value('');
+	}
+
+	$('#_jobposDetail_AddBtn').click(function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		setTimeout(function () {
+			$("#_jobposDetail_submitBtn").click();
+			$("#_jobpos_right-page").load(
+				'${url.adminJobPosPortlet.jobpos_detail}'
+				);
+			$("#_jobpos_listView").getKendoListView().clearSelection();
+			clearJobpos();
+		}, 500)
+	})
 	
 
 	var _jobposDetail_permission_work_BaseUrl = "${api.endpoint}/jobpos";

@@ -299,7 +299,25 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		systemURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		systemURL.setParameter(
 				"mvcPath", "/templates/system.ftl");
-
+		
+		PortletURL holidayURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		holidayURL.setPortletMode(PortletMode.VIEW);
+		holidayURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		holidayURL.setParameter(
+				"mvcPath", "/templates/holiday/holiday_list.ftl");
+		
+		PortletURL worktimeURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		worktimeURL.setPortletMode(PortletMode.VIEW);
+		worktimeURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		worktimeURL.setParameter(
+				"mvcPath", "/templates/workTime/worktime_list.ftl");
+		
+		urlObject.put("holiday", holidayURL.toString());
+		urlObject.put("worktime", worktimeURL.toString());
 		urlObject.put("registrationtemplates", registrationTemplatesURL.toString());
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
