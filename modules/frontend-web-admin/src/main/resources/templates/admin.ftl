@@ -93,14 +93,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Dịch vụ công</div>
 			</li>
-			<li class="clearfix" >
+			<#-- <li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
 				<div class="col-sm-9 PL10 P0">Ngày làm việc, ngày nghỉ</div>
-			</li>
+			</li> -->
 			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
@@ -185,7 +185,7 @@
 			'${ajax.dossiertemplate}',
 			'${ajax.serviceprocess}',
 			'${ajax.serviceconfig}',
-			'holiday.ftl',
+			// 'holiday.ftl',
 			'${ajax.payment_config}',
 			'${ajax.manage_account}',
 			// 'efrom.ftl',
