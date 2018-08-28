@@ -115,6 +115,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		// Audit fields
 		holiday.setUuid(serviceContext.getUuid());
 		holiday.setCompanyId(user.getCompanyId());
+		holiday.setGroupId(groupId);
 		holiday.setUserId(user.getUserId());
 		holiday.setUserName(user.getFullName());
 		holiday.setCreateDate(serviceContext.getCreateDate(now));

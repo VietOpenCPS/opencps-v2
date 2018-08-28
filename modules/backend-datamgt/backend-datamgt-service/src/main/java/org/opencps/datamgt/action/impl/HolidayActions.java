@@ -35,7 +35,7 @@ public class HolidayActions implements HolidayInterface {
 		boolean flag = false;
 
 		Holiday holiday = HolidayLocalServiceUtil.fetchByF_holidayDate(groupId,
-				DateTimeUtils.convertStringToDateAPI(day));
+				new Date(GetterUtil.getLong(day)));
 
 		if (Validator.isNotNull(holiday)) {
 
@@ -95,7 +95,7 @@ public class HolidayActions implements HolidayInterface {
 			ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException {
 		Holiday holiday = HolidayLocalServiceUtil.fetchByF_holidayDate(groupId,
-				DateTimeUtils.convertStringToDateAPI(day));
+				new Date(GetterUtil.getLong(day)));
 
 		if(Validator.isNotNull(holidayDate)){
 			
