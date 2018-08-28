@@ -186,7 +186,6 @@ public class HolidayManagementImpl implements HolidayManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
 			Holiday holiday = actions.update(user.getUserId(), groupId, day, input.getHolidayDate(), input.getDescription(),
 					serviceContext);
 
@@ -195,7 +194,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			return Response.status(200).entity(holidayModel).build();
 
 		} catch (Exception e) {
-
+			
 			if (e instanceof UnauthenticationException) {
 
 				_log.error("@POST: " + e);
