@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="backend.feedback.model.Evaluation">
+		<field name="uuid" type="String" />
+		<field name="evaluationId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="employeeId" type="long" />
+		<field name="employeeName" type="String" />
+		<field name="score" type="int" />
+	</model>
+</model-hints>
