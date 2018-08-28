@@ -1120,6 +1120,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");

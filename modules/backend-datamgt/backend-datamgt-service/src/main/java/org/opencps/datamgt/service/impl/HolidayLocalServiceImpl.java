@@ -115,6 +115,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		// Audit fields
 		holiday.setUuid(serviceContext.getUuid());
 		holiday.setCompanyId(user.getCompanyId());
+		holiday.setGroupId(groupId);
 		holiday.setUserId(user.getUserId());
 		holiday.setUserName(user.getFullName());
 		holiday.setCreateDate(serviceContext.getCreateDate(now));
@@ -124,10 +125,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		holiday.setDescription(description);
 
 		holiday.setExpandoBridgeAttributes(serviceContext);
-
-		holidayPersistence.update(holiday);
-
-		return holiday;
+		return holidayPersistence.update(holiday);
 	}
 
 	/**
