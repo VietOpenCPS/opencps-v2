@@ -1508,7 +1508,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-	public static final int LENGHT_DOSSIER_PASSWORD = 15;
+	public static final int LENGHT_DOSSIER_PASSWORD = 4;
 	public static final String DEFAULT_PATTERN_PASSWORD = "0123456789khoa";
 
 	@Override
