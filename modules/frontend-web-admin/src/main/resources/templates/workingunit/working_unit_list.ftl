@@ -163,7 +163,7 @@
 
 							//var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
 							
-							$("#_workingUnit_hidden_new_id").val(data.workingUnitId);
+							// $("#_workingUnit_hidden_new_id").val(data.workingUnitId);
 							
 							$("#_workingUnit_listView").getKendoListView().dataSource.read();
 							
@@ -171,7 +171,7 @@
 							//dataSource.pushUpdate(data);
 							//$('#_workingUnit_CounterList').html(dataSource.total());
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							//$("#_workingUnitDetail_submitBtn").button('reset');
+							$("#_workingUnitDetail_submitBtn").button('reset');
 						},
 						error: function(xhr, textStatus, errorThrown) {
 							
