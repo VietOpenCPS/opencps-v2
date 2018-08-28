@@ -1,6 +1,5 @@
 package org.opencps.api.controller.util;
 
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +51,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.MathUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -61,6 +59,8 @@ public class DossierUtils {
 
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	private static final String EXTEND_ONE_VALUE = ".0";
+	private static final String EXTEND_TWO_VALUE = ".00";
 
 	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
@@ -399,7 +399,16 @@ public class DossierUtils {
 			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
 			overDue = (double) Math.ceil(subDueCount * 4) / 4;
 			//TODO: Process a.0 = a
-			return overDue + strOverDue;
+			boolean flagCeil = false;
+			String strOverDueConvert = String.valueOf(overDue);
+			if (Validator.isNotNull(strOverDueConvert)) {
+				if (strOverDueConvert.contains(EXTEND_ONE_VALUE) || strOverDueConvert.contains(EXTEND_TWO_VALUE)) {
+					flagCeil = true;
+				}
+			}
+			if (!flagCeil) {
+				return overDue + strOverDue;
+			}
 		} else {
 			strOverDue = " giờ";
 			dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
