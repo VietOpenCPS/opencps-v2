@@ -214,9 +214,20 @@
 					postStepCode: serviceProcessAction.postStepCode,
 					autoEvent: serviceProcessAction.autoEvent,
 					preCondition: serviceProcessAction.preCondition,
-					allowAssignUser: serviceProcessAction.allowAssignUser,
+					allowAssignUser: function (e) {
+						if (!serviceProcessAction.allowAssignUser) {
+							// return serviceProcessAction.allowAssignUser;
+							$("#assignUserIdTemp").hide();
+						}
+						return serviceProcessAction.allowAssignUser;
+					},
 					assignUserId: serviceProcessAction.assignUserId,
-					requestPayment: serviceProcessAction.requestPayment,
+					requestPayment: function (e) {
+						if (!serviceProcessAction.requestPayment) {
+							$("#paymentFeeTemp").hide();
+						}
+						return serviceProcessAction.requestPayment;
+					},
 					paymentFee: serviceProcessAction.paymentFee,
 					syncActionCode: serviceProcessAction.syncActionCode,
 					rollbackable: serviceProcessAction.rollbackable,
@@ -320,7 +331,7 @@
 					createDossierNo : "",
 					eSignature : "",
 					configNote : "",
-					createDossiers: ""
+					createDossiers: "",
 					dossiertemplatesFileFilter : function(){
 
 						$("#dossiertemplateTmp").val("");
@@ -447,7 +458,7 @@
 					if (!allowAssignUser) {
 						assignUserId = 0;
 					} else {
-						assignUserId = $("#assignUserId").val()
+						assignUserId = $("#assignUserId").val();
 					}
 					$.ajax({
 						url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions",
@@ -503,7 +514,8 @@
 								"rollbackable": $("#rollbackable").prop("checked"),
 								"createDossierNo" : $("#createDossierNo").prop("checked"),
 								"eSignature" : $("#eSignature").prop("checked"),
-								"configNote" : $("textarea#configNote").val()
+								"configNote" : $("textarea#configNote").val(),
+								"createDossiers" : $("#createDossiers").val()
 							});
 
 							
