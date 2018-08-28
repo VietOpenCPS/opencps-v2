@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
+import org.opencps.api.dossier.model.DossierDataPublishModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
@@ -967,4 +968,34 @@ public class DossierUtils {
 		return model;
 	}
 
+	//Mapping publish dossier
+	public static List<DossierDataPublishModel> mappingForGetPublishList(List<Document> docs) {
+		List<DossierDataPublishModel> ouputs = new ArrayList<DossierDataPublishModel>();
+
+		for (Document doc : docs) {
+			DossierDataPublishModel model = new DossierDataPublishModel();
+			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
+			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME));
+			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
+			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			}
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
+			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
+			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
+			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+
+			ouputs.add(model);
+		}
+
+		return ouputs;
+	}
 }
