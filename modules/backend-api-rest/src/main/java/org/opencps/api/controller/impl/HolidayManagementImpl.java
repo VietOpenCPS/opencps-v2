@@ -60,7 +60,9 @@ public class HolidayManagementImpl implements HolidayManagement {
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
-			params.put("year", query.getYear());
+			if (Validator.isNotNull(query.getYear())) {
+				params.put("year", query.getYear());				
+			}
 			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

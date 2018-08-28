@@ -124,10 +124,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		holiday.setDescription(description);
 
 		holiday.setExpandoBridgeAttributes(serviceContext);
-
-		holidayPersistence.update(holiday);
-
-		return holiday;
+		return holidayPersistence.update(holiday);
 	}
 
 	/**
