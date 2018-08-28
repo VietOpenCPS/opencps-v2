@@ -259,7 +259,7 @@
 			
 			});
 			var viewModel = {};
-			if (selected[0].hasOwnProperty('day') && selected[0]['day'] !== null && selected[0]['day'] !== undefined) {
+			if (selected[0]) {
 				viewModel = kendo.observable({
 					day: selected[0].day,
 					hours: function (e) {
