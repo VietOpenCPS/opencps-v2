@@ -102,7 +102,6 @@
 		});
 		
 		$('#_holiday_CounterList').html($("#_holiday_listView").getKendoListView().dataSource.total());
-		
 	}
 
 	function parseStringToDate (data) {

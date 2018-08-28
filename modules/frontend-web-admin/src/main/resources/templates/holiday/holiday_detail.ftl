@@ -99,6 +99,9 @@
 					description: $("#holidayDescription").val()
 				},
 				dataType: 'json',
+				headers: {
+					"groupId": ${groupId}
+				},
 				beforeSend: function( xhr ) {
 					$(event.currentTarget).button('loading');
 				},
@@ -135,7 +138,7 @@
 			});
 
 		} else {
-			
+
 			$.ajax({
 				type: 'POST',
 				url: _holiday_BaseUrl,
@@ -144,7 +147,9 @@
 					description: $("#holidayDescription").val()
 				},
 				dataType: 'json',
-				
+				headers: {
+					"groupId": ${groupId}
+				},
 				success: function(data) {
 
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
@@ -198,7 +203,8 @@
 
 	$("#holidayDate").kendoDatePicker({
 		format: "dd/MM/yyyy",
-		dateInput: true
+		dateInput: true,
+		placeholder: 'Ngày nghỉ'
 	});
 })(jQuery);
 

@@ -138,6 +138,9 @@
 				beforeSend: function( xhr ) {
 					$(event.currentTarget).button('loading');
 				},
+				headers: {
+					"groupId": ${groupId}
+				},
 				success: function(data) {
 
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
@@ -192,7 +195,9 @@
 					hours: hourTem
 				},
 				dataType: 'json',
-				
+				headers: {
+					"groupId": ${groupId}
+				},
 				success: function(data) {
 
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
