@@ -24,7 +24,7 @@
 				</label>
 				
 				<input type="text" id="worktimeDay" name="worktimeDay" class="form-control"
-					placeholder="Ngày nghỉ" required validationMessage="Nhập ngày nghỉ" />
+					placeholder="Ngày nghỉ" data-bind="value: day" required validationMessage="Nhập ngày nghỉ" />
 				
 			</div>
 			
@@ -34,7 +34,7 @@
 					Buổi sáng
 				</label>
 				<br>
-				<div class="row">
+				<div class="row" data-bind="value: hours">
 					<div class="col-sm-6 col-xs-12">
 						<label for="worktimeStartMorning"> Từ
 							<span class="icon-asterisk text-warning"></span>
@@ -75,18 +75,18 @@
 			</div>
 				
 			<div class="form-group text-right">
-				<button class="btn btn-sm btn-active" 
+				<#-- <button class="btn btn-sm btn-active" 
 					id="_worktimeDetail_AddBtn" name="_worktimeDetail_AddBtn" type="button"
-					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
+					dât-loading-tẽt="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i>
 					<span class="lfr-btn-label">Lưu và thêm mới</span>
-				</button>
+				</button> -->
 
 				<button class="btn btn-sm btn-active" 
 					id="_worktimeDetail_submitBtn" name="_worktimeDetail_submitBtn" type="button"
 					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i>
-					<span class="lfr-btn-label">Xác nhận</span>
+					<span class="lfr-btn-label">Lưu lại</span>
 				</button>
 			
 			</div>
@@ -122,7 +122,6 @@
 		var worktimeStartAfter = $("#worktimeStartAfter").val();
 		var worktimeEndAfter = $("#worktimeEndAfter").val();
 		hourTem = worktimeStartMorning + '-' + worktimeEndMorning + ',' + worktimeStartAfter + '-' + worktimeEndAfter;
-		hourTem = hourTem.replace(':', '.');
 
 		if ($("#_worktime_hidden_new_id").val() != 0 ) {
 
@@ -144,7 +143,7 @@
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
 						showMessageByAPICode(data.statusCode);
 					} else {
-						$("#_worktime_hidden_new_id").val(data.holidayDate);
+						// $("#_worktime_hidden_new_id").val(data.holidayDate);
 						var dataSource = $("#_worktime_listView").getKendoListView().dataSource;
 						dataSource.pushUpdate(data);
 
@@ -245,23 +244,23 @@
 	})
 	$('#worktimeStartMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH:mm",
+		format: "HH.mm",
 		value: new Date(2018, 0, 1, 06, 00)
 	});
 	$('#worktimeEndMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH:mm",
+		format: "HH.mm",
 		value: new Date(2018, 0, 1, 12, 00)
 	});
 	$('#worktimeStartAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH:mm",
+		format: "HH.mm",
 		value: new Date(2018, 0, 1, 12, 30)
 	});
 	$('#worktimeEndAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH:mm",
-		value: new Date(2018, 0, 1, 06, 00)
+		format: "HH.mm",
+		value: new Date(2018, 0, 1, 18, 00)
 	});
 	$("#worktimeDay").kendoComboBox({
 		placeholder : "Chọn ngày làm việc",
