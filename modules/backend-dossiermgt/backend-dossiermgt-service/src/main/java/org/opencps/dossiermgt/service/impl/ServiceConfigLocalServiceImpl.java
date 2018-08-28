@@ -505,6 +505,10 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfigPersistence.findByF_GID_SID(groupId, serviceInfoId);
 	}
 
+	public List<ServiceConfig> getByGovAgencyCode(String govAgencyCode) {
+		return serviceConfigPersistence.findByF_GAC(govAgencyCode);
+	}
+
 	public static final String CLASS_NAME = ServiceConfig.class.getName();
 
 }
