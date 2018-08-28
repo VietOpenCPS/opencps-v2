@@ -207,7 +207,6 @@
 				var serviceProcessAction = serviceProcessActionDataSource.get(($(this).attr("data-pk")));
 
 				console.log("serviceProcessAction==============",serviceProcessAction);
-
 				var viewModel = kendo.observable({
 					actionCode: serviceProcessAction.actionCode,
 					actionName: serviceProcessAction.actionName,
@@ -225,7 +224,8 @@
 					createDossierNo : serviceProcessAction.createDossierNo,
 					eSignature : serviceProcessAction.eSignature,
 					configNote : serviceProcessAction.configNote,
-					dossiertemplatesFileFilter : serviceProcessAction.dossierTemplateNo
+					dossiertemplatesFileFilter : serviceProcessAction.dossierTemplateNo,
+					createDossiers: serviceProcessAction.createDossiers
 
 				});
 
@@ -320,6 +320,7 @@
 					createDossierNo : "",
 					eSignature : "",
 					configNote : "",
+					createDossiers: ""
 					dossiertemplatesFileFilter : function(){
 
 						$("#dossiertemplateTmp").val("");
@@ -361,6 +362,13 @@
 
 			var updateServiceProcessAction = function(serviceProcessId, actionId){
 				if (validateProcessAction()){
+					var allowAssignUser = $("#allowAssignUser").data('kendoComboBox').value();
+					var assignUserId = 0;
+					if (!allowAssignUser) {
+						assignUserId = 0;
+					} else {
+						assignUserId = $("#assignUserId").val()
+					}
 					$.ajax({
 						url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions/" + actionId,
 						type: "PUT",
@@ -374,7 +382,7 @@
 							autoEvent: $("#autoEvent").val(),
 							preCondition: $("#preCondition").val(),
 							allowAssignUser: $("#allowAssignUser").val(),
-							assignUserId: $("#assignUserId").val(),
+							assignUserId: assignUserId,
 							requestPayment: $("#requestPayment").val(),
 							paymentFee: $("#paymentFee").val(),
 							createDossierFiles: getCreateDossierFiles(),
@@ -384,7 +392,8 @@
 							createDossierNo : $("#createDossierNo").prop("checked"),
 							eSignature : $("#eSignature").prop("checked"),
 							configNote : $("textarea#configNote").val(),
-							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val(),
+							createDossiers: $("#createDossiers").val()
 						},
 						success: function(result) {
 							notification.show({
@@ -433,6 +442,13 @@
 
 			var addServiceProcessAction = function(serviceProcessId){
 				if (validateProcessAction()){
+					var allowAssignUser = $("#allowAssignUser").data('kendoComboBox').value();
+					var assignUserId = 0;
+					if (!allowAssignUser) {
+						assignUserId = 0;
+					} else {
+						assignUserId = $("#assignUserId").val()
+					}
 					$.ajax({
 						url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions",
 						type: "POST",
@@ -446,7 +462,7 @@
 							autoEvent: $("#autoEvent").val(),
 							preCondition: $("#preCondition").val(),
 							allowAssignUser: $("#allowAssignUser").val(),
-							assignUserId: $("#assignUserId").val(),
+							assignUserId: assignUserId,
 							requestPayment: $("#requestPayment").val(),
 							paymentFee: $("#paymentFee").val(),
 							createDossierFiles: getCreateDossierFiles(),
@@ -456,7 +472,8 @@
 							createDossierNo : $("#createDossierNo").prop("checked"),
 							eSignature : $("#eSignature").prop("checked"),
 							configNote : $("textarea#configNote").val(),
-							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val(),
+							createDossiers: $("#createDossiers").val()
 						},
 						success: function(result) {
 							notification.show({
