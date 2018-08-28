@@ -2951,7 +2951,9 @@ public class DossierManagementImpl implements DossierManagement {
 						processDateLong != 0 ? new Date(processDateLong) : null,
 						serviceContext);
 
-
+			dossier.setDossierNo(input.getDossierNo());
+			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 
 		} catch (Exception e) {

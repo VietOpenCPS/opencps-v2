@@ -314,6 +314,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_TEMPLATE_NO)) {
 			model.setDossierTemplateNo(jsonObj.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
 		}
+		if (jsonObj.has(DossierTerm.DOSSIER_NO)) {
+			model.setDossierNo(jsonObj.getString(DossierTerm.DOSSIER_NO));
+		}
 		if (jsonObj.has(DossierTerm.APPLICANT_NAME)) {
 			model.setApplicantName(jsonObj.getString(DossierTerm.APPLICANT_NAME));
 		}
