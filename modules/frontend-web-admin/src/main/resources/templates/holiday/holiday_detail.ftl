@@ -24,7 +24,7 @@
 				</label>
 				
 				<input type="text" id="holidayDate" name="holidayDate" class="form-control"
-					placeholder="Ngày nghỉ" required validationMessage="Nhập ngày nghỉ" data-bind="value: holidayDate"/>
+					placeholder="Ngày nghỉ" data-bind="value: holidayDate" required validationMessage="Nhập ngày nghỉ" data-bind="value: holidayDate"/>
 				
 			</div>
 			
@@ -44,12 +44,12 @@
 			</div>
 				
 			<div class="form-group text-right">
-				<button class="btn btn-sm btn-active" 
+				<#-- <button class="btn btn-sm btn-active" 
 					id="_holidayDetail_AddBtn" name="_holidayDetail_AddBtn" type="button"
 					data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 					<i class="fa fa-check-circle"></i>
 					<span class="lfr-btn-label">Lưu và thêm mới</span>
-				</button>
+				</button> -->
 
 				<button class="btn btn-sm btn-active" 
 					id="_holidayDetail_submitBtn" name="_holidayDetail_submitBtn" type="button"
@@ -107,7 +107,7 @@
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
 						showMessageByAPICode(data.statusCode);
 					} else {
-						$("#_holiday_hidden_new_id").val(data.holidayDate);
+						// $("#_holiday_hidden_new_id").val(data.holidayDate);
 						var dataSource = $("#_holiday_listView").getKendoListView().dataSource;
 						dataSource.pushUpdate(data);
 
@@ -135,7 +135,7 @@
 			});
 
 		} else {
-
+			
 			$.ajax({
 				type: 'POST',
 				url: _holiday_BaseUrl,

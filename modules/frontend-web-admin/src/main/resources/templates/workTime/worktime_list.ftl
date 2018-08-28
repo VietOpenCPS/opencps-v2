@@ -8,7 +8,7 @@
 		
 		<div class="panel-body">
 	
-			<span id="_jobpos_editLabel" class="btn btn-active btn-block"> 
+			<span id="_worktime_editLabel" class="btn btn-active btn-block"> 
 				<i class="fa fa-clock-o" aria-hidden="true"></i>
 				Thêm ngày làm việc
 			</span>
@@ -16,14 +16,13 @@
 			<div class="input-group MT15">
 				
 				<input type="text" class="form-control" id="_worktime_keySearch"
-					oninput="_worktime_autocompleteSearch(this.value)" 
 					placeholder="Tìm kiếm theo ngày làm việc">
 	
-				<div class="input-group-addon btn-active" id="_worktime_btnSearch">
+				<#-- <div class="input-group-addon btn-active" id="_worktime_btnSearch">
 					
 					<i class="fa fa-search" aria-hidden="true"></i>
 	
-				</div>
+				</div> -->
 	
 			</div>
 			
@@ -96,10 +95,10 @@
 
 <script type="text/javascript">
 	
-	function _jobpos_autocompleteSearch() {
+	function _worktime_autocompleteSearch(data) {
 	
 		$("#_worktime_listView").getKendoListView().dataSource.filter({
-			 field: "day", operator: "contains", 	value: $("#_worktime_keySearch").val().trim() 
+			 field: "day", operator: "contains", 	value: data 
 		});
 		
 		$('#_worktime_CounterList').html($("#_worktime_listView").getKendoListView().dataSource.total());
@@ -259,26 +258,100 @@
 				return data[$(item).index()];
 			
 			});
-			var viewModel = kendo.observable({
-				day: selected[0].day,
-				hours: selected[0].hours
-			});
-			kendo.bind($("#_worktimeDetail_form"), viewModel);
-			$("#_worktime_hidden_new_id").val(selected[0].day);
+			var viewModel = {};
+			if (selected[0].hasOwnProperty('day') && selected[0]['day'] !== null && selected[0]['day'] !== undefined) {
+				viewModel = kendo.observable({
+					day: selected[0].day,
+					hours: function (e) {
+						var hoursTemp = selected[0].hours.split(',');
+						var hoursMorning = hoursTemp[0].split('-');
+						var hoursAfter = hoursTemp[1].split('-');
+						var worktimeStartMorning = hoursMorning[0];
+						var worktimeEndMorning = hoursMorning[1];
+						var worktimeStartAfter = hoursAfter[0];
+						var worktimeEndAfter = hoursAfter[1];
+						$("#worktimeStartMorning").data('kendoTimePicker').value(worktimeStartMorning);
+						$("#worktimeEndMorning").data('kendoTimePicker').value(worktimeEndMorning);
+						$("#worktimeStartAfter").data('kendoTimePicker').value(worktimeStartAfter);
+						$("#worktimeEndAfter").data('kendoTimePicker').value(worktimeEndAfter);
+					}
+				});
+				$("#_worktimeDetail_submitBtn > span").html('Lưu lại');
+				$("#_worktime_hidden_new_id").val(selected[0].day);
+			} else {
+				viewModel = kendo.observable({
+					day: 0,
+					hours: function (e) {
+						$("#worktimeStartMorning").data('kendoTimePicker').value('06.00');
+						$("#worktimeEndMorning").data('kendoTimePicker').value('12.00');
+						$("#worktimeStartAfter").data('kendoTimePicker').value('12.30');
+						$("#worktimeEndAfter").data('kendoTimePicker').value('18.00');
+					}
+				});
+				$("#_worktimeDetail_submitBtn > span").html('Thêm mới');
+				$("#_worktime_hidden_new_id").val(0);
+			}
 			
+			kendo.bind($("#_worktimeDetail_form"), viewModel);
 		}
 
-		$(document).on('click', '#_worktime_autocompleteSearch', function(event){
+		$(document).on('click', '#_worktime_editLabel', function(event){
 		
-			// event.preventDefault();
-			// event.stopPropagation();
-			// event.stopImmediatePropagation();
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
 			
 			// $("#_jobpos_right-page").load(
 			// 	'${url.adminJobPosPortlet.jobpos_detail}'
 			// 	);
-			
-			// $("#_jobpos_listView").getKendoListView().clearSelection();
+			$("#_worktimeDetail_submitBtn > span").html('Thêm mới');
+			$("#_worktime_listView").getKendoListView().clearSelection();
+		});
+
+		$("#_worktime_keySearch").kendoComboBox({
+			placeholder : "Tìm theo ngày làm việc",
+			dataTextField : "text",
+			dataValueField : "value",
+			dataSource : [
+			{
+				value: 0,
+				text: 'Chủ nhật'
+			},
+			{
+				value: 1,
+				text: 'Thứ 2'
+			},
+			{
+				value: 2,
+				text: 'Thứ 3'
+			},
+			{
+				value: 3,
+				text: 'Thứ 4'
+			},
+			{
+				value: 4,
+				text: 'Thứ 5'
+			},
+			{
+				value: 5,
+				text: 'Thứ 6'
+			},
+			{
+				value: 6,
+				text: 'Thứ 7'
+			}
+			],
+			dataBound : function(e){
+				$(".k-clear-value").addClass("k-hidden");
+			},
+			change: function (e) {
+				console.log(this.value())
+				if (this.value() !== null && this.value() !== '' && this.value() !== undefined) {
+					_worktime_autocompleteSearch(this.value())
+				}
+			},
+			noDataTemplate: 'Không có dữ liệu'
 		});
 		
 	})(jQuery);
