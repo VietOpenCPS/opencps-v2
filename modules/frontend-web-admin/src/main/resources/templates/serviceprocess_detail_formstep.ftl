@@ -90,7 +90,7 @@
 		<div class="row MT10">
 			<div class="col-xs-12 col-sm-8"></div>
 			<div class="col-xs-12 col-sm-4">
-				<div class="checkbox"> <input type="checkbox" name="editable" id="editable" data-bind="checked: editable"> <label>Cho phép sửa hồ sơ</label> </div>
+				<div class="checkbox"> <input type="checkbox" name="editable" id="editable" data-bind="checked: editable"> <label class="ML10">Cho phép sửa hồ sơ</label> </div>
 			</div>
 		</div>
 		<div class="service-process-form-step-controls">

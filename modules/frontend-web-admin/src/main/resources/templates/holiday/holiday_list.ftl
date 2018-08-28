@@ -266,6 +266,21 @@
 				_holiday_listView.select(children[index]);
 			}			
 		}
+		function pullDetailHoliday(data) {
+			if (data) {
+				$("#holidayDescription").val(data.description)
+				var holidayDate_temp = new Date(data.holidayDate);
+				var formatted_date = holidayDate_temp.getDate() + "/" + (holidayDate_temp.getMonth() + 1) + "/" + holidayDate_temp.getFullYear()
+				console.log('formatted_date------------', formatted_date)
+				$("#holidayDate").data('kendoDatePicker').value(formatted_date)
+			} else {
+				$("#holidayDescription").val('')
+				var holidayDate_temp = new Date();
+				var formatted_date = holidayDate_temp.getDate() + "/" + (holidayDate_temp.getMonth() + 1) + "/" + holidayDate_temp.getFullYear()
+				console.log('formatted_date------------', formatted_date)
+				$("#holidayDate").data('kendoDatePicker').value(formatted_date)
+			}
+		}
 		
 		function _holiday_onChange(e) {
 	
@@ -276,34 +291,15 @@
 				return data[$(item).index()];
 			
 			});
-			var viewModel = {};
 			if (selected[0]) {
-				viewModel = kendo.observable({
-					holidayDescription: selected[0].description,
-					holidayDate: function (e) {
-						var holidayDate_temp = new Date(selected[0].holidayDate);
-						var formatted_date = holidayDate_temp.getDate() + "/" + (holidayDate_temp.getMonth() + 1) + "/" + holidayDate_temp.getFullYear()
-						console.log('formatted_date------------', formatted_date)
-						return formatted_date;
-					}
-				});
+				pullDetailHoliday(selected[0])
 				$("#_holidayDetail_submitBtn > span").html('Lưu lại');
 				$("#_holiday_hidden_new_id").val(selected[0].holidayDate);
 			} else {
-				viewModel = kendo.observable({
-					holidayDescription: '',
-					holidayDate: function (e) {
-						var holidayDate_temp = new Date();
-						var formatted_date = holidayDate_temp.getDate() + "/" + (holidayDate_temp.getMonth() + 1) + "/" + holidayDate_temp.getFullYear()
-						console.log('formatted_date------------', formatted_date)
-						return formatted_date;
-					}
-				});
+				pullDetailHoliday()
 				$("#_holidayDetail_submitBtn > span").html('Thêm mới');
 				$("#_holiday_hidden_new_id").val(0);
 			}
-			
-			kendo.bind($("#_holidayDetail_form"), viewModel);
 		}
 
 		$(document).on('click', '#_holiday_editLabel', function(event){

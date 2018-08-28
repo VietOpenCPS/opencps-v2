@@ -24,7 +24,7 @@
 				</label>
 				
 				<input type="text" id="worktimeDay" name="worktimeDay" class="form-control"
-					placeholder="Ngày nghỉ" data-bind="value: day" required validationMessage="Nhập ngày nghỉ" />
+					placeholder="Ngày nghỉ" required validationMessage="Nhập ngày nghỉ" />
 				
 			</div>
 			
@@ -34,7 +34,7 @@
 					Buổi sáng
 				</label>
 				<br>
-				<div class="row" data-bind="value: hours">
+				<div class="row">
 					<div class="col-sm-6 col-xs-12">
 						<label for="worktimeStartMorning"> Từ
 							<span class="icon-asterisk text-warning"></span>
