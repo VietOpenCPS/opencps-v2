@@ -51,4 +51,7 @@ public class ProcessActionTerm {
 	
 	public static final String DUE_DATE_EDITABLE = "editable";
 	public static final String DUE_DATE_HOUR = "hour";
+	
+	public static final String paymentFee = "paymentFee";
+	public static final String createDossiers = "createDossiers";
 }
