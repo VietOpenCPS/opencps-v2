@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.kyso.model.kyso">
+		<field name="uuid" type="String" />
+		<field name="jasperId" type="long" />
+	</model>
+</model-hints>
