@@ -132,15 +132,15 @@ public class HolidayUtils {
 
 			long countDay = hoursCount / 8;
 			int countHours = (int) hoursCount % 8;
-			if (countDay > 1) {
+			if (countDay > 0 && countDay == 1) {
+				baseDateCal.add(Calendar.DATE, 1);
+				baseDateCal = checkDay(baseDateCal, startDate, holidayList);
+			} else if (countDay > 1) {
 				for (int i = 0; i < countDay; i++) {
 					baseDateCal.add(Calendar.DATE, 1);
 					baseDateCal = checkDay(baseDateCal, startDate, holidayList);
 //							saturdayIsHoliday, sundayIsHoliday);
 				}
-			} else if (countDay > 0) {
-				baseDateCal.add(Calendar.DATE, 1);
-				baseDateCal = checkDay(baseDateCal, startDate, holidayList);
 			}
 
 			if (countHours > 0) {
@@ -323,25 +323,20 @@ public class HolidayUtils {
 	//LamTV_ Process checkDay
 	private static Calendar checkDay(Calendar baseDateCal, Date startDate, List<Holiday> holidayList) {
 
-		boolean isHoliday = false;
 		try {
 			/**
 			 * Kiem tra ngay xu ly co trung vao list ngay nghi da config hay
 			 * chua, Neu trung thi + them ngay xu ly
 			 */
-			isHoliday = isHoliday(baseDateCal, holidayList);
+			boolean isHoliday = isHoliday(baseDateCal, holidayList);
+			//Check day is Day off
+			boolean isDayOff = false;
+			if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))) {
+				isDayOff = true;
+			}
 
-			if (isHoliday) {
-				if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))) {
-					baseDateCal.add(Calendar.DATE, 2);
-				} else {
-					baseDateCal.add(Calendar.DATE, 1);
-				}
-
-			} else {
-				if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))) {
-					baseDateCal.add(Calendar.DATE, 1);
-				}
+			if (isHoliday || isDayOff) {
+				baseDateCal.add(Calendar.DATE, 1);
 			}
 			
 		}
@@ -533,24 +528,30 @@ public class HolidayUtils {
 			if (holidayList != null && holidayList.size() > 0) {
 				isHoliday = isHoliday(startDateCal, holidayList);
 			}
-			if (isHoliday) {
-				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
-					startDateCal.add(Calendar.DAY_OF_MONTH, 2);
-					count += 2;
-					flagCompareDate = compareDate(startDateCal, endDateCal);
-				} else {
-					startDateCal.add(Calendar.DAY_OF_MONTH, 1);
-					count += 1;
-					flagCompareDate = compareDate(startDateCal, endDateCal);
-				}
-
-			} else {
-				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
-					startDateCal.add(Calendar.DAY_OF_MONTH, 1);
-					count += 1;
-					flagCompareDate = compareDate(startDateCal, endDateCal);
-				}
+			//Check day is Day off
+			boolean isDayOff = false;
+			if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
+				isDayOff = true;
 			}
+			if (isHoliday || isDayOff) {
+//				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
+//					startDateCal.add(Calendar.DAY_OF_MONTH, 2);
+//					count += 2;
+//					flagCompareDate = compareDate(startDateCal, endDateCal);
+//				} else {
+				startDateCal.add(Calendar.DAY_OF_MONTH, 1);
+				count += 1;
+				flagCompareDate = compareDate(startDateCal, endDateCal);
+//				}
+
+			}
+//			else {
+//				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
+//					startDateCal.add(Calendar.DAY_OF_MONTH, 1);
+//					count += 1;
+//					flagCompareDate = compareDate(startDateCal, endDateCal);
+//				}
+//			}
 			if (flagCompareDate) {
 				return count;
 			}

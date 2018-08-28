@@ -310,13 +310,14 @@ public class StatisticManagementImpl implements StatisticManagement {
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
 					groupId);
 			if (dictCollection != null) {
-				List<DictItem> dictItemList = DictItemLocalServiceUtil
-						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+				List<DictItem> dictItemList = DictItemLocalServiceUtil.
+						findByF_dictCollectionId_parentItemId(dictCollection.getDictCollectionId(), 0);
+//						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
 
 				if (dictItemList != null && dictItemList.size() > 0) {
 					for (DictItem dictItem : dictItemList) {
-						long parentItemId = dictItem.getParentItemId();
-						if (parentItemId == 0) {
+//						long parentItemId = dictItem.getParentItemId();
+//						if (parentItemId == 0) {
 							String statusCode = dictItem.getItemCode();
 							JSONObject statistic = JSONFactoryUtil.createJSONObject();
 							params.put(DossierTerm.STATUS, statusCode);
@@ -330,7 +331,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 							_log.info("statistic: " + statistic.toJSONString());
 							statisticArr.put(statistic);
-						}
+//						}
 					}
 				}
 			}
