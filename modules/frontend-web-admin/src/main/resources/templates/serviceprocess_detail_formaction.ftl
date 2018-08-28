@@ -95,13 +95,11 @@
 		<div class="row MT10">
 			<div class="col-xs-12 col-sm-5">
 				<div class="row">
-					<div class="col-xs-12 col-sm-12">
+					<div class="col-xs-12 col-sm-12 MB5">
 						Phân công người thực hiện
-						
 					</div>				
 					<div class="col-xs-12 col-sm-12">
 						<select class="form-control" id="allowAssignUser" name="allowAssignUser" data-bind="value: allowAssignUser">
-							<option value=""></option>
 							<option value="0">Không phân công</option>
 							<option value="1">Chỉ phân công người thực hiện</option>
 							<option value="2">Phân công thực hiện và phối hợp</option>
@@ -109,7 +107,10 @@
 						</select>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row" id="assignUserIdTemp">
+					<div class="col-xs-12 col-sm-12 MT10 MB5">
+						Người được chọn ngầm định
+					</div>
 					<div class="col-xs-12 col-sm-12">
 						<select class="form-control" id="assignUserId" name="assignUserId" data-bind="value: assignUserId">
 							<option></option>
@@ -119,7 +120,7 @@
 			</div>
 			<div class="col-xs-12 col-sm-1"></div>
 			<div class="col-xs-12 col-sm-5">
-				<div class="checkbox"> <input type="checkbox" id="rollbackable" name="rollbackable" data-bind="checked: rollbackable"> <label>Cho phép rollback</label> </div>
+				<div class="checkbox"> <input type="checkbox" id="rollbackable" name="rollbackable" data-bind="checked: rollbackable"> <label class="ML10">Cho phép rollback</label> </div>
 			</div>
 		</div>
 		<div class="row MT10">
@@ -155,7 +156,7 @@
 		<div class="row MT10">
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
-					<div class="col-xs-12 col-sm-12"><label>Yêu cầu thanh toán</label></div>
+					<div class="col-xs-12 col-sm-12 MB5">Yêu cầu thanh toán</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
@@ -171,8 +172,9 @@
 					
 				</div>
 				
-				<div class="row">
-					<div class="col-xs-12 col-sm-12">
+				<div class="row" id="paymentFeeTemp">
+					<div class="col-xs-12 col-sm-12 MT10">
+						<div class="MB5">Chuỗi cấu hình tính phí</div>
 						<input class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee">
 					</div>
 				</div>
@@ -193,6 +195,20 @@
 		</div>
 
 		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">Cấu hình cơ quan</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<input class="form-control" type="text" name="createDossiers" id="createDossiers" value="" data-bind="value: createDossiers">
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="row MT10">
 			<div class="col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
@@ -211,12 +227,12 @@
 			<div class="col-sm-6">
 				<div class="checkbox"> 
 					<input type="checkbox" id="createDossierNo" name="createDossierNo" data-bind="checked:createDossierNo"> 
-					<label>Sinh mã số tiếp nhận</label> 
+					<label class="ML10">Sinh mã số tiếp nhận</label> 
 				</div>
 			</div>
 			<div class="col-sm-6">
 				<div class="checkbox"> <input type="checkbox" id="eSignature" name="eSignature" data-bind="checked:eSignature"> 
-					<label>Có ký số điện tử</label> 
+					<label class="ML10">Có ký số điện tử</label> 
 				</div>
 			</div>
 		</div>
@@ -423,6 +439,28 @@
 		filter: "contains",
 		placeholder: "Nhập từ khóa",
 		noDataTemplate: 'Không có dữ liệu'
+	});
+
+	$("#allowAssignUser").kendoComboBox({
+		change: function (e) {
+			console.log(this.value())
+			if (this.value() == 0 || this.value() == '') {
+				$("#assignUserIdTemp").hide();
+			} else {
+				$("#assignUserIdTemp").show();
+			}
+		}
+	});
+	
+	$("#requestPayment").kendoComboBox({
+		change: function (e) {
+			console.log(this.value())
+			if (this.value() == 0 || this.value() == '') {
+				$("#paymentFeeTemp").hide();
+			} else {
+				$("#paymentFeeTemp").show();
+			}
+		}
 	});
 
 	/*$("#createDossierFiles").kendoAutoComplete({

@@ -253,6 +253,28 @@
 			_worktime_listView.select(children[index]);
 			
 		}
+		function pullDetailWorkTime(data) {
+			if (data) {
+				$("#worktimeDay").data('kendoComboBox').value(data.day);
+				var hoursTemp = data.hours.split(',');
+				var hoursMorning = hoursTemp[0].split('-');
+				var hoursAfter = hoursTemp[1].split('-');
+				var worktimeStartMorning = hoursMorning[0];
+				var worktimeEndMorning = hoursMorning[1];
+				var worktimeStartAfter = hoursAfter[0];
+				var worktimeEndAfter = hoursAfter[1];
+				$("#worktimeStartMorning").data('kendoTimePicker').value(worktimeStartMorning);
+				$("#worktimeEndMorning").data('kendoTimePicker').value(worktimeEndMorning);
+				$("#worktimeStartAfter").data('kendoTimePicker').value(worktimeStartAfter);
+				$("#worktimeEndAfter").data('kendoTimePicker').value(worktimeEndAfter);
+			} else {
+				$("#worktimeDay").data('kendoComboBox').value(data.day);
+				$("#worktimeStartMorning").data('kendoTimePicker').value('06.00');
+				$("#worktimeEndMorning").data('kendoTimePicker').value('12.00');
+				$("#worktimeStartAfter").data('kendoTimePicker').value('12.30');
+				$("#worktimeEndAfter").data('kendoTimePicker').value('18.00');
+			}
+		}
 		
 		function _worktime_onChange(e) {
 	
@@ -263,41 +285,15 @@
 				return data[$(item).index()];
 			
 			});
-			var viewModel = {};
 			if (selected[0]) {
-				viewModel = kendo.observable({
-					day: selected[0].day,
-					hours: function (e) {
-						var hoursTemp = selected[0].hours.split(',');
-						var hoursMorning = hoursTemp[0].split('-');
-						var hoursAfter = hoursTemp[1].split('-');
-						var worktimeStartMorning = hoursMorning[0];
-						var worktimeEndMorning = hoursMorning[1];
-						var worktimeStartAfter = hoursAfter[0];
-						var worktimeEndAfter = hoursAfter[1];
-						$("#worktimeStartMorning").data('kendoTimePicker').value(worktimeStartMorning);
-						$("#worktimeEndMorning").data('kendoTimePicker').value(worktimeEndMorning);
-						$("#worktimeStartAfter").data('kendoTimePicker').value(worktimeStartAfter);
-						$("#worktimeEndAfter").data('kendoTimePicker').value(worktimeEndAfter);
-					}
-				});
+				pullDetailWorkTime(selected[0]);
 				$("#_worktimeDetail_submitBtn > span").html('Lưu lại');
 				$("#_worktime_hidden_new_id").val(selected[0].day);
 			} else {
-				viewModel = kendo.observable({
-					day: 0,
-					hours: function (e) {
-						$("#worktimeStartMorning").data('kendoTimePicker').value('06.00');
-						$("#worktimeEndMorning").data('kendoTimePicker').value('12.00');
-						$("#worktimeStartAfter").data('kendoTimePicker').value('12.30');
-						$("#worktimeEndAfter").data('kendoTimePicker').value('18.00');
-					}
-				});
+				pullDetailWorkTime()
 				$("#_worktimeDetail_submitBtn > span").html('Thêm mới');
 				$("#_worktime_hidden_new_id").val(0);
 			}
-			
-			kendo.bind($("#_worktimeDetail_form"), viewModel);
 		}
 
 		$(document).on('click', '#_worktime_editLabel', function(event){
