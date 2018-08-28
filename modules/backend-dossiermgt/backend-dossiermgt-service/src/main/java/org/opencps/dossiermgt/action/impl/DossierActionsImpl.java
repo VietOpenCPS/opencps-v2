@@ -161,17 +161,6 @@ public class DossierActionsImpl implements DossierActions {
 
 		try {
 
-//			String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
-////			_log.info("status: "+status);
-//			if (Validator.isNotNull(status)) {
-//				if (!status.contains(StringPool.COMMA)) {
-//					if (!status.equals("done") && !status.equals("cancelled")) {
-//						_log.info("done: "+status);
-//						params.put(DossierTerm.NOT_STATE, "cancelling");
-//					}
-//				}
-//			}
-
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 			
 			result.put("data", hits.toList());

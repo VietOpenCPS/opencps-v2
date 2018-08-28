@@ -1,12 +1,12 @@
 package org.opencps.api.controller.util;
 
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
+import org.opencps.api.dossier.model.DossierDataPublishModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.MathUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -61,6 +60,8 @@ public class DossierUtils {
 
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	private static final String EXTEND_ONE_VALUE = ".0";
+	private static final String EXTEND_TWO_VALUE = ".00";
 
 	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
@@ -399,7 +400,16 @@ public class DossierUtils {
 			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
 			overDue = (double) Math.ceil(subDueCount * 4) / 4;
 			//TODO: Process a.0 = a
-			return overDue + strOverDue;
+			boolean flagCeil = false;
+			String strOverDueConvert = String.valueOf(overDue);
+			if (Validator.isNotNull(strOverDueConvert)) {
+				if (strOverDueConvert.contains(EXTEND_ONE_VALUE) || strOverDueConvert.contains(EXTEND_TWO_VALUE)) {
+					flagCeil = true;
+				}
+			}
+			if (!flagCeil) {
+				return overDue + strOverDue;
+			}
 		} else {
 			strOverDue = " giờ";
 			dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
@@ -958,4 +968,34 @@ public class DossierUtils {
 		return model;
 	}
 
+	//Mapping publish dossier
+	public static List<DossierDataPublishModel> mappingForGetPublishList(List<Document> docs) {
+		List<DossierDataPublishModel> ouputs = new ArrayList<DossierDataPublishModel>();
+
+		for (Document doc : docs) {
+			DossierDataPublishModel model = new DossierDataPublishModel();
+			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
+			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME));
+			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
+			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			}
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
+			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
+			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
+			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+
+			ouputs.add(model);
+		}
+
+		return ouputs;
+	}
 }

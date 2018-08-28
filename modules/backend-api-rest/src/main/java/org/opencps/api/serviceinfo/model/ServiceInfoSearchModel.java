@@ -53,7 +53,8 @@ import com.liferay.portal.kernel.util.StringPool;
     "start",
     "end",
     "sort",
-    "order"
+    "order",
+    "active"
 })
 @XmlRootElement(name = "ServiceInfoSearchModel")
 public class ServiceInfoSearchModel {
@@ -73,6 +74,8 @@ public class ServiceInfoSearchModel {
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;
+	@QueryParam(value = "active")
+    protected String active;
 
     /**
      * Gets the value of the keyword property.
@@ -265,5 +268,13 @@ public class ServiceInfoSearchModel {
     public void setOrder(String value) {
         this.order = value;
     }
+
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
 
 }

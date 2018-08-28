@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.usermgt.model.Applicant">
+		<field name="uuid" type="String" />
+		<field name="applicantId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="applicantName" type="String" />
+		<field name="applicantIdType" type="String" />
+		<field name="applicantIdNo" type="String" />
+		<field name="applicantIdDate" type="Date" />
+		<field name="address" type="String" />
+		<field name="cityCode" type="String" />
+		<field name="cityName" type="String" />
+		<field name="districtCode" type="String" />
+		<field name="districtName" type="String" />
+		<field name="wardCode" type="String" />
+		<field name="wardName" type="String" />
+		<field name="contactName" type="String" />
+		<field name="contactTelNo" type="String" />
+		<field name="contactEmail" type="String" />
+		<field name="mappingUserId" type="long" />
+		<field name="activationCode" type="String" />
+		<field name="lock_" type="boolean" />
+		<field name="profile" type="String" />
+		<field name="tmpPass" type="String" />
+		<field name="representativeEnterprise" type="String" />
+	</model>
+	<model name="org.opencps.usermgt.model.Employee">
+		<field name="uuid" type="String" />
+		<field name="employeeId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="employeeNo" type="String" />
+		<field name="fullName" type="String" />
+		<field name="title" type="String" />
+		<field name="gender" type="int" />
+		<field name="birthdate" type="Date" />
+		<field name="telNo" type="String" />
+		<field name="mobile" type="String" />
+		<field name="email" type="String" />
+		<field name="workingStatus" type="int" />
+		<field name="mappingUserId" type="long" />
+		<field name="mainJobPostId" type="long" />
+		<field name="photoFileEntryId" type="long" />
+		<field name="recruitDate" type="Date" />
+		<field name="leaveDate" type="Date" />
+		<field name="fileCertId" type="long" />
+		<field name="fileSignId" type="long" />
+		<field name="fileCertPath" type="String" />
+		<field name="fileSignPath" type="String" />
+	</model>
+	<model name="org.opencps.usermgt.model.EmployeeJobPos">
+		<field name="uuid" type="String" />
+		<field name="employeeJobPosId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="employeeId" type="long" />
+		<field name="jobPostId" type="long" />
+		<field name="workingUnitId" type="long" />
+	</model>
+	<model name="org.opencps.usermgt.model.HmacAuthen">
+		<field name="hmacAuthId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="secret" type="String" />
+		<field name="permanent" type="boolean" />
+	</model>
+	<model name="org.opencps.usermgt.model.JobPos">
+		<field name="uuid" type="String" />
+		<field name="jobPosId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="jobPosCode" type="String" />
+		<field name="title" type="String" />
+		<field name="description" type="String" />
+		<field name="mappingRoleId" type="long" />
+		<field name="leader" type="int" />
+	</model>
+	<model name="org.opencps.usermgt.model.JobPosWork">
+		<field name="uuid" type="String" />
+		<field name="jobPosWorkId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="jobPostId" type="long" />
+		<field name="checklistCat" type="String" />
+	</model>
+	<model name="org.opencps.usermgt.model.OfficeSite">
+		<field name="uuid" type="String" />
+		<field name="officeSiteId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="enName" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="address" type="String" />
+		<field name="telNo" type="String" />
+		<field name="faxNo" type="String" />
+		<field name="email" type="String" />
+		<field name="website" type="String" />
+		<field name="logoFileEntryId" type="long" />
+		<field name="siteGroupId" type="long" />
+		<field name="adminUserId" type="long" />
+		<field name="preferences" type="String" />
+		<field name="ceremonyDate" type="Date" />
+	</model>
+	<model name="org.opencps.usermgt.model.Preferences">
+		<field name="uuid" type="String" />
+		<field name="preferencesId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="preferences" type="String" />
+	</model>
+	<model name="org.opencps.usermgt.model.ResourceRole">
+		<field name="uuid" type="String" />
+		<field name="resourceRoleId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="roleId" type="long" />
+		<field name="readonly" type="int" />
+	</model>
+	<model name="org.opencps.usermgt.model.ResourceUser">
+		<field name="uuid" type="String" />
+		<field name="resourceUserId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="toUserId" type="long" />
+		<field name="fullname" type="String" />
+		<field name="email" type="String" />
+		<field name="readonly" type="boolean" />
+	</model>
+	<model name="org.opencps.usermgt.model.Visibility">
+		<field name="uuid" type="String" />
+		<field name="visibilityId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="visibility" type="int" />
+		<field name="security" type="String" />
+	</model>
+	<model name="org.opencps.usermgt.model.WorkingUnit">
+		<field name="uuid" type="String" />
+		<field name="workingUnitId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="enName" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="parentWorkingUnitId" type="long" />
+		<field name="sibling" type="String" />
+		<field name="treeIndex" type="String" />
+		<field name="address" type="String" />
+		<field name="telNo" type="String" />
+		<field name="faxNo" type="String" />
+		<field name="email" type="String" />
+		<field name="website" type="String" />
+		<field name="logoFileEntryId" type="long" />
+		<field name="level" type="int" />
+		<field name="ceremonyDate" type="Date" />
+	</model>
+</model-hints>

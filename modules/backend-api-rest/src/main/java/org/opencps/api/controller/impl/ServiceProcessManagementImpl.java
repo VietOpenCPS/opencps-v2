@@ -46,6 +46,7 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -1057,7 +1058,12 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
 					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
 					input.getDossierTemplateNo(), serviceContext);
-
+			
+			if (Validator.isNotNull(input.getCreateDossiers())) {
+				processAction.setCreateDossiers(input.getCreateDossiers());
+				processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
 			return Response.status(200).entity(results).build();
@@ -1114,7 +1120,11 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
 					input.getDossierTemplateNo(), serviceContext);
 
-
+			if (Validator.isNotNull(input.getCreateDossiers())) {
+				processAction.setCreateDossiers(input.getCreateDossiers());
+				processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
 			return Response.status(200).entity(results).build();
