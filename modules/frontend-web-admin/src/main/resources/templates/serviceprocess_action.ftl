@@ -320,7 +320,7 @@
 					createDossierNo : "",
 					eSignature : "",
 					configNote : "",
-					createDossiers: ""
+					createDossiers: "",
 					dossiertemplatesFileFilter : function(){
 
 						$("#dossiertemplateTmp").val("");
