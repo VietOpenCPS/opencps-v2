@@ -177,4 +177,6 @@ public class DossierTerm {
 	public static final String DUE_DATE_COMING = "dueDateComing";
 	public static final String PASSED = "passed";
 	public static final String USER_DOSSIER_ACTION_ID = "userIdAction";
+	public static final String EMAIL_USER_LOGIN = "emailUserLogin";
+	public static final String EMAIL_DEFAULT = "default@liferay.com";
 }

@@ -46,7 +46,8 @@
 									</#if>
 									
 									<span class="PL10">
-										${(oJobPos.workingUnitName)!} - ${(oJobPos.jobPosTitle)!}
+										<#--${(oJobPos.workingUnitName)!} - ${(oJobPos.jobPosTitle)!} -->
+										${(oJobPos.jobPosTitle)!}
 									</span>
 								
 								</div>

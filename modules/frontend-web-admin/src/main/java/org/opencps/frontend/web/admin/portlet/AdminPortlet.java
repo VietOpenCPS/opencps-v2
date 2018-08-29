@@ -841,6 +841,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				for (EmployeeJobPos empjobpos : employeeJobPos) {
 					long jobPosId = empjobpos.getJobPostId();
 					long workingUnitId = empjobpos.getWorkingUnitId();
+					_log.info("jobPosId: "+jobPosId);
+					_log.info("workingUnitId: "+workingUnitId);
 					boolean mainJobPos =
 						empjobpos.getEmployeeJobPosId() == employee.getMainJobPostId()
 							? true : false;
@@ -858,24 +860,27 @@ public class AdminPortlet extends FreeMarkerPortlet {
 					try {
 						JobPos jobPos =
 							JobPosLocalServiceUtil.getJobPos(jobPosId);
-						WorkingUnit workingUnit =
-							WorkingUnitLocalServiceUtil.getWorkingUnit(
-								workingUnitId);
+//						WorkingUnit workingUnit =
+//							WorkingUnitLocalServiceUtil.getWorkingUnit(
+//								workingUnitId);
 
 						if (jobPos != null) {
 							jsonObject.put("leader", jobPos.getLeader());
 							jsonObject.put("jobPosTitle", jobPos.getTitle());
 							jsonObject.put("jobPosId", jobPos.getJobPosId());
+							_log.info("jobPos.getLeader(): "+jobPos.getLeader());
+							_log.info("jobPos.getTitle(): "+jobPos.getTitle());
+							_log.info("jobPos.getJobPosId(): "+jobPos.getJobPosId());
 						}
 
-						if (workingUnit != null) {
-							jsonObject.put(
-								"workingUnitName", workingUnit.getName());
-							jsonObject.put(
-								"workingUnitId",
-								workingUnit.getWorkingUnitId());
-
-						}
+//						if (workingUnit != null) {
+//							jsonObject.put(
+//								"workingUnitName", workingUnit.getName());
+//							jsonObject.put(
+//								"workingUnitId",
+//								workingUnit.getWorkingUnitId());
+//
+//						}
 
 					}
 					catch (Exception e) {

@@ -107,13 +107,13 @@ public class DossierPermission {
 
 	}
 
-	public void checkPassword(Dossier dossier, String password) throws PortalException {
+	public void checkPassword(Dossier dossier, String secretCode) throws PortalException {
 
 		if (Validator.isNull(dossier.getPassword())) {
 			throw new DossierPasswordException("DossierPasswordException");
 		}
 
-		if (!dossier.getPassword().equalsIgnoreCase(password)) {
+		if (!dossier.getPassword().equalsIgnoreCase(secretCode)) {
 			throw new DossierPasswordException("DossierPasswordException");
 		}
 	}

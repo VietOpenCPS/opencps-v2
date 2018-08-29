@@ -132,7 +132,7 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
+//			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
 			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
 //			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
@@ -141,8 +141,8 @@ public class DossierUtils {
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
 			Long releaseDateTimeStamp = Long.valueOf(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
-			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
-			_log.info("releaseDateTimeStamp: "+releaseDateTimeStamp);
+//			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
+//			_log.info("releaseDateTimeStamp: "+releaseDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
 			if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
@@ -163,14 +163,14 @@ public class DossierUtils {
 			} else {
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 					long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-					_log.info("subTimeStamp: "+subTimeStamp);
+//					_log.info("subTimeStamp: "+subTimeStamp);
 					if (subTimeStamp > 0) {
-						_log.info("START Qua han: ");
+//						_log.info("START Qua han: ");
 						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId);
 						model.setDossierOverdue("Quá hạn " + strOverDue);
 					} else {
-						_log.info("START Con han: ");
+//						_log.info("START Con han: ");
 						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId);
 						model.setDossierOverdue("Còn " + strOverDue);
@@ -667,6 +667,8 @@ public class DossierUtils {
 				APIDateTimeUtils.convertDateToString(input.getCancellingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		model.setCorrectingDate(
 				APIDateTimeUtils.convertDateToString(input.getCorrecttingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		model.setExtendDate(
+				APIDateTimeUtils.convertDateToString(input.getExtendDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		model.setDossierStatus(input.getDossierStatus());
 		model.setDossierStatusText(input.getDossierStatusText());
 		model.setDossierSubStatus(input.getDossierSubStatus());
