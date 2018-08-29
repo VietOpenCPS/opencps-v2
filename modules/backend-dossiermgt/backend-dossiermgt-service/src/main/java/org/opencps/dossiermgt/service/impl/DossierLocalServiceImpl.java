@@ -2956,9 +2956,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			
 			dossier = dossierPersistence.update(dossier);
 		} else {
-
-			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
-
 			dossier.setModifiedDate(modifiedDate);
 			dossier.setSubmitDate(submitDate);
 			dossier.setReceiveDate(receiveDate);
