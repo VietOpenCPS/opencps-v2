@@ -66,7 +66,21 @@
 							order: true
 						},
 						success: function(result) {
-							options.success(result);
+							if (result.data) {
+								if (Array.isArray(result.data)) {
+									options.success(result);
+								} else {
+									var arrTemp = [];
+									arrTemp.push(result.data);
+									result['data'] = arrTemp;
+									options.success(result);
+								}
+							} else {
+								options.success({
+									total: 0,
+									data: []
+								});
+							}
 						},
 						error: function(xhr){
 							options.error(xhr);
