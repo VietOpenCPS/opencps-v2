@@ -667,6 +667,8 @@ public class DossierUtils {
 				APIDateTimeUtils.convertDateToString(input.getCancellingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		model.setCorrectingDate(
 				APIDateTimeUtils.convertDateToString(input.getCorrecttingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		model.setExtendDate(
+				APIDateTimeUtils.convertDateToString(input.getExtendDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		model.setDossierStatus(input.getDossierStatus());
 		model.setDossierStatusText(input.getDossierStatusText());
 		model.setDossierSubStatus(input.getDossierSubStatus());
