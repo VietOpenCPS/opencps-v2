@@ -164,9 +164,10 @@
 							<option value=""></option>
 							<option value="0">Không thay đổi trạng thái</option>
 							<option value="1">Yêu cầu nộp tiền tạm ứng</option>
-							<option value="2">Báo đã nộp phí trực tuyến</option>
-							<option value="3">Yêu cầu nộp lại phí trực tuyến</option>
-							<option value="4">Xác nhận hoàn thành thu phí</option>
+							<option value="2">Yêu cầu quyết toán phí</option>
+							<option value="3">Báo đã nộp phí trực tuyến</option>
+							<option value="4">Yêu cầu nộp lại phí trực tuyến</option>
+							<option value="5">Xác nhận hoàn thành thu phí</option>
 						</select>
 					</div>
 					
