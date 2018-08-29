@@ -3218,6 +3218,10 @@ public class DossierActionsImpl implements DossierActions {
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		jsonData.put(DossierTerm.DUE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		if (dossier.getExtendDate() != null) {
+			jsonData.put(DossierTerm.EXTEND_DATE,
+					APIDateTimeUtils.convertDateToString(dossier.getExtendDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		}
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
