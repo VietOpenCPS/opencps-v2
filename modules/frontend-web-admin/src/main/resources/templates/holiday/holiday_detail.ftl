@@ -23,8 +23,7 @@
 				
 				</label>
 				
-				<input type="text" id="holidayDate" name="holidayDate" class="form-control"
-					placeholder="Ngày nghỉ" data-bind="value: holidayDate" required validationMessage="Nhập ngày nghỉ" data-bind="value: holidayDate"/>
+				<input type="text" id="holidayDate" name="holidayDate" class="form-control" data-bind="value: holidayDate" required validationMessage="Nhập ngày nghỉ"/>
 				
 			</div>
 			
@@ -37,7 +36,7 @@
 				</label>
 				
 				<textarea id="holidayDescription" name="holidayDescription" class="form-control"
-					placeholder="Mô tả" required validationMessage="Nhập mô tả" data-bind="value: holidayDescription"> </textarea>
+					placeholder="Mô tả" required validationMessage="Nhập mô tả"> </textarea>
 				<#-- <input type="text" id="holidayDescription" name="holidayDescription" class="form-control"
 					placeholder="Mô tả" required validationMessage="Nhập mô tả"/> -->
 				
@@ -110,7 +109,7 @@
 					if (data.hasOwnProperty('msg') && data.msg == "error") {
 						showMessageByAPICode(data.statusCode);
 					} else {
-						// $("#_holiday_hidden_new_id").val(data.holidayDate);
+						$("#_holiday_hidden_new_id").val(data.holidayDate);
 						var dataSource = $("#_holiday_listView").getKendoListView().dataSource;
 						dataSource.pushUpdate(data);
 
@@ -139,6 +138,19 @@
 
 		} else {
 
+			var dataSource = $("#_holiday_listView").getKendoListView().dataSource;
+			var datas = dataSource.data();
+			if (datas.length > 0) {
+				for (var i = 0; i < datas.length; i++) {
+					if (datas[i]['holidayDate'] == timeSt) {
+						notification.show({
+							message: "Ngày này đã có trong hệ thống, không thể thêm mới!"
+						}, "error");
+						return;
+					}
+				}
+			}
+
 			$.ajax({
 				type: 'POST',
 				url: _holiday_BaseUrl,
@@ -162,7 +174,7 @@
 
 						var dataSource = $("#_holiday_listView").getKendoListView().dataSource;
 						
-						dataSource.pushUpdate(data);
+						dataSource.pushCreate(data);
 						$('#_holiday_CounterList').html(dataSource.total());
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"

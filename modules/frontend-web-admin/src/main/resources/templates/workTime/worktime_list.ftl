@@ -47,7 +47,7 @@
 					
 				<div class="col-sm-9 PL0">
 					#
-						if (day === 0) {
+						if (day == 0) {
 					#
 						<strong class="btn-block">Chủ nhật</strong>
 					#
@@ -91,7 +91,7 @@
 
 </div>
 
-<input type="hidden" value="0" id="_worktime_hidden_new_id"/>
+<input type="hidden" value="" id="_worktime_hidden_new_id"/>
 
 <script type="text/javascript">
 	
@@ -156,7 +156,7 @@
 								type: 'DELETE',
 								success: function(result) {
 									
-									$("#_worktime_hidden_new_id").val("0");
+									$("#_worktime_hidden_new_id").val('');
 									options.success();
 									$('#_worktimebpos_CounterList').html($("#_worktime_listView").getKendoListView().dataSource.total());
 									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
@@ -268,7 +268,7 @@
 				$("#worktimeStartAfter").data('kendoTimePicker').value(worktimeStartAfter);
 				$("#worktimeEndAfter").data('kendoTimePicker').value(worktimeEndAfter);
 			} else {
-				$("#worktimeDay").data('kendoComboBox').value(data.day);
+				$("#worktimeDay").data('kendoComboBox').value(0);
 				$("#worktimeStartMorning").data('kendoTimePicker').value('06.00');
 				$("#worktimeEndMorning").data('kendoTimePicker').value('12.00');
 				$("#worktimeStartAfter").data('kendoTimePicker').value('12.30');
@@ -292,7 +292,7 @@
 			} else {
 				pullDetailWorkTime()
 				$("#_worktimeDetail_submitBtn > span").html('Thêm mới');
-				$("#_worktime_hidden_new_id").val(0);
+				$("#_worktime_hidden_new_id").val('');
 			}
 		}
 

@@ -175,7 +175,7 @@
 				<div class="row" id="paymentFeeTemp">
 					<div class="col-xs-12 col-sm-12 MT10">
 						<div class="MB5">Chuỗi cấu hình tính phí</div>
-						<input class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee">
+						<textarea class="form-control" type="text" name="paymentFee" id="paymentFee" data-bind="value: paymentFee" rows="4"></textarea>
 					</div>
 				</div>
 			</div>
@@ -451,7 +451,7 @@
 			}
 		}
 	});
-	
+
 	$("#requestPayment").kendoComboBox({
 		change: function (e) {
 			console.log(this.value())

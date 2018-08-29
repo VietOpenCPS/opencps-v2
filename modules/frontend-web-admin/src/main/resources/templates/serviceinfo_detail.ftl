@@ -67,8 +67,6 @@
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="domain" name="domain" data-bind="value:domainCode" required="required" validationMessage="Bạn phải chọn lĩnh vực">
-									
-									
 								</select>
 								<span data-for="domain" class="k-invalid-msg"></span>
 							</div>

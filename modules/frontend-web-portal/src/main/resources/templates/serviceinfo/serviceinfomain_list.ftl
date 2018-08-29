@@ -198,7 +198,7 @@
               } else {
                 #
                   <div class="dropdown">
-                  <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dân
+                  <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dẫn
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
