@@ -423,40 +423,38 @@ function _collectionSub_group_autocompleteSearch(val) {
 			
 			},
 			destroy: function(options) {
-				
-				var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_collectionSub_group_listView") );
+				var cf = confirm('Bạn có chắc muốn xóa bản ghi này?');
+				// var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_collectionSub_group_listView") );
 					
-				confirmWindown.then(function(confirmed){
 				
-					if(confirmed){
+				if(cf){
 
-						$.ajax({
-							url: _collectionSub_group_BaseUrl_detail + "/" + options.data.groupCode,
-							headers: {
-								"groupId": ${groupId}
-							},
-							type: 'DELETE',
-							success: function(result) {
-								
-								options.success();
-								$('#_collectionSub_group_CounterListDetail').html($("#_collectionSub_group_listView").getKendoListView().dataSource.total());
-								showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-								
-							},
-							error: function(xhr, textStatus, errorThrown) {
-								
-								$("#_collectionSub_group_listView").getKendoListView().dataSource.error();
-								showMessageByAPICode(xhr.status);
+					$.ajax({
+						url: _collectionSub_group_BaseUrl_detail + "/" + options.data.groupCode,
+						headers: {
+							"groupId": ${groupId}
+						},
+						type: 'DELETE',
+						success: function(result) {
 							
-							}
-			
-						});
-
-					} else{
+							options.success();
+							$('#_collectionSub_group_CounterListDetail').html($("#_collectionSub_group_listView").getKendoListView().dataSource.total());
+							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+							
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							
+							$("#_collectionSub_group_listView").getKendoListView().dataSource.error();
+							showMessageByAPICode(xhr.status);
+							
+						}
 						
-						options.error();
-					}
-				});
+					});
+
+				} else{
+					
+					options.error();
+				}
 				
 			},
 			parameterMap: function(options, operation) {

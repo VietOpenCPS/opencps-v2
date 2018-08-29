@@ -356,7 +356,7 @@
 
 	var leader_vl = $("#_jobposDetail_leader").attr('data-vl');
 	
-	leader_vl = (leader_vl!="" && leader_vl!=null )?leader_vl:0;
+	leader_vl = (leader_vl!="" && leader_vl!=null && leader_vl!=undefined && leader_vl!='undefined')?leader_vl:0;
 	_jobposDetail_leader.value(leader_vl);
 	
 	
