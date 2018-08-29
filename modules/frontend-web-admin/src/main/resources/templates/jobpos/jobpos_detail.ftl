@@ -350,7 +350,7 @@
 
 					},
 					error: function(xhr, textStatus, errorThrown) {
-						
+						options.error(xhr);
 						//showMessageByAPICode(xhr.status);
 					
 					}
@@ -387,21 +387,23 @@
 		
 	}).data("kendoMultiSelect");
 	
-	var _jobposDetail_leader = $("#_jobposDetail_leader").kendoDropDownList({
-		dataSource: [
-					{ value:0, text: "Thông thường"},
-					{ value:1, text: "Cấp trưởng"},
-					{ value:2, text: "Cấp phó"}
-					],
-		dataTextField: "text",
-		dataValueField: "value"
+	// var _jobposDetail_leader = $("#_jobposDetail_leader").kendoDropDownList({
+	// 	dataSource: [
+	// 				{ value:0, text: "Thông thường"},
+	// 				{ value:1, text: "Cấp trưởng"},
+	// 				{ value:2, text: "Cấp phó"}
+	// 				],
+	// 	dataTextField: "text",
+	// 	dataValueField: "value"
 		
-	}).data("kendoDropDownList");
+	// }).data("kendoDropDownList");
 
-	var leader_vl = $("#_jobposDetail_leader").attr('data-vl');
+	// var leader_vl = $("#_jobposDetail_leader").attr('data-vl');
 	
-	leader_vl = (leader_vl!="" && leader_vl!=null )?leader_vl:0;
-	_jobposDetail_leader.value(leader_vl);
+	// leader_vl = (leader_vl!="" && leader_vl!=null && leader_vl!=undefined && leader_vl!='undefined')?leader_vl:0;
+	// console.log('leader_vl-------', leader_vl);
+	// console.log('_jobposDetail_leader-------', _jobposDetail_leader);
+	// _jobposDetail_leader.value(leader_vl);
 	
 	
 })(jQuery);

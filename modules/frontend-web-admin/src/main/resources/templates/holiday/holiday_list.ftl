@@ -157,41 +157,37 @@
 					});
 				},
 				destroy: function(options) {
+					var cf = confirm('Bạn có chắc muốn xóa bản ghi này?');
 					
-					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_holiday_listView") );
-					
-					confirmWindown.then(function(confirmed){
-					
-						if(confirmed){
-	
-							$.ajax({
-								url: _holiday_BaseUrl + "/" + options.data.holidayDate,
-								headers: {
-									"groupId": ${groupId}
-								},
-								type: 'DELETE',
-								success: function(result) {
-									
-									$("#_holiday_hidden_new_id").val("");
-									options.success();
-									$('#_holidaybpos_CounterList').html($("#_holiday_listView").getKendoListView().dataSource.total());
-									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-									
-								},
-								error: function(xhr, textStatus, errorThrown) {
+					if(cf){
+						
+						$.ajax({
+							url: _holiday_BaseUrl + "/" + options.data.holidayDate,
+							headers: {
+								"groupId": ${groupId}
+							},
+							type: 'DELETE',
+							success: function(result) {
 								
-									$("#_holiday_listView").getKendoListView().dataSource.error();
-									showMessageByAPICode(xhr.status);
+								$("#_holiday_hidden_new_id").val("");
+								options.success();
+								$('#_holidaybpos_CounterList').html($("#_holiday_listView").getKendoListView().dataSource.total());
+								showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 								
-								}
-				
-							});
-	
-						} else{
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								
+								$("#_holiday_listView").getKendoListView().dataSource.error();
+								showMessageByAPICode(xhr.status);
+								
+							}
 							
-							options.error();
-						}
-					});
+						});
+						
+					} else{
+						
+						options.error();
+					}
 					
 				},
 				parameterMap: function(options, operation) {
