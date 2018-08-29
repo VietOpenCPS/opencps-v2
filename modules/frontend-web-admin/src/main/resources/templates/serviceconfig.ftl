@@ -7,7 +7,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<button class="btn btn-active form-control MB5" id="btnAddServiceConfig"><i class="glyphicon glyphicon-plus"></i> Thêm dịch vụ công</button>
-					<button class="btn btn-active form-control" id="btnAddServiceConfigS"><i class="glyphicon glyphicon-plus"></i> Tạo nhiều DVC</button>
+					<#-- <button class="btn btn-active form-control" id="btnAddServiceConfigS"><i class="glyphicon glyphicon-plus"></i> Tạo nhiều DVC</button> -->
 				</div>
 				<div class="col-sm-12">
 					<div class="form-group search-icon MT10">
