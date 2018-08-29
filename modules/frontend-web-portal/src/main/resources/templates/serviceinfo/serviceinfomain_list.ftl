@@ -6,7 +6,7 @@
   <div class="col-xs-12 col-sm-12 panel P0">
     <div class="row-header align-middle">
       <div class="background-triangle-big">DANH SÁCH THỦ TỤC HÀNH CHÍNH</div>
-      <span>Hiển thị <span id="numPerPage"></span> trên <span id="totalItem"></span> tổng số bản ghi được tìm thấy</span>
+      <span>Hiển thị <span id="numPerPage"></span> trên <span id="totalItem"></span> tổng số thủ tục được tìm thấy</span>
       <span class="show-per-page">Hiển thị
         <span class="select-wrapper">
          <select class="ML5" id="slPageSize">
@@ -159,7 +159,7 @@
             } else if(serviceLevel2.length > 0){
                 #
                   <div class="dropdown">
-                    <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dân
+                    <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dẫn
                       <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
@@ -198,7 +198,7 @@
               } else {
                 #
                   <div class="dropdown">
-                  <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dân
+                  <button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dẫn
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">

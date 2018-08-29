@@ -450,6 +450,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				}
 			}
+
 			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
 			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, sbPermission.toString());
 

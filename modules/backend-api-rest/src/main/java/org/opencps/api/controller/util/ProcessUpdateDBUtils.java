@@ -1174,7 +1174,7 @@ public class ProcessUpdateDBUtils {
 					String itemDescription = StringPool.BLANK;
 					String parent = StringPool.BLANK;
 					Integer level = 0;
-					Integer sibling = 0;
+					String sibling = StringPool.BLANK;
 					String metadata = StringPool.BLANK;
 					for (DictItem dictItem : dictItemList) {
 						itemCode = dictItem.getItemCode();

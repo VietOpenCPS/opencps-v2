@@ -5,7 +5,6 @@
 **/sequences.sql
 **/tables.sql
 **/module-hbm.xml
-**/portlet-model-hints.xml
 **/module-spring.xml 
 **/service.properties
 **/sql/**

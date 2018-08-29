@@ -261,6 +261,10 @@
 			<finder-column name="serviceInfoId" />
 		</finder>
 
+		<finder return-type="Collection" name="F_GAC">
+			<finder-column name="govAgencyCode" />
+		</finder>
+
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"

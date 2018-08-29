@@ -76,7 +76,8 @@ import javax.xml.bind.annotation.XmlType;
     "createDossierNo",
     "eSignature",
     "configNote",
-    "dossierTemplateNo"
+    "dossierTemplateNo",
+    "createDossiers"
 })
 public class ProcessActionDataModel {
 
@@ -104,6 +105,7 @@ public class ProcessActionDataModel {
     protected boolean eSignature;
     protected String configNote;
 	protected String dossierTemplateNo;
+	protected String createDossiers;
 
 	public String getDossierTemplateNo() {
 		return dossierTemplateNo;
@@ -571,4 +573,11 @@ public class ProcessActionDataModel {
         this.rollbackable = value;
     }
 
+    public String getCreateDossiers() {
+    	return createDossiers;
+    }
+    
+    public void setCreateDossiers(String value) {
+    	this.createDossiers = value;
+    }
 }

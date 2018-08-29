@@ -299,7 +299,25 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		systemURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 		systemURL.setParameter(
 				"mvcPath", "/templates/system.ftl");
-
+		
+		PortletURL holidayURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		holidayURL.setPortletMode(PortletMode.VIEW);
+		holidayURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		holidayURL.setParameter(
+				"mvcPath", "/templates/holiday/holiday_list.ftl");
+		
+		PortletURL worktimeURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		worktimeURL.setPortletMode(PortletMode.VIEW);
+		worktimeURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		worktimeURL.setParameter(
+				"mvcPath", "/templates/workTime/worktime_list.ftl");
+		
+		urlObject.put("holiday", holidayURL.toString());
+		urlObject.put("worktime", worktimeURL.toString());
 		urlObject.put("registrationtemplates", registrationTemplatesURL.toString());
 		urlObject.put("serviceinfo_list", serviceInfoListURL.toString());
 		urlObject.put("serviceinfo_form", serviceInfoFormURL.toString());
@@ -823,6 +841,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				for (EmployeeJobPos empjobpos : employeeJobPos) {
 					long jobPosId = empjobpos.getJobPostId();
 					long workingUnitId = empjobpos.getWorkingUnitId();
+					_log.info("jobPosId: "+jobPosId);
+					_log.info("workingUnitId: "+workingUnitId);
 					boolean mainJobPos =
 						empjobpos.getEmployeeJobPosId() == employee.getMainJobPostId()
 							? true : false;
@@ -840,24 +860,27 @@ public class AdminPortlet extends FreeMarkerPortlet {
 					try {
 						JobPos jobPos =
 							JobPosLocalServiceUtil.getJobPos(jobPosId);
-						WorkingUnit workingUnit =
-							WorkingUnitLocalServiceUtil.getWorkingUnit(
-								workingUnitId);
+//						WorkingUnit workingUnit =
+//							WorkingUnitLocalServiceUtil.getWorkingUnit(
+//								workingUnitId);
 
 						if (jobPos != null) {
 							jsonObject.put("leader", jobPos.getLeader());
 							jsonObject.put("jobPosTitle", jobPos.getTitle());
 							jsonObject.put("jobPosId", jobPos.getJobPosId());
+							_log.info("jobPos.getLeader(): "+jobPos.getLeader());
+							_log.info("jobPos.getTitle(): "+jobPos.getTitle());
+							_log.info("jobPos.getJobPosId(): "+jobPos.getJobPosId());
 						}
 
-						if (workingUnit != null) {
-							jsonObject.put(
-								"workingUnitName", workingUnit.getName());
-							jsonObject.put(
-								"workingUnitId",
-								workingUnit.getWorkingUnitId());
-
-						}
+//						if (workingUnit != null) {
+//							jsonObject.put(
+//								"workingUnitName", workingUnit.getName());
+//							jsonObject.put(
+//								"workingUnitId",
+//								workingUnit.getWorkingUnitId());
+//
+//						}
 
 					}
 					catch (Exception e) {

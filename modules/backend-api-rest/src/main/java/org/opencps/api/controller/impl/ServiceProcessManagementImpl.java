@@ -46,11 +46,14 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -63,6 +66,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceProcessManagementImpl implements ServiceProcessManagement {
+
+	private static Log _log = LogFactoryUtil.getLog(ServiceProcessManagementImpl.class);
 
 	@Override
 	public Response getServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -1051,18 +1056,24 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 */
 			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), Integer.parseInt(input.getAllowAssignUser()),
-					GetterUtil.getLong(input.getAssignUserId()), Integer.parseInt(input.getRequestPayment()),
+					input.getActionName(), GetterUtil.getInteger(input.getAllowAssignUser()),
+					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getInteger(input.getRequestPayment()),
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
 					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
 					input.getDossierTemplateNo(), serviceContext);
-
+			
+			if (Validator.isNotNull(input.getCreateDossiers())) {
+				processAction.setCreateDossiers(input.getCreateDossiers());
+				processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1114,12 +1125,17 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
 					input.getDossierTemplateNo(), serviceContext);
 
-
+			if (Validator.isNotNull(input.getCreateDossiers())) {
+				processAction.setCreateDossiers(input.getCreateDossiers());
+				processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");

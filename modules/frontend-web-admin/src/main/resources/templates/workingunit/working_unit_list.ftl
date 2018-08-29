@@ -163,7 +163,7 @@
 
 							//var dataSource = $("#_workingUnit_listView").getKendoListView().dataSource;
 							
-							$("#_workingUnit_hidden_new_id").val(data.workingUnitId);
+							// $("#_workingUnit_hidden_new_id").val(data.workingUnitId);
 							
 							$("#_workingUnit_listView").getKendoListView().dataSource.read();
 							
@@ -171,7 +171,7 @@
 							//dataSource.pushUpdate(data);
 							//$('#_workingUnit_CounterList').html(dataSource.total());
 							showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-							//$("#_workingUnitDetail_submitBtn").button('reset');
+							$("#_workingUnitDetail_submitBtn").button('reset');
 						},
 						error: function(xhr, textStatus, errorThrown) {
 							
@@ -224,38 +224,33 @@
 				
 				},
 				destroy: function(options) {
-					
-					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_workingUnit_listView") );
-					
-					confirmWindown.then(function(confirmed){
-					
-						if(confirmed){
-	
-							$.ajax({
-								url: _workingUnit_BaseUrl + "/" + options.data.workingUnitId,
-								type: 'DELETE',
-								success: function(result) {
-									
-									$("#_workingUnit_hidden_new_id").val("0");
-									options.success();
-									$('#_workingUnit_CounterList').html($("#_workingUnit_listView").getKendoListView().dataSource.total());
-									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-									
-								},
-								error: function(xhr, textStatus, errorThrown) {
+					var cf = confirm('Bạn có chắc muốn xóa bản ghi này?');
+					// var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_workingUnit_listView") );
+					if(cf){
+						$.ajax({
+							url: _workingUnit_BaseUrl + "/" + options.data.workingUnitId,
+							type: 'DELETE',
+							success: function(result) {
+
+								$("#_workingUnit_hidden_new_id").val("0");
+								options.success();
+								$('#_workingUnit_CounterList').html($("#_workingUnit_listView").getKendoListView().dataSource.total());
+								showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+
+							},
+							error: function(xhr, textStatus, errorThrown) {
 								
-									$("#_workingUnit_listView").getKendoListView().dataSource.error();
-									showMessageByAPICode(xhr.status);
+								$("#_workingUnit_listView").getKendoListView().dataSource.error();
+								showMessageByAPICode(xhr.status);
 								
-								}
-				
-							});
-	
-						} else{
-							
-							options.error();
-						}
-					});
+							}
+
+						});
+
+					} else{
+
+						options.error();
+					}
 					
 				},
 				parameterMap: function(options, operation) {

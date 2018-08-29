@@ -88,6 +88,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, query.getAdministration());
 			params.put(ServiceInfoTerm.DOMAIN_CODE, query.getDomain());
 			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
+			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

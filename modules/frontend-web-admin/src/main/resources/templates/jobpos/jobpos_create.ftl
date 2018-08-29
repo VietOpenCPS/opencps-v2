@@ -61,7 +61,6 @@
 				data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 				<i class="fa fa-check-circle"></i>
 				<span class="lfr-btn-label">Xác nhận</span>
-				
 			</button> 
 			<button class="btn btn-default pull-right" data-dismiss="modal" value="Quay lại">
 			

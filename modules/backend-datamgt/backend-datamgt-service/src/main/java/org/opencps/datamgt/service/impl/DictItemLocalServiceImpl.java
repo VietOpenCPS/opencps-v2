@@ -801,7 +801,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DictItem updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
-			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling,
+			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, String sibling,
 			String metadata) throws NoSuchUserException {
 
 			Date now = new Date();
@@ -835,7 +835,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			dictItem.setItemNameEN(itemNameEN);
 			dictItem.setItemDescription(itemDescription);
 			dictItem.setParentItemId(dictItemParentId);
-			dictItem.setSibling(String.valueOf(sibling));
+			dictItem.setSibling(sibling);
 	//		dictItem.setTreeIndex(treeIndex);
 			dictItem.setLevel(level);
 			dictItem.setMetaData(metadata);

@@ -15,7 +15,6 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,7 +49,6 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
-import org.opencps.usermgt.constants.ApplicantTerm;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -343,9 +341,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-	private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
+//	private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
 	private final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
-	private final int DUE_DATE_DEFAULT = 5;
+//	private final int DUE_DATE_DEFAULT = 5;
 
 	private String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
@@ -500,17 +498,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //		}
 //		}
 		//LamTV_ Process Post payment
-		long userId = context.getUserId();
-		long groupId = dossier.getGroupId();
+//		long userId = context.getUserId();
+//		long groupId = dossier.getGroupId();
 		String referenceUid = StringPool.BLANK;
 		if (Validator.isNull(referenceUid)) {
 			referenceUid = PortalUUIDUtil.generate();
 		}
-		String govAgencyCode = dossier.getGovAgencyCode();
-		String govAgencyName = dossier.getGovAgencyName();
-		long paymentAmount = 0;
-		String epaymentProfile = StringPool.BLANK;
-		String bankInfo = StringPool.BLANK;
+//		String govAgencyCode = dossier.getGovAgencyCode();
+//		String govAgencyName = dossier.getGovAgencyName();
+//		long paymentAmount = 0;
+//		String epaymentProfile = StringPool.BLANK;
+//		String bankInfo = StringPool.BLANK;
 //		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId,
 //				referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
 //				paymentFeeNote, epaymentProfile, bankInfo, context);
@@ -730,12 +728,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //			referenceUid = PortalUUIDUtil.generate();
 //		}
 //		String govAgencyCode = dossier.getGovAgencyCode();
-		String govAgencyName = dossier.getGovAgencyName();
-		String paymentNote = StringPool.BLANK;
-		String epaymentProfile = StringPool.BLANK;
-		String bankInfo = StringPool.BLANK;
+//		String govAgencyName = dossier.getGovAgencyName();
+//		String paymentNote = StringPool.BLANK;
+//		String epaymentProfile = StringPool.BLANK;
+//		String bankInfo = StringPool.BLANK;
 		String paymentFee = StringPool.BLANK;
-		long paymentAmount = 0;
+//		long paymentAmount = 0;
 		if (serviceProcess != null) {
 			paymentFee = serviceProcess.getPaymentFee();
 			_log.info("paymentFee: "+paymentFee);
@@ -1782,6 +1780,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
+		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1804,7 +1803,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, booleanQuery);
+				template, top, emailLogin, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
@@ -1866,6 +1865,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
+		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1885,7 +1885,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, booleanQuery);
+				template, top, emailLogin, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
@@ -1899,7 +1899,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private BooleanQuery processSearchCommon(String keywords, String secetKey, String groupId, String owner,
-			long userId, String follow, String step, String template, BooleanQuery booleanQuery) throws ParseException {
+			long userId, String follow, String step, String template, String top, String emailLogin,
+			BooleanQuery booleanQuery) throws ParseException {
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
@@ -1964,10 +1965,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		//DossierActionId = 0
-		MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
-		queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
-		booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
-		//OriginDossierId = 0
+		boolean flagEmail = true;
+		if (Validator.isNotNull(emailLogin)) {
+			if (DossierTerm.EMAIL_DEFAULT.equals(emailLogin.toLowerCase())) {
+				flagEmail = false;
+			}
+		}
+		_log.info("flagEmail: "+flagEmail);
+		_log.info("emailLogin: "+emailLogin);
+		if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+			_log.info("TEST: "+true);
+			MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
+			queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
+			booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
+		}
+
+//		//OriginDossierId = 0
 		MultiMatchQuery queryOrigin = new MultiMatchQuery(String.valueOf(0));
 		queryOrigin.addField(DossierTerm.ORIGIN_DOSSIER_ID);
 		booleanQuery.add(queryOrigin, BooleanClauseOccur.MUST);
@@ -2088,6 +2101,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (year > 0) {
 			_log.info("year: "+year);
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
+			MultiMatchQuery queryYearTwo = new MultiMatchQuery(String.valueOf(year));
 
 			if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 //				MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
@@ -2105,29 +2119,56 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				//
 //				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 				MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
-				MultiMatchQuery queryFinish = new MultiMatchQuery(String.valueOf(0));
+				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
 				BooleanQuery subQueryOne = new BooleanQueryImpl();
 				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+				BooleanQuery subQueryThree = new BooleanQueryImpl();
 				
+//				//Check receiveDate != null
+//				queryReceive.addField(DossierTerm.YEAR_DOSSIER);
+//				subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
+//				//Check receiveDate
+//				query.addFields(DossierTerm.YEAR_DOSSIER);
+//				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+//				/**Check receiveDate < now && finishDate = null or finishDate = now**/
+//				// Check receiveDate < now
+////				Calendar calDate = Calendar.getInstance();
+////				calDate.setTime(new Date());
+////				int yearCurrent = calDate.get(Calendar.YEAR);
+//				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.YEAR_DOSSIER,
+//						String.valueOf(0), String.valueOf(year), false, true);
+//				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+//				//
+//				queryFinish.addField(DossierTerm.YEAR_RELEASE);
+//				subQueryTwo.add(queryFinish, BooleanClauseOccur.SHOULD);
+//				query.addFields(DossierTerm.YEAR_RELEASE);
+//				subQueryTwo.add(query, BooleanClauseOccur.SHOULD);
+//				//
+//				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+//				//
+//				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 				//Check receiveDate != null
 				queryReceive.addField(DossierTerm.YEAR_DOSSIER);
 				subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
 				//Check receiveDate
-				query.addFields(DossierTerm.YEAR_DOSSIER);
-				subQueryOne.add(query, BooleanClauseOccur.SHOULD);
-				/**Check receiveDate < now && finishDate = null or finishDate = now**/
+				queryYearTwo.addFields(DossierTerm.YEAR_DOSSIER);
+				subQueryOne.add(queryYearTwo, BooleanClauseOccur.SHOULD);
+				/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
 				// Check receiveDate < now
 //				Calendar calDate = Calendar.getInstance();
 //				calDate.setTime(new Date());
-//				int yearCurrent = calDate.get(Calendar.YEAR);
+//				int monthCurrent = calDate.get(Calendar.MONTH) + 1;
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.YEAR_DOSSIER,
-						String.valueOf(0), String.valueOf(year), false, true);
+						String.valueOf(0), String.valueOf(month), false, false);
 				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
-				//
-				queryFinish.addField(DossierTerm.YEAR_RELEASE);
-				subQueryTwo.add(queryFinish, BooleanClauseOccur.SHOULD);
-				query.addFields(DossierTerm.YEAR_RELEASE);
-				subQueryTwo.add(query, BooleanClauseOccur.SHOULD);
+				
+				queryRelease.addField(DossierTerm.YEAR_RELEASE);
+				subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
+				
+				subQueryThree.add(queryYearTwo, BooleanClauseOccur.SHOULD);
+				
+				queryYearTwo.addFields(DossierTerm.YEAR_RELEASE);
+				subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
 				//
 				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
 				//
@@ -2151,11 +2192,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				BooleanQuery subQueryThree = new BooleanQueryImpl();
 				
 				//Check receiveDate != null
-				queryReceive.addField(DossierTerm.MONTH_RELEASE);
+				queryReceive.addField(DossierTerm.MONTH_DOSSIER);
 				subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
 				//Check receiveDate
-				queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
-				subQueryOne.add(queryMonthTwo, BooleanClauseOccur.MUST);
+				queryMonthTwo.addFields(DossierTerm.MONTH_DOSSIER);
+				subQueryOne.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
 				/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
 				// Check receiveDate < now
 //				Calendar calDate = Calendar.getInstance();
@@ -2164,15 +2205,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.MONTH_DOSSIER,
 						String.valueOf(0), String.valueOf(month), false, false);
 				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+				
 				queryRelease.addField(DossierTerm.MONTH_RELEASE);
-				subQueryThree.add(queryRelease, BooleanClauseOccur.SHOULD);
+				subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
 				
 				subQueryThree.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
 				
 				queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
 				subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
+//				//
 				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
-
+				//
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else {
 				query.addFields(DossierTerm.MONTH_DOSSIER);
@@ -2187,7 +2230,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
 				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
 				
-			} else {
+			} else if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 
 				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
@@ -2853,8 +2896,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo);
 
 		Dossier dossier = null;
-
-		if (dossierId == 0) {
+		dossier = getByRef(groupId, referenceUid);
+		
+		if (dossier == null) {
 			String dossierTemplateName = getDossierTemplateName(groupId, dossierTemplateNo);
 
 			dossierId = counterLocalService.increment(Dossier.class.getName());
@@ -2921,9 +2965,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			
 			dossier = dossierPersistence.update(dossier);
 		} else {
-
-			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
-
 			dossier.setModifiedDate(modifiedDate);
 			dossier.setSubmitDate(submitDate);
 			dossier.setReceiveDate(receiveDate);

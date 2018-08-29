@@ -257,8 +257,7 @@ public class BackendAPIRestApplication extends Application {
 		try {
 			QrCode qrcode = new QrCode();
 			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
-			qrcode.setDataType(Symbol.DataType.HIBC);
-			qrcode.setPreferredVersion(40);
+			qrcode.setDataType(Symbol.DataType.ECI);
 			qrcode.setContent(value);
 
 			int width = qrcode.getWidth();

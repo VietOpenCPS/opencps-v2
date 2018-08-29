@@ -46,7 +46,8 @@
 									</#if>
 									
 									<span class="PL10">
-										${(oJobPos.workingUnitName)!} - ${(oJobPos.jobPosTitle)!}
+										<#--${(oJobPos.workingUnitName)!} - ${(oJobPos.jobPosTitle)!} -->
+										${(oJobPos.jobPosTitle)!}
 									</span>
 								
 								</div>
@@ -92,16 +93,10 @@
 		event.preventDefault();
 		event.stopPropagation();
 		event.stopImmediatePropagation();
-		
-		var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn muốn xóa chức vụ này ?', $(event.currentTarget) );
-
 		var employeeJobPosId = $(this).attr('data-pk');
-	
-		confirmWindown.then(function(confirmed){
-		
-			if(confirmed){
-		
-				$.ajax({
+		var cf = confirm('Bạn có muốn xóa ?');
+		if (cf) {
+			$.ajax({
 				
 					url: employeeDeleteJobPosBaseUrl + "/"+ employeeJobPosId,
 					
@@ -124,11 +119,45 @@
 					}
 				
 				});
+		} else {
+			return;
+		}
+		// var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn muốn xóa chức vụ này ?', $(event.currentTarget) );
 
-			} else{
-				return;
-			}
-		});
+		// var employeeJobPosId = $(this).attr('data-pk');
+	
+		// confirmWindown.then(function(confirmed){
+		
+		// 	if(confirmed){
+		
+		// 		$.ajax({
+				
+		// 			url: employeeDeleteJobPosBaseUrl + "/"+ employeeJobPosId,
+					
+		// 			type: 'DELETE',
+		// 			headers: {
+		// 				"groupId": ${groupId}
+		// 			},
+		// 			success: function(result) {
+					
+		// 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+						
+		// 				var liItem = $("#employee-detail-jobpos-"+employeeJobPosId).closest("li");
+		// 				liItem.remove();
+	
+		// 			},
+		// 			error: function(xhr, textStatus, errorThrown) {
+					
+		// 				showMessageByAPICode(xhr.status);
+				
+		// 			}
+				
+		// 		});
+
+		// 	} else{
+		// 		return;
+		// 	}
+		// });
 
 	});
 	

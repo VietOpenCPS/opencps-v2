@@ -16,6 +16,7 @@ import org.opencps.api.controller.ServiceConfigManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.ServiceConfigUtils;
 import org.opencps.api.controller.util.ServiceInfoUtils;
+import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionResultsModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionSearchModel;
@@ -47,18 +48,18 @@ import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -1133,6 +1134,68 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 
 			}
+		}
+	}
+
+	@Override
+	public Response getDomainsByGovAgencyCode(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, String govAgencyCode, ServiceContext serviceContext,
+			ServiceInfoSearchModel query) {
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		try {
+			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByGovAgencyCode(govAgencyCode);
+
+			int total = 0;
+			JSONArray domains = JSONFactoryUtil.createJSONArray();
+			if (configList != null && configList.size() > 0) {
+				for (ServiceConfig config : configList) {
+					long serviceInfoId = config.getServiceInfoId();
+					if (serviceInfoId > 0) {
+						ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
+						if (serviceInfo != null) {
+							String domainCode = serviceInfo.getDomainCode();
+							if (Validator.isNotNull(domainCode)) {
+								boolean flag = true;
+								JSONObject jsonDomain = JSONFactoryUtil.createJSONObject();
+								if (domains != null && domains.length() > 0) {
+									for (int i = 0; i < domains.length(); i++) {
+										JSONObject jsonData = domains.getJSONObject(i);
+										if (domainCode.equals(jsonData.getString(ServiceConfigTerm.DOMAIN_CODE))) {
+											flag = false;
+											break;
+										}
+									}
+									if (flag) {
+										total += 1;
+										jsonDomain.put(ServiceConfigTerm.DOMAIN_CODE, domainCode);
+										jsonDomain.put(ServiceConfigTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+										jsonDomain.put(ServiceConfigTerm.DOMAIN_INDEX, serviceInfo.getDomainIndex());
+										//
+										domains.put(jsonDomain);
+									}
+								} else {
+									total += 1;
+									jsonDomain.put(ServiceConfigTerm.DOMAIN_CODE, domainCode);
+									jsonDomain.put(ServiceConfigTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+									jsonDomain.put(ServiceConfigTerm.DOMAIN_INDEX, serviceInfo.getDomainIndex());
+									//
+									domains.put(jsonDomain);
+								}
+							}
+						}
+					}
+				}
+			}
+			results.put("total", total);
+			results.put("domains", domains);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return processException(e);
 		}
 	}
 

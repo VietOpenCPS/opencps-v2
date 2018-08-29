@@ -27,7 +27,7 @@
 				
 			</div>
 			
-			<div class="form-group">
+			<#-- <div class="form-group">
 			
 				<label for="_jobposDetail_leader">Vị trí :</label>
 				<input id="_jobposDetail_leader" name="_jobposDetail_leader" class="form-control" data-vl="${(jobPos.leader)!}" />
@@ -39,7 +39,7 @@
 				<label for="_jobposDetail_permissions">Quyền hạn :</label>
 				<input id="_jobposDetail_permissions" name="_jobposDetail_permissions" class="form-control" />
 				
-			</div>
+			</div> -->
 
 			<div class="form-group">
 			
@@ -356,7 +356,7 @@
 
 	var leader_vl = $("#_jobposDetail_leader").attr('data-vl');
 	
-	leader_vl = (leader_vl!="" && leader_vl!=null )?leader_vl:0;
+	leader_vl = (leader_vl!="" && leader_vl!=null && leader_vl!=undefined && leader_vl!='undefined')?leader_vl:0;
 	_jobposDetail_leader.value(leader_vl);
 	
 	

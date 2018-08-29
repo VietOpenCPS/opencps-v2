@@ -1,12 +1,12 @@
 package org.opencps.api.controller.util;
 
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
+import org.opencps.api.dossier.model.DossierDataPublishModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.MathUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -61,6 +60,8 @@ public class DossierUtils {
 
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	private static final String EXTEND_ONE_VALUE = ".0";
+	private static final String EXTEND_TWO_VALUE = ".00";
 
 	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
@@ -131,6 +132,7 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+//			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
 			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
 //			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
@@ -139,8 +141,8 @@ public class DossierUtils {
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
 			Long releaseDateTimeStamp = Long.valueOf(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
-			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
-			_log.info("releaseDateTimeStamp: "+releaseDateTimeStamp);
+//			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
+//			_log.info("releaseDateTimeStamp: "+releaseDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
 			if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
@@ -161,11 +163,14 @@ public class DossierUtils {
 			} else {
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 					long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+//					_log.info("subTimeStamp: "+subTimeStamp);
 					if (subTimeStamp > 0) {
+//						_log.info("START Qua han: ");
 						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId);
 						model.setDossierOverdue("Quá hạn " + strOverDue);
 					} else {
+//						_log.info("START Con han: ");
 						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId);
 						model.setDossierOverdue("Còn " + strOverDue);
@@ -183,35 +188,31 @@ public class DossierUtils {
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			if (dAction != null) {
-				Integer state = dAction.getState();
-				if (state != null) {
-					if (state > 0) {
-						int actionOverDue = dAction.getActionOverdue();
-						if (actionOverDue > 0) {
-							model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
-						} else {
-							model.setStepOverdue(StringPool.BLANK);
-						}
+				int state = dAction.getState();
+				if (state > 0) {
+					int actionOverDue = dAction.getActionOverdue();
+					if (actionOverDue > 0) {
+						model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
 					} else {
-						Date dueDate = dAction.getDueDate();
-						if (dueDate != null) {
-							long dueDateActionTimeStamp = dueDate.getTime();
-							long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
-							if (subTimeStamp > 0) {
-								String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
-										dueDateTimeStamp, groupId);
-								model.setDossierOverdue("Quá hạn " + stepOverDue);
-							} else {
-								String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
-										dueDateTimeStamp, groupId);
-								model.setDossierOverdue("Còn " + strOverDue);
-							}
-						} else {
-							model.setStepOverdue(StringPool.BLANK);
-						}
+						model.setStepOverdue(StringPool.BLANK);
 					}
 				} else {
-					model.setStepOverdue(StringPool.BLANK);
+					Date dueDate = dAction.getDueDate();
+					if (dueDate != null) {
+						long dueDateActionTimeStamp = dueDate.getTime();
+						long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
+						if (subTimeStamp > 0) {
+							String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+									dueDateTimeStamp, groupId);
+							model.setStepOverdue("Quá hạn " + stepOverDue);
+						} else {
+							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+									dueDateTimeStamp, groupId);
+							model.setStepOverdue("Còn " + strOverDue);
+						}
+					} else {
+						model.setStepOverdue(StringPool.BLANK);
+					}
 				}
 			} else {
 				model.setStepOverdue(StringPool.BLANK);
@@ -399,7 +400,16 @@ public class DossierUtils {
 			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
 			overDue = (double) Math.ceil(subDueCount * 4) / 4;
 			//TODO: Process a.0 = a
-			return overDue + strOverDue;
+			boolean flagCeil = false;
+			String strOverDueConvert = String.valueOf(overDue);
+			if (Validator.isNotNull(strOverDueConvert)) {
+				if (strOverDueConvert.contains(EXTEND_ONE_VALUE) || strOverDueConvert.contains(EXTEND_TWO_VALUE)) {
+					flagCeil = true;
+				}
+			}
+			if (!flagCeil) {
+				return overDue + strOverDue;
+			}
 		} else {
 			strOverDue = " giờ";
 			dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
@@ -657,6 +667,8 @@ public class DossierUtils {
 				APIDateTimeUtils.convertDateToString(input.getCancellingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		model.setCorrectingDate(
 				APIDateTimeUtils.convertDateToString(input.getCorrecttingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		model.setExtendDate(
+				APIDateTimeUtils.convertDateToString(input.getExtendDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		model.setDossierStatus(input.getDossierStatus());
 		model.setDossierStatusText(input.getDossierStatusText());
 		model.setDossierSubStatus(input.getDossierSubStatus());
@@ -958,4 +970,34 @@ public class DossierUtils {
 		return model;
 	}
 
+	//Mapping publish dossier
+	public static List<DossierDataPublishModel> mappingForGetPublishList(List<Document> docs) {
+		List<DossierDataPublishModel> ouputs = new ArrayList<DossierDataPublishModel>();
+
+		for (Document doc : docs) {
+			DossierDataPublishModel model = new DossierDataPublishModel();
+			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
+			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME));
+			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
+			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+			if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+				Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			}
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
+			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
+			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
+			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+
+			ouputs.add(model);
+		}
+
+		return ouputs;
+	}
 }

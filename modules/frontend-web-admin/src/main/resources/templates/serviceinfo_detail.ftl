@@ -67,8 +67,6 @@
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="domain" name="domain" data-bind="value:domainCode" required="required" validationMessage="Bạn phải chọn lĩnh vực">
-									
-									
 								</select>
 								<span data-for="domain" class="k-invalid-msg"></span>
 							</div>
@@ -108,6 +106,7 @@
 				</div>
 				<div class="row MT15">
 					<div class="col-sm-12 text-center">
+						<button class=" btn btn-active" id="btn-create-serviceinfo-detail" type="button">Lưu và thêm mới</button>
 						<button class="btn btn-active" id="btn-submit-serviceinfo-general" type="button">Ghi lại</button> <button class="btn" type="reset">Hủy bỏ</button>
 					</div>
 				</div>
@@ -143,6 +142,7 @@
 				<div id="regularText" name="regularText" data-bind="text:regularText"></div>
 
 				<div class="col-sm-12 text-center MT10">
+					
 					<button class=" btn btn-active" id="btn-submit-serviceinfo-detail" type="button">Ghi lại</button> <button class=" btn" type="reset" id="btn-reset-serviceinfo-detail">Hủy bỏ</button>
 				</div>
 			</form>
@@ -573,6 +573,46 @@ error : function(xhr){
 }
 });
 }
+function clearInput () {
+	var viewModel = kendo.observable({
+		serviceName: '',
+		serviceCode: '',
+		resultText: function(e){
+			$('#resultText').summernote('code', '');
+		},
+		feeText: function(e){
+			$('#feeText').summernote('code', '');
+		},
+		methodText : function(e){
+			$('#methodText').summernote('code', '');
+		},
+		durationText : function(e){
+			$('#durationText').summernote('code', '');
+		},
+		dossierText : function(e){
+			$('#dossierText').summernote('code', '');
+		},
+		processText : function(e){
+			$('#processText').summernote('code', '');
+		},
+		applicantText : function(e){
+			$('#applicantText').summernote('code', '');
+		},
+		regularText : function(e){
+			$('#regularText').summernote('code', '');
+		},
+		conditionText : function(e){
+			$('#conditionText').summernote('code', '');
+		},
+		fileTemplates : []
+	});
+	kendo.bind($("#dataDetailServiceInfo"), viewModel);
+	$("#administration").data("kendoComboBox").value('');
+	$("#domain").data("kendoComboBox").value('');
+	$("#level").data("kendoComboBox").value('');
+	$("#status").data("kendoComboBox").value('');
+	$("#itemServiceInfoId").val('');
+}
 
 var formControlFileTemplate = function(dataPk){
 
@@ -722,6 +762,16 @@ $("#btn-submit-serviceinfo-detail").click(function(){
 
 });
 
+$("#btn-create-serviceinfo-detail").click(function () {
+	console.log($("#processText").summernote("code"));
+	console.log($("#methodText").summernote("code"));
+	setTimeout(function () {
+		$("#btn-submit-serviceinfo-general").click();
+		clearInput();
+		$("#itemServiceInfoId").val('');
+	}, 500)
+})
+
 $("#btn-submit-serviceinfo-general").click(function(){
 	var idServiceinfo = $("#itemServiceInfoId").val();
 	var validator = $("#frmServiceinfoGenaral").kendoValidator().data("kendoValidator");
@@ -747,9 +797,9 @@ $("#btn-submit-serviceinfo-general").click(function(){
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
 
-					setTimeout(function(){
-						$("#listViewTTHC li[data-pk=" + idServiceinfo + "]").addClass("k-state-selected");
-					}, 100);
+					// setTimeout(function(){
+					// 	$("#listViewTTHC li[data-pk=" + idServiceinfo + "]").addClass("k-state-selected");
+					// }, 100);
 				},
 				error : function(result){
 					if (result.responseJSON){
@@ -793,11 +843,11 @@ $("#btn-submit-serviceinfo-general").click(function(){
 					notification.show({
 						message: "Yêu cầu được thực hiện thành công"
 					}, "success");
-					pullDataDetail(result.serviceInfoId);
+					// pullDataDetail(result.serviceInfoId);
 
-					setTimeout(function(){
-						$("#listViewTTHC li[data-pk=" + result.serviceInfoId + "]").addClass("k-state-selected");
-					}, 100);
+					// setTimeout(function(){
+					// 	$("#listViewTTHC li[data-pk=" + result.serviceInfoId + "]").addClass("k-state-selected");
+					// }, 100);
 				},
 				error : function(result){
 					if (result.responseJSON){

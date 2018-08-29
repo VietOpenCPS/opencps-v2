@@ -124,7 +124,7 @@ public interface DictcollectionInterface {
 	public long getDictItemByItemCode(long dictCollectionId, String parent, long groupId);
 
 	public void updateDictItemDB(long userId, long groupId, long dictCollectionId, String itemCode, String itemName,
-			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, Integer sibling,
+			String itemNameEN, String itemDescription, long dictItemParentId, Integer level, String sibling,
 			String metadata) throws NoSuchUserException;
 
 	public boolean deleteAllDictItem(long userId, long groupId, long dictCollectionId);
