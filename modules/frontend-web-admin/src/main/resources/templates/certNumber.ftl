@@ -5,8 +5,8 @@
 <div class="row box MT10">
 	<div class="col-sm-12 MT15" id="viewLsCertNumber">
 		<button class="btn btn-active MB15" id="btn-add-certnumber"><i class="glyphicon glyphicon-plus"></i> Thêm tham số hệ thống</button>
-		<button class="btn btn-active MB15 ML15" id="btn-add-certnumber-list"><i class="glyphicon glyphicon-plus"></i> Thêm danh sách tham số hệ thống</button> 
-		<button class="btn MB15 pull-right" id="btn-delete-certnumber" style="background-color:#e63434 !important; color:#fff !important"><i class="fa fa-trash"></i> Xóa danh sách tham số hệ thống</button> <br>
+		<#-- <button class="btn btn-active MB15 ML15" id="btn-add-certnumber-list"><i class="glyphicon glyphicon-plus"></i> Thêm danh sách tham số hệ thống</button> 
+		<button class="btn MB15 pull-right" id="btn-delete-certnumber" style="background-color:#e63434 !important; color:#fff !important"><i class="fa fa-trash"></i> Xóa danh sách tham số hệ thống</button> <br> -->
 		<table class="table table-bordered">
 			<thead>
 				<tr>
