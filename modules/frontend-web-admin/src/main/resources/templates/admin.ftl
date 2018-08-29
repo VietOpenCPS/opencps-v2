@@ -21,14 +21,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Thủ tục hành chính</div>
 			</li>
-			<#-- <li class="clearfix" >
+			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
 				<div class="col-sm-9 PL10 P0">Tổ chức</div>
-			</li> -->
+			</li>
 			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
@@ -51,7 +51,7 @@
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
-				<div class="col-sm-9 PL10 P0">Ngày nghỉ</div>
+				<div class="col-sm-9 PL10 P0">Ngày nghỉ, ngày lễ</div>
 			</li>
 			<li class="clearfix employee" >
 				<div class="col-sm-2 clearfix ">
@@ -176,7 +176,7 @@
 		contentUrls: [
 			'${ajax.dictcollection_index}',
 			'${ajax.serviceinfo_list}',
-			// '${url.adminWorkingUnitPortlet.working_unit_list}',
+			'${url.adminWorkingUnitPortlet.working_unit_list}',
 			'${url.adminJobPosPortlet.jobpos_list}',
 			'${url.employeePortlet.employee_index}',
 			'${ajax.holiday}',

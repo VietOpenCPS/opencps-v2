@@ -10,6 +10,7 @@
 					<button class="btn btn-active form-control MB5" id="btnAddServiceInfo"><i class="glyphicon glyphicon-plus"></i> Thêm thủ tục </button>
 					<select class="form-control" id="administrationCodeSearch" name="administrationCodeSearch"></select>
 					<select class="form-control" id="domainCodeSearch" name="domainCodeSearch"></select>
+					<select class="form-control" id="statusSearch" name="statusSearch"></select>
 					<div class="form-group search-icon">
 						<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa">
 					</div>
@@ -76,7 +77,8 @@
 						keyword: options.data.keyword,
 						page: options.data.page,
 						pageSize: options.data.pageSize,
-						order : true
+						order : true,
+						active: options.data.active
 					},
 					success: function(result) {
 						console.log(options.data);
@@ -173,7 +175,8 @@
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
 				"administration": $("#administrationCodeSearch").val(),
-				"keyword": $("#keyword").val()
+				"keyword": $("#keyword").val(),
+				"active":  $("#statusSearch").val()
 			});
 		},
 		filter:"contains",
@@ -188,7 +191,8 @@
 			dataSourceTTHC.read({
 				"domain": $("#domainCodeSearch").val(),
 				"administration" :$("#administrationCodeSearch").val(),
-				"keyword": $("#keyword").val()
+				"keyword": $("#keyword").val(),
+				"active":  $("#statusSearch").val()
 			});
 		},
 		dataSource : {
@@ -214,12 +218,40 @@
 		filter:"contains",
 		noDataTemplate: 'Không có dữ liệu'
 	});
+	$("#statusSearch").kendoComboBox({
+		placeholder:"Chọn trạng thái",
+		dataTextField: "text",
+		dataValueField: "value",
+		change:function(){
+			var status = this.value();
+			dataSourceTTHC.read({
+				"domain": $("#domainCodeSearch").val(),
+				"administration" :$("#administrationCodeSearch").val(),
+				"keyword": $("#keyword").val(),
+				"active": status
+			});
+		},
+		dataSource : [
+			{
+				'text': 'Công khai',
+				'value': true
+			},
+			{
+				'text': 'Không công khai',
+				'value': false
+			}
+		],
+		filter:"contains",
+		noDataTemplate: 'Không có dữ liệu'
+	});
+	
 
 	$("#keyword").change(function(){
 		dataSourceTTHC.read({
 			"domain": $("#domainCodeSearch").val(),
 			"administration": $("#administrationCodeSearch").val(),
-			"keyword": $("#keyword").val()
+			"keyword": $("#keyword").val(),
+			"status":  $("#statusSearch").val()
 		});
 	});
 

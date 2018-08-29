@@ -91,7 +91,7 @@
 
 </div>
 
-<input type="hidden" value="0" id="_holiday_hidden_new_id"/>
+<input type="hidden" value="" id="_holiday_hidden_new_id"/>
 
 <script type="text/javascript">
 	
@@ -172,7 +172,7 @@
 								type: 'DELETE',
 								success: function(result) {
 									
-									$("#_holiday_hidden_new_id").val("0");
+									$("#_holiday_hidden_new_id").val("");
 									options.success();
 									$('#_holidaybpos_CounterList').html($("#_holiday_listView").getKendoListView().dataSource.total());
 									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
@@ -240,6 +240,7 @@
 			}
 		
 		});
+		var firstTimeHl = true;
 		
 		function _holiday_dataBound(e) {
 			
@@ -249,19 +250,23 @@
 			
 			var index = $("#_holiday_hidden_new_id").val().trim();
 
-			if (index === '' || index === undefined || index === 0 || index === 'undefined' || index === null) {
+			if (firstTimeHl) {
 				_holiday_listView.select(children[0]);
+				firstTimeHl = false;
+				return;
+			}
+
+			if (index === '' || index === undefined || index === 0 || index === 'undefined' || index === null) {
+				// _holiday_listView.select(children[0]);
 			} else {
 				for (var x = 0; x < children.length; x++) {
 
 					var getObj = _holiday_listView.dataSource.view()[x];
 
 					if (getObj.holidayDate == index) {
-
+						console.log("index -----", x);
 						index = x;
-
 					};
-
 				};
 				_holiday_listView.select(children[index]);
 			}			
@@ -298,7 +303,7 @@
 			} else {
 				pullDetailHoliday()
 				$("#_holidayDetail_submitBtn > span").html('Thêm mới');
-				$("#_holiday_hidden_new_id").val(0);
+				$("#_holiday_hidden_new_id").val('');
 			}
 		}
 

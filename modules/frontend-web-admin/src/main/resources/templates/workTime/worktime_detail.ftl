@@ -123,7 +123,7 @@
 		var worktimeEndAfter = $("#worktimeEndAfter").val();
 		hourTem = worktimeStartMorning + '-' + worktimeEndMorning + ',' + worktimeStartAfter + '-' + worktimeEndAfter;
 
-		if ($("#_worktime_hidden_new_id").val() != 0 ) {
+		if ($("#_worktime_hidden_new_id").val() != "" && $("#_worktime_hidden_new_id").val() !== undefined && $("#_worktime_hidden_new_id").val() !== null) {
 
 			// update jobpos
 			
@@ -209,8 +209,8 @@
 						// $("#_worktime_hidden_new_id").val(data.holidayDate);
 
 						
-						
-						dataSource.pushUpdate(data);
+						// $("#_worktime_listView").getKendoListView().clearSelection();
+						dataSource.pushCreate(data);
 						$('#_worktime_CounterList').html(dataSource.total());
 						notification.show({
 							message: "Yêu cầu được thực hiện thành công"
@@ -249,19 +249,23 @@
 	})
 	$('#worktimeStartMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm"
+		format: "HH.mm",
+		placeholder: 'Thời gian bắt đầu'
 	});
 	$('#worktimeEndMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm"
+		format: "HH.mm",
+		placeholder: 'Thời gian kết thúc'
 	});
 	$('#worktimeStartAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm"
+		format: "HH.mm",
+		placeholder: 'Thời gian bắt đầu'
 	});
 	$('#worktimeEndAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm"
+		format: "HH.mm",
+		placeholder: 'Thời gian kết thúc'
 	});
 	$("#worktimeDay").kendoComboBox({
 		placeholder : "Chọn ngày làm việc",
