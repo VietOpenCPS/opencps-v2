@@ -2583,7 +2583,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-					_log.info("Payment object in do action: " + paymentObj);
+//					_log.info("Payment object in do action: " + paymentObj);
 					if (paymentObj.has("paymentFee")) {
 						paymentFee = paymentObj.getString("paymentFee");
 					}
@@ -3139,7 +3139,7 @@ public class DossierActionsImpl implements DossierActions {
 					//Generate PDF
 					String formData = payload;
 					JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
-//					_log.info("Dossier document form data: " + formDataObj.toJSONString());
+//					_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
 					Message message = new Message();
 //					_log.info("Document script: " + dt.getDocumentScript());
 					JSONObject msgData = JSONFactoryUtil.createJSONObject();
