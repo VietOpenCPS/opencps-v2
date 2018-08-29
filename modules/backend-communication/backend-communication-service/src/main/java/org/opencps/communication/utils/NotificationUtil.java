@@ -88,7 +88,9 @@ public class NotificationUtil {
 					serviceContext.getScopeGroupId());
 
 //				baseUrl = PropValues.PORTAL_DOMAIN +
-						baseUrl = "http://119.17.200.7" +
+//				jsonData.put("url", serviceContext.getPortalURL());
+//				baseUrl = "http://119.17.200.7" +
+				baseUrl = serviceContext.getPortalURL() +
 					PortalUtil.getPathFriendlyURLPrivateGroup() +
 					group.getFriendlyURL();
 				_log.info("baseUrl: "+baseUrl);
@@ -105,7 +107,8 @@ public class NotificationUtil {
 					serviceContext.getScopeGroupId());
 
 //				guestBaseUrl = PropValues.PORTAL_DOMAIN +
-						guestBaseUrl = "http://119.17.200.7" +
+//				guestBaseUrl = "http://119.17.200.7" +
+				baseUrl = serviceContext.getPortalURL() +
 					PortalUtil.getPathFriendlyURLPublic() +
 					group.getFriendlyURL();
 				_log.info("guestBaseUrl: "+guestBaseUrl);

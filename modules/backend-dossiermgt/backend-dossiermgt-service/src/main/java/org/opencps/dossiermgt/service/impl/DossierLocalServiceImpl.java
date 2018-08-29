@@ -15,7 +15,6 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,7 +49,6 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
-import org.opencps.usermgt.constants.ApplicantTerm;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -343,9 +341,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-	private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
+//	private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
 	private final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
-	private final int DUE_DATE_DEFAULT = 5;
+//	private final int DUE_DATE_DEFAULT = 5;
 
 	private String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
@@ -500,17 +498,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //		}
 //		}
 		//LamTV_ Process Post payment
-		long userId = context.getUserId();
-		long groupId = dossier.getGroupId();
+//		long userId = context.getUserId();
+//		long groupId = dossier.getGroupId();
 		String referenceUid = StringPool.BLANK;
 		if (Validator.isNull(referenceUid)) {
 			referenceUid = PortalUUIDUtil.generate();
 		}
-		String govAgencyCode = dossier.getGovAgencyCode();
-		String govAgencyName = dossier.getGovAgencyName();
-		long paymentAmount = 0;
-		String epaymentProfile = StringPool.BLANK;
-		String bankInfo = StringPool.BLANK;
+//		String govAgencyCode = dossier.getGovAgencyCode();
+//		String govAgencyName = dossier.getGovAgencyName();
+//		long paymentAmount = 0;
+//		String epaymentProfile = StringPool.BLANK;
+//		String bankInfo = StringPool.BLANK;
 //		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId,
 //				referenceUid, govAgencyCode, govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount,
 //				paymentFeeNote, epaymentProfile, bankInfo, context);
@@ -730,12 +728,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //			referenceUid = PortalUUIDUtil.generate();
 //		}
 //		String govAgencyCode = dossier.getGovAgencyCode();
-		String govAgencyName = dossier.getGovAgencyName();
-		String paymentNote = StringPool.BLANK;
-		String epaymentProfile = StringPool.BLANK;
-		String bankInfo = StringPool.BLANK;
+//		String govAgencyName = dossier.getGovAgencyName();
+//		String paymentNote = StringPool.BLANK;
+//		String epaymentProfile = StringPool.BLANK;
+//		String bankInfo = StringPool.BLANK;
 		String paymentFee = StringPool.BLANK;
-		long paymentAmount = 0;
+//		long paymentAmount = 0;
 		if (serviceProcess != null) {
 			paymentFee = serviceProcess.getPaymentFee();
 			_log.info("paymentFee: "+paymentFee);
@@ -1782,6 +1780,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
+		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1804,7 +1803,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, top, booleanQuery);
+				template, top, emailLogin, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
@@ -1866,6 +1865,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
+		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1885,7 +1885,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, top, booleanQuery);
+				template, top, emailLogin, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
@@ -1899,7 +1899,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private BooleanQuery processSearchCommon(String keywords, String secetKey, String groupId, String owner,
-			long userId, String follow, String step, String template, String top, BooleanQuery booleanQuery) throws ParseException {
+			long userId, String follow, String step, String template, String top, String emailLogin,
+			BooleanQuery booleanQuery) throws ParseException {
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
@@ -1963,8 +1964,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		//DossierActionId = 0
-		if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+		//DossierActionId = 0
+		boolean flagEmail = true;
+		if (Validator.isNotNull(emailLogin)) {
+			if (DossierTerm.EMAIL_DEFAULT.equals(emailLogin.toLowerCase())) {
+				flagEmail = false;
+			}
+		}
+		_log.info("flagEmail: "+flagEmail);
+		_log.info("emailLogin: "+emailLogin);
+		if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 			_log.info("TEST: "+true);
 			MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
 			queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);

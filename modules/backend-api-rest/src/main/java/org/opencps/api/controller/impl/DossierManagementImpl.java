@@ -166,6 +166,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
+		String emailLogin = user.getEmailAddress();
+		_log.info("userId: "+userId);
+		_log.info("emailLogin: "+emailLogin);
 //		BackendAuth auth = new BackendAuthImpl();
 //		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -313,6 +316,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.APPLICANT_NAME, applicantName);
 			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DossierTerm.SERVICE_NAME, serviceName);
+			//Check guest search
+			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -1032,21 +1037,25 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, String id) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		String password = GetterUtil.getString(header.getHeaderString("password"));
+		String secretCode = GetterUtil.getString(header.getHeaderString("secretCode"));
 		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 
-			if (Validator.isNotNull(password)) {
+			if (Validator.isNotNull(secretCode)) {
+				try {
+					Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-				Dossier dossier = DossierUtils.getDossier(id, groupId);
+					dossierPermission.checkPassword(dossier, secretCode);
 
-				dossierPermission.checkPassword(dossier, password);
+					DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
-				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
-
-				return Response.status(200).entity(result).build();
+					return Response.status(200).entity(result).build();
+				} catch (Exception e) {
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretCode not sucess")
+							.build();
+				}
 
 			} else {
 				if (!auth.isAuth(serviceContext)) {
@@ -3160,6 +3169,10 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DossierActions actions = new DossierActionsImpl();
+		long userId = user.getUserId();
+		String emailLogin = user.getEmailAddress();
+		_log.info("userId: "+userId);
+		_log.info("emailLogin: "+emailLogin);
 
 		try {
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
@@ -3208,6 +3221,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
  			}
 
+			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
