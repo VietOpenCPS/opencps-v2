@@ -2887,8 +2887,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				wardCode, contactName, contactTelNo, contactEmail, dossierTemplateNo);
 
 		Dossier dossier = null;
-
-		if (dossierId == 0) {
+		dossier = getByRef(groupId, referenceUid);
+		
+		if (dossier == null) {
 			String dossierTemplateName = getDossierTemplateName(groupId, dossierTemplateNo);
 
 			dossierId = counterLocalService.increment(Dossier.class.getName());
