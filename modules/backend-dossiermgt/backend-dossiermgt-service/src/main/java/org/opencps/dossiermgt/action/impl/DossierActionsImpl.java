@@ -3108,6 +3108,10 @@ public class DossierActionsImpl implements DossierActions {
 		ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
 		
+		if (Validator.isNotNull(payload)) {
+			dossier = DossierLocalServiceUtil.updateDossier(dossier.getDossierId(), payloadObject);			
+		}
+		
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
