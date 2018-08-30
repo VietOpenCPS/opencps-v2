@@ -345,10 +345,10 @@ public class JRReportUtil {
 		case PDF:
 			sourceFileName = exportPdfFile(jasperPrint, sourceFileName);
 			break;
-		case XLSX:
+		case XLS:
 			sourceFileName = exportExcelFile(jasperPrint, sourceFileName);
 			break;	
-		case DOCX:
+		case DOC:
 			sourceFileName = exportDocFile(jasperPrint, sourceFileName);
 			break;				
 		default:
