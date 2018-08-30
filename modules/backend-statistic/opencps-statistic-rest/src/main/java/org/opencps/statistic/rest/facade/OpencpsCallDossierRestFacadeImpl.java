@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.facade;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 
 import org.opencps.statistic.rest.dto.GetDossierRequest;
@@ -7,6 +8,7 @@ import org.opencps.statistic.rest.dto.GetDossierResponse;
 import org.opencps.statistic.rest.util.DossierConstants;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -29,13 +31,13 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		return makeServiceCall(payload);
 	}
 
-	@Override
+/*	@Override
 	protected GetDossierResponse makeServiceCall(GetDossierRequest payload)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 		
-		buildUrlQueryParams(urlQueryParams, payload);
+		//buildUrlQueryParams(urlQueryParams, payload);
 		
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
 
@@ -55,6 +57,28 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GetDossierResponse.class).getBody();
 
+	}*/
+	
+	protected GetDossierResponse makeServiceCall(GetDossierRequest payload)
+			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+		
+		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
+		
+		urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));
+		urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
+		urlQueryParams.add("top", "statistic");
+		
+		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
+		HashMap<String, String> urlPathSegments = new HashMap<>();
+		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
+		LOG.info(url);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		
+		DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
+		
+		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		return (GetDossierResponse) this
+				.executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GetDossierResponse.class).getBody();
 	}
 
 	private void buildUrlQueryParams(MultiValueMap<String, String> urlQueryParams, GetDossierRequest dossierRequest) {

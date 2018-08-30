@@ -143,41 +143,39 @@
 					});
 				},
 				destroy: function(options) {
+					var cf = confirm('Bạn có chắc muốn xóa bản ghi này?');
+					// var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_collection_listView") );
 					
-					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_collection_listView") );
 					
-					confirmWindown.then(function(confirmed){
-					
-						if(confirmed){
-	
-							$.ajax({
-								url: _collection_BaseUrl + "/" + options.data.collectionCode,
-								type: 'DELETE',
-								headers: {
-									"groupId": ${groupId}
-								},
-								success: function(result) {
-									
-									$("#_collection_hidden_new_id").val("0");
-									options.success();
-									$('#dictCollectionCounterList').html($("#_collection_listView").getKendoListView().dataSource.total());
-									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-									
-								},
-								error: function(xhr, textStatus, errorThrown) {
+					if(cf){
+						
+						$.ajax({
+							url: _collection_BaseUrl + "/" + options.data.collectionCode,
+							type: 'DELETE',
+							headers: {
+								"groupId": ${groupId}
+							},
+							success: function(result) {
 								
-									$("#_collection_listView").getKendoListView().dataSource.error();
-									showMessageByAPICode(xhr.status);
+								$("#_collection_hidden_new_id").val("0");
+								options.success();
+								$('#dictCollectionCounterList').html($("#_collection_listView").getKendoListView().dataSource.total());
+								showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 								
-								}
-				
-							});
-	
-						} else{
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								
+								$("#_collection_listView").getKendoListView().dataSource.error();
+								showMessageByAPICode(xhr.status);
+								
+							}
 							
-							options.error();
-						}
-					});
+						});
+						
+					} else{
+						
+						options.error();
+					}
 					
 				},
 				parameterMap: function(options, operation) {

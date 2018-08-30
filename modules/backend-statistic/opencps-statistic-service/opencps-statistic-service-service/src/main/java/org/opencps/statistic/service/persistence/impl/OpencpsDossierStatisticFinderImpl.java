@@ -34,7 +34,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 	private static final String CONDITION_GOV_AGENCY_REPLACE = "(opencps_statistic.govAgencyCode IS NULL) AND";
 	private static final String CONDITION_GROUP_AGENCY = "(opencps_statistic.groupAgencyCode = ?) AND";
 	private static final String CONDITION_MONTH = "(opencps_statistic.month = ?) AND";
+	private static final String CONDITION_MONTH_REPLACE = "(opencps_statistic.month != 0) AND";
 	private static final String CONDITION_YEAR = "(opencps_statistic.year = ?) AND";
+	
 	public static final int ALL_MONTH = -1;
 	
 	@SuppressWarnings("unchecked")
@@ -109,6 +111,75 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 		return null;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, int year,
+			String domain, String govAgency, String groupAgencyCode, boolean reporting, int start, int end) {
+		Session session = null;
+		
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(getClass(), SEARCH_DOSSIER_STATISTIC);
+			
+			sql = StringUtil.replace(sql, CONDITION_MONTH, CONDITION_MONTH_REPLACE);
+		
+			if (domain.contains("total")){
+				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
+			}
+			
+			if (govAgency.contains("total")){
+				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
+			}
+			
+			sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
+
+			//LOG.info(sql);
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			q.setCacheable(false);
+			q.addEntity("OpencpsDossierStatistic", OpencpsDossierStatisticImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			/* add month parameter */
+
+
+			/* add year parameter */
+			qPos.add(year);
+
+			/* add domain parameter */
+			if (!domain.contentEquals(TOTAL)) {
+				qPos.add(domain);
+			}
+
+			/* add govAgency parameter */
+			if (!govAgency.contentEquals(TOTAL)) {
+				qPos.add(govAgency);
+			}
+
+			/* add reporting */
+			qPos.add(reporting);
+
+			/* add groupId */
+			qPos.add(groupId);
+			
+			return (List<OpencpsDossierStatistic>) QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
+
+		} catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				se.printStackTrace();
+			}
+		} finally {
+			closeSession(session);
+		}
+
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<OpencpsDossierStatistic> searchByDomainGovAgencyGroupAndReporting(long groupId, int month, int year,
@@ -139,7 +210,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			if (Validator.isNull(govAgency)) {
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY, StringPool.BLANK);
-			} else {
+			} else if (govAgency.contentEquals(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			

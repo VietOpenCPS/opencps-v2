@@ -17,172 +17,114 @@ import org.slf4j.LoggerFactory;
 import com.liferay.portal.kernel.util.Validator;
 
 public class StatisticEngineFetchEntry {
+	private static final Logger LOG = LoggerFactory.getLogger(StatisticEngineFetchEntry.class);
 
-	private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetchEntry.class);
-
-	/**
-	 * Update to StatisticData
-	 * 
-	 * @param statisticData
-	 * @param dossierData
-	 */
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData) {
-		// check release date is null or
-
 		int month = LocalDate.now().getMonthValue();
 		int year = LocalDate.now().getYear();
-
 		statisticData.setMonth(month);
 		statisticData.setYear(year);
 		statisticData.setGroupId(dossierData.getGroupId());
-
-		Date dueDate = Validator.isNull(dossierData.getDueDate()) ? null
+		Date dueDate = Validator.isNull(dossierData.getDueDate())
+				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate()) ? null
+		Date extendDate = Validator.isNull(dossierData.getExtendDate())
+				? null
 				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
-		Date releaseDate = Validator.isNull(dossierData.getReleaseDate()) ? null
+		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
+				? null
 				: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
-		Date receviedDate = Validator.isNull(dossierData.getReceiveDate()) ? null
+		Date receviedDate = Validator.isNull(dossierData.getReceiveDate())
+				? null
 				: StatisticUtils.convertStringToDate(dossierData.getReceiveDate());
-
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
-
-		/* DENIED */
-		if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_DENIED)) {
+		if (dossierData.getDossierStatus().contentEquals("denied")) {
 			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);
-
-		} else if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_CANCELLED)) {
+		} else if (dossierData.getDossierStatus().contentEquals("cancelled")) {
 			statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
-
 		} else {
-
-			/* PROCESS */
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
-
-			/* REVEICED */
 			if (Validator.isNotNull(dossierData.getReceiveDate()) && receviedDate.after(getFirstDay())) {
-
-				statisticData.setReceivedCount(statisticData.getReceivedCount());
-
-				/* ONLINE */
+				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
-					statisticData.setOnlineCount(statisticData.getOnlineCount());
+					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
-
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}
 			} else {
-				/* REMAINING */
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
-
 			}
 
-			/* RELEASED */
-			if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_DONE)
-					|| dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_RELEASING)
-					|| dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_POSTING)
-					|| dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_UNRESOLVED)) {
+			if (!dossierData.getDossierStatus().contentEquals("done")
+					&& !dossierData.getDossierStatus().contentEquals("releasing")
+					&& !dossierData.getDossierStatus().contentEquals("posting")
+					&& !dossierData.getDossierStatus().contentEquals("unresolved")) {
+				if (dossierData.getDossierStatus().contentEquals("waiting")) {
+					statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
+				} else {
+					statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
+					if (!dossierData.getDossierStatus().equals("procesing")) {
+						statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
+					} else {
+						statisticData.setInsideCount(statisticData.getInsideCount() + 1);
+					}
 
+					if (!Validator.isNull(dueDate) && !dueDate.after(new Date())) {
+						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
+						if (dossierData.getDossierStatus().contentEquals("interoperating")) {
+							statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
+						}
+					} else {
+						statisticData.setUndueCount(statisticData.getUndueCount() + 1);
+					}
+				}
+			} else {
 				statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);
-
-				/* DONE */
-				if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_DONE)
-						|| dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_POSTING)) {
-
+				if (dossierData.getDossierStatus().contentEquals("done")
+						|| dossierData.getDossierStatus().contentEquals("posting")) {
 					statisticData.setDoneCount(statisticData.getDoneCount() + 1);
 				}
 
-				/* RELEASING */
-				if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_RELEASING)) {
+				if (dossierData.getDossierStatus().contentEquals("releasing")) {
 					statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
 				}
 
-				/* UNRESOLVED */
-				if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_UNRESOLVED)) {
+				if (dossierData.getDossierStatus().contentEquals("unresolved")) {
 					statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
 				}
 
-				/* BETIME */
 				if (Validator.isNotNull(dueDate) && Validator.isNotNull(extendDate) && extendDate.before(dueDate)) {
-
 					statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
-
-				} else {
-					/* ONTIMECOUNT */
-					if (Validator.isNull(dossierData.getDueDate())
-							|| (Validator.isNotNull(dossierData.getReleaseDate()) && releaseDate.before(dueDate))) {
-						// tinhs overtime
-
-						statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
-
+				} else if (!Validator.isNull(dossierData.getDueDate())
+						&& (!Validator.isNotNull(dossierData.getReleaseDate()) || !releaseDate.before(dueDate))) {
+					statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
+					boolean isOvertimeInside = true;
+					if (isOvertimeInside) {
+						statisticData.setOvertimeInside(statisticData.getOvertimeInside() + 1);
 					} else {
-
-						statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
-
-						/* TODO :) Fixed */
-
-						boolean isOvertimeInside = true;
-
-						if (isOvertimeInside) {
-							statisticData.setOvertimeInside(statisticData.getOvertimeInside() + 1);
-						} else {
-							statisticData.setOvertimeOutside(statisticData.getOvertimeOutside() + 1);
-						}
+						statisticData.setOvertimeOutside(statisticData.getOvertimeOutside() + 1);
 					}
-				}
-
-			} else if (dossierData.getDossierStatus().contentEquals(DossierStatusContants.DOSSIER_STATUS_WAITING)) {
-				statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
-			} else {
-				/* PROCESSING */
-				statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
-
-				/* OUTSIDE COUNT */
-				if (!dossierData.getDossierStatus().equals(DossierStatusContants.DOSSIER_STATUS_PROCESING)) {
-					statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
 				} else {
-					/* INSIDE COUNT */
-					statisticData.setInsideCount(statisticData.getInsideCount() + 1);
-				}
-
-				/* UNDUE */
-				if (Validator.isNull(dueDate) || dueDate.after(new Date())) {
-					statisticData.setUndueCount(statisticData.getUndueCount() + 1);
-				} else {
-					// OVERDUE
-					statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
-					/* INTEROPERATING */
-					if (dossierData.getDossierStatus()
-							.contentEquals(DossierStatusContants.DOSSIER_STATUS_INTEROPERATING)) {
-						statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
-					}
+					statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
 				}
 			}
-
 		}
 
 	}
 
 	private static Date getFirstDay() {
 		LocalDateTime localDateTime = LocalDateTime.now();
-
-		localDateTime.with(TemporalAdjusters.firstDayOfMonth());
-		localDateTime.with(LocalTime.MIN);
-
+		localDateTime = localDateTime.with(TemporalAdjusters.firstDayOfMonth());
+		localDateTime = localDateTime.with(LocalTime.MIN);
 		Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
-
 		return Date.from(instant);
 	}
 
 	private static Date getLastDay() {
 		LocalDateTime localDateTime = LocalDateTime.now();
-
-		localDateTime.with(TemporalAdjusters.lastDayOfMonth());
-		localDateTime.with(LocalTime.MAX);
-
+		localDateTime = localDateTime.with(TemporalAdjusters.lastDayOfMonth());
+		localDateTime = localDateTime.with(LocalTime.MAX);
 		Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
-
 		return Date.from(instant);
 	}
-
 }

@@ -141,41 +141,38 @@
 					});
 				},
 				destroy: function(options) {
+					var cf = confirm('Bạn có chắc muốn xóa bản ghi này?');
+					// var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_worktime_listView") );
 					
-					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_worktime_listView") );
-					
-					confirmWindown.then(function(confirmed){
-					
-						if(confirmed){
-	
-							$.ajax({
-								url: _worktime_BaseUrl + "/" + options.data.day,
-								headers: {
-									"groupId": ${groupId}
-								},
-								type: 'DELETE',
-								success: function(result) {
-									
-									$("#_worktime_hidden_new_id").val('');
-									options.success();
-									$('#_worktimebpos_CounterList').html($("#_worktime_listView").getKendoListView().dataSource.total());
-									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-									
-								},
-								error: function(xhr, textStatus, errorThrown) {
+					if(cf){
+						
+						$.ajax({
+							url: _worktime_BaseUrl + "/" + options.data.day,
+							headers: {
+								"groupId": ${groupId}
+							},
+							type: 'DELETE',
+							success: function(result) {
 								
-									$("#_worktime_listView").getKendoListView().dataSource.error();
-									showMessageByAPICode(xhr.status);
+								$("#_worktime_hidden_new_id").val('');
+								options.success();
+								$('#_worktimebpos_CounterList').html($("#_worktime_listView").getKendoListView().dataSource.total());
+								showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 								
-								}
-				
-							});
-	
-						} else{
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								
+								$("#_worktime_listView").getKendoListView().dataSource.error();
+								showMessageByAPICode(xhr.status);
+								
+							}
 							
-							options.error();
-						}
-					});
+						});
+						
+					} else{
+						
+						options.error();
+					}
 					
 				},
 				parameterMap: function(options, operation) {

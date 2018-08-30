@@ -159,7 +159,7 @@
          }, "success");
 
           setTimeout(function(){
-           window.location.href = "${portalURL}/confirm-account?active_user_id=" + result.applicantId;
+           window.location.href = "${portalURL}/web${(themeDisplay.getScopeGroup().getFriendlyURL())!}/confirm-account?active_user_id=" + result.applicantId;
          }, 2000);
         },
         500: function(result) {
