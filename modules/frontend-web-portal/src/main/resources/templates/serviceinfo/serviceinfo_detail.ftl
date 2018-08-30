@@ -239,7 +239,7 @@
                                 for(var i=0; i<result.serviceConfigs.length;i++){
                                     var item = result.serviceConfigs[i];
                                     if(item.serviceLevel>=3){
-                                        submitDsier += '<li><a href="/web/cong-tiep-nhan/register">'+item.govAgencyName+'</a></li>';
+                                        submitDsier += '<li><a href="/web${(Request.layoutfriendurl)!}/dich-vu-cong#/add-dvc/' + item.serviceConfigId + '">'+item.govAgencyName+'</a></li>';
                                     }else{
                                         submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+item.serviceInstruction+'>'+item.govAgencyName+'</a></li>';
                                     }
@@ -247,7 +247,7 @@
                             }else{
                                 if(result.serviceConfigs.serviceLevel>=3){
                                     // submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
-                                    submitDsier += '<li><a href="/web/cong-tiep-nhan/register">'+result.serviceConfigs.govAgencyName+'</a></li>';
+                                     submitDsier += '<li><a href="/web${(Request.layoutfriendurl)!}/dich-vu-cong#/add-dvc/' + item.serviceConfigId + '">'+item.govAgencyName+'</a></li>';
                                 }else{
                                     submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+result.serviceConfigs.serviceInstruction+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
                                 }
