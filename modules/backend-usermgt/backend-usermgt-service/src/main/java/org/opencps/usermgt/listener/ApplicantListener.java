@@ -135,7 +135,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 				_log.error(parse);
 			}
 			_log.info("payloadTest: "+payload.toJSONString());
-			queue.setPayload(payload.toJSONString());
+			queue.setPayload(payload1);
 			
 			queue.setExpireDate(cal.getTime());
 			
