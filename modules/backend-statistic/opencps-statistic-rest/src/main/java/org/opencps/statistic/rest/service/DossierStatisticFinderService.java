@@ -7,4 +7,5 @@ import com.liferay.portal.kernel.exception.PortalException;
 
 public interface DossierStatisticFinderService {
 	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest) throws PortalException;
+	public DossierStatisticResponse finderDossierStatistics(DossierStatisticRequest dossierStatisticRequest) throws PortalException;
 }

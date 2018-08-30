@@ -33,7 +33,7 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 
 public class StatisticSumYearCalcular {
 	
-	private final static Logger LOG = LoggerFactory.getLogger(StatisticSumYearCalcular.class);
+	//private final static Logger LOG = LoggerFactory.getLogger(StatisticSumYearCalcular.class);
 
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
@@ -60,7 +60,7 @@ public class StatisticSumYearCalcular {
 
 			List<DomainResponse> domainResponses = getDomain(groupId);
 			
-			DossierStatisticUtils.logAsFormattedJson(LOG, domainResponses);
+			//DossierStatisticUtils.logAsFormattedJson(LOG, domainResponses);
 
 			for (DomainResponse domainResponse : domainResponses) {
 
@@ -68,10 +68,10 @@ public class StatisticSumYearCalcular {
 					dossierStatisticRequest.setDomain(domainResponse.getItemCode());
 					dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.DOMAIN_AGENCY);
 					
-					DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
 					dossierStatisticResponse = dossierStatisticFinderService
-							.finderDossierStatistic(dossierStatisticRequest);
+							.finderDossierStatistics(dossierStatisticRequest);
 
 					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -115,7 +115,7 @@ public class StatisticSumYearCalcular {
 				dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.DOMAIN_AGENCY);
 				
 				dossierStatisticResponse = dossierStatisticFinderService
-						.finderDossierStatistic(dossierStatisticRequest);
+						.finderDossierStatistics(dossierStatisticRequest);
 
 				Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 						.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -162,7 +162,7 @@ public class StatisticSumYearCalcular {
 
 					try {
 						dossierStatisticResponse = dossierStatisticFinderService
-								.finderDossierStatistic(dossierStatisticRequest);
+								.finderDossierStatistics(dossierStatisticRequest);
 
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -356,22 +356,18 @@ public class StatisticSumYearCalcular {
 			overtimeInside = overtimeInside + data.getOvertimeInside();
 			onegateCount = onegateCount + data.getOnegateCount();
 		}
-		
-
-		/* value get in the latest month */
 		processingCount = latest.getProcessingCount();
 		undueCount = latest.getUndueCount();
 		overdueCount = latest.getOverdueCount();
 		interoperatingCount = latest.getInteroperatingCount();
 		waitingCount = latest.getWaitingCount();
-
 		processCount = releaseCount + processingCount;
-
 		totalCount = processCount + deniedCount + cancelledCount;
-
 		remainingCount = processCount - receivedCount;
-
 		doneCount = releaseCount - (releasingCount + unresolvedCount);
+		
+		/* value get in the latest month */
+		
 		
 		if (releaseCount > 0) {
 			ontimePercentage = (betimesCount + ontimeCount)*100/releaseCount;
@@ -404,19 +400,12 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setOnegateCount(onegateCount);
 		dossierStatisticData.setOvertimeInside(overtimeInside);
 		dossierStatisticData.setOvertimeOutside(overtimeOutside);
-		
 		dossierStatisticData.setDomainCode(domainCode);
 		dossierStatisticData.setDomainName(domainName);
 		dossierStatisticData.setGovAgencyCode(govAgencyCode);
 		dossierStatisticData.setGovAgencyName(govAgencyName);
 		dossierStatisticData.setCompanyId(companyId);
 		dossierStatisticData.setGroupId(groupId);
-
-		/* add to database */
-		
-		if (groupId == 393401) {
-			DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticData);
-		}
 
 		updateGovService.updateDossierStatistic(dossierStatisticData);
 	}
