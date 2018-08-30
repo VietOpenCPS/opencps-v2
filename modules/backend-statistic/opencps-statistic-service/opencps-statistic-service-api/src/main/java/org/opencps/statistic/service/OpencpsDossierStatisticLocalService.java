@@ -141,6 +141,13 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
 		int end, OrderByComparator<T> orderByComparator);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> fetchDossierStatistic(long groupId,
+		int month, int year, java.lang.String domain,
+		java.lang.String govAgencyCode, java.lang.String groupAgenvyCode,
+		boolean reporting, int start, int end)
+		throws PortalException, SystemException;
+
 	/**
 	* Returns a range of all the opencps dossier statistics.
 	*
