@@ -1577,7 +1577,8 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		long userId = themeDisplay.getUserId();
 
 		long jobPosId = ParamUtil.getLong(actionRequest, "jobPosId");
-
+		
+		String jobPosCode = ParamUtil.getString(actionRequest, "jobPosCode");
 		String title = ParamUtil.getString(actionRequest, "title");
 		String description = ParamUtil.getString(actionRequest, "description");
 		String permissions = ParamUtil.getString(actionRequest, "permissions");
@@ -1601,6 +1602,10 @@ public class AdminPortlet extends FreeMarkerPortlet {
 					serviceContext);
 			}
 
+			if (jobPos != null) {
+				jobPos.setJobPosCode(jobPosCode);
+				JobPosLocalServiceUtil.updateJobPos(jobPos);
+			}
 			// if (Validator.isNotNull(permissions)) {
 			jobposActions.createPermissionsPatch(
 				userId, serviceContext.getCompanyId(), groupId,
