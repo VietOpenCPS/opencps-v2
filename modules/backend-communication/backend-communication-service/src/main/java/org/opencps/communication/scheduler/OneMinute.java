@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.util.StringPool;
 /**
  * @author trungnt
  */
-@Component(immediate = true, service = OneMinute.class)
+//@Component(immediate = true, service = OneMinute.class)
 public class OneMinute extends BaseSchedulerEntryMessageListener {
 
 	@Override
