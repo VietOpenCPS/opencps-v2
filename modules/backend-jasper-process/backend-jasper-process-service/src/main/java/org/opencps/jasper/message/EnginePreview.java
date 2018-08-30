@@ -93,7 +93,7 @@ public class EnginePreview implements MessageListener {
 				file = FileUtil.createTempFile(JRReportUtil.DocType.DOC.toString());	
 			}
 			else {
-				FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
+				file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
 			}			
 			
 			if (isJsonObject(formData)) {

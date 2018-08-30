@@ -106,6 +106,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getGovAgencyCode())) {
 		    params.put(DossierTerm.GOV_AGENCY_CODE, model.getGovAgencyCode());	    	
 	    }
+	    if (Validator.isNotNull(model.getGovAgencyName())) {
+		    params.put(DossierTerm.GOV_AGENCY_NAME, model.getGovAgencyName());	    	
+	    }
 	    if (Validator.isNotNull(model.getDossierTemplateNo())) {
 		    params.put(DossierTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());	    	
 	    }
