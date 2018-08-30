@@ -50,6 +50,7 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
+import org.opencps.usermgt.constants.ApplicantTerm;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -1777,6 +1778,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
 		String domain = GetterUtil.getString(params.get(DossierTerm.DOMAIN_CODE));
+		String domainName = GetterUtil.getString(params.get(DossierTerm.DOMAIN_NAME));
+		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
+		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
+		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1804,7 +1809,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
-				originality, assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
+				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName, applicantIdNo,
+				serviceName, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1856,6 +1862,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String subStatusStep = GetterUtil.getString(params.get(DossierTerm.DOSSIER_SUBSTATUS_STEP));
 		String permission = GetterUtil.getString(params.get(DossierTerm.MAPPING_PERMISSION));
 		String domain = GetterUtil.getString(params.get(DossierTerm.DOMAIN_CODE));
+		String domainName = GetterUtil.getString(params.get(DossierTerm.DOMAIN_NAME));
+		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
+		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
+		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1880,7 +1890,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
-				originality, assigned, statusStep, subStatusStep, permission, domain, booleanCommon);
+				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName, applicantIdNo,
+				serviceName, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1965,11 +1976,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private BooleanQuery processSearchInput(String status, String subStatus, String state, String online,
-			String submitting, String agency, String service, long userId, String top, int year, int month, String dossierNo,
-			String certificateNo, String strDossierActionId, String fromReceiveDate, String toReceiveDate,
-			String certNo, String fromCertDate, String toCertDate, String fromSubmitDate, String toSubmitDate,
-			String notState, Long statusReg, Long notStatusReg, String originality, String assigned,
-			String statusStep, String subStatusStep, String permission, String domain, BooleanQuery booleanQuery) throws ParseException {
+			String submitting, String agency, String service, long userId, String top, int year, int month,
+			String dossierNo, String certificateNo, String strDossierActionId, String fromReceiveDate,
+			String toReceiveDate, String certNo, String fromCertDate, String toCertDate, String fromSubmitDate,
+			String toSubmitDate, String notState, Long statusReg, Long notStatusReg, String originality,
+			String assigned, String statusStep, String subStatusStep, String permission, String domain,
+			String domainName, String applicantName, String applicantIdNo, String serviceName,
+			BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2138,11 +2151,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				BooleanQuery subQueryThree = new BooleanQueryImpl();
 				
 				//Check receiveDate != null
-				queryReceive.addField(DossierTerm.MONTH_RELEASE);
+				queryReceive.addField(DossierTerm.MONTH_DOSSIER);
 				subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
 				//Check receiveDate
-				queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
-				subQueryOne.add(queryMonthTwo, BooleanClauseOccur.MUST);
+				queryMonthTwo.addFields(DossierTerm.MONTH_DOSSIER);
+				subQueryOne.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
 				/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
 				// Check receiveDate < now
 //				Calendar calDate = Calendar.getInstance();
@@ -2151,15 +2164,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.MONTH_DOSSIER,
 						String.valueOf(0), String.valueOf(month), false, false);
 				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+				
 				queryRelease.addField(DossierTerm.MONTH_RELEASE);
-				subQueryThree.add(queryRelease, BooleanClauseOccur.SHOULD);
+				subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
 				
 				subQueryThree.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
 				
 				queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
 				subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
+				//
 				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
-
+				//
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else {
 				query.addFields(DossierTerm.MONTH_DOSSIER);
@@ -2442,7 +2457,54 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
+		// LamTV: Process search LIKE
+		if (Validator.isNotNull(domainName)) {
+			String[] domainArr = domainName.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : domainArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.DOMAIN_NAME,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(applicantName)) {
+			String[] applicantArr = applicantName.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : applicantArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.APPLICANT_NAME,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// LamTV: Process search LIKE
+		if (Validator.isNotNull(applicantIdNo)) {
+			String[] keywordArr = applicantIdNo.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.APPLICANT_ID_NO,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// LamTV: Process search LIKE
+		if (Validator.isNotNull(serviceName)) {
+			String[] serviceArr = serviceName.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : serviceArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
 		return booleanQuery;
 	}
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {

@@ -4,8 +4,8 @@
 
 <div id="app"></div>
 
-<script type="text/javascript" src="/o/frontend-web-chartjs/js/manifest.0c17a8a7a0bc3a092369.js"></script>
+<script type="text/javascript" src="/o/frontend-web-chartjs/js/manifest.9ff3e0485e6984c1cad1.js"></script>
 <script type="text/javascript" src="/o/frontend-web-chartjs/js/vendor.4f2e5da82e8847bf42d6.js"></script>
-<script type="text/javascript" src="/o/frontend-web-chartjs/js/app.93ce0cdc3a1393863307.js"></script>
+<script type="text/javascript" src="/o/frontend-web-chartjs/js/app.8ff9d78a16e8b6213293.js"></script>
 
 

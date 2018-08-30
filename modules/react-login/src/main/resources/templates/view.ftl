@@ -7,7 +7,7 @@
 <form action="${loginURL}" method="post" name="login_form">
 <div id="root" style="float: right;"></div>
 </form>
-<script type="text/javascript" src="/o/react-login/js/bundle.js?t=18"></script>
+<script type="text/javascript" src="/o/react-login/js/bundle.js?t=21"></script>
 
 <style type="text/css">
 	.hidden__temp {

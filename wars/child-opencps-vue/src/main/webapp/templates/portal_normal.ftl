@@ -14,7 +14,7 @@
 	<@liferay_util["include"] page=top_head_include />
 	
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=6" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=8" rel="stylesheet">
 	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=1" rel="stylesheet">
 	
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -28,6 +28,19 @@
 <body class="${css_class} mBody">
 
 	<@liferay_util["include"] page=body_top_include />
+	
+	<#if permissionChecker.isOmniadmin()>
+	  	<@liferay.control_menu />
+	<#else>
+	  	<style>
+		    html .has-control-menu #wrapper {
+		        margin-top: 0 !important;
+		    }
+		    html body.open #wrapper {
+		      padding-left: 0 !important;
+		    }
+	  	</style>
+	</#if>
 	
 	<div class="mWrapper">
 		<header id="banner">		
@@ -81,7 +94,7 @@
 					<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
 					<p class="align-middle">
 						<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
-						Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a> trên nền <a href="https://github.com/VietOpenCPS/opencps-v2" target="_blank">OpenCPS</a>
+						Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a>
 					</p>
 				</div>
 			</div>

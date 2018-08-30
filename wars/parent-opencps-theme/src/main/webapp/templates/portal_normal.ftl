@@ -119,7 +119,7 @@
 				<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
 				<p class="align-middle">
 					<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
-					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a> trên nền <a href="https://github.com/VietOpenCPS/opencps-v2" target="_blank">OpenCPS</a>
+					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a>
 				</p>
 			</div>
 		</div>

@@ -44,8 +44,10 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -329,6 +331,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
+		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -349,26 +352,44 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
+//		if (Validator.isNotNull(keywords)) {
+//
+//			String[] keyword = keywords.split(StringPool.SPACE);
+//
+//			for (String string : keyword) {
+//
+//				MultiMatchQuery query = new MultiMatchQuery(string);
+//
+//				query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
+//						EmployeeTerm.TELNO);
+//
+//				// for (String moreField : advFilterOptions) {
+//				// if (Validator.isNotNull(moreField)) {
+//				// query.addField("alpaca_" + moreField);
+//				// }
+//				// }
+//
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//
+//			}
+//		}
+
 		if (Validator.isNotNull(keywords)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] { EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
+					EmployeeTerm.TELNO };
 
-			String[] keyword = keywords.split(StringPool.SPACE);
-
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
-						EmployeeTerm.TELNO);
-
-				// for (String moreField : advFilterOptions) {
-				// if (Validator.isNotNull(moreField)) {
-				// query.addField("alpaca_" + moreField);
-				// }
-				// }
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
+			String[] keywordArr = keywords.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
 			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(employeeId)) {
@@ -471,6 +492,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+		}
+
+		if (Validator.isNotNull(employeeName)) {
+
+			String[] keywordArr = employeeName.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());
@@ -495,6 +528,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
+		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -512,26 +546,44 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
+//		if (Validator.isNotNull(keywords)) {
+//
+//			String[] keyword = keywords.split(StringPool.SPACE);
+//
+//			for (String string : keyword) {
+//
+//				MultiMatchQuery query = new MultiMatchQuery(string);
+//
+//				query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
+//						EmployeeTerm.TELNO);
+//
+//				// for (String moreField : advFilterOptions) {
+//				// if (Validator.isNotNull(moreField)) {
+//				// query.addField("alpaca_" + moreField);
+//				// }
+//				// }
+//
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//
+//			}
+//		}
+
 		if (Validator.isNotNull(keywords)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] { EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
+					EmployeeTerm.TELNO };
 
-			String[] keyword = keywords.split(StringPool.SPACE);
-
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
-						EmployeeTerm.TELNO);
-
-				// for (String moreField : advFilterOptions) {
-				// if (Validator.isNotNull(moreField)) {
-				// query.addField("alpaca_" + moreField);
-				// }
-				// }
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
+			String[] keywordArr = keywords.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
 			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(employeeId)) {
@@ -634,6 +686,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+		}
+
+		if (Validator.isNotNull(employeeName)) {
+
+			String[] keywordArr = employeeName.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());

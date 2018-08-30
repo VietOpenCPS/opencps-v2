@@ -11,7 +11,6 @@ package org.opencps.api.employee.model;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -58,7 +57,8 @@ import javax.xml.bind.annotation.XmlType;
     "active",
     "permission",
     "metadata",
-    "month"
+    "month",
+    "employeeName"
 })
 @XmlRootElement(name = "DataSearchModel")
 public class DataSearchModel {
@@ -89,6 +89,8 @@ public class DataSearchModel {
     protected String metadata;
 	@QueryParam(value = "month")
     protected String month;
+	@QueryParam(value = "employeeName")
+    protected String employeeName;
     /**
      * Gets the value of the keywords property.
      * 
@@ -343,6 +345,14 @@ public class DataSearchModel {
 
 	public void setMonth(String month) {
 		this.month = month;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
 
 }

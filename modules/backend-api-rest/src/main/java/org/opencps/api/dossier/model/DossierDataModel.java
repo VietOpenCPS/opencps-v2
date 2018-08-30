@@ -178,7 +178,8 @@ import javax.xml.bind.annotation.XmlType;
     "assigned",
     "domainCode",
     "domainName",
-    "extendDate"
+    "extendDate",
+    "lastActionUserId"
 })
 public class DossierDataModel {
 
@@ -263,6 +264,7 @@ public class DossierDataModel {
 	protected String domainCode;
 	protected String domainName;
 	protected String extendDate;
+	protected Long lastActionUserId;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1920,6 +1922,14 @@ public class DossierDataModel {
 
 	public void setExtendDate(String extendDate) {
 		this.extendDate = extendDate;
+	}
+
+	public Long getLastActionUserId() {
+		return lastActionUserId;
+	}
+
+	public void setLastActionUserId(Long lastActionUserId) {
+		this.lastActionUserId = lastActionUserId;
 	}
 
 }

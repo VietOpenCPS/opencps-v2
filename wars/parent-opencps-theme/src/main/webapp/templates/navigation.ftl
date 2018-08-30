@@ -10,7 +10,7 @@
 			<!-- <a class="navbar-brand" href="#">Brand</a> -->
 		</div>
 		
-		<div class="collapse navbar-collapse" id="menu-collapse">
+		<div class="navbar-collapse" id="menu-collapse">
 			<ul aria-label="<@liferay.language key="site-pages" />" role="menubar" class="nav navbar-nav">
 				<#list nav_items as nav_item>
 					<#assign

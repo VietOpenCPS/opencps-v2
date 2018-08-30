@@ -324,7 +324,7 @@ body .portlet-title-text {
 	display: none;
 }
 body .control-menu + div {
-	margin-top: 73px;
+	margin-top: 55px;
 }
 
 body .navigation-drawer--fixed {
@@ -429,4 +429,8 @@ body .alert-danger.liferayalert, .portlet-msg-error.liferayalert {
 
 body > div.mWrapper + iframe {
 	display: none !important;
+}
+
+.portlet-boundary_npmreactlogin_ span {
+	font-size: 13px;
 }

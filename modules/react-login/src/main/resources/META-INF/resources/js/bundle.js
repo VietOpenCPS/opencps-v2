@@ -61,7 +61,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3733790cb9fd39ece067"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "2721afd6c820497ac95b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -56958,6 +56958,7 @@ var Index = function (_React$Component) {
       anchorEl: null,
       isSignedIn: false,
       userNameLogin: '',
+      forgottenURL: '/forgotten-password',
       drawer: false,
       avatarURL: 'http://via.placeholder.com/350x150',
       notificationCount: 0,
@@ -57003,9 +57004,17 @@ var Index = function (_React$Component) {
     value: function componentDidMount() {
       var vm = this;
       if (themeDisplay !== null && themeDisplay !== undefined) {
+        var redirectURL = themeDisplay.getLayoutRelativeURL().substring(0, themeDisplay.getLayoutRelativeURL().lastIndexOf('\/'));
+        var forgottenURLStr = '';
+        if (redirectURL !== '') {
+          forgottenURLStr = redirectURL + '/forgotten-password';
+        } else {
+          forgottenURLStr = themeDisplay.getURLHome() + '/forgotten-password';
+        }
         vm.setState({
           isSignedIn: themeDisplay.isSignedIn(),
-          userNameLogin: themeDisplay.getUserName()
+          userNameLogin: themeDisplay.getUserName(),
+          forgottenURL: forgottenURLStr
         });
         if (themeDisplay.isSignedIn()) {
           var param = {
@@ -57029,7 +57038,8 @@ var Index = function (_React$Component) {
           isSignedIn = _state.isSignedIn,
           userNameLogin = _state.userNameLogin,
           avatarURL = _state.avatarURL,
-          notificationCount = _state.notificationCount;
+          notificationCount = _state.notificationCount,
+          forgottenURL = _state.forgottenURL;
 
 
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -57037,7 +57047,7 @@ var Index = function (_React$Component) {
         {
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 137
+            lineNumber: 146
           },
           __self: this
         },
@@ -57045,7 +57055,7 @@ var Index = function (_React$Component) {
           'div',
           { className: 'login-wrapper', __source: {
               fileName: _jsxFileName,
-              lineNumber: 139
+              lineNumber: 148
             },
             __self: this
           },
@@ -57053,7 +57063,7 @@ var Index = function (_React$Component) {
             'div',
             { className: 'login-input', __source: {
                 fileName: _jsxFileName,
-                lineNumber: 140
+                lineNumber: 149
               },
               __self: this
             },
@@ -57061,13 +57071,13 @@ var Index = function (_React$Component) {
               'div',
               { className: 'ico ico-user', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 141
+                  lineNumber: 150
                 },
                 __self: this
               },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', placeholder: 'T\xE0i kho\u1EA3n \u0111\u0103ng nh\u1EADp', name: '_npmreactlogin_login', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 142
+                  lineNumber: 151
                 },
                 __self: this
               })
@@ -57076,13 +57086,13 @@ var Index = function (_React$Component) {
               'div',
               { className: 'ico ico-pass', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 144
+                  lineNumber: 153
                 },
                 __self: this
               },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'password', placeholder: 'M\u1EADt kh\u1EA9u', name: '_npmreactlogin_password', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 145
+                  lineNumber: 154
                 },
                 __self: this
               })
@@ -57092,7 +57102,7 @@ var Index = function (_React$Component) {
             'div',
             { className: 'login-input', __source: {
                 fileName: _jsxFileName,
-                lineNumber: 148
+                lineNumber: 157
               },
               __self: this
             },
@@ -57100,15 +57110,15 @@ var Index = function (_React$Component) {
               'div',
               { className: 'forgetten-password-input', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 149
+                  lineNumber: 158
                 },
                 __self: this
               },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'a',
-                { href: '/forgotten-password', className: 'text-hover-blue', __source: {
+                { href: forgottenURL, className: 'text-hover-blue', __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 150
+                    lineNumber: 159
                   },
                   __self: this
                 },
@@ -57119,7 +57129,7 @@ var Index = function (_React$Component) {
               'div',
               { className: 'action-btn-login-input', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 152
+                  lineNumber: 161
                 },
                 __self: this
               },
@@ -57127,7 +57137,7 @@ var Index = function (_React$Component) {
                 'button',
                 { onClick: this.goToDangKyPage, type: 'button', className: 'btn-register', __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 153
+                    lineNumber: 162
                   },
                   __self: this
                 },
@@ -57137,7 +57147,7 @@ var Index = function (_React$Component) {
                 'button',
                 { type: 'submit', className: 'btn-login', __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 154
+                    lineNumber: 163
                   },
                   __self: this
                 },
@@ -57149,7 +57159,7 @@ var Index = function (_React$Component) {
           __WEBPACK_IMPORTED_MODULE_11__material_ui_core_Grid___default.a,
           { container: true, __source: {
               fileName: _jsxFileName,
-              lineNumber: 159
+              lineNumber: 168
             },
             __self: this
           },
@@ -57157,7 +57167,7 @@ var Index = function (_React$Component) {
             __WEBPACK_IMPORTED_MODULE_11__material_ui_core_Grid___default.a,
             { item: true, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 160
+                lineNumber: 169
               },
               __self: this
             },
@@ -57165,7 +57175,7 @@ var Index = function (_React$Component) {
               __WEBPACK_IMPORTED_MODULE_3__material_ui_core_IconButton___default.a,
               { style: btnNotiStyle, className: classes.margin, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 161
+                  lineNumber: 170
                 },
                 __self: this
               },
@@ -57173,19 +57183,19 @@ var Index = function (_React$Component) {
                 __WEBPACK_IMPORTED_MODULE_2__material_ui_core_Badge___default.a,
                 { badgeContent: notificationCount, color: 'secondary', __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 163
+                    lineNumber: 172
                   },
                   __self: this
                 },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__material_ui_icons_NotificationsActive___default.a, { color: 'primary', __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 164
+                    lineNumber: 173
                   },
                   __self: this
                 })
               ) : __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__material_ui_icons_NotificationsActive___default.a, { color: 'primary', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 167
+                  lineNumber: 176
                 },
                 __self: this
               })
@@ -57195,7 +57205,7 @@ var Index = function (_React$Component) {
             __WEBPACK_IMPORTED_MODULE_11__material_ui_core_Grid___default.a,
             { item: true, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 171
+                lineNumber: 180
               },
               __self: this
             },
@@ -57203,7 +57213,7 @@ var Index = function (_React$Component) {
               onClick: this.handleToggle,
               avatar: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__material_ui_core_Avatar___default.a, { src: avatarURL, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 174
+                  lineNumber: 183
                 },
                 __self: this
               }),
@@ -57214,13 +57224,13 @@ var Index = function (_React$Component) {
               deleteIcon: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_16__material_ui_icons_ExpandMore___default.a, {
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 179
+                  lineNumber: 188
                 },
                 __self: this
               }),
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 172
+                lineNumber: 181
               },
               __self: this
             }),
@@ -57236,7 +57246,7 @@ var Index = function (_React$Component) {
                 style: pStyle,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 181
+                  lineNumber: 190
                 },
                 __self: this
               },
@@ -57244,14 +57254,14 @@ var Index = function (_React$Component) {
                 __WEBPACK_IMPORTED_MODULE_9__material_ui_core_MenuItem___default.a,
                 { onClick: this.doUserInfo, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 190
+                    lineNumber: 199
                   },
                   __self: this
                 },
                 ' ',
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_15__material_ui_icons_Person___default.a, { style: userInfoStyle, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 190
+                    lineNumber: 199
                   },
                   __self: this
                 }),
@@ -57261,14 +57271,14 @@ var Index = function (_React$Component) {
                 __WEBPACK_IMPORTED_MODULE_9__material_ui_core_MenuItem___default.a,
                 { onClick: this.doExitApp, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 191
+                    lineNumber: 200
                   },
                   __self: this
                 },
                 ' ',
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_14__material_ui_icons_ExitToApp___default.a, { style: exitToAppStyle, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 191
+                    lineNumber: 200
                   },
                   __self: this
                 }),

@@ -100,6 +100,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {

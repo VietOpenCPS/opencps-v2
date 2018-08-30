@@ -22,6 +22,7 @@ import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
@@ -48,7 +49,10 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -322,19 +326,30 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
+//		if (Validator.isNotNull(keywords)) {
+//
+//			String[] keyword = keywords.split(StringPool.SPACE);
+//
+//			for (String string : keyword) {
+//
+//				MultiMatchQuery query = new MultiMatchQuery(string);
+//
+//				query.addFields(ServiceInfoTerm.SERVICE_NAME);
+//
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//
+//			}
+//		}
+		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
-
-			String[] keyword = keywords.split(StringPool.SPACE);
-
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(ServiceInfoTerm.SERVICE_NAME);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
+			String[] keywordArr = keywords.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(groupId)) {
@@ -401,19 +416,31 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
+//		if (Validator.isNotNull(keywords)) {
+//
+//			String[] keyword = keywords.split(StringPool.SPACE);
+//
+//			for (String string : keyword) {
+//
+//				MultiMatchQuery query = new MultiMatchQuery(string);
+//
+//				query.addFields(ServiceInfoTerm.SERVICE_NAME);
+//
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//
+//			}
+//		}
+
+		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
-
-			String[] keyword = keywords.split(StringPool.SPACE);
-
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(ServiceInfoTerm.SERVICE_NAME);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
+			String[] keywordArr = keywords.split(StringPool.SPACE);
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(groupId)) {
