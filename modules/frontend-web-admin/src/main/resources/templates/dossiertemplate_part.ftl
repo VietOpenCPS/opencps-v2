@@ -74,8 +74,6 @@
 									data : []
 								});
 							}
-
-
 							/*dossierTemplatePartDataSource.sort({ field: "partNo", dir: "asc" });*/
 						},
 						error : function(xhr){
