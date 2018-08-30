@@ -400,10 +400,10 @@ public class JRReportUtil {
 				JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
 				if (reportType.equals("excel")) {
-					return exportReport(jasperPrint, destFileName, DocType.XLSX);						
+					return exportReport(jasperPrint, destFileName, DocType.XLS);						
 				}
 				else if (reportType.equals("word")) {
-					return exportReport(jasperPrint, destFileName, DocType.DOCX);	
+					return exportReport(jasperPrint, destFileName, DocType.DOC);	
 				}
 				else {
 					return exportReport(jasperPrint, destFileName, DocType.PDF);
