@@ -1,0 +1,7 @@
+Bundle-Name: opencps-statistic-common
+Bundle-SymbolicName: opencps.statistic.common
+Bundle-Version: 1.0.0-SNAPSHOT
+Export-Package: \
+	opencps.statistic.common.webservice.exception,\
+	opencps.statistic.common.webservice.facade,\
+	opencps.statistic.common.webservice.util
