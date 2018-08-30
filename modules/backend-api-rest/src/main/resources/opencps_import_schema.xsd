@@ -1085,7 +1085,13 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="level" type="xsd:int" />
-							<xsd:element name="sibling" type="xsd:int" />
+							<xsd:element name="sibling">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 							<xsd:element name="metadata">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">

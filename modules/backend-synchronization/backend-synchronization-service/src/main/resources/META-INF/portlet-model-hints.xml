@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.synchronization.model.DictCollectionTemp">
+		<field name="uuid" type="String" />
+		<field name="dictCollectionId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="collectionCode" type="String" />
+		<field name="collectionName" type="String" />
+		<field name="collectionNameEN" type="String" />
+		<field name="description" type="String" />
+		<field name="dataForm" type="String" />
+		<field name="status" type="int" />
+		<field name="mustSync" type="int" />
+	</model>
+	<model name="org.opencps.synchronization.model.DictGroupTemp">
+		<field name="uuid" type="String" />
+		<field name="dictGroupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dictCollectionId" type="long" />
+		<field name="groupCode" type="String" />
+		<field name="groupName" type="String" />
+		<field name="groupNameEN" type="String" />
+		<field name="groupDescription" type="String" />
+		<field name="status" type="int" />
+	</model>
+	<model name="org.opencps.synchronization.model.DictItemGroupTemp">
+		<field name="uuid" type="String" />
+		<field name="dictItemGroupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dictGroupId" type="long" />
+		<field name="dictItemId" type="long" />
+		<field name="dictGroupName" type="String" />
+	</model>
+	<model name="org.opencps.synchronization.model.DictItemTemp">
+		<field name="uuid" type="String" />
+		<field name="dictItemId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dictCollectionId" type="long" />
+		<field name="itemCode" type="String" />
+		<field name="itemName" type="String" />
+		<field name="itemNameEN" type="String" />
+		<field name="itemDescription" type="String" />
+		<field name="parentItemId" type="long" />
+		<field name="level" type="int" />
+		<field name="sibling" type="String" />
+		<field name="treeIndex" type="String" />
+		<field name="metaData" type="String" />
+		<field name="status" type="int" />
+	</model>
+	<model name="org.opencps.synchronization.model.PushCollection">
+		<field name="uuid" type="String" />
+		<field name="pushCollectionId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
+		<field name="collectionCode" type="String" />
+		<field name="collectionName" type="String" />
+		<field name="collectionNameEN" type="String" />
+		<field name="description" type="String" />
+		<field name="dataForm" type="String" />
+		<field name="method" type="String" />
+	</model>
+	<model name="org.opencps.synchronization.model.PushDictGroup">
+		<field name="uuid" type="String" />
+		<field name="pushDictGroupId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
+		<field name="collectionCode" type="String" />
+		<field name="groupCode" type="String" />
+		<field name="groupName" type="String" />
+		<field name="groupNameEN" type="String" />
+		<field name="groupDescription" type="String" />
+		<field name="itemCode" type="String" />
+		<field name="method" type="String" />
+	</model>
+	<model name="org.opencps.synchronization.model.PushDictItem">
+		<field name="uuid" type="String" />
+		<field name="pushDictItemId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
+		<field name="collectionCode" type="String" />
+		<field name="itemCode" type="String" />
+		<field name="itemName" type="String" />
+		<field name="itemNameEN" type="String" />
+		<field name="itemDescription" type="String" />
+		<field name="parentItemCode" type="String" />
+		<field name="sibling" type="String" />
+		<field name="method" type="String" />
+		<field name="metaData" type="String" />
+	</model>
+	<model name="org.opencps.synchronization.model.SyncQueue">
+		<field name="uuid" type="String" />
+		<field name="syncQueueId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serverNo" type="String" />
+		<field name="className" type="String" />
+		<field name="jsonObject" type="String" />
+		<field name="status" type="int" />
+		<field name="retryCount" type="int" />
+		<field name="priority" type="int" />
+		<field name="method" type="String" />
+	</model>
+</model-hints>

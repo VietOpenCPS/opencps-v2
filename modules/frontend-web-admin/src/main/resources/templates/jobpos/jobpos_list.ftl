@@ -226,41 +226,39 @@
 				
 				},
 				destroy: function(options) {
+					var cf = confirm('Bạn có chắc muốn xóa bản ghi này?');
+					// var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_jobpos_listView") );
 					
-					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_jobpos_listView") );
 					
-					confirmWindown.then(function(confirmed){
-					
-						if(confirmed){
-	
-							$.ajax({
-								url: _jobpos_BaseUrl + "/" + options.data.jobPosId,
-								headers: {
-									"groupId": ${groupId}
-								},
-								type: 'DELETE',
-								success: function(result) {
-									
-									$("#_jobpos_hidden_new_id").val("0");
-									options.success();
-									$('#_jobpos_CounterList').html($("#_jobpos_listView").getKendoListView().dataSource.total());
-									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-									
-								},
-								error: function(xhr, textStatus, errorThrown) {
+					if(cf){
+						
+						$.ajax({
+							url: _jobpos_BaseUrl + "/" + options.data.jobPosId,
+							headers: {
+								"groupId": ${groupId}
+							},
+							type: 'DELETE',
+							success: function(result) {
 								
-									$("#_jobpos_listView").getKendoListView().dataSource.error();
-									showMessageByAPICode(xhr.status);
+								$("#_jobpos_hidden_new_id").val("0");
+								options.success();
+								$('#_jobpos_CounterList').html($("#_jobpos_listView").getKendoListView().dataSource.total());
+								showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 								
-								}
-				
-							});
-	
-						} else{
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								
+								$("#_jobpos_listView").getKendoListView().dataSource.error();
+								showMessageByAPICode(xhr.status);
+								
+							}
 							
-							options.error();
-						}
-					});
+						});
+						
+					} else{
+						
+						options.error();
+					}
 					
 				},
 				parameterMap: function(options, operation) {

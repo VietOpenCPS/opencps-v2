@@ -109,6 +109,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getDossierTemplateNo())) {
 		    params.put(DossierTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());	    	
 	    }
+	    if (Validator.isNotNull(model.getDossierNo())) {
+	    	params.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
+	    }
 	    params.put(DossierTerm.SERVICE_NAME, model.getServiceName());
 	    params.put(DossierTerm.APPLICANT_NAME, model.getApplicantName());
 	    params.put(DossierTerm.APPLICANT_ID_TYPE, model.getApplicantIdType());
@@ -313,6 +316,9 @@ public class OpenCPSConverter {
 		}
 		if (jsonObj.has(DossierTerm.DOSSIER_TEMPLATE_NO)) {
 			model.setDossierTemplateNo(jsonObj.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_NO)) {
+			model.setDossierNo(jsonObj.getString(DossierTerm.DOSSIER_NO));
 		}
 		if (jsonObj.has(DossierTerm.APPLICANT_NAME)) {
 			model.setApplicantName(jsonObj.getString(DossierTerm.APPLICANT_NAME));

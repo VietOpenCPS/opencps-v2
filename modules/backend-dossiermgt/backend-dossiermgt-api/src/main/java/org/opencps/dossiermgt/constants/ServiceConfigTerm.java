@@ -19,5 +19,6 @@ public class ServiceConfigTerm {
 	public static final String APPICATION_TYPE = "registratio";
 	public static final String PROCESSES = "processes";
 	public static final String ACTION_USER = "actionUser";
+	public static final String DOMAIN_INDEX = "domainIndex";
 
 }

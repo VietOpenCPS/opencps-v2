@@ -207,7 +207,6 @@
 				var serviceProcessAction = serviceProcessActionDataSource.get(($(this).attr("data-pk")));
 
 				console.log("serviceProcessAction==============",serviceProcessAction);
-
 				var viewModel = kendo.observable({
 					actionCode: serviceProcessAction.actionCode,
 					actionName: serviceProcessAction.actionName,
@@ -215,9 +214,20 @@
 					postStepCode: serviceProcessAction.postStepCode,
 					autoEvent: serviceProcessAction.autoEvent,
 					preCondition: serviceProcessAction.preCondition,
-					allowAssignUser: serviceProcessAction.allowAssignUser,
+					allowAssignUser: function (e) {
+						if (!serviceProcessAction.allowAssignUser) {
+							// return serviceProcessAction.allowAssignUser;
+							$("#assignUserIdTemp").hide();
+						}
+						return serviceProcessAction.allowAssignUser;
+					},
 					assignUserId: serviceProcessAction.assignUserId,
-					requestPayment: serviceProcessAction.requestPayment,
+					requestPayment: function (e) {
+						if (!serviceProcessAction.requestPayment) {
+							$("#paymentFeeTemp").hide();
+						}
+						return serviceProcessAction.requestPayment;
+					},
 					paymentFee: serviceProcessAction.paymentFee,
 					syncActionCode: serviceProcessAction.syncActionCode,
 					rollbackable: serviceProcessAction.rollbackable,
@@ -225,7 +235,8 @@
 					createDossierNo : serviceProcessAction.createDossierNo,
 					eSignature : serviceProcessAction.eSignature,
 					configNote : serviceProcessAction.configNote,
-					dossiertemplatesFileFilter : serviceProcessAction.dossierTemplateNo
+					dossiertemplatesFileFilter : serviceProcessAction.dossierTemplateNo,
+					createDossiers: serviceProcessAction.createDossiers
 
 				});
 
@@ -320,6 +331,7 @@
 					createDossierNo : "",
 					eSignature : "",
 					configNote : "",
+					createDossiers: "",
 					dossiertemplatesFileFilter : function(){
 
 						$("#dossiertemplateTmp").val("");
@@ -361,6 +373,13 @@
 
 			var updateServiceProcessAction = function(serviceProcessId, actionId){
 				if (validateProcessAction()){
+					var allowAssignUser = $("#allowAssignUser").data('kendoComboBox').value();
+					var assignUserId = 0;
+					if (!allowAssignUser) {
+						assignUserId = 0;
+					} else {
+						assignUserId = $("#assignUserId").val()
+					}
 					$.ajax({
 						url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions/" + actionId,
 						type: "PUT",
@@ -373,9 +392,9 @@
 							postStepCode: $("#postStepCode").val(),
 							autoEvent: $("#autoEvent").val(),
 							preCondition: $("#preCondition").val(),
-							allowAssignUser: $("#allowAssignUser").prop("checked"),
-							assignUserId: $("#assignUserId").val(),
-							requestPayment: $("#requestPayment").prop("checked"),
+							allowAssignUser: $("#allowAssignUser").val(),
+							assignUserId: assignUserId,
+							requestPayment: $("#requestPayment").val(),
 							paymentFee: $("#paymentFee").val(),
 							createDossierFiles: getCreateDossierFiles(),
 							returnDossierFiles: getReturnDossierFiles(),
@@ -384,7 +403,8 @@
 							createDossierNo : $("#createDossierNo").prop("checked"),
 							eSignature : $("#eSignature").prop("checked"),
 							configNote : $("textarea#configNote").val(),
-							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val(),
+							createDossiers: $("#createDossiers").val()
 						},
 						success: function(result) {
 							notification.show({
@@ -433,6 +453,13 @@
 
 			var addServiceProcessAction = function(serviceProcessId){
 				if (validateProcessAction()){
+					var allowAssignUser = $("#allowAssignUser").data('kendoComboBox').value();
+					var assignUserId = 0;
+					if (!allowAssignUser) {
+						assignUserId = 0;
+					} else {
+						assignUserId = $("#assignUserId").val();
+					}
 					$.ajax({
 						url: "${api.server}" + "/serviceprocesses/" + serviceProcessId + "/actions",
 						type: "POST",
@@ -445,9 +472,9 @@
 							postStepCode: $("#postStepCode").val(),
 							autoEvent: $("#autoEvent").val(),
 							preCondition: $("#preCondition").val(),
-							allowAssignUser: $("#allowAssignUser").prop("checked"),
-							assignUserId: $("#assignUserId").val(),
-							requestPayment: $("#requestPayment").prop("checked"),
+							allowAssignUser: $("#allowAssignUser").val(),
+							assignUserId: assignUserId,
+							requestPayment: $("#requestPayment").val(),
 							paymentFee: $("#paymentFee").val(),
 							createDossierFiles: getCreateDossierFiles(),
 							returnDossierFiles: getReturnDossierFiles(),
@@ -456,7 +483,8 @@
 							createDossierNo : $("#createDossierNo").prop("checked"),
 							eSignature : $("#eSignature").prop("checked"),
 							configNote : $("textarea#configNote").val(),
-							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val(),
+							createDossiers: $("#createDossiers").val()
 						},
 						success: function(result) {
 							notification.show({
@@ -476,9 +504,9 @@
 								"postStepName" : $("#postStepCode").data("kendoComboBox").text(),
 								"autoEvent": $("#autoEvent").val(),
 								"preCondition": $("#preCondition").val(),
-								"allowAssignUser": $("#allowAssignUser").prop("checked"),
+								"allowAssignUser": $("#allowAssignUser").val(),
 								"assignUserId": $("#assignUserId").val(),
-								"requestPayment": $("#requestPayment").prop("checked"),
+								"requestPayment": $("#requestPayment").val(),
 								"paymentFee": $("#paymentFee").val(),
 								"createDossierFiles": getCreateDossierFiles(),
 								"returnDossierFiles": getReturnDossierFiles(),
@@ -486,7 +514,8 @@
 								"rollbackable": $("#rollbackable").prop("checked"),
 								"createDossierNo" : $("#createDossierNo").prop("checked"),
 								"eSignature" : $("#eSignature").prop("checked"),
-								"configNote" : $("textarea#configNote").val()
+								"configNote" : $("textarea#configNote").val(),
+								"createDossiers" : $("#createDossiers").val()
 							});
 
 							
@@ -540,12 +569,14 @@
 					}, "error");
 					return false;
 				}*/
+				/*
 				if ($("#requestPayment").prop("checked") && !$("#paymentFee").val()){
 					notification.show({
 						message: "Mời nhập phí"
 					}, "error");
 					return false;
 				}
+				*/
 				return true;
 			}
 

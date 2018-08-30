@@ -55,6 +55,7 @@
 				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="govAgencyCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="govAgencyName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="dossierTemplateNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="applicantName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="applicantIdType" type="xsd:string" minOccurs="0" />

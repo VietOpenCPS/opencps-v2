@@ -261,6 +261,17 @@
 		format: "dd/MM/yyyy",
 		dateInput: false
 	});
+	function clearInputEmployee(argument) {
+		$("#employee-create-birthdate").data("kendoDatePicker").value('');
+		$("#employee-create-recruitDate").data("kendoDatePicker").value('');
+		$("#employee-create-leaveDate").data("kendoDatePicker").value('');
+		$( "#employee-create-employeeno" ).val('');
+		$( "#employee-create-fullname" ).val('');
+		$( "#employee-create-title" ).val('');
+		$( "#employee-create-telno" ).val('');
+		$( "#employee-create-email" ).val('');
+		$("#employee-create-gender").data("kendoDropDownList").value(1)
+	}
 	
 	$(document).on('click', '#employee-create-submit-btn', function(event){
 		
@@ -306,11 +317,12 @@
 			success: function(data, textStatus, xhr) {
 				
 				// redirect to detail page
-				$("#modal-lg").trigger({ type: "click" });
+				// $("#modal-lg").trigger({ type: "click" });
+				clearInputEmployee();
 				//$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
 				
-				var url = "${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId
-				$("#employee-index-page").load(url);
+				// var url = "${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId
+				// $("#employee-index-page").load(url);
 				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 				
 			},

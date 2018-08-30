@@ -182,6 +182,8 @@ public class DossierInputModel {
 	private String delegateWardCode;
 	@FormParam(value = "sampleCount")
 	private Long sampleCount;
+	@FormParam(value = "briefNote")
+	private String briefNote;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -871,4 +873,11 @@ public class DossierInputModel {
 		this.sampleCount = sampleCount;
 	} 
 
+	public String getBriefNote() {
+		return briefNote;
+	}
+	
+	public void setBriefNote(String value) {
+		this.briefNote = value;
+	}
 }

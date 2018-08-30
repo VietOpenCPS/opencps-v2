@@ -9,18 +9,18 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.core.Response;
-
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
@@ -49,29 +49,13 @@ public class DossierNumberGenerator {
 	public static String generateDossierNumber(long groupId, long companyId, long dossierId, long processOtionId,
 			String seriNumberPattern, LinkedHashMap<String, Object> params, SearchContext... searchContext)
 			throws ParseException, SearchException {
-		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		
-		String serviceProcessCode = StringPool.BLANK;
-		
-		try {
-			ProcessOption processOption = ProcessOptionLocalServiceUtil.getProcessOption(processOtionId); 
-			
-			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(processOption.getServiceProcessId());
-			
-			serviceProcessCode = serviceProcess.getProcessNo();
-			
-			_log.info("SERVICECODE____"+serviceProcessCode);
-			
-		} catch (Exception e) {
-			_log.info("SERVICECODE____ERROR");
 
-		}
-		
-		
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		String dossierNumber = StringPool.BLANK;
 
 		if (dossier != null) {
 			String codePattern = "\\{(n+|N+)\\}";
+			String codePatternGov = "\\{(a+|A+)\\}";
 			String dayPattern = "\\{(d{2}|D{2})\\}";
 			String monthPattern = "\\{(m{2}|M{2})\\}";
 			String yearPattern = "\\{(y+|Y+)\\}";
@@ -79,7 +63,7 @@ public class DossierNumberGenerator {
 			String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
 			String extractValuePattern = "\\[\\$(.*?)\\$\\]";
 			String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
-			String[] patterns = new String[] { codePattern, dayPattern, monthPattern, yearPattern,
+			String[] patterns = new String[] { codePattern, codePatternGov, dayPattern, monthPattern, yearPattern,
 					dynamicVariablePattern, datetimePattern };
 
 			Date now = new Date();
@@ -89,6 +73,27 @@ public class DossierNumberGenerator {
 			String month = String.valueOf(DateTimeUtils.getMonthFromDate(now) + 1);
 			String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
 
+			//Process Pattern
+			String serviceProcessCode = StringPool.BLANK;
+			String govAgencyCode = StringPool.BLANK;
+			try {
+				ProcessOption processOption = ProcessOptionLocalServiceUtil.getProcessOption(processOtionId); 
+				
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(processOption.getServiceProcessId());
+				
+				serviceProcessCode = serviceProcess.getProcessNo();
+				
+				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.fetchServiceConfig(processOption.getServiceConfigId());
+				if (serviceConfig != null) {
+					govAgencyCode = serviceConfig.getGovAgencyCode();
+				}
+				_log.info("SERVICECODE____"+serviceProcessCode);
+				
+			} catch (Exception e) {
+				_log.info("SERVICECODE____ERROR");
+
+			}
+
 			for (String pattern : patterns) {
 				Pattern r = Pattern.compile(pattern);
 
@@ -97,10 +102,28 @@ public class DossierNumberGenerator {
 				while (m.find()) {
 					String tmp = m.group(1);
 
+					// Pattern follow serviceProcess
 					if (r.toString().equals(codePattern)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						
 						String number = countByInit(serviceProcessCode, dossierId, tmp);
+
+						_log.info("//////////////////////////////////////////////////////////// " + number
+								+ "|processOtionId= " + number);
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+
+						// Pattern follow GovAgencyCode
+					} if (r.toString().equals(codePatternGov)) {
+						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+
+						String number = countByInit(govAgencyCode, dossierId, tmp);
 
 						_log.info("//////////////////////////////////////////////////////////// " + number
 								+ "|processOtionId= " + number);

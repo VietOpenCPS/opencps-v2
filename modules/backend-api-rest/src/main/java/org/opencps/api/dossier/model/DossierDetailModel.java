@@ -188,7 +188,8 @@ import javax.xml.bind.annotation.XmlType;
     "durationCount",
     "durationUnit",
     "sampleCount",
-    "lastActionUserId"
+    "lastActionUserId",
+    "extendDate"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -284,6 +285,7 @@ public class DossierDetailModel {
 	protected Double processBlock;
     protected int processUnit;
     protected Long lastActionUserId;
+    protected String extendDate;
 
     public String getPaymentFee() {
 		return paymentFee;
@@ -2042,6 +2044,14 @@ public class DossierDetailModel {
 
 	public void setLastActionUserId(Long lastActionUserId) {
 		this.lastActionUserId = lastActionUserId;
+	}
+
+	public String getExtendDate() {
+		return extendDate;
+	}
+
+	public void setExtendDate(String extendDate) {
+		this.extendDate = extendDate;
 	}
 
 }

@@ -28,8 +28,8 @@ public class HolidayUtils {
 			for (Document document : listDocument) {
 				ett = new HolidayModel();
 
-				ett.setHolidayDate(Validator.isNotNull(document.getDate(HolidayTerm.HOLIDAY_DATE)) ? APIDateTimeUtils
-						.convertDateToString(document.getDate(HolidayTerm.HOLIDAY_DATE), APIDateTimeUtils._TIMESTAMP)
+				ett.setHolidayDate(Validator.isNotNull(document.getDate(HolidayTerm.HOLIDAY_DATE)) ? 
+						String.valueOf(document.getDate(HolidayTerm.HOLIDAY_DATE).getTime())
 						: StringPool.BLANK);
 				ett.setDescription(document.get(HolidayTerm.DESCRIPTION));
 
@@ -49,8 +49,8 @@ public class HolidayUtils {
 
 		try {
 
-			ett.setHolidayDate(Validator.isNotNull(holiday.getHolidayDate()) ? APIDateTimeUtils
-					.convertDateToString(holiday.getHolidayDate(), APIDateTimeUtils._TIMESTAMP)
+			ett.setHolidayDate(Validator.isNotNull(holiday.getHolidayDate()) ? 
+					String.valueOf(holiday.getHolidayDate().getTime())
 					: StringPool.BLANK);
 			ett.setDescription(holiday.getDescription());
 

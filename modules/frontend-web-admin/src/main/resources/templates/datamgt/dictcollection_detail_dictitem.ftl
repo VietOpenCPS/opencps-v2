@@ -188,38 +188,34 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 					});
 				},
 				destroy: function(options) {
-					
-					var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_collectionSub_dictItem_listView") );
-					
-					confirmWindown.then(function(confirmed){
-					
-						if(confirmed){
+					var cf = confirm('Bạn có chắc muốn xóa bản ghi này?');
+					// var confirmWindown = showWindowConfirm('#template-confirm','Cảnh báo','Bạn có chắc muốn xóa bản ghi này?', $("#_collectionSub_dictItem_listView") );
+					if(cf){
 
-							$.ajax({
-								url: _collectionSub_dictItem_BaseUrl_detail + "/" + options.data.itemCode,
-								headers: {
-									"groupId": ${groupId}
-								},
-								type: 'DELETE',
-								success: function(result) {
-									options.success();
-									showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
-									
-								},
-								error: function(xhr, textStatus, errorThrown) {
-									
-									_collectionSub_dictItem_dataSource_detail.dataSource.error();
-									showMessageByAPICode(xhr.status);
+						$.ajax({
+							url: _collectionSub_dictItem_BaseUrl_detail + "/" + options.data.itemCode,
+							headers: {
+								"groupId": ${groupId}
+							},
+							type: 'DELETE',
+							success: function(result) {
+								options.success();
+								showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+
+							},
+							error: function(xhr, textStatus, errorThrown) {
+
+								_collectionSub_dictItem_dataSource_detail.dataSource.error();
+								showMessageByAPICode(xhr.status);
 								
-								}
-				
-							});
+							}
 
-						} else{
-							
-							options.error();
-						}
-					});
+						});
+
+					} else{
+
+						options.error();
+					}
 					
 				},
 				parameterMap: function(options, operation) {

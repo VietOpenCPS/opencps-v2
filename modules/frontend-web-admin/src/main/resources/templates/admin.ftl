@@ -51,6 +51,22 @@
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
+				<div class="col-sm-9 PL10 P0">Ngày nghỉ, ngày lễ</div>
+			</li>
+			<li class="clearfix employee" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Ngày làm việc trong tuần</div>
+			</li>
+			<li class="clearfix employee" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
 				<div class="col-sm-9 PL10 P0">Mẫu thông báo</div>
 			</li>
 			<li class="clearfix" >
@@ -77,14 +93,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Dịch vụ công</div>
 			</li>
-			<li class="clearfix" >
+			<#-- <li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
 				<div class="col-sm-9 PL10 P0">Ngày làm việc, ngày nghỉ</div>
-			</li>
+			</li> -->
 			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
@@ -101,15 +117,15 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Công dân, doanh nghiệp</div>
 			</li>
-			<li class="clearfix" >
+			<#-- <li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
 				<div class="col-sm-9 PL10 P0">Tạo Eform</div>
-			</li>
-			<li class="clearfix" >
+			</li> -->
+			<#-- <li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
 						<i class="fa fa-gg" aria-hidden="true"></i>
@@ -117,7 +133,7 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Mẫu đăng kí hồ sơ thương nhân</div>
 			</li>
-			<li class="clearfix" >
+ -->			<li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
 						<i class="fa fa-gg" aria-hidden="true"></i>
@@ -141,14 +157,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Import</div>
 			</li>
-			<li class="clearfix" >
+			<#-- <li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
 						<i class="fa fa-gg" aria-hidden="true"></i>
 					</a>
 				</div>
 				<div class="col-sm-9 PL10 P0">Sửa lỗi hệ thống</div>
-			</li>
+			</li> -->
 		</ul>
 	</div>
 </div>
@@ -163,19 +179,21 @@
 			'${url.adminWorkingUnitPortlet.working_unit_list}',
 			'${url.adminJobPosPortlet.jobpos_list}',
 			'${url.employeePortlet.employee_index}',
+			'${ajax.holiday}',
+			'${ajax.worktime}',
 			'${url.adminNotificationPortlet.notification_template_list}',
 			'${ajax.dossiertemplate}',
 			'${ajax.serviceprocess}',
 			'${ajax.serviceconfig}',
-			'holiday.ftl',
+			// 'holiday.ftl',
 			'${ajax.payment_config}',
 			'${ajax.manage_account}',
-			'efrom.ftl',
-			'${ajax.registrationtemplates}',
+			// 'efrom.ftl',
+			// '${ajax.registrationtemplates}',
 			'${ajax.serverconfigs}',
 			'${ajax.certnumber}',
-			'${ajax.import}',
-			'${ajax.system}'
+			'${ajax.import}'
+			// '${ajax.system}'
 		]
 	}).data('kendoTabStrip');
 

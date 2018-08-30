@@ -180,7 +180,12 @@
 				</div>
 					
 				<div class="col-xs-6 col-sm-6 text-right PT20">
-
+					<button class="btn btn-active btn-default" id="_workingUnitDetail_addBtn" 
+						name="_workingUnitDetail_addBtn" type="button"
+						data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
+						<i class="fa fa-check-circle"></i>
+						<span class="lfr-btn-label">Lưu và thêm mới</span>
+					</button>
 					<button class="btn btn-active btn-default" id="_workingUnitDetail_submitBtn" 
 						name="_workingUnitDetail_submitBtn" type="button" data-pk="${(param.workingUnit_workingUnitId)!}"
 						data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
@@ -336,6 +341,23 @@
 		}
 		
 	});
+
+	$("#_workingUnitDetail_addBtn").click(function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		setTimeout(function () {
+			$("#_workingUnitDetail_submitBtn").click();
+			$("#_workingUnit_right-page").load(
+				'${url.adminWorkingUnitPortlet.working_unit_detail}'
+				);
+
+			$("#_workingUnit_listView").getKendoListView().clearSelection();
+			clearJobpos();
+		}, 500)
+
+		
+	})
 
 	$("#_workingUnitDetail_ceremonyDate").kendoDatePicker({
 		start: "month",
