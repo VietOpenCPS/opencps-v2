@@ -46,6 +46,7 @@ public class OpenCPSConverter {
 		    params.put(DossierTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());	    	
 	    }
 	    params.put(DossierTerm.SERVICE_NAME, model.getServiceName());
+	    params.put(DossierTerm.GOV_AGENCY_NAME, model.getGovAgencyName());
 	    params.put(DossierTerm.APPLICANT_NAME, model.getApplicantName());
 	    params.put(DossierTerm.APPLICANT_ID_TYPE, model.getApplicantIdType());
 	    params.put(DossierTerm.APPLICANT_ID_NO, model.getApplicantIdNo());
@@ -60,6 +61,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.CONTACT_NAME, model.getContactName());
 	    params.put(DossierTerm.CONTACT_TEL_NO, model.getContactTelNo());
 	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
+
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.PASSWORD, model.getPassword());	    	
 	    }
@@ -113,6 +115,7 @@ public class OpenCPSConverter {
 	    	params.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
 	    }
 	    params.put(DossierTerm.SERVICE_NAME, model.getServiceName());
+	    params.put(DossierTerm.GOV_AGENCY_NAME, model.getGovAgencyName());
 	    params.put(DossierTerm.APPLICANT_NAME, model.getApplicantName());
 	    params.put(DossierTerm.APPLICANT_ID_TYPE, model.getApplicantIdType());
 	    params.put(DossierTerm.APPLICANT_ID_NO, model.getApplicantIdNo());
@@ -127,6 +130,11 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.CONTACT_NAME, model.getContactName());
 	    params.put(DossierTerm.CONTACT_TEL_NO, model.getContactTelNo());
 	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
+	    params.put(DossierTerm.DOSSIER_STATUS, model.getDossierStatus());
+	    params.put(DossierTerm.DOSSIER_STATUS_TEXT, model.getDossierStatusText());
+	    params.put(DossierTerm.DOSSIER_SUB_STATUS, model.getDossierSubStatus());
+	    params.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, model.getDossierSubStatusText());
+
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.PASSWORD, model.getPassword());	    	
 	    }
@@ -292,7 +300,7 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.NOTIFICATION)) {
 			model.setNotification(jsonObj.getString(DossierTerm.NOTIFICATION));
 		}
-		
+
 		return model;
 	}
 	
@@ -431,7 +439,19 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.PROCESS_DATE)) {
 			model.setProcessDate(jsonObj.getLong(DossierTerm.PROCESS_DATE));
 		}
-		
+		if (jsonObj.has(DossierTerm.DOSSIER_STATUS)) {
+			model.setDossierStatus(jsonObj.getString(DossierTerm.DOSSIER_STATUS));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_STATUS_TEXT)) {
+			model.setDossierStatusText(jsonObj.getString(DossierTerm.DOSSIER_STATUS_TEXT));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_SUB_STATUS)) {
+			model.setDossierSubStatus(jsonObj.getString(DossierTerm.DOSSIER_SUB_STATUS));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_SUB_STATUS_TEXT)) {
+			model.setDossierSubStatusText(jsonObj.getString(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+		}
+
 		return model;
 	}	
 	private static Log _log = LogFactoryUtil.getLog(OpenCPSConverter.class);
@@ -526,7 +546,19 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.NOTIFICATION)) {
 			model.setNotification(jsonObj.getString(DossierTerm.NOTIFICATION));
 		}
-		
+		if (jsonObj.has(DossierTerm.DOSSIER_STATUS)) {
+			model.setDossierStatus(jsonObj.getString(DossierTerm.DOSSIER_STATUS));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_STATUS_TEXT)) {
+			model.setDossierStatusText(jsonObj.getString(DossierTerm.DOSSIER_STATUS_TEXT));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_SUB_STATUS)) {
+			model.setDossierSubStatus(jsonObj.getString(DossierTerm.DOSSIER_SUB_STATUS));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_SUB_STATUS_TEXT)) {
+			model.setDossierSubStatusText(jsonObj.getString(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+		}
+
 		return model;
 	}	
 	

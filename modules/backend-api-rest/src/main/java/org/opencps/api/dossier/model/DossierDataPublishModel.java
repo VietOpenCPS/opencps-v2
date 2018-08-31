@@ -56,6 +56,7 @@ import javax.xml.bind.annotation.XmlType;
 	 "dossierStatusText",
 	 "dossierSubStatus",
 	 "dossierSubStatusText",
+	 "finishDate"
 })
 public class DossierDataPublishModel {
 
@@ -71,6 +72,8 @@ public class DossierDataPublishModel {
 	protected String dossierStatusText;
 	protected String dossierSubStatus;
 	protected String dossierSubStatusText;
+	protected String finishDate;
+
 	public String getDossierNo() {
 		return dossierNo;
 	}
@@ -142,6 +145,12 @@ public class DossierDataPublishModel {
 	}
 	public void setDossierSubStatusText(String dossierSubStatusText) {
 		this.dossierSubStatusText = dossierSubStatusText;
+	}
+	public String getFinishDate() {
+		return finishDate;
+	}
+	public void setFinishDate(String finishDate) {
+		this.finishDate = finishDate;
 	}
 
 }
