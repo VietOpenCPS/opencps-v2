@@ -94,6 +94,7 @@ public class EmployeeUtils {
 				// Roles
 				ett.setWorkingUnitName(document.get(EmployeeTerm.WORKING_UNIT_NAME));
 				ett.setJobPosTitle(document.get(EmployeeTerm.JOB_POS_TITLE));
+
 				results.add(ett);
 			}
 

@@ -99,7 +99,9 @@ import javax.xml.bind.annotation.XmlType;
     "domainName",
     "applicantName",
     "applicantIdNo",
-    "serviceName"
+    "serviceName",
+    "fromFinishDate",
+    "toFinishDate"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -189,6 +191,10 @@ public class DossierSearchModel {
     protected String applicantName;
     @QueryParam(value = "serviceName")
     protected String serviceName;
+    @QueryParam(value = "fromFinishDate")
+    protected String fromFinishDate;
+    @QueryParam(value = "toFinishDate")
+    protected String toFinishDate;
 
     public Integer getAssigned() {
 		return assigned;
@@ -876,6 +882,22 @@ public class DossierSearchModel {
 
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
+	}
+
+	public String getFromFinishDate() {
+		return fromFinishDate;
+	}
+
+	public void setFromFinishDate(String fromFinishDate) {
+		this.fromFinishDate = fromFinishDate;
+	}
+
+	public String getToFinishDate() {
+		return toFinishDate;
+	}
+
+	public void setToFinishDate(String toFinishDate) {
+		this.toFinishDate = toFinishDate;
 	}
 
 }
