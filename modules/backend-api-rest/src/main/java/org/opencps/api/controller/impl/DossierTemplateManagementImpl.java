@@ -613,11 +613,13 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				}
 			}
 			String content = actions.getFormScript(groupId, dossierTempId, partNo);
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put("value", content);
 
 //			result.setValue(content);
 
 //			return Response.status(200).entity(JSONFactoryUtil.createJSONObject(content).toJSONString()).build();
-			return Response.status(200).entity(content).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(result)).build();
 
 		} catch (Exception e) {
 			_log.info(e);
