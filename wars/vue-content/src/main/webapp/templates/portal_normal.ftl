@@ -19,11 +19,6 @@
 
 <body style="min-width: unset !important;">
 	
-	<div id="app"></div>
-	<script type="text/javascript" src="/o/vue-content/js/manifest.a458ee6ca9ab13605b44.js"></script>
-	<script type="text/javascript" src="/o/vue-content/js/vendor.4f2e5da82e8847bf42d6.js"></script>
-	<script type="text/javascript" src="/o/vue-content/js/main_public.7ad0d026ed23b7011404.js"></script>
-	
 	<#if selectable>
 		<@liferay_util["include"] page=content_include />
 	<#else>

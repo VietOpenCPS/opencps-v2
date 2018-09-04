@@ -115,13 +115,33 @@ import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.backend.Symbol;
 import uk.org.okapibarcode.output.Java2DRenderer;
 
-@ApplicationPath("/v2")
-@Component(immediate = true, property={"jaxrs.application=true"}, service = Application.class)
-public class BackendApiRestApplication	 extends Application {
+@Component(immediate = true, service = Application.class)
+public class BackendApiRestApplication extends Application {
 
+	@Context
+    private UriInfo uriInfo;
+    
+	@Reference
+	private CompanyContextProvider _companyContextProvider;
+
+	@Reference
+	private LocaleContextProvider _localeContextProvider;
+
+	@Reference
+	private UserContextProvider _userContextProvider;
+
+	@Reference
+	private ServiceContextProvider _serviceContextProvider;
+
+	
 	public Set<Object> getSingletons() {
-		Set<Object> singletons = new HashSet<Object>();
-		
+
+		Set<Object> singletons = new HashSet<>();
+
+		singletons.add(_userContextProvider);
+		singletons.add(_companyContextProvider);
+		singletons.add(_localeContextProvider);
+		singletons.add(_serviceContextProvider);
 		
 		// add REST endpoints (resources)
 		singletons.add(new ApplicantManagementImpl());
@@ -172,12 +192,8 @@ public class BackendApiRestApplication	 extends Application {
 		singletons.add(new DossierSyncManagementImpl());
 		
 		singletons.add(new SystemManagementImpl());
-		
-		// add service provider
-		singletons.add(_serviceContextProvider);
-		singletons.add(_companyContextProvider);
-		singletons.add(_localeContextProvider);
-		singletons.add(_userContextProvider);
+
+		singletons.add(this);
 		
 		return singletons;	
 	}
@@ -386,20 +402,5 @@ public class BackendApiRestApplication	 extends Application {
 		
 		return Response.status(200).entity(result).build();
 	}
-    @Context
-    private UriInfo uriInfo;
-    
-	@Reference
-	private CompanyContextProvider _companyContextProvider;
-
-	@Reference
-	private LocaleContextProvider _localeContextProvider;
-
-	@Reference
-	private UserContextProvider _userContextProvider;
-
-	@Reference
-	private ServiceContextProvider _serviceContextProvider;
-
 
 }

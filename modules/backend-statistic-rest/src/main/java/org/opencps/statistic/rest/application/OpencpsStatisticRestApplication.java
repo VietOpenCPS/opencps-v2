@@ -35,7 +35,6 @@ import opencps.statistic.common.webservice.exception.ServiceException;
 /**
  * @author khoavu
  */
-@ApplicationPath("/statistics")
 @Component(immediate = true, service = Application.class)
 @Consumes("application/json")
 @Produces("application/json")

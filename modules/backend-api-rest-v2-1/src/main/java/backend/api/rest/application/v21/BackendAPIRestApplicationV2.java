@@ -33,7 +33,6 @@ import backend.api.rest.application.v21.impl.StepConfigApiImpl;
 /**
  * @author binhth
  */
-@ApplicationPath("/")
 @Component(immediate = true, service = Application.class)
 public class BackendAPIRestApplicationV2 extends Application {
 

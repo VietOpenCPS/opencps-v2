@@ -33,7 +33,6 @@ import io.swagger.annotations.ApiOperation;
 /**
  * @author GIAHUY
  */
-@ApplicationPath("/v2/signature")
 @Component(immediate = true, service = Application.class)
 public class BackendKysoApiRestApplication extends Application {
 

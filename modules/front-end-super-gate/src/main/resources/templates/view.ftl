@@ -4,7 +4,7 @@
 
 <div id="app"></div>
 
-<script type="text/javascript" src="/o/front-end-super-gate/js/manifest.fcc9b769cf3e0e054e86.js"></script>
-<script type="text/javascript" src="/o/front-end-super-gate/js/vendor.df2d892936bb2251d2d6.js"></script>
-<script type="text/javascript" src="/o/front-end-super-gate/js/app.07ce05edf3f4e6c8f95e.js"></script>
+<script type="text/javascript" src="/o/front-end-super-gate/js/manifest.02df4890ab3281f5351e.js"></script>
+<script type="text/javascript" src="/o/front-end-super-gate/js/vendor.1a748c2b8dc64b6e5c46.js"></script>
+<script type="text/javascript" src="/o/front-end-super-gate/js/app.2ee8936ebd1a53472e55.js"></script>
 

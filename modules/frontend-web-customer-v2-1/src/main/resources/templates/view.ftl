@@ -4,6 +4,6 @@
 
 <div id="app"></div>
 
-<script type="text/javascript" src="/o/frontend-web-customer-v2-1/js/manifest.5a0a9797f7d7af1fd064.js"></script>
-<script type="text/javascript" src="/o/frontend-web-customer-v2-1/js/vendor.e70e24065f2df2c9f5fd.js"></script>
-<script type="text/javascript" src="/o/frontend-web-customer-v2-1/js/app_dvc.294ecedbe270f1cb0ae5.js"></script>
+<script type="text/javascript" src="/o/frontend-web-customer-v2-1/js/manifest.0c20adb247eeb40532fd.js"></script>
+<script type="text/javascript" src="/o/frontend-web-customer-v2-1/js/vendor.1a748c2b8dc64b6e5c46.js"></script>
+<script type="text/javascript" src="/o/frontend-web-customer-v2-1/js/app_dvc.fd36592746427fd5cb54.js"></script>
