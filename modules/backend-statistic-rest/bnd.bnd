@@ -2,3 +2,9 @@ Bundle-Name: backend-statistic-rest
 Bundle-SymbolicName: backend.statistic.rest
 Bundle-Version: 1.0.0
 Liferay-Configuration-Path: /configuration
+Export-Package: \
+	opencps.statistic.common.webservice.exception,\
+	opencps.statistic.common.webservice.facade,\
+	opencps.statistic.common.webservice.*,\
+	
+	

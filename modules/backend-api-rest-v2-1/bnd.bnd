@@ -1,6 +1,9 @@
-Bundle-Name: backend-api-rest-2
+Bundle-Name: backend-api-rest-v2-1
 Bundle-SymbolicName: backend.api.rest.v21
-Bundle-Version: 2.0.0
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+Include-Resource:configuration=src/main/resources/configuration
+
 Export-Package: \
 	org.toilelibre.libe.curl,\
 	io.swagger.api,\
