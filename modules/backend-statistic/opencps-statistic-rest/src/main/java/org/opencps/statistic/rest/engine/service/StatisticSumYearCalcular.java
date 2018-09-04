@@ -223,7 +223,7 @@ public class StatisticSumYearCalcular {
 
 							try {
 								dossierStatisticResponse = dossierStatisticFinderService
-										.finderDossierStatistic(dossierStatisticRequest);
+										.finderDossierStatistics(dossierStatisticRequest);
 
 								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -356,12 +356,13 @@ public class StatisticSumYearCalcular {
 			overtimeInside = overtimeInside + data.getOvertimeInside();
 			onegateCount = onegateCount + data.getOnegateCount();
 		}
+		
 		processingCount = latest.getProcessingCount();
 		undueCount = latest.getUndueCount();
 		overdueCount = latest.getOverdueCount();
 		interoperatingCount = latest.getInteroperatingCount();
 		waitingCount = latest.getWaitingCount();
-		processCount = releaseCount + processingCount;
+		processCount = releaseCount + processingCount + waitingCount;
 		totalCount = processCount + deniedCount + cancelledCount;
 		remainingCount = processCount - receivedCount;
 		doneCount = releaseCount - (releasingCount + unresolvedCount);
