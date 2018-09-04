@@ -989,6 +989,8 @@ public class DossierUtils {
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
 			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
+			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			_log.info("FINISH_DATE: "+ doc.get(DossierTerm.FINISH_DATE));
 			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));

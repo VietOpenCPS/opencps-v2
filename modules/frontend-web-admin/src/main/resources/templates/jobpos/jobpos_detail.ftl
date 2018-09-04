@@ -59,12 +59,12 @@
 				
 			</div> -->
 
-			<div class="form-group">
+			<#-- <div class="form-group">
 			
 				<label for="_jobposDetail_works">Công việc phải làm :</label>
 				<input  id="_jobposDetail_works" name="_jobposDetail_works" class="form-control" />
 				
-			</div>
+			</div> -->
 			
 			<div class="form-group">
 			
@@ -116,11 +116,11 @@
 		}
 		
 		var _jobposDetail_BaseUrl = "${(url.adminJobPosPortlet.jobpos_edit_action)!}";
-		var permissions = $("#_jobposDetail_permissions").data("kendoMultiSelect").dataItems();
-		var works = $("#_jobposDetail_works").data("kendoMultiSelect").dataItems();
+		// var permissions = $("#_jobposDetail_permissions").data("kendoMultiSelect").dataItems();
+		// var works = $("#_jobposDetail_works").data("kendoMultiSelect").dataItems();
 
-		permissions = (permissions != null && permissions !="" && permissions.length > 0)?JSON.stringify(permissions):"";
-		works = (works != null && works !="" && works.length > 0)?JSON.stringify(works):"";
+		// permissions = (permissions != null && permissions !="" && permissions.length > 0)?JSON.stringify(permissions):"";
+		// works = (works != null && works !="" && works.length > 0)?JSON.stringify(works):"";
 
 		var _jobposDetail_jobPosId = ($(this).attr("data-pk")!="" && $(this).attr("data-pk")!=null)?$(this).attr("data-pk"):0;
 
@@ -134,10 +134,10 @@
 				data: {
 					${portletNamespace}jobPosCode: $( "#_jobposDetail_jobPosCode" ).val().trim(),
 					${portletNamespace}title: $( "#_jobposDetail_title" ).val().trim(),
-					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
+					// ${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
 					${portletNamespace}description: $( "#_jobposDetail_description" ).val().trim(),
-					${portletNamespace}permissions: permissions,
-					${portletNamespace}works: works
+					// ${portletNamespace}permissions: permissions,
+					// ${portletNamespace}works: works
 				},
 				dataType: 'json',
 				beforeSend: function( xhr ) {
@@ -178,10 +178,10 @@
 				data: {
 					${portletNamespace}jobPosCode: $( "#_jobposDetail_jobPosCode" ).val().trim(),
 					${portletNamespace}title: $( "#_jobposDetail_title" ).val().trim(),
-					${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
+					// ${portletNamespace}leader: $( "#_jobposDetail_leader" ).val().trim(),
 					${portletNamespace}description: $( "#_jobposDetail_description" ).val().trim(),
-					${portletNamespace}permissions: permissions,
-					${portletNamespace}works: works
+					// ${portletNamespace}permissions: permissions,
+					// ${portletNamespace}works: works
 
 				},
 				dataType: 'json',
@@ -220,8 +220,8 @@
 		$( "#_jobposDetail_jobPosCode" ).val('');
 		$( "#_jobposDetail_leader" ).val('');
 		$( "#_jobposDetail_description" ).val('');
-		$("#_jobposDetail_permissions").data("kendoMultiSelect").value('');
-		$("#_jobposDetail_works").data("kendoMultiSelect").value('');
+		// $("#_jobposDetail_permissions").data("kendoMultiSelect").value('');
+		// $("#_jobposDetail_works").data("kendoMultiSelect").value('');
 	}
 
 	$('#_jobposDetail_AddBtn').click(function (event) {
@@ -273,7 +273,7 @@
 							} 
 						});
 
-						_jobposDetail_permissions.value(dataSelected);
+						// _jobposDetail_permissions.value(dataSelected);
 
 					},
 					error: function(xhr, textStatus, errorThrown) {
@@ -303,89 +303,89 @@
 		
 	});
 	
-	var _jobposDetail_permissions = $("#_jobposDetail_permissions").kendoMultiSelect({
+	// var _jobposDetail_permissions = $("#_jobposDetail_permissions").kendoMultiSelect({
 		
-		optionLabel: "Chọn quyền hạn...",
-		dataTextField: "actionName",
-		dataValueField: "actionId",
-		dataSource: _jobposDetail_permission_dataSource
+	// 	optionLabel: "Chọn quyền hạn...",
+	// 	dataTextField: "actionName",
+	// 	dataValueField: "actionId",
+	// 	dataSource: _jobposDetail_permission_dataSource
 		
-	}).data("kendoMultiSelect");
+	// }).data("kendoMultiSelect");
 
 
-	var _jobposDetail_work_dataSource = new kendo.data.DataSource({
+	// var _jobposDetail_work_dataSource = new kendo.data.DataSource({
 		
-		transport: {
+	// 	transport: {
 
-			read: function(options) {
+	// 		read: function(options) {
 				
-				$.ajax({
+	// 			$.ajax({
 				
-					url: _jobposDetail_permission_work_BaseUrl+"/"+(($( "#_jobposDetail_submitBtn" ).attr("data-pk")!="" && $( "#_jobposDetail_submitBtn" ).attr("data-pk")!=null)?$( "#_jobposDetail_submitBtn" ).attr("data-pk"):0)+"/works",
-					dataType: "json",
-					type: 'GET',
-					headers: {
-						"groupId": ${groupId}
-					},
-					data: {
-						sort: 'actionName',
-						full: true
-					},
-					success: function(result) {
+	// 				url: _jobposDetail_permission_work_BaseUrl+"/"+(($( "#_jobposDetail_submitBtn" ).attr("data-pk")!="" && $( "#_jobposDetail_submitBtn" ).attr("data-pk")!=null)?$( "#_jobposDetail_submitBtn" ).attr("data-pk"):0)+"/works",
+	// 				dataType: "json",
+	// 				type: 'GET',
+	// 				headers: {
+	// 					"groupId": ${groupId}
+	// 				},
+	// 				data: {
+	// 					sort: 'actionName',
+	// 					full: true
+	// 				},
+	// 				success: function(result) {
 						
-						result["data"] = result.total==0 ? []: result["data"];
-						options.success(result);
+	// 					result["data"] = result.total==0 ? []: result["data"];
+	// 					options.success(result);
 
-						var dataSelected=[];
-						$.map( result.data, function( obj, i ) {
+	// 					var dataSelected=[];
+	// 					$.map( result.data, function( obj, i ) {
 							
-							if(obj.selected) {
+	// 						if(obj.selected) {
 
-								dataSelected.push(obj)
+	// 							dataSelected.push(obj)
 
-							} 
-						});
+	// 						} 
+	// 					});
 
-						_jobposDetail_works.value(dataSelected);
+	// 					_jobposDetail_works.value(dataSelected);
 
-					},
-					error: function(xhr, textStatus, errorThrown) {
-						options.error(xhr);
-						//showMessageByAPICode(xhr.status);
+	// 				},
+	// 				error: function(xhr, textStatus, errorThrown) {
+	// 					options.error(xhr);
+	// 					//showMessageByAPICode(xhr.status);
 					
-					}
+	// 				}
 				
-				});
-			}
-		},
-		schema: {
-			data: "data",
-			total: "total",
-			model: {
-				id: "checklistCat",
-				fields: {
-					checklistCat: {
-						editable: false,
-						nullable: true
-					},
-					checklistType: { type: "string" },
-					categoryName: { type: "string" },
-					selected: "selected"
+	// 			});
+	// 		}
+	// 	},
+	// 	schema: {
+	// 		data: "data",
+	// 		total: "total",
+	// 		model: {
+	// 			id: "checklistCat",
+	// 			fields: {
+	// 				checklistCat: {
+	// 					editable: false,
+	// 					nullable: true
+	// 				},
+	// 				checklistType: { type: "string" },
+	// 				categoryName: { type: "string" },
+	// 				selected: "selected"
 
-				}
-			}
-		}
+	// 			}
+	// 		}
+	// 	}
 		
-	});
+	// });
 	
-	var _jobposDetail_works = $("#_jobposDetail_works").kendoMultiSelect({
+	// var _jobposDetail_works = $("#_jobposDetail_works").kendoMultiSelect({
 		
-		optionLabel: "Chọn công việc...",
-		dataTextField: "categoryName",
-		dataValueField: "checklistCat",
-		dataSource: _jobposDetail_work_dataSource
+	// 	optionLabel: "Chọn công việc...",
+	// 	dataTextField: "categoryName",
+	// 	dataValueField: "checklistCat",
+	// 	dataSource: _jobposDetail_work_dataSource
 		
-	}).data("kendoMultiSelect");
+	// }).data("kendoMultiSelect");
 	
 	// var _jobposDetail_leader = $("#_jobposDetail_leader").kendoDropDownList({
 	// 	dataSource: [

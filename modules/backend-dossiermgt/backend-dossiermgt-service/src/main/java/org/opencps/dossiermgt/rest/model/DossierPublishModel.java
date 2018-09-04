@@ -139,7 +139,11 @@ import javax.xml.bind.annotation.XmlType;
     "correcttingDate",
     "endorsementDate",
     "extendDate",
-    "processDate"
+    "processDate",
+    "dossierStatus",
+    "dossierStatusText",
+    "dossierSubStatus",
+    "dossierSubStatusText"
 })
 @XmlRootElement(name = "DossierPublishModel")
 public class DossierPublishModel {
@@ -197,6 +201,10 @@ public class DossierPublishModel {
     protected Long endorsementDate;
     protected Long extendDate;
     protected Long processDate;
+    protected String dossierStatus;
+    protected String dossierStatusText;
+    protected String dossierSubStatus;
+    protected String dossierSubStatusText;
 
     /**
      * Gets the value of the referenceUid property.
@@ -1469,5 +1477,37 @@ public class DossierPublishModel {
     public void setProcessDate(Long value) {
         this.processDate = value;
     }
+
+	public String getDossierStatus() {
+		return dossierStatus;
+	}
+
+	public void setDossierStatus(String dossierStatus) {
+		this.dossierStatus = dossierStatus;
+	}
+
+	public String getDossierStatusText() {
+		return dossierStatusText;
+	}
+
+	public void setDossierStatusText(String dossierStatusText) {
+		this.dossierStatusText = dossierStatusText;
+	}
+
+	public String getDossierSubStatus() {
+		return dossierSubStatus;
+	}
+
+	public void setDossierSubStatus(String dossierSubStatus) {
+		this.dossierSubStatus = dossierSubStatus;
+	}
+
+	public String getDossierSubStatusText() {
+		return dossierSubStatusText;
+	}
+
+	public void setDossierSubStatusText(String dossierSubStatusText) {
+		this.dossierSubStatusText = dossierSubStatusText;
+	}
 
 }
