@@ -43,7 +43,10 @@ Liferay-Service: true
 @spring-expression.jar;lib:=true,\
 @jasperreports-functions.jar;lib:=true,\
 @jasperreports-javaflow.jar;lib:=true,\
-@commons-javaflow.jar;lib:=true
+@commons-javaflow.jar;lib:=true,\
+@poi-3.10.1.jar;lib:=true,\
+@poi-ooxml-3.10.1.jar;lib:=true,\
+@poi-ooxml-schemas-3.10.1.jar;lib:=true
 Import-Package: *;resolution:=optional
 Export-Package: \
 	net.sf.jasperreports.engine.data,\

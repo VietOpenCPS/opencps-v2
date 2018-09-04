@@ -132,6 +132,13 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.FINISH_DATE, StringPool.BLANK);
 			}
+			//
+			if (Validator.isNotNull(object.getFinishDate())) {
+				document.addDateSortable(DossierTerm.FINISH_DATE_LUCENE, object.getFinishDate());
+			} else {
+				document.addTextSortable(DossierTerm.FINISH_DATE_LUCENE, StringPool.BLANK);
+			}
+
 			if (Validator.isNotNull(object.getCancellingDate())) {
 				document.addTextSortable(DossierTerm.CANCELLING_DATE, APIDateTimeUtils
 						.convertDateToString(object.getCancellingDate(), APIDateTimeUtils._NORMAL_PARTTERN));

@@ -3,6 +3,7 @@ package org.opencps.jasper.message;
 import java.io.File;
 
 import org.opencps.jasper.utils.JRReportUtil;
+import org.opencps.jasper.utils.JRReportUtil.DocType;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -53,15 +54,15 @@ public class EnginePreview implements MessageListener {
 	
 	private void _doPreview(Message message) {
 		_log.info("DoPreview.........");
-		
-		File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
-		
+				
 		String formReport = message.getString("formReport");
 		
 		String formData = message.getString("formData");
 		String className = message.getString("className");
 		_log.info("Object or array: " + isJsonObject(formData));
 		if ("org.opencps.dossiermgt.model.DossierDocument".equals(className)) {
+			File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
+			
 			try {
 				//create file
 				JRReportUtil.createReportFile(formReport,
@@ -84,6 +85,16 @@ public class EnginePreview implements MessageListener {
 				}
 		} else {
 			String reportType = message.contains("reportType") ? message.getString("reportType") : "pdf";
+			File file = null;
+			if (reportType.equals("excel")) {
+				file = FileUtil.createTempFile(JRReportUtil.DocType.XLS.toString());						
+			}
+			else if (reportType.equals("word")) {
+				file = FileUtil.createTempFile(JRReportUtil.DocType.DOC.toString());	
+			}
+			else {
+				file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
+			}			
 			
 			if (isJsonObject(formData)) {
 				try {

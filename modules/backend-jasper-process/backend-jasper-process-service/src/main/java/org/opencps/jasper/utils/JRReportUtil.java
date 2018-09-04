@@ -345,10 +345,10 @@ public class JRReportUtil {
 		case PDF:
 			sourceFileName = exportPdfFile(jasperPrint, sourceFileName);
 			break;
-		case XLSX:
+		case XLS:
 			sourceFileName = exportExcelFile(jasperPrint, sourceFileName);
 			break;	
-		case DOCX:
+		case DOC:
 			sourceFileName = exportDocFile(jasperPrint, sourceFileName);
 			break;				
 		default:
@@ -400,10 +400,10 @@ public class JRReportUtil {
 				JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
 				if (reportType.equals("excel")) {
-					return exportReport(jasperPrint, destFileName, DocType.XLSX);						
+					return exportReport(jasperPrint, destFileName, DocType.XLS);						
 				}
 				else if (reportType.equals("word")) {
-					return exportReport(jasperPrint, destFileName, DocType.DOCX);	
+					return exportReport(jasperPrint, destFileName, DocType.DOC);	
 				}
 				else {
 					return exportReport(jasperPrint, destFileName, DocType.PDF);

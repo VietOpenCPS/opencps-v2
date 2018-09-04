@@ -1009,6 +1009,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 
 			String serverNo = SERVER + itemCode;
+			String jobPos = query.getJobpos();
 			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
 
 			long groupIdEmp = 0;
@@ -1042,12 +1043,34 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 						query.getStart(), query.getEnd(), serviceContext);
 
-				result.setTotal(jsonData.getLong("total"));
-				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
-			} else {
-				result.setTotal(0);
+				int total = 0;
+//				if (jsonData != null && jsonData.getLong("total") > 0) {
+					// if (Validator.isNotNull(jobPos)) {
+					// List<Document> docList = (List<Document>)
+					// jsonData.get("data");
+					// if (docList != null && docList.size() > 0) {
+					// for (Document document : docList) {
+					// String jobPosCode =
+					// GetterUtil.getString(document.get(""));
+					// }
+					// } else {
+					// result.setTotal(0);
+					// }
+					// } else {
+					// result.setTotal(jsonData.getLong("total"));
+					// result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>)
+					// jsonData.get("data")));
+					// }
+					// } else {
+					// result.setTotal(jsonData.getLong("total"));
+					// }
+					result.setTotal(jsonData.getLong("total"));
+					result.getEmployeeModel()
+							.addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+//				} else {
+//					result.setTotal(0);
+//				}
 			}
-
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {

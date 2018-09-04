@@ -1,0 +1,4 @@
+Bundle-Name: backend-statistic-common
+Bundle-SymbolicName: backend.statistic.common
+Bundle-Version: 1.0.0
+Export-Package: backend.statistic.common.api

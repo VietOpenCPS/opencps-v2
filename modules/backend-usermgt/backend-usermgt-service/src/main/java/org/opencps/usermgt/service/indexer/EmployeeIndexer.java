@@ -114,18 +114,18 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 			
 		}
 		
-		long emJobposId = Validator.isNotNull(employeeJobPos)?employeeJobPos.getJobPostId():0;
+//		long emJobposId = Validator.isNotNull(employeeJobPos)?employeeJobPos.getJobPostId():0;
 		
-		
-		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(emJobposId);
-		
+		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employee.getMainJobPostId());
 		String jobPosTitle = Validator.isNotNull(jobPos)?jobPos.getTitle():StringPool.BLANK;
+		String jobPosCode = Validator.isNotNull(jobPos)?jobPos.getJobPosCode():StringPool.BLANK;
 		
 		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, workingUnitName);
 		document.addNumberSortable(EmployeeTerm.WORKING_UNIT_ID, workingUnitId);
 		
 		document.addTextSortable(EmployeeTerm.JOB_POS_TITLE, jobPosTitle);
-		document.addNumberSortable(EmployeeTerm.JOB_POS_ID, emJobposId);
+		document.addTextSortable(EmployeeTerm.JOB_POS_CODE, jobPosCode);
+		document.addNumberSortable(EmployeeTerm.JOB_POS_ID, employee.getMainJobPostId());
 		
 		Calendar cal = Calendar.getInstance();
 
