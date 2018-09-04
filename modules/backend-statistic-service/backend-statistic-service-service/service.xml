@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder package-path="org.opencps.statistic">
+	<author>khoavu</author>
+	<namespace>statistic</namespace>
+	<entity local-service="true" name="OpencpsDossierStatistic"
+		remote-service="false" table="opencps_statistic" uuid="true">
+
+		<column name="dossierStatisticId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="month" type="int" />
+		<column name="year" type="int" />
+		<column name="totalCount" type="int" />
+		<column name="deniedCount" type="int" />
+		<column name="cancelledCount" type="int" />
+		<column name="processCount" type="int" />
+		<column name="remainingCount" type="int" />
+		<column name="receivedCount" type="int" />
+		<column name="onlineCount" type="int" />
+		<column name="onegateCount" type="int" />
+		<column name="releaseCount" type="int" />
+		<column name="betimesCount" type="int" />
+		<column name="ontimeCount" type="int" />
+		<column name="overtimeCount" type="int" />
+		<column name="doneCount" type="int" />
+		<column name="releasingCount" type="int" />
+		<column name="unresolvedCount" type="int" />
+		<column name="processingCount" type="int" />
+		<column name="undueCount" type="int" />
+		<column name="overdueCount" type="int" />
+		<column name="pausingCount" type="int" />
+		<column name="ontimePercentage" type="int" />
+		<column name="govAgencyCode" type="String" />
+		<column name="groupAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="domainCode" type="String" />
+		<column name="domainName" type="String" />
+		<column name="reporting" type="boolean" />
+		<column name="overtimeInside" type="int"/>
+		<column name="overtimeOutside" type="int"/>
+		<column name="interoperatingCount" type="int"/>
+		<column name="waitingCount" type="int"/>
+		
+		<column name="outsideCount" type="int"/>
+		<column name="insideCount" type="int"/>
+		
+		<!-- Order -->
+
+		<!-- Filter -->
+		<finder return-type="Collection" name="G_UID_Y">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>
+		
+		<finder return-type="OpencpsDossierStatistic" name="M_Y_DM_G">
+			<finder-column name="groupId"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="reporting"/>
+		</finder>
+		
+		<finder return-type="OpencpsDossierStatistic" name="G_M_Y_G_D">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+		</finder>
+		
+		<finder return-type="OpencpsDossierStatistic" name="M_Y_G">
+			<finder-column name="groupId"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
+
+	</entity>
+	s
+</service-builder>
