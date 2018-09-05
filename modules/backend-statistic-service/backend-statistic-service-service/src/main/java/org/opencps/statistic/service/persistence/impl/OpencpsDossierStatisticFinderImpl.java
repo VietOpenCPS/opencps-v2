@@ -46,7 +46,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 		try {
 			session = openSession();
-
+			
 			String sql = CustomSQLUtil.get(getClass(), SEARCH_DOSSIER_STATISTIC);
 
 		
