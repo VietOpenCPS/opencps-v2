@@ -618,8 +618,8 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 //			result.setValue(content);
 
-//			return Response.status(200).entity(JSONFactoryUtil.createJSONObject(content).toJSONString()).build();
-			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(result)).build();
+			return Response.status(200).entity(content).build();
+//			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(result)).build();
 
 		} catch (Exception e) {
 			_log.info(e);

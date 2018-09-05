@@ -86,7 +86,9 @@ public class OpencpsStatisticRestApplication extends Application {
 		try {
 			return dossierStatisticFinderService.finderDossierStatistic(dossierStatisticRequest);
 		} catch (Exception e) {
-
+			
+			LOG.error("error", e);
+			
 			serviceExceptionDetails.setFaultCode("500");
 			serviceExceptionDetails.setFaultMessage(e.getMessage());
 
