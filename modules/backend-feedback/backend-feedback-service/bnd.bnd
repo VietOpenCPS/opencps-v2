@@ -3,3 +3,9 @@ Bundle-SymbolicName: backend.feedback.service
 Bundle-Version: 1.0.0
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
+Export-Package: \
+	backend.feedback.constants,\
+	backend.feedback.model.impl,\
+	backend.feedback.action,\
+	backend.feedback.action.impl,\
+	backend.feedback.service.util

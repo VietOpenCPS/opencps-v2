@@ -186,6 +186,7 @@ public class ServiceInfoUtils {
 		for (Document serviceConfig : serviceConfigs) {
 			ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
 
+			cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(ServiceConfigTerm.SERVICECONFIG_ID)));
 			cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
 			cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
 			cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
