@@ -74,6 +74,11 @@ gradle-local.properties
 **/backend-synchronization-api/**/service/
 **/backend-synchronization-api/**/service/persistence/
 
+**/backend-feedback-api/**/model/
+**/backend-feedback-api/**/exception/
+**/backend-feedback-api/**/service/
+**/backend-feedback-api/**/service/persistence/
+
 **/**/ServiceProps.java
 
 **/vr-business/**

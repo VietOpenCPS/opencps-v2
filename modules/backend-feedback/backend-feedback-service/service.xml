@@ -31,4 +31,117 @@
 		</finder>
 		
 	</entity>
+
+	<entity name="Comment" uuid="true" local-service="true"
+		remote-service="false" table="opencps_comment">
+
+		<!-- PK fields -->
+		<column name="commentId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="fullname" type="String" />
+		<column name="email" type="String" />
+		<column name="parent" type="long" />
+		<column name="content" type="String" />
+		<column name="fileEntryId" type="long" />
+		<column name="pings" type="String"></column>
+		<column name="upvoteCount" type="int" />
+		<column name="userHasUpvoted" type="String" />
+		<column name="upvotedUsers" type="String" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="modifiedDate" />
+		</order>
+		
+		<finder return-type="Collection" name="F_groupId" where=" ( content is not null ) ">
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
+	</entity>
+	
+	<entity name="Voting" uuid="true" local-service="true"
+		remote-service="false" table="opencps_voting">
+
+		<!-- PK fields -->
+		<column name="votingId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="className" type="String" />
+		<column name="classPK" type="String" />
+		<column name="subject" type="String" />
+		<column name="choices" type="String" />
+
+		<!-- extend -->
+		<column name="templateNo" type="String" />
+		<column name="commentable" type="boolean" />
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+	</entity>
+
+	<entity name="VotingResult" uuid="true" local-service="true"
+		remote-service="false" table="opencps_votingresult">
+
+		<!-- PK fields -->
+		<column name="votingResultId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="votingId" type="long" />
+		<column name="fullname" type="String" />
+		<column name="email" type="String" />
+		<column name="comment" type="String" />
+		<column name="selected" type="String" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+		<finder return-type="VotingResult" name="F_votingId_userId">
+
+			<finder-column name="userId"></finder-column>
+			<finder-column name="votingId"></finder-column>
+
+		</finder>
+
+		<finder return-type="Collection" name="F_votingId_selected">
+
+			<finder-column name="votingId"></finder-column>
+			<finder-column name="selected"></finder-column>
+
+		</finder>
+	</entity>
+
 </service-builder>

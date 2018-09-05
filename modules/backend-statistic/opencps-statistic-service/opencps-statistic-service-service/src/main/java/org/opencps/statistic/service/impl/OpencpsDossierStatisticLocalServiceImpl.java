@@ -132,6 +132,11 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setOnegateCount(onegateCount);
 			dossierStatistic.setOutsideCount(outsideCount);
 			dossierStatistic.setInsideCount(insideCount);
+			
+			dossierStatistic.setGovAgencyCode(govAgencyCode);
+			dossierStatistic.setGovAgencyName(govAgencyName);
+			dossierStatistic.setDomainCode(domainCode);
+			dossierStatistic.setDomainName(domainName);
 		}
 
 		int ontimePercent = 0;

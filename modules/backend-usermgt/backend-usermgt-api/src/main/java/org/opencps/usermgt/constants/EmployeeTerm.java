@@ -52,7 +52,9 @@ public class EmployeeTerm {
 	public static final String WORKING_UNIT_ID = "workingUnitId";
 	
 	public static final String JOB_POS_TITLE = "jobPosTitle";
-	
+
+	public static final String JOB_POS_CODE = "jobPosCode";
+
 	public static final String JOB_POS_ID = "jobPosId";
 	
 	public static final String MONTH = "month";

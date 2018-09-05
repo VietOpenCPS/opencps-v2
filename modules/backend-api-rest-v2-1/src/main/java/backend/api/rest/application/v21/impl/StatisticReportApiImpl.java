@@ -296,6 +296,28 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			for (int i = 0; i < statistics.length(); i++) {
 				currentObject = statistics.getJSONObject(i);
 				if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
+//					result.put("total_3", currentObject.getInt("totalCount"));
+//					result.put("total_4", currentObject.getInt("deniedCount"));
+//					result.put("total_5", currentObject.getInt("cancelledCount"));
+//					result.put("total_6", currentObject.getInt("processCount"));
+//					result.put("total_7", currentObject.getInt("remainingCount"));
+//					result.put("total_8", currentObject.getInt("receivedCount"));
+//					result.put("total_9", currentObject.getInt("onegateCount"));
+//					result.put("total_10", currentObject.getInt("onlineCount"));
+//					result.put("total_11", currentObject.getInt("releaseCount"));
+//					result.put("total_12", currentObject.getInt("betimesCount"));
+//					result.put("total_13", currentObject.getInt("ontimeCount"));
+//					result.put("total_14", currentObject.getInt("overtimeCount"));
+//					result.put("total_15", currentObject.getInt("overtimeInside"));
+//					result.put("total_16", currentObject.getInt("overtimeOutside"));
+//					result.put("total_17", currentObject.getInt("ontimePercentage"));
+//					result.put("total_18", currentObject.getInt("doneCount"));
+//					result.put("total_19", currentObject.getInt("releasingCount"));
+//					result.put("total_20", currentObject.getInt("unresolvedCount"));
+//					result.put("total_21", currentObject.getInt("processingCount"));
+//					result.put("total_22", currentObject.getInt("undueCount"));
+//					result.put("total_23", currentObject.getInt("overdueCount"));
+//					result.put("total_24", currentObject.getInt("waitingCount"));
 					result.put("total_3", currentObject.getInt("totalCount"));
 					result.put("total_4", currentObject.getInt("deniedCount"));
 					result.put("total_5", currentObject.getInt("cancelledCount"));
@@ -310,14 +332,15 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 					result.put("total_14", currentObject.getInt("overtimeCount"));
 					result.put("total_15", currentObject.getInt("overtimeInside"));
 					result.put("total_16", currentObject.getInt("overtimeOutside"));
-					result.put("total_17", currentObject.getInt("ontimePercentage"));
-					result.put("total_18", currentObject.getInt("doneCount"));
-					result.put("total_19", currentObject.getInt("releasingCount"));
-					result.put("total_20", currentObject.getInt("unresolvedCount"));
-					result.put("total_21", currentObject.getInt("processingCount"));
-					result.put("total_22", currentObject.getInt("undueCount"));
-					result.put("total_23", currentObject.getInt("overdueCount"));
+					result.put("total_17", currentObject.getInt("doneCount"));
+					result.put("total_18", currentObject.getInt("releasingCount"));
+					result.put("total_19", currentObject.getInt("unresolvedCount"));
+					result.put("total_20", currentObject.getInt("processingCount"));
+					result.put("total_21", currentObject.getInt("undueCount"));
+					result.put("total_22", currentObject.getInt("overdueCount"));
+					result.put("total_23", currentObject.getInt("outsideCount"));
 					result.put("total_24", currentObject.getInt("waitingCount"));
+					result.put("total_25", currentObject.getInt("ontimePercentage"));
 	
 				} else if (Validator.isNotNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
 					statisticsData.put(currentObject);
