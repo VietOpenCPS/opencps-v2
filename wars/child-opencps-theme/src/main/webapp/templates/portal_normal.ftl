@@ -14,6 +14,7 @@
 	<@liferay_util["include"] page=top_head_include />
 	
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet" />
 	
 	<!-- Mainly scripts -->
 	<script>
@@ -31,15 +32,22 @@
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap-datetimepicker.min.js"></script>
 	
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap-editable.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/handlebars.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/alpaca.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/moment.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/Chart.bundle.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/Chart.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.culture.vi-VN.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/summernote.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/toastr.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/handlebars.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.ui.widget.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload-process.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload-validate.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.iframe-transport.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.textcomplete.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/alpaca.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/mobilink-alpaca-form.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/mobilink.util.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js?t=124"></script>
-	
+	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js"></script>
 	<!-- Slider -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css" />

@@ -30426,3 +30426,10 @@ div.splitter,
 .status.expired {
     color: #b95000
 }
+
+
+#navigation .nav.navbar-nav img {
+    width: 12px;
+    margin-right: 5px;
+    height: 12px;
+}
