@@ -1,2 +1,3 @@
 contextPath=/rest
-authVerifierProperties=auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=*
+##authVerifierProperties=auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=*
+authVerifierProperties=auth.verifier.OpenCPSAuthHeaderAuthVerifier.urls.includes=*

@@ -103,6 +103,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -313,9 +315,11 @@ public class BackendAPIRestApplication extends Application {
 			
             // Issue a token for the user
             String token = issueToken(user.getEmailAddress());
-
+            JSONObject result = JSONFactoryUtil.createJSONObject();
+            result.put("token", token);
+            
             // Return the token on the response
-            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+            return Response.ok().header(AUTHORIZATION, "Bearer " + token).entity(result.toJSONString()).build();
 
         } catch (Exception e) {
         	e.printStackTrace();
