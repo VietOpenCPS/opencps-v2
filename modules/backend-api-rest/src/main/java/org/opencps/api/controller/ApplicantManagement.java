@@ -164,7 +164,7 @@ public interface ApplicantManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
 	@GET
 	@Path("/{id}/activate/{code}")
-	@Produces("text/plain")
+//	@Produces("text/plain")
 	@ApiOperation(value = "Get the profile of applicant", response = JSONObject.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the profile of applicant", response = JSONObject.class),
@@ -197,5 +197,18 @@ public interface ApplicantManagement {
 	public Response resendActivateCodeApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
+	
+	@GET
+	@Path("/{id}/activate2/{code}")
+//	@Produces("text/plain")
+	@ApiOperation(value = "Get the profile of applicant", response = JSONObject.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the profile of applicant", response = JSONObject.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response activateApplicant2(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("code") String code);
 
 }

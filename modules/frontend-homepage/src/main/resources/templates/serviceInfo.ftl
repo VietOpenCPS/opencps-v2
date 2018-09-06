@@ -23,7 +23,7 @@
 				<input type="text" name="" class="form-control" placeholder="Nhập tên thủ tục" id="serviceName" />
 			</div>
 			<div class="col-xs-6 text-right">
-				<button class="btn btn-outline-primary" type="button" onclick="filterDatasource()">Tìm kiếm</button>
+				<button class="btn btn-primary" style="background-color: #fff; color: #2e6da4; border-color: #2e6da4" type="button" onclick="filterDatasource()">Tìm kiếm</button>
 			</div>
 		</div>
 		<div class="row">
@@ -78,52 +78,56 @@
 			transport: {
 				read : function(options){
 					$.ajax({
-						url: "${(api)!}/serviceinfos?level=2",
+						url: "${(api)!}/serviceinfos",
 						dataType: 'json',
 						type: 'GET',
 						headers: {
 							'groupId': '55217',
 						},
+						data:{
+							level: 2,
+							active: true
+						},
 						success: function(result){
 							for (var i = 0; i < result.data.length; i++) {
-								if(result.data[i].domainCode != "" && result.data[i].domainName != "")
+								// if(result.data[i].domainCode != "" && result.data[i].domainName != "")
+								// {
+								// 	domainList[result.data[i].domainCode] = result.data[i].domainName;
+								// 	govList[result.data[i].administrationCode] =  result.data[i].administrationName;
+
+								// }
+								var serviceConfig = result.data[i].serviceConfigs;
+								result.data[i].govAgencyName = "";
+								result.data[i].govAgencyCode = "";
+								if((typeof serviceConfig) == "undefined")
 								{
-									domainList[result.data[i].domainCode] = result.data[i].domainName;
-									govList[result.data[i].administrationCode] =  result.data[i].administrationName;
 
 								}
-								var serviceConfig = result.data[i].serviceConfigs;
-								// result.data[i].govAgencyName = "";
-								// result.data[i].govAgencyCode = "";
-								// if((typeof serviceConfig) == "undefined")
-								// {
-
-								// }
-								// else if(serviceConfig.length == undefined){
-								// 	result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig.govAgencyName;
-								// 	result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig.govAgencyCode;
-								// 	if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
-								// 	{
-								// 		govList[serviceConfig.govAgencyCode] =  serviceConfig.govAgencyName;
-								// 	}
-								// }else {
-								// 	for (var j = 0; j < serviceConfig.length; j++)
-								// 	{
-								// 		if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
-								// 		{
-								// 			govList[serviceConfig[j].govAgencyCode] =  serviceConfig[j].govAgencyName;
-								// 		}
-								// 		if(j == (serviceConfig.length - 1))
-								// 		{
-								// 			result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName;
-								// 			result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode;
-								// 		}
-								// 		else {
-								// 			result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName + ", ";
-								// 			result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode  + ", ";
-								// 		}
-								// 	}
-								// }
+								else if(serviceConfig.length == undefined){
+									result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig.govAgencyName;
+									result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig.govAgencyCode;
+									if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
+									{
+										govList[serviceConfig.govAgencyCode] =  serviceConfig.govAgencyName;
+									}
+								}else {
+									for (var j = 0; j < serviceConfig.length; j++)
+									{
+										if(serviceConfig.govAgencyCode != "" && serviceConfig.govAgencyName != "")
+										{
+											govList[serviceConfig[j].govAgencyCode] =  serviceConfig[j].govAgencyName;
+										}
+										if(j == (serviceConfig.length - 1))
+										{
+											result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName;
+											result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode;
+										}
+										else {
+											result.data[i].govAgencyName = result.data[i].govAgencyName + serviceConfig[j].govAgencyName + ", ";
+											result.data[i].govAgencyCode = result.data[i].govAgencyCode + serviceConfig[j].govAgencyCode  + ", ";
+										}
+									}
+								}
 							}
 							options.success(result)
 							if(parseInt($("#slPageSize").val()) > parseInt(dataSourceSI.total())){

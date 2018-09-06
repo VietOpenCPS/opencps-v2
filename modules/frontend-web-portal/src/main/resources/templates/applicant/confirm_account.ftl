@@ -89,7 +89,7 @@
             title: "Error",
             message: "Xẩy ra lỗi, vui lòng thử lại."
           }, "error");
-        }
+        },
       }
     });
   });

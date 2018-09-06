@@ -299,7 +299,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		String agency = GetterUtil.getString(params.get(ServiceConfigTerm.GOVAGENCY_CODE));
 		String service = String.valueOf((params.get(ServiceConfigTerm.SERVICE_CODE)));
 		String domain = String.valueOf((params.get(ServiceConfigTerm.DOMAIN_CODE)));
-
+		String active_ = String.valueOf((params.get(ServiceConfigTerm.ACTIVE_)));
+		
 		String applicant = String.valueOf((params.get(ServiceConfigTerm.APPICATION_TYPE)));
 
 		if (Validator.isNotNull(level)) {
@@ -347,6 +348,14 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 
 			query.addFields(ServiceConfigTerm.FOR_CITIZEN);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(active_)) {
+			MultiMatchQuery query = new MultiMatchQuery(active_);
+
+			query.addFields(ServiceConfigTerm.ACTIVE_);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -407,6 +416,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		String agency = GetterUtil.getString(params.get(ServiceConfigTerm.GOVAGENCY_CODE));
 		String service = String.valueOf((params.get(ServiceConfigTerm.SERVICE_CODE)));
 		String domain = String.valueOf((params.get(ServiceConfigTerm.DOMAIN_CODE)));
+		String active_ = String.valueOf((params.get(ServiceConfigTerm.ACTIVE_)));
 
 		String applicant = String.valueOf((params.get(ServiceConfigTerm.APPICATION_TYPE)));
 
@@ -455,6 +465,14 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 
 			query.addFields(ServiceConfigTerm.FOR_CITIZEN);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(active_)) {
+			MultiMatchQuery query = new MultiMatchQuery(active_);
+
+			query.addFields(ServiceConfigTerm.ACTIVE_);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

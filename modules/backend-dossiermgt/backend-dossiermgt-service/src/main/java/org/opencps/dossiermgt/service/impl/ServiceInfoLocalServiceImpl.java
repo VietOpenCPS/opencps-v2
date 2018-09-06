@@ -349,6 +349,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String administration = GetterUtil.getString(params.get(ServiceInfoTerm.ADMINISTRATION_CODE));
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE));
 		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
+		//sondt add to search serviceInfo active or not
+		String public_ = GetterUtil.getString(params.get(ServiceInfoTerm.PUBLIC_));
 
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
@@ -370,6 +372,14 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(public_)) {
+			MultiMatchQuery query = new MultiMatchQuery(public_);
+
+			query.addFields(ServiceInfoTerm.PUBLIC_);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -429,7 +439,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String administration = GetterUtil.getString(params.get(ServiceInfoTerm.ADMINISTRATION_CODE));
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE));
 		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
-
+		//sondt add to search serviceInfo active or not
+		String public_ = GetterUtil.getString(params.get(ServiceInfoTerm.PUBLIC_));
+		
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
 
@@ -450,6 +462,14 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(public_)) {
+			MultiMatchQuery query = new MultiMatchQuery(public_);
+
+			query.addFields(ServiceInfoTerm.PUBLIC_);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

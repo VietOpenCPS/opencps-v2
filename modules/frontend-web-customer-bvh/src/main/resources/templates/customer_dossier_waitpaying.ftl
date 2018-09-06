@@ -300,19 +300,18 @@
 											<span class="text-normal">Chọn ảnh từ máy</span>
 										</label>
 									</div>
-								</div>
+									<div class="row">
+										<div class="col-sm-11">
+											<div class="form-group"> 
+												<label class="control-label">Ghi chú kèm theo</label> 
+												<textarea class="form-control" rows="2" id="confirmNote" name="confirmNote" data-bind="text:confirmNote">
 
-								<div class="row">
-									<div class="col-sm-11">
-										<div class="form-group"> 
-											<label class="control-label">Ghi chú kèm theo</label> 
-											<textarea class="form-control" rows="2" id="confirmNote" name="confirmNote" data-bind="text:confirmNote">
-
-											</textarea> 
+												</textarea> 
+											</div>
+										</div> 
+										<div class="col-sm-1 MT30">
+											<button class="btn" data-bind="attr : {data-pk : referenceUid}" id="btn-dossier-payment-confirm">Gửi</button>
 										</div>
-									</div> 
-									<div class="col-sm-1 MT30">
-										<button class="btn" data-bind="attr : {data-pk : referenceUid}" id="btn-dossier-payment-confirm">Gửi</button>
 									</div>
 								</div>
 							</div>
@@ -460,6 +459,7 @@
 								}else if(this.get('paymentDossier').paymentStatus === 2){
 									$("#dossier-payment-online").prop("disabled",true);
 									$("#dossier-payment-confirm").prop("disabled",true);
+									$("#btn-dossier-payment-confirm").prop("disabled",true);
 									$("#dossier-payment-viewpdf").show();
 									$("#uploadFile").show();
 									$("#so_HDDT").show();

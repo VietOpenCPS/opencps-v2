@@ -225,8 +225,8 @@
 					createDossierNo : serviceProcessAction.createDossierNo,
 					eSignature : serviceProcessAction.eSignature,
 					configNote : serviceProcessAction.configNote,
-					dossiertemplatesFileFilter : serviceProcessAction.dossierTemplateNo
-
+					dossiertemplatesFileFilter : serviceProcessAction.dossierTemplateNo,
+					sequenceNo: serviceProcessAction.sequenceNo,
 				});
 
 				kendo.bind($("#serviceprocesses_detail_form_action"), viewModel);
@@ -315,6 +315,7 @@
 					createDossierFiles: "",
 					returnDossierFiles: "",
 					syncActionCode: "",
+					sequenceNo: "",
 					rollbackable: "",
 					dossiertemplatesFileFilter: "",
 					createDossierNo : "",
@@ -384,7 +385,8 @@
 							createDossierNo : $("#createDossierNo").prop("checked"),
 							eSignature : $("#eSignature").prop("checked"),
 							configNote : $("textarea#configNote").val(),
-							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val(),
+							sequenceNo :  $("#sequenceNo1").val()
 						},
 						success: function(result) {
 							notification.show({
@@ -456,7 +458,8 @@
 							createDossierNo : $("#createDossierNo").prop("checked"),
 							eSignature : $("#eSignature").prop("checked"),
 							configNote : $("textarea#configNote").val(),
-							dossierTemplateNo : $("#dossiertemplates_file_filter").val()
+							dossierTemplateNo : $("#dossiertemplates_file_filter").val(),
+							sequenceNo : $("#sequenceNo1").val(),
 						},
 						success: function(result) {
 							notification.show({
@@ -486,7 +489,8 @@
 								"rollbackable": $("#rollbackable").prop("checked"),
 								"createDossierNo" : $("#createDossierNo").prop("checked"),
 								"eSignature" : $("#eSignature").prop("checked"),
-								"configNote" : $("textarea#configNote").val()
+								"configNote" : $("textarea#configNote").val(),
+								"sequenceNo": $("#sequenceNo1").val(),
 							});
 
 							

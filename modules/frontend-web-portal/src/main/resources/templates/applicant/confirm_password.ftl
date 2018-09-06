@@ -39,7 +39,22 @@
 						title: "Success",
 						message: "Xác thực thành công. Mời bạn vào hòm thư để lấy lại mật khẩu mới!!!"
 					}, "success");
-				}
+					setTimeout(function(){
+			            window.location.href = "/web/cong-tiep-nhan/login?p_p_id=com_liferay_login_web_portlet_LoginPortlet&p_p_lifecycle=0&_com_liferay_login_web_portlet_LoginPortlet_redirect=%2Fgroup%2Fcong-tiep-nhan";
+          			}, 2000);
+				},
+				500: function(result) {
+					notification.show({
+						title: "Error",
+						message: "Xẩy ra lỗi, vui lòng thử lại."
+					}, "error");
+				},
+				409: function(result) {
+					notification.show({
+						title: "Success",
+						message: "Xác thực thành công. Mời bạn vào hòm thư để lấy lại mật khẩu mới!!!"
+					}, "success");
+				}	
 			}
 		});
 	});

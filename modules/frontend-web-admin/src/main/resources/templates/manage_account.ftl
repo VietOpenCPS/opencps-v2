@@ -388,7 +388,7 @@
 				var item = dataSourceBusiness.get(id);
 
 				if(result){
-					dataSourceBusiness.pushUpdate(result)
+					dataSourceBusiness.read(result);
 					// var mappingUser = item.mappingUser;
 					// mappingUser.locking = true;
 					// item.set("mappingUser",mappingUser);
@@ -406,17 +406,17 @@
 		var that = this;
 		var id = $(this).attr("data-pk");
 		$.ajax({
-			url : "${api.server}/applicants/"+id+"/lock",
+			url : "${api.server}/applicants/"+id+"/activate",
 			dataType : "json",
 			type : "POST",
 			headers: {"groupId": ${groupId}},
-			data : {
+			/*data : {
 				locked : false
-			},
+			},*/
 			success : function(result){
 				var item = dataSourceBusiness.get(id);
 				if(result){
-					dataSourceBusiness.pushUpdate(result)
+					dataSourceBusiness.read(result);
 					// var mappingUser = item.mappingUser;
 					// mappingUser.locking = false;
 					// item.set("mappingUser",mappingUser);

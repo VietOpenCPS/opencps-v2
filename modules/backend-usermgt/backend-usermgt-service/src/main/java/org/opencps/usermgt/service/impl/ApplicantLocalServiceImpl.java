@@ -171,6 +171,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			long[] userGroupIds = null;
 
 			String screenName = null;
+			
+			String[] For_split_email = contactEmail.split("@");
+			screenName = For_split_email[0];
 
 			if (Validator.isNull(password)) {
 				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
@@ -202,7 +205,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
-					password, password, autoScreenName, applicantName, contactEmail, 0l, StringPool.BLANK,
+					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
 					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);

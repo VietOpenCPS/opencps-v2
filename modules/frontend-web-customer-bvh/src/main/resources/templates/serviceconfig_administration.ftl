@@ -189,6 +189,7 @@
 						headers : {"groupId": ${groupId}},
 						data: {
 							keyword: options.data.keyword,
+							active: true
 						},
 						success: function(result) {
 							options.success(result);

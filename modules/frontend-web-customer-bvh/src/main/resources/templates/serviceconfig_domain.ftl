@@ -180,7 +180,8 @@
 						dataType : "json",
 						type : "GET",
 						data: {
-							keyword: options.data.keyword
+							keyword: options.data.keyword,
+							active: true
 						},
 						headers : {"groupId": ${groupId}},
 						success : function(result){
