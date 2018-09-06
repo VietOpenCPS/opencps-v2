@@ -181,11 +181,11 @@
 			$.ajax({
 				url: "${api.server}" + "/dossiertemplates/" + dossierTemplateSelected.id + "/parts/" + dataItem.partNo + "/formscript",
 				type: "GET",
-				dataType: "json",
+				dataType: "text",
 				headers: {"groupId": ${groupId}},
 				async: false,
 				success: function(result) {
-					formScript = result.value;
+					formScript = result;
 				}
 			});
 			$.ajax({

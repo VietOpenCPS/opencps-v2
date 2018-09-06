@@ -157,6 +157,14 @@
 				</div>
 				<div class="col-sm-9 PL10 P0">Import</div>
 			</li>
+			<li class="clearfix" >
+				<div class="col-sm-2 clearfix ">
+					<a href="javascript:;" >
+						<i class="fa fa-gg" aria-hidden="true"></i>
+					</a>
+				</div>
+				<div class="col-sm-9 PL10 P0">Voting</div>
+			</li>
 			<#-- <li class="clearfix" >
 				<div class="col-sm-2 clearfix ">
 					<a href="javascript:;" >
@@ -192,7 +200,8 @@
 			// '${ajax.registrationtemplates}',
 			'${ajax.serverconfigs}',
 			'${ajax.certnumber}',
-			'${ajax.import}'
+			'${ajax.import}',
+			'${ajax.voting}'
 			// '${ajax.system}'
 		]
 	}).data('kendoTabStrip');
