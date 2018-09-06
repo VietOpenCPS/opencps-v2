@@ -1,5 +1,6 @@
 package org.opencps.communication.utils;
 
+import org.opencps.communication.constants.MailVariables;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.Preferences;
@@ -75,13 +76,19 @@ public class NotificationUtil {
 			String textMessageTemplate = template.getTextMessage();
 			String userUrlPatternTemplate = template.getUserUrlPattern();
 			String guestUrlPatternTemplate = template.getGuestUrlPattern();
-			_log.info("emailSubjectTemplate: "+emailSubjectTemplate);
-			_log.info("emailBodyTemplate: "+emailBodyTemplate);
-			_log.info("textMessageTemplate: "+textMessageTemplate);
-			_log.info("userUrlPatternTemplate: "+userUrlPatternTemplate);
-			_log.info("guestUrlPatternTemplate: "+guestUrlPatternTemplate);
+//			_log.info("emailSubjectTemplate: "+emailSubjectTemplate);
+//			_log.info("emailBodyTemplate: "+emailBodyTemplate);
+//			_log.info("textMessageTemplate: "+textMessageTemplate);
+//			_log.info("userUrlPatternTemplate: "+userUrlPatternTemplate);
+//			_log.info("guestUrlPatternTemplate: "+guestUrlPatternTemplate);
 
 			String baseUrl = StringPool.BLANK;
+
+//			_log.info("PropValues.PORTAL_DOMAIN: "+PropValues.PORTAL_DOMAIN);
+//			_log.info("serviceContext.getPortalURL(): "+serviceContext.getPortalURL());
+//			_log.info("serviceContext.getCurrentURL(): "+serviceContext.getCurrentURL());
+//			_log.info("serviceContext.getPathFriendlyURLPublic(): "+serviceContext.getPathFriendlyURLPublic());
+//			_log.info("serviceContext.getPathFriendlyURLPublic(): "+serviceContext.getPathFriendlyURLPublic());
 
 			try {
 				Group group = GroupLocalServiceUtil.getGroup(
@@ -90,9 +97,12 @@ public class NotificationUtil {
 //				baseUrl = PropValues.PORTAL_DOMAIN +
 //				jsonData.put("url", serviceContext.getPortalURL());
 //				baseUrl = "http://119.17.200.7" +
-				baseUrl = serviceContext.getPortalURL() +
+//				baseUrl = serviceContext.getPortalURL() +
+				baseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPrivateGroup() +
 					group.getFriendlyURL();
+//				_log.info("group.getFriendlyURL(): "+group.getFriendlyURL());
+//				_log.info("group.getFriendlyURL(): "+PortalUtil.getPathFriendlyURLPublic());
 				_log.info("baseUrl: "+baseUrl);
 
 			}
@@ -108,7 +118,8 @@ public class NotificationUtil {
 
 //				guestBaseUrl = PropValues.PORTAL_DOMAIN +
 //				guestBaseUrl = "http://119.17.200.7" +
-				baseUrl = serviceContext.getPortalURL() +
+//				baseUrl = serviceContext.getPortalURL() +
+				guestBaseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPublic() +
 					group.getFriendlyURL();
 				_log.info("guestBaseUrl: "+guestBaseUrl);
@@ -128,11 +139,15 @@ public class NotificationUtil {
 				JSONObject payloadJSON =
 					JSONFactoryUtil.createJSONObject(queue.getPayload());
 
-				if (payloadJSON.has("Visibility")) {
-					security =
-						payloadJSON.getJSONObject("Visibility").getString(
-							"security");
-				}
+//				if (payloadJSON.has("Visibility")) {
+//					security =
+//						payloadJSON.getJSONObject("Visibility").getString(
+//							"security");
+//				}
+				
+//				String guestConfirmUrl = guestBaseUrl + MailVariables.SUB_URL_ACTIVE + payloadJSON.getJSONObject("Applicant").getString(
+//						"applicantId");
+//				_log.info("guestConfirmUrl: "+guestConfirmUrl);
 
 				MessageDataModel dataModel = new MessageDataModel();
 
@@ -155,6 +170,7 @@ public class NotificationUtil {
 				dataModel.setBaseUrl(baseUrl);
 				dataModel.setGuestBaseUrl(guestBaseUrl);
 				dataModel.setSecurity(security);
+				dataModel.setSubActiveUrl(MailVariables.SUB_URL_ACTIVE);
 				String token = StringPool.BLANK;
 				if (Validator.isNotNull(security)) {
 					token = Base64.encode(

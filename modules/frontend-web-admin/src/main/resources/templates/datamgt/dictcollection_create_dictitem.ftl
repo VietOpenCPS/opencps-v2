@@ -157,15 +157,23 @@
 		</div>
 
 		<div class="eq-height">
-						
-			<button class="btn btn-sm btn-active" id="_collectionSub_dictItem_edit_editDictItem" 
-				name="_collectionSub_dictItem_edit_editDictItem" type="button"
-				data-pk="${(param.dictCollection_itemCode)!}"
-				data-collectionCode="${(param.dictCollection_collectionCode)!}"
+			<#if (param.dictCollection_itemCode)??>
+			<button class="btn btn-sm btn-active" id="_collectionSub_dictItem_add_editDictItem" 
+				name="_collectionSub_dictItem_add_editDictItem" type="button"
 				data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
-					<i class="fa fa-check-circle"></i>
-					<span class="lfr-btn-label">Xác nhận</span>
-				</button>
+				<i class="fa fa-check-circle"></i>
+				<span class="lfr-btn-label">Lưu và thêm mới</span>
+			</button>
+			</#if>
+
+			<button class="btn btn-sm btn-active" id="_collectionSub_dictItem_edit_editDictItem" 
+			name="_collectionSub_dictItem_edit_editDictItem" type="button"
+			data-pk="${(param.dictCollection_itemCode)!}"
+			data-collectionCode="${(param.dictCollection_collectionCode)!}"
+			data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
+			<i class="fa fa-check-circle"></i>
+			<span class="lfr-btn-label">Xác nhận</span>
+		</button>
 		
 			<button class="btn btn-default btn-sm MLA" data-dismiss="modal" value="Quay lại">
 				<i class="icon-undo"></i>
@@ -266,7 +274,7 @@
 
 						var dataSource = $("#_collectionSub_dictItem_listView").getKendoListView().dataSource;
 						dataSource.pushUpdate(data);
-						$("#modal-lg").trigger({ type: "click" });
+						// $("#modal-lg").trigger({ type: "click" });
 						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 
 					}
@@ -309,9 +317,9 @@
 
 						var dataSource = $("#_collectionSub_dictItem_listView").getKendoListView().dataSource;
 					
-						dataSource.pushUpdate(data);
+						dataSource.pushCreate(data);
 						$('#_collectionSub_dictItem_CounterListDetail').html(dataSource.total());
-						$("#modal-lg").trigger({ type: "click" });
+						// $("#modal-lg").trigger({ type: "click" });
 						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
 
 					}
@@ -327,6 +335,21 @@
 		}
 		
 	});
+
+	function clearInputDict () {
+		$("#_collectionSub_dictItem_edit_itemCode").val("");
+		$("#_collectionSub_dictItem_edit_itemName").val("");
+		$("#_collectionSub_dictItem_edit_itemNameEN").val("");
+		$("#_collectionSub_dictItem_edit_groupCode").data('kendoMultiSelect').value([]);
+		$("#_collectionSub_dictItem_edit_sibling").val("");
+		$("#_collectionSub_dictItem_edit_description").val("");
+	}
+	$("#_collectionSub_dictItem_add_editDictItem").click(function (event) {
+		$("#_collectionSub_dictItem_edit_editDictItem").click();
+		setTimeout(function (argument) {
+			clearInputDict();
+		}, 500)
+	})
 			
 })(jQuery);
 

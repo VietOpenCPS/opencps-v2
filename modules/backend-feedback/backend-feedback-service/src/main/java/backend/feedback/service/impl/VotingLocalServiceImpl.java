@@ -214,14 +214,6 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		if (Validator.isNotNull(groupId)) {
-//			MultiMatchQuery query = new MultiMatchQuery(groupId);
-//
-//			query.addFields(VotingTerm.GROUP_ID);
-//
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
-
 		if (Validator.isNotNull(userId)) {
 			MultiMatchQuery query = new MultiMatchQuery(userId);
 

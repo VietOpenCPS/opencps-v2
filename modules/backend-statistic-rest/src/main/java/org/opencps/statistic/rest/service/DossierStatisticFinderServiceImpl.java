@@ -6,6 +6,7 @@ import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.converter.DossierStatisticConverter;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +23,14 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest)
 			throws PortalException, SystemException {
 		
+		LOG.info("***DossierStatisticFinderServiceImpl");
+		
+		DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+		
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
 				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
 						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
-						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getGroupAgencyCode(),
+						dossierStatisticRequest.getGovAgencyCode(), "",
 						dossierStatisticRequest.isReporting(), dossierStatisticRequest.getStart(),
 						dossierStatisticRequest.getEnd());
 
