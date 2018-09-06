@@ -6,7 +6,7 @@ import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.impl.OpencpsDossierStatisticImpl;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
 
-import com.liferay.portal.dao.orm.custom.sql.CustomSQLUtil;
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFinderBaseImpl
 		implements OpencpsDossierStatisticFinder {
@@ -46,8 +47,8 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 		try {
 			session = openSession();
-			
-			String sql = CustomSQLUtil.get(getClass(), SEARCH_DOSSIER_STATISTIC);
+
+			String sql = _customSQL.get(getClass(), SEARCH_DOSSIER_STATISTIC);
 
 		
 			if (Validator.isNull(domain)) {
@@ -120,7 +121,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 		try {
 			session = openSession();
 
-			String sql = CustomSQLUtil.get(getClass(), SEARCH_DOSSIER_STATISTIC);
+			String sql = _customSQL.get(getClass(), SEARCH_DOSSIER_STATISTIC);
 			
 			sql = StringUtil.replace(sql, CONDITION_MONTH, CONDITION_MONTH_REPLACE);
 		
@@ -189,7 +190,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 		try {
 			session = openSession();
 
-			String sql = CustomSQLUtil.get(getClass(), SEARCH_DOSSIER_STATISTIC);
+			String sql = _customSQL.get(getClass(), SEARCH_DOSSIER_STATISTIC);
 
 			// LOG.info(sql);
 
@@ -272,5 +273,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 		return null;
 	}
-
+	
+	@ServiceReference(type = CustomSQL.class)
+	private CustomSQL _customSQL;
 }
