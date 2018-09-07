@@ -3,7 +3,6 @@ package backend.api.rest.application.v21;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 import com.liferay.portal.kernel.model.User;
 
@@ -33,7 +33,12 @@ import backend.api.rest.application.v21.impl.StepConfigApiImpl;
 /**
  * @author binhth
  */
-@Component(immediate = true, service = Application.class)
+@Component( 
+property = { 
+    JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/rest/v2_1", 
+    JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.restv2_1"
+}, 
+service = Application.class)
 public class BackendAPIRestApplicationV2 extends Application {
 
 	@Reference

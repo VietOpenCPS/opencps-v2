@@ -11,6 +11,7 @@ import javax.ws.rs.core.Application;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 import backend.postal.api.rest.controller.impl.EInvoiceManagementImpl;
 import backend.postal.api.rest.controller.impl.EvaluationManagementImpl;
@@ -19,7 +20,12 @@ import backend.postal.api.rest.controller.impl.VNPostManagementImpl;
 /**
  * @author admin
  */
-@Component(immediate = true, service = Application.class)
+@Component( 
+property = { 
+    JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/rest/v2/postal", 
+    JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.restv2postal"
+}, 
+service = Application.class)
 public class BackendPostalApiRestApplication extends Application {
 
 	@Reference

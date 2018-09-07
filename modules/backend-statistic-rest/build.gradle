@@ -8,6 +8,9 @@ dependencies {
 	compile "org.springframework:spring-core:5.0.7.RELEASE"
 	compile "biz.aQute.bnd:biz.aQute.bndlib:3.2.0"
 	compile "com.liferay:com.liferay.ant.bnd:2.0.37"
+	    
+	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
+	compileOnly group: 'com.liferay', name: 'com.liferay.oauth2.provider.scope.api', version: '1.0.2'
 	
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-api")
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-service")

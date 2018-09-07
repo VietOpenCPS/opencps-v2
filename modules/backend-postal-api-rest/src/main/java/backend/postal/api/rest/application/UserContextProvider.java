@@ -21,7 +21,6 @@ public class UserContextProvider implements ContextProvider<User> {
     @Override
     public User createContext(Message message) {
         try {
-        	System.out.println("UserContextProvider.createContext()");
             return _portal.getUser(
                 (HttpServletRequest)message.getContextualProperty(
                     "HTTP.REQUEST"));

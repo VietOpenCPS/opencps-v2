@@ -96,6 +96,7 @@ import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -115,7 +116,12 @@ import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.backend.Symbol;
 import uk.org.okapibarcode.output.Java2DRenderer;
 
-@Component(immediate = true, service = Application.class)
+@Component( 
+property = { 
+    JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/rest/v2", 
+    JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.restv2"
+}, 
+service = Application.class)
 public class BackendApiRestApplication extends Application {
 
 	@Context
