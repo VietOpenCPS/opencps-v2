@@ -56,7 +56,8 @@ import javax.xml.bind.annotation.XmlType;
     "esign",
     "hasForm",
     "typeCode",
-    "deliverableAction"
+    "deliverableAction",
+    "eForm"
 })
 @XmlRootElement(name = "DossierPartInputModel")
 public class DossierPartInputModel {
@@ -83,6 +84,8 @@ public class DossierPartInputModel {
     protected String typeCode;
 	@FormParam(value = "deliverableAction")
     protected Integer deliverableAction;
+	@FormParam(value = "eForm")
+    protected String eForm;
 
     /**
      * Gets the value of the partNo property.
@@ -347,5 +350,13 @@ public class DossierPartInputModel {
     public void setDeliverableAction(Integer value) {
         this.deliverableAction = value;
     }
+
+	public String geteForm() {
+		return eForm;
+	}
+
+	public void seteForm(String eForm) {
+		this.eForm = eForm;
+	}
 
 }

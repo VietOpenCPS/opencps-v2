@@ -124,6 +124,7 @@ public class DossierTemplateUtils {
 			model.setFileTemplateNo(doc.get(DossierPartTerm.FILE_TEMPLATE_NO));
 			model.setTypeCode(doc.get(DossierPartTerm.DELIVERABLE_TYPE));
 			model.setDeliverableAction(GetterUtil.getInteger(doc.get(DossierPartTerm.DELIVERABLE_ACTION)));
+			model.seteForm(doc.get(DossierPartTerm.EFORM));
 			
 			boolean hasForm = false;
 
@@ -154,6 +155,7 @@ public class DossierTemplateUtils {
 		
 		output.setTypeCode(object.getDeliverableType());
 		output.setDeliverableAction(object.getDeliverableAction());
+		output.seteForm(Boolean.toString(object.getEForm()));
 
 		return output;
 	}

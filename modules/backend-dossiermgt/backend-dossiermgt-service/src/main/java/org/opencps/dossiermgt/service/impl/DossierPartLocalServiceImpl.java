@@ -225,9 +225,8 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 			object.setESign(eSign);
 		}
 
-		dossierPartPersistence.update(object);
+		return dossierPartPersistence.update(object);
 
-		return object;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -303,9 +302,8 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		}
 
-		dossierPartPersistence.update(object);
+		return dossierPartPersistence.update(object);
 
-		return object;
 	}
 
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
