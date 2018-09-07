@@ -1189,7 +1189,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				}
 			}
 			results.put("total", total);
-			results.put("domains", domains);
+			results.put("data", domains);
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

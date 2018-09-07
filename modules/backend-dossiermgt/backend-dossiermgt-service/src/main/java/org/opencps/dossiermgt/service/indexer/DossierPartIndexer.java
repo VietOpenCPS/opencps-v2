@@ -78,6 +78,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 		document.addTextSortable(DossierPartTerm.FILE_TEMPLATE_NO, object.getFileTemplateNo());
 		document.addTextSortable(DossierPartTerm.ESIGN, Boolean.toString(object.getESign()));
 		document.addTextSortable(DossierPartTerm.DELIVERABLE_TYPE, Validator.isNotNull(object.getDeliverableType()) ? object.getDeliverableType() : StringPool.BLANK );
+		document.addTextSortable(DossierPartTerm.EFORM, Boolean.toString(object.getEForm()));
 
 		return document;
 	}
