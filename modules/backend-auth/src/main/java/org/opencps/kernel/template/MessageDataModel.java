@@ -40,6 +40,7 @@ public class MessageDataModel {
 	private String guestBaseUrl;
 	private String security;
 	private String token;
+	private String subActiveUrl;
 
 	public long getGroupId() {
 
@@ -249,6 +250,14 @@ public class MessageDataModel {
 	public void setToken(String token) {
 
 		this.token = token;
+	}
+
+	public String getSubActiveUrl() {
+		return subActiveUrl;
+	}
+
+	public void setSubActiveUrl(String subActiveUrl) {
+		this.subActiveUrl = subActiveUrl;
 	}
 
 }

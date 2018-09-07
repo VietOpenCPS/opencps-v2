@@ -24,4 +24,6 @@ public class MailVariables {
 	
 	//Voting
 	public static final String SUBJECT = "[$SUBJECT$]";
+	//
+	public static final String SUB_URL_ACTIVE = "confirm-account?active_user_id=";
 }

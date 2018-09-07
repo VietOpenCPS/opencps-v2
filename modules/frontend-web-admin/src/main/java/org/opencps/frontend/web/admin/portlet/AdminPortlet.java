@@ -316,6 +316,14 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		worktimeURL.setParameter(
 				"mvcPath", "/templates/workTime/worktime_list.ftl");
 		
+		PortletURL votingURL = PortletURLFactoryUtil.create(
+				renderRequest, portletId, themeDisplay.getPlid(),
+				PortletRequest.RENDER_PHASE);
+		votingURL.setPortletMode(PortletMode.VIEW);
+		votingURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+		votingURL.setParameter(
+				"mvcPath", "/templates/voting/voting.ftl");
+		
 		urlObject.put("holiday", holidayURL.toString());
 		urlObject.put("worktime", worktimeURL.toString());
 		urlObject.put("registrationtemplates", registrationTemplatesURL.toString());
@@ -349,6 +357,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		urlObject.put("certnumber", certNumberURL.toString());
 		urlObject.put("import", impoartURL.toString());
 		urlObject.put("system", systemURL.toString());
+		urlObject.put("voting", votingURL.toString());
 		
 		// set object edit
 		long serviceInfoId = ParamUtil.getLong(renderRequest, "serviceInfoId");

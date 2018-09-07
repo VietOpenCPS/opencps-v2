@@ -259,19 +259,34 @@
 		dataTextField : "serviceName",
 		dataSource: {
 			transport : {
-				read : {
-					url : "${api.server}/serviceinfos",
-					dataType : "json",
-					type : "GET",
-					headers: {"groupId": ${groupId}},
-					success : function(result){
-
-					},
-					error : function(xhr){
-
-					}
+				read : function (options) {
+					$.ajax({
+						url : "${api.server}/serviceinfos",
+						dataType : "json",
+						type : "GET",
+						headers: {"groupId": ${groupId}},
+						data: {
+							start: 0,
+							end: 15,
+							keyword: $("#keyword").val()
+						},
+						success : function(result){
+							if (result.data) {
+								options.success(result);
+							} else {
+								options.success({
+									data: [],
+									total: 0
+								})
+							}
+						},
+						error : function(xhr){
+							options.error(xhr);
+						}
+					})
 				}
 			},
+			serverFiltering: true,
 			schema : {
 				total : "total",
 				data : "data"
