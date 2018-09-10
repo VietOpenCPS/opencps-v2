@@ -139,4 +139,11 @@
 <@liferay_util["include"] page=bottom_include />
 </body>
 
+<script type="text/javascript">
+	    $.ajaxSetup({
+			headers: {"Token": Liferay.authToken},
+			global: true
+		});
+</script>
+
 </html>

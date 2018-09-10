@@ -14,8 +14,8 @@
 	<@liferay_util["include"] page=top_head_include />
 	
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=14" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=2" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=21" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=21" rel="stylesheet">
 	
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
@@ -83,15 +83,21 @@
 		<footer id="footer">
 			<div class="container">
 				<div class="left">
-					<div class="site-name"><!--Cổng dịch vụ công trực tuyến--> <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
+					<div class="site-name"><!--Cổng dịch vụ công trực tuyến--> <span>${site_name_cus}</span> </div>
 					<div class="contact">
-						<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
-						<p><i class="fa fa-phone"></i> 0986 997 029</p>
-						<p><i class="fa fa-envelope"></i> vpub@phutho.gov.vn</p>
+						<p><i class="fa fa-map-marker"></i> ${address}</p>
+						<p><i class="fa fa-phone"></i> ${phone}</p>
+						<p><i class="fa fa-envelope"></i> ${email}</p>
 					</div>
 				</div>
 				<div class="right">
-					<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
+					<div class="hotline align-middle">
+						<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
+						<div>
+							<p>Đường dây nóng</p>
+							<span>${hotline}</span>
+						</div>
+					</div>
 					<p class="align-middle">
 						<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
 						Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a>
@@ -106,5 +112,12 @@
 	<@liferay_util["include"] page=bottom_include />
 
 </body>
+
+<script type="text/javascript">
+	    $.ajaxSetup({
+			headers: {"Token": Liferay.authToken},
+			global: true
+		});
+</script>
 
 </html>
