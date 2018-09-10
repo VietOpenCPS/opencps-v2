@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.StringPool;
 
 
 public class DossierStatisticFinderServiceImpl implements DossierStatisticFinderService {
@@ -24,9 +25,9 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 			throws PortalException, SystemException {
 		
 		LOG.info("***DossierStatisticFinderServiceImpl");
-		
+		  
 		DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
-		
+		  
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
 				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
 						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),

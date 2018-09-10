@@ -78,28 +78,8 @@ public class jasperWrapper implements jasper, ModelWrapper<jasper> {
 	}
 
 	@Override
-	public boolean isCachedModel() {
-		return _jasper.isCachedModel();
-	}
-
-	@Override
-	public boolean isEscapedModel() {
-		return _jasper.isEscapedModel();
-	}
-
-	@Override
-	public boolean isNew() {
-		return _jasper.isNew();
-	}
-
-	@Override
-	public ExpandoBridge getExpandoBridge() {
-		return _jasper.getExpandoBridge();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.CacheModel<org.opencps.jasper.model.jasper> toCacheModel() {
-		return _jasper.toCacheModel();
+	public Object clone() {
+		return new jasperWrapper((jasper)_jasper.clone());
 	}
 
 	@Override
@@ -108,38 +88,8 @@ public class jasperWrapper implements jasper, ModelWrapper<jasper> {
 	}
 
 	@Override
-	public int hashCode() {
-		return _jasper.hashCode();
-	}
-
-	@Override
-	public Serializable getPrimaryKeyObj() {
-		return _jasper.getPrimaryKeyObj();
-	}
-
-	@Override
-	public java.lang.Object clone() {
-		return new jasperWrapper((jasper)_jasper.clone());
-	}
-
-	/**
-	* Returns the uuid of this jasper.
-	*
-	* @return the uuid of this jasper
-	*/
-	@Override
-	public java.lang.String getUuid() {
-		return _jasper.getUuid();
-	}
-
-	@Override
-	public java.lang.String toString() {
-		return _jasper.toString();
-	}
-
-	@Override
-	public java.lang.String toXmlString() {
-		return _jasper.toXmlString();
+	public ExpandoBridge getExpandoBridge() {
+		return _jasper.getExpandoBridge();
 	}
 
 	/**
@@ -163,13 +113,38 @@ public class jasperWrapper implements jasper, ModelWrapper<jasper> {
 	}
 
 	@Override
-	public org.opencps.jasper.model.jasper toEscapedModel() {
-		return new jasperWrapper(_jasper.toEscapedModel());
+	public Serializable getPrimaryKeyObj() {
+		return _jasper.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the uuid of this jasper.
+	*
+	* @return the uuid of this jasper
+	*/
+	@Override
+	public String getUuid() {
+		return _jasper.getUuid();
 	}
 
 	@Override
-	public org.opencps.jasper.model.jasper toUnescapedModel() {
-		return new jasperWrapper(_jasper.toUnescapedModel());
+	public int hashCode() {
+		return _jasper.hashCode();
+	}
+
+	@Override
+	public boolean isCachedModel() {
+		return _jasper.isCachedModel();
+	}
+
+	@Override
+	public boolean isEscapedModel() {
+		return _jasper.isEscapedModel();
+	}
+
+	@Override
+	public boolean isNew() {
+		return _jasper.isNew();
 	}
 
 	@Override
@@ -183,14 +158,14 @@ public class jasperWrapper implements jasper, ModelWrapper<jasper> {
 	}
 
 	@Override
-	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge) {
-		_jasper.setExpandoBridgeAttributes(expandoBridge);
-	}
-
-	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
 		_jasper.setExpandoBridgeAttributes(baseModel);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge) {
+		_jasper.setExpandoBridgeAttributes(expandoBridge);
 	}
 
 	@Override
@@ -234,8 +209,33 @@ public class jasperWrapper implements jasper, ModelWrapper<jasper> {
 	* @param uuid the uuid of this jasper
 	*/
 	@Override
-	public void setUuid(java.lang.String uuid) {
+	public void setUuid(String uuid) {
 		_jasper.setUuid(uuid);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.CacheModel<org.opencps.jasper.model.jasper> toCacheModel() {
+		return _jasper.toCacheModel();
+	}
+
+	@Override
+	public org.opencps.jasper.model.jasper toEscapedModel() {
+		return new jasperWrapper(_jasper.toEscapedModel());
+	}
+
+	@Override
+	public String toString() {
+		return _jasper.toString();
+	}
+
+	@Override
+	public org.opencps.jasper.model.jasper toUnescapedModel() {
+		return new jasperWrapper(_jasper.toUnescapedModel());
+	}
+
+	@Override
+	public String toXmlString() {
+		return _jasper.toXmlString();
 	}
 
 	@Override

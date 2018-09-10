@@ -22,6 +22,7 @@ import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +36,12 @@ import opencps.statistic.common.webservice.exception.ServiceException;
 /**
  * @author khoavu
  */
-@ApplicationPath("/statistics")
-@Component(immediate = true, service = Application.class)
+@Component( 
+property = { 
+    JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/rest/statistics", 
+    JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.reststatistics"
+}, 
+service = Application.class)
 @Consumes("application/json")
 @Produces("application/json")
 public class OpencpsStatisticRestApplication extends Application {

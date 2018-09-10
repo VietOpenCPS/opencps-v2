@@ -10,6 +10,7 @@ import org.opencps.usermgt.constants.OfficeSiteTerm;
 import org.opencps.usermgt.constants.ResourceRoleTerm;
 import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -30,6 +31,10 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class OfficeSiteIndexer extends BaseIndexer<OfficeSite> {
 
 	public static final String CLASS_NAME = OfficeSite.class.getName();

@@ -686,14 +686,7 @@
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:element>
-<!-- 				<xsd:element name="durationCount" type="xsd:double" /> -->
-				<xsd:element name="durationCount">
-					<xsd:simpleType>
-						<xsd:restriction base="xsd:string">
-							<xsd:maxLength value="255"></xsd:maxLength>
-						</xsd:restriction>
-					</xsd:simpleType>
-				</xsd:element>
+				<xsd:element name="durationCount" type="xsd:double" />
 				<xsd:element name="durationUnit" type="xsd:int" />
 				<xsd:element name="generatePassword" type="xsd:boolean" />
 				<xsd:element name="serverNo">
@@ -813,14 +806,7 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
-<!-- 							<xsd:element name="durationCount" type="xsd:double" /> -->
-							<xsd:element name="durationCount">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
+							<xsd:element name="durationCount" type="xsd:int" />
 							<xsd:element name="instructionNote">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">

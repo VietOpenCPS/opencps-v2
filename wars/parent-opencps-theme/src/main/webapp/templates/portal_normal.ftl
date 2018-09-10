@@ -14,6 +14,7 @@
 	<@liferay_util["include"] page=top_head_include />
 	
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet" />
 	
 	<!-- Mainly scripts -->
 	<script>
@@ -31,14 +32,26 @@
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap-datetimepicker.min.js"></script>
 	
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap-editable.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/handlebars.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/alpaca.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/moment.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/Chart.bundle.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/Chart.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.culture.vi-VN.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/summernote.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/toastr.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/handlebars.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.ui.widget.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload-process.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload-validate.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.iframe-transport.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.textcomplete.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/alpaca.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/mobilink-alpaca-form.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/mobilink.util.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js?t=124"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js"></script>
+	<!-- Slider -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.js"></script>
 	
 	<script>
         window.define = window.__define;
@@ -72,15 +85,11 @@
 			<a href="${site_default_url}" class="logo align-middle">
 				<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
 				<div class="text-logo">
-					Cổng dịch vụ công trực tuyến
-					<span>${site_name}</span>
+					${site_name}
+					<span>HỆ THỐNG MỘT CỬA ĐIỆN TỬ VÀ DỊCH VỤ CÔNG TRỰC TUYẾN</span>
 				</div>
 			</a>
-			<@liferay_portlet["runtime"]
-              defaultPreferences="${freeMarkerPortletPreferences}"
-              portletProviderAction=portletProviderAction.VIEW
-              instanceId="FrontendWebPortal_LoginPortlet_1"
-              portletName="FrontendWebPortal_LoginPortlet"/>
+			<@liferay_portlet["runtime"] portletName="npmreactlogin"/>
 		</div>
 	</header>
 		
@@ -110,7 +119,7 @@
 				<div class="site-name"><!--Cổng dịch vụ công trực tuyến--> <span>Ủy ban nhân dân Tỉnh Phú Thọ</span> </div>
 				<div class="contact">
 					<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
-					<p><i class="fa fa-phone"></i> 0210.3846647 - 0210.3847393</p>
+					<p><i class="fa fa-phone"></i> 0986 997 029</p>
 					<p><i class="fa fa-envelope"></i> vpub@phutho.gov.vn</p>
 				</div>
 			</div>
@@ -118,7 +127,7 @@
 				<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
 				<p class="align-middle">
 					<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
-					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội Viettel trên nền OpenCPS
+					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a>
 				</p>
 			</div>
 		</div>

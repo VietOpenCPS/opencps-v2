@@ -266,19 +266,19 @@ public interface EvaluationModel extends BaseModel<Evaluation>, ShardedModel,
 	public Object clone();
 
 	@Override
-	public int compareTo(backend.feedback.model.Evaluation evaluation);
+	public int compareTo(Evaluation evaluation);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<backend.feedback.model.Evaluation> toCacheModel();
+	public CacheModel<Evaluation> toCacheModel();
 
 	@Override
-	public backend.feedback.model.Evaluation toEscapedModel();
+	public Evaluation toEscapedModel();
 
 	@Override
-	public backend.feedback.model.Evaluation toUnescapedModel();
+	public Evaluation toUnescapedModel();
 
 	@Override
 	public String toString();

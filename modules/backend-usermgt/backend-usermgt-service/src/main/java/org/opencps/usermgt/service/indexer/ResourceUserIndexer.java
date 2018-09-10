@@ -11,6 +11,7 @@ import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.ResourceUser;
 import org.opencps.usermgt.service.ResourceUserLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -32,6 +33,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class ResourceUserIndexer extends BaseIndexer<ResourceUser> {
 
 	public static final String CLASS_NAME = ResourceUser.class.getName();

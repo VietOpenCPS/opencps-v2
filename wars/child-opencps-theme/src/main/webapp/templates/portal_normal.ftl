@@ -5,14 +5,16 @@
 <html class="${root_css_class}" dir="<@liferay.language key="lang.dir" />" lang="${w3c_language_id}">
 
 <head>
-	<title>Hệ thống Dịch vụ công trực tuyến</title>
+	<title>${the_title} - ${company_name}</title>
 
 	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	
-	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;subset=vietnamese" rel="stylesheet">
+	<!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700&amp;subset=vietnamese" rel="stylesheet"> -->
 
 	<@liferay_util["include"] page=top_head_include />
+	
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet" />
 	
 	<!-- Mainly scripts -->
 	<script>
@@ -24,28 +26,33 @@
 	 
 	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/slick.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.ui.core.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.messages.en-US.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.culture.vi-VN.js"></script>
-	
-	
-	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.ui.core.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/jasny-bootstrap.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/moment-with-locales.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap-datetimepicker.min.js"></script>
 	
 	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap-editable.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/handlebars.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/alpaca.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/moment.min.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/Chart.bundle.js"></script>
-	<script src="${themeDisplay.getPathThemeRoot()}/js/Chart.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/kendo.culture.vi-VN.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/summernote.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/toastr.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/handlebars.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.ui.widget.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload-process.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.fileupload-validate.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.iframe-transport.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.textcomplete.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/alpaca.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/mobilink-alpaca-form.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/mobilink.util.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/custom.js"></script>
+	<!-- Slider -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.js"></script>
+	
 	<script>
         window.define = window.__define;
         window.require = window.__require;
@@ -78,15 +85,11 @@
 			<a href="${site_default_url}" class="logo align-middle">
 				<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
 				<div class="text-logo">
-					Hệ thống Một cửa điện tử liên thông
+					HỆ THỐNG MỘT CỬA ĐIỆN TỬ LIÊN THÔNG
 					<span>${site_name}</span>
 				</div>
 			</a>
-			<@liferay_portlet["runtime"]
-              defaultPreferences="${freeMarkerPortletPreferences}"
-              portletProviderAction=portletProviderAction.VIEW
-              instanceId="FrontendWebPortal_LoginPortlet_1"
-              portletName="FrontendWebPortal_LoginPortlet"/>
+			<@liferay_portlet["runtime"] portletName="npmreactlogin"/>
 		</div>
 	</header>
 		
@@ -113,10 +116,10 @@
 	<footer id="footer">
 		<div class="container">
 			<div class="left">
-				<div class="site-name">Hệ thống một cửa điện tử liên thông Tỉnh Phú Thọ</div>
+				<div class="site-name"><span>HỆ THỐNG MỘT CỬA ĐIỆN TỬ LIÊN THÔNG TỈNH PHÚ THỌ</span> </div>
 				<div class="contact">
 					<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
-					<p><i class="fa fa-phone"></i> 0210.3846647 - 0210.3847393</p>
+					<p><i class="fa fa-phone"></i> 0986 997 029</p>
 					<p><i class="fa fa-envelope"></i> vpub@phutho.gov.vn</p>
 				</div>
 			</div>
@@ -124,7 +127,7 @@
 				<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
 				<p class="align-middle">
 					<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
-					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội Viettel trên nền OpenCPS
+					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a> trên nền <a href="https://github.com/VietOpenCPS/opencps-v2" target="_blank">OpenCPS</a>
 				</p>
 			</div>
 		</div>

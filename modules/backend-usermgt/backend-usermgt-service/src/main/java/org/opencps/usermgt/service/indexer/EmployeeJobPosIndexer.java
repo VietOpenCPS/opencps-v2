@@ -13,6 +13,7 @@ import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -32,8 +33,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
-
-
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class EmployeeJobPosIndexer extends BaseIndexer<EmployeeJobPos> {
 
 	public static final String CLASS_NAME = EmployeeJobPos.class.getName();

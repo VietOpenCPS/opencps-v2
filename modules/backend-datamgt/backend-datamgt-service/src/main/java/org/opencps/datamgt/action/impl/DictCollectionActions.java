@@ -82,6 +82,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			result.put("total", total);
 
+			/*
 			if (DictCollectionLocalServiceUtil.initDictCollection(groupId)) {
 
 				// create init dictcollection
@@ -105,6 +106,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 				}
 
 			}
+			*/
 
 		}
 		catch (ParseException e) {

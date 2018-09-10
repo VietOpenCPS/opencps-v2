@@ -47,8 +47,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param uuid the uuid
 	* @return the matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid(
-		java.lang.String uuid);
+	public java.util.List<OpencpsDossierStatistic> findByUuid(String uuid);
 
 	/**
 	* Returns a range of all the opencps dossier statistics where uuid = &#63;.
@@ -62,8 +61,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
 	* @return the range of matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid(
-		java.lang.String uuid, int start, int end);
+	public java.util.List<OpencpsDossierStatistic> findByUuid(String uuid,
+		int start, int end);
 
 	/**
 	* Returns an ordered range of all the opencps dossier statistics where uuid = &#63;.
@@ -78,8 +77,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid(
-		java.lang.String uuid, int start, int end,
+	public java.util.List<OpencpsDossierStatistic> findByUuid(String uuid,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -96,8 +95,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid(
-		java.lang.String uuid, int start, int end,
+	public java.util.List<OpencpsDossierStatistic> findByUuid(String uuid,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache);
 
@@ -109,7 +108,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the first matching opencps dossier statistic
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic findByUuid_First(java.lang.String uuid,
+	public OpencpsDossierStatistic findByUuid_First(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -120,7 +119,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic fetchByUuid_First(java.lang.String uuid,
+	public OpencpsDossierStatistic fetchByUuid_First(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -131,7 +130,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the last matching opencps dossier statistic
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic findByUuid_Last(java.lang.String uuid,
+	public OpencpsDossierStatistic findByUuid_Last(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -142,7 +141,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic fetchByUuid_Last(java.lang.String uuid,
+	public OpencpsDossierStatistic fetchByUuid_Last(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -155,7 +154,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
 	*/
 	public OpencpsDossierStatistic[] findByUuid_PrevAndNext(
-		long dossierStatisticId, java.lang.String uuid,
+		long dossierStatisticId, String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -164,7 +163,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	*
 	* @param uuid the uuid
 	*/
-	public void removeByUuid(java.lang.String uuid);
+	public void removeByUuid(String uuid);
 
 	/**
 	* Returns the number of opencps dossier statistics where uuid = &#63;.
@@ -172,7 +171,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param uuid the uuid
 	* @return the number of matching opencps dossier statistics
 	*/
-	public int countByUuid(java.lang.String uuid);
+	public int countByUuid(String uuid);
 
 	/**
 	* Returns the opencps dossier statistic where uuid = &#63; and groupId = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.
@@ -182,8 +181,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistic
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic findByUUID_G(java.lang.String uuid,
-		long groupId) throws NoSuchOpencpsDossierStatisticException;
+	public OpencpsDossierStatistic findByUUID_G(String uuid, long groupId)
+		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
 	* Returns the opencps dossier statistic where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -192,8 +191,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param groupId the group ID
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic fetchByUUID_G(java.lang.String uuid,
-		long groupId);
+	public OpencpsDossierStatistic fetchByUUID_G(String uuid, long groupId);
 
 	/**
 	* Returns the opencps dossier statistic where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -203,8 +201,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic fetchByUUID_G(java.lang.String uuid,
-		long groupId, boolean retrieveFromCache);
+	public OpencpsDossierStatistic fetchByUUID_G(String uuid, long groupId,
+		boolean retrieveFromCache);
 
 	/**
 	* Removes the opencps dossier statistic where uuid = &#63; and groupId = &#63; from the database.
@@ -213,8 +211,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param groupId the group ID
 	* @return the opencps dossier statistic that was removed
 	*/
-	public OpencpsDossierStatistic removeByUUID_G(java.lang.String uuid,
-		long groupId) throws NoSuchOpencpsDossierStatisticException;
+	public OpencpsDossierStatistic removeByUUID_G(String uuid, long groupId)
+		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
 	* Returns the number of opencps dossier statistics where uuid = &#63; and groupId = &#63;.
@@ -223,7 +221,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param groupId the group ID
 	* @return the number of matching opencps dossier statistics
 	*/
-	public int countByUUID_G(java.lang.String uuid, long groupId);
+	public int countByUUID_G(String uuid, long groupId);
 
 	/**
 	* Returns all the opencps dossier statistics where uuid = &#63; and companyId = &#63;.
@@ -232,8 +230,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param companyId the company ID
 	* @return the matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid_C(
-		java.lang.String uuid, long companyId);
+	public java.util.List<OpencpsDossierStatistic> findByUuid_C(String uuid,
+		long companyId);
 
 	/**
 	* Returns a range of all the opencps dossier statistics where uuid = &#63; and companyId = &#63;.
@@ -248,8 +246,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
 	* @return the range of matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid_C(
-		java.lang.String uuid, long companyId, int start, int end);
+	public java.util.List<OpencpsDossierStatistic> findByUuid_C(String uuid,
+		long companyId, int start, int end);
 
 	/**
 	* Returns an ordered range of all the opencps dossier statistics where uuid = &#63; and companyId = &#63;.
@@ -265,8 +263,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid_C(
-		java.lang.String uuid, long companyId, int start, int end,
+	public java.util.List<OpencpsDossierStatistic> findByUuid_C(String uuid,
+		long companyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -284,8 +282,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching opencps dossier statistics
 	*/
-	public java.util.List<OpencpsDossierStatistic> findByUuid_C(
-		java.lang.String uuid, long companyId, int start, int end,
+	public java.util.List<OpencpsDossierStatistic> findByUuid_C(String uuid,
+		long companyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache);
 
@@ -298,7 +296,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the first matching opencps dossier statistic
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic findByUuid_C_First(java.lang.String uuid,
+	public OpencpsDossierStatistic findByUuid_C_First(String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
@@ -311,7 +309,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic fetchByUuid_C_First(java.lang.String uuid,
+	public OpencpsDossierStatistic fetchByUuid_C_First(String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
@@ -324,7 +322,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the last matching opencps dossier statistic
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic findByUuid_C_Last(java.lang.String uuid,
+	public OpencpsDossierStatistic findByUuid_C_Last(String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
@@ -337,7 +335,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
-	public OpencpsDossierStatistic fetchByUuid_C_Last(java.lang.String uuid,
+	public OpencpsDossierStatistic fetchByUuid_C_Last(String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
@@ -352,7 +350,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
 	*/
 	public OpencpsDossierStatistic[] findByUuid_C_PrevAndNext(
-		long dossierStatisticId, java.lang.String uuid, long companyId,
+		long dossierStatisticId, String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -362,7 +360,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param uuid the uuid
 	* @param companyId the company ID
 	*/
-	public void removeByUuid_C(java.lang.String uuid, long companyId);
+	public void removeByUuid_C(String uuid, long companyId);
 
 	/**
 	* Returns the number of opencps dossier statistics where uuid = &#63; and companyId = &#63;.
@@ -371,7 +369,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param companyId the company ID
 	* @return the number of matching opencps dossier statistics
 	*/
-	public int countByUuid_C(java.lang.String uuid, long companyId);
+	public int countByUuid_C(String uuid, long companyId);
 
 	/**
 	* Returns all the opencps dossier statistics where groupId = &#63; and userId = &#63; and year = &#63;.
@@ -545,9 +543,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByM_Y_DM_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode, boolean reporting)
-		throws NoSuchOpencpsDossierStatisticException;
+		String govAgencyCode, int month, int year, String domainCode,
+		boolean reporting) throws NoSuchOpencpsDossierStatisticException;
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -561,8 +558,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode, boolean reporting);
+		String govAgencyCode, int month, int year, String domainCode,
+		boolean reporting);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -577,9 +574,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode, boolean reporting,
-		boolean retrieveFromCache);
+		String govAgencyCode, int month, int year, String domainCode,
+		boolean reporting, boolean retrieveFromCache);
 
 	/**
 	* Removes the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; from the database.
@@ -593,9 +589,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the opencps dossier statistic that was removed
 	*/
 	public OpencpsDossierStatistic removeByM_Y_DM_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode, boolean reporting)
-		throws NoSuchOpencpsDossierStatisticException;
+		String govAgencyCode, int month, int year, String domainCode,
+		boolean reporting) throws NoSuchOpencpsDossierStatisticException;
 
 	/**
 	* Returns the number of opencps dossier statistics where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63;.
@@ -608,8 +603,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param reporting the reporting
 	* @return the number of matching opencps dossier statistics
 	*/
-	public int countByM_Y_DM_G(long groupId, java.lang.String govAgencyCode,
-		int month, int year, java.lang.String domainCode, boolean reporting);
+	public int countByM_Y_DM_G(long groupId, String govAgencyCode, int month,
+		int year, String domainCode, boolean reporting);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.
@@ -623,7 +618,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByG_M_Y_G_D(long groupId, int month,
-		int year, java.lang.String govAgencyCode, java.lang.String domainCode)
+		int year, String govAgencyCode, String domainCode)
 		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
@@ -637,7 +632,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByG_M_Y_G_D(long groupId, int month,
-		int year, java.lang.String govAgencyCode, java.lang.String domainCode);
+		int year, String govAgencyCode, String domainCode);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -651,7 +646,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByG_M_Y_G_D(long groupId, int month,
-		int year, java.lang.String govAgencyCode, java.lang.String domainCode,
+		int year, String govAgencyCode, String domainCode,
 		boolean retrieveFromCache);
 
 	/**
@@ -665,7 +660,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the opencps dossier statistic that was removed
 	*/
 	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month,
-		int year, java.lang.String govAgencyCode, java.lang.String domainCode)
+		int year, String govAgencyCode, String domainCode)
 		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
@@ -679,7 +674,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the number of matching opencps dossier statistics
 	*/
 	public int countByG_M_Y_G_D(long groupId, int month, int year,
-		java.lang.String govAgencyCode, java.lang.String domainCode);
+		String govAgencyCode, String domainCode);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.
@@ -692,7 +687,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByM_Y_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year)
+		String govAgencyCode, int month, int year)
 		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
@@ -705,7 +700,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year);
+		String govAgencyCode, int month, int year);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -718,8 +713,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year,
-		boolean retrieveFromCache);
+		String govAgencyCode, int month, int year, boolean retrieveFromCache);
 
 	/**
 	* Removes the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; from the database.
@@ -731,7 +725,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the opencps dossier statistic that was removed
 	*/
 	public OpencpsDossierStatistic removeByM_Y_G(long groupId,
-		java.lang.String govAgencyCode, int month, int year)
+		String govAgencyCode, int month, int year)
 		throws NoSuchOpencpsDossierStatisticException;
 
 	/**
@@ -743,8 +737,8 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param year the year
 	* @return the number of matching opencps dossier statistics
 	*/
-	public int countByM_Y_G(long groupId, java.lang.String govAgencyCode,
-		int month, int year);
+	public int countByM_Y_G(long groupId, String govAgencyCode, int month,
+		int year);
 
 	/**
 	* Caches the opencps dossier statistic in the entity cache if it is enabled.
@@ -869,5 +863,5 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	public int countAll();
 
 	@Override
-	public java.util.Set<java.lang.String> getBadColumnNames();
+	public java.util.Set<String> getBadColumnNames();
 }

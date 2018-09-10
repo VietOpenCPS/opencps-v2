@@ -2,7 +2,7 @@ dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
 	compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
 	compileOnly project(":modules:backend-jasper-process:backend-jasper-process-api")
 	
 	compile name : "bcmail-jdk14"
@@ -45,9 +45,6 @@ dependencies {
 	compile name : "commons-javaflow"
 	compile name : "jasperreports-fonts-6.2.2"
 	compile name : "joda-time-2.4"
-	compile name : "poi-3.10.1"
-	compile name : "poi-ooxml-3.10.1"
-	compile name : "poi-ooxml-schemas-3.10.1"
 }	
 
 repositories {

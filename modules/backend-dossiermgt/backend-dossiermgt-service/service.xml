@@ -2062,6 +2062,9 @@
 		<exception>SeqOrder</exception>
 		
 		<exception>DuplicateActionCode</exception>
-
+		<exception>NoSuchDeliverable</exception>
+		
+		<exception>NoSuchProcessSequence</exception>
+		
 	</exceptions>
 </service-builder>

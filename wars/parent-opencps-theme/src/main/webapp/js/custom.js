@@ -16,27 +16,16 @@ $(document).ready(function(){
 		$($(this).attr("href")).toggleClass("toggle-hide");
 	});
 	
+	$(document).on('click', 'span[data-toggle="collapse"]', function(event){
+		$(this).parent().next().toggleClass("toggle-hide");
+	});
+	
 	$(document).on('click', 'div[data-toggle="collapse"]', function(event){
 		$(this).next().toggleClass("toggle-hide");
-	});
-	
-	$(document).on('click', '.slide-toggle', function(event){
-		$(this).next('.collapse').slideToggle();
-	});
-	
-	$(document).on('click', '.slide-toggle-lv2', function(event){
-		$(this).parent().next('.collapse').slideToggle();
 	});
 	
 	$('.toggle-collapse').on('click', function() {
 		$(this).toggleClass('fa-expand fa-compress');
 		$('body #appManagerDossier').toggleClass('show-hide');
 	});
-	
-	$('#column-1 > div > div').each(function(){
-		if($(this).hasClass('portlet-boundary_FrontendWebPortal_LoginPortlet_')) {
-			$('body').addClass('login-page');
-		} 
-	});
-
 });

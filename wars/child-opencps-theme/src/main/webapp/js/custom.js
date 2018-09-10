@@ -7,11 +7,25 @@ $(document).ready(function(){
 		$(this).parent().toggleClass( "open" );
 	});
 
-	////Slide
-	$('.img-gallery .slider').slick({
-		autoplay: false,
-		slidesToShow: 1,
-		slidesToScroll: 1,
-		arrows: true
+	$( "body" ).on( 'hidden.bs.modal', ".modal", function() {
+		$(this).removeData( "bs.modal" );
+	});
+	
+	$(document).on('click', '.mWrapper a[data-toggle="collapse"]', function(event){
+		$(this).toggleClass("open");
+		$($(this).attr("href")).toggleClass("toggle-hide");
+	});
+	
+	$(document).on('click', 'span[data-toggle="collapse"]', function(event){
+		$(this).parent().next().toggleClass("toggle-hide");
+	});
+	
+	$(document).on('click', 'div[data-toggle="collapse"]', function(event){
+		$(this).next().toggleClass("toggle-hide");
+	});
+	
+	$('.toggle-collapse').on('click', function() {
+		$(this).toggleClass('fa-expand fa-compress');
+		$('body #appManagerDossier').toggleClass('show-hide');
 	});
 });

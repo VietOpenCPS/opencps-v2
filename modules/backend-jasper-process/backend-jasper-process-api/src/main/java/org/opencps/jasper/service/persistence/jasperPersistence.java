@@ -47,7 +47,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @param uuid the uuid
 	* @return the matching jaspers
 	*/
-	public java.util.List<jasper> findByUuid(java.lang.String uuid);
+	public java.util.List<jasper> findByUuid(String uuid);
 
 	/**
 	* Returns a range of all the jaspers where uuid = &#63;.
@@ -61,8 +61,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @param end the upper bound of the range of jaspers (not inclusive)
 	* @return the range of matching jaspers
 	*/
-	public java.util.List<jasper> findByUuid(java.lang.String uuid, int start,
-		int end);
+	public java.util.List<jasper> findByUuid(String uuid, int start, int end);
 
 	/**
 	* Returns an ordered range of all the jaspers where uuid = &#63;.
@@ -77,8 +76,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching jaspers
 	*/
-	public java.util.List<jasper> findByUuid(java.lang.String uuid, int start,
-		int end,
+	public java.util.List<jasper> findByUuid(String uuid, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<jasper> orderByComparator);
 
 	/**
@@ -95,8 +93,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching jaspers
 	*/
-	public java.util.List<jasper> findByUuid(java.lang.String uuid, int start,
-		int end,
+	public java.util.List<jasper> findByUuid(String uuid, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<jasper> orderByComparator,
 		boolean retrieveFromCache);
 
@@ -108,7 +105,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @return the first matching jasper
 	* @throws NoSuchjasperException if a matching jasper could not be found
 	*/
-	public jasper findByUuid_First(java.lang.String uuid,
+	public jasper findByUuid_First(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<jasper> orderByComparator)
 		throws NoSuchjasperException;
 
@@ -119,7 +116,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching jasper, or <code>null</code> if a matching jasper could not be found
 	*/
-	public jasper fetchByUuid_First(java.lang.String uuid,
+	public jasper fetchByUuid_First(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<jasper> orderByComparator);
 
 	/**
@@ -130,7 +127,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @return the last matching jasper
 	* @throws NoSuchjasperException if a matching jasper could not be found
 	*/
-	public jasper findByUuid_Last(java.lang.String uuid,
+	public jasper findByUuid_Last(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<jasper> orderByComparator)
 		throws NoSuchjasperException;
 
@@ -141,7 +138,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching jasper, or <code>null</code> if a matching jasper could not be found
 	*/
-	public jasper fetchByUuid_Last(java.lang.String uuid,
+	public jasper fetchByUuid_Last(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<jasper> orderByComparator);
 
 	/**
@@ -153,8 +150,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @return the previous, current, and next jasper
 	* @throws NoSuchjasperException if a jasper with the primary key could not be found
 	*/
-	public jasper[] findByUuid_PrevAndNext(long jasperId,
-		java.lang.String uuid,
+	public jasper[] findByUuid_PrevAndNext(long jasperId, String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<jasper> orderByComparator)
 		throws NoSuchjasperException;
 
@@ -163,7 +159,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	*
 	* @param uuid the uuid
 	*/
-	public void removeByUuid(java.lang.String uuid);
+	public void removeByUuid(String uuid);
 
 	/**
 	* Returns the number of jaspers where uuid = &#63;.
@@ -171,7 +167,7 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	* @param uuid the uuid
 	* @return the number of matching jaspers
 	*/
-	public int countByUuid(java.lang.String uuid);
+	public int countByUuid(String uuid);
 
 	/**
 	* Caches the jasper in the entity cache if it is enabled.
@@ -292,5 +288,5 @@ public interface jasperPersistence extends BasePersistence<jasper> {
 	public int countAll();
 
 	@Override
-	public java.util.Set<java.lang.String> getBadColumnNames();
+	public java.util.Set<String> getBadColumnNames();
 }

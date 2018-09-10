@@ -11,6 +11,7 @@ import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -29,6 +30,10 @@ import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class StepConfigIndexer extends BaseIndexer<StepConfig> {
 	public static final String CLASS_NAME = StepConfig.class.getName();
 
@@ -45,7 +50,6 @@ public class StepConfigIndexer extends BaseIndexer<StepConfig> {
 	@Override
 	protected Document doGetDocument(StepConfig object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
-		System.out.println("StepConfigIndexer.doGetDocument()"+object);
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());

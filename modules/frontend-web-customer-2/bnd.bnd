@@ -1,8 +1,0 @@
-Bundle-Name: frontend-web-customer-2
-Bundle-SymbolicName: org.opencps.customer2
-Bundle-Version: 1.0.0
-Export-Package: org.opencps.constants
-
--includeresource:\
-	@com.liferay.util.bridges-[0-9]*.jar!/com/liferay/util/bridges/freemarker/FreeMarkerPortlet.class,\
-	@com.liferay.util.taglib-[0-9]*.jar!/META-INF/*.tld

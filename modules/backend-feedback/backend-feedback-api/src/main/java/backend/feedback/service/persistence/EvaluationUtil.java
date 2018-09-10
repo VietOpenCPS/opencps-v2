@@ -18,11 +18,12 @@ import aQute.bnd.annotation.ProviderType;
 
 import backend.feedback.model.Evaluation;
 
-import com.liferay.osgi.util.ServiceTrackerFactory;
-
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -117,7 +118,7 @@ public class EvaluationUtil {
 	* @param uuid the uuid
 	* @return the matching evaluations
 	*/
-	public static List<Evaluation> findByUuid(java.lang.String uuid) {
+	public static List<Evaluation> findByUuid(String uuid) {
 		return getPersistence().findByUuid(uuid);
 	}
 
@@ -133,8 +134,7 @@ public class EvaluationUtil {
 	* @param end the upper bound of the range of evaluations (not inclusive)
 	* @return the range of matching evaluations
 	*/
-	public static List<Evaluation> findByUuid(java.lang.String uuid, int start,
-		int end) {
+	public static List<Evaluation> findByUuid(String uuid, int start, int end) {
 		return getPersistence().findByUuid(uuid, start, end);
 	}
 
@@ -151,8 +151,8 @@ public class EvaluationUtil {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching evaluations
 	*/
-	public static List<Evaluation> findByUuid(java.lang.String uuid, int start,
-		int end, OrderByComparator<Evaluation> orderByComparator) {
+	public static List<Evaluation> findByUuid(String uuid, int start, int end,
+		OrderByComparator<Evaluation> orderByComparator) {
 		return getPersistence().findByUuid(uuid, start, end, orderByComparator);
 	}
 
@@ -170,8 +170,8 @@ public class EvaluationUtil {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching evaluations
 	*/
-	public static List<Evaluation> findByUuid(java.lang.String uuid, int start,
-		int end, OrderByComparator<Evaluation> orderByComparator,
+	public static List<Evaluation> findByUuid(String uuid, int start, int end,
+		OrderByComparator<Evaluation> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
 				   .findByUuid(uuid, start, end, orderByComparator,
@@ -186,7 +186,7 @@ public class EvaluationUtil {
 	* @return the first matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public static Evaluation findByUuid_First(java.lang.String uuid,
+	public static Evaluation findByUuid_First(String uuid,
 		OrderByComparator<Evaluation> orderByComparator)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence().findByUuid_First(uuid, orderByComparator);
@@ -199,7 +199,7 @@ public class EvaluationUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public static Evaluation fetchByUuid_First(java.lang.String uuid,
+	public static Evaluation fetchByUuid_First(String uuid,
 		OrderByComparator<Evaluation> orderByComparator) {
 		return getPersistence().fetchByUuid_First(uuid, orderByComparator);
 	}
@@ -212,7 +212,7 @@ public class EvaluationUtil {
 	* @return the last matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public static Evaluation findByUuid_Last(java.lang.String uuid,
+	public static Evaluation findByUuid_Last(String uuid,
 		OrderByComparator<Evaluation> orderByComparator)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence().findByUuid_Last(uuid, orderByComparator);
@@ -225,7 +225,7 @@ public class EvaluationUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public static Evaluation fetchByUuid_Last(java.lang.String uuid,
+	public static Evaluation fetchByUuid_Last(String uuid,
 		OrderByComparator<Evaluation> orderByComparator) {
 		return getPersistence().fetchByUuid_Last(uuid, orderByComparator);
 	}
@@ -240,7 +240,7 @@ public class EvaluationUtil {
 	* @throws NoSuchEvaluationException if a evaluation with the primary key could not be found
 	*/
 	public static Evaluation[] findByUuid_PrevAndNext(long evaluationId,
-		java.lang.String uuid, OrderByComparator<Evaluation> orderByComparator)
+		String uuid, OrderByComparator<Evaluation> orderByComparator)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence()
 				   .findByUuid_PrevAndNext(evaluationId, uuid, orderByComparator);
@@ -251,7 +251,7 @@ public class EvaluationUtil {
 	*
 	* @param uuid the uuid
 	*/
-	public static void removeByUuid(java.lang.String uuid) {
+	public static void removeByUuid(String uuid) {
 		getPersistence().removeByUuid(uuid);
 	}
 
@@ -261,7 +261,7 @@ public class EvaluationUtil {
 	* @param uuid the uuid
 	* @return the number of matching evaluations
 	*/
-	public static int countByUuid(java.lang.String uuid) {
+	public static int countByUuid(String uuid) {
 		return getPersistence().countByUuid(uuid);
 	}
 
@@ -273,7 +273,7 @@ public class EvaluationUtil {
 	* @return the matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public static Evaluation findByUUID_G(java.lang.String uuid, long groupId)
+	public static Evaluation findByUUID_G(String uuid, long groupId)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence().findByUUID_G(uuid, groupId);
 	}
@@ -285,7 +285,7 @@ public class EvaluationUtil {
 	* @param groupId the group ID
 	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public static Evaluation fetchByUUID_G(java.lang.String uuid, long groupId) {
+	public static Evaluation fetchByUUID_G(String uuid, long groupId) {
 		return getPersistence().fetchByUUID_G(uuid, groupId);
 	}
 
@@ -297,7 +297,7 @@ public class EvaluationUtil {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public static Evaluation fetchByUUID_G(java.lang.String uuid, long groupId,
+	public static Evaluation fetchByUUID_G(String uuid, long groupId,
 		boolean retrieveFromCache) {
 		return getPersistence().fetchByUUID_G(uuid, groupId, retrieveFromCache);
 	}
@@ -309,7 +309,7 @@ public class EvaluationUtil {
 	* @param groupId the group ID
 	* @return the evaluation that was removed
 	*/
-	public static Evaluation removeByUUID_G(java.lang.String uuid, long groupId)
+	public static Evaluation removeByUUID_G(String uuid, long groupId)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence().removeByUUID_G(uuid, groupId);
 	}
@@ -321,7 +321,7 @@ public class EvaluationUtil {
 	* @param groupId the group ID
 	* @return the number of matching evaluations
 	*/
-	public static int countByUUID_G(java.lang.String uuid, long groupId) {
+	public static int countByUUID_G(String uuid, long groupId) {
 		return getPersistence().countByUUID_G(uuid, groupId);
 	}
 
@@ -332,8 +332,7 @@ public class EvaluationUtil {
 	* @param companyId the company ID
 	* @return the matching evaluations
 	*/
-	public static List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId) {
+	public static List<Evaluation> findByUuid_C(String uuid, long companyId) {
 		return getPersistence().findByUuid_C(uuid, companyId);
 	}
 
@@ -350,8 +349,8 @@ public class EvaluationUtil {
 	* @param end the upper bound of the range of evaluations (not inclusive)
 	* @return the range of matching evaluations
 	*/
-	public static List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId, int start, int end) {
+	public static List<Evaluation> findByUuid_C(String uuid, long companyId,
+		int start, int end) {
 		return getPersistence().findByUuid_C(uuid, companyId, start, end);
 	}
 
@@ -369,9 +368,8 @@ public class EvaluationUtil {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching evaluations
 	*/
-	public static List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId, int start, int end,
-		OrderByComparator<Evaluation> orderByComparator) {
+	public static List<Evaluation> findByUuid_C(String uuid, long companyId,
+		int start, int end, OrderByComparator<Evaluation> orderByComparator) {
 		return getPersistence()
 				   .findByUuid_C(uuid, companyId, start, end, orderByComparator);
 	}
@@ -391,9 +389,8 @@ public class EvaluationUtil {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching evaluations
 	*/
-	public static List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId, int start, int end,
-		OrderByComparator<Evaluation> orderByComparator,
+	public static List<Evaluation> findByUuid_C(String uuid, long companyId,
+		int start, int end, OrderByComparator<Evaluation> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
 				   .findByUuid_C(uuid, companyId, start, end,
@@ -409,8 +406,8 @@ public class EvaluationUtil {
 	* @return the first matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public static Evaluation findByUuid_C_First(java.lang.String uuid,
-		long companyId, OrderByComparator<Evaluation> orderByComparator)
+	public static Evaluation findByUuid_C_First(String uuid, long companyId,
+		OrderByComparator<Evaluation> orderByComparator)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence()
 				   .findByUuid_C_First(uuid, companyId, orderByComparator);
@@ -424,8 +421,8 @@ public class EvaluationUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public static Evaluation fetchByUuid_C_First(java.lang.String uuid,
-		long companyId, OrderByComparator<Evaluation> orderByComparator) {
+	public static Evaluation fetchByUuid_C_First(String uuid, long companyId,
+		OrderByComparator<Evaluation> orderByComparator) {
 		return getPersistence()
 				   .fetchByUuid_C_First(uuid, companyId, orderByComparator);
 	}
@@ -439,8 +436,8 @@ public class EvaluationUtil {
 	* @return the last matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public static Evaluation findByUuid_C_Last(java.lang.String uuid,
-		long companyId, OrderByComparator<Evaluation> orderByComparator)
+	public static Evaluation findByUuid_C_Last(String uuid, long companyId,
+		OrderByComparator<Evaluation> orderByComparator)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence()
 				   .findByUuid_C_Last(uuid, companyId, orderByComparator);
@@ -454,8 +451,8 @@ public class EvaluationUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public static Evaluation fetchByUuid_C_Last(java.lang.String uuid,
-		long companyId, OrderByComparator<Evaluation> orderByComparator) {
+	public static Evaluation fetchByUuid_C_Last(String uuid, long companyId,
+		OrderByComparator<Evaluation> orderByComparator) {
 		return getPersistence()
 				   .fetchByUuid_C_Last(uuid, companyId, orderByComparator);
 	}
@@ -471,7 +468,7 @@ public class EvaluationUtil {
 	* @throws NoSuchEvaluationException if a evaluation with the primary key could not be found
 	*/
 	public static Evaluation[] findByUuid_C_PrevAndNext(long evaluationId,
-		java.lang.String uuid, long companyId,
+		String uuid, long companyId,
 		OrderByComparator<Evaluation> orderByComparator)
 		throws backend.feedback.exception.NoSuchEvaluationException {
 		return getPersistence()
@@ -485,7 +482,7 @@ public class EvaluationUtil {
 	* @param uuid the uuid
 	* @param companyId the company ID
 	*/
-	public static void removeByUuid_C(java.lang.String uuid, long companyId) {
+	public static void removeByUuid_C(String uuid, long companyId) {
 		getPersistence().removeByUuid_C(uuid, companyId);
 	}
 
@@ -496,7 +493,7 @@ public class EvaluationUtil {
 	* @param companyId the company ID
 	* @return the number of matching evaluations
 	*/
-	public static int countByUuid_C(java.lang.String uuid, long companyId) {
+	public static int countByUuid_C(String uuid, long companyId) {
 		return getPersistence().countByUuid_C(uuid, companyId);
 	}
 
@@ -977,7 +974,7 @@ public class EvaluationUtil {
 		return getPersistence().countAll();
 	}
 
-	public static java.util.Set<java.lang.String> getBadColumnNames() {
+	public static java.util.Set<String> getBadColumnNames() {
 		return getPersistence().getBadColumnNames();
 	}
 
@@ -985,6 +982,17 @@ public class EvaluationUtil {
 		return _serviceTracker.getService();
 	}
 
-	private static ServiceTracker<EvaluationPersistence, EvaluationPersistence> _serviceTracker =
-		ServiceTrackerFactory.open(EvaluationPersistence.class);
+	private static ServiceTracker<EvaluationPersistence, EvaluationPersistence> _serviceTracker;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(EvaluationPersistence.class);
+
+		ServiceTracker<EvaluationPersistence, EvaluationPersistence> serviceTracker =
+			new ServiceTracker<EvaluationPersistence, EvaluationPersistence>(bundle.getBundleContext(),
+				EvaluationPersistence.class, null);
+
+		serviceTracker.open();
+
+		_serviceTracker = serviceTracker;
+	}
 }

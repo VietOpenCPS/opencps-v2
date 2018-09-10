@@ -1,9 +1,0 @@
-Bundle-Name: opencps-statistic-service-api
-Bundle-SymbolicName: org.opencps.statistic.api
-Bundle-Version: 1.0.0-SNAPSHOT
-Export-Package:\
-	org.opencps.statistic.exception,\
-	org.opencps.statistic.model,\
-	org.opencps.statistic.service,\
-	org.opencps.statistic.service.persistence
--includeresource: META-INF/service.xml=../opencps-statistic-service-service/service.xml

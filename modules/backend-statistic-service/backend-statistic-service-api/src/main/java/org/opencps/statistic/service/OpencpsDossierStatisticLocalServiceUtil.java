@@ -16,7 +16,8 @@ package org.opencps.statistic.service;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.osgi.util.ServiceTrackerFactory;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -41,21 +42,68 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.statistic.service.impl.OpencpsDossierStatisticLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
-		return getService().getActionableDynamicQuery();
+
+	/**
+	* Adds the opencps dossier statistic to the database. Also notifies the appropriate model listeners.
+	*
+	* @param opencpsDossierStatistic the opencps dossier statistic
+	* @return the opencps dossier statistic that was added
+	*/
+	public static org.opencps.statistic.model.OpencpsDossierStatistic addOpencpsDossierStatistic(
+		org.opencps.statistic.model.OpencpsDossierStatistic opencpsDossierStatistic) {
+		return getService().addOpencpsDossierStatistic(opencpsDossierStatistic);
 	}
 
-	public static com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
-		return getService().dynamicQuery();
+	public static org.opencps.statistic.model.OpencpsDossierStatistic checkExsit(
+		long groupId, int month, int year, String govAgency, String domain,
+		boolean reporting) {
+		return getService()
+				   .checkExsit(groupId, month, year, govAgency, domain,
+			reporting);
 	}
 
-	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
-		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
-		return getService().getExportActionableDynamicQuery(portletDataContext);
+	public static org.opencps.statistic.model.OpencpsDossierStatistic checkNotDuplicate(
+		long groupId, String govAgencyCode, int month, int year,
+		String domainCode) {
+		return getService()
+				   .checkNotDuplicate(groupId, govAgencyCode, month, year,
+			domainCode);
 	}
 
-	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
-		return getService().getIndexableActionableDynamicQuery();
+	/**
+	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
+	*
+	* @param dossierStatisticId the primary key for the new opencps dossier statistic
+	* @return the new opencps dossier statistic
+	*/
+	public static org.opencps.statistic.model.OpencpsDossierStatistic createOpencpsDossierStatistic(
+		long dossierStatisticId) {
+		return getService().createOpencpsDossierStatistic(dossierStatisticId);
+	}
+
+	/**
+	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
+	*
+	* @param dossierStatisticId the primary key of the opencps dossier statistic
+	* @return the opencps dossier statistic that was removed
+	* @throws PortalException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static org.opencps.statistic.model.OpencpsDossierStatistic deleteOpencpsDossierStatistic(
+		long dossierStatisticId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deleteOpencpsDossierStatistic(dossierStatisticId);
+	}
+
+	/**
+	* Deletes the opencps dossier statistic from the database. Also notifies the appropriate model listeners.
+	*
+	* @param opencpsDossierStatistic the opencps dossier statistic
+	* @return the opencps dossier statistic that was removed
+	*/
+	public static org.opencps.statistic.model.OpencpsDossierStatistic deleteOpencpsDossierStatistic(
+		org.opencps.statistic.model.OpencpsDossierStatistic opencpsDossierStatistic) {
+		return getService()
+				   .deleteOpencpsDossierStatistic(opencpsDossierStatistic);
 	}
 
 	/**
@@ -67,28 +115,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().deletePersistedModel(persistedModel);
 	}
 
-	public static com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
-		java.io.Serializable primaryKeyObj)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	/**
-	* Returns the number of opencps dossier statistics.
-	*
-	* @return the number of opencps dossier statistics
-	*/
-	public static int getOpencpsDossierStatisticsCount() {
-		return getService().getOpencpsDossierStatisticsCount();
-	}
-
-	/**
-	* Returns the OSGi service identifier.
-	*
-	* @return the OSGi service identifier
-	*/
-	public static java.lang.String getOSGiServiceIdentifier() {
-		return getService().getOSGiServiceIdentifier();
+	public static com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
+		return getService().dynamicQuery();
 	}
 
 	/**
@@ -141,15 +169,113 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 				   .dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
 
+	/**
+	* Returns the number of rows matching the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @return the number of rows matching the dynamic query
+	*/
+	public static long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
+		return getService().dynamicQueryCount(dynamicQuery);
+	}
+
+	/**
+	* Returns the number of rows matching the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows matching the dynamic query
+	*/
+	public static long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection) {
+		return getService().dynamicQueryCount(dynamicQuery, projection);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> fetchDossierStatistic(
-		long groupId, int month, int year, java.lang.String domain,
-		java.lang.String govAgencyCode, java.lang.String groupAgenvyCode,
-		boolean reporting, int start, int end)
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String groupAgenvyCode, boolean reporting, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .fetchDossierStatistic(groupId, month, year, domain,
 			govAgencyCode, groupAgenvyCode, reporting, start, end);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic fetchOpencpsDossierStatistic(
+		long dossierStatisticId) {
+		return getService().fetchOpencpsDossierStatistic(dossierStatisticId);
+	}
+
+	/**
+	* Returns the opencps dossier statistic matching the UUID and group.
+	*
+	* @param uuid the opencps dossier statistic's UUID
+	* @param groupId the primary key of the group
+	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static org.opencps.statistic.model.OpencpsDossierStatistic fetchOpencpsDossierStatisticByUuidAndGroupId(
+		String uuid, long groupId) {
+		return getService()
+				   .fetchOpencpsDossierStatisticByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
+		return getService().getActionableDynamicQuery();
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYear(
+		long groupId, String govAgencyCode, int month, int year)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .getByGovMonthYear(groupId, govAgencyCode, month, year);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
+		long groupId, String govAgencyCode, int month, int year,
+		String domainCode, boolean reporting) {
+		return getService()
+				   .getByGovMonthYearDomain(groupId, govAgencyCode, month,
+			year, domainCode, reporting);
+	}
+
+	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
+		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
+		return getService().getExportActionableDynamicQuery(portletDataContext);
+	}
+
+	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
+		return getService().getIndexableActionableDynamicQuery();
+	}
+
+	/**
+	* Returns the opencps dossier statistic with the primary key.
+	*
+	* @param dossierStatisticId the primary key of the opencps dossier statistic
+	* @return the opencps dossier statistic
+	* @throws PortalException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getOpencpsDossierStatistic(
+		long dossierStatisticId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getOpencpsDossierStatistic(dossierStatisticId);
+	}
+
+	/**
+	* Returns the opencps dossier statistic matching the UUID and group.
+	*
+	* @param uuid the opencps dossier statistic's UUID
+	* @param groupId the primary key of the group
+	* @return the matching opencps dossier statistic
+	* @throws PortalException if a matching opencps dossier statistic could not be found
+	*/
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getOpencpsDossierStatisticByUuidAndGroupId(
+		String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .getOpencpsDossierStatisticByUuidAndGroupId(uuid, groupId);
 	}
 
 	/**
@@ -176,7 +302,7 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	* @return the matching opencps dossier statistics, or an empty list if no matches were found
 	*/
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getOpencpsDossierStatisticsByUuidAndCompanyId(
-		java.lang.String uuid, long companyId) {
+		String uuid, long companyId) {
 		return getService()
 				   .getOpencpsDossierStatisticsByUuidAndCompanyId(uuid,
 			companyId);
@@ -193,171 +319,45 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	* @return the range of matching opencps dossier statistics, or an empty list if no matches were found
 	*/
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getOpencpsDossierStatisticsByUuidAndCompanyId(
-		java.lang.String uuid, long companyId, int start, int end,
+		String uuid, long companyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.statistic.model.OpencpsDossierStatistic> orderByComparator) {
 		return getService()
 				   .getOpencpsDossierStatisticsByUuidAndCompanyId(uuid,
 			companyId, start, end, orderByComparator);
 	}
 
+	/**
+	* Returns the number of opencps dossier statistics.
+	*
+	* @return the number of opencps dossier statistics
+	*/
+	public static int getOpencpsDossierStatisticsCount() {
+		return getService().getOpencpsDossierStatisticsCount();
+	}
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	public static String getOSGiServiceIdentifier() {
+		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getPersistedModel(primaryKeyObj);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
-		long groupId, int month, int year, java.lang.String domain,
-		java.lang.String govAgencyCode, java.lang.String groupAgenvyCode,
-		boolean reporting, int start, int end)
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String groupAgenvyCode, boolean reporting, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .searchDossierStatistic(groupId, month, year, domain,
 			govAgencyCode, groupAgenvyCode, reporting, start, end);
-	}
-
-	/**
-	* Returns the number of rows matching the dynamic query.
-	*
-	* @param dynamicQuery the dynamic query
-	* @return the number of rows matching the dynamic query
-	*/
-	public static long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
-		return getService().dynamicQueryCount(dynamicQuery);
-	}
-
-	/**
-	* Returns the number of rows matching the dynamic query.
-	*
-	* @param dynamicQuery the dynamic query
-	* @param projection the projection to apply to the query
-	* @return the number of rows matching the dynamic query
-	*/
-	public static long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
-		com.liferay.portal.kernel.dao.orm.Projection projection) {
-		return getService().dynamicQueryCount(dynamicQuery, projection);
-	}
-
-	/**
-	* Adds the opencps dossier statistic to the database. Also notifies the appropriate model listeners.
-	*
-	* @param opencpsDossierStatistic the opencps dossier statistic
-	* @return the opencps dossier statistic that was added
-	*/
-	public static org.opencps.statistic.model.OpencpsDossierStatistic addOpencpsDossierStatistic(
-		org.opencps.statistic.model.OpencpsDossierStatistic opencpsDossierStatistic) {
-		return getService().addOpencpsDossierStatistic(opencpsDossierStatistic);
-	}
-
-	public static org.opencps.statistic.model.OpencpsDossierStatistic checkExsit(
-		long groupId, int month, int year, java.lang.String govAgency,
-		java.lang.String domain, boolean reporting) {
-		return getService()
-				   .checkExsit(groupId, month, year, govAgency, domain,
-			reporting);
-	}
-
-	public static org.opencps.statistic.model.OpencpsDossierStatistic checkNotDuplicate(
-		long groupId, java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode) {
-		return getService()
-				   .checkNotDuplicate(groupId, govAgencyCode, month, year,
-			domainCode);
-	}
-
-	/**
-	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
-	*
-	* @param dossierStatisticId the primary key for the new opencps dossier statistic
-	* @return the new opencps dossier statistic
-	*/
-	public static org.opencps.statistic.model.OpencpsDossierStatistic createOpencpsDossierStatistic(
-		long dossierStatisticId) {
-		return getService().createOpencpsDossierStatistic(dossierStatisticId);
-	}
-
-	/**
-	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
-	*
-	* @param dossierStatisticId the primary key of the opencps dossier statistic
-	* @return the opencps dossier statistic that was removed
-	* @throws PortalException if a opencps dossier statistic with the primary key could not be found
-	*/
-	public static org.opencps.statistic.model.OpencpsDossierStatistic deleteOpencpsDossierStatistic(
-		long dossierStatisticId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteOpencpsDossierStatistic(dossierStatisticId);
-	}
-
-	/**
-	* Deletes the opencps dossier statistic from the database. Also notifies the appropriate model listeners.
-	*
-	* @param opencpsDossierStatistic the opencps dossier statistic
-	* @return the opencps dossier statistic that was removed
-	*/
-	public static org.opencps.statistic.model.OpencpsDossierStatistic deleteOpencpsDossierStatistic(
-		org.opencps.statistic.model.OpencpsDossierStatistic opencpsDossierStatistic) {
-		return getService()
-				   .deleteOpencpsDossierStatistic(opencpsDossierStatistic);
-	}
-
-	public static org.opencps.statistic.model.OpencpsDossierStatistic fetchOpencpsDossierStatistic(
-		long dossierStatisticId) {
-		return getService().fetchOpencpsDossierStatistic(dossierStatisticId);
-	}
-
-	/**
-	* Returns the opencps dossier statistic matching the UUID and group.
-	*
-	* @param uuid the opencps dossier statistic's UUID
-	* @param groupId the primary key of the group
-	* @return the matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
-	*/
-	public static org.opencps.statistic.model.OpencpsDossierStatistic fetchOpencpsDossierStatisticByUuidAndGroupId(
-		java.lang.String uuid, long groupId) {
-		return getService()
-				   .fetchOpencpsDossierStatisticByUuidAndGroupId(uuid, groupId);
-	}
-
-	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYear(
-		long groupId, java.lang.String govAgencyCode, int month, int year)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .getByGovMonthYear(groupId, govAgencyCode, month, year);
-	}
-
-	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
-		long groupId, java.lang.String govAgencyCode, int month, int year,
-		java.lang.String domainCode, boolean reporting) {
-		return getService()
-				   .getByGovMonthYearDomain(groupId, govAgencyCode, month,
-			year, domainCode, reporting);
-	}
-
-	/**
-	* Returns the opencps dossier statistic with the primary key.
-	*
-	* @param dossierStatisticId the primary key of the opencps dossier statistic
-	* @return the opencps dossier statistic
-	* @throws PortalException if a opencps dossier statistic with the primary key could not be found
-	*/
-	public static org.opencps.statistic.model.OpencpsDossierStatistic getOpencpsDossierStatistic(
-		long dossierStatisticId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getOpencpsDossierStatistic(dossierStatisticId);
-	}
-
-	/**
-	* Returns the opencps dossier statistic matching the UUID and group.
-	*
-	* @param uuid the opencps dossier statistic's UUID
-	* @param groupId the primary key of the group
-	* @return the matching opencps dossier statistic
-	* @throws PortalException if a matching opencps dossier statistic could not be found
-	*/
-	public static org.opencps.statistic.model.OpencpsDossierStatistic getOpencpsDossierStatisticByUuidAndGroupId(
-		java.lang.String uuid, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .getOpencpsDossierStatisticByUuidAndGroupId(uuid, groupId);
 	}
 
 	/**
@@ -374,17 +374,16 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic updateStatistic(
 		long dossierStatisticId, long companyId, long groupId, long userId,
-		java.lang.String userName, int month, int year, int totalCount,
-		int deniedCount, int cancelledCount, int processCount,
-		int remainingCount, int receivedCount, int onlineCount,
-		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
-		int doneCount, int releasingCount, int unresolvedCount,
-		int processingCount, int undueCount, int overdueCount,
-		int pausingCount, int ontimePercentage, int overtimeInside,
-		int overtimeOutside, int interoperatingCount, int waitingCount,
-		java.lang.String govAgencyCode, java.lang.String govAgencyName,
-		java.lang.String domainCode, java.lang.String domainName,
-		boolean reporting, int onegateCount, int outsideCount, int insideCount)
+		String userName, int month, int year, int totalCount, int deniedCount,
+		int cancelledCount, int processCount, int remainingCount,
+		int receivedCount, int onlineCount, int releaseCount, int betimesCount,
+		int ontimeCount, int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, boolean reporting,
+		int onegateCount, int outsideCount, int insideCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -404,6 +403,17 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return _serviceTracker.getService();
 	}
 
-	private static ServiceTracker<OpencpsDossierStatisticLocalService, OpencpsDossierStatisticLocalService> _serviceTracker =
-		ServiceTrackerFactory.open(OpencpsDossierStatisticLocalService.class);
+	private static ServiceTracker<OpencpsDossierStatisticLocalService, OpencpsDossierStatisticLocalService> _serviceTracker;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(OpencpsDossierStatisticLocalService.class);
+
+		ServiceTracker<OpencpsDossierStatisticLocalService, OpencpsDossierStatisticLocalService> serviceTracker =
+			new ServiceTracker<OpencpsDossierStatisticLocalService, OpencpsDossierStatisticLocalService>(bundle.getBundleContext(),
+				OpencpsDossierStatisticLocalService.class, null);
+
+		serviceTracker.open();
+
+		_serviceTracker = serviceTracker;
+	}
 }

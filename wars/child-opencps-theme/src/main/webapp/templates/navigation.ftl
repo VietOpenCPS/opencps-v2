@@ -1,6 +1,6 @@
 <nav class="${nav_css_class} navbar navbar-default" id="navigation" role="navigation">
-	<div class="container">
-		<div class="navbar-header">
+	<div class="container" style="padding: 0px;">
+		<div class="navbar-header" style="display: none;">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="menu-collapse" aria-expanded="false">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
@@ -38,7 +38,7 @@
 										nav_child_attr_selected = ""
 										nav_child_css_class = ""
 									/>
-
+									
 									<#if nav_item.isSelected()>
 										<#assign
 											nav_child_attr_selected = "aria-selected='true'"
@@ -55,6 +55,7 @@
 					</li>
 				</#list>
 			</ul>
+			<div style="clear: both;"></div>
 		</div>
 	</div>
 </nav>

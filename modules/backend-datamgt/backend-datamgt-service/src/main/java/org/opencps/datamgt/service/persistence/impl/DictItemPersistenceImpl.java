@@ -30,12 +30,10 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ReflectionUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -50,6 +48,7 @@ import org.opencps.datamgt.service.persistence.DictItemPersistence;
 import java.io.Serializable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 
 import java.sql.Timestamp;
 
@@ -231,7 +230,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -319,7 +318,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -368,7 +367,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -460,7 +459,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_UUID_3);
 		}
 		else {
@@ -596,7 +595,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -675,7 +674,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			msg.append(", groupId=");
 			msg.append(groupId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -738,7 +737,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -778,13 +777,6 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 					result = dictItem;
 
 					cacheResult(dictItem);
-
-					if ((dictItem.getUuid() == null) ||
-							!dictItem.getUuid().equals(uuid) ||
-							(dictItem.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-							finderArgs, dictItem);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -845,7 +837,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -1042,7 +1034,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1139,7 +1131,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -1195,7 +1187,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -1289,7 +1281,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 		}
 		else {
@@ -1431,7 +1423,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1699,7 +1691,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append("dictCollectionId=");
 		msg.append(dictCollectionId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -1750,7 +1742,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append("dictCollectionId=");
 		msg.append(dictCollectionId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -2028,7 +2020,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			msg.append(", groupId=");
 			msg.append(groupId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -2091,7 +2083,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (itemCode == null) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_ITEMCODE_1);
 			}
-			else if (itemCode.equals(StringPool.BLANK)) {
+			else if (itemCode.equals("")) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_ITEMCODE_3);
 			}
 			else {
@@ -2142,13 +2134,6 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 					result = dictItem;
 
 					cacheResult(dictItem);
-
-					if ((dictItem.getItemCode() == null) ||
-							!dictItem.getItemCode().equals(itemCode) ||
-							(dictItem.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_F_DICTITEMCODE,
-							finderArgs, dictItem);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -2210,7 +2195,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (itemCode == null) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_ITEMCODE_1);
 			}
-			else if (itemCode.equals(StringPool.BLANK)) {
+			else if (itemCode.equals("")) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_ITEMCODE_3);
 			}
 			else {
@@ -2497,7 +2482,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -2553,7 +2538,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -2860,7 +2845,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			msg.append(", groupId=");
 			msg.append(groupId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -2928,7 +2913,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (itemCode == null) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_DICTCOLLECTIONID_ITEMCODE_1);
 			}
-			else if (itemCode.equals(StringPool.BLANK)) {
+			else if (itemCode.equals("")) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_DICTCOLLECTIONID_ITEMCODE_3);
 			}
 			else {
@@ -2983,14 +2968,6 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 					result = dictItem;
 
 					cacheResult(dictItem);
-
-					if ((dictItem.getItemCode() == null) ||
-							!dictItem.getItemCode().equals(itemCode) ||
-							(dictItem.getDictCollectionId() != dictCollectionId) ||
-							(dictItem.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_F_DICTITEMCODE_DICTCOLLECTIONID,
-							finderArgs, dictItem);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -3056,7 +3033,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (itemCode == null) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_DICTCOLLECTIONID_ITEMCODE_1);
 			}
-			else if (itemCode.equals(StringPool.BLANK)) {
+			else if (itemCode.equals("")) {
 				query.append(_FINDER_COLUMN_F_DICTITEMCODE_DICTCOLLECTIONID_ITEMCODE_3);
 			}
 			else {
@@ -3334,7 +3311,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append("parentItemId=");
 		msg.append(parentItemId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -3385,7 +3362,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append("parentItemId=");
 		msg.append(parentItemId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -3905,7 +3882,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", level=");
 		msg.append(level);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -3973,7 +3950,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", level=");
 		msg.append(level);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -4303,7 +4280,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			msg.append(", dictCollectionId=");
 			msg.append(dictCollectionId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -4366,7 +4343,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (itemCode == null) {
 				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_1);
 			}
-			else if (itemCode.equals(StringPool.BLANK)) {
+			else if (itemCode.equals("")) {
 				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_3);
 			}
 			else {
@@ -4417,13 +4394,6 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 					result = dictItem;
 
 					cacheResult(dictItem);
-
-					if ((dictItem.getItemCode() == null) ||
-							!dictItem.getItemCode().equals(itemCode) ||
-							(dictItem.getDictCollectionId() != dictCollectionId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
-							finderArgs, dictItem);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -4484,7 +4454,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (itemCode == null) {
 				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_1);
 			}
-			else if (itemCode.equals(StringPool.BLANK)) {
+			else if (itemCode.equals("")) {
 				query.append(_FINDER_COLUMN_IC_DCI_ITEMCODE_3);
 			}
 			else {
@@ -4654,9 +4624,8 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 					if ((dictCollectionId != dictItem.getDictCollectionId()) ||
 							(parentItemId != dictItem.getParentItemId()) ||
 							!StringUtil.wildcardMatches(
-								dictItem.getTreeIndex(), treeIndex,
-								CharPool.UNDERLINE, CharPool.PERCENT,
-								CharPool.BACK_SLASH, true)) {
+								dictItem.getTreeIndex(), treeIndex, '_', '%',
+								'\\', true)) {
 						list = null;
 
 						break;
@@ -4687,7 +4656,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (treeIndex == null) {
 				query.append(_FINDER_COLUMN_F_TREEINDEX_TREEINDEX_1);
 			}
-			else if (treeIndex.equals(StringPool.BLANK)) {
+			else if (treeIndex.equals("")) {
 				query.append(_FINDER_COLUMN_F_TREEINDEX_TREEINDEX_3);
 			}
 			else {
@@ -4789,7 +4758,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", treeIndex=");
 		msg.append(treeIndex);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -4852,7 +4821,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", treeIndex=");
 		msg.append(treeIndex);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -4957,7 +4926,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		if (treeIndex == null) {
 			query.append(_FINDER_COLUMN_F_TREEINDEX_TREEINDEX_1);
 		}
-		else if (treeIndex.equals(StringPool.BLANK)) {
+		else if (treeIndex.equals("")) {
 			query.append(_FINDER_COLUMN_F_TREEINDEX_TREEINDEX_3);
 		}
 		else {
@@ -5110,7 +5079,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			if (treeIndex == null) {
 				query.append(_FINDER_COLUMN_F_TREEINDEX_TREEINDEX_1);
 			}
-			else if (treeIndex.equals(StringPool.BLANK)) {
+			else if (treeIndex.equals("")) {
 				query.append(_FINDER_COLUMN_F_TREEINDEX_TREEINDEX_3);
 			}
 			else {
@@ -5401,7 +5370,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", parentItemId=");
 		msg.append(parentItemId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -5459,7 +5428,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", parentItemId=");
 		msg.append(parentItemId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -5823,7 +5792,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 
 		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_DICTITEMNEWERTHAN;
 		finderArgs = new Object[] {
-				modifiedDate, groupId,
+				_getTime(modifiedDate), groupId,
 				
 				start, end, orderByComparator
 			};
@@ -5959,7 +5928,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -6015,7 +5984,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		msg.append(", groupId=");
 		msg.append(groupId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchDictItemException(msg.toString());
 	}
@@ -6235,7 +6204,7 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 	public int countByF_dictItemNewerThan(Date modifiedDate, long groupId) {
 		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_DICTITEMNEWERTHAN;
 
-		Object[] finderArgs = new Object[] { modifiedDate, groupId };
+		Object[] finderArgs = new Object[] { _getTime(modifiedDate), groupId };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -6301,8 +6270,10 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		setModelClass(DictItem.class);
 
 		try {
-			Field field = ReflectionUtil.getDeclaredField(BasePersistenceImpl.class,
+			Field field = BasePersistenceImpl.class.getDeclaredField(
 					"_dbColumnNames");
+
+			field.setAccessible(true);
 
 			Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -6621,8 +6592,6 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 
 	@Override
 	protected DictItem removeImpl(DictItem dictItem) {
-		dictItem = toUnwrappedModel(dictItem);
-
 		Session session = null;
 
 		try {
@@ -6653,9 +6622,23 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 
 	@Override
 	public DictItem updateImpl(DictItem dictItem) {
-		dictItem = toUnwrappedModel(dictItem);
-
 		boolean isNew = dictItem.isNew();
+
+		if (!(dictItem instanceof DictItemModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(dictItem.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(dictItem);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in dictItem proxy " +
+					invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom DictItem implementation " +
+				dictItem.getClass());
+		}
 
 		DictItemModelImpl dictItemModelImpl = (DictItemModelImpl)dictItem;
 
@@ -6940,38 +6923,6 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		return dictItem;
 	}
 
-	protected DictItem toUnwrappedModel(DictItem dictItem) {
-		if (dictItem instanceof DictItemImpl) {
-			return dictItem;
-		}
-
-		DictItemImpl dictItemImpl = new DictItemImpl();
-
-		dictItemImpl.setNew(dictItem.isNew());
-		dictItemImpl.setPrimaryKey(dictItem.getPrimaryKey());
-
-		dictItemImpl.setUuid(dictItem.getUuid());
-		dictItemImpl.setDictItemId(dictItem.getDictItemId());
-		dictItemImpl.setCompanyId(dictItem.getCompanyId());
-		dictItemImpl.setGroupId(dictItem.getGroupId());
-		dictItemImpl.setUserId(dictItem.getUserId());
-		dictItemImpl.setUserName(dictItem.getUserName());
-		dictItemImpl.setCreateDate(dictItem.getCreateDate());
-		dictItemImpl.setModifiedDate(dictItem.getModifiedDate());
-		dictItemImpl.setDictCollectionId(dictItem.getDictCollectionId());
-		dictItemImpl.setItemCode(dictItem.getItemCode());
-		dictItemImpl.setItemName(dictItem.getItemName());
-		dictItemImpl.setItemNameEN(dictItem.getItemNameEN());
-		dictItemImpl.setItemDescription(dictItem.getItemDescription());
-		dictItemImpl.setParentItemId(dictItem.getParentItemId());
-		dictItemImpl.setLevel(dictItem.getLevel());
-		dictItemImpl.setSibling(dictItem.getSibling());
-		dictItemImpl.setTreeIndex(dictItem.getTreeIndex());
-		dictItemImpl.setMetaData(dictItem.getMetaData());
-
-		return dictItemImpl;
-	}
-
 	/**
 	 * Returns the dict item with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
 	 *
@@ -7122,12 +7073,12 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 		for (Serializable primaryKey : uncachedPrimaryKeys) {
 			query.append((long)primaryKey);
 
-			query.append(StringPool.COMMA);
+			query.append(",");
 		}
 
 		query.setIndex(query.index() - 1);
 
-		query.append(StringPool.CLOSE_PARENTHESIS);
+		query.append(")");
 
 		String sql = query.toString();
 
@@ -7380,6 +7331,15 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_DICTITEM = "SELECT dictItem FROM DictItem dictItem";
 	private static final String _SQL_SELECT_DICTITEM_WHERE_PKS_IN = "SELECT dictItem FROM DictItem dictItem WHERE dictItemId IN (";
 	private static final String _SQL_SELECT_DICTITEM_WHERE = "SELECT dictItem FROM DictItem dictItem WHERE ";

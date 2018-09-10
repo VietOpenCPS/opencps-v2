@@ -559,10 +559,10 @@
 			OTHER
 ------------------------------*/
 .text-bold {
-	font-family: 'Roboto-Bold' !important;
+	font-weight: bold !important;
 }
 .text-normal {
-	font-family: 'Roboto-Regular' !important;
+	font-weight: normal !important;
 }
 .text-ellipsis {
     overflow: hidden;
@@ -586,6 +586,5 @@
 }
 
 body b, body label, body .label, body strong {
-	font-weight: normal;
-	font-family: 'Roboto-Bold';
+	font-weight: bold;
 }

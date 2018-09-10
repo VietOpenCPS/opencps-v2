@@ -1,8 +1,0 @@
-Bundle-Name: frontend-web-onedoor
-Bundle-SymbolicName: frontend.web.onedoor
-Bundle-Version: 1.0.0
-Export-Package: frontend.web.onedoor.constants
-
--includeresource:\
-	@com.liferay.util.bridges-[0-9]*.jar!/com/liferay/util/bridges/freemarker/FreeMarkerPortlet.class,\
-	@com.liferay.util.taglib-[0-9]*.jar!/META-INF/*.tld

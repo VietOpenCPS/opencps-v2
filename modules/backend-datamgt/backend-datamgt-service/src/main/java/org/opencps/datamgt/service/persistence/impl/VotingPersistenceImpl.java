@@ -31,10 +31,9 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ReflectionUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -48,6 +47,7 @@ import org.opencps.datamgt.service.persistence.VotingPersistence;
 import java.io.Serializable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 
 import java.util.Collections;
 import java.util.Date;
@@ -227,7 +227,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -315,7 +315,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchVotingException(msg.toString());
 	}
@@ -364,7 +364,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		msg.append("uuid=");
 		msg.append(uuid);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchVotingException(msg.toString());
 	}
@@ -455,7 +455,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_UUID_3);
 		}
 		else {
@@ -591,7 +591,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -670,7 +670,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			msg.append(", groupId=");
 			msg.append(groupId);
 
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
+			msg.append("}");
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(msg.toString());
@@ -733,7 +733,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -773,13 +773,6 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 					result = voting;
 
 					cacheResult(voting);
-
-					if ((voting.getUuid() == null) ||
-							!voting.getUuid().equals(uuid) ||
-							(voting.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-							finderArgs, voting);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -840,7 +833,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -1037,7 +1030,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1133,7 +1126,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchVotingException(msg.toString());
 	}
@@ -1188,7 +1181,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		msg.append(", companyId=");
 		msg.append(companyId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchVotingException(msg.toString());
 	}
@@ -1282,7 +1275,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
-		else if (uuid.equals(StringPool.BLANK)) {
+		else if (uuid.equals("")) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 		}
 		else {
@@ -1424,7 +1417,7 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
-			else if (uuid.equals(StringPool.BLANK)) {
+			else if (uuid.equals("")) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1478,8 +1471,10 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		setModelClass(Voting.class);
 
 		try {
-			Field field = ReflectionUtil.getDeclaredField(BasePersistenceImpl.class,
+			Field field = BasePersistenceImpl.class.getDeclaredField(
 					"_dbColumnNames");
+
+			field.setAccessible(true);
 
 			Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -1683,8 +1678,6 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 
 	@Override
 	protected Voting removeImpl(Voting voting) {
-		voting = toUnwrappedModel(voting);
-
 		Session session = null;
 
 		try {
@@ -1715,9 +1708,23 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 
 	@Override
 	public Voting updateImpl(Voting voting) {
-		voting = toUnwrappedModel(voting);
-
 		boolean isNew = voting.isNew();
+
+		if (!(voting instanceof VotingModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(voting.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(voting);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in voting proxy " +
+					invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom Voting implementation " +
+				voting.getClass());
+		}
 
 		VotingModelImpl votingModelImpl = (VotingModelImpl)voting;
 
@@ -1843,34 +1850,6 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		voting.resetOriginalValues();
 
 		return voting;
-	}
-
-	protected Voting toUnwrappedModel(Voting voting) {
-		if (voting instanceof VotingImpl) {
-			return voting;
-		}
-
-		VotingImpl votingImpl = new VotingImpl();
-
-		votingImpl.setNew(voting.isNew());
-		votingImpl.setPrimaryKey(voting.getPrimaryKey());
-
-		votingImpl.setUuid(voting.getUuid());
-		votingImpl.setVotingId(voting.getVotingId());
-		votingImpl.setCompanyId(voting.getCompanyId());
-		votingImpl.setGroupId(voting.getGroupId());
-		votingImpl.setUserId(voting.getUserId());
-		votingImpl.setUserName(voting.getUserName());
-		votingImpl.setCreateDate(voting.getCreateDate());
-		votingImpl.setModifiedDate(voting.getModifiedDate());
-		votingImpl.setClassName(voting.getClassName());
-		votingImpl.setClassPK(voting.getClassPK());
-		votingImpl.setSubject(voting.getSubject());
-		votingImpl.setChoices(voting.getChoices());
-		votingImpl.setTemplateNo(voting.getTemplateNo());
-		votingImpl.setCommentable(voting.isCommentable());
-
-		return votingImpl;
 	}
 
 	/**
@@ -2022,12 +2001,12 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 		for (Serializable primaryKey : uncachedPrimaryKeys) {
 			query.append((long)primaryKey);
 
-			query.append(StringPool.COMMA);
+			query.append(",");
 		}
 
 		query.setIndex(query.index() - 1);
 
-		query.append(StringPool.CLOSE_PARENTHESIS);
+		query.append(")");
 
 		String sql = query.toString();
 

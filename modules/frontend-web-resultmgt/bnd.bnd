@@ -1,8 +1,0 @@
-Bundle-Name: frontend-web-resultmgt
-Bundle-SymbolicName: frontend.web.resultmgt
-Bundle-Version: 1.0.0
-Export-Package: frontend.web.resultmgt.constants
-
--includeresource:\
-	@com.liferay.util.bridges-[0-9]*.jar!/com/liferay/util/bridges/freemarker/FreeMarkerPortlet.class,\
-	@com.liferay.util.taglib-[0-9]*.jar!/META-INF/*.tld

@@ -48,7 +48,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param uuid the uuid
 	* @return the matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid(java.lang.String uuid);
+	public java.util.List<Evaluation> findByUuid(String uuid);
 
 	/**
 	* Returns a range of all the evaluations where uuid = &#63;.
@@ -62,8 +62,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param end the upper bound of the range of evaluations (not inclusive)
 	* @return the range of matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid(java.lang.String uuid,
-		int start, int end);
+	public java.util.List<Evaluation> findByUuid(String uuid, int start, int end);
 
 	/**
 	* Returns an ordered range of all the evaluations where uuid = &#63;.
@@ -78,8 +77,8 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid(java.lang.String uuid,
-		int start, int end,
+	public java.util.List<Evaluation> findByUuid(String uuid, int start,
+		int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator);
 
 	/**
@@ -96,8 +95,8 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid(java.lang.String uuid,
-		int start, int end,
+	public java.util.List<Evaluation> findByUuid(String uuid, int start,
+		int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator,
 		boolean retrieveFromCache);
 
@@ -109,7 +108,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @return the first matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public Evaluation findByUuid_First(java.lang.String uuid,
+	public Evaluation findByUuid_First(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator)
 		throws NoSuchEvaluationException;
 
@@ -120,7 +119,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public Evaluation fetchByUuid_First(java.lang.String uuid,
+	public Evaluation fetchByUuid_First(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator);
 
 	/**
@@ -131,7 +130,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @return the last matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public Evaluation findByUuid_Last(java.lang.String uuid,
+	public Evaluation findByUuid_Last(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator)
 		throws NoSuchEvaluationException;
 
@@ -142,7 +141,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public Evaluation fetchByUuid_Last(java.lang.String uuid,
+	public Evaluation fetchByUuid_Last(String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator);
 
 	/**
@@ -154,8 +153,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @return the previous, current, and next evaluation
 	* @throws NoSuchEvaluationException if a evaluation with the primary key could not be found
 	*/
-	public Evaluation[] findByUuid_PrevAndNext(long evaluationId,
-		java.lang.String uuid,
+	public Evaluation[] findByUuid_PrevAndNext(long evaluationId, String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator)
 		throws NoSuchEvaluationException;
 
@@ -164,7 +162,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	*
 	* @param uuid the uuid
 	*/
-	public void removeByUuid(java.lang.String uuid);
+	public void removeByUuid(String uuid);
 
 	/**
 	* Returns the number of evaluations where uuid = &#63;.
@@ -172,7 +170,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param uuid the uuid
 	* @return the number of matching evaluations
 	*/
-	public int countByUuid(java.lang.String uuid);
+	public int countByUuid(String uuid);
 
 	/**
 	* Returns the evaluation where uuid = &#63; and groupId = &#63; or throws a {@link NoSuchEvaluationException} if it could not be found.
@@ -182,7 +180,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @return the matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public Evaluation findByUUID_G(java.lang.String uuid, long groupId)
+	public Evaluation findByUUID_G(String uuid, long groupId)
 		throws NoSuchEvaluationException;
 
 	/**
@@ -192,7 +190,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param groupId the group ID
 	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public Evaluation fetchByUUID_G(java.lang.String uuid, long groupId);
+	public Evaluation fetchByUUID_G(String uuid, long groupId);
 
 	/**
 	* Returns the evaluation where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -202,7 +200,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public Evaluation fetchByUUID_G(java.lang.String uuid, long groupId,
+	public Evaluation fetchByUUID_G(String uuid, long groupId,
 		boolean retrieveFromCache);
 
 	/**
@@ -212,7 +210,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param groupId the group ID
 	* @return the evaluation that was removed
 	*/
-	public Evaluation removeByUUID_G(java.lang.String uuid, long groupId)
+	public Evaluation removeByUUID_G(String uuid, long groupId)
 		throws NoSuchEvaluationException;
 
 	/**
@@ -222,7 +220,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param groupId the group ID
 	* @return the number of matching evaluations
 	*/
-	public int countByUUID_G(java.lang.String uuid, long groupId);
+	public int countByUUID_G(String uuid, long groupId);
 
 	/**
 	* Returns all the evaluations where uuid = &#63; and companyId = &#63;.
@@ -231,8 +229,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param companyId the company ID
 	* @return the matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId);
+	public java.util.List<Evaluation> findByUuid_C(String uuid, long companyId);
 
 	/**
 	* Returns a range of all the evaluations where uuid = &#63; and companyId = &#63;.
@@ -247,8 +244,8 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param end the upper bound of the range of evaluations (not inclusive)
 	* @return the range of matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId, int start, int end);
+	public java.util.List<Evaluation> findByUuid_C(String uuid, long companyId,
+		int start, int end);
 
 	/**
 	* Returns an ordered range of all the evaluations where uuid = &#63; and companyId = &#63;.
@@ -264,8 +261,8 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId, int start, int end,
+	public java.util.List<Evaluation> findByUuid_C(String uuid, long companyId,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator);
 
 	/**
@@ -283,8 +280,8 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching evaluations
 	*/
-	public java.util.List<Evaluation> findByUuid_C(java.lang.String uuid,
-		long companyId, int start, int end,
+	public java.util.List<Evaluation> findByUuid_C(String uuid, long companyId,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator,
 		boolean retrieveFromCache);
 
@@ -297,7 +294,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @return the first matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public Evaluation findByUuid_C_First(java.lang.String uuid, long companyId,
+	public Evaluation findByUuid_C_First(String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator)
 		throws NoSuchEvaluationException;
 
@@ -309,8 +306,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public Evaluation fetchByUuid_C_First(java.lang.String uuid,
-		long companyId,
+	public Evaluation fetchByUuid_C_First(String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator);
 
 	/**
@@ -322,7 +318,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @return the last matching evaluation
 	* @throws NoSuchEvaluationException if a matching evaluation could not be found
 	*/
-	public Evaluation findByUuid_C_Last(java.lang.String uuid, long companyId,
+	public Evaluation findByUuid_C_Last(String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator)
 		throws NoSuchEvaluationException;
 
@@ -334,7 +330,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching evaluation, or <code>null</code> if a matching evaluation could not be found
 	*/
-	public Evaluation fetchByUuid_C_Last(java.lang.String uuid, long companyId,
+	public Evaluation fetchByUuid_C_Last(String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator);
 
 	/**
@@ -348,7 +344,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @throws NoSuchEvaluationException if a evaluation with the primary key could not be found
 	*/
 	public Evaluation[] findByUuid_C_PrevAndNext(long evaluationId,
-		java.lang.String uuid, long companyId,
+		String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Evaluation> orderByComparator)
 		throws NoSuchEvaluationException;
 
@@ -358,7 +354,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param uuid the uuid
 	* @param companyId the company ID
 	*/
-	public void removeByUuid_C(java.lang.String uuid, long companyId);
+	public void removeByUuid_C(String uuid, long companyId);
 
 	/**
 	* Returns the number of evaluations where uuid = &#63; and companyId = &#63;.
@@ -367,7 +363,7 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	* @param companyId the company ID
 	* @return the number of matching evaluations
 	*/
-	public int countByUuid_C(java.lang.String uuid, long companyId);
+	public int countByUuid_C(String uuid, long companyId);
 
 	/**
 	* Returns all the evaluations where employeeId = &#63;.
@@ -765,5 +761,5 @@ public interface EvaluationPersistence extends BasePersistence<Evaluation> {
 	public int countAll();
 
 	@Override
-	public java.util.Set<java.lang.String> getBadColumnNames();
+	public java.util.Set<String> getBadColumnNames();
 }

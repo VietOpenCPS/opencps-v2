@@ -16,13 +16,14 @@ package org.opencps.jasper.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.osgi.util.ServiceTrackerFactory;
-
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.jasper.model.jasper;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -114,7 +115,7 @@ public class jasperUtil {
 	* @param uuid the uuid
 	* @return the matching jaspers
 	*/
-	public static List<jasper> findByUuid(java.lang.String uuid) {
+	public static List<jasper> findByUuid(String uuid) {
 		return getPersistence().findByUuid(uuid);
 	}
 
@@ -130,8 +131,7 @@ public class jasperUtil {
 	* @param end the upper bound of the range of jaspers (not inclusive)
 	* @return the range of matching jaspers
 	*/
-	public static List<jasper> findByUuid(java.lang.String uuid, int start,
-		int end) {
+	public static List<jasper> findByUuid(String uuid, int start, int end) {
 		return getPersistence().findByUuid(uuid, start, end);
 	}
 
@@ -148,8 +148,8 @@ public class jasperUtil {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching jaspers
 	*/
-	public static List<jasper> findByUuid(java.lang.String uuid, int start,
-		int end, OrderByComparator<jasper> orderByComparator) {
+	public static List<jasper> findByUuid(String uuid, int start, int end,
+		OrderByComparator<jasper> orderByComparator) {
 		return getPersistence().findByUuid(uuid, start, end, orderByComparator);
 	}
 
@@ -167,9 +167,8 @@ public class jasperUtil {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching jaspers
 	*/
-	public static List<jasper> findByUuid(java.lang.String uuid, int start,
-		int end, OrderByComparator<jasper> orderByComparator,
-		boolean retrieveFromCache) {
+	public static List<jasper> findByUuid(String uuid, int start, int end,
+		OrderByComparator<jasper> orderByComparator, boolean retrieveFromCache) {
 		return getPersistence()
 				   .findByUuid(uuid, start, end, orderByComparator,
 			retrieveFromCache);
@@ -183,7 +182,7 @@ public class jasperUtil {
 	* @return the first matching jasper
 	* @throws NoSuchjasperException if a matching jasper could not be found
 	*/
-	public static jasper findByUuid_First(java.lang.String uuid,
+	public static jasper findByUuid_First(String uuid,
 		OrderByComparator<jasper> orderByComparator)
 		throws org.opencps.jasper.exception.NoSuchjasperException {
 		return getPersistence().findByUuid_First(uuid, orderByComparator);
@@ -196,7 +195,7 @@ public class jasperUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching jasper, or <code>null</code> if a matching jasper could not be found
 	*/
-	public static jasper fetchByUuid_First(java.lang.String uuid,
+	public static jasper fetchByUuid_First(String uuid,
 		OrderByComparator<jasper> orderByComparator) {
 		return getPersistence().fetchByUuid_First(uuid, orderByComparator);
 	}
@@ -209,7 +208,7 @@ public class jasperUtil {
 	* @return the last matching jasper
 	* @throws NoSuchjasperException if a matching jasper could not be found
 	*/
-	public static jasper findByUuid_Last(java.lang.String uuid,
+	public static jasper findByUuid_Last(String uuid,
 		OrderByComparator<jasper> orderByComparator)
 		throws org.opencps.jasper.exception.NoSuchjasperException {
 		return getPersistence().findByUuid_Last(uuid, orderByComparator);
@@ -222,7 +221,7 @@ public class jasperUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching jasper, or <code>null</code> if a matching jasper could not be found
 	*/
-	public static jasper fetchByUuid_Last(java.lang.String uuid,
+	public static jasper fetchByUuid_Last(String uuid,
 		OrderByComparator<jasper> orderByComparator) {
 		return getPersistence().fetchByUuid_Last(uuid, orderByComparator);
 	}
@@ -236,8 +235,8 @@ public class jasperUtil {
 	* @return the previous, current, and next jasper
 	* @throws NoSuchjasperException if a jasper with the primary key could not be found
 	*/
-	public static jasper[] findByUuid_PrevAndNext(long jasperId,
-		java.lang.String uuid, OrderByComparator<jasper> orderByComparator)
+	public static jasper[] findByUuid_PrevAndNext(long jasperId, String uuid,
+		OrderByComparator<jasper> orderByComparator)
 		throws org.opencps.jasper.exception.NoSuchjasperException {
 		return getPersistence()
 				   .findByUuid_PrevAndNext(jasperId, uuid, orderByComparator);
@@ -248,7 +247,7 @@ public class jasperUtil {
 	*
 	* @param uuid the uuid
 	*/
-	public static void removeByUuid(java.lang.String uuid) {
+	public static void removeByUuid(String uuid) {
 		getPersistence().removeByUuid(uuid);
 	}
 
@@ -258,7 +257,7 @@ public class jasperUtil {
 	* @param uuid the uuid
 	* @return the number of matching jaspers
 	*/
-	public static int countByUuid(java.lang.String uuid) {
+	public static int countByUuid(String uuid) {
 		return getPersistence().countByUuid(uuid);
 	}
 
@@ -409,7 +408,7 @@ public class jasperUtil {
 		return getPersistence().countAll();
 	}
 
-	public static java.util.Set<java.lang.String> getBadColumnNames() {
+	public static java.util.Set<String> getBadColumnNames() {
 		return getPersistence().getBadColumnNames();
 	}
 
@@ -417,6 +416,16 @@ public class jasperUtil {
 		return _serviceTracker.getService();
 	}
 
-	private static ServiceTracker<jasperPersistence, jasperPersistence> _serviceTracker =
-		ServiceTrackerFactory.open(jasperPersistence.class);
+	private static ServiceTracker<jasperPersistence, jasperPersistence> _serviceTracker;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(jasperPersistence.class);
+
+		ServiceTracker<jasperPersistence, jasperPersistence> serviceTracker = new ServiceTracker<jasperPersistence, jasperPersistence>(bundle.getBundleContext(),
+				jasperPersistence.class, null);
+
+		serviceTracker.open();
+
+		_serviceTracker = serviceTracker;
+	}
 }

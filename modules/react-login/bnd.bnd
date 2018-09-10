@@ -1,0 +1,9 @@
+Bundle-Name: react-login
+Bundle-SymbolicName: react.login
+Bundle-Version: 1.0.0
+Export-Package: react.login.constants
+Web-ContextPath:/react-login
+
+-includeresource:\
+	@com.liferay.util.bridges-[0-9]*.jar!/com/liferay/util/bridges/freemarker/FreeMarkerPortlet.class,\
+	@com.liferay.util.taglib-[0-9]*.jar!/META-INF/*.tld

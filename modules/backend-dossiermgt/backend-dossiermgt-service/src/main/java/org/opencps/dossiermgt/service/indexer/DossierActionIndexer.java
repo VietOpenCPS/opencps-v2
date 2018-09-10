@@ -8,6 +8,7 @@ import javax.portlet.PortletResponse;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -22,6 +23,10 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class DossierActionIndexer extends BaseIndexer<DossierAction> {
 	public static final String CLASS_NAME = DossierAction.class.getName();
 

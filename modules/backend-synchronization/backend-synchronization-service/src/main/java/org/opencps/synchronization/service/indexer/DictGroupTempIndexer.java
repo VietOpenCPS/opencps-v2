@@ -10,6 +10,7 @@ import org.opencps.synchronization.model.DictCollectionTemp;
 import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -29,6 +30,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+@Component(
+    immediate = true,
+    service = BaseIndexer.class
+)
 public class DictGroupTempIndexer extends BaseIndexer<DictGroupTemp> {
 
 	public static final String CLASS_NAME = DictGroupTemp.class.getName();

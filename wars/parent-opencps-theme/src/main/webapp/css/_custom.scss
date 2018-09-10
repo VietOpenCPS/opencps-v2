@@ -5,6 +5,7 @@
 @import url(bootstrap-datetimepicker.css);  	/* Datetime picker for alpaca */
 
 @import url(base-style.css);                    /* Style header, footer, navbar */
+@import url(manual.css);						/* Style for Manual page */
 
 
 
@@ -17,3 +18,17 @@
 @import url(override-kendoui.css);              /* Override Kendo css */
 @import url(modern_component.css);              /* Components style css */
 @import url(custom-style.css);                  /* Custom style for non-components */
+
+
+body .navbar-default .navbar-nav > .active > a,
+body .navbar-default .navbar-nav > .active > a:hover,
+body .navbar-default .navbar-nav > .active > a:focus {
+	background-color: transparent;
+}
+
+#navigation .nav.navbar-nav img {
+    width: 12px;
+    margin-right: 5px;
+    height: 12px;
+    margin-top: -4px;
+}

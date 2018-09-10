@@ -3,7 +3,6 @@ package backend.api.rest.application.v21;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -16,12 +15,9 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.opencps.api.context.provider.v2.CompanyContextProvider;
-import org.opencps.api.context.provider.v2.LocaleContextProvider;
-import org.opencps.api.context.provider.v2.ServiceContextProvider;
-import org.opencps.api.context.provider.v2.UserContextProvider;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 import com.liferay.portal.kernel.model.User;
 
@@ -37,30 +33,32 @@ import backend.api.rest.application.v21.impl.StepConfigApiImpl;
 /**
  * @author binhth
  */
-@ApplicationPath("/v2_1")
-@Component(immediate = true, service = Application.class)
+@Component( 
+property = { 
+    JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/rest/v2_1", 
+    JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.restv2_1"
+}, 
+service = Application.class)
 public class BackendAPIRestApplicationV2 extends Application {
 
 	@Reference
+	private UserContextProvider _userContextProvider;
+	@Reference
 	private CompanyContextProvider _companyContextProvider;
-
 	@Reference
 	private LocaleContextProvider _localeContextProvider;
-
-	@Reference
-	private UserContextProvider _userContextProvider;
-
 	@Reference
 	private ServiceContextProvider _serviceContextProvider;
-	
+
+	@Override
 	public Set<Object> getSingletons() {
-		Set<Object> singletons = new HashSet<Object>();
-		
-		// add service provider
-		singletons.add(_serviceContextProvider);
+
+		Set<Object> singletons = new HashSet<>();
+
+		singletons.add(_userContextProvider);
 		singletons.add(_companyContextProvider);
 		singletons.add(_localeContextProvider);
-		singletons.add(_userContextProvider);
+		singletons.add(_serviceContextProvider);
 		
 		singletons.add(new ActionConfigApiImpl());
 		singletons.add(new MenuConfigApiImpl());
@@ -71,6 +69,8 @@ public class BackendAPIRestApplicationV2 extends Application {
 		singletons.add(new DossierDocumentApiImpl());
 		singletons.add(new StatisticReportApiImpl());
 		
+		singletons.add(this);
+		
 		return singletons;	
 	}
 
@@ -79,7 +79,7 @@ public class BackendAPIRestApplicationV2 extends Application {
 	public String working(@Context User user) {
 		System.out.println(user);
 		System.out.println();
-		return "It works!";
+		return "It works222222222!";
 	}
 
 	@GET
