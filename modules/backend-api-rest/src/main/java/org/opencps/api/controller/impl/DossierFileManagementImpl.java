@@ -830,7 +830,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (groupList != null && groupList.size() > 0) {
 				List<String> groupIdList = new ArrayList<>();
 				for (Group group : groupList) {
-					groupIdList.add(String.valueOf(group.getGroupId()));
+					if (group.isSite()) {
+						groupIdList.add(String.valueOf(group.getGroupId()));
+					}
 				}
 				if (groupIdList != null && groupIdList.size() > 0) {
 					strGroupId = String.join(StringPool.COMMA, groupIdList);
