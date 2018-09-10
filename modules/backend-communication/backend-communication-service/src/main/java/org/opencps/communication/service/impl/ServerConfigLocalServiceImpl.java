@@ -18,13 +18,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.communication.exception.ServerNameDuplicateException;
 import org.opencps.communication.exception.ServerNoDuplicateException;
 import org.opencps.communication.exception.ServerNoException;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.base.ServerConfigLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
@@ -59,6 +60,8 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	 * the server config local service.
 	 */
 	
+	private static Log _log = LogFactoryUtil.getLog(ServerConfigLocalServiceImpl.class);
+
 	public ServerConfig updateLastSync(long serverConfigId, Date lastSync, ServiceContext context) throws PortalException {
 		
 		ServerConfig serverConfig = serverConfigPersistence.fetchByPrimaryKey(serverConfigId);
@@ -181,9 +184,15 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	public ServerConfig getByCode(String serverNo) {
 		return serverConfigPersistence.fetchByCF_CD(serverNo);
 	}
-	
+
 	public List<ServerConfig> getGroupId(long groupId) {
-		return serverConfigPersistence.findByCF_GID(groupId);
+		try {
+			return serverConfigPersistence.findByCF_GID(groupId);
+		} catch (Exception e) {
+			_log.info(e);
+			return null;
+		}
+		
 	}
 
 	//LamTV_Remove all record
