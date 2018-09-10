@@ -143,6 +143,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -922,7 +923,8 @@ public class DossierManagementImpl implements DossierManagement {
 //			_log.info("Service code: " + input.getServiceCode());
 			String password = StringPool.BLANK;
 			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
+//				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
+				password = PwdGenerator.getPinNumber();
 			}
 
 			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
@@ -1514,8 +1516,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-	public static final int LENGHT_DOSSIER_PASSWORD = 4;
-	public static final String DEFAULT_PATTERN_PASSWORD = "0123456789khoa";
+//	public static final int LENGHT_DOSSIER_PASSWORD = 4;
+//	public static final String DEFAULT_PATTERN_PASSWORD = "0123";
 
 	@Override
 	public Response getContactsDossier(HttpHeaders header, ServiceContext serviceContext, Long dossierId,
