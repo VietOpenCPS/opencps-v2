@@ -275,7 +275,7 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			info: false
 		});
 
-		var itemIndex = 0;
+		var localIndex = 0;
 		$("#_collectionSub_dictItem_listView").kendoListView({
 			remove: function(e) {
 				
@@ -284,15 +284,22 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			dataSource: _collectionSub_dictItem_dataSource_detail,
 
 			template : function(data){
+				var _pageSize = _collectionSub_dictItem_dataSource_detail.pageSize();
 
+				localIndex++;
+
+				var currentPage = $("#_collectionSub_dictItem_listView_pager").data("kendoPager").page();
+				var totalPage =  $("#_collectionSub_dictItem_listView_pager").data("kendoPager").totalPages();
+
+				var index = (currentPage-1)*_pageSize + localIndex;
+
+				data.itemIndex = index;
 				itemIndex++ ;
-
-				data.itemIndex = itemIndex;
 
 				return kendo.template($("#_collectionSub_dictItem_template").html())(data);
 			},
 			dataBound : function(e){
-				itemIndex = 0;
+				localIndex = 0;
 			},
 			
 			filterable: {
