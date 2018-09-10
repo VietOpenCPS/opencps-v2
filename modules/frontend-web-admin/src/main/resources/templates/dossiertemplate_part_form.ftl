@@ -100,6 +100,15 @@
 			<div class="col-xs-12 col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
+						<div class="checkbox MB0 MT5"> <input type="checkbox" id="hasForm" name="hasForm" data-bind="checked:hasForm"> <label>Form trực tuyến</label> </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
 						Mã tạo form
 					</div>
 				</div>
@@ -283,7 +292,8 @@
 				required: $('#required').is(':checked'),
 				esign: $('#esign').is(':checked'),
 				typeCode : $("textarea#typeCode").val(),
-				deliverableAction : ($("#deliverableAction").val()) ? $("#deliverableAction").val() : 0
+				deliverableAction : ($("#deliverableAction").val()) ? $("#deliverableAction").val() : 0,
+				eForm: $("#hasForm").prop("checked")
 			},
 			success: function(result) {
 				notification.show({

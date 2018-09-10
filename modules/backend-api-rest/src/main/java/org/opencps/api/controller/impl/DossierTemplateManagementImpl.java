@@ -425,6 +425,11 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
 					GetterUtil.getBoolean(query.getEsign()), query.getTypeCode(), query.getDeliverableAction(),
 					serviceContext);
+
+			if (dossierPart != null) {
+				dossierPart.setEForm(GetterUtil.getBoolean(query.geteForm()));
+				DossierPartLocalServiceUtil.updateDossierPart(dossierPart);
+			}
 			
 			result = DossierTemplateUtils.mappingForPartPOST(dossierPart);
 
@@ -496,6 +501,11 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
 					GetterUtil.getBoolean(query.getEsign()), query.getTypeCode(), query.getDeliverableAction(),
 					serviceContext);
+
+			if (dossierPart != null) {
+				dossierPart.setEForm(GetterUtil.getBoolean(query.geteForm()));
+				DossierPartLocalServiceUtil.updateDossierPart(dossierPart);
+			}
 
 			result = DossierTemplateUtils.mappingForPartPOST(dossierPart);
 

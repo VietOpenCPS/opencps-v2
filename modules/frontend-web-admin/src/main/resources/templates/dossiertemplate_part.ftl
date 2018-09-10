@@ -221,7 +221,8 @@
 				formReport: formReport,
 				sampleData: sampleData,
 				typeCode : dataItem.typeCode,
-				deliverableAction : dataItem.deliverableAction
+				deliverableAction : dataItem.deliverableAction,
+				eForm: dataItem.hasForm
 			});
 
 			kendo.bind($("#dossier_template_part_model"), viewModel);
