@@ -61,7 +61,7 @@ public class DateTimeUtil {
 		Date date = null;
 
 		try {
-			if (Validator.isNotNull(strDate)) {
+			if (df != null && Validator.isNotNull(strDate)) {
 				date = df.parse(strDate);
 			}
 		}
@@ -79,14 +79,16 @@ public class DateTimeUtil {
 		Date date = null;
 
 		try {
-			if (Validator.isNotNull(strDate)) {
+			if (df != null && Validator.isNotNull(strDate)) {
 				date = df.parse(strDate);
 			}
 		}
 		catch (ParseException pe) {
 			df = getDateTimeFormat(_DATE_TIME_TO_NAME);
 			try {
-				date = df.parse(strDate);
+				if (df != null && Validator.isNotNull(strDate)) {
+					date = df.parse(strDate);
+				}
 			}
 			catch (ParseException e) {
 				_log.error(pe);
@@ -103,7 +105,7 @@ public class DateTimeUtil {
 		Date date = null;
 
 		try {
-			if (Validator.isNotNull(strDate)) {
+			if (df != null && Validator.isNotNull(strDate)) {
 				date = df.parse(strDate);
 			}
 		}
@@ -120,7 +122,7 @@ public class DateTimeUtil {
 		Date date = null;
 
 		try {
-			if (Validator.isNotNull(strDate)) {
+			if (df != null && Validator.isNotNull(strDate)) {
 				date = df.parse(strDate);
 			}
 		}
@@ -138,7 +140,7 @@ public class DateTimeUtil {
 		Date date = null;
 
 		try {
-			if (Validator.isNotNull(strDate)) {
+			if (df != null && Validator.isNotNull(strDate)) {
 				date = df.parse(strDate);
 			}
 		}
@@ -155,7 +157,7 @@ public class DateTimeUtil {
 		Date date = null;
 
 		try {
-			if (Validator.isNotNull(strDate)) {
+			if (df != null && Validator.isNotNull(strDate)) {
 				date = df.parse(strDate);
 			}
 		}
@@ -219,18 +221,22 @@ public class DateTimeUtil {
 
 	public static DateFormat getDateTimeFormat(String pattern) {
 
-		DateFormat dateFormat =
-			DateFormatFactoryUtil.getSimpleDateFormat(pattern);
+//		DateFormat dateFormat =
+//			DateFormatFactoryUtil.getSimpleDateFormat(pattern);
 
 		if (Validator.isNotNull(pattern)) {
-			pattern = _VN_DATE_TIME_FORMAT;
+//			pattern = _VN_DATE_TIME_FORMAT;
+			DateFormat dateFormat =
+					DateFormatFactoryUtil.getSimpleDateFormat(_VN_DATE_TIME_FORMAT);
+			dateFormat.setTimeZone(TimeZoneUtil.getDefault());
+
+			return dateFormat;
 		}
 
-		dateFormat.setTimeZone(TimeZoneUtil.getDefault());
-
+//		dateFormat.setTimeZone(TimeZoneUtil.getDefault());
 		// dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-		return dateFormat;
+//		return dateFormat;
+		return null;
 	}
 
 	public static Calendar getInstance(Date date, int... ignores) {
@@ -279,16 +285,19 @@ public class DateTimeUtil {
 
 	public static int getDayFromDate(Date date) {
 
-		int day = 1;
+		int day = 0;
 
 		if (date != null) {
 			Calendar calendar = Calendar.getInstance();
 
 			calendar.setTime(date);
-			day = calendar.get(Calendar.DAY_OF_MONTH);
+			day += calendar.get(Calendar.DAY_OF_MONTH);
 
-			calendar.setTime(date);
-			day = calendar.get(Calendar.DAY_OF_MONTH);
+//			calendar.setTime(date);
+//			day = calendar.get(Calendar.DAY_OF_MONTH);
+//			return day;
+		} else {
+			day += 1;
 		}
 
 		return day;
@@ -296,16 +305,19 @@ public class DateTimeUtil {
 
 	public static int getMonthFromDate(Date date) {
 
-		int month = 1;
+		int month = 0;
 
 		if (date != null) {
 			Calendar calendar = Calendar.getInstance();
 
 			calendar.setTime(date);
-			month = calendar.get(Calendar.MONTH);
+			month += calendar.get(Calendar.MONTH);
 
-			calendar.setTime(date);
-			month = calendar.get(Calendar.MONTH);
+//			calendar.setTime(date);
+//			month = calendar.get(Calendar.MONTH);
+//			return month;
+		} else {
+			month += 1;
 		}
 
 		return month;
@@ -313,16 +325,19 @@ public class DateTimeUtil {
 
 	public static int getYearFromDate(Date date) {
 
-		int year = 1990;
+//		int year = 1990;
+		int year = 0;
 
 		if (date != null) {
 			Calendar calendar = Calendar.getInstance();
 
 			calendar.setTime(date);
-			year = calendar.get(Calendar.YEAR);
+			year += calendar.get(Calendar.YEAR);
 
-			calendar.setTime(date);
-			year = calendar.get(Calendar.YEAR);
+//			calendar.setTime(date);
+//			year = calendar.get(Calendar.YEAR);
+		} else {
+			year += 1990;
 		}
 
 		return year;
