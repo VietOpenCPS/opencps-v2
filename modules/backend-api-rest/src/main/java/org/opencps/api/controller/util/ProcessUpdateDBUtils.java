@@ -341,7 +341,11 @@ public class ProcessUpdateDBUtils {
 
 		try {
 			//Delete all table ServerConfig
-			ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
+			List<org.opencps.communication.model.ServerConfig> configList = ServerConfigLocalServiceUtil
+					.getGroupId(groupId);
+			if (configList != null && configList.size() > 0) {
+				ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
+			}
 			//Update table ServerConfig
 			if (serverList != null) {
 				List<ServerConfig> serverConfigList = serverList.getServerConfig();
