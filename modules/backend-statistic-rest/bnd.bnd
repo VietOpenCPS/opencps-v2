@@ -1,0 +1,4 @@
+Bundle-Name: backend-statistic-rest
+Bundle-SymbolicName: backend.statistic.rest
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration

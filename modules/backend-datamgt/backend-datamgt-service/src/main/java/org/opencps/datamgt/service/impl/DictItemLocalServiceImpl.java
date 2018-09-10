@@ -630,9 +630,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		String dictItemParentId = String.valueOf(params.get(DictItemTerm.PARENT_ITEM_ID));
 		String parentItemCode = (String) params.get(DictItemTerm.PARENT_ITEM_CODE);
 
-		if (Validator.isNull(parentItemCode)) {
-			parentItemCode = "0";
-		}
+//		if (Validator.isNull(parentItemCode)) {
+//			parentItemCode = "0";
+//		}
 
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");
