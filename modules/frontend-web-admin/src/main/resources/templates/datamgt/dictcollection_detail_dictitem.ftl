@@ -60,6 +60,7 @@
 			</li>
 			
 			<div id ="_collectionSub_dictItem_listView"></div>
+			<div id="_collectionSub_dictItem_listView_pager" class="k-pager-wrap full-width-pager pull-right PR15 PB15"></div>
 
 		</ul>
 
@@ -157,7 +158,10 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			transport: {
 	
 				read: function(options) {
-					
+					var page = options.data.page;
+					var pageSize = options.data.pageSize;
+					var start = (page - 1) * pageSize;
+					var end = (page - 1) * pageSize + pageSize;
 					$.ajax({
 					
 						url: _collectionSub_dictItem_BaseUrl_detail,
@@ -168,7 +172,9 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 						},
 						data: {
 							
-							sort: 'sibling'
+							sort: 'sibling',
+							start: start,
+							end: end
 							
 						},
 						success: function(result) {
@@ -227,6 +233,10 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 					}
 				}
 			},
+			pageSize: 15,
+			serverPaging: true,
+			serverSorting: true,
+			serverFiltering: true,
 			schema: {
 				data: "data",
 				total: "total",
@@ -257,6 +267,12 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 				this.cancelChanges();
 				
 			}
+		});
+
+		$("#_collectionSub_dictItem_listView_pager").kendoPager({
+			dataSource: _collectionSub_dictItem_dataSource_detail,
+			buttonCount: 5,
+			info: false
 		});
 
 		var itemIndex = 0;
