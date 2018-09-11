@@ -34,7 +34,7 @@ import backend.utils.FileUploadUtils;
 
 public class WorkingUnitActions implements WorkingUnitInterface {
 
-	private static final Log _log = LogFactoryUtil.getLog(WorkingUnitActions.class);
+	private static Log _log = LogFactoryUtil.getLog(WorkingUnitActions.class);
 
 	@Override
 	public JSONObject getWorkingUnits(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -196,7 +196,7 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 		try {
 			fileEntry = DLAppLocalServiceUtil.getFileEntry(workingUnit.getLogoFileEntryId());
 		} catch (PortalException e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return fileEntry;
@@ -213,7 +213,7 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 
 		WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(id);
 
-		workingUnit = WorkingUnitLocalServiceUtil.updateWorkingUnit(userId, workingUnit.getWorkingUnitId(),
+		WorkingUnitLocalServiceUtil.updateWorkingUnit(userId, workingUnit.getWorkingUnitId(),
 				workingUnit.getName(), workingUnit.getEnName(), workingUnit.getGovAgencyCode(),
 				workingUnit.getParentWorkingUnitId(), workingUnit.getSibling(), workingUnit.getAddress(),
 				workingUnit.getTelNo(), workingUnit.getFaxNo(), workingUnit.getEmail(), workingUnit.getWebsite(),

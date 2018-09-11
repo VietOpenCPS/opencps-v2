@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
 import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.model.Employee;
@@ -60,9 +61,8 @@ import backend.utils.FileUploadUtils;
 
 public class EmployeeActions implements EmployeeInterface {
 
-	public static Locale locale = new Locale("vi", "VN");
-	private static final Log _log =
-		LogFactoryUtil.getLog(EmployeeActions.class);
+	private static final Locale locale = new Locale("vi", "VN");
+	private static Log _log = LogFactoryUtil.getLog(EmployeeActions.class);
 
 	@Override
 	public JSONObject getEmployees(
@@ -211,7 +211,7 @@ public class EmployeeActions implements EmployeeInterface {
 		}
 		catch (PortalException e) {
 			_log.error(
-				"Can not get Employee photo employeeId = " + id + " " + e);
+				"Can not get Employee photo employeeId = " + id + " | " + e);
 		}
 
 		return file;
@@ -233,7 +233,7 @@ public class EmployeeActions implements EmployeeInterface {
 		catch (PortalException e) {
 			_log.error(
 				"Can not get employee photo with employee.getPhotoFileEntryId() " +
-					employee.getPhotoFileEntryId());
+					employee.getPhotoFileEntryId() + " | " + e);
 		}
 
 		return fileEntry;
@@ -260,7 +260,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 			Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
 
-			employee = EmployeeLocalServiceUtil.updateEmployee(
+			EmployeeLocalServiceUtil.updateEmployee(
 				userId, employee.getEmployeeId(), employee.getFullName(),
 				employee.getEmployeeNo(), employee.getGender(),
 				employee.getBirthdate(), employee.getTelNo(),
@@ -275,7 +275,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return file;
@@ -309,7 +309,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 			employee.setMainJobPostId(jobPosId);
 
-			employee = EmployeeLocalServiceUtil.updateEmployee(
+			EmployeeLocalServiceUtil.updateEmployee(
 				userId, employee.getEmployeeId(), employee.getFullName(),
 				employee.getEmployeeNo(), employee.getGender(),
 				employee.getBirthdate(), employee.getTelNo(),
@@ -350,7 +350,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 			employee.setMainJobPostId(jobPosId);
 
-			employee = EmployeeLocalServiceUtil.updateEmployee(
+			EmployeeLocalServiceUtil.updateEmployee(
 				userId, employee.getEmployeeId(), employee.getFullName(),
 				employee.getEmployeeNo(), employee.getGender(),
 				employee.getBirthdate(), employee.getTelNo(),
@@ -409,7 +409,7 @@ public class EmployeeActions implements EmployeeInterface {
 		PortalException {
 
 		if (Validator.isNull(screenName)) {
-			screenName = email.substring(0, email.indexOf("@"));
+			screenName = email.substring(0, email.indexOf(StringPool.AT));
 		}
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
@@ -439,12 +439,12 @@ public class EmployeeActions implements EmployeeInterface {
 
 			if (exist) {
 
-				jsonObject.put("screenName", user.getScreenName());
-				jsonObject.put("email", user.getEmailAddress());
-				jsonObject.put("exist", exist);
-				jsonObject.put("duplicate", Boolean.FALSE.toString());
+				jsonObject.put(CommonTerm.SCREEN_NAME, user.getScreenName());
+				jsonObject.put(CommonTerm.EMAIL, user.getEmailAddress());
+				jsonObject.put(CommonTerm.EXITS, exist);
+				jsonObject.put(CommonTerm.DUPLICATE, Boolean.FALSE.toString());
 
-				employee = EmployeeLocalServiceUtil.updateEmployee(
+				EmployeeLocalServiceUtil.updateEmployee(
 					userId, employee.getEmployeeId(), employee.getFullName(),
 					employee.getEmployeeNo(), employee.getGender(),
 					employee.getBirthdate(), employee.getTelNo(),
@@ -458,7 +458,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 				if (roleIdsInit.isEmpty() || Validator.isNull(roleIdsInit)) {
 					Role role =
-						RoleLocalServiceUtil.fetchRole(companyId, "employee");
+						RoleLocalServiceUtil.fetchRole(companyId, CommonTerm.EMPLOYEE);
 
 					if (Validator.isNotNull(role)) {
 						roleIdsInit.add(role);
@@ -478,6 +478,7 @@ public class EmployeeActions implements EmployeeInterface {
 							user.getUserId(), role.getRoleId());
 					}
 					catch (Exception e) {
+						_log.error(e);
 					}
 				}
 
@@ -490,7 +491,7 @@ public class EmployeeActions implements EmployeeInterface {
 					List<Long> roleIds = new ArrayList<>();
 
 					Role role =
-						RoleLocalServiceUtil.fetchRole(companyId, "employee");
+						RoleLocalServiceUtil.fetchRole(companyId, CommonTerm.EMPLOYEE);
 
 					if (Validator.isNotNull(role)) {
 						roleIds.add(role.getRoleId());
@@ -574,9 +575,9 @@ public class EmployeeActions implements EmployeeInterface {
 
 					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-					payLoad.put("USERNAME", newUser.getScreenName());
-					payLoad.put("USEREMAIL", newUser.getEmailAddress());
-					payLoad.put("PASSWORD", passWord);
+					payLoad.put(CommonTerm.USER_NAME, newUser.getScreenName());
+					payLoad.put(CommonTerm.USER_EMAIL, newUser.getEmailAddress());
+					payLoad.put(CommonTerm.PASS_WORD, passWord);
 
 					NotificationQueueLocalServiceUtil.addNotificationQueue(
 						userId, groupId, Constants.USER_01,
@@ -587,17 +588,17 @@ public class EmployeeActions implements EmployeeInterface {
 						employee.getEmail(), employee.getTelNo(), new Date(),
 						null, serviceContext);
 
-					jsonObject.put("screenName", newUser.getScreenName());
-					jsonObject.put("email", newUser.getEmailAddress());
-					jsonObject.put("exist", exist);
-					jsonObject.put("duplicate", Boolean.FALSE.toString());
-
+					jsonObject.put(CommonTerm.SCREEN_NAME, newUser.getScreenName());
+					jsonObject.put(CommonTerm.EMAIL, newUser.getEmailAddress());
+					jsonObject.put(CommonTerm.EXITS, exist);
+					jsonObject.put(CommonTerm.DUPLICATE, Boolean.FALSE.toString());
 				}
 				catch (Exception e) {
-					jsonObject.put("screenName", user.getScreenName());
-					jsonObject.put("email", user.getEmailAddress());
-					jsonObject.put("exist", Boolean.TRUE);
-					jsonObject.put("duplicate", Boolean.TRUE.toString());
+					_log.error(e);
+					jsonObject.put(CommonTerm.SCREEN_NAME, user.getScreenName());
+					jsonObject.put(CommonTerm.EMAIL, user.getEmailAddress());
+					jsonObject.put(CommonTerm.EXITS, Boolean.TRUE);
+					jsonObject.put(CommonTerm.DUPLICATE, Boolean.TRUE.toString());
 				}
 
 			}
@@ -640,16 +641,16 @@ public class EmployeeActions implements EmployeeInterface {
 
 			indexer.reindex(user);
 
-			jsonObject.put("screenName", user.getScreenName());
-			jsonObject.put("email", user.getEmailAddress());
-			jsonObject.put("exist", true);
+			jsonObject.put(CommonTerm.SCREEN_NAME, user.getScreenName());
+			jsonObject.put(CommonTerm.EMAIL, user.getEmailAddress());
+			jsonObject.put(CommonTerm.EXITS, true);
 
 			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-			payLoad.put("USERNAME", user.getScreenName());
-			payLoad.put("USEREMAIL", user.getEmailAddress());
+			payLoad.put(CommonTerm.USER_NAME, user.getScreenName());
+			payLoad.put(CommonTerm.USER_EMAIL, user.getEmailAddress());
 			payLoad.put(
-					"USERSTATUS",
+					CommonTerm.USER_STATUS,
 					LanguageUtil.get(locale, "user-status-" + user.getStatus()));
 
 			NotificationQueueLocalServiceUtil.addNotificationQueue(
@@ -853,7 +854,7 @@ public class EmployeeActions implements EmployeeInterface {
 	private void processUpdateEmpJobPos(long userId, long groupId, String[] roleArr, Employee employee,
 			List<EmployeeJobPos> empJobPosList, ServiceContext serviceContext) throws PortalException {
 		long jobPosId = 0;
-		String jobCode = StringPool.BLANK;
+//		String jobCode = StringPool.BLANK;
 		if (empJobPosList != null && empJobPosList.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			long jobPosEmpId = 0;
@@ -871,7 +872,7 @@ public class EmployeeActions implements EmployeeInterface {
 			String strJobPos = sb.toString();
 			if (Validator.isNotNull(strJobPos)) {
 				for (int i = 0; i < roleArr.length; i++) {
-					jobCode = roleArr[i];
+					String jobCode = roleArr[i];
 					if (!strJobPos.contains(jobCode)) {
 						JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
 						if (job != null) {
@@ -885,7 +886,7 @@ public class EmployeeActions implements EmployeeInterface {
 		} else {
 			for (int i = 0; i < roleArr.length; i++) {
 				_log.info("roleArr.length: "+roleArr.length);
-				jobCode = roleArr[i];
+				String jobCode = roleArr[i];
 				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
 				if (job != null) {
 					jobPosId = job.getJobPosId();
@@ -906,7 +907,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 		try {
 			if (Validator.isNull(screenName)) {
-				screenName = email.substring(0, email.indexOf("@"));
+				screenName = email.substring(0, email.indexOf(StringPool.AT));
 			}
 			_log.info("companyId: " + serviceContext.getCompanyId());
 			long companyId = serviceContext.getCompanyId();

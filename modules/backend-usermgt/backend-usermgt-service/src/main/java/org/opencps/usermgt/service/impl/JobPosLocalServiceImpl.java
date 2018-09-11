@@ -97,7 +97,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 		String modelName = UserMGTConstants.WORKINGUNIT_MGT_CENTER;
 
-		String[] listPermission = ActionKeys.LIST_PERMISSION;
+		String[] listPermission = ActionKeys.getListPermission();
 
 		try {
 			
@@ -105,6 +105,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 					ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(roleId), roleId, actionIds);
 			
 		} catch (PortalException e) {
+			_log.error(e);
 			for (int i = 0; i < listPermission.length; i++) {
 
 				String actionId = listPermission[i];
@@ -174,9 +175,9 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		long jobPosId = counterLocalService.increment(JobPos.class.getName());
 
 		// create role name
-		String role_name = title;
+//		String role_name = title;
 
-		role_name = title + jobPosId;
+		String role_name = title + jobPosId;
 
 		// add role
 		Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
@@ -235,14 +236,15 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 
-		JobPos jobPos;
+		JobPos jobPos = null;
 
 		try {
 
 			jobPos = jobPosPersistence.remove(JobPosId);
 
 		} catch (NoSuchJobPosException e) {
-			throw new NotFoundException();
+//			throw new NotFoundException();
+			_log.error(e);
 		}
 
 		return jobPos;
@@ -437,8 +439,8 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			long jobPosId = counterLocalService.increment(JobPos.class.getName());
 			jobPos = jobPosPersistence.create(jobPosId);
 			// create role name
-			String role_name = title;
-			role_name = title + jobPosId;
+//			String role_name = title;
+			String role_name = title + jobPosId;
 
 			// add role
 			_log.info("role_name:"+role_name);

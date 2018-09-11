@@ -3,7 +3,6 @@ package org.opencps.usermgt.service.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -18,7 +17,8 @@ public class UserMgtUtils {
 
 	public static Date getDefaultBrithday() {
 		try {
-			return ServiceProps.SIMPLE_DATE_FORMAT.parse("01/01/1971 00:00::00");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy hh:MM:ss");
+			return sdf.parse("01/01/1971 00:00::00");
 		} catch (Exception e) {
 			return new Date();
 		}

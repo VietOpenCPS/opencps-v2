@@ -112,7 +112,7 @@ public class JobposActions implements JobposInterface {
 	public JSONObject getJobposPermissions() {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		String[] permissionData = ActionKeys.LIST_PERMISSION_DATA;
+		String[] permissionData = ActionKeys.getListPermissionData();
 
 		result.put("data", permissionData);
 
@@ -130,7 +130,7 @@ public class JobposActions implements JobposInterface {
 
 		List<String> actionIds = new ArrayList<>();
 
-		for (String actionKey : ActionKeys.LIST_PERMISSION_DATA) {
+		for (String actionKey : ActionKeys.getListPermissionData()) {
 
 			boolean hasPermission = false;
 
@@ -145,8 +145,7 @@ public class JobposActions implements JobposInterface {
 				}
 
 			} catch (PortalException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 		}
@@ -170,7 +169,7 @@ public class JobposActions implements JobposInterface {
 
 		List<String> actionIds = new ArrayList<>();
 
-		for (String actionKey : ActionKeys.LIST_PERMISSION_DATA) {
+		for (String actionKey : ActionKeys.getListPermissionData()) {
 
 			boolean hasPermission = false;
 
@@ -185,8 +184,7 @@ public class JobposActions implements JobposInterface {
 				}
 
 			} catch (PortalException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 		}

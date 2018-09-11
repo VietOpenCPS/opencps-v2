@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.configuration.Filter;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -32,11 +30,11 @@ import java.util.Properties;
 public class ServiceProps {
 	
 	public static final String APPLICANT_ROLE_NAME = "APPLICANT";
-	public static int PASSWORD_LENGHT = 10;
-	public static String ADM_ROLE_NAME = "Administrator";
-	public static String APPLICANT_JOB_TITLE = "Applicant";
+	public static final int PASSWORD_LENGHT = 10;
+	public static final String ADM_ROLE_NAME = "Administrator";
+	public static final String APPLICANT_JOB_TITLE = "Applicant";
 	
-	public static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd/mm/yyyy hh:MM:ss");
+//	public static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd/mm/yyyy hh:MM:ss");
 	
 
 
