@@ -12,7 +12,7 @@ public class KPRest {
     //test
 //    private static final String BASE_URI = "http://113.160.58.22:5555/webservices/resources";
     //staging
-    private static String BASE_URI = "http://webservices.keypay.vn/resources";
+    private String BASE_URI = "http://webservices.keypay.vn/resources";
 //    private static final String BASE_URI = "http://localhost/webservices/resources";
     //product
 //    private static final String BASE_URI = "http://webservices.keypay.gov.vn/resources";

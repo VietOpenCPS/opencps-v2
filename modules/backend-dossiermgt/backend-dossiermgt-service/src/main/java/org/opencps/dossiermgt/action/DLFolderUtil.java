@@ -99,10 +99,14 @@ public class DLFolderUtil {
 			userId, groupId, repositoryId, mountPoint, parentFolderId, name,
 			description, hidden, serviceContext);
 
-		return getFolder(
-			userId, groupId, repositoryId, mountPoint, dlFolder.getFolderId(),
-			name, description, hidden, serviceContext);
-
+		if (dlFolder != null) {
+			return getFolder(
+				userId, groupId, repositoryId, mountPoint, dlFolder.getFolderId(),
+				name, description, hidden, serviceContext);
+		}
+		else {
+			return null;
+		}
 	}
 
 	public static DLFolder getFolder(
@@ -165,7 +169,7 @@ public class DLFolderUtil {
 			String name = folderNames[0];
 			dlFolder = getFolder(groupId, parentFolderId, name);
 			folderNames = ArrayUtil.remove(folderNames, name);
-			if (folderNames.length > 0) {
+			if (folderNames.length > 0 && dlFolder != null) {
 				dlFolder = getTargetFolder(
 					groupId, dlFolder.getFolderId(),
 					StringUtil.merge(folderNames, StringPool.FORWARD_SLASH));
@@ -224,12 +228,12 @@ public class DLFolderUtil {
 			ActionKeys.VIEW, ActionKeys.ACCESS
 		};
 		try {
-			resourcePermission =
-				ResourcePermissionLocalServiceUtil.getResourcePermission(
-					fileEntry.getCompanyId(), DLFileEntry.class.getName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(fileEntry.getPrimaryKey()),
-					guestMemberRole.getRoleId());
+//			resourcePermission =
+//				ResourcePermissionLocalServiceUtil.getResourcePermission(
+//					fileEntry.getCompanyId(), DLFileEntry.class.getName(),
+//					ResourceConstants.SCOPE_INDIVIDUAL,
+//					String.valueOf(fileEntry.getPrimaryKey()),
+//					guestMemberRole.getRoleId());
 
 			ResourcePermissionLocalServiceUtil.setResourcePermissions(
 				fileEntry.getCompanyId(), DLFileEntry.class.getName(),
@@ -243,6 +247,7 @@ public class DLFolderUtil {
 			// }
 		}
 		catch (NoSuchResourcePermissionException e) {
+			_log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());
@@ -290,6 +295,7 @@ public class DLFolderUtil {
 				siteMemberRole.getRoleId(), actionIds);
 		}
 		catch (NoSuchResourcePermissionException e) {
+			_log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());
@@ -337,6 +343,7 @@ public class DLFolderUtil {
 				siteMemberRole.getRoleId(), actionIds);
 		}
 		catch (NoSuchResourcePermissionException e) {
+			_log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());

@@ -245,9 +245,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				}
 				
 				//Update submit date
-				now = new Date();
+//				now = new Date();
 //				dossier.setSubmitDate(now);
-				Double durationCount = 0d;
+				Double durationCount;
 				Integer durationUnit = 0;
 				if (serviceProcess != null ) {
 					durationCount = serviceProcess.getDurationCount();
@@ -500,10 +500,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		//LamTV_ Process Post payment
 //		long userId = context.getUserId();
 //		long groupId = dossier.getGroupId();
-		String referenceUid = StringPool.BLANK;
-		if (Validator.isNull(referenceUid)) {
-			referenceUid = PortalUUIDUtil.generate();
-		}
+//		String referenceUid = StringPool.BLANK;
+//		if (Validator.isNull(referenceUid)) {
+//			referenceUid = PortalUUIDUtil.generate();
+//		}
 //		String govAgencyCode = dossier.getGovAgencyCode();
 //		String govAgencyName = dossier.getGovAgencyName();
 //		long paymentAmount = 0;
@@ -698,7 +698,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossierPersistence.update(dossier);
 
 		// init DossierFile
-		List<DossierPart> dossierParts = new ArrayList<DossierPart>();
+		List<DossierPart> dossierParts;
 
 		dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
 
@@ -719,7 +719,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
 		String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-				dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+				dossierId, option.getProcessOptionId(), serviceProcess != null ? serviceProcess.getDossierNoPattern() : StringPool.BLANK, params);
 
 
 		//LamTV_ Process Post payment
@@ -732,7 +732,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //		String paymentNote = StringPool.BLANK;
 //		String epaymentProfile = StringPool.BLANK;
 //		String bankInfo = StringPool.BLANK;
-		String paymentFee = StringPool.BLANK;
+		String paymentFee;
 //		long paymentAmount = 0;
 		if (serviceProcess != null) {
 			paymentFee = serviceProcess.getPaymentFee();
@@ -742,9 +742,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote, epaymentProfile,
 //				bankInfo, context);
 
-		_log.info("SERVICEPROCESS"+ serviceProcess.getDossierNoPattern());
-		
-		_log.info("DOSSIER_NO_"+ dossierRef);
+//		_log.info("SERVICEPROCESS"+ serviceProcess.getDossierNoPattern());
+//		
+//		_log.info("DOSSIER_NO_"+ dossierRef);
 
 		dossier.setDossierNo(dossierRef.trim());
 
@@ -840,7 +840,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			// create DossierFile if it is eForm
 
-			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
+			List<DossierPart> dossierParts;
 
 			dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
 
@@ -2610,6 +2610,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			if (Validator.isNotNull(serviceInfo)) {
 				dossierNote = serviceInfo.getProcessText();
 			}
@@ -2631,6 +2632,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			_log.info("sc.get(0).getServerNo():" + sc.get(0).getServerNo());
 			return sc.get(0).getServerNo();
 		} catch (Exception e) {
+			_log.error(e);
 			return StringPool.BLANK;
 		}
 
@@ -2654,6 +2656,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossierPersistence.remove(dossier.getDossierId());
 			} catch (NoSuchDossierException e) {
 //				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 //		dossierPersistence.removeByNOTO_DS(originality, dossierStatus);
@@ -3069,9 +3072,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			dossier.setDossierActionId(dossierAction.getDossierActionId());
 			dossier.setDossierStatus(processStep.getDossierStatus());
-			dossier.setDossierStatusText(jsonDataStatusText.getString(processStep.getDossierStatus()));
+			dossier.setDossierStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(processStep.getDossierStatus()) : StringPool.BLANK);
 			dossier.setDossierSubStatus(processStep.getDossierSubStatus());
-			dossier.setDossierSubStatusText(jsonDataStatusText.getString(processStep.getDossierSubStatus()));
+			dossier.setDossierSubStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(processStep.getDossierSubStatus()) : StringPool.BLANK);
 		}
 		return dossierPersistence.update(dossier);
 	}

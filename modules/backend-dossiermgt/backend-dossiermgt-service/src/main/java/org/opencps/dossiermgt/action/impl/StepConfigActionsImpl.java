@@ -50,7 +50,7 @@ public class StepConfigActionsImpl implements StepConfigActions {
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
 		if (authImpl.hasResource(serviceContext, StringPool.BLANK, StringPool.BLANK)) {
-			StepConfig object = StepConfigLocalServiceUtil.getStepConfig(stepConfigId);
+			StepConfig object;
 
 			object = StepConfigLocalServiceUtil.updateStepConfig(stepConfigId, userId, groupId, stepCode, stepName,
 					stepType, dossierStatus, dossierSubStatus, menuGroup, menuStepName, buttonConfig);

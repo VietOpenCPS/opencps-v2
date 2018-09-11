@@ -90,6 +90,7 @@ public class DossierNumberGenerator {
 				_log.info("SERVICECODE____"+serviceProcessCode);
 				
 			} catch (Exception e) {
+				_log.error(e);
 				_log.info("SERVICECODE____ERROR");
 
 			}
@@ -186,8 +187,8 @@ public class DossierNumberGenerator {
 						Pattern r2 = Pattern.compile(extractValuePattern);
 						Matcher m2 = r2.matcher(tmp);
 						String extractContent = (m2.find() ? m2.group(1) : StringPool.BLANK).trim();
-						String key = StringPool.BLANK;
-						String param = StringPool.BLANK;
+						String key;
+						String param;
 						String value = StringPool.BLANK;
 						String[] textSplit = StringUtil.split(extractContent, "@");
 						if (textSplit == null || textSplit.length < 2) {
@@ -259,7 +260,7 @@ public class DossierNumberGenerator {
 		String processId = String.valueOf(DossierLocalServiceUtil.countLucene(param, sc) + 1);
 		// String processId = "100";
 		String processP = "";
-		if (listPattern[0].equals("{code}")) {
+		if ("{code}".equals(listPattern[0])) {
 			// replace code
 			pattern = pattern.replace(listPattern[0], code);
 			processP = listPattern[2];
@@ -305,10 +306,10 @@ public class DossierNumberGenerator {
 			//int curYear = cal.get(Calendar.YEAR);
 			
 			DateFormat df = new SimpleDateFormat("yyyy");
-			DateFormat sdf = new SimpleDateFormat("yy");
+//			DateFormat sdf = new SimpleDateFormat("yy");
 			
 			String curYear = df.format(cal.getTime());
-			String shortCurYear = sdf.format(cal.getTime());
+//			String shortCurYear = sdf.format(cal.getTime());
 
 			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + curYear;
 			
@@ -383,6 +384,7 @@ public class DossierNumberGenerator {
 				
 			}
 		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		return certNumber;
@@ -390,7 +392,7 @@ public class DossierNumberGenerator {
 	}
 	
 	public static String generatePassword(String pattern, int length) {
-		String password = StringPool.BLANK;
+		String password;
 
 		// TODO add more logic here if that is necessary
 		password = PwdGenerator.getPassword(pattern, length);

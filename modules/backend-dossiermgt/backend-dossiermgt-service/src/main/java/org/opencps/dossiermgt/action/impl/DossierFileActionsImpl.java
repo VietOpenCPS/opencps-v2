@@ -148,30 +148,33 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		OutputStream outStream = null;
 
 		try {
-		File afile = new File(orgFileName);
-		File bfile = new File(targetFileName);
-		if (!bfile.exists()) {
-			bfile.createNewFile();
-		}
-		inStream = new FileInputStream(afile);
-		outStream = new FileOutputStream(bfile);
-
-		byte[] buffer = new byte[1024];
-
-			int length = 0;
-		// copy the file content in bytes
-		while ((length = inStream.read(buffer)) > 0) {
-
-			outStream.write(buffer, 0, length);
-
-		}
+			File afile = new File(orgFileName);
+			File bfile = new File(targetFileName);
+			if (!bfile.exists()) {
+				bfile.createNewFile();
+			}
+			inStream = new FileInputStream(afile);
+			outStream = new FileOutputStream(bfile);
+	
+			byte[] buffer = new byte[1024];
+	
+				int length = 0;
+			// copy the file content in bytes
+			while ((length = inStream.read(buffer)) > 0) {
+	
+				outStream.write(buffer, 0, length);
+	
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.info(e);
 		} finally{
-		inStream.close();
-		outStream.close();
+			if (inStream != null) 
+				inStream.close();
+			if (outStream != null) 
+				outStream.close();
 		}
-		_log.info("Create file " + targetFileName + " success");
+//		_log.info("Create file " + targetFileName + " success");
 	}
 
 	@Override
@@ -210,15 +213,22 @@ public class DossierFileActionsImpl implements DossierFileActions {
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
-			} finally{
-			zos.closeEntry();
-			fis.close();
-		}
+				_log.error(e);
+			} 
+			finally{
+				if (zos != null)
+					zos.closeEntry();
+				if (fis != null)
+					fis.close();
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 		} finally{
-		zos.close();
-		fos.close();
+			if (zos != null)
+				zos.close();
+			if (fos != null)
+				fos.close();
 		}
 		
 		_log.info("Zip file Successfull");
@@ -315,11 +325,11 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 	@Override
 	public void uploadFileEntry(String name, InputStream inputStream, ServiceContext serviceContext) {
-		long userId = serviceContext.getUserId();
+//		long userId = serviceContext.getUserId();
 
 //		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
 
-		long fileEntryId = 0;
+//		long fileEntryId = 0;
 
 		try {
 //			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, dossierFile.getFileEntryId(),

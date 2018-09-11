@@ -65,6 +65,7 @@ public class PaymentUrlGenerator {
 			md5 = MessageDigest.getInstance("MD5");
 			ba = md5.digest(buf.toString().getBytes("UTF-8"));
 		} catch (Exception e) {
+			_log.error(e);
 		} // wont happen
 		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
 		String formattedDate = df.format(Calendar.getInstance().getTime());
@@ -153,7 +154,7 @@ public class PaymentUrlGenerator {
 
 				// TODO : update returnURL keyPay
 
-				String return_url = StringPool.BLANK;
+				String return_url;
 				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
 
 				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
@@ -289,6 +290,7 @@ public class PaymentUrlGenerator {
 		try {
 			paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
 		} catch (Exception e) {
+			_log.error(e);
 			paymentFile = null;
 		}
 
@@ -307,6 +309,7 @@ public class PaymentUrlGenerator {
 		try {
 			paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, govAgencyCode);
 		} catch (Exception e) {
+			_log.error(e);
 			paymentConfig = null;
 		}
 
@@ -321,7 +324,7 @@ public class PaymentUrlGenerator {
 
 		String tempGoodCode = _generatorUniqueString(length);
 
-		String goodCode = StringPool.BLANK;
+		String goodCode;
 
 		while (_checkContainsGoodCode(tempGoodCode)) {
 			tempGoodCode = _generatorUniqueString(length);
@@ -376,6 +379,7 @@ public class PaymentUrlGenerator {
 				isContains = true;
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			isContains = true;
 		}
 

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class FileUploadUtils {
@@ -43,12 +42,12 @@ public class FileUploadUtils {
 
 			calendar.setTime(new Date());
 
-			destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
-			destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
-			destination += calendar.get(Calendar.DAY_OF_MONTH);
+//			destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
+//			destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
+//			destination += calendar.get(Calendar.DAY_OF_MONTH);
 
-			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
-					"Comment attactment", false, serviceContext);
+//			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
+//					"Comment attactment", false, serviceContext);
 
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
 

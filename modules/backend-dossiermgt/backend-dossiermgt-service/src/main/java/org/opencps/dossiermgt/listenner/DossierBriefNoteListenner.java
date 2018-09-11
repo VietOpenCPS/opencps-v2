@@ -90,11 +90,12 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (PortalException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	}
 
-	public static DossierFile modelBeforeUpdate;
+	public DossierFile modelBeforeUpdate;
 
 	private Log _log = LogFactoryUtil.getLog(DossierBriefNoteListenner.class.getName());
 	

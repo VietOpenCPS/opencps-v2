@@ -47,9 +47,9 @@ public class DossierPaymentUtils {
 		Pattern patternName = null;
 		Matcher matcherName = null;
 
-		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngineManager manager;
 
-		ScriptEngine engine = manager.getEngineByExtension("js");
+		ScriptEngine engine;
 
 		patternName = Pattern.compile("net=\\[(.*?)\\]");
 
@@ -87,7 +87,8 @@ public class DossierPaymentUtils {
 				long net = GetterUtil.getInteger(engine.get("payment"));
 				System.out.println("DossierPaymentUtils.main()" + net);
 			} catch (ScriptException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 
 		}
@@ -207,7 +208,8 @@ public class DossierPaymentUtils {
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+//					e.printStackTrace();
+					_log.error(e);
 				}
 
 			}
@@ -220,7 +222,8 @@ public class DossierPaymentUtils {
 
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	}
 
@@ -332,7 +335,7 @@ public class DossierPaymentUtils {
 				}
 			}
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		return msgPayments;
@@ -441,7 +444,7 @@ public class DossierPaymentUtils {
 			Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonObject);
 
 			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-				String valReplace = StringPool.BLANK;
+				String valReplace;
 
 				if (Validator.isNumber(String.valueOf(entry.getValue()))) {
 

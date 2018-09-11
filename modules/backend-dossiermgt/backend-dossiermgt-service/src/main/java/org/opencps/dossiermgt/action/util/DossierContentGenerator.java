@@ -18,12 +18,15 @@ import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierContentGenerator {
-
+	private static final Log _log = LogFactoryUtil.getLog(DossierContentGenerator.class);
+	
 	public static String getDossierNote(long groupId, long dossierId) {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -33,7 +36,7 @@ public class DossierContentGenerator {
 			ProcessOption option = getProcessOption(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(),
 					dossier.getDossierTemplateNo());
 
-			String source = option.getInstructionNote();
+			String source = option != null ? option.getInstructionNote() : StringPool.BLANK;
 
 			// TODO add keys and values that need to be replaced
 
@@ -55,7 +58,7 @@ public class DossierContentGenerator {
 			ProcessOption option = getProcessOption(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(),
 					dossier.getDossierTemplateNo());
 
-			String source = option.getSubmissionNote();
+			String source = option != null ? option.getSubmissionNote() : StringPool.BLANK;
 
 			// TODO add keys and values that need to be replaced
 
@@ -82,6 +85,7 @@ public class DossierContentGenerator {
 			return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
 					config.getServiceConfigId());
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 
@@ -91,7 +95,7 @@ public class DossierContentGenerator {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		String briefNote = StringPool.BLANK;
+		String briefNote;
 
 		LinkedHashMap<String, String> patternContentMaps = new LinkedHashMap<String, String>();
 
@@ -145,6 +149,7 @@ public class DossierContentGenerator {
 								briefNotePattern = briefNotePattern.replace(tmpKey,
 										Validator.isNotNull(value) ? value : StringPool.BLANK);
 							} catch (Exception e) {
+								_log.error(e);
 								briefNotePattern = briefNotePattern.replace(tmpKey, StringPool.BLANK);
 							}
 						}

@@ -166,8 +166,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
-		object.setUserId(Validator.isNotNull(userAction) ? userAction.getUserId() : 0l);
-		object.setUserName(Validator.isNotNull(userAction) ? userAction.getFullName() : StringPool.BLANK);
+		object.setUserId(userAction != null ? userAction.getUserId() : 0l);
+		object.setUserName(userAction != null ? userAction.getFullName() : StringPool.BLANK);
 
 		// Add other fields
 
@@ -398,12 +398,13 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 			} catch (PortalException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+//				e1.printStackTrace();
+				_log.error(e1);
 			}
 			// process sampleData
-			if (Validator.isNull(sampleData)) {
-				sampleData = "{}";
-			}
+//			if (Validator.isNull(sampleData)) {
+//				sampleData = "{}";
+//			}
 
 			Map<String, Object> jsonMap = jsonToMap(result);
 
@@ -495,6 +496,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 								}
 							} catch (Exception e) {
 								// TODO: handle exception
+								_log.error(e);
 							}
 
 							if (myCHK.startsWith("#")) {
@@ -504,7 +506,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 							}
 						}
 					} catch (SystemException e) {
-						e.printStackTrace();
+//						e.printStackTrace();
+						_log.error(e);
 					}
 				}
 			}
@@ -521,7 +524,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return result.toJSONString();
@@ -535,7 +539,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				retMap = toMap(json);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 		return retMap;
@@ -692,6 +697,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				fileEntryId = fileEntry.getFileEntryId();
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			throw new SystemException(e);
 		}
 
@@ -1099,10 +1105,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		if (Validator.isNotNull(referenceUid)) {
 			//DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
-			DossierFile dossierFile = null;
-			if (dossierFile != null) {
-				throw new DuplicateDossierFileException("dossierId= " + dossierId + "|referenceUid=" + referenceUid);
-			}
+//			DossierFile dossierFile = null;
+//			if (dossierFile != null) {
+//				throw new DuplicateDossierFileException("dossierId= " + dossierId + "|referenceUid=" + referenceUid);
+//			}
 		}
 	}
 
@@ -1160,6 +1166,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		try {
 			return dossierFilePersistence.findByDE_CODE(deliverableCode);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -1169,6 +1176,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		try {
 			return deliverableFinder.findFileTemplateNo(id, fileTemplateNo);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}

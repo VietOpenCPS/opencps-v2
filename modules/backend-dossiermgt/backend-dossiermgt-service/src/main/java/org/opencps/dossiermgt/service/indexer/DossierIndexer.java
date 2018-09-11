@@ -193,7 +193,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			double durationUnit = object.getDurationUnit();
 			long durationComing = 0;
 			if (durationCount > 0) {
-				if (durationUnit == 0 ) {
+				if (durationUnit == 0.0) {
 					durationComing = (long) (durationComing * VALUE_CONVERT_DATE_TIMESTAMP / 5);
 				} else {
 					durationComing = (long) (durationComing * VALUE_CONVERT_HOUR_TIMESTAMP / 5);

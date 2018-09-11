@@ -42,7 +42,7 @@ public class MappingDataUtils {
 		//Get key mappingData
 		Iterator<String> keyMapping = mappingDataJSON.keys();
 		List<String> keyMapList = new ArrayList<String>();
-		String keys = StringPool.BLANK;
+		String keys;
 		while(keyMapping.hasNext()) {
 				keys = keyMapping.next();
 				keyMapList.add(keys);
@@ -55,12 +55,12 @@ public class MappingDataUtils {
 				keys = keyFormData.next();
 				keyFormList.add(keys);
 		}
-		String valueMap = StringPool.BLANK;
+		String valueMap;
 		for (String keyMap : keyMapList) {
 			valueMap = String.valueOf(mappingDataJSON.get(keyMap));
 			String valueMapLower = valueMap.toLowerCase();
 			if (Validator.isNotNull(valueMap) && !strKeyMapping.contains(valueMapLower)) {
-				valueMap = valueMap.replaceAll(StringPool.POUND, StringPool.BLANK);
+//				valueMap = valueMap.replaceAll(StringPool.POUND, StringPool.BLANK);
 			}
 			for (String keyForm : keyFormList) {
 				String keyFormLower = keyForm.toLowerCase();

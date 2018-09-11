@@ -819,7 +819,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 					throw new Exception();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+//					e1.printStackTrace();
+					_log.error(e1);
 				}
 			} finally {
 				this.setOccurs(occurs);
