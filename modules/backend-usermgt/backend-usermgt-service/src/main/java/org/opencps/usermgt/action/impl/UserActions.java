@@ -58,8 +58,8 @@ import backend.utils.FileUploadUtils;
 
 public class UserActions implements UserInterface {
 
-	public static Locale locale = new Locale("vi", "VN");
-	private static final Log _log = LogFactoryUtil.getLog(UserActions.class);
+	public static final Locale locale = new Locale("vi", "VN");
+	private static Log _log = LogFactoryUtil.getLog(UserActions.class);
 
 	@Override
 	public File getPhoto(long id, ServiceContext serviceContext) {
@@ -71,7 +71,7 @@ public class UserActions implements UserInterface {
 		try {
 			file = FileUtil.createTempFile(image.getTextObj());
 		} catch (IOException e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return file;
@@ -156,7 +156,7 @@ public class UserActions implements UserInterface {
 			result.put("total", total);
 
 		} catch (PortalException e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return result;
@@ -236,8 +236,7 @@ public class UserActions implements UserInterface {
 			result = jsonObject.getString(key);
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return result;
@@ -285,8 +284,7 @@ public class UserActions implements UserInterface {
 					jsonObject.toJSONString(), serviceContext);
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return preferences.getPreferences();
@@ -355,8 +353,7 @@ public class UserActions implements UserInterface {
 					new Date(), null, serviceContext);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 		return document;
 	}
@@ -414,8 +411,7 @@ public class UserActions implements UserInterface {
 					new Date(), null, serviceContext);
 
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 		return document;
 	}
@@ -427,8 +423,7 @@ public class UserActions implements UserInterface {
 		try {
 			flag = PasswordTrackerLocalServiceUtil.isSameAsCurrentPassword(id, password);
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return flag;
@@ -479,7 +474,7 @@ public class UserActions implements UserInterface {
 					flagNo = 1;
 				}
 			} catch (PortalException e) {
-				_log.info("END 22222: ");
+				_log.info("END 22222: "+e);
 				flagNo = 1;
 			}
 		}
@@ -505,12 +500,12 @@ public class UserActions implements UserInterface {
 					//update application
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 				
-					email = employee.getEmail();
+					email += employee.getEmail();
 				} else {
 					//update employee
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
 				
-					email = applicant.getContactEmail();
+					email += applicant.getContactEmail();
 					_log.info("email: "+email);
 				}
 

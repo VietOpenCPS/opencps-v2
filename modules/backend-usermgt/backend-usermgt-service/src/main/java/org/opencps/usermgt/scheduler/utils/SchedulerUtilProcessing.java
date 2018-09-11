@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import backend.utils.SendMailUtils;
 
@@ -46,8 +45,7 @@ public class SchedulerUtilProcessing {
 
 					if (queueType.equals(type)) {
 
-						Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
-								.fetchByF_NotificationtemplateByType(groupId, type);
+						NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, type);
 
 						JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
@@ -70,8 +68,7 @@ public class SchedulerUtilProcessing {
 							NotificationQueueLocalServiceUtil.deleteNotificationQueue(
 									notificationQueue.getNotificationQueueId(), serviceContext);
 						} catch (NoSuchNotificationQueueException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							_log.error(e);
 						}
 
 					}
@@ -79,8 +76,7 @@ public class SchedulerUtilProcessing {
 				}
 
 			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				_log.error(e1);
 			}
 
 		}

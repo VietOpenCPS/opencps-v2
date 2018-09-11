@@ -200,7 +200,7 @@ public class OfficeSiteActions implements OfficeSiteInterface {
 
 		OfficeSite officeSite = OfficeSiteLocalServiceUtil.fetchOfficeSite(id);
 
-		officeSite = OfficeSiteLocalServiceUtil.updateOfficeSite(userId, officeSite.getOfficeSiteId(),
+		OfficeSiteLocalServiceUtil.updateOfficeSite(userId, officeSite.getOfficeSiteId(),
 				officeSite.getName(), officeSite.getEnName(), officeSite.getGovAgencyCode(), officeSite.getAddress(),
 				officeSite.getTelNo(), officeSite.getFaxNo(), officeSite.getEmail(), officeSite.getWebsite(),
 				fileEntry.getFileEntryId(), officeSite.getSiteGroupId(), officeSite.getAdminUserId(), officeSite.getPreferences(), serviceContext);
@@ -219,7 +219,7 @@ public class OfficeSiteActions implements OfficeSiteInterface {
 		try {
 			fileEntry = DLAppLocalServiceUtil.getFileEntry(officeSite.getLogoFileEntryId());
 		} catch (PortalException e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 		
 		return fileEntry;
@@ -263,8 +263,7 @@ public class OfficeSiteActions implements OfficeSiteInterface {
 			
 			
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return officeSite;

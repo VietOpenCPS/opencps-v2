@@ -172,7 +172,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 					RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
 					RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
 				} catch (Exception e) {
-					// TODO: handle exception
+					_log.error(e);
 				}
 				
 				for (Role role : roleIds) {
@@ -268,7 +268,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 				RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
 				RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
 			} catch (Exception e) {
-				// TODO: handle exception
+				_log.error(e);
 			}
 			
 			for (Role role : roleIds) {
@@ -283,7 +283,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 			indexer.reindex(newUser);
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 		return employeeJobPos;
 
