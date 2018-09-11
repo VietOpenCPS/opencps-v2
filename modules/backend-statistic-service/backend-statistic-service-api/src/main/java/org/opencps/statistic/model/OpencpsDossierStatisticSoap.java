@@ -69,7 +69,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setGovAgencyName(model.getGovAgencyName());
 		soapModel.setDomainCode(model.getDomainCode());
 		soapModel.setDomainName(model.getDomainName());
-		soapModel.setReporting(model.getReporting());
+		soapModel.setReporting(model.isReporting());
 		soapModel.setOvertimeInside(model.getOvertimeInside());
 		soapModel.setOvertimeOutside(model.getOvertimeOutside());
 		soapModel.setInteroperatingCount(model.getInteroperatingCount());

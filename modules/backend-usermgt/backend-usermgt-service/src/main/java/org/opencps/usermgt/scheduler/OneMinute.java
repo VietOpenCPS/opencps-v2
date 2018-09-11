@@ -30,7 +30,7 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 //			SchedulerUtilProcessing.notificationByType(notificationTypeList);
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 
 	}

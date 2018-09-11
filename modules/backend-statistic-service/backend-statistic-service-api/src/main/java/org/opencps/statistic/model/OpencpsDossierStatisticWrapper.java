@@ -96,7 +96,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("domainCode", getDomainCode());
 		attributes.put("domainName", getDomainName());
-		attributes.put("reporting", getReporting());
+		attributes.put("reporting", isReporting());
 		attributes.put("overtimeInside", getOvertimeInside());
 		attributes.put("overtimeOutside", getOvertimeOutside());
 		attributes.put("interoperatingCount", getInteroperatingCount());
@@ -364,58 +364,8 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	@Override
-	public OpencpsDossierStatistic toEscapedModel() {
-		return new OpencpsDossierStatisticWrapper(_opencpsDossierStatistic.toEscapedModel());
-	}
-
-	@Override
-	public OpencpsDossierStatistic toUnescapedModel() {
-		return new OpencpsDossierStatisticWrapper(_opencpsDossierStatistic.toUnescapedModel());
-	}
-
-	/**
-	* Returns the reporting of this opencps dossier statistic.
-	*
-	* @return the reporting of this opencps dossier statistic
-	*/
-	@Override
-	public boolean getReporting() {
-		return _opencpsDossierStatistic.getReporting();
-	}
-
-	@Override
-	public boolean isCachedModel() {
-		return _opencpsDossierStatistic.isCachedModel();
-	}
-
-	@Override
-	public boolean isEscapedModel() {
-		return _opencpsDossierStatistic.isEscapedModel();
-	}
-
-	@Override
-	public boolean isNew() {
-		return _opencpsDossierStatistic.isNew();
-	}
-
-	/**
-	* Returns <code>true</code> if this opencps dossier statistic is reporting.
-	*
-	* @return <code>true</code> if this opencps dossier statistic is reporting; <code>false</code> otherwise
-	*/
-	@Override
-	public boolean isReporting() {
-		return _opencpsDossierStatistic.isReporting();
-	}
-
-	@Override
-	public ExpandoBridge getExpandoBridge() {
-		return _opencpsDossierStatistic.getExpandoBridge();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.CacheModel<OpencpsDossierStatistic> toCacheModel() {
-		return _opencpsDossierStatistic.toCacheModel();
+	public Object clone() {
+		return new OpencpsDossierStatisticWrapper((OpencpsDossierStatistic)_opencpsDossierStatistic.clone());
 	}
 
 	@Override
@@ -444,6 +394,26 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the company ID of this opencps dossier statistic.
+	*
+	* @return the company ID of this opencps dossier statistic
+	*/
+	@Override
+	public long getCompanyId() {
+		return _opencpsDossierStatistic.getCompanyId();
+	}
+
+	/**
+	* Returns the create date of this opencps dossier statistic.
+	*
+	* @return the create date of this opencps dossier statistic
+	*/
+	@Override
+	public Date getCreateDate() {
+		return _opencpsDossierStatistic.getCreateDate();
+	}
+
+	/**
 	* Returns the denied count of this opencps dossier statistic.
 	*
 	* @return the denied count of this opencps dossier statistic
@@ -454,6 +424,26 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the domain code of this opencps dossier statistic.
+	*
+	* @return the domain code of this opencps dossier statistic
+	*/
+	@Override
+	public String getDomainCode() {
+		return _opencpsDossierStatistic.getDomainCode();
+	}
+
+	/**
+	* Returns the domain name of this opencps dossier statistic.
+	*
+	* @return the domain name of this opencps dossier statistic
+	*/
+	@Override
+	public String getDomainName() {
+		return _opencpsDossierStatistic.getDomainName();
+	}
+
+	/**
 	* Returns the done count of this opencps dossier statistic.
 	*
 	* @return the done count of this opencps dossier statistic
@@ -461,6 +451,61 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getDoneCount() {
 		return _opencpsDossierStatistic.getDoneCount();
+	}
+
+	/**
+	* Returns the dossier statistic ID of this opencps dossier statistic.
+	*
+	* @return the dossier statistic ID of this opencps dossier statistic
+	*/
+	@Override
+	public long getDossierStatisticId() {
+		return _opencpsDossierStatistic.getDossierStatisticId();
+	}
+
+	@Override
+	public ExpandoBridge getExpandoBridge() {
+		return _opencpsDossierStatistic.getExpandoBridge();
+	}
+
+	/**
+	* Returns the gov agency code of this opencps dossier statistic.
+	*
+	* @return the gov agency code of this opencps dossier statistic
+	*/
+	@Override
+	public String getGovAgencyCode() {
+		return _opencpsDossierStatistic.getGovAgencyCode();
+	}
+
+	/**
+	* Returns the gov agency name of this opencps dossier statistic.
+	*
+	* @return the gov agency name of this opencps dossier statistic
+	*/
+	@Override
+	public String getGovAgencyName() {
+		return _opencpsDossierStatistic.getGovAgencyName();
+	}
+
+	/**
+	* Returns the group agency code of this opencps dossier statistic.
+	*
+	* @return the group agency code of this opencps dossier statistic
+	*/
+	@Override
+	public String getGroupAgencyCode() {
+		return _opencpsDossierStatistic.getGroupAgencyCode();
+	}
+
+	/**
+	* Returns the group ID of this opencps dossier statistic.
+	*
+	* @return the group ID of this opencps dossier statistic
+	*/
+	@Override
+	public long getGroupId() {
+		return _opencpsDossierStatistic.getGroupId();
 	}
 
 	/**
@@ -481,6 +526,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getInteroperatingCount() {
 		return _opencpsDossierStatistic.getInteroperatingCount();
+	}
+
+	/**
+	* Returns the modified date of this opencps dossier statistic.
+	*
+	* @return the modified date of this opencps dossier statistic
+	*/
+	@Override
+	public Date getModifiedDate() {
+		return _opencpsDossierStatistic.getModifiedDate();
 	}
 
 	/**
@@ -594,6 +649,21 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the primary key of this opencps dossier statistic.
+	*
+	* @return the primary key of this opencps dossier statistic
+	*/
+	@Override
+	public long getPrimaryKey() {
+		return _opencpsDossierStatistic.getPrimaryKey();
+	}
+
+	@Override
+	public Serializable getPrimaryKeyObj() {
+		return _opencpsDossierStatistic.getPrimaryKeyObj();
+	}
+
+	/**
 	* Returns the process count of this opencps dossier statistic.
 	*
 	* @return the process count of this opencps dossier statistic
@@ -654,6 +724,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the reporting of this opencps dossier statistic.
+	*
+	* @return the reporting of this opencps dossier statistic
+	*/
+	@Override
+	public boolean getReporting() {
+		return _opencpsDossierStatistic.getReporting();
+	}
+
+	/**
 	* Returns the total count of this opencps dossier statistic.
 	*
 	* @return the total count of this opencps dossier statistic
@@ -684,6 +764,46 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the user ID of this opencps dossier statistic.
+	*
+	* @return the user ID of this opencps dossier statistic
+	*/
+	@Override
+	public long getUserId() {
+		return _opencpsDossierStatistic.getUserId();
+	}
+
+	/**
+	* Returns the user name of this opencps dossier statistic.
+	*
+	* @return the user name of this opencps dossier statistic
+	*/
+	@Override
+	public String getUserName() {
+		return _opencpsDossierStatistic.getUserName();
+	}
+
+	/**
+	* Returns the user uuid of this opencps dossier statistic.
+	*
+	* @return the user uuid of this opencps dossier statistic
+	*/
+	@Override
+	public String getUserUuid() {
+		return _opencpsDossierStatistic.getUserUuid();
+	}
+
+	/**
+	* Returns the uuid of this opencps dossier statistic.
+	*
+	* @return the uuid of this opencps dossier statistic
+	*/
+	@Override
+	public String getUuid() {
+		return _opencpsDossierStatistic.getUuid();
+	}
+
+	/**
 	* Returns the waiting count of this opencps dossier statistic.
 	*
 	* @return the waiting count of this opencps dossier statistic
@@ -709,173 +829,28 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	@Override
-	public Serializable getPrimaryKeyObj() {
-		return _opencpsDossierStatistic.getPrimaryKeyObj();
+	public boolean isCachedModel() {
+		return _opencpsDossierStatistic.isCachedModel();
 	}
 
 	@Override
-	public java.lang.Object clone() {
-		return new OpencpsDossierStatisticWrapper((OpencpsDossierStatistic)_opencpsDossierStatistic.clone());
+	public boolean isEscapedModel() {
+		return _opencpsDossierStatistic.isEscapedModel();
 	}
 
-	/**
-	* Returns the domain code of this opencps dossier statistic.
-	*
-	* @return the domain code of this opencps dossier statistic
-	*/
 	@Override
-	public java.lang.String getDomainCode() {
-		return _opencpsDossierStatistic.getDomainCode();
+	public boolean isNew() {
+		return _opencpsDossierStatistic.isNew();
 	}
 
 	/**
-	* Returns the domain name of this opencps dossier statistic.
+	* Returns <code>true</code> if this opencps dossier statistic is reporting.
 	*
-	* @return the domain name of this opencps dossier statistic
+	* @return <code>true</code> if this opencps dossier statistic is reporting; <code>false</code> otherwise
 	*/
 	@Override
-	public java.lang.String getDomainName() {
-		return _opencpsDossierStatistic.getDomainName();
-	}
-
-	/**
-	* Returns the gov agency code of this opencps dossier statistic.
-	*
-	* @return the gov agency code of this opencps dossier statistic
-	*/
-	@Override
-	public java.lang.String getGovAgencyCode() {
-		return _opencpsDossierStatistic.getGovAgencyCode();
-	}
-
-	/**
-	* Returns the gov agency name of this opencps dossier statistic.
-	*
-	* @return the gov agency name of this opencps dossier statistic
-	*/
-	@Override
-	public java.lang.String getGovAgencyName() {
-		return _opencpsDossierStatistic.getGovAgencyName();
-	}
-
-	/**
-	* Returns the group agency code of this opencps dossier statistic.
-	*
-	* @return the group agency code of this opencps dossier statistic
-	*/
-	@Override
-	public java.lang.String getGroupAgencyCode() {
-		return _opencpsDossierStatistic.getGroupAgencyCode();
-	}
-
-	/**
-	* Returns the user name of this opencps dossier statistic.
-	*
-	* @return the user name of this opencps dossier statistic
-	*/
-	@Override
-	public java.lang.String getUserName() {
-		return _opencpsDossierStatistic.getUserName();
-	}
-
-	/**
-	* Returns the user uuid of this opencps dossier statistic.
-	*
-	* @return the user uuid of this opencps dossier statistic
-	*/
-	@Override
-	public java.lang.String getUserUuid() {
-		return _opencpsDossierStatistic.getUserUuid();
-	}
-
-	/**
-	* Returns the uuid of this opencps dossier statistic.
-	*
-	* @return the uuid of this opencps dossier statistic
-	*/
-	@Override
-	public java.lang.String getUuid() {
-		return _opencpsDossierStatistic.getUuid();
-	}
-
-	@Override
-	public java.lang.String toString() {
-		return _opencpsDossierStatistic.toString();
-	}
-
-	@Override
-	public java.lang.String toXmlString() {
-		return _opencpsDossierStatistic.toXmlString();
-	}
-
-	/**
-	* Returns the create date of this opencps dossier statistic.
-	*
-	* @return the create date of this opencps dossier statistic
-	*/
-	@Override
-	public Date getCreateDate() {
-		return _opencpsDossierStatistic.getCreateDate();
-	}
-
-	/**
-	* Returns the modified date of this opencps dossier statistic.
-	*
-	* @return the modified date of this opencps dossier statistic
-	*/
-	@Override
-	public Date getModifiedDate() {
-		return _opencpsDossierStatistic.getModifiedDate();
-	}
-
-	/**
-	* Returns the company ID of this opencps dossier statistic.
-	*
-	* @return the company ID of this opencps dossier statistic
-	*/
-	@Override
-	public long getCompanyId() {
-		return _opencpsDossierStatistic.getCompanyId();
-	}
-
-	/**
-	* Returns the dossier statistic ID of this opencps dossier statistic.
-	*
-	* @return the dossier statistic ID of this opencps dossier statistic
-	*/
-	@Override
-	public long getDossierStatisticId() {
-		return _opencpsDossierStatistic.getDossierStatisticId();
-	}
-
-	/**
-	* Returns the group ID of this opencps dossier statistic.
-	*
-	* @return the group ID of this opencps dossier statistic
-	*/
-	@Override
-	public long getGroupId() {
-		return _opencpsDossierStatistic.getGroupId();
-	}
-
-	/**
-	* Returns the primary key of this opencps dossier statistic.
-	*
-	* @return the primary key of this opencps dossier statistic
-	*/
-	@Override
-	public long getPrimaryKey() {
-		return _opencpsDossierStatistic.getPrimaryKey();
-	}
-
-	/**
-	* Returns the user ID of this opencps dossier statistic.
-	*
-	* @return the user ID of this opencps dossier statistic
-	*/
-	@Override
-	public long getUserId() {
-		return _opencpsDossierStatistic.getUserId();
+	public boolean isReporting() {
+		return _opencpsDossierStatistic.isReporting();
 	}
 
 	@Override
@@ -944,7 +919,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param domainCode the domain code of this opencps dossier statistic
 	*/
 	@Override
-	public void setDomainCode(java.lang.String domainCode) {
+	public void setDomainCode(String domainCode) {
 		_opencpsDossierStatistic.setDomainCode(domainCode);
 	}
 
@@ -954,7 +929,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param domainName the domain name of this opencps dossier statistic
 	*/
 	@Override
-	public void setDomainName(java.lang.String domainName) {
+	public void setDomainName(String domainName) {
 		_opencpsDossierStatistic.setDomainName(domainName);
 	}
 
@@ -979,14 +954,14 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	@Override
-	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge) {
-		_opencpsDossierStatistic.setExpandoBridgeAttributes(expandoBridge);
-	}
-
-	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
 		_opencpsDossierStatistic.setExpandoBridgeAttributes(baseModel);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge) {
+		_opencpsDossierStatistic.setExpandoBridgeAttributes(expandoBridge);
 	}
 
 	@Override
@@ -1000,7 +975,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param govAgencyCode the gov agency code of this opencps dossier statistic
 	*/
 	@Override
-	public void setGovAgencyCode(java.lang.String govAgencyCode) {
+	public void setGovAgencyCode(String govAgencyCode) {
 		_opencpsDossierStatistic.setGovAgencyCode(govAgencyCode);
 	}
 
@@ -1010,7 +985,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param govAgencyName the gov agency name of this opencps dossier statistic
 	*/
 	@Override
-	public void setGovAgencyName(java.lang.String govAgencyName) {
+	public void setGovAgencyName(String govAgencyName) {
 		_opencpsDossierStatistic.setGovAgencyName(govAgencyName);
 	}
 
@@ -1020,7 +995,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param groupAgencyCode the group agency code of this opencps dossier statistic
 	*/
 	@Override
-	public void setGroupAgencyCode(java.lang.String groupAgencyCode) {
+	public void setGroupAgencyCode(String groupAgencyCode) {
 		_opencpsDossierStatistic.setGroupAgencyCode(groupAgencyCode);
 	}
 
@@ -1310,7 +1285,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param userName the user name of this opencps dossier statistic
 	*/
 	@Override
-	public void setUserName(java.lang.String userName) {
+	public void setUserName(String userName) {
 		_opencpsDossierStatistic.setUserName(userName);
 	}
 
@@ -1320,7 +1295,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param userUuid the user uuid of this opencps dossier statistic
 	*/
 	@Override
-	public void setUserUuid(java.lang.String userUuid) {
+	public void setUserUuid(String userUuid) {
 		_opencpsDossierStatistic.setUserUuid(userUuid);
 	}
 
@@ -1330,7 +1305,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @param uuid the uuid of this opencps dossier statistic
 	*/
 	@Override
-	public void setUuid(java.lang.String uuid) {
+	public void setUuid(String uuid) {
 		_opencpsDossierStatistic.setUuid(uuid);
 	}
 
@@ -1352,6 +1327,31 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setYear(int year) {
 		_opencpsDossierStatistic.setYear(year);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.CacheModel<OpencpsDossierStatistic> toCacheModel() {
+		return _opencpsDossierStatistic.toCacheModel();
+	}
+
+	@Override
+	public OpencpsDossierStatistic toEscapedModel() {
+		return new OpencpsDossierStatisticWrapper(_opencpsDossierStatistic.toEscapedModel());
+	}
+
+	@Override
+	public String toString() {
+		return _opencpsDossierStatistic.toString();
+	}
+
+	@Override
+	public OpencpsDossierStatistic toUnescapedModel() {
+		return new OpencpsDossierStatisticWrapper(_opencpsDossierStatistic.toUnescapedModel());
+	}
+
+	@Override
+	public String toXmlString() {
+		return _opencpsDossierStatistic.toXmlString();
 	}
 
 	@Override

@@ -36,6 +36,9 @@ public class UserMGTConstants implements Constants, WebKeys {
 	
 	public static final String EDIT_DATA = "EDIT_DATA";
 	
-	public static final String[] LIST_PERMISSION = new String[] {"VIEW", "ADD_TO_PAGE", "CONFIGURATION", "PERMISSIONS", "PREFERENCES", "ACCESS_IN_CONTROL_PANEL", "VIEW_EMPLOYEE", "MANAGER_EMPLOYEE", "MOVE_EMPLOYEE", "EDIT_DATA"};
-	
+	private static final String[] LIST_PERMISSION = new String[] {"VIEW", "ADD_TO_PAGE", "CONFIGURATION", "PERMISSIONS", "PREFERENCES", "ACCESS_IN_CONTROL_PANEL", "VIEW_EMPLOYEE", "MANAGER_EMPLOYEE", "MOVE_EMPLOYEE", "EDIT_DATA"};
+
+	public static final String[] getListPermission() {
+		return LIST_PERMISSION.clone();
+	}
 }

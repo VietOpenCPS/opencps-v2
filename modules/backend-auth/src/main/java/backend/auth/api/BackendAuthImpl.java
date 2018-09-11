@@ -35,8 +35,8 @@ public class BackendAuthImpl implements BackendAuth {
 			RoleLocalServiceUtil.getUserRoles(context.getUserId());
 		try {
 			for (Role role : roles) {
-
-				if (role.getName().equals("Administrator")) {
+				//LamTV_Fix sonarqube
+				if ("Administrator".equals(role.getName())) {
 
 					hasPermission = true;
 					break;
@@ -104,8 +104,8 @@ public class BackendAuthImpl implements BackendAuth {
 			RoleLocalServiceUtil.getUserRoles(context.getUserId());
 		try {
 			for (Role role : roles) {
-
-				if (role.getName().equals("Administrator")) {
+				//LamTV_Fix sonarqube
+				if ("Administrator".equals(role.getName())) {
 
 					isAdmin = true;
 					break;

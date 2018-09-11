@@ -17,12 +17,12 @@
 
 package org.opencps.kernel.util;
 
-import javax.mail.internet.InternetAddress;
-
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -35,6 +35,8 @@ import com.liferay.portal.kernel.util.Validator;
  * @see SendMailUtil
  */
 public class SendMailUtil {
+
+	private static Log _log = LogFactoryUtil.getLog(SendMailUtil.class);
 
 	public static void sendEmailNotification(JSONObject payLoad, ServiceContext serviceContext) throws SystemException {
 
@@ -52,9 +54,7 @@ public class SendMailUtil {
 
 			String body = payLoad.getString("body");
 			
-			MailMessage mailMessage = new MailMessage();
-			
-			
+//			MailMessage mailMessage = new MailMessage();
 			
 			//mailMessage.setTo(InternetAddress);
 			
@@ -122,8 +122,8 @@ public class SendMailUtil {
 //		        }
 		        
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}		
 		}
 		

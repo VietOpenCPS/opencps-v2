@@ -158,14 +158,15 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 		long applicantId = model.getPrimaryKey();
 
 		try {
-			modelBefore = ApplicantLocalServiceUtil.fetchApplicant(applicantId);
+//			modelBefore = ApplicantLocalServiceUtil.fetchApplicant(applicantId);
+			ApplicantLocalServiceUtil.fetchApplicant(applicantId);
 		} catch (Exception e) {
 			_log.error(e);
 		}
 	}
 
 	
-	public static Applicant modelBefore;
+//	private static Applicant modelBefore;
 
 	
 	

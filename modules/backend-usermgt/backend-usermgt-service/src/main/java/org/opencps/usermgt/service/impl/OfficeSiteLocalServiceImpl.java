@@ -23,6 +23,8 @@ import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -79,6 +81,9 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 	 * org.opencps.usermgt.service.OfficeSiteLocalServiceUtil} to
 	 * access the office site local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(OfficeSiteLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public OfficeSite addOfficeSite(long userId, long groupId, String name, String enName, String govAgencyCode,
@@ -154,17 +159,19 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-		OfficeSite OfficeSite;
+
+		OfficeSite officeSite = null;
 
 		try {
 
-			OfficeSite = officeSitePersistence.remove(officeSiteId);
+			officeSite = officeSitePersistence.remove(officeSiteId);
 
 		} catch (NoSuchOfficeSiteException e) {
-			// TODO Auto-generated catch block
-			throw new NotFoundException();
+//			// TODO Auto-generated catch block
+//			throw new NotFoundException();
+			_log.error(e);
 		}
-		return OfficeSite;
+		return officeSite;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

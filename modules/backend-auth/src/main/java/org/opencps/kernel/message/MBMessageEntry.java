@@ -8,12 +8,16 @@ import java.util.List;
 
 import javax.mail.internet.InternetAddress;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
  * @author trungnt
  */
 public class MBMessageEntry {
+
+	private static Log _log = LogFactoryUtil.getLog(MBMessageEntry.class);
 
 	public MBMessageEntry(ServiceContext serviceContext) {
 		this.setUserId(serviceContext.getUserId());
@@ -47,7 +51,7 @@ public class MBMessageEntry {
 			internetAddresses = new InternetAddress(email, name);
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 		return internetAddresses;
 	}
@@ -61,7 +65,7 @@ public class MBMessageEntry {
 			};
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 		return internetAddresses;
 	}

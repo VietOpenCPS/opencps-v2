@@ -36,7 +36,7 @@ public class TreeIndexUtil {
 
 			}
 
-			treeIndex = ext + sibling;
+			treeIndex += ext + sibling;
 
 		}
 		else {
@@ -96,14 +96,14 @@ public class TreeIndexUtil {
 		return maxNumber;
 	}
 
-	public static void main(String[] args) {
-
-		System.out.println(new TreeIndexUtil().getMaxIntegerNumberOfRange(9));
-		System.out.println(generateNumberTreeIndex("0001.0001", 99999, 4));
-		System.out.println(generateHexTreeIndex("00011.00001", 65535, 5));
-		System.out.println(Integer.toHexString(300));
-		System.out.println(Integer.MAX_VALUE);
-	}
+//	public static void main(String[] args) {
+//
+//		System.out.println(new TreeIndexUtil().getMaxIntegerNumberOfRange(9));
+//		System.out.println(generateNumberTreeIndex("0001.0001", 99999, 4));
+//		System.out.println(generateHexTreeIndex("00011.00001", 65535, 5));
+//		System.out.println(Integer.toHexString(300));
+//		System.out.println(Integer.MAX_VALUE);
+//	}
 
 	public static String generateNumberTreeIndex(
 		String parentTreeIndex, int sibling, int length) {
@@ -133,7 +133,7 @@ public class TreeIndexUtil {
 				ext += String.valueOf(0);
 
 			}
-			treeIndex = ext + sibling;
+			treeIndex += ext + sibling;
 		}
 
 		if (Validator.isNotNull(parentTreeIndex)) {
@@ -172,7 +172,7 @@ public class TreeIndexUtil {
 				ext += String.valueOf(0);
 
 			}
-			treeIndex = ext + hexSibling;
+			treeIndex += ext + hexSibling;
 		}
 
 		if (Validator.isNotNull(parentTreeIndex)) {

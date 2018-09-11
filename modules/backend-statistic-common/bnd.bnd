@@ -1,4 +1,13 @@
 Bundle-Name: backend-statistic-common
 Bundle-SymbolicName: backend.statistic.common
 Bundle-Version: 1.0.0
-Export-Package: backend.statistic.common.api
+Export-Package: \
+	backend.statistic.common.api,\
+	org.apache.commons.lang3,\
+	org.apache.commons.lang3.arch,\
+	org.apache.commons.lang3.builder,\
+	org.apache.commons.lang3.exception,\
+	org.apache.commons.lang3.math,\
+	org.apache.commons.lang3.mutable,\
+	org.apache.commons.lang3.reflect,\
+	org.apache.commons.lang3.*,\

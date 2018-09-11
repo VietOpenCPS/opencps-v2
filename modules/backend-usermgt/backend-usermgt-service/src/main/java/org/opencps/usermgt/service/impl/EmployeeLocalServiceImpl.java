@@ -184,11 +184,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 
-		Employee employee;
+		Employee employee = null;
 		try {
 			employee = employeePersistence.remove(employeeId);
 		} catch (NoSuchEmployeeException e) {
-			throw new NotFoundException();
+//			throw new NotFoundException();
+			_log.error(e);
 		}
 
 		return employee;
