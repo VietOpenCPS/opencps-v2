@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HttpMethod;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -69,38 +70,51 @@ implements AuthVerifier {
 				if (schemaData == null || schemaData.length != 2) {
 					return null;
 				}
+	
+				HttpAuthorizationHeader httpAuthorizationHeader =
+					HttpAuthManagerUtil.parse(request);
+		
+				if (httpAuthorizationHeader == null) {
+					return null;
+				}
+		
+				String scheme = httpAuthorizationHeader.getScheme();
+		
+				// We only handle HTTP Basic authentication
+		
+				if (!StringUtil.equalsIgnoreCase(
+					scheme, HttpAuthorizationHeader.SCHEME_BASIC)) {
+		
+					return null;
+				}
+		
+				long userId =
+					HttpAuthManagerUtil.getUserId(request, httpAuthorizationHeader);
+		
+				if (userId <= 0) {
+					throw new AuthException();
+				}
+		
+		
+				credentials[0] = String.valueOf(userId);
+				credentials[1] = httpAuthorizationHeader.getAuthParameter(
+					HttpAuthorizationHeader.AUTH_PARAMETER_NAME_PASSWORD);
+		
+				credentials[2] = Boolean.TRUE.toString();
 			}
-	
-			HttpAuthorizationHeader httpAuthorizationHeader =
-				HttpAuthManagerUtil.parse(request);
-	
-			if (httpAuthorizationHeader == null) {
-				return null;
+			else {
+				//Check if GET method
+				if (request.getMethod().equals(HttpMethod.GET)) {
+					User u = PortalUtil.getUser(request);
+					if (u != null) {
+						credentials[0] = String.valueOf(u.getUserId());
+						credentials[2] = Boolean.TRUE.toString();				
+					}					
+				}
+				else {
+					return null;
+				}
 			}
-	
-			String scheme = httpAuthorizationHeader.getScheme();
-	
-			// We only handle HTTP Basic authentication
-	
-			if (!StringUtil.equalsIgnoreCase(
-				scheme, HttpAuthorizationHeader.SCHEME_BASIC)) {
-	
-				return null;
-			}
-	
-			long userId =
-				HttpAuthManagerUtil.getUserId(request, httpAuthorizationHeader);
-	
-			if (userId <= 0) {
-				throw new AuthException();
-			}
-	
-	
-			credentials[0] = String.valueOf(userId);
-			credentials[1] = httpAuthorizationHeader.getAuthParameter(
-				HttpAuthorizationHeader.AUTH_PARAMETER_NAME_PASSWORD);
-	
-			credentials[2] = Boolean.TRUE.toString();
 		}
 		
 		return credentials;
