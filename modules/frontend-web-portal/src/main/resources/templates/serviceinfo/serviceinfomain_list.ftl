@@ -361,6 +361,21 @@ serverFiltering: true
           data : "data",
           total : "total"
         }
+      },
+      change: function (e) {
+        console.log('administrationCodeSearch-------', this.value())
+        var url = "";
+        if (this.value()) {
+          url = "${api.server}/serviceconfigs/pubish/" + this.value() + "/domains";
+          $("#domainCodeSearch").data('kendoComboBox').dataSource.read({
+            url: url
+          })
+        } else {
+          url = "${api.server}/serviceinfos/statistics/domains";
+          $("#domainCodeSearch").data('kendoComboBox').dataSource.read({
+            url: url
+          })
+        }
       }
     });
 
@@ -370,19 +385,34 @@ serverFiltering: true
       filter: "contains",
       dataSource: {
         transport :{
-          read : {
-            url : "${api.server}/serviceinfos/statistics/domains",
-            dataType : "json",
-            type : "GET",
-            beforeSend: function(req) {
-              req.setRequestHeader('groupId', ${groupId});
-            },
-            success : function(result){
-
-            },
-            error : function(xhr){
-
+          read : function (options) {
+            var url = "";
+            if (!options.data.url) {
+              url = "${api.server}/serviceinfos/statistics/domains";
+            } else {
+              url = options.data.url;
             }
+            $.ajax({
+              url : url,
+              dataType : "json",
+              type : "GET",
+              beforeSend: function(req) {
+                req.setRequestHeader('groupId', ${groupId});
+              },
+              success : function(result){
+                if (result.data) {
+                  options.success(result)
+                } else {
+                  options.success({
+                    data: [],
+                    total: 0
+                  })
+                }
+              },
+              error : function(xhr){
+                options.error(xhr)
+              }
+            })
           }
         },
         schema : {
@@ -486,21 +516,37 @@ serverFiltering: true
     $("#input_search_service_info").kendoAutoComplete({
       dataSource: {
         transport :{
-          read : {
-            url : "${api.server}/serviceinfos",
-            dataType : "json",
-            type : "GET",
-            beforeSend: function(req) {
-              req.setRequestHeader('groupId', ${groupId});
-            },
-            success : function(result){
-
-            },
-            error : function(xhr){
-
-            }
+          read : function (options) {
+            $.ajax({
+              url : "${api.server}/serviceinfos",
+              dataType : "json",
+              type : "GET",
+              beforeSend: function(req) {
+                req.setRequestHeader('groupId', ${groupId});
+              },
+              data: {
+                start: 0,
+                end: 15,
+                keyword: $("#input_search_service_info").val()
+              },
+              success : function(result){
+                if (result.data) {
+                  options.success(result);
+                } else {
+                  console.log('no data')
+                  options.success({
+                    data: [],
+                    total: 0
+                  });
+                }
+              },
+              error : function(xhr){
+                options.error(xhr)
+              }
+            })
           }
         },
+        serverFiltering: true,
         schema : {
           data : "data",
           total : "total"

@@ -152,23 +152,23 @@
 
 			<div class="row " >
 			
-				<div class="col-sm-6" id=""> 
-				
-					<button class="btn btn-sm btn-active pull-right" id="employee-create-submit-btn" name="employee-create-submit-btn" type="button">
+				<div class="col-sm-12 text-center" id=""> 
+					<button class="btn btn-sm btn-active MR10" id="employee-create-btn" name="employee-create-btn" type="button">
+						<i class="fa fa-check-circle"></i>
+						<span class="lfr-btn-label">Lưu và thêm mới</span>
+					</button>
+
+					<button class="btn btn-sm btn-active MR10" id="employee-create-submit-btn" name="employee-create-submit-btn" type="button">
 						<i class="fa fa-check-circle"></i>
 						<span class="lfr-btn-label">Xác nhận</span>
 					</button>
-				
-				</div> 
-				
-				<div class="col-sm-6" id=""> 
-					
-					<button class="btn btn-default btn-sm pull-left" data-dismiss="modal" value="Quay lại">
+
+					<button class="btn btn-default btn-sm" data-dismiss="modal" value="Quay lại">
 						<i class="icon-undo"></i>
 						<span class="lfr-btn-label">Quay lại</span>
 					</button>
-					
-				</div>
+				
+				</div> 
 				
 			</div>
 
@@ -272,6 +272,77 @@
 		$( "#employee-create-email" ).val('');
 		$("#employee-create-gender").data("kendoDropDownList").value(1)
 	}
+
+	$(document).on('click', '#employee-create-btn', function(event){
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+
+		var checkFormValidate = $("#employee-create-form").kendoValidator().data("kendoValidator");
+
+		if (!checkFormValidate.validate()) {
+			return;
+		}
+
+		var birthdate = $("#employee-create-birthdate").data("kendoDatePicker").value();
+		var recruitDate = $("#employee-create-recruitDate").data("kendoDatePicker").value();
+		var leaveDate = $("#employee-create-leaveDate").data("kendoDatePicker").value();
+		
+		birthdate = (birthdate!=null && birthdate!="" )?kendo.toString(birthdate, 'yyyyMMdd'):"";
+		recruitDate = (recruitDate!=null && recruitDate!="" )?kendo.toString(recruitDate, 'yyyyMMdd'):"";
+		leaveDate = (leaveDate!=null && leaveDate!="" )?kendo.toString(leaveDate, 'yyyyMMdd'):"";
+		console.log('eeeeeee')
+		$.ajax({
+			url: createEmployeeBaseUrl,
+			headers: {
+				"groupId": ${groupId}
+			},
+			data: {
+				
+				employeeNo: $( "#employee-create-employeeno" ).val().trim(),
+				fullName: $( "#employee-create-fullname" ).val().trim(),
+				gender: $( "#employee-create-gender" ).val().trim(),
+				birthdate: birthdate,
+				title: $( "#employee-create-title" ).val().trim(),
+				telNo: $( "#employee-create-telno" ).val().trim(),
+				email: $( "#employee-create-email" ).val().trim(),
+				recruitDate: recruitDate,
+				leaveDate: leaveDate
+
+			},
+			type: 'POST',
+			dataType: 'json',
+			contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+			success: function(data, textStatus, xhr) {
+				
+				// redirect to detail page
+				// $("#modal-lg").trigger({ type: "click" });
+				clearInputEmployee();
+				//$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
+				
+				// var url = "${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId
+				// $("#employee-index-page").load(url);
+				$("#employee-listview").getKendoListView().dataSource.pushUpdate(data)
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
+				
+			},
+			error: function(xhr, textStatus, errorThrown) {
+
+				if (xhr.status == 409) {
+
+					showMessageToastr("error", xhr.responseJSON.message);
+					
+				} else {
+
+					showMessageByAPICode(xhr.status);
+
+				}
+			
+			}
+		});
+	})
 	
 	$(document).on('click', '#employee-create-submit-btn', function(event){
 		
@@ -317,13 +388,15 @@
 			success: function(data, textStatus, xhr) {
 				
 				// redirect to detail page
-				// $("#modal-lg").trigger({ type: "click" });
+				$("#modal-lg").trigger({ type: "click" });
 				clearInputEmployee();
-				//$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
+				$( "#employee-index-page").load("${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId);
 				
-				// var url = "${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId
-				// $("#employee-index-page").load(url);
-				showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+				var url = "${(url.employeePortlet.employee_detail)!}&${portletNamespace}employeeId="+data.employeeId
+				$("#employee-index-page").load(url);
+				notification.show({
+					message: "Yêu cầu được thực hiện thành công"
+				}, "success");
 				
 			},
 			error: function(xhr, textStatus, errorThrown) {

@@ -158,8 +158,9 @@
 
 		<div class="eq-height">
 			<#if (param.dictCollection_itemCode)??>
-			<button class="btn btn-sm btn-active" id="_collectionSub_dictItem_add_editDictItem" 
+			<button class="btn btn-sm btn-active MR10" id="_collectionSub_dictItem_add_editDictItem" 
 				name="_collectionSub_dictItem_add_editDictItem" type="button"
+				data-collectionCode="${(param.dictCollection_collectionCode)!}"
 				data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 				<i class="fa fa-check-circle"></i>
 				<span class="lfr-btn-label">Lưu và thêm mới</span>
@@ -168,7 +169,6 @@
 
 			<button class="btn btn-sm btn-active" id="_collectionSub_dictItem_edit_editDictItem" 
 			name="_collectionSub_dictItem_edit_editDictItem" type="button"
-			data-pk="${(param.dictCollection_itemCode)!}"
 			data-collectionCode="${(param.dictCollection_collectionCode)!}"
 			data-loading-text="<i class='fa fa-spinner fa-spin '></i> Đang lưu thông tin...">
 			<i class="fa fa-check-circle"></i>
@@ -183,7 +183,7 @@
 		</div>
 		
 	</form>
-
+	<input type="hidden" id="dictCollection_item" name="dictCollection_item" value="${(param.dictCollection_itemCode)!}" />
 </div>
 
 
@@ -226,7 +226,7 @@
 			return;
 		}
 
-		var dictCollection_itemCode = $(this).attr('data-pk');
+		var dictCollection_itemCode = $("#dictCollection_item").val();
 		var dictCollection_collectionCode = $(this).attr('data-collectionCode');
 		var _dictCollection_edit_dictItem_BaseUrl ="${(url.adminDataMgtPortlet.dictcollection_dictitem_edit_action)!}&${portletNamespace}collectionCode="+dictCollection_collectionCode;
 		var groupCode = $('#_collectionSub_dictItem_edit_groupCode').val();
@@ -274,15 +274,20 @@
 
 						var dataSource = $("#_collectionSub_dictItem_listView").getKendoListView().dataSource;
 						dataSource.pushUpdate(data);
+						$("#dictCollection_item").val(data.itemCode);
 						// $("#modal-lg").trigger({ type: "click" });
-						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 
 					}
 					$(event.currentTarget).button('reset');
 				},
 				error: function(xhr, textStatus, errorThrown) {
 					
-					showMessageToastr("error", 'Yêu cầu của bạn xử lý thất bại!');
+					notification.show({
+						message: "Yêu cầu của bạn xử lý thất bại!"
+					}, "error");
 					$(event.currentTarget).button('reset');
 				}
 			})
@@ -316,18 +321,22 @@
 					} else {
 
 						var dataSource = $("#_collectionSub_dictItem_listView").getKendoListView().dataSource;
-					
 						dataSource.pushCreate(data);
 						$('#_collectionSub_dictItem_CounterListDetail').html(dataSource.total());
+						$("#dictCollection_item").val(data.itemCode);
 						// $("#modal-lg").trigger({ type: "click" });
-						showMessageToastr("success", 'Yêu cầu của bạn được xử lý thành công!');
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
 
 					}
 
 				},
 				error: function(xhr, textStatus, errorThrown) {
 					
-					showMessageToastr("error", 'Yêu cầu của bạn xử lý thất bại!');
+					notification.show({
+						message: "Yêu cầu của bạn xử lý thất bại!"
+					}, "error");
 
 				}
 			}) 
@@ -337,6 +346,7 @@
 	});
 
 	function clearInputDict () {
+		$("#dictCollection_item").val("");
 		$("#_collectionSub_dictItem_edit_itemCode").val("");
 		$("#_collectionSub_dictItem_edit_itemName").val("");
 		$("#_collectionSub_dictItem_edit_itemNameEN").val("");
@@ -345,10 +355,68 @@
 		$("#_collectionSub_dictItem_edit_description").val("");
 	}
 	$("#_collectionSub_dictItem_add_editDictItem").click(function (event) {
-		$("#_collectionSub_dictItem_edit_editDictItem").click();
-		setTimeout(function (argument) {
-			clearInputDict();
-		}, 500)
+		if ($("#dictCollection_item").val()) {
+			$("#_collectionSub_dictItem_edit_editDictItem").click();
+			setTimeout(function () {
+				clearInputDict();
+			}, 500)
+			return;
+		}
+		var dictCollection_collectionCode = $(this).attr('data-collectionCode');
+		var _dictCollection_edit_dictItem_BaseUrl ="${(url.adminDataMgtPortlet.dictcollection_dictitem_edit_action)!}&${portletNamespace}collectionCode="+dictCollection_collectionCode;
+		var groupCode = $('#_collectionSub_dictItem_edit_groupCode').val();
+
+		var metaData = "";
+
+		if ($("#_collectionSub_dictItem_edit_metaData").alpaca("get")!=null) {
+
+			metaData = $("#_collectionSub_dictItem_edit_metaData").alpaca("get").getValue();
+
+		}
+
+		groupCode = (groupCode != null && groupCode !="")? groupCode.join() : "";
+		metaData = (metaData==null || metaData=="")?"":JSON.stringify(metaData);
+		$.ajax({
+			type: 'POST',
+			url: _dictCollection_edit_dictItem_BaseUrl,
+			data: {
+
+				${portletNamespace}itemCode: $( "#_collectionSub_dictItem_edit_itemCode" ).val().trim(),
+				${portletNamespace}itemName: $( "#_collectionSub_dictItem_edit_itemName" ).val().trim(),
+				${portletNamespace}itemNameEN: $( "#_collectionSub_dictItem_edit_itemNameEN" ).val().trim(),
+				${portletNamespace}itemDescription: $( "#_collectionSub_dictItem_edit_itemDescription" ).val().trim(),
+				${portletNamespace}sibling: $( "#_collectionSub_dictItem_edit_sibling" ).val().trim(),
+				${portletNamespace}parentItemCode: $( "#_collectionSub_dictItem_edit_parentItemCode" ).val().trim(),
+				${portletNamespace}metaData: metaData,
+				${portletNamespace}groupCode: groupCode
+			},
+			dataType: 'json',
+
+			success: function(data) {
+
+				if (data.hasOwnProperty('msg') && data.msg == "error") {
+
+					showMessageByAPICode(data.statusCode);
+
+				} else {
+
+					var dataSource = $("#_collectionSub_dictItem_listView").getKendoListView().dataSource;
+					dataSource.pushCreate(data);
+					$('#_collectionSub_dictItem_CounterListDetail').html(dataSource.total());
+						// $("#modal-lg").trigger({ type: "click" });
+						notification.show({
+							message: "Yêu cầu được thực hiện thành công"
+						}, "success");
+						clearInputDict();
+					}
+
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					notification.show({
+						message: "Yêu cầu của bạn xử lý thất bại!"
+					}, "error");
+				}
+			}) 
 	})
 			
 })(jQuery);

@@ -69,13 +69,107 @@
  </div>
 </div>
 <div class="row MT15 MB15 text-center">
+  <div class="captcha-chat">
+    <div class="captcha-container media">
+      <div class="media-body">             
+      </div>
+      <div id="captcha">
+        <div class="controls">
+          <input class="user-text btn-common form-control" placeholder="Nhập mã xác nhận" type="text" />
+          <!-- <button class="validate btn-common">
+            this image should be converted into inline svg
+            <img src="img/enter_icon.png" alt="submit icon">
+          </button> -->
+          <button class="refresh btn-common">
+            <!-- this image should be converted into inline svg -->
+            <img src="img/refresh_icon.png" alt="refresh icon">
+          </button>
+        </div>
+      </div>
+      <p class="wrong info">Sai mã xác nhận</p>
+    </div>
+  </div>
+</div>
+<div class="row MT15 MB15 text-center">
  <button class="btn btn-active" title="Đăng ký" id="btn-register" disabled="true">Đăng ký</button>
 </div>
 </form>
 </div>
 </div>
 
+<style>
+  p.wrong {
+    display: none;
+  }
+
+  p.wrong.shake {
+    display: block;
+  }
+
+  p.wrong.shake {
+    animation: shake .4s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    20%,
+    80% {
+      transform: translate3d(1px, 0, 0);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translate3d(-2px, 0, 0);
+    }
+    40%,
+    60% {
+      transform: translate3d(2px, 0, 0);
+    }
+  }
+
+  .controls img {
+    height: 20px;
+  }
+</style>
+
 <script type="text/javascript">
+  var captcha;
+  document.addEventListener("DOMContentLoaded", function() {
+    document.body.scrollTop;
+
+    var timeout;
+
+    captcha = new $.Captcha({
+      onFailure: function() {
+
+        $(".captcha-chat .wrong").show({
+          duration: 30,
+          done: function() {
+            var that = this;
+            clearTimeout(timeout);
+            $(this).removeClass("shake");
+            $(this).css("animation");
+            $(this).addClass("shake");
+            var time = parseFloat($(this).css("animation-duration")) * 1000;
+            timeout = setTimeout(function() {
+              $(that).removeClass("shake");
+            }, time);
+          }
+        });
+
+      },
+      onSuccess: function() {
+        // alert("CORRECT!!!");
+      }
+    });
+    captcha.generate();
+  });
   (function($){
     var validator = $("#fm").kendoValidator().data("kendoValidator");
    /* $("form").submit(function(event) {
@@ -118,6 +212,9 @@
   });
 
      var register = function(){
+      if (!captcha.validate()) {
+        return
+      }
       var data = $('#fm').serialize();
       $.ajax({
         url: '${api.server}/applicants',

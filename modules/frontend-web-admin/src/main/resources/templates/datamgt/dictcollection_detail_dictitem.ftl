@@ -211,7 +211,7 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 							},
 							error: function(xhr, textStatus, errorThrown) {
 
-								_collectionSub_dictItem_dataSource_detail.dataSource.error();
+								options.error();
 								showMessageByAPICode(xhr.status);
 								
 							}
@@ -294,7 +294,6 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 				var index = (currentPage-1)*_pageSize + localIndex;
 
 				data.itemIndex = index;
-				itemIndex++ ;
 
 				return kendo.template($("#_collectionSub_dictItem_template").html())(data);
 			},
