@@ -122,53 +122,17 @@
 </#if>
 
 <#assign isOmniadmin = Request.isOmniadmin>
+<#assign p_auth = (Request.p_auth)!>
+
 </#if>
 <script type="text/javascript">
 	(function($) {
-		function setCookie(cname, cvalue, exdays) {
-		    var d = new Date();
-		    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-		    var expires = "expires="+d.toUTCString();
-		    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-		}
-		
-		function getCookie(cname) {
-		    var name = cname + "=";
-		    var ca = document.cookie.split(';');
-		    for(var i = 0; i < ca.length; i++) {
-		        var c = ca[i];
-		        while (c.charAt(0) == ' ') {
-		            c = c.substring(1);
-		        }
-		        if (c.indexOf(name) == 0) {
-		            return c.substring(name.length, c.length);
-		        }
-		    }
-		    return "";
-		}
-		
-		if (!getCookie('token')) {
-			$.ajax({
-				url: "${api.server}" + "/login",
-				type: "POST",
-				dataType: "json",
-				headers: {"groupId": ${groupId}},
-				data: {
-									
-				},
-				success: function(result) {
-					setCookie("token", result.token, 365);	
-				}
-			});	
-		}
-		
 		$.ajaxSetup({
 		    headers:{
-		        'Bearer': getCookie('token')
+		        'Token': Liferay.authToken
 		    },
 	        error: function(jqXHR, exception) {
 	            if (jqXHR.status === 0) {
-	                alert('Not connect.n Verify Network.');
 	            } else if (jqXHR.status == 403) {
 				} else if (jqXHR.status == 404) {	                
 	            } else if (jqXHR.status == 500) {
