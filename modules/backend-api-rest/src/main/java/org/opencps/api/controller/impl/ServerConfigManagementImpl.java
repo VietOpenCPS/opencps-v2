@@ -51,9 +51,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				query.setEnd(-1);
 			}
 
-			int count = ServerConfigLocalServiceUtil.getServerConfigsCount();
-
 			List<ServerConfig> configs = ServerConfigLocalServiceUtil.getGroupId(groupId);
+			int count = configs.size();
 
 			ServerConfigResultsModel results = new ServerConfigResultsModel();
 
