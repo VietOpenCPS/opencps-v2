@@ -87,6 +87,7 @@ public class JRReportUtil {
             else
             	return false;
         } catch (JSONException ex) {
+        	_log.error(ex);
             try {
                 JSONObject obj = JSONFactoryUtil.createJSONObject(jsonString);
                 if (obj == null) {
@@ -96,6 +97,7 @@ public class JRReportUtil {
                 	return true;
                 }
             } catch (JSONException e) {
+            	_log.error(e);
                 return false;
             }
         }
@@ -399,10 +401,10 @@ public class JRReportUtil {
 	
 				JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
-				if (reportType.equals("excel")) {
+				if ("excel".equals(reportType)) {
 					return exportReport(jasperPrint, destFileName, DocType.XLS);						
 				}
-				else if (reportType.equals("word")) {
+				else if ("word".equals(reportType)) {
 					return exportReport(jasperPrint, destFileName, DocType.DOC);	
 				}
 				else {

@@ -153,9 +153,8 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		notificationTemplate.setExpandoBridgeAttributes(serviceContext);
 
-		notificationtemplatePersistence.update(notificationTemplate);
-
-		return notificationTemplate;
+		return notificationtemplatePersistence.update(notificationTemplate);
+		//return notificationTemplate;
 	}
 
 	/**
@@ -187,7 +186,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		try {
 			notificationTemplate = notificationtemplatePersistence.remove(notificationTemplateId);
 		} catch (NoSuchNotificationtemplateException e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return notificationTemplate;

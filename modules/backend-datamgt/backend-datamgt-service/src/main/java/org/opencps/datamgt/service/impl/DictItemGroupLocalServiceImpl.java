@@ -156,9 +156,9 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		dictItemGroup.setExpandoBridgeAttributes(serviceContext);
 
-		dictItemGroupPersistence.update(dictItemGroup);
+		return dictItemGroupPersistence.update(dictItemGroup);
 
-		return dictItemGroup;
+		//return dictItemGroup;
 	}
 
 	/**
@@ -193,8 +193,8 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			dictItemGroup = dictItemGroupPersistence.remove(dictItemGroupId);
 
 		} catch (NoSuchDictItemGroupException e) {
-
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 
 		}
 
@@ -213,9 +213,8 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			dictItemGroup = dictItemGroupPersistence.remove(dictItemGroupId);
 
 		} catch (NoSuchDictItemGroupException e) {
-
-			throw new NotFoundException();
-
+			_log.error(e);
+			//throw new NotFoundException();
 		}
 
 		return dictItemGroup;
@@ -284,9 +283,9 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		dictItemGroup.setExpandoBridgeAttributes(serviceContext);
 
-		dictItemGroupPersistence.update(dictItemGroup);
+		return dictItemGroupPersistence.update(dictItemGroup);
 
-		return dictItemGroup;
+		//return dictItemGroup;
 	}
 
 	/**

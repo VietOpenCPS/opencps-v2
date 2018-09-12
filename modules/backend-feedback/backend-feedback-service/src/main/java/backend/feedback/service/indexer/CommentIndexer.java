@@ -7,6 +7,8 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.usermgt.constants.CommonTerm;
+
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -110,15 +112,14 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 
 	@Override
 	protected String doGetSortField(String orderByCol) {
-
-		if (orderByCol.equals("email-address")) {
-			return "emailAddress";
-		} else if (orderByCol.equals("first-name")) {
-			return "firstName";
-		} else if (orderByCol.equals("job-title")) {
-			return "jobTitle";
-		} else if (orderByCol.equals("last-name")) {
-			return "lastName";
+		if (CommonTerm.EMAIL_DASH_ADDRESS.equals(orderByCol)) {
+			return CommonTerm.EMAIL_ADDRESS;
+		} else if (CommonTerm.FIRST_DASH_NAME.equals(orderByCol)) {
+			return CommonTerm.FIRST_NAME;
+		} else if (CommonTerm.JOB_DASH_TITLE.equals(orderByCol)) {
+			return CommonTerm.JOB_TITLE;
+		} else if (CommonTerm.LAST_DASH_NAME.equals(orderByCol)) {
+			return CommonTerm.LAST_NAME;
 		} else {
 			return orderByCol;
 		}

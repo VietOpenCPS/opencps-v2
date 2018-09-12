@@ -26,7 +26,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.util.PDFTextStripper;
-import org.apache.pdfbox.util.TextPosition;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -124,6 +123,7 @@ public class ExtractTextLocations extends PDFTextStripper {
 		}
 	}
 
+/**
 	@Override
 	protected void processTextPosition(TextPosition text) {
 
@@ -131,50 +131,21 @@ public class ExtractTextLocations extends PDFTextStripper {
 			.getCharacter().equals(StringPool.POUND) && text
 				.getFontSize() == 1L) {
 
-			System.out
-				.println("String[" + text
-					.getXDirAdj() + "," + text
-						.getYDirAdj() +
-					" fs=" + text
-						.getFontSize() +
-					" xscale=" + text
-						.getXScale() +
-					" height=" + text
-						.getHeightDir() +
-					" space=" + text
-						.getWidthOfSpace() +
-					" width=" + text
-						.getWidthDirAdj() +
-					"]" + text
-						.getCharacter());
+			System.out.println("String[" + text.getXDirAdj() + "," + text.getYDirAdj() + " fs=" + text.getFontSize()
+					+ " xscale=" + text.getXScale() + " height=" + text.getHeightDir() + " space="
+					+ text.getWidthOfSpace() + " width=" + text.getWidthDirAdj() + "]" + text.getCharacter());
 
-			System.out
-				.println("String[" + text
-					.getX() + "," + text
-						.getY() +
-					" fs=" + text
-						.getFontSize() +
-					" xscale=" + text
-						.getXScale() +
-					" height=" + text
-						.getHeight() +
-					" space=" + text
-						.getWidthOfSpace() +
-					" width=" + text
-						.getWidth() +
-					"]" + text
-						.getCharacter());
-			setAnchorX(text
-				.getX());
-			setAnchorY(text
-				.getY());
-			setSignatureHeight(text
-				.getHeight());
-			setSignatureWidth(text
-				.getWidth());
+			System.out.println("String[" + text.getX() + "," + text.getY() + " fs=" + text.getFontSize() + " xscale="
+					+ text.getXScale() + " height=" + text.getHeight() + " space=" + text.getWidthOfSpace() + " width="
+					+ text.getWidth() + "]" + text.getCharacter());
+			setAnchorX(text.getX());
+			setAnchorY(text.getY());
+			setSignatureHeight(text.getHeight());
+			setSignatureWidth(text.getWidth());
 		}
 
 	}
+**/
 
 	public float getAnchorX() {
 

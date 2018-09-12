@@ -384,52 +384,48 @@ import backend.utils.ObjectConverterUtil;
 			renderRequest.setAttribute("param", generalParamsCommon(renderRequest));
 		}
 		
-		private void renderFrontendWebNotificationPortlet(
-				RenderRequest renderRequest, RenderResponse renderResponse) {
-			
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+	private void renderFrontendWebNotificationPortlet(RenderRequest renderRequest, RenderResponse renderResponse) {
 
-			ServiceContext serviceContext = null;
-			
+		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		ServiceContext serviceContext = null;
+
+		try {
+			serviceContext = ServiceContextFactory.getInstance(renderRequest);
+		} catch (Exception e) {
+			_log.error(e);
+			throw new NullPointerException();
+		}
+
+		long groupId = themeDisplay.getScopeGroupId();
+
+		long userId = themeDisplay.getUserId();
+
+		String notificationType = ParamUtil.getString(renderRequest, "notificationType");
+
+		NotificationTemplateActions notificationTemplateActions = new NotificationTemplateActions();
+
+		Notificationtemplate notificationTemplate = null;
+
+		if (Validator.isNotNull(notificationType)) {
 			try {
-				serviceContext = ServiceContextFactory.getInstance(renderRequest);
-			}
-			catch (Exception e) {
+
+				notificationTemplate = notificationTemplateActions.read(userId, groupId, notificationType,
+						serviceContext);
+				JSONObject object = ObjectConverterUtil.objectToJSON(notificationTemplate.getClass(),
+						notificationTemplate);
+				// Map<String, String> initTemplates =
+				// NotificationMGTConstants.getNotificationTempMap();
+
+				object.put("typeName",
+						NotificationMGTConstants.getNotificationTemp(notificationTemplate.getNotificationType()));
+				renderRequest.setAttribute("notificationTemplate", object);
+
+			} catch (Exception e) {
 				_log.error(e);
-				throw new NullPointerException();
-			}
-
-			long groupId = themeDisplay.getScopeGroupId();
-
-			long userId = themeDisplay.getUserId();
-
-			String notificationType =
-				ParamUtil.getString(renderRequest, "notificationType");
-
-			NotificationTemplateActions notificationTemplateActions =
-				new NotificationTemplateActions();
-
-			Notificationtemplate notificationTemplate = null;
-
-			if (Validator.isNotNull(notificationType)) {
-				try {
-
-					notificationTemplate = notificationTemplateActions.read(
-						userId, groupId, notificationType, serviceContext);
-					JSONObject object = ObjectConverterUtil.objectToJSON(
-						notificationTemplate.getClass(), notificationTemplate);
-					Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
-					
-					object.put("typeName", initTemplates.get(notificationTemplate.getNotificationType()));
-					renderRequest.setAttribute("notificationTemplate", object);
-
-				}
-				catch (Exception e) {
-					_log.error(e);
-				}
 			}
 		}
+	}
 
 		public void renderFrontendWebWorkingUnitPortlet(
 			RenderRequest renderRequest, RenderResponse renderResponse)

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
@@ -82,7 +81,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.taglib.ui.JournalArticleTag;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
 import backend.auth.api.BackendAuthImpl;
@@ -471,9 +469,11 @@ public class AdminPortlet extends FreeMarkerPortlet {
 					userId, groupId, notificationType, serviceContext);
 				JSONObject object = ObjectConverterUtil.objectToJSON(
 					notificationTemplate.getClass(), notificationTemplate);
-				Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
-				
-				object.put("typeName", initTemplates.get(notificationTemplate.getNotificationType()));
+				//Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+				//object.put("typeName", initTemplates.get(notificationTemplate.getNotificationType()));
+
+				object.put("typeName",
+						NotificationMGTConstants.getNotificationTemp(notificationTemplate.getNotificationType()));
 				renderRequest.setAttribute("notificationTemplate", object);
 
 			}
@@ -682,6 +682,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private String getListDictGroupByDictItem(
 		DictItem dictItem, ServiceContext serviceContext) {
 
@@ -702,7 +703,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		try {
 
 			// TODO template commented
-			// @SuppressWarnings("unchecked")
 			List<Document> listResults = (List<Document>) jsonData.get("data");
 
 			for (Document document : listResults) {
@@ -1594,7 +1594,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		String title = ParamUtil.getString(actionRequest, "title");
 		String description = ParamUtil.getString(actionRequest, "description");
 		String permissions = ParamUtil.getString(actionRequest, "permissions");
-		String works = ParamUtil.getString(actionRequest, "works");
+		//String works = ParamUtil.getString(actionRequest, "works");
 
 		int leader = ParamUtil.getInteger(actionRequest, "leader");
 

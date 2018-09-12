@@ -161,22 +161,28 @@ public class SignatureUtil {
 	 */
 	public static int getSignCheck(String path, String extension)
 			throws Exception {
-		int signCheck = 0;
-		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
+//		int signCheck = 0;
+//		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
 
-		signerInfos = getSignerInfoAcrossExtension(path, extension);
+		List<SignerInfo> signerInfos = getSignerInfoAcrossExtension(path, extension);
 
-		if (signerInfos.size() == 0) {
-			signCheck = 0;
-		} else {
+//		if (signerInfos.size() == 0) {
+//			signCheck = 0;
+//		} else {
+		if (signerInfos != null && signerInfos.size() > 0) {
 			if (isTrust(signerInfos)) {
-				signCheck = 1;
+//				signCheck = 1;
+				return 1;
 			} else {
-				signCheck = 2;
+//				signCheck = 2;
+				return 2;
 			}
 		}
+			
+//		}
 
-		return signCheck;
+//		return signCheck;
+		return 0;
 	}
 
 	/**
@@ -187,7 +193,7 @@ public class SignatureUtil {
 	 */
 	public static String getSignInfo(String path, String extension)
 			throws Exception {
-		String signInfoStr = StringPool.BLANK;
+//		String signInfoStr = StringPool.BLANK;
 //		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
 //		
 //		JSONArray arraySigInfo = JSONFactoryUtil.createJSONArray();
@@ -208,31 +214,32 @@ public class SignatureUtil {
 //			signInfoStr = gson.toJson(arraySigInfo);
 //		}
 
-		return signInfoStr;
+		//return signInfoStr;
+		return "";
 	}
 
 	public static String getSignerInfo(long dossierFileId) {
-		StringBuilder stringBuilder = new StringBuilder();
+
 		try {
 
 			JSONArray jsonArray = JSONFactoryUtil
 					.createJSONArray();
 
-			String signInfoStr = StringPool.BLANK;
-
+//			String signInfoStr = StringPool.BLANK;
+			StringBuilder stringBuilder = new StringBuilder();
 			for (int i = 0; i < jsonArray.length(); i++) {
-
-				signInfoStr = jsonArray.getJSONObject(i).getString("SubjectDN");
+				String signInfoStr = jsonArray.getJSONObject(i).getString("SubjectDN");
 
 				stringBuilder.append(signInfoStr);
 				stringBuilder.append("; ");
-
 			}
+
+			return stringBuilder.toString();
 		} catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 
-		return stringBuilder.toString();
+		return StringPool.BLANK;
 
 	}
 
@@ -250,14 +257,14 @@ public class SignatureUtil {
 		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
 		
 		try {
-			if (extension.equalsIgnoreCase("doc")
-					|| extension.equalsIgnoreCase("docx")) {
+			if ("doc".equalsIgnoreCase(extension)
+					|| "docx".equalsIgnoreCase(extension)) {
 				doccontent = new DocContent(path);
 				if (signer.verify(doccontent)) {
 					signerInfos = signer.getSignatureInfos(doccontent);
 				}
 
-			} else if (extension.equalsIgnoreCase("pdf")) {
+			} else if ("pdf".equalsIgnoreCase(extension)) {
 				pdfcontent = new PdfContent(path);
 
 				if (signer.verify(pdfcontent)) {

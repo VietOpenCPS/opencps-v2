@@ -56,11 +56,9 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 				try {
 					indexer.reindex(dictItem);
 				} catch (SearchException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					_log.error(e);
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					_log.error(e);
 				}
 
 			} catch (Exception e) {
@@ -110,7 +108,7 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 		_log.info("id" + id);
 
 		try {
-			modelBefore = DictItemLocalServiceUtil.fetchDictItem(id);
+			DictItemLocalServiceUtil.fetchDictItem(id);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -125,14 +123,14 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 		_log.info("id" + id);
 
 		try {
-			modelBefore = DictItemLocalServiceUtil.fetchDictItem(id);
+			DictItemLocalServiceUtil.fetchDictItem(id);
 
 		} catch (Exception e) {
 			_log.error(e);
 		}
 	}
 
-	public static DictItem modelBefore;
+//	private static DictItem modelBefore;
 
 	Log _log = LogFactoryUtil.getLog(DictItemListener.class);
 
