@@ -31,11 +31,18 @@ public class ActionKeys extends com.liferay.portal.kernel.security.permission.Ac
 
 	public static final String EDIT_DATA = "EDIT_DATA";// QUYEN QUAN TRI DU LIEU
 
-	public static final String[] LIST_PERMISSION = new String[] { "VIEW", "ADD_TO_PAGE", "CONFIGURATION", "PERMISSIONS",
+	private static final String[] LIST_PERMISSION = new String[] { "VIEW", "ADD_TO_PAGE", "CONFIGURATION", "PERMISSIONS",
 			"PREFERENCES", "ACCESS_IN_CONTROL_PANEL", "VIEW_EMPLOYEE", "UPDATE_EMPLOYEE", "VIEW_PARTNER",
 			"UPDATE_PARTNER", "ADD_ACTIVITY_TEMPLATE", "ADD_DOCFILE_TEMPLATE", "ADD_DOCARCHIVE_TEMPLATE", "ADD_PROJECT", "ADD_NEWSBOARD", "EDIT_DATA" };
 	
-	public static final String[] LIST_PERMISSION_DATA = new String[] { "VIEW_EMPLOYEE", "UPDATE_EMPLOYEE", "VIEW_PARTNER",
+	private static final String[] LIST_PERMISSION_DATA = new String[] { "VIEW_EMPLOYEE", "UPDATE_EMPLOYEE", "VIEW_PARTNER",
 			"UPDATE_PARTNER", "ADD_ACTIVITY_TEMPLATE", "ADD_DOCFILE_TEMPLATE", "ADD_DOCARCHIVE_TEMPLATE", "ADD_PROJECT", "ADD_NEWSBOARD", "EDIT_DATA" };
 
+	public static final String[] getListPermission() {
+		return LIST_PERMISSION.clone();
+	}
+
+	public static final String[] getListPermissionData() {
+		return LIST_PERMISSION_DATA.clone();
+	}
 }

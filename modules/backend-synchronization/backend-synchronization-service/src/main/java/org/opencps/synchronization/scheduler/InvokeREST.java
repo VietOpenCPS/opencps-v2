@@ -45,7 +45,7 @@ public class InvokeREST {
 			conn.setRequestProperty("groupId", String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
-				for (Map.Entry m : properties.entrySet()) {
+				for (Map.Entry<String, String> m : properties.entrySet()) {
 					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
 				}
 			}
@@ -66,11 +66,9 @@ public class InvokeREST {
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			_log.error(e);
 		} catch (IOException e) {
-
-			e.printStackTrace();
-
+			_log.error(e);
 		}
 
 		return response;
@@ -106,7 +104,7 @@ public class InvokeREST {
 			conn.setRequestProperty("groupId", String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
-				for (Map.Entry m : properties.entrySet()) {
+				for (Map.Entry<String, String> m : properties.entrySet()) {
 					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
 				}
 			}
@@ -151,9 +149,8 @@ public class InvokeREST {
 			if (conn != null) {
 				try {
 				conn.disconnect();
-			}
-				catch (Exception e) {
-					
+				} catch (Exception e) {
+					_log.error(e);
 				}
 			}
 
@@ -161,7 +158,7 @@ public class InvokeREST {
 				try {
 					br.close();
 				} catch (IOException e) {
-//					_log.error(e);
+					_log.error(e);
 				}
 			}
 
@@ -190,7 +187,7 @@ public class InvokeREST {
 			multipart.addFilePart("file", file);
 
 			if (!properties.isEmpty()) {
-				for (Map.Entry m : properties.entrySet()) {
+				for (Map.Entry<String, String> m : properties.entrySet()) {
 					multipart.addFormField(m.getKey().toString(), m.getValue().toString());
 
 				}
@@ -208,6 +205,7 @@ public class InvokeREST {
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
 
 		} catch (Exception e) {
+			_log.error(e);
 			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
 			response.put(RESTFulConfiguration.MESSAGE, e.getMessage());
 		}

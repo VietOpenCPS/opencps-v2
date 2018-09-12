@@ -29,6 +29,8 @@ import org.opencps.synchronization.service.base.SyncQueueLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -55,6 +57,9 @@ public class SyncQueueLocalServiceImpl extends SyncQueueLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.synchronization.service.SyncQueueLocalServiceUtil} to access the sync queue local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(SyncQueueLocalServiceImpl.class);
+
 	@Override
 	public SyncQueue addSyncQueue(
 			long userId, 
@@ -195,8 +200,10 @@ public class SyncQueueLocalServiceImpl extends SyncQueueLocalServiceBaseImpl {
 			return syncQueuePersistence.remove(syncQueueId);
 
 		} catch (NoSuchSyncQueueException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
+		return null;
 	}
 	
 	@Override

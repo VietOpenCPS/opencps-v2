@@ -125,8 +125,6 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 			message.saveChanges();
 			message.writeTo(System.out);
-			
-			
 
 			try {
 				// Create SOAP Connection
@@ -141,22 +139,23 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				soapResponse.writeTo(stream);
 				soapResponse.writeTo(System.out);
-				_log.info("");
+//				_log.info("");
 				results = new String(stream.toByteArray(), "utf-8");
 
 				soapConnection.close();
 			} catch (Exception e) {
-				System.err.println(
-						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
-				e.printStackTrace();
+//				System.err.println(
+//						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
+//				e.printStackTrace();
+				_log.error(e);
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			_log.error(e);
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			_log.error(e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return Response.status(200).entity(results).build();

@@ -358,7 +358,7 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			collection = getDictCollectionTempDetail(collectionCode, groupId);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		
 		if (collection != null) {
@@ -704,7 +704,7 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 				DictItemGroupTempLocalServiceUtil.deleteDictItemGroupTemp(dictItemGroup.getDictItemGroupId());
 			}
 		} catch (Exception e) {
-			_log.warn("Can't not get DictItemGroupsTemp by groupId, dictItemId " + groupId + "|" + dictItemId);
+			_log.warn("Can't not get DictItemGroupsTemp by groupId, dictItemId " + groupId + "|" + dictItemId+ "|" + e);
 		}
 		if (Validator.isNotNull(groupCodes)) {
 			String[] arrGroupCode = StringUtil.split(groupCodes);
@@ -721,8 +721,7 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 									dictGroup.getDictGroupId(), dictItemId, arrGroupCode[i], serviceContext);
 							groupCodeList.add(arrGroupCode[i]);
 						} catch (Exception e) {
-							continue;
-
+							_log.error(e);
 						}
 					}
 
@@ -741,7 +740,7 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			collection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(dictCollectionCode, groupId);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		if (collection != null) {
 			DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());

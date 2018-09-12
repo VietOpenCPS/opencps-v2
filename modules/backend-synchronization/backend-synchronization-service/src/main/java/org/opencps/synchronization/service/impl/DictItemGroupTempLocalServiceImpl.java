@@ -188,8 +188,8 @@ public class DictItemGroupTempLocalServiceImpl
 			dictItemGroup = dictItemGroupTempPersistence.remove(dictItemGroupId);
 
 		} catch (NoSuchDictItemGroupTempException e) {
-
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 
 		}
 
@@ -208,8 +208,8 @@ public class DictItemGroupTempLocalServiceImpl
 			dictItemGroup = dictItemGroupTempPersistence.remove(dictItemGroupId);
 
 		} catch (NoSuchDictItemGroupTempException e) {
-
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 
 		}
 

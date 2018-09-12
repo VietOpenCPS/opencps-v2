@@ -14,6 +14,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 
 /**
@@ -30,6 +32,7 @@ public class MultipartUtility {
 	private String charset;
 	private OutputStream outputStream;
 	private PrintWriter writer;
+	private static Log _log = LogFactoryUtil.getLog(MultipartUtility.class);
 
 	/**
 	 * This constructor initializes a new HTTP POST request with content type is
@@ -118,7 +121,7 @@ public class MultipartUtility {
 	 *            a File to be uploaded
 	 * @throws IOException
 	 */
-	public void addFilePart(String fieldName, File uploadFile) throws IOException {
+	public void addFilePart(String fieldName, File uploadFile) {
 		String fileName = uploadFile.getName();
 		writer.append("--" + boundary).append(LINE_FEED);
 		writer.append("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"")
@@ -127,15 +130,34 @@ public class MultipartUtility {
 		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
 		writer.append(LINE_FEED);
 		writer.flush();
-
-		FileInputStream inputStream = new FileInputStream(uploadFile);
+		FileInputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(uploadFile);
 		byte[] buffer = new byte[4096];
 		int bytesRead = -1;
 		while ((bytesRead = inputStream.read(buffer)) != -1) {
 			outputStream.write(buffer, 0, bytesRead);
 		}
 		outputStream.flush();
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+			try {
+				if (inputStream != null) {
 		inputStream.close();
+				}
+			} catch (IOException e) {
+				_log.error(e);
+			}
+		}
+//		FileInputStream inputStream = new FileInputStream(uploadFile);
+//		byte[] buffer = new byte[4096];
+//		int bytesRead = -1;
+//		while ((bytesRead = inputStream.read(buffer)) != -1) {
+//			outputStream.write(buffer, 0, bytesRead);
+//		}
+//		outputStream.flush();
+//		inputStream.close();
 
 		writer.append(LINE_FEED);
 		writer.flush();
