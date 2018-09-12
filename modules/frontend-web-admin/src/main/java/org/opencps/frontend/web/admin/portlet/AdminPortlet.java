@@ -369,7 +369,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				renderRequest.setAttribute("SERVICE_INFO", serviceInfo);
 			}
 			catch (Exception e) {
-
+				_log.error(e);
 			}
 		}
 
@@ -518,7 +518,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				workingUnit =
 					WorkingUnitLocalServiceUtil.fetchWorkingUnit(workingUnitId);
 
-				JSONObject jsonWorkingUnit = JSONFactoryUtil.createJSONObject();
+				JSONObject jsonWorkingUnit;
 
 				jsonWorkingUnit = ObjectConverterUtil.objectToJSON(
 					workingUnit.getClass(), workingUnit);
@@ -638,9 +638,9 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 				if (Validator.isNotNull(dictItem)) {
 
-					dictItem = collectionActions.getDictItemByItemCode(
-						collectionCode, dictItem.getItemCode(), groupId,
-						serviceContext);
+//					dictItem = collectionActions.getDictItemByItemCode(
+//						collectionCode, dictItem.getItemCode(), groupId,
+//						serviceContext);
 
 				}
 
@@ -859,7 +859,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 						empjobpos.getEmployeeJobPosId() == employee.getMainJobPostId()
 							? true : false;
 
-					JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+					JSONObject jsonObject;
 
 					jsonObject = ObjectConverterUtil.objectToJSON(
 						empjobpos.getClass(), empjobpos);
@@ -896,6 +896,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 					}
 					catch (Exception e) {
+						_log.error(e);
 						continue;
 					}
 
@@ -1013,13 +1014,13 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 
 			if (Validator.isNotNull(dictItem)) {
-				dictItem = collectionActions.getDictItemByItemCode(
-					collectionCode, dictItem.getItemCode(), groupId,
-					serviceContext);
+//				dictItem = collectionActions.getDictItemByItemCode(
+//					collectionCode, dictItem.getItemCode(), groupId,
+//					serviceContext);
 			}
 		}
 		catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		params.put("dictCollection_groupCode", groupCode);

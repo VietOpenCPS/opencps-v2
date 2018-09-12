@@ -116,8 +116,10 @@ public class StepConfigApiImpl implements StepConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 

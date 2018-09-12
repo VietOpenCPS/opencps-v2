@@ -10,15 +10,15 @@ import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
-import javax.portlet.ResourceURL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.opencps.portlet.constants.OneGatePortletKeys;
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -45,7 +45,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	service = Portlet.class
 )
 public class OneGatePortlet extends FreeMarkerPortlet {
-
+	private static Log _log = LogFactoryUtil.getLog(OneGatePortlet.class.getName());
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 			throws PortletException {
 		try {
@@ -57,7 +57,7 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
 			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
 			
-			if (resourceID.equals("renderURLInit")) {
+			if ("renderURLInit".equals(resourceID)) {
 
 				User user = themeDisplay.getUser();
 
@@ -114,14 +114,14 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 			}
 			
 		} catch (Exception e) {
-
+			_log.error(e);
 			throw new PortletException((Throwable) e);
 
 		}
 	}
 	public static String pullToken(ThemeDisplay themeDisplay) {
 
-		String result = StringPool.BLANK;
+		String result;
 
 		Process process = null;
 
@@ -150,10 +150,11 @@ public class OneGatePortlet extends FreeMarkerPortlet {
 			process.destroy();
 
 		} catch (IOException e) {
-			process = null;
-			process.destroy();
+//			process = null;
+//			process.destroy();
+			_log.error(e);
 		} finally {
-			process.destroy();
+//			process.destroy();
 		}
 
 		result = data;
