@@ -1,7 +1,7 @@
 <#include "init.ftl">
 <div class="row box" >
 	<div class="col-sm-12 col-xs-12 text-xs-center MT20">
-		<input id="workingUnitVoting" name="workingUnitVoting" />
+		<input id="objectVotingSearch" name="objectVotingSearch" />
 	</div>
 	<div class="col-sm-12 col-xs-12">
 		<div class="MB20 MT10">
@@ -185,8 +185,9 @@
 				commentable: $("#commentable").prop("checked")
 			},
 			success: function(result) {
-				result["data"] = result.total == 0 ? []: result["data"];
-				$("#votingListView").getKendoListView().dataSource.pushUpdate(result);
+				if ($("#objectVoting").data('kendoComboBox').value() == $("#objectVotingSearch").data('kendoComboBox').value()) {
+					$("#votingListView").getKendoListView().dataSource.pushUpdate(result);
+				}
 				if (type === "POST") {
 					clearInputVot();
 				} else {
@@ -205,9 +206,10 @@
 	
 				read: function(options) {
 					var working = options.data.working ? options.data.working : 0;
+					var className = options.data.className ? options.data.className : 'employee';
 					$.ajax({
 					
-						url: '/o/rest/v2/postal/votings/question_opencps/' + working,
+						url: '/o/rest/v2/postal/votings/' + className + '/' + working,
 						dataType: "json",
 						type: 'GET',
 						headers: {
@@ -328,58 +330,28 @@
 		noDataTemplate: 'Không có dữ liệu'
 	});
 
-	$("#workingUnitVoting").kendoComboBox({
-		dataTextField : "itemName",
-		dataValueField: "itemCode",
-		dataSource: {
-			transport : {
-				read : function(options){
-					$.ajax({
-						url : "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems?sort=sibling",
-						dataType : "json",
-						type : "GET",
-						headers: {"groupId": ${groupId}},
-						success : function(result){
-							if(result.data){
-								options.success(result);
-							}else {
-								options.success({
-									"total" : 0,
-									"data" : []
-								});
-							}
-
-						},
-						error : function(xhr){
-							options.error(xhr);
-						}
-					});
-					
-				}
-			},
-			schema : {
-				total : "total",
-				data : "data",
-				model : {
-					fields : {
-						itemName : {
-							type : "string"
-						},
-						itemCode : {
-							type : "string"
-						}
-					}
-				}
-			}
-		},
+	$("#objectVotingSearch").kendoComboBox({
+		dataTextField : "text",
+		dataValueField: "value",
+		dataSource: [{
+			text: 'Cán bộ',
+			value: 'employee'
+		}, {
+			text: 'Đơn vị',
+			value: 'govagency'
+		}, {
+			text: 'Khảo sát',
+			value: 'survey'
+		}],
+		filter: "contains",
+		placeholder: "Chọn đối tượng",
+		noDataTemplate: 'Không có dữ liệu',
 		change: function (e) {
 			var value = this.value() ? this.value() : 0;
 			$("#votingListView").getKendoListView().dataSource.read({
-				working: this.value()
+				className: value
 			})
-		},
-		filter: "contains",
-		placeholder: "Chọn cơ quan",
-		noDataTemplate: 'Không có dữ liệu'
+		}
 	});
+	$("#objectVotingSearch").data("kendoComboBox").select(0);
 </script>
