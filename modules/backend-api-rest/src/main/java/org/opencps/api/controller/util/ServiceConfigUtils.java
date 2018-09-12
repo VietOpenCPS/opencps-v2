@@ -15,12 +15,14 @@ import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class ServiceConfigUtils {
-
+	private static Log _log = LogFactoryUtil.getLog(ServiceConfigUtils.class);
 	public static ProcessOption mappingToProcessOption(org.opencps.dossiermgt.model.ProcessOption input) {
 		ProcessOption model = new ProcessOption();
 
@@ -38,6 +40,7 @@ public class ServiceConfigUtils {
 			model.setTemplateNo_0020(dossierTemplate.getTemplateNo());
 			model.setTemplateName(dossierTemplate.getTemplateName());
 		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		try {
@@ -46,6 +49,7 @@ public class ServiceConfigUtils {
 			model.setProcessNo(serviceProcess.getProcessNo());
 			model.setProcessName(serviceProcess.getProcessName());
 		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		model.setServiceProcessId(GetterUtil.getInteger(input.getServiceProcessId()));
@@ -138,6 +142,7 @@ public class ServiceConfigUtils {
 				model.setServiceName(serviceInfo.getServiceName());
 
 			} catch (Exception e) {
+				_log.error(e);
 			}
 
 		}

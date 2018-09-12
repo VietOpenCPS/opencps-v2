@@ -221,6 +221,7 @@ public class ServiceInfoUtils {
 					fileTemplate.setTemplateName(sft.getTemplateName());
 
 				} catch (Exception e) {
+					_log.error(e);
 					_log.error("Can't get ServiceFileTemplate");
 				}
 			}
@@ -246,6 +247,7 @@ public class ServiceInfoUtils {
 				fileTemplate.setFileType(fileEntry.getExtension());
 
 			} catch (Exception e) {
+				_log.error(e);
 				_log.error("Can't get ServiceFileTemplate");
 			}
 		}

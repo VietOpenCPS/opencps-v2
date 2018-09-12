@@ -3,7 +3,6 @@ package org.opencps.api.controller.util;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.opencps.background.executor.SiteCleanBackgroundTaskExecutor;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.constants.NotificationTemplateTerm;
@@ -27,7 +26,6 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -46,6 +44,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class SystemUtils {
+	private static Log _log = LogFactoryUtil.getLog(SystemUtils.class);
 	public static void cleanNotificationTemplate(long groupId, long userId, ServiceContext serviceContext) throws PortalException {
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 		NotificationTemplateInterface actions = new NotificationTemplateActions();
@@ -72,6 +71,7 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
+						_log.error(e);
 					}
 				}
 			}			
@@ -107,6 +107,7 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
+						_log.error(e);
 					}
 				}
 			}			
@@ -143,6 +144,7 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
+						_log.error(e);
 					}
 				}
 			}			
@@ -156,7 +158,7 @@ public class SystemUtils {
 					DLAppLocalServiceUtil.deleteFileEntry(df.getFileEntryId());		
 				}
 				catch (PortalException e) {
-					
+					_log.error(e);
 				}
 			}
 			DossierFileLocalServiceUtil.permanentDeleteDossierFile(df.getDossierFileId());
@@ -188,6 +190,7 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
+						_log.error(e);
 					}
 				}
 			}			
@@ -226,6 +229,7 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
+						_log.error(e);
 					}
 				}
 			}			
