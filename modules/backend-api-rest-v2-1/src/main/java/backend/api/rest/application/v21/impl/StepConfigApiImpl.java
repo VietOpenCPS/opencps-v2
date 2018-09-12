@@ -14,6 +14,8 @@ import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -40,7 +42,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 
 	private StepConfigActions action = new StepConfigActionsImpl();
 	private OpenCPSAPIParsing parsing = new OpenCPSAPIParsing();
-
+	private static Log _log = LogFactoryUtil.getLog(StepConfigApiImpl.class);
 	@Override
 	public StepConfigItem addStepConfig(StepConfigItem body) {
 		long userId = user.getUserId();
@@ -57,8 +59,10 @@ public class StepConfigApiImpl implements StepConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -76,8 +80,10 @@ public class StepConfigApiImpl implements StepConfigApi {
 			action.deleteStepConfig(Long.valueOf(id), serviceContext);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}

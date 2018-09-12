@@ -549,6 +549,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			return registrationPersistence.findByREG_APPNO(applicantIdNo);
 
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -560,6 +561,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		try {
 			return registrationPersistence.findByG_USER_STATE(groupId, userId, state);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}

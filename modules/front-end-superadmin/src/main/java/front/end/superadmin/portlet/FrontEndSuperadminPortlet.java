@@ -49,9 +49,9 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 			ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
-			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
+//			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
 			
-			if (resourceID.equals("renderURLInit")) {
+			if ("renderURLInit".equals(resourceID)) {
 
 				User user = themeDisplay.getUser();
 
@@ -90,7 +90,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 				writeJSON(resourceRequest, resourceResponse, object);
 
-			} else if (resourceID.equals("getActionConfigs")) {
+			} else if ("getActionConfigs".equals(resourceID)) {
 				
 				List<ActionConfig> actionConfigs = ActionConfigLocalServiceUtil.getByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
@@ -100,7 +100,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 				writeJSON(resourceRequest, resourceResponse, object);
 				
-			} else if (resourceID.equals("getMenuConfigs")) {
+			} else if ("getMenuConfigs".equals(resourceID)) {
 				
 				List<MenuConfig> actionConfigs = MenuConfigLocalServiceUtil.getByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
@@ -110,7 +110,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 				writeJSON(resourceRequest, resourceResponse, object);
 				
-			} else if (resourceID.equals("getStepConfigs")) {
+			} else if ("getStepConfigs".equals(resourceID)) {
 				
 				List<StepConfig> actionConfigs = StepConfigLocalServiceUtil.getStepByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();

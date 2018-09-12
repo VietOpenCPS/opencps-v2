@@ -1,29 +1,23 @@
 package frontend.web.kios.portlet;
 
-import frontend.web.kios.constants.FrontendWebKiosPortletKeys;
+import javax.portlet.Portlet;
+import javax.portlet.PortletException;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+
+//
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
-import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
-import java.io.IOException;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import javax.servlet.http.HttpServletRequest;
-//
-import org.osgi.service.component.annotations.Component;
+import frontend.web.kios.constants.FrontendWebKiosPortletKeys;
 
 /**
  * @author
@@ -45,6 +39,8 @@ import org.osgi.service.component.annotations.Component;
 )
 
 public class FrontendWebKiosPortlet extends FreeMarkerPortlet {
+	private static final Log _log =
+			LogFactoryUtil.getLog(FrontendWebKiosPortlet.class);
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 			throws PortletException {
 		try {
@@ -53,10 +49,10 @@ public class FrontendWebKiosPortlet extends FreeMarkerPortlet {
 
 			ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
-			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
+//			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+//			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
 
-			if (resourceID.equals("renderURLInit")) {
+			if ("renderURLInit".equals(resourceID)) {
 
 				User user = themeDisplay.getUser();
 
@@ -80,7 +76,7 @@ public class FrontendWebKiosPortlet extends FreeMarkerPortlet {
 
 			}
 		} catch (Exception e) {
-
+			_log.error(e);
 			throw new PortletException((Throwable) e);
 
 		}

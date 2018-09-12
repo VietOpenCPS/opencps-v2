@@ -79,7 +79,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
             String content, String notificationType, String payload, ServiceContext serviceContext) 
         throws PortalException, SystemException {
 		
-		long userId = serviceContext.getUserId();
+//		long userId = serviceContext.getUserId();
 
 //		validateAddDossierFile(groupId, dossierId, referenceUid, 
 //				dossierTemplateNo, dossierPartNo, fileTemplateNo);
