@@ -23,16 +23,16 @@ public class HolidayUtils {
 	public final static String SUNDAY = "SUNDAY";
 
 	// get value day off
-	private static String strDayOff = StringPool.BLANK;
+	private static volatile String strDayOff = StringPool.BLANK;
 	// get value time working
-	private static Integer startHourMorning = 0;
-	private static Integer startMinuteMorning = 0;
-	private static Integer endHourMorning = 0;
-	private static Integer endMinuteMorning = 0;
-	private static Integer startHourAfterNoon = 0;
-	private static Integer startMinuteAfterNoon = 0;
-	private static Integer endHourAfterNoon = 0;
-	private static Integer endMinuteAfterNoon = 0;
+	private static volatile Integer startHourMorning = 0;
+	private static volatile Integer startMinuteMorning = 0;
+	private static volatile Integer endHourMorning = 0;
+	private static volatile Integer endMinuteMorning = 0;
+	private static volatile Integer startHourAfterNoon = 0;
+	private static volatile Integer startMinuteAfterNoon = 0;
+	private static volatile Integer endHourAfterNoon = 0;
+	private static volatile Integer endMinuteAfterNoon = 0;
 
 	public static Date getDueDate(Date startDate, double durationCount, int durationUnit, long groupId) {
 

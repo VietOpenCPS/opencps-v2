@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -425,7 +424,7 @@ public class DateTimeUtils {
 
 	private static Log _log = LogFactoryUtil.getLog(DateTimeUtils.class);
 
-	private static DateTimeBean DateTimeBean;
+	private static volatile DateTimeBean DateTimeBean;
 
 	public static DateTimeBean getDateTimeBean() {
 		return DateTimeBean;

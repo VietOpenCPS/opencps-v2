@@ -16,6 +16,8 @@ import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -36,7 +38,8 @@ import frontend.web.customer.v21.constants.FrontendWebCustomerPortletKeys;
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
-
+	private static final Log _log =
+			LogFactoryUtil.getLog(FrontendWebCustomerPortlet.class);
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 			throws PortletException {
 		try {
@@ -48,7 +51,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
 			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
 
-			if (resourceID.equals("renderURLInit")) {
+			if ("renderURLInit".equals(resourceID)) {
 
 				User user = themeDisplay.getUser();
 
@@ -138,10 +141,11 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			process.destroy();
 
 		} catch (IOException e) {
+			_log.error(e);
 			process = null;
-			process.destroy();
 		} finally {
-			process.destroy();
+			if (process != null)
+				process.destroy();
 		}
 
 		result = data;

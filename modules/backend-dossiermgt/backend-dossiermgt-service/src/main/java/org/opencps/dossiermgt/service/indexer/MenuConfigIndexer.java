@@ -133,6 +133,7 @@ public class MenuConfigIndexer extends BaseIndexer<MenuConfig> {
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(formData);
 			parseJSONObject(keyValues, jsonObject);
 		} catch (Exception e) {
+			_log.error(e);
 			_log.info("Can not parse json object from FormData: =>"
 					+ " : Cause " + e.getCause());
 		}
@@ -170,6 +171,7 @@ public class MenuConfigIndexer extends BaseIndexer<MenuConfig> {
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 				} catch (JSONException e) {
 					// string
+					_log.error(e);
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
 					if (Validator.isNotNull(strObject.toString())) {
@@ -210,6 +212,7 @@ public class MenuConfigIndexer extends BaseIndexer<MenuConfig> {
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
+					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;

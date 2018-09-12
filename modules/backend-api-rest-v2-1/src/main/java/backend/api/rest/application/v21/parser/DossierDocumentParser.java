@@ -56,6 +56,7 @@ public class DossierDocumentParser {
 					fileType = dlFileVersion.getMimeType();
 					fileSize = dlFileVersion.getSize();
 				} catch (Exception e) {
+					_log.error(e);
 					_log.info("No file entry Id");
 				}
 			}
