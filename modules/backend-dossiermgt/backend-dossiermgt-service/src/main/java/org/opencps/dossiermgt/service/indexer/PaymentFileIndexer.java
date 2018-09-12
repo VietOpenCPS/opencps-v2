@@ -112,20 +112,22 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 				ba = md5.digest(dossier.getReferenceUid().getBytes("UTF-8"));
 				
 			} catch (Exception e) {
+				_log.error(e);
 			} 
 
 			DateFormat df = new SimpleDateFormat("yy");
 			
 			String formattedDate = df.format(Calendar.getInstance().getTime());
 			
-			String dossierIDCTN = StringPool.BLANK;
+			String dossierIDCTN;
 			
 			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
 			
 			document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return document;

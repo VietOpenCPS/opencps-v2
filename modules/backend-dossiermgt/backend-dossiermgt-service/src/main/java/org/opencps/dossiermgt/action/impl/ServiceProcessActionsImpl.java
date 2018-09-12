@@ -340,6 +340,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 				flag = true;
 			}
 		}catch (Exception e) {
+			_log.error(e);
 			return false;
 		}
 
@@ -361,6 +362,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 				flag = true;
 			}
 		}catch (Exception e) {
+			_log.error(e);
 			return false;
 		}
 
@@ -405,7 +407,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 				flag = true;
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			return false;
 		}
 
@@ -427,6 +430,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 				flag = true;
 			}
 		}catch (Exception e) {
+			_log.error(e);
 			return false;
 		}
 

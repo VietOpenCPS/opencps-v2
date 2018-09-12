@@ -27,7 +27,7 @@ public class DossierGarbageCollectorScheduler extends BaseSchedulerEntryMessageL
 			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(0, StringPool.BLANK);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 	}
 	//TODO

@@ -54,25 +54,33 @@ public class DossierFileComparator extends OrderByComparator<DossierFile> {
 
 		Object value0 = getValue(dossierFile0.getClass(), dossierFile0);
 		Object value1 = getValue(dossierFile1.getClass(), dossierFile1);
-
-		if (_columnType.getName().equals(String.class.getName())) {
+		if (value0 == null && value1 != null) {
+			return -1;
+		}
+		else if (value0 != null && value1 == null) {
+			return 1;
+		}
+		else if (value0 == null && value1 == null) {
+			return 0;
+		}
+		if (_columnType.isAssignableFrom(String.class)) {
 			value = ((String) value0).compareTo(((String) value1));
-		} else if (_columnType.getName().equals(Date.class.getName())) {
+		} else if (_columnType.isAssignableFrom(Date.class)) {
 			value = ((Date) value0).compareTo(((Date) value1));
-		} else if (_columnType.getName().equals(Long.class.getName())
-				|| _columnType.getName().equals(long.class.getName())) {
+		} else if (_columnType.isAssignableFrom(Long.class)
+				|| _columnType.isAssignableFrom(long.class)) {
 			value = ((Long) value0).compareTo(((Long) value1));
-		} else if (_columnType.getName().equals(Integer.class.getName())
-				|| _columnType.getName().equals(int.class.getName())) {
+		} else if (_columnType.isAssignableFrom(Integer.class)
+				|| _columnType.isAssignableFrom(int.class)) {
 			value = ((Integer) value0).compareTo(((Integer) value1));
-		} else if (_columnType.getName().equals(Double.class.getName())
-				|| _columnType.getName().equals(double.class.getName())) {
+		} else if (_columnType.isAssignableFrom(Double.class)
+				|| _columnType.isAssignableFrom(double.class)) {
 			value = ((Double) value0).compareTo(((Double) value1));
-		} else if (_columnType.getName().equals(Float.class.getName())
-				|| _columnType.getName().equals(float.class.getName())) {
+		} else if (_columnType.isAssignableFrom(Float.class)
+				|| _columnType.isAssignableFrom(float.class)) {
 			value = ((Float) value0).compareTo(((Float) value1));
-		} else if (_columnType.getName().equals(Short.class.getName())
-				|| _columnType.getName().equals(short.class.getName())) {
+		} else if (_columnType.isAssignableFrom(Short.class)
+				|| _columnType.isAssignableFrom(short.class)) {
 			value = ((Short) value0).compareTo(((Short) value1));
 		}
 

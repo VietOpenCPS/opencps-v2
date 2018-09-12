@@ -17,7 +17,6 @@ import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -70,16 +69,16 @@ public class DossierActionUserImpl implements DossierActionUser {
 			}
 		}
 		// Get DossierAction
-		_log.info("START ROLES");
+//		_log.info("START ROLES");
 		DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
-		_log.info("dossierActionId: "+dossierActionId);
+//		_log.info("dossierActionId: "+dossierActionId);
 		if (dossierAction != null) {
-			_log.info("actionCode: "+dossierAction.getActionCode());
+//			_log.info("actionCode: "+dossierAction.getActionCode());
 		}
 		
-		String actionCode = dossierAction.getActionCode();
-		long serviceProcessId = dossierAction.getServiceProcessId();
-		_log.info("serviceProcessId: "+dossierAction.getServiceProcessId());
+//		String actionCode = dossierAction.getActionCode();
+		long serviceProcessId = dossierAction != null ? dossierAction.getServiceProcessId() : 0l;
+//		_log.info("serviceProcessId: "+dossierAction.getServiceProcessId());
 		
 		String stepCode = processAction.getPostStepCode();
 
@@ -157,7 +156,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 			try {
 				DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), du.getModerator() == 0 ? (processStepRole.getModerator() ? 1 : 0) : 1, true);
 			} catch (NoSuchDossierUserException e) {
-				e.printStackTrace();
+				_log.error(e);
+//				e.printStackTrace();
 			}
 		}
 	}
@@ -197,7 +197,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 				}				
 			}
 		} catch (PortalException e) {
-			e.printStackTrace();
+			_log.error(e);
+//			e.printStackTrace();
 		}		
 	}
 	
@@ -399,6 +400,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 									}
 								} catch (NoSuchDossierUserException e) {
 	//										e.printStackTrace();
+									_log.error(e);
 								}					
 							}	
 							
@@ -452,6 +454,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 											}
 										} catch (NoSuchDossierUserException e) {
 	//										e.printStackTrace();
+											_log.error(e);
 										}					
 									}	
 									
@@ -470,6 +473,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 							}
 						}
 					} catch (PortalException e) {
+						_log.error(e);
 					}				
 				}
 			}

@@ -17,11 +17,14 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierPermission {
-
+	private static final Log _log = LogFactoryUtil.getLog(DossierPermission.class);
+	
 	public boolean isCitizen(long userId) {
 		try {
 			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
@@ -30,6 +33,7 @@ public class DossierPermission {
 			}
 			return false;
 		} catch (Exception e) {
+			_log.error(e);
 			return false;
 		}
 	}
@@ -70,7 +74,7 @@ public class DossierPermission {
 			List<ProcessStepRole> processStepRoles = new ArrayList<ProcessStepRole>();
 
 			for (ProcessStep processStep : processSteps) {
-				List<ProcessStepRole> elms = new ArrayList<ProcessStepRole>();
+				List<ProcessStepRole> elms;
 
 				elms = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStep.getPrimaryKey());
 

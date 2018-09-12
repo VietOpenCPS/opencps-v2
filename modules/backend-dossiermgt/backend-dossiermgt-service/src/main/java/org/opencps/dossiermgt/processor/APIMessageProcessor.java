@@ -66,7 +66,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		try {
 			client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 		} catch (JSONException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 		
 	}
@@ -163,7 +164,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());
 									DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 								} catch (PortalException e) {
-									e.printStackTrace();
+//									e.printStackTrace();
+									_log.error(e);
 								}
 
 							}
@@ -190,7 +192,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									retry++;
 									if (retry > N_OF_RETRIES) break;
 								} catch (InterruptedException e) {
-									e.printStackTrace();
+//									e.printStackTrace();
+									_log.error(e);
 								}
 								
 							}
@@ -201,7 +204,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 											true);
 								} catch (PortalException e) {
-									e.printStackTrace();
+//									e.printStackTrace();
+									_log.error(e);
 								}
 
 							}
@@ -215,7 +219,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				}
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			return false;
 		}
 		
@@ -240,7 +245,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			}
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
@@ -325,7 +330,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										}
 										dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());
 									} catch (PortalException e) {
-										e.printStackTrace();
+//										e.printStackTrace();
+										_log.error(e);
 									}
 	
 								}
@@ -355,7 +361,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										}
 										dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());							
 									} catch (PortalException e) {
-										e.printStackTrace();
+//										e.printStackTrace();
+										_log.error(e);
 									}
 	
 								}
@@ -373,7 +380,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					}
 				}			
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 				return false;
 			}	
 		}
@@ -429,14 +437,16 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 												}
 											}
 										} catch (PortalException e) {
-											e.printStackTrace();
+//											e.printStackTrace();
+											_log.error(e);
 										}
 										
 										
 									}
 								}
 							} catch (PortalException e) {
-								e.printStackTrace();
+//								e.printStackTrace();
+								_log.error(e);
 							}
 							
 							if (df != null && !df.getEForm()) {
@@ -461,7 +471,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										}
 										dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());
 									} catch (PortalException e) {
-										e.printStackTrace();
+//										e.printStackTrace();
+										_log.error(e);
 									}
 	
 								}
@@ -491,7 +502,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										}
 										dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());							
 									} catch (PortalException e) {
-										e.printStackTrace();
+//										e.printStackTrace();
+										_log.error(e);
 									}
 	
 								}
@@ -509,7 +521,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					}
 				}			
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 				return false;
 			}	
 		}

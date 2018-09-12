@@ -136,6 +136,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(formData);
 			parseJSONObject(keyValues, jsonObject);
 		} catch (Exception e) {
+			_log.error(e);
 			_log.info("Can not parse json object from FormData: =>"
 					+ " : Cause " + e.getCause());
 		}
@@ -172,6 +173,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 				} catch (JSONException e) {
+					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
@@ -213,6 +215,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
+					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;

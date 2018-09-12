@@ -1,12 +1,9 @@
 package org.opencps.dossiermgt.listenner;
 
-import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,7 +15,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 //@Component(immediate = true, service = ModelListener.class)
@@ -49,7 +45,8 @@ public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 			message.put("msgToEngine", msgDataESign);
 			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
 		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	}
 
@@ -77,7 +74,7 @@ public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 
 
 
-	public static DossierFile modelBeforeUpdate;
+	public DossierFile modelBeforeUpdate;
 
 	private Log _log = LogFactoryUtil.getLog(DossierFileKySoListenner.class.getName());
 }

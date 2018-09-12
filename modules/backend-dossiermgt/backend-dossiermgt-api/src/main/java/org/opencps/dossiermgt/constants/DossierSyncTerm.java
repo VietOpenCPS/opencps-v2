@@ -15,12 +15,12 @@ public class DossierSyncTerm {
 	public static final int SYNCTYPE_REQUEST = 1;
 	public static final int SYNCTYPE_INFORM = 2;
 	
-	public static String SERVER_CONFIG_PROTOCOL_API = "API_SYNC";
-	public static String SERVER_CONFIG_PROTOCOL_MESSAGE = "MESSAGE_SYNC";
-	public static String SERVER_CONFIG_USERNAME = "username";
-	public static String SERVER_CONFIG_PASSWORD = "password";
-	public static String SERVER_CONFIG_URL = "url";
-	public static String SERVER_CONFIG_GROUP_ID = "groupId";
+	public static final String SERVER_CONFIG_PROTOCOL_API = "API_SYNC";
+	public static final String SERVER_CONFIG_PROTOCOL_MESSAGE = "MESSAGE_SYNC";
+	public static final String SERVER_CONFIG_USERNAME = "username";
+	public static final String SERVER_CONFIG_PASSWORD = "password";
+	public static final String SERVER_CONFIG_URL = "url";
+	public static final String SERVER_CONFIG_GROUP_ID = "groupId";
 	
 	public static final String PAYLOAD_SYNC_FILES = "dossierFiles";
 	public static final String PAYLOAD_SYNC_DOCUMENTS = "dossierDocuments";

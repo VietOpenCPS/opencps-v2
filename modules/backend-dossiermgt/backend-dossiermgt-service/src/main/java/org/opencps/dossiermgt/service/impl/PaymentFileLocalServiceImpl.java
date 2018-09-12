@@ -410,6 +410,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			return paymentFile;
 		} catch (NoSuchPaymentFileException e) {
 //			e.printStackTrace();
+			_log.error(e);
 		}
 		
 		return null;
@@ -479,7 +480,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmNote(confirmNote);
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
-			if (Validator.isNotNull(paymentMethod) && paymentMethod.equals("N\u1ED9p online")) {
+			if (Validator.isNotNull(paymentMethod) && "N\u1ED9p online".equals(paymentMethod)) {
 				paymentFile.setPaymentStatus(2);
 			} else {
 				paymentFile.setPaymentStatus(1);
@@ -501,7 +502,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			
 			//indexer.reindex(dossier);
 		} catch (SearchException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return paymentFilePersistence.update(paymentFile);
@@ -538,6 +540,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 					}
 				} catch (Exception e) {
 					// throw new SystemException(e);
+					_log.error(e);
 				}
 			}
 
@@ -566,7 +569,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			
 			//indexer.reindex(dossier);
 		} catch (SearchException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 
@@ -627,7 +631,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		if (paymentFile != null) {
 
-			long fileEntryId = 0;
+//			long fileEntryId = 0;
 			if (inputStream != null) {
 				long userId = serviceContext.getUserId();
 				try {
@@ -635,10 +639,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 							sourceFileName, null, fileSize, serviceContext);
 
 					if (fileEntry != null) {
-						fileEntryId = fileEntry.getFileEntryId();
+//						fileEntryId = fileEntry.getFileEntryId();
 					}
 				} catch (Exception e) {
 					// e.printStackTrace();
+					_log.error(e);
 					throw new SystemException(e);
 				}
 
@@ -676,6 +681,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		try {
 			return paymentFilePersistence.findByDossierId(groupId, dossierId);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -699,7 +705,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			
 			return paymentFilePersistence.update(paymentFile);
 		} catch (NoSuchPaymentFileException e) {
-
+			_log.error(e);
 		}
 		
 		return null;

@@ -14,6 +14,8 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
 import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -156,7 +158,7 @@ public class DeliverableNumberGenerator {
 
 
 		} catch (Exception e) {
-			
+			_log.error(e);
 			certNumber = "" + count;
 		}
 		
@@ -165,5 +167,5 @@ public class DeliverableNumberGenerator {
 	}	
 	
 	public static final String PRE_FIX_CERT = "OPENCPS_CERT@";
-	
+	private static final Log _log = LogFactoryUtil.getLog(DeliverableNumberGenerator.class);
 }
