@@ -16,10 +16,13 @@ package org.opencps.communication.service.impl;
 
 import java.util.Date;
 
+import org.opencps.communication.exception.NoSuchPreferencesException;
 import org.opencps.communication.model.Preferences;
 import org.opencps.communication.service.base.PreferencesLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -47,6 +50,8 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.communication.service.PreferencesLocalServiceUtil} to access the preferences local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(PreferencesLocalServiceImpl.class);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Preferences addPreferences(
@@ -79,9 +84,8 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 
 		preferences.setExpandoBridgeAttributes(serviceContext);
 
-		preferencesPersistence.update(preferences);
-
-		return preferences;
+		return preferencesPersistence.update(preferences);
+		//return preferences;
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -90,14 +94,11 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 		throws NotFoundException {
 
 		try {
-
 			return preferencesPersistence.remove(preferencesId);
-
+		} catch (NoSuchPreferencesException e) {
+			_log.error(e);
 		}
-		catch (Exception e) {
-			throw new NotFoundException();
-		}
-
+		return null;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

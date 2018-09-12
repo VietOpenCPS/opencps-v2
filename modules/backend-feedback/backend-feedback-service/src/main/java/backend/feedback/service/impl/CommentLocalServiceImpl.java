@@ -24,6 +24,8 @@ import javax.ws.rs.NotFoundException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -52,7 +54,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.feedback.constants.CommentTerm;
-import backend.feedback.exception.NoSuchCommentException;
 import backend.feedback.model.Comment;
 import backend.feedback.service.base.CommentLocalServiceBaseImpl;
 
@@ -76,6 +77,8 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link backend.feedback.service.CommentLocalServiceUtil} to access the comment local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(CommentLocalServiceImpl.class);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Comment addComment(long userId, long groupId, String className, String classPK, String fullname,
@@ -111,15 +114,15 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
 
-			String destination = "Comments/";
+//			String destination = "Comments/";
 
 			Calendar calendar = Calendar.getInstance();
 
 			calendar.setTime(now);
 
-			destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
-			destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
-			destination += calendar.get(Calendar.DAY_OF_MONTH);
+//			destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
+//			destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
+//			destination += calendar.get(Calendar.DAY_OF_MONTH);
 
 //			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
 //					"Comment attactment", false, serviceContext);
@@ -178,6 +181,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 			comment = commentPersistence.remove(commentId);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			throw new PortalException();
 		}
 

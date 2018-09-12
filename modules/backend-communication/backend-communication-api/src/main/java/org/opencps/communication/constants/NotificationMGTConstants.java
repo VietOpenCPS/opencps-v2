@@ -9,9 +9,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import aQute.bnd.osgi.Constants;
 
-public class NotificationMGTConstants implements Constants, WebKeys {
+public class NotificationMGTConstants {
 
-	public static final Map<String, String> NOTIFICATION_TEMPLATE_INIT = new HashMap<String, String>();
+	private static final Map<String, String> NOTIFICATION_TEMPLATE_INIT = new HashMap<String, String>();
 
 	static {
 		
@@ -50,4 +50,19 @@ public class NotificationMGTConstants implements Constants, WebKeys {
 		NOTIFICATION_TEMPLATE_INIT.put(NotificationType.REGISTRATION_02, "Thay \u0111\u1ED5i th\u00F4ng tin \u0111\u0103ng k\u00ED h\u1ED3 s\u01A1 th\u01B0\u01A1ng nh\u00E2n");
 		
 	}
+
+	public static String getNotificationTemp(String key) {
+		return NOTIFICATION_TEMPLATE_INIT.get(key);
+	}
+
+	public static Map<String, String> getNotificationTempMap() {
+		Map<String, String> initNotificationTemp = new HashMap<String, String>();
+		if (NOTIFICATION_TEMPLATE_INIT != null && NOTIFICATION_TEMPLATE_INIT.size() > 0) {
+			for (Map.Entry<String, String> entry: NOTIFICATION_TEMPLATE_INIT.entrySet()) {
+				initNotificationTemp.put(entry.getKey(), entry.getValue());
+			}
+		}
+		return initNotificationTemp;
+	}
+
 }

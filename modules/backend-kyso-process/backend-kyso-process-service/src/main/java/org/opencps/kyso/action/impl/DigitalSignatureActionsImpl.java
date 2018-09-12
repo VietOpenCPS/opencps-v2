@@ -79,11 +79,11 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fullPath = file.getAbsolutePath();
 				_log.info("fullPath: "+fullPath);
 
-				String signImagePath = StringPool.BLANK;
+//				String signImagePath = StringPool.BLANK;
 				_log.info("====***typeSignature+===: "+typeSignature);
 				_log.info("====***postStepCode+===: "+postStepCode);
 //				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
-				signImagePath = new File(realPath + email + ".png").getAbsolutePath();
+				String signImagePath = new File(realPath + email + ".png").getAbsolutePath();
 				_log.info("signImagePath_Kyso: "+realPath);
 //				} else if (TYPE_DONGDAU.contains(typeSignature) && STEPCODE_DONGDAU.equals(postStepCode)){
 //					signImagePath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/nguyenadmin.png";

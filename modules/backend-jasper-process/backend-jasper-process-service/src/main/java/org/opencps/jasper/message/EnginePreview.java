@@ -3,7 +3,6 @@ package org.opencps.jasper.message;
 import java.io.File;
 
 import org.opencps.jasper.utils.JRReportUtil;
-import org.opencps.jasper.utils.JRReportUtil.DocType;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -16,7 +15,6 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class EnginePreview implements MessageListener {
 
@@ -38,6 +36,7 @@ public class EnginePreview implements MessageListener {
             else
             	return false;
         } catch (JSONException ex) {
+        	_log.error(ex);
             try {
                 JSONObject obj = JSONFactoryUtil.createJSONObject(jsonString);
                 if (obj == null) {
@@ -47,6 +46,7 @@ public class EnginePreview implements MessageListener {
                 	return true;
                 }
             } catch (JSONException e) {
+            	_log.error(e);
                 return false;
             }
         }
@@ -81,15 +81,15 @@ public class EnginePreview implements MessageListener {
 				MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
 	
 			} catch (Exception e) {
-				_log.error("Generate file exception.........");
+				_log.error("Generate file exception........."+e);
 				}
 		} else {
 			String reportType = message.contains("reportType") ? message.getString("reportType") : "pdf";
 			File file = null;
-			if (reportType.equals("excel")) {
+			if ("excel".equals(reportType)) {
 				file = FileUtil.createTempFile(JRReportUtil.DocType.XLS.toString());						
 			}
-			else if (reportType.equals("word")) {
+			else if ("word".equals(reportType)) {
 				file = FileUtil.createTempFile(JRReportUtil.DocType.DOC.toString());	
 			}
 			else {
@@ -115,59 +115,57 @@ public class EnginePreview implements MessageListener {
 					MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
 			
 				} catch (Exception e) {
-					_log.error("Generate file exception.........");
+					_log.error("Generate file exception........."+e);
 				}			
 			}
 		}
 	}
 
-	private void _doReceiveJasperRequest(Message message) {
-		// TODO Auto-generated method stub
-		_log.info("Jasper processing .............................");
-		JSONObject msgData = (JSONObject) message.get("msgToEngine");
-
-		File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
-
-		try {
-
-			long userId = msgData.getLong("userId");
-
-			long classPK = msgData.getLong("classPK");
-
-			String className = msgData.getString("className");
-			
-			JSONObject jsonData = JSONFactoryUtil.createJSONObject();
-			
-			try {
-				jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
-			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			String fileExport = JRReportUtil.createReportFile(msgData.getString("jrxmlTemplate"),
-					jsonData.toJSONString(), null, file.getCanonicalPath());
-
-			if (Validator.isNotNull(fileExport)) {
-				
-				_log.info("Jasper export success: " + fileExport);
-				
-				JSONObject msgDataIn = JSONFactoryUtil.createJSONObject();
-				msgDataIn.put("className", className);
-				msgDataIn.put("classPK", classPK);
-				msgDataIn.put("userId", userId);
-				msgDataIn.put("filePath", fileExport );
-				
-				message.put("msgToEngine", msgDataIn);
-				MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+//	private void _doReceiveJasperRequest(Message message) {
+//		// TODO Auto-generated method stub
+//		_log.info("Jasper processing .............................");
+//		JSONObject msgData = (JSONObject) message.get("msgToEngine");
+//
+//		File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
+//
+//		try {
+//
+//			long userId = msgData.getLong("userId");
+//
+//			long classPK = msgData.getLong("classPK");
+//
+//			String className = msgData.getString("className");
+//			
+//			JSONObject jsonData = JSONFactoryUtil.createJSONObject();
+//			
+//			try {
+//				jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
+//			} catch (JSONException e1) {
+//				_log.error(e1);
+//			}
+//
+//			String fileExport = JRReportUtil.createReportFile(msgData.getString("jrxmlTemplate"),
+//					jsonData.toJSONString(), null, file.getCanonicalPath());
+//
+//			if (Validator.isNotNull(fileExport)) {
+//				
+//				_log.info("Jasper export success: " + fileExport);
+//				
+//				JSONObject msgDataIn = JSONFactoryUtil.createJSONObject();
+//				msgDataIn.put("className", className);
+//				msgDataIn.put("classPK", classPK);
+//				msgDataIn.put("userId", userId);
+//				msgDataIn.put("filePath", fileExport );
+//				
+//				message.put("msgToEngine", msgDataIn);
+//				MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+//			}
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//	}
 
 	private Log _log = LogFactoryUtil.getLog(EnginePreview.class);
 }

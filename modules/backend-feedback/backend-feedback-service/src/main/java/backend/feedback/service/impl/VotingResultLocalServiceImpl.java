@@ -100,9 +100,8 @@ public class VotingResultLocalServiceImpl
 
 		votingResult.setExpandoBridgeAttributes(serviceContext);
 
-		votingResultPersistence.update(votingResult);
-
-		return votingResult;
+		return votingResultPersistence.update(votingResult);
+		//return votingResult;
 	}
 
 	/**
@@ -116,15 +115,11 @@ public class VotingResultLocalServiceImpl
 	public VotingResult deleteVoteResult(long votingResultId, ServiceContext serviceContext)
 			throws NoSuchVotingResultException {
 
-		try {
-
-			return votingResultPersistence.remove(votingResultId);
-
-		} catch (NoSuchVotingResultException e) {
-
-			throw new NotFoundException();
-		}
-
+//		try {
+		return votingResultPersistence.remove(votingResultId);
+//		} catch (NoSuchVotingResultException e) {
+//			throw new NotFoundException();
+//		}
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

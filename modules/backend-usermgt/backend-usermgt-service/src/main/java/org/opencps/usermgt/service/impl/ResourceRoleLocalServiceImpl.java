@@ -168,18 +168,19 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 			throw new UnauthorizationException();
 		}
 
-		ResourceRole ResourceRole;
+		ResourceRole resourceRole = null;
 
 		try {
 
-			ResourceRole = resourceRolePersistence.remove(resourceRoleId);
+			resourceRole = resourceRolePersistence.remove(resourceRoleId);
 
 		} catch (NoSuchResourceRoleException e) {
 			// TODO Auto-generated catch block
-			throw new NotFoundException();
+			//throw new NotFoundException();
+			_log.error(e);
 		}
 
-		return ResourceRole;
+		return resourceRole;
 
 	}
 

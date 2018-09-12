@@ -123,9 +123,8 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		workTime.setExpandoBridgeAttributes(serviceContext);
 
-		workTimePersistence.update(workTime);
-
-		return workTime;
+		return workTimePersistence.update(workTime);
+		//return workTime;
 	}
 
 	/**
@@ -154,18 +153,15 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 
-		WorkTime WorkTime;
+		WorkTime workTime = null;
 
 		try {
-
-			WorkTime = workTimePersistence.remove(workTimeId);
-
+			workTime = workTimePersistence.remove(workTimeId);
 		} catch (NoSuchWorkTimeException e) {
-			// TODO Auto-generated catch block
-			throw new NotFoundException();
+			_log.error(e);
 		}
 
-		return WorkTime;
+		return workTime;
 
 	}
 

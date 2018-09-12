@@ -28,12 +28,13 @@ import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.exception.NoSuchDictGroupException;
 import org.opencps.datamgt.model.DictGroup;
-import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.impl.DictItemGroupImpl;
 import org.opencps.datamgt.service.base.DictGroupLocalServiceBaseImpl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -86,6 +87,9 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	 * org.opencps.datamgt.service.DictGroupLocalServiceUtil} to access
 	 * the dict group local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(DictGroupLocalServiceImpl.class);
+
 	/**
 	 * @author binhth
 	 * @param userId
@@ -171,9 +175,9 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		dictGroup.setExpandoBridgeAttributes(serviceContext);
 
-		dictGroupPersistence.update(dictGroup);
+		return dictGroupPersistence.update(dictGroup);
 
-		return dictGroup;
+		//return dictGroup;
 	}
 
 	/**
@@ -214,8 +218,8 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			}
 
 		} catch (NoSuchDictGroupException e) {
-
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 
 		}
 
@@ -305,9 +309,9 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		dictGroup.setExpandoBridgeAttributes(serviceContext);
 
-		dictGroupPersistence.update(dictGroup);
+		return dictGroupPersistence.update(dictGroup);
 
-		return dictGroup;
+		//return dictGroup;
 	}
 
 	/**

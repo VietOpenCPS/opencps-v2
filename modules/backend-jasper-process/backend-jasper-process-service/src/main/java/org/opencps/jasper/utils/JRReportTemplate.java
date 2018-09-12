@@ -6,7 +6,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.lang.Validate;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExpressionCollector;
@@ -19,6 +20,7 @@ public class JRReportTemplate extends JasperReport {
 
 	
 	private static final long serialVersionUID = 1L;
+	private static Log _log = LogFactoryUtil.getLog(JRReportTemplate.class);
 
 	public JRReportTemplate(JRReport report, String compilerClass, Serializable compileData,
 			JRExpressionCollector expressionCollector, String compileNameSuffix) {
@@ -41,8 +43,7 @@ public class JRReportTemplate extends JasperReport {
 			reportTemplate = JasperCompileManager.compileReport(isTemplate);
 			
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			_log.error(e);
 		} finally {
 			
 			try {
@@ -50,8 +51,7 @@ public class JRReportTemplate extends JasperReport {
 					isTemplate.close();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 			
 		}

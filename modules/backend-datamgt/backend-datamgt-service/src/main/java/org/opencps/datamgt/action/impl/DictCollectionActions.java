@@ -3,6 +3,7 @@ package org.opencps.datamgt.action.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,18 +86,23 @@ public class DictCollectionActions implements DictcollectionInterface {
 			if (DictCollectionLocalServiceUtil.initDictCollection(groupId)) {
 
 				// create init dictcollection
-				Map<String, String> initDictCollection =
-					DataMGTConstants.DICTCOLLECTION_INIT;
+//				Map<String, String> initDictCollection = new HashMap<String, String>();
+//				for (Map.Entry<String, String> entry : map.entrySet()) {
+//		            System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+//		        }
+//				DataMGTConstants.DICTCOLLECTION_INIT;
+
+				// create init dictcollection
+				Map<String, String> initDictCollection = new HashMap<String, String>();
+				initDictCollection.put(DataMGTConstants.ACTIVITY_TYPE, DataMGTConstants.VALUE_ACTIVITY_TYPE);
+				initDictCollection.put(DataMGTConstants.DOCUMENT_TYPE, DataMGTConstants.VALUE_DOCUMENT_TYPE);
 
 				for (String key : initDictCollection.keySet()) {
-
 					try {
-
 						DictCollectionLocalServiceUtil.addDictCollection(
 							userId, groupId, key, initDictCollection.get(key),
 							initDictCollection.get(key),
 							initDictCollection.get(key), serviceContext);
-
 					}
 					catch (Exception e) {
 						_log.error(e);
@@ -541,7 +547,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 			collection = getDictCollectionDetail(collectionCode, groupId);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		if (collection != null) {
 			DictGroup dictColl = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
@@ -587,9 +593,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 				itemCode, dictCollection.getDictCollectionId(), groupId);
 		}
 
-		dictItemGroup = DictItemGroupLocalServiceUtil.addDictItemGroup(
-			userId, groupId, dictGroup.getDictGroupId(),
-			dictItem.getDictItemId(), groupCode, serviceContext);
+		if (dictGroup != null && dictItem != null) {
+			dictItemGroup = DictItemGroupLocalServiceUtil.addDictItemGroup(
+					userId, groupId, dictGroup.getDictGroupId(),
+					dictItem.getDictItemId(), groupCode, serviceContext);
+		}
 
 		return dictItemGroup;
 	}
@@ -932,9 +940,9 @@ public class DictCollectionActions implements DictcollectionInterface {
 			}
 		}
 		catch (Exception e) {
-			_log.warn(
+			_log.info(
 				"Can't not get DictItemGroups by groupId, dictItemId " +
-					groupId + "|" + dictItemId);
+					groupId + "|" + dictItemId+ "|" + e);
 		}
 		if (Validator.isNotNull(groupCodes)) {
 			String[] arrGroupCode = StringUtil.split(groupCodes);
@@ -956,8 +964,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 							groupCodeList.add(arrGroupCode[i]);
 						}
 						catch (Exception e) {
-							continue;
-
+							_log.error(e);
 						}
 					}
 
@@ -1074,7 +1081,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 				collectionCode = collection.getCollectionCode();
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 			obj.put(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
 			obj.put(DictGroupTerm.GROUP_CODE, dg.getGroupCode());
@@ -1133,7 +1140,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 			collection = getDictCollectionDetail(collectionCode, groupId);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		if (collection != null) {
 			DictGroup dictColl = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
@@ -1171,7 +1178,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 			collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(dictCollectionCode, groupId);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		if (collection != null) {
 			DictGroup dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
@@ -1229,6 +1236,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 				flag = true;
 			}
 		}catch (Exception e) {
+			_log.error(e);
 			return false;
 		}
 

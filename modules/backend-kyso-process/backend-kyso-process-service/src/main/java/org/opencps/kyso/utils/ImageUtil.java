@@ -194,18 +194,16 @@ public class ImageUtil {
 	}
 
 	public static String saveAsImage(String strURL, String dest, String email,
-			String ext, long fileId) throws IOException, PortalException,
-			SystemException {
+			String ext, long fileId) {
 
 		InputStream is = null;
 		OutputStream os = null;
-		String imagePath = StringPool.BLANK;
 		try {
 
 			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileId);
 			is = fileEntry.getContentStream();
 			// image = ImageIO.read(is);
-			imagePath = dest + email + "." + ext;
+			String imagePath = dest + email + "." + ext;
 			// ImageIO.write(image, ext, new File(fileName));
 
 			os = new FileOutputStream(imagePath);
@@ -217,17 +215,27 @@ public class ImageUtil {
 				os.write(b, 0, length);
 			}
 
-		} catch (IOException e) {
+			return imagePath;
+		} catch (Exception e) {
 			_log.error(e);
 		} finally {
-			if (is != null) {
-				is.close();
-			}
-			if (os != null) {
-				os.close();
+			try {
+				if (is != null) {
+					is.close();
+				}
+			} catch (IOException e1) {
+				_log.error(e1);
+			} finally {
+				try {
+					if (os != null) {
+						os.close();
+					}
+				} catch (IOException e2) {
+					_log.error(e2);
+				}
 			}
 		}
-		return imagePath;
+		return StringPool.BLANK;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(ImageUtil.class);
