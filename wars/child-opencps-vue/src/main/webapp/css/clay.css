@@ -25527,12 +25527,6 @@ a .icon-fb-decimal {
     content: "\f155"
 }
 
-@font-face {
-    font-family: 'Glyphicons Halflings';
-    src: url(compat/third_party/font_glyphicons/glyphicons-halflings-regular.eot);
-    src: url(compat/third_party/font_glyphicons/glyphicons-halflings-regular.eot?#iefix) format("embedded-opentype"), url(compat/third_party/font_glyphicons/glyphicons-halflings-regular.woff2) format("woff2"), url(compat/third_party/font_glyphicons/glyphicons-halflings-regular.woff) format("woff"), url(compat/third_party/font_glyphicons/glyphicons-halflings-regular.ttf) format("truetype"), url(compat/third_party/font_glyphicons/glyphicons-halflings-regular.svgglyphicons_halflingsregular) format("svg")
-}
-
 .glyphicon {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
