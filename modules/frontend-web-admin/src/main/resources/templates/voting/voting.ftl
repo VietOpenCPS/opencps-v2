@@ -56,6 +56,10 @@
 				</div>
 				<div class="modal-body">
 					<form id="formVoting" name="formVoting">
+						<div class="form-group MB10">
+							<label for="objectVoting">Đối tượng:</label>
+							<input type="text" class="form-control" id="objectVoting" name="objectVoting" />
+						</div>
 						<div class="form-group">
 							<label for="subject">Nội dung ý kiến:</label>
 							<textarea id="subject" class="form-control" name="subject" tabindex="0" placeholder="Nhập nội dung xin ý kiến" rows="3"></textarea>
@@ -174,7 +178,7 @@
 				"groupId": ${groupId}
 			},
 			data: {
-				className: "question_opencps",
+				className: $("#objectVoting").val(),
 				classPK: "0",
 				subject: $("#subject").val(),
 				choices: choicesItems,
@@ -304,6 +308,24 @@
 		// 	field: "holidayDate", operator: "contains", 	value: $("#_holiday_keySearch").val().trim() 
 		// }
 		
+	});
+
+	$("#objectVoting").kendoComboBox({
+		dataTextField : "text",
+		dataValueField: "value",
+		dataSource: [{
+			text: 'Cán bộ',
+			value: 'employee'
+		}, {
+			text: 'Đơn vị',
+			value: 'govagency'
+		}, {
+			text: 'Khảo sát',
+			value: 'survey'
+		}],
+		filter: "contains",
+		placeholder: "Chọn đối tượng",
+		noDataTemplate: 'Không có dữ liệu'
 	});
 
 	$("#workingUnitVoting").kendoComboBox({
