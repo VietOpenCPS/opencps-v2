@@ -469,8 +469,8 @@ public class DataTempManagementImpl implements DataTempManagement {
 				return Response.status(409).entity(error).build();
 
 			}
-
-			e.printStackTrace();
+			_log.error(e);
+//			e.printStackTrace();
 			return Response.status(500).build();
 		}
 	}
@@ -1287,7 +1287,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			if (code.equalsIgnoreCase("ADMINISTRATIVE_REGION"))
+			if ("ADMINISTRATIVE_REGION".equals(code))
 				groupId = 0;
 
 			params.put("groupId", groupId);
@@ -1772,7 +1772,8 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 
 			return Response.status(200).entity(value).build();

@@ -73,6 +73,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DataManagementImpl implements DataManagement {
@@ -459,7 +460,7 @@ public class DataManagementImpl implements DataManagement {
 							serviceContext);					
 				}
 
-				return Response.status(200).entity(dictCollection.getDataForm()).build();				
+				return Response.status(200).entity(dictCollection != null ? dictCollection.getDataForm() : StringPool.BLANK).build();				
 			}
 			else {
 				throw new DuplicateCategoryException();
@@ -904,7 +905,8 @@ public class DataManagementImpl implements DataManagement {
 					groupCode, itemCode, serviceContext);
 			}
 			catch (DuplicateCategoryException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 			try {
 				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
@@ -1019,7 +1021,7 @@ public class DataManagementImpl implements DataManagement {
 			try {
 				collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 			DictGroup group = null;
 			try {
@@ -1027,7 +1029,7 @@ public class DataManagementImpl implements DataManagement {
 					group = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());					
 				}
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 			DictItem item = null;
 
@@ -1036,7 +1038,7 @@ public class DataManagementImpl implements DataManagement {
 					item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, collection.getDictCollectionId(),
 							groupId);
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 			DictItemGroup dictItemGroup = null;
 
@@ -1045,7 +1047,7 @@ public class DataManagementImpl implements DataManagement {
 					dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
 							group.getDictGroupId(), item.getDictItemId());
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 			boolean flag = dictItemDataUtil.deleteDictgroupsDictItems(groupId, code, groupCode, itemCode,
 					serviceContext);
@@ -1055,7 +1057,8 @@ public class DataManagementImpl implements DataManagement {
 					serviceContext);
 			}
 			catch (NotFoundException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 			try {
 				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
@@ -1188,7 +1191,7 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			if (code.equalsIgnoreCase("ADMINISTRATIVE_REGION"))
+			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(code))
 				groupId = 0;
 
 			params.put("groupId", groupId);
@@ -1555,7 +1558,8 @@ public class DataManagementImpl implements DataManagement {
 				DictItemTempLocalServiceUtil.deleteDictItemTemp(groupId, itemCode, serviceContext);
 				}
 				catch (NotFoundException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
+					_log.error(e);
 				}
 				try {
 					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
@@ -1572,7 +1576,7 @@ public class DataManagementImpl implements DataManagement {
 										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
 										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
 										&& configObj.has(SyncServerTerm.SERVER_URL)
-										& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
+										&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
 									if (groupId == sc.getGroupId()) {
 										pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
 												sc.getServerNo(),
@@ -1708,7 +1712,8 @@ public class DataManagementImpl implements DataManagement {
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 
 			return Response.status(200).entity(value).build();
@@ -1754,13 +1759,14 @@ public class DataManagementImpl implements DataManagement {
 					itemCode, input.getMetaData());
 			}
 			catch (DuplicateCategoryException | NotFoundException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 			DictItem parentEtt = null;
 			try {
 				parentEtt = DictItemLocalServiceUtil.fetchDictItem(ett.getParentItemId());
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 			try {
 				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
@@ -1876,7 +1882,7 @@ public class DataManagementImpl implements DataManagement {
 			try {
 				oldEtt = dictItemDataUtil.getDictItemByItemCode(code, itemCode, groupId, serviceContext);
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 
 			DictItem ett = null;

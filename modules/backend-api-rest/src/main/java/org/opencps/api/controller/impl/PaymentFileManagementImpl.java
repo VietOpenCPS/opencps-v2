@@ -563,7 +563,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long dossierId = GetterUtil.getLong(id);
+//		long dossierId = GetterUtil.getLong(id);
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
@@ -574,9 +574,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 
-			PaymentFileActions action = new PaymentFileActionsImpl();
+//			PaymentFileActions action = new PaymentFileActionsImpl();
 
-			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
+//			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
 //			if (paymentFile.getInvoiceFileEntryId() > 0) {
 			long getInvoiceFileEntryId = 0;
@@ -597,6 +597,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -807,7 +808,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
-			PaymentFileInputModel PaymentFileInput = new PaymentFileInputModel();
+			PaymentFileInputModel PaymentFileInput;
 
 			PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());			PaymentFile paymentFile = null;
 			

@@ -133,7 +133,7 @@ public class JobposUtils {
 		
 		List<JobposPermissionModel> results = new ArrayList<>();
 
-		BackendAuthImpl authImpl = new BackendAuthImpl();
+//		BackendAuthImpl authImpl = new BackendAuthImpl();
 
 		try {
 			
@@ -187,5 +187,5 @@ public class JobposUtils {
 		return ett;
 	}
 	
-	public static Locale locale = new Locale("vi", "VN");
+	public static final Locale locale = new Locale("vi", "VN");
 }

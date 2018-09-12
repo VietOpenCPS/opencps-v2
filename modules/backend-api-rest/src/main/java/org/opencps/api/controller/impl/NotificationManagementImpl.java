@@ -50,7 +50,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 
 		// System.out.println(">>>>>>>>>>>>>>>>>>>bbb>>>>>>>>>>" + bbb);
 		long userId = user.getUserId();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 
@@ -100,6 +100,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 
 			_log.info(">>>>>>>markAsReadAll is OK>>>>>>>>");
 		} catch (Exception e) {
+			_log.error(e);
 			_log.info(">>>>>>>markAsReadAll is ERR>>>>>>>>");
 		}
 
@@ -115,6 +116,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 				result.put("success", true);
 			}
 			catch (Exception e) {
+				_log.error(e);
 				result.put("success", false);
 			}
 
@@ -150,6 +152,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 
 			result.put("total", userNotificationEventsCount);
 		} catch (Exception e) {
+			_log.error(e);
 			result.put("total", 0);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result).build();
 		}
@@ -170,6 +173,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 			UserNotificationEventLocalServiceUtil.deleteUserNotificationEvent(userNotificationEventId);
 			result.put("success", true);
 		} catch (Exception e) {
+			_log.error(e);
 			result.put("success", false);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result).build();
 		}

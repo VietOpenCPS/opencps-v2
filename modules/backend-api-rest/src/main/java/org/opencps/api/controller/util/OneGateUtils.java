@@ -22,12 +22,14 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 public class OneGateUtils {
-
+	private static Log _log = LogFactoryUtil.getLog(OneGateUtils.class);
 	public static DossierDetailModel mappingForGetDetail(Dossier input) {
 
 		DossierDetailModel model = new DossierDetailModel();
@@ -36,6 +38,7 @@ public class OneGateUtils {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
 		} catch (Exception e) {
+			_log.error(e);
 			model.setDossierIdCTN("");
 		}
 		
@@ -156,6 +159,7 @@ public class OneGateUtils {
 			processUnit = serviceProcess.getDurationUnit();
 			
 		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		if (input.getDossierActionId() != 0) {

@@ -56,9 +56,10 @@ public class ApplicantUtils {
 			user = UserLocalServiceUtil.getUser(mappingUserId);
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 		}
 
-		if (Validator.isNotNull(user)) {
+		if (user != null) {
 			mappingUser.setUserId(Long.toString(mappingUserId));
 			mappingUser.setScreenName(user.getScreenName());
 			mappingUser.setLocking(user.getLockout());
@@ -111,9 +112,10 @@ public class ApplicantUtils {
 				user = UserLocalServiceUtil.getUser(mappingUserId);
 			} catch (Exception e) {
 				// TODO: handle exception
+				_log.error(e);
 			}
 
-			if (Validator.isNotNull(user)) {
+			if (user != null) {
 				mappingUser.setUserId(Long.toString(mappingUserId));
 				mappingUser.setScreenName(user.getScreenName());
 				mappingUser.setLocking(user.getLockout());
@@ -135,7 +137,7 @@ public class ApplicantUtils {
 			
 			user = UserLocalServiceUtil.fetchUser(applicant.getMappingUserId());
 		} catch (Exception e) {
-			
+			_log.error(e);
 		}
 		
 		return user;

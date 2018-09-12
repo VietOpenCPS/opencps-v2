@@ -71,7 +71,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			Dossier dossier = getDossier(id, groupId);
 
-			if (Validator.isNotNull(dossier)) {
+			if (dossier != null) {
 
 				long dossierActionId = dossier.getDossierActionId();
 
@@ -163,7 +163,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			Dossier dossier = getDossier(id, groupId);
 
-			if (Validator.isNotNull(dossier)) {
+			if (dossier != null) {
 
 				long dossierActionId = dossier.getDossierActionId();
 
@@ -239,7 +239,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			Dossier dossier = getDossier(id, groupId);
 
-			if (Validator.isNotNull(dossier)) {
+			if (dossier != null) {
 
 				long dossierActionId = dossier.getDossierActionId();
 
@@ -312,7 +312,8 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 		} catch (Exception e) {
-			_log.info("Cant get dossier_" + id);
+			_log.error(e);
+//			_log.info("Cant get dossier_" + id);
 		}
 
 		return dossier;
@@ -334,7 +335,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			Dossier dossier = getDossier(id, groupId);
 
-			if (Validator.isNotNull(dossier)) {
+			if (dossier != null) {
 
 				long dossierActionId = dossier.getDossierActionId();
 
@@ -403,6 +404,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						return responseBuilder.build();
 
 					} catch (MessageBusException e) {
+						_log.error(e);
 						throw new Exception("Preview rendering not avariable");
 					}
 
@@ -568,7 +570,8 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
 		}
 
@@ -589,6 +592,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			formData = part.getFormReport();
 
 		} catch (Exception e) {
+			_log.error(e);
 			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
 		}
 
@@ -609,6 +613,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			formData = part.getFormScript();
 
 		} catch (Exception e) {
+			_log.error(e);
 			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
 		}
 
@@ -632,7 +637,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			Dossier dossier = getDossier(id, groupId);
 
-			if (Validator.isNotNull(dossier)) {
+			if (dossier != null) {
 
 				long dossierActionId = dossier.getDossierActionId();
 

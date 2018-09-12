@@ -778,7 +778,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response activateApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String code) {
 		ApplicantActions actions = new ApplicantActionsImpl();
-		ApplicantModel results = new ApplicantModel();
+//		ApplicantModel results = new ApplicantModel();
 		
 		long applicantId = 0;
 		
@@ -788,6 +788,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			applicantId = id;
 			
 		} catch (Exception e) {
+			_log.error(e);
 			try {
 				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
 				
@@ -796,6 +797,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				}
 			} catch (Exception e2) {
 				// TODO: handle exception
+				_log.error(e2);
 			}
 			
 		}
@@ -807,7 +809,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			applicant = actions.activationApplicant(serviceContext, applicantId, code);
 
-			results = ApplicantUtils.mappingToApplicantModel(applicant);
+//			results = ApplicantUtils.mappingToApplicantModel(applicant);
 			
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
 			
@@ -817,6 +819,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
