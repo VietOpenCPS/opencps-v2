@@ -8,6 +8,8 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -15,11 +17,14 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class UserMgtUtils {
 
+	private static Log _log = LogFactoryUtil.getLog(UserMgtUtils.class);
+
 	public static Date getDefaultBrithday() {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy hh:MM:ss");
 			return sdf.parse("01/01/1971 00:00::00");
 		} catch (Exception e) {
+			_log.error(e);
 			return new Date();
 		}
 	}
@@ -41,6 +46,7 @@ public class UserMgtUtils {
 			roleDefault = RoleLocalServiceUtil.getRole(companyId, ServiceProps.APPLICANT_ROLE_NAME);
 
 		} catch (Exception e) {
+			_log.error(e);
 			roleDefault = RoleLocalServiceUtil.createRole(CounterLocalServiceUtil.increment(Role.class.getName()));
 
 			roleDefault.setName(ServiceProps.APPLICANT_ROLE_NAME);

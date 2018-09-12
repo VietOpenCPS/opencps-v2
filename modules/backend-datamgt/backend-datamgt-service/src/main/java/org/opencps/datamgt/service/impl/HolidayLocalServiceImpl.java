@@ -154,15 +154,12 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 
-		Holiday holiday;
+		Holiday holiday = null;
 
 		try {
-
 			holiday = holidayPersistence.remove(holidayId);
-
 		} catch (NoSuchHolidayException e) {
-			// TODO Auto-generated catch block
-			throw new NotFoundException();
+			_log.error(e);
 		}
 
 		return holiday;
@@ -215,9 +212,8 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		holiday.setExpandoBridgeAttributes(serviceContext);
 
-		holidayPersistence.update(holiday);
-
-		return holiday;
+		return holidayPersistence.update(holiday);
+		//return holiday;
 	}
 
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,

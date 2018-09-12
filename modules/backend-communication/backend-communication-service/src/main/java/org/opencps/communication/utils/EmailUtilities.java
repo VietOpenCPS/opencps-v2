@@ -8,11 +8,15 @@ import org.opencps.communication.model.Notificationtemplate;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class EmailUtilities {
+	private static Log _log = LogFactoryUtil.getLog(EmailUtilities.class);
+
 	public static JSONObject createEmailBody(Notificationtemplate template, NotificationQueue queue) {
 		JSONObject payload = JSONFactoryUtil.createJSONObject();
 		JSONObject payLoadData = JSONFactoryUtil.createJSONObject();
@@ -21,8 +25,7 @@ public class EmailUtilities {
 			payLoadData = JSONFactoryUtil.createJSONObject(queue.getPayload());
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		payload.put("toName", queue.getToUsername());

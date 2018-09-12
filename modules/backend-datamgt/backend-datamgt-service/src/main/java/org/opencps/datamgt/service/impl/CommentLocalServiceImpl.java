@@ -29,6 +29,8 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -86,6 +88,9 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 	 * {@link org.mobilink.collaboration.service.CommentLocalServiceUtil} to
 	 * access the comment local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(CommentLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Comment addComment(
@@ -292,10 +297,12 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		}
 		catch (NoSuchCommentException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
 		catch (PortalException e) {
-			throw new PortalException();
+			_log.error(e);
+			//throw new PortalException();
 		}
 
 		return comment;
@@ -328,10 +335,12 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		}
 		catch (NoSuchCommentException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
 		catch (PortalException e) {
-			throw new PortalException();
+			_log.error(e);
+			//throw new PortalException();
 		}
 
 		return comment;

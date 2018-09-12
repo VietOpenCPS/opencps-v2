@@ -71,11 +71,11 @@ public class HolidayUtils {
 		// Get day off and day work.
 		if (workTimeList != null && workTimeList.size() > 0) {
 //			_log.info("workTimeList.size(): "+workTimeList.size());
-			String strHours = StringPool.BLANK;
+//			String strHours = StringPool.BLANK;
 			sbDayOff = new StringBuilder();
 			sbDayWork = new StringBuilder();
 			for (WorkTime work : workTimeList) {
-				strHours = work.getHours();
+				String strHours = work.getHours();
 //				_log.info("strHours: "+strHours);
 				if (Validator.isNull(strHours)) {
 					if (Validator.isNull(sbDayOff.toString())) {
@@ -272,7 +272,11 @@ public class HolidayUtils {
 											}
 											//
 											hoursOverdue = startHourMorning + countTest;
+											//
+											baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
+											baseDateCal.set(Calendar.MINUTE, minutes);
 											
+											return baseDateCal.getTime();
 										}
 									}
 									

@@ -207,13 +207,15 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		FileAttach fileAttach = fileAttachPersistence.fetchByPrimaryKey(fileAttachId);
 
-		try {
-
-			fileAttach = fileAttachPersistence.remove(fileAttachId);
-
-		} catch (NoSuchFileAttachException e) {
-			throw new NotFoundException();
+//		try {
+		if (fileAttach != null) {
+			fileAttach = fileAttachPersistence.remove(fileAttach);
 		}
+
+//		fileAttach = fileAttachPersistence.remove(fileAttachId);
+//		} catch (NoSuchFileAttachException e) {
+//			throw new NotFoundException();
+//		}
 
 		return fileAttach;
 
