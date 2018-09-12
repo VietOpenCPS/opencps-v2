@@ -145,7 +145,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	public void copyFile(String orgFileName, String targetFileName) throws IOException {
 		// TODO Auto-generated method stub
 		InputStream inStream = null;
-		OutputStream outStream = null;
 
 		try {
 			File afile = new File(orgFileName);
@@ -154,7 +153,7 @@ public class DossierFileActionsImpl implements DossierFileActions {
 				bfile.createNewFile();
 			}
 			inStream = new FileInputStream(afile);
-			outStream = new FileOutputStream(bfile);
+			try (OutputStream outStream = new FileOutputStream(bfile)) {
 	
 			byte[] buffer = new byte[1024];
 	
@@ -165,14 +164,13 @@ public class DossierFileActionsImpl implements DossierFileActions {
 				outStream.write(buffer, 0, length);
 	
 			}
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			_log.info(e);
 		} finally{
 			if (inStream != null) 
 				inStream.close();
-			if (outStream != null) 
-				outStream.close();
 		}
 //		_log.info("Create file " + targetFileName + " success");
 	}
@@ -195,7 +193,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		fos = new FileOutputStream(zipDirName);
 		zos = new ZipOutputStream(fos);
 			ZipEntry ze = null;
-			FileInputStream fis = null;
 			try {
 		for (String filePath : filesListInDir) {
 //					System.out.println("Zipping " + filePath);
@@ -204,13 +201,14 @@ public class DossierFileActionsImpl implements DossierFileActions {
 					ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
 			zos.putNextEntry(ze);
 			// read the file and write to ZipOutputStream
-					fis = new FileInputStream(filePath);
+					try (FileInputStream fis = new FileInputStream(filePath)) {
 			byte[] buffer = new byte[1024];
 					int len = 0;
 			while ((len = fis.read(buffer)) > 0) {
 				zos.write(buffer, 0, len);
 			}
 				}
+		}
 			} catch (Exception e) {
 				// TODO: handle exception
 				_log.error(e);
@@ -218,8 +216,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			finally{
 				if (zos != null)
 					zos.closeEntry();
-				if (fis != null)
-					fis.close();
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

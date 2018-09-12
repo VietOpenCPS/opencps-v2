@@ -21,6 +21,8 @@ import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.service.base.ProcessStepRoleLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
@@ -49,6 +51,7 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalServiceBaseImpl {
+	private static final Log _log = LogFactoryUtil.getLog(ProcessStepRoleLocalServiceBaseImpl.class);
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -89,7 +92,8 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 		try {
 			indexer.reindex(processStep);
 		} catch (SearchException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return processStepRole;
@@ -112,7 +116,8 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 		try {
 			indexer.reindex(processStep);
 		} catch (SearchException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return processStepRole;

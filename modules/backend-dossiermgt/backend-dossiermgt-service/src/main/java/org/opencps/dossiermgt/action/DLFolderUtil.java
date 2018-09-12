@@ -141,15 +141,18 @@ public class DLFolderUtil {
 				userId, groupId, repositoryId, mountPoint, parentFolderId, name,
 				description, hidden, serviceContext);
 			
-			setFolderPermissions(dlFolder);
+			if (dlFolder != null)
+				setFolderPermissions(dlFolder);
 			
 			folderNames = ArrayUtil.remove(folderNames, name);
 			if (folderNames.length > 0) {
-				dlFolder = getTargetFolder(
-					userId, groupId, repositoryId, mountPoint,
-					dlFolder.getFolderId(),
-					StringUtil.merge(folderNames, StringPool.FORWARD_SLASH),
-					description, hidden, serviceContext);
+				if (dlFolder != null) {
+					dlFolder = getTargetFolder(
+						userId, groupId, repositoryId, mountPoint,
+						dlFolder.getFolderId(),
+						StringUtil.merge(folderNames, StringPool.FORWARD_SLASH),
+						description, hidden, serviceContext);
+				}
 			}
 
 		}

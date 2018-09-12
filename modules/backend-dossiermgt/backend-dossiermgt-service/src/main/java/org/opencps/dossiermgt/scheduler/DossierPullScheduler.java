@@ -862,28 +862,29 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
 									StringPool.PERIOD + ref.getString("fileType"));
 
-							FileOutputStream outStream = new FileOutputStream(tempFile);
+							try (FileOutputStream outStream = new FileOutputStream(tempFile)) {
 
-							int bytesRead = -1;
-							byte[] buffer = new byte[BUFFER_SIZE];
-							while ((bytesRead = is.read(buffer)) != -1) {
-								outStream.write(buffer, 0, bytesRead);
+								int bytesRead = -1;
+								byte[] buffer = new byte[BUFFER_SIZE];
+								while ((bytesRead = is.read(buffer)) != -1) {
+									outStream.write(buffer, 0, bytesRead);
+								}
+	
+								outStream.close();
+								is.close();
+	
+								String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
+										+ "/files";
+	
+								String clientAuthString = new String(
+										Base64.getEncoder().encodeToString((RESTFulConfiguration.CLIENT_USER
+												+ StringPool.COLON + RESTFulConfiguration.CLIENT_PASS).getBytes()));
+	
+								pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, clientAuthString, tempFile,
+										ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
+										ref.getString("fileTemplateNo"), ref.getString("displayName"),
+										ref.getString("formData"), dossierRef, fileRef, serviceContext);
 							}
-
-							outStream.close();
-							is.close();
-
-							String requestURL = RESTFulConfiguration.CLIENT_PATH_BASE + "dossiers/" + dossierId
-									+ "/files";
-
-							String clientAuthString = new String(
-									Base64.getEncoder().encodeToString((RESTFulConfiguration.CLIENT_USER
-											+ StringPool.COLON + RESTFulConfiguration.CLIENT_PASS).getBytes()));
-
-							pullDossierFile(requestURL, "UTF-8", desGroupId, dossierId, clientAuthString, tempFile,
-									ref.getString("dossierTemplateNo"), ref.getString("dossierPartNo"),
-									ref.getString("fileTemplateNo"), ref.getString("displayName"),
-									ref.getString("formData"), dossierRef, fileRef, serviceContext);
 						} else {
 							// Sync FormData
 
@@ -904,25 +905,26 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							File tempFile = File.createTempFile(String.valueOf(System.currentTimeMillis()),
 									StringPool.PERIOD + ref.getString("fileType"));
 
-							FileOutputStream outStream = new FileOutputStream(tempFile);
+							try (FileOutputStream outStream = new FileOutputStream(tempFile)) {
 
-							int bytesRead = -1;
-							byte[] buffer = new byte[BUFFER_SIZE];
-							while ((bytesRead = is.read(buffer)) != -1) {
-								outStream.write(buffer, 0, bytesRead);
+								int bytesRead = -1;
+								byte[] buffer = new byte[BUFFER_SIZE];
+								while ((bytesRead = is.read(buffer)) != -1) {
+									outStream.write(buffer, 0, bytesRead);
+								}
+	
+								outStream.close();
+								is.close();
+								// Update file entry
+								_log.info("START UPDATE FILE ENTRY");
+								DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil
+										.fetchDLFileEntry(dossierFile.getFileEntryId());
+	
+								DLAppLocalServiceUtil.updateFileEntry(userId, dlFileEntry.getFileEntryId(),
+										dlFileEntry.getTitle(), dlFileEntry.getMimeType(), dlFileEntry.getTitle(),
+										dlFileEntry.getDescription(), StringPool.BLANK, true, tempFile, serviceContext);
+								_log.info("END UPDATE FILE ENTRY");
 							}
-
-							outStream.close();
-							is.close();
-							// Update file entry
-							_log.info("START UPDATE FILE ENTRY");
-							DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil
-									.fetchDLFileEntry(dossierFile.getFileEntryId());
-
-							DLAppLocalServiceUtil.updateFileEntry(userId, dlFileEntry.getFileEntryId(),
-									dlFileEntry.getTitle(), dlFileEntry.getMimeType(), dlFileEntry.getTitle(),
-									dlFileEntry.getDescription(), StringPool.BLANK, true, tempFile, serviceContext);
-							_log.info("END UPDATE FILE ENTRY");
 						}
 
 					}
