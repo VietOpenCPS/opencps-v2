@@ -68,8 +68,9 @@ public class InvokeREST {
 
 		} catch (MalformedURLException e) {
 //			e.printStackTrace();
+			_log.error(e);
 		} catch (IOException e) {
-
+			_log.error(e);
 //			e.printStackTrace();
 
 		}
@@ -208,6 +209,7 @@ public class InvokeREST {
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
 
 		} catch (Exception e) {
+			_log.error(e);
 			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
 			response.put(RESTFulConfiguration.MESSAGE, e.getMessage());
 		}

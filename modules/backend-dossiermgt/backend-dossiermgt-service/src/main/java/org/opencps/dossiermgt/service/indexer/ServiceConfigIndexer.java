@@ -81,10 +81,10 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 		try {
 			serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(object.getServiceInfoId());
 		} catch (Exception e) {
-
+			_log.info(e);
 		}
 
-		if (Validator.isNotNull(serviceInfo)) {
+		if (serviceInfo != null && Validator.isNotNull(serviceInfo)) {
 			document.addTextSortable(ServiceConfigTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 			document.addTextSortable(ServiceConfigTerm.SERVICE_NAME, serviceInfo.getServiceName());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_CODE, serviceInfo.getDomainCode());

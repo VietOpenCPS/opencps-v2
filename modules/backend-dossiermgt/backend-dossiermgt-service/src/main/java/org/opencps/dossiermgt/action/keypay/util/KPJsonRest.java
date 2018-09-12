@@ -8,7 +8,7 @@ public class KPJsonRest {
 	private WebTarget webTarget;
 	private Client client;
 
-	private static String BASE_URI = "http://webservices.keypay.vn/jsonresources";
+	private String BASE_URI = "http://webservices.keypay.vn/jsonresources";
 
 	public KPJsonRest() {
 		client = javax.ws.rs.client.ClientBuilder.newClient();

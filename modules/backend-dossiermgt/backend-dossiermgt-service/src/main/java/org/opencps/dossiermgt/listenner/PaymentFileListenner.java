@@ -37,7 +37,8 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
 					notificationType, payload, serviceContext);
 		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 		super.onAfterCreate(model);
 	}
@@ -56,7 +57,8 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
 					notificationType, payload, serviceContext);
 		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	}
 	
@@ -90,13 +92,14 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
 					notificationType, payload, serviceContext);
 		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	}
 
 
 
-	public static PaymentFile modelBeforeUpdate;
+	public PaymentFile modelBeforeUpdate;
 
 	private Log _log = LogFactoryUtil.getLog(PaymentFileListenner.class.getName());
 }

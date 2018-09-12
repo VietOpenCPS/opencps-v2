@@ -141,12 +141,14 @@ public class MultipartUtility {
 		outputStream.flush();
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 		} finally{
 			if (inputStream != null) {
                 try {
 		inputStream.close();
                 } catch (IOException ex1) {
                     //TODO:
+                	_log.error(ex1);
                 }
             }
 		}

@@ -105,23 +105,24 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					}
 
 				} catch (Exception e) {
+					_log.error(e);
 					_log.error("Parser JSONDATA error_DELIVERABLE");
 				}
 
-				String subject = StringPool.BLANK;
-				String issueDate = StringPool.BLANK;
-				String expireDate = StringPool.BLANK;
-				String revalidate = StringPool.BLANK;
-				String deliverableState = "2";
-				String formData = StringPool.BLANK;
+//				String subject = StringPool.BLANK;
+//				String issueDate = StringPool.BLANK;
+//				String expireDate = StringPool.BLANK;
+//				String revalidate = StringPool.BLANK;
+//				String deliverableState = "2";
+//				String formData = StringPool.BLANK;
 
 				if (Validator.isNotNull(formDataContent)) {
-					subject = formDataContent.getString("subject");
-					issueDate = formDataContent.getString("issueDate");
-					expireDate = formDataContent.getString("expireDate");
-					revalidate = formDataContent.getString("revalidate");
-
-					formData = formDataContent.toString();
+//					subject = formDataContent.getString("subject");
+//					issueDate = formDataContent.getString("issueDate");
+//					expireDate = formDataContent.getString("expireDate");
+//					revalidate = formDataContent.getString("revalidate");
+//
+//					formData = formDataContent.toString();
 
 				}
 
@@ -147,7 +148,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 	}
 
 	private JSONObject mappingContent(JSONObject mappingSrc, JSONObject srcFormData, long dossierId) {
-		JSONObject returnOBJ = JSONFactoryUtil.createJSONObject();
+		JSONObject returnOBJ;
 
 		// dossierId
 
@@ -163,9 +164,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			String entryValue = GetterUtil.getString(entry.getValue());
 
-			String uEntryValue = StringPool.BLANK;
+			String uEntryValue;
 
-			JSONObject jEntryValue = JSONFactoryUtil.createJSONObject();
+			JSONObject jEntryValue;
 
 			if (entryValue.startsWith("#") && entryValue.contains("@")) {
 				// _log.info("INTO->getElement");
@@ -235,6 +236,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			_log.info("File" + fileTemplateNo + "is null or json is not correct");
 		}
 
@@ -260,6 +262,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				elmValue = jsformData.getString(keyJs);
 
 			} catch (Exception e) {
+				_log.error(e);
 				_log.info("File" + formTemplate + "is null or json is not correct");
 			}
 		}
@@ -353,7 +356,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		return val;
@@ -383,7 +386,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
 					content, notificationType, payload, serviceContext);
 		} catch (SystemException | PortalException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	}
 
@@ -462,7 +466,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String issueDate = StringPool.BLANK;
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
-				String deliverableState = StringPool.BLANK;
+				String deliverableState;
 				if (eSign) {
 					deliverableState = "0";
 				} else {
@@ -506,6 +510,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					}
 
 				} catch (Exception e) {
+					_log.error(e);
 					_log.error("Parser JSONDATA error_DELIVERABLE");
 				}
 
@@ -529,7 +534,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	}
 
-	public static Map<String, Object> jsonToMap(JSONObject json) {
+	public Map<String, Object> jsonToMap(JSONObject json) {
 		Map<String, Object> retMap = new HashMap<String, Object>();
 
 		if (Validator.isNotNull(json)) {
@@ -537,7 +542,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				retMap = toMap(json);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 		return retMap;
@@ -581,7 +587,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		return list;
 	}
 
-	public static DossierFile modelBeforeUpdate;
+	public DossierFile modelBeforeUpdate;
 
 	private Log _log = LogFactoryUtil.getLog(DossierFileListenner.class.getName());
 }

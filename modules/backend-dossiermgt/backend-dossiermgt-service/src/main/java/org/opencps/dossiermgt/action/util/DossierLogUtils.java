@@ -11,11 +11,14 @@ import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierLogUtils {
+	private static final Log _log = LogFactoryUtil.getLog(DossierLogUtils.class);
 	public static String createPayload(DossierFile dossierFile, PaymentFile paymentFile, Dossier dossier) {
 		String fileType = StringPool.BLANK;
 		String fileUrl = StringPool.BLANK;
@@ -33,7 +36,8 @@ public class DossierLogUtils {
 					fileUrl = dlFileVersion.getTreePath();
 
 				} catch (Exception e) {
-					e.printStackTrace();
+//					e.printStackTrace();
+					_log.error(e);
 				}
 			}
 			

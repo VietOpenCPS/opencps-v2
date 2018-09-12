@@ -39,7 +39,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 		EmployeeActions employeeActions = new EmployeeActions();
 
-		JobposActions jobposActions = new JobposActions();
+//		JobposActions jobposActions = new JobposActions();
 
 		try {
 
@@ -51,14 +51,14 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 
 			//long dossierId = model.getDossierId();
 
-			String jobPosName = StringPool.BLANK;
+//			String jobPosName = StringPool.BLANK;
 
 			if (mainJobposId > 0) {
 
-				JobPos jobPos = jobposActions.getJobPos(mainJobposId);
+//				JobPos jobPos = jobposActions.getJobPos(mainJobposId);
 
-				jobPosName = (jobPos != null && Validator.isNotNull(jobPos.getTitle())) ? jobPos.getTitle()
-						: StringPool.BLANK;
+//				jobPosName = (jobPos != null && Validator.isNotNull(jobPos.getTitle())) ? jobPos.getTitle()
+//						: StringPool.BLANK;
 			}
 
 			//TODO: Hot fix

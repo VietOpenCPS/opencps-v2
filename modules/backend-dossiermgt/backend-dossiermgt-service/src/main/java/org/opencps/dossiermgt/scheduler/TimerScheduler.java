@@ -58,7 +58,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 		// get all actions that has preCondition is "timer"
 
 		// Get all dossier
-		List<Dossier> allDossierTimer = new ArrayList<Dossier>();
+		List<Dossier> allDossierTimer;
 
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
@@ -96,7 +96,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 				//boolean pending = dossierAction != null ? dossierAction.getPending() : false;
 
-				List<ProcessAction> lstProcessAction = new ArrayList<ProcessAction>();
+				List<ProcessAction> lstProcessAction;
 
 				lstProcessAction = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(dossier.getGroupId(),
 						serviceProcessId, stepCode);
@@ -191,6 +191,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			try {
 				userActionName = UserLocalServiceUtil.getUser(userId).getFullName();
 			} catch (Exception e) {
+				_log.error(e);
 				_log.info("DEFAULT_NAME");
 
 				userActionName = defaultName;

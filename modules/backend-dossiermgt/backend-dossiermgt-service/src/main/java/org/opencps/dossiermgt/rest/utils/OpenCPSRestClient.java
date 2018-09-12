@@ -126,6 +126,7 @@ public class OpenCPSRestClient {
 			
 			return result;
 		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		return result;
@@ -154,6 +155,7 @@ public class OpenCPSRestClient {
 			
 			return result;
 		} catch (Exception e) {
+			_log.error(e);
 		}
 		
 		return result;
@@ -201,7 +203,8 @@ public class OpenCPSRestClient {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 		
 		return lstDossierFiles;
@@ -229,6 +232,7 @@ public class OpenCPSRestClient {
 			
 			return result;
 		} catch (Exception e) {
+			_log.error(e);
 		}
 		
 		return result;
@@ -252,6 +256,7 @@ public class OpenCPSRestClient {
 			
 			return result;
 		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		return result;
@@ -279,7 +284,8 @@ public class OpenCPSRestClient {
 			
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return result;

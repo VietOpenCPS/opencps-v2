@@ -57,17 +57,24 @@ public class HttpDownloadUtility {
 			String saveFilePath = saveDir + File.separator + fileName;
 			
 			// opens an output stream to save into file
-			FileOutputStream outputStream = new FileOutputStream(saveFilePath);
-
-			int bytesRead = -1;
-			byte[] buffer = new byte[BUFFER_SIZE];
-			while ((bytesRead = inputStream.read(buffer)) != -1) {
-				outputStream.write(buffer, 0, bytesRead);
+			FileOutputStream outputStream = null; 
+			try {	
+				outputStream = new FileOutputStream(saveFilePath);
+				int bytesRead = -1;
+				byte[] buffer = new byte[BUFFER_SIZE];
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
 			}
-
-			outputStream.close();
-			inputStream.close();
-
+			catch (Exception e) {
+				throw new IOException(e);
+			}
+			finally  {
+				if (outputStream != null)
+					outputStream.close();
+				if (inputStream != null)
+					inputStream.close();
+			}
 			System.out.println("File downloaded");
 		} else {
 			System.out.println("No file to download. Server replied HTTP code: " + responseCode);

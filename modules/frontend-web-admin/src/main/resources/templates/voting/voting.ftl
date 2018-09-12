@@ -163,10 +163,10 @@
 		var url = "";
 		if ($("#_voting_hidden_new_id").val()) {
 			type = "PUT";
-			url = "/o/rest/v2/pk5/votings/" + $("#_voting_hidden_new_id").val()
+			url = "/o/rest/v2/postal/votings/" + $("#_voting_hidden_new_id").val()
 		} else {
 			type = "POST";
-			url = "/o/rest/v2/pk5/votings"
+			url = "/o/rest/v2/postal/votings"
 		}
 
 		$.ajax({
@@ -207,7 +207,7 @@
 					var working = options.data.working ? options.data.working : 0;
 					$.ajax({
 					
-						url: '/o/rest/v2/pk5/votings/question_opencps/' + working,
+						url: '/o/rest/v2/postal/votings/question_opencps/' + working,
 						dataType: "json",
 						type: 'GET',
 						headers: {
@@ -234,7 +234,7 @@
 					if(cf){
 						
 						$.ajax({
-							url: '/o/rest/v2/pk5/votings/' + options.data.votingId,
+							url: '/o/rest/v2/postal/votings/' + options.data.votingId,
 							headers: {
 								"groupId": ${groupId}
 							},

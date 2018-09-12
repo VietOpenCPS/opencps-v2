@@ -34,7 +34,7 @@ public class DossierListennerUltils {
 
 		try {
 
-			String content = StringPool.BLANK;
+			String content;
 			String notificationType = StringPool.BLANK;
 			String payload = DossierLogUtils.createPayload(null, null, model);
 			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId());
@@ -93,8 +93,8 @@ public class DossierListennerUltils {
 					content, notificationType, payload, serviceContext);
 
 		} catch (Exception e) {
-			e.printStackTrace();
-
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 	}

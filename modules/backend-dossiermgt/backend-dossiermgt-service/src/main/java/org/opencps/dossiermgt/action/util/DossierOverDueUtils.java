@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.action.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.opencps.datamgt.util.HolidayUtils;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 
 public class DossierOverDueUtils {
-
 	public static final int START_HOUR_OF_DAY = 8;
 
 	public static final int END_HOUR_OF_DAY = 18;
@@ -56,7 +54,8 @@ public class DossierOverDueUtils {
 		c.setTime(now);
 		c.add(Calendar.DATE, processingDay);
 		Date estimateDate = c.getTime();
-
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		
 		return dateFormat.format(estimateDate);
 	}
 
@@ -109,7 +108,7 @@ public class DossierOverDueUtils {
 
 		boolean isHoliday = false;
 
-		List<Holiday> holidays = new ArrayList<Holiday>();
+		List<Holiday> holidays;
 
 		holidays = HolidayLocalServiceUtil.getHolidaies(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
@@ -156,7 +155,4 @@ public class DossierOverDueUtils {
 
 		return startCal.getTime();
 	}
-	
-
-	private static final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 }
