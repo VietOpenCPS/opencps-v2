@@ -15,13 +15,15 @@ import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierTemplateUtils {
-
+	private static final Log _log = LogFactoryUtil.getLog(DossierTemplateUtils.class);
 	public static List<DossierTemplateDataModel> mappingToDossierTemplateList(List<Document> documents) {
 		List<DossierTemplateDataModel> outputs = new ArrayList<DossierTemplateDataModel>();
 
@@ -98,7 +100,7 @@ public class DossierTemplateUtils {
 			}
 
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		output.getDossierParts().addAll(inputs);

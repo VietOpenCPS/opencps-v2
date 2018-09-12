@@ -70,7 +70,7 @@ public class CommentManagementImpl implements CommentManagement {
 					commentInputModel.getParent(), commentInputModel.getContent(), 0, null, StringPool.BLANK,
 					StringPool.BLANK, 0, commentInputModel.getPings(), commentInputModel.getOpinion(), serviceContext);
 
-			CommentModel commentModel = new CommentModel();
+			CommentModel commentModel;
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
@@ -181,7 +181,8 @@ public class CommentManagementImpl implements CommentManagement {
 
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null)
+					inputStream.close();
 			} catch (IOException e) {
 				_log.error(e);
 			}
@@ -389,14 +390,14 @@ public class CommentManagementImpl implements CommentManagement {
 			String email = commentInputModel.getEmail();
 			// Truong hop co userId thi lay email va fullname tu user
 
-			if (!user.getEmailAddress().equals("default@liferay.com")) {
+			if (!"default@liferay.com".equals(user.getEmailAddress())) {
 				email = user.getEmailAddress();
 			}
 
 			Comment comment = CommentLocalServiceUtil.updateComment(commentId, commentInputModel.getClassName(),
 					commentInputModel.getClassPK(), email, -1, serviceContext);
 
-			CommentModel commentModel = new CommentModel();
+			CommentModel commentModel;
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
@@ -454,7 +455,7 @@ public class CommentManagementImpl implements CommentManagement {
 			String fullname = commentInputModel.getFullname();
 			// Truong hop co userId thi lay email va fullname tu user
 
-			if (!user.getEmailAddress().equals("default@liferay.com")) {
+			if (!"default@liferay.com".equals(user.getEmailAddress())) {
 				email = user.getEmailAddress();
 			}
 
@@ -463,7 +464,7 @@ public class CommentManagementImpl implements CommentManagement {
 					commentInputModel.getParent(), commentInputModel.getContent(), commentInputModel.getPings(),
 					serviceContext);
 
-			CommentModel commentModel = new CommentModel();
+			CommentModel commentModel;
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
@@ -521,14 +522,14 @@ public class CommentManagementImpl implements CommentManagement {
 
 			String email = commentInputModel.getEmail();
 
-			if (!user.getEmailAddress().equals("default@liferay.com")) {
+			if (!"default@liferay.com".equals(user.getEmailAddress())) {
 				email = user.getEmailAddress();
 			}
 
 			Comment comment = CommentLocalServiceUtil.updateComment(commentId, commentInputModel.getClassName(),
 					commentInputModel.getClassPK(), email, 0, serviceContext);
 
-			CommentModel commentModel = new CommentModel();
+			CommentModel commentModel;
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 

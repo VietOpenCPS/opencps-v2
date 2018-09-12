@@ -498,7 +498,8 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null)
+					inputStream.close();
 			} catch (IOException e) {
 				_log.error(e);
 			}
@@ -1009,7 +1010,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 
 			String serverNo = SERVER + itemCode;
-			String jobPos = query.getJobpos();
+//			String jobPos = query.getJobpos();
 			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
 
 			long groupIdEmp = 0;

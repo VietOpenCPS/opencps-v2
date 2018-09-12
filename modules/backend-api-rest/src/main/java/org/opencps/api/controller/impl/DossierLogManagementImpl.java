@@ -42,7 +42,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String notificationType, String author,
 			String payload, String content) {
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
@@ -69,7 +69,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 	public Response getDossierLogs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierLogSearchModel query) {
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 

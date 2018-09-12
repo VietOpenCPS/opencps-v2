@@ -151,7 +151,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
 							
 							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
-							int durationUnit = dossier.getDurationUnit();
+//							int durationUnit = dossier.getDurationUnit();
 							if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 								long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 								if (subTimeStamp > 0) {
@@ -341,7 +341,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 	public Response getListActionsExecuted(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, DossierActionSearchModel query, String id) {
 
-		DossierActions actions = new DossierActionsImpl();
+//		DossierActions actions = new DossierActionsImpl();
 		DossierActionResult21Model result = new DossierActionResult21Model();
 
 		try {
@@ -473,7 +473,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -483,7 +483,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
 //			_log.info("dossier File: "+ dossierFileList.get);
 			StringBuilder sb = new StringBuilder();
-			String deliverableCode = StringPool.BLANK;
+			String deliverableCode;
 			if (dossierFileList != null && dossierFileList.size() > 0) {
 				int length = dossierFileList.size();
 //				_log.info("Size dossier File: "+ length);
@@ -519,7 +519,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			if (deliverableList != null && deliverableList.size() > 0) {
 //				int lengthDeliver = deliverableList.size();
 //				_log.info("Size list deliverable: "+ deliverableList.size());
-				String formData = StringPool.BLANK;
+				String formData;
 				for (Deliverable deliverable : deliverableList) {
 					JSONObject formDetail = JSONFactoryUtil.createJSONObject();
 					formData = deliverable.getFormData();
@@ -548,12 +548,10 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							formDetail.put("bien_ban@dang_kiem_vien_chinh", jsonReportData.get("dang_kiem_vien_chinh"));
 							results.put(formDetail);
 						} catch (Exception e) {
-							_log.info("================");
-							//-log.error(e);
+							_log.error(e);
 						}
 					} catch (Exception e) {
-						_log.info("================");
-						//-log.error(e);
+						_log.error(e);
 					}
 					
 				}
@@ -562,6 +560,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 //			_log.info("Result: "+ results);
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
 
