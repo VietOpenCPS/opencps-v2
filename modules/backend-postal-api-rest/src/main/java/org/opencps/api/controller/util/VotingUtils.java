@@ -53,7 +53,7 @@ public class VotingUtils {
 	 */
 	public static String convertListToStringAnswers(List<String> answerlist) {
 
-		String stringAnswer = StringPool.BLANK;
+//		String stringAnswer = StringPool.BLANK;
 
 		StringBuffer sb = new StringBuffer();
 
@@ -63,7 +63,7 @@ public class VotingUtils {
 			sb.append("\n");
 		}
 
-		stringAnswer = sb.toString().replaceAll("\n$", StringPool.BLANK);
+		 String stringAnswer = sb.toString().replaceAll("\n$", StringPool.BLANK);
 
 		return stringAnswer;
 	}
@@ -91,8 +91,7 @@ public class VotingUtils {
 						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 			ett.setTemplateNo(doc.get(VotingTerm.TEMPLATE_NO));
@@ -159,8 +158,7 @@ public class VotingUtils {
 						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 			ett.setTemplateNo(doc.get(VotingTerm.TEMPLATE_NO));
@@ -284,8 +282,7 @@ public class VotingUtils {
 						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 			ett.setFullName(doc.get(VotingResultTerm.FULLNAME));
@@ -328,8 +325,7 @@ public class VotingUtils {
 						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 			ett.setFullName(doc.get(VotingResultTerm.FULLNAME));
@@ -397,8 +393,7 @@ public class VotingUtils {
 
 				ett.setChoice(choiceValue);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 			results.add(ett);
 		}
@@ -425,13 +420,12 @@ public class VotingUtils {
 
 			ett.setSelected(GetterUtil.get(votingResult.getSelected(), 0));
 
-			boolean isCurrentUser = false;
-
-			if (votingResult.getUserId() == votingResult.getUserId()) {
-				isCurrentUser = true;
-			}
-
-			ett.setCurrentUser(isCurrentUser);
+//			boolean isCurrentUser = false;
+//			if (votingResult.getUserId() == votingResult.getUserId()) {
+//				isCurrentUser = true;
+//			}
+//			ett.setCurrentUser(isCurrentUser);
+			ett.setCurrentUser(true);
 		}
 
 		return ett;
@@ -440,12 +434,12 @@ public class VotingUtils {
 	public static List<VotingStatisticsModel> mappingVotingStatisticsModelList(List<Document> list,
 			ServiceContext serviceContext) {
 
-		List<VotingStatisticsModel> results = new ArrayList<>();
+//		List<VotingStatisticsModel> results = new ArrayList<>();
 
-		VotingStatisticsModel ett = null;
+//		VotingStatisticsModel ett = null;
 
-		for (Document doc : list) {
-			ett = new VotingStatisticsModel();
+//		for (Document doc : list) {
+//			ett = new VotingStatisticsModel();
 
 			// ett.setTotal(value);
 			// ett.setUserId(Long.valueOf(doc.get(VotingResultTerm.USER_ID)));
@@ -478,9 +472,9 @@ public class VotingUtils {
 			//
 			// ett.setCurrentUser(isCurrentUser);
 
-			results.add(ett);
-		}
+//			results.add(ett);
+//		}
 
-		return results;
+		return null;
 	}
 }

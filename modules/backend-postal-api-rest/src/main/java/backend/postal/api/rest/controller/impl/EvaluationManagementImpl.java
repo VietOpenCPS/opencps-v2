@@ -44,7 +44,7 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			if(score.equals("")){
+			if("".equals(score)){
 				score = "0";
 			}
 			int number = Integer.parseInt(score);

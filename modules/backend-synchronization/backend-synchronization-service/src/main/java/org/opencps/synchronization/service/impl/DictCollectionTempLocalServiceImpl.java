@@ -217,8 +217,8 @@ public class DictCollectionTempLocalServiceImpl
 			}
 
 		} catch (NoSuchDictCollectionTempException e) {
-
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 
 		}
 
@@ -316,7 +316,7 @@ public class DictCollectionTempLocalServiceImpl
 	 */
 	public DictCollectionTemp fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
-		if (collectionCode.equalsIgnoreCase("ADMINISTRATIVE_REGION")) {
+		if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(collectionCode)) {
 			groupId = 0;
 		}
 

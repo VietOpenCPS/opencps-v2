@@ -182,6 +182,7 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 						}
 					}
 					catch (Exception e) {
+						_log.error(e);
 						_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());						
 					}
 					_log.info("PUSH DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));		
