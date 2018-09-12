@@ -70,7 +70,7 @@ public class DossierTemplateUtils {
 
 		try {
 
-			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
+			List<DossierPart> dossierParts;
 
 			dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(dossierTemplate.getGroupId(),
 					dossierTemplate.getTemplateNo());

@@ -2,14 +2,10 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.opencps.api.deliverable.model.DeliverableModel;
 import org.opencps.api.registrationform.model.RegistrationFormDetailModel;
 import org.opencps.api.registrationform.model.RegistrationFormModel;
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
@@ -18,13 +14,11 @@ import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationFormUtils {
 
-	Log _log = LogFactoryUtil.getLog(RegistrationFormUtils.class);
+	private static Log _log = LogFactoryUtil.getLog(RegistrationFormUtils.class);
 
 	public static RegistrationFormDetailModel mappingToRegistrationFormDetailModel(RegistrationForm registrationForm) {
 
@@ -51,7 +45,7 @@ public class RegistrationFormUtils {
 			model.setMultiple(registrationTemplates.getMultiple());
 
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 		return model;
 	}

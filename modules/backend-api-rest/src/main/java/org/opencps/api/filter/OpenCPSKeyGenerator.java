@@ -6,13 +6,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 public class OpenCPSKeyGenerator implements KeyGenerator {
-	private static Key _key;
+	private Key _key = null;
 	
     @Override
     public Key generateKey() {
-    	if (_key == null) {
-            _key = Keys.secretKeyFor(SignatureAlgorithm.HS512);;    		
+    	if (_key != null) {
+    		return _key;   		
     	}
-        return _key;
+    	_key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    	
+    	return _key;
     }
 }
