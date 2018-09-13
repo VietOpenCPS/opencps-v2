@@ -1,18 +1,13 @@
 package backend.api.rest.application.utils;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.cxf.helpers.IOUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 public class ReadFileJSONUtils {
 
@@ -25,16 +20,16 @@ public class ReadFileJSONUtils {
 //		return null;
 //	}
 	
-	public String readFileJSON(String className) throws FileNotFoundException, IOException, ParseException {
-		String result = StringPool.BLANK;
-		String userDir = System.getProperty("root.dir");
-		System.out.println("Application plugin running in " + userDir);
+	public String readFileJSON(String className) throws IOException, ParseException {
+		String result;
+//		String userDir = System.getProperty("root.dir");
+//		System.out.println("Application plugin running in " + userDir);
 
 		String sssss = PropsUtil.get("liferay.home");
 		_log.info("sssss: "+sssss);
 		
-		String sourceFile = SOURCE_JSON + className + ".json";
-		JSONParser parser = new JSONParser();
+//		String sourceFile = SOURCE_JSON + className + ".json";
+//		JSONParser parser = new JSONParser();
 //		JSONObject jsonData = (JSONObject) parser.parse(new FileReader(sourceFile));
 //		if (jsonData != null) {
 //			result = jsonData.toJSONString();

@@ -334,7 +334,7 @@ import backend.utils.ObjectConverterUtil;
 					renderRequest.setAttribute("SERVICE_INFO", serviceInfo);
 				}
 				catch (Exception e) {
-
+					_log.error(e);
 				}
 			}
 
@@ -462,7 +462,7 @@ import backend.utils.ObjectConverterUtil;
 					workingUnit =
 						WorkingUnitLocalServiceUtil.fetchWorkingUnit(workingUnitId);
 
-					JSONObject jsonWorkingUnit = JSONFactoryUtil.createJSONObject();
+					JSONObject jsonWorkingUnit;
 
 					jsonWorkingUnit = ObjectConverterUtil.objectToJSON(
 						workingUnit.getClass(), workingUnit);
@@ -582,9 +582,9 @@ import backend.utils.ObjectConverterUtil;
 
 					if (Validator.isNotNull(dictItem)) {
 
-						dictItem = collectionActions.getDictItemTempByItemCode(
-							collectionCode, dictItem.getItemCode(), groupId,
-							serviceContext);
+//						dictItem = collectionActions.getDictItemTempByItemCode(
+//							collectionCode, dictItem.getItemCode(), groupId,
+//							serviceContext);
 
 					}
 
@@ -801,7 +801,7 @@ import backend.utils.ObjectConverterUtil;
 							empjobpos.getEmployeeJobPosId() == employee.getMainJobPostId()
 								? true : false;
 
-						JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+						JSONObject jsonObject;
 
 						jsonObject = ObjectConverterUtil.objectToJSON(
 							empjobpos.getClass(), empjobpos);
@@ -835,6 +835,7 @@ import backend.utils.ObjectConverterUtil;
 
 						}
 						catch (Exception e) {
+							_log.error(e);
 							continue;
 						}
 
@@ -952,13 +953,13 @@ import backend.utils.ObjectConverterUtil;
 				}
 
 				if (Validator.isNotNull(dictItem)) {
-					dictItem = collectionActions.getDictItemTempByItemCode(
-						collectionCode, dictItem.getItemCode(), groupId,
-						serviceContext);
+//					dictItem = collectionActions.getDictItemTempByItemCode(
+//						collectionCode, dictItem.getItemCode(), groupId,
+//						serviceContext);
 				}
 			}
 			catch (Exception e) {
-
+				_log.error(e);
 			}
 
 			params.put("dictCollection_groupCode", groupCode);
@@ -1762,7 +1763,7 @@ import backend.utils.ObjectConverterUtil;
 						oldItemGroups.add(groupTemp.getGroupCode());
 					}
 					catch (Exception e) {
-						
+						_log.error(e);
 					}
 				}
 
@@ -1927,7 +1928,7 @@ import backend.utils.ObjectConverterUtil;
 					result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
 				}
 				catch (Exception e) {
-					
+					_log.error(e);
 				}
 			}
 			else if (o instanceof DictItemTemp) {
@@ -1947,19 +1948,19 @@ import backend.utils.ObjectConverterUtil;
 					result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
 				}
 				catch (Exception e) {
-					
+					_log.error(e);
 				}			
 				try {
 					DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItem.getParentItemId());
 					result.put(DictItemTempTerm.PARENT_ITEM_CODE, parentItem.getItemCode());
 				}
 				catch (Exception e) {
-					
+					_log.error(e);
 				}			
 			}
 			
 			return result;
 		}
 		
-		private Log _log = LogFactoryUtil.getLog(AdminPortlet.class.getName());
+		private static Log _log = LogFactoryUtil.getLog(AdminPortlet.class.getName());
 	}

@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 import org.osgi.service.component.annotations.Component;
 
@@ -74,6 +72,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
 		}
 		catch (Exception e) {
+			_log.error(e);
 		}
 
 		String dossierTemplateId =
@@ -94,12 +93,13 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		}
 		catch (Exception e) {
 			// TODO: handle exception
-			_log.info(e.getMessage());
+//			_log.info(e.getMessage());
+			_log.error(e);
 		}
 
 		String dossierPartNo =
 			ParamUtil.getString(renderRequest, "dossierPartNo");
-		System.out.println("dossierPartNo:" + dossierPartNo);
+//		System.out.println("dossierPartNo:" + dossierPartNo);
 
 		String dossierTemplateNo =
 			ParamUtil.getString(renderRequest, "dossierTemplateNo");

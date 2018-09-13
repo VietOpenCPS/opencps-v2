@@ -1,15 +1,5 @@
 package frontend.web.chartjs.portlet;
 
-import frontend.web.chartjs.constants.FrontendWebChartjsPortletKeys;
-
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
-
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
@@ -17,6 +7,18 @@ import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
+
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
+
+import frontend.web.chartjs.constants.FrontendWebChartjsPortletKeys;
 
 /**
  * @author binhth
@@ -38,7 +40,7 @@ import org.osgi.service.component.annotations.Component;
 	service = Portlet.class
 )
 public class FrontendWebChartjsPortlet extends FreeMarkerPortlet {
-	
+	private static Log _log = LogFactoryUtil.getLog(FrontendWebChartjsPortlet.class);
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 			throws PortletException {
 		try {
@@ -47,10 +49,10 @@ public class FrontendWebChartjsPortlet extends FreeMarkerPortlet {
 
 			ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
-			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
+//			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+//			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
 
-			if (resourceID.equals("renderURLInit")) {
+			if ("renderURLInit".equals(resourceID)) {
 
 				User user = themeDisplay.getUser();
 
@@ -74,7 +76,7 @@ public class FrontendWebChartjsPortlet extends FreeMarkerPortlet {
 
 			}
 		} catch (Exception e) {
-
+			_log.error(e);
 			throw new PortletException((Throwable) e);
 
 		}
