@@ -87,7 +87,6 @@ public class FrontendWebEvaluationPortlet extends FreeMarkerPortlet {
 			} else {
 
 				super.serveResource(resourceRequest, resourceResponse);
-
 			}
 		} catch (Exception e) {
 
