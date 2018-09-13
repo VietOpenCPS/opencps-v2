@@ -1617,37 +1617,40 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 			if (jobPos != null) {
 				jobPos.setJobPosCode(jobPosCode);
-				JobPosLocalServiceUtil.updateJobPos(jobPos);
+				JobPosLocalServiceUtil.updateJobPos(jobPos);			
+		
+				// if (Validator.isNotNull(permissions)) {
+				jobposActions.createPermissionsPatch(
+					userId, serviceContext.getCompanyId(), groupId,
+					jobPos.getJobPosId(), permissions, serviceContext);
+				// }
+	
+				// TODO template commented
+				// if (Validator.isNotNull(works)) {
+				// jobposActions.createJobposWorksPatch(
+				// userId, serviceContext.getCompanyId(), groupId,
+				// jobPos.getJobPosId(), works, serviceContext);
+				// }
+	
+				result.put("jobPosId", jobPos.getJobPosId());
+				result.put(
+					"createDate", DateTimeUtils.convertDateToString(
+						jobPos.getCreateDate(), DateTimeUtils._TIMESTAMP));
+				result.put(
+					"modifiedDate", DateTimeUtils.convertDateToString(
+						jobPos.getModifiedDate(), DateTimeUtils._TIMESTAMP));
+				result.put(
+					"title", Validator.isNotNull(jobPos.getTitle())
+						? jobPos.getTitle() : StringPool.BLANK);
+				result.put(
+					"description", Validator.isNotNull(jobPos.getDescription())
+						? jobPos.getDescription() : StringPool.BLANK);
+				result.put("leader", jobPos.getLeader());
+				result.put("mappingRoleId", jobPos.getMappingRoleId());
 			}
-			// if (Validator.isNotNull(permissions)) {
-			jobposActions.createPermissionsPatch(
-				userId, serviceContext.getCompanyId(), groupId,
-				jobPos.getJobPosId(), permissions, serviceContext);
-			// }
-
-			// TODO template commented
-			// if (Validator.isNotNull(works)) {
-			// jobposActions.createJobposWorksPatch(
-			// userId, serviceContext.getCompanyId(), groupId,
-			// jobPos.getJobPosId(), works, serviceContext);
-			// }
-
-			result.put("jobPosId", jobPos.getJobPosId());
-			result.put(
-				"createDate", DateTimeUtils.convertDateToString(
-					jobPos.getCreateDate(), DateTimeUtils._TIMESTAMP));
-			result.put(
-				"modifiedDate", DateTimeUtils.convertDateToString(
-					jobPos.getModifiedDate(), DateTimeUtils._TIMESTAMP));
-			result.put(
-				"title", Validator.isNotNull(jobPos.getTitle())
-					? jobPos.getTitle() : StringPool.BLANK);
-			result.put(
-				"description", Validator.isNotNull(jobPos.getDescription())
-					? jobPos.getDescription() : StringPool.BLANK);
-			result.put("leader", jobPos.getLeader());
-			result.put("mappingRoleId", jobPos.getMappingRoleId());
-
+			else {
+				throw new NullPointerException("Jobpos is null");
+			}
 		}
 		catch (Exception e) {
 			_log.error(e);

@@ -732,10 +732,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //		String paymentNote = StringPool.BLANK;
 //		String epaymentProfile = StringPool.BLANK;
 //		String bankInfo = StringPool.BLANK;
-		String paymentFee;
+//		String paymentFee;
 //		long paymentAmount = 0;
 		if (serviceProcess != null) {
-			paymentFee = serviceProcess.getPaymentFee();
+//			paymentFee = serviceProcess.getPaymentFee();
 //			_log.info("paymentFee: "+paymentFee);
 		}
 //		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid, govAgencyCode,
