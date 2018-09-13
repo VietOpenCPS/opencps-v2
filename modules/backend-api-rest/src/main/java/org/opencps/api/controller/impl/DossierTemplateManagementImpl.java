@@ -31,10 +31,13 @@ import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.impl.DossierTemplateImpl;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -297,6 +300,8 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 		}
 
 	}
+	
+	private Log _log = LogFactoryUtil.getLog(DossierTemplateImpl.class);
 
 	@Override
 	public Response getDossierParts(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -360,9 +365,21 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (Validator.isNotNull(required)) {
 				params.put(DossierPartTerm.REQUIRED, required);
 			}
+			
+			if (Validator.isNull(query.getSort())) {
+				query.setSort(DossierPartTerm.PART_NO);
+			}
+			
+			if (Validator.isNull(query.getOrder())) {
+				query.setSort(StringPool.FALSE);
+			}
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
+			
+			//_log.info("***query.getSort()" + query.getSort());
+			//_log.info("***query.getSort()" + GetterUtil.getBoolean(query.getOrder()));
+
 
 			JSONObject jsonData = actions.getDossierParts(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
