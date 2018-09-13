@@ -59,7 +59,7 @@ public class DossierDucumentUtils {
 		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarksByFileMark(groupId, dossierId, 0);
 		if (dossierMarkList != null && dossierMarkList.size() > 0) {
 			JSONObject jsonMark = null;
-			String partNo = StringPool.BLANK;
+			String partNo;
 			for (DossierMark dossierMark : dossierMarkList) {
 				jsonMark = JSONFactoryUtil.createJSONObject();
 				partNo = dossierMark.getDossierPartNo();

@@ -145,6 +145,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			} catch (Exception e) {
 //				e.printStackTrace();
 //				throw new SystemException(e);
+				_log.error(e);
 			}
 		}
 		_log.info("****End uploadFile file at:" + new Date());
@@ -166,8 +167,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
-		object.setUserId(Validator.isNotNull(userAction) ? userAction.getUserId() : 0l);
-		object.setUserName(Validator.isNotNull(userAction) ? userAction.getFullName() : StringPool.BLANK);
+		object.setUserId(userAction != null ? userAction.getUserId() : 0l);
+		object.setUserName(userAction != null ? userAction.getFullName() : StringPool.BLANK);
 
 		// Add other fields
 
@@ -256,6 +257,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			} catch (Exception e) {
 //				e.printStackTrace();
 //				throw new SystemException(e);
+				_log.error(e);
 			}
 		}
 		_log.info("****End uploadFile file at:" + new Date());
@@ -372,8 +374,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			String _contactEmail = StringPool.BLANK;
 
 			// TODO
-			String _dossierFileNo = StringPool.BLANK;
-			String _dossierFileDate = StringPool.BLANK;
+//			String _dossierFileNo = StringPool.BLANK;
+//			String _dossierFileDate = StringPool.BLANK;
 
 			// get data applicant or employee
 			ApplicantActions applicantActions = new ApplicantActionsImpl();
@@ -398,12 +400,13 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 			} catch (PortalException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+//				e1.printStackTrace();
+				_log.error(e1);
 			}
 			// process sampleData
-			if (Validator.isNull(sampleData)) {
-				sampleData = "{}";
-			}
+//			if (Validator.isNull(sampleData)) {
+//				sampleData = "{}";
+//			}
 
 			Map<String, Object> jsonMap = jsonToMap(result);
 
@@ -413,29 +416,29 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 				if (value.startsWith("_") && !value.contains(":")) {
 
-					if (value.equals("_subjectName")) {
+					if ("_subjectName".equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
-					} else if (value.equals("_subjectId")) {
+					} else if ("_subjectId".equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectId);
-					} else if (value.equals("_address")) {
+					} else if ("_address".equals(value)) {
 						jsonMap.put(entry.getKey(), _address);
-					} else if (value.equals("_cityCode")) {
+					} else if ("_cityCode".equals(value)) {
 						jsonMap.put(entry.getKey(), _cityCode);
-					} else if (value.equals("_cityName")) {
+					} else if ("_cityName".equals(value)) {
 						jsonMap.put(entry.getKey(), _cityName);
-					} else if (value.equals("_districtCode")) {
+					} else if ("_districtCode".equals(value)) {
 						jsonMap.put(entry.getKey(), _districtCode);
-					} else if (value.equals("_districtName")) {
+					} else if ("_districtName".equals(value)) {
 						jsonMap.put(entry.getKey(), _districtName);
-					} else if (value.equals("_wardCode")) {
+					} else if ("_wardCode".equals(value)) {
 						jsonMap.put(entry.getKey(), _wardCode);
-					} else if (value.equals("_wardName")) {
+					} else if ("_wardName".equals(value)) {
 						jsonMap.put(entry.getKey(), _wardName);
-					} else if (value.equals("_contactName")) {
+					} else if ("_contactName".equals(value)) {
 						jsonMap.put(entry.getKey(), _contactName);
-					} else if (value.equals("_contactTelNo")) {
+					} else if ("_contactTelNo".equals(value)) {
 						jsonMap.put(entry.getKey(), _contactTelNo);
-					} else if (value.equals("_contactEmail")) {
+					} else if ("_contactEmail".equals(value)) {
 						jsonMap.put(entry.getKey(), _contactEmail);
 					}
 
@@ -443,29 +446,29 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 					String resultBinding = StringPool.BLANK;
 					String[] valueSplit = value.split(":");
 					for (String string : valueSplit) {
-						if (string.equals("_subjectName")) {
+						if ("_subjectName".equals(string)) {
 							resultBinding += ", " + _subjectName;
-						} else if (string.equals("_subjectId")) {
+						} else if ("_subjectId".equals(string)) {
 							resultBinding += ", " + _subjectId;
-						} else if (string.equals("_address")) {
+						} else if ("_address".equals(string)) {
 							resultBinding += ", " + _address;
-						} else if (string.equals("_wardCode")) {
+						} else if ("_wardCode".equals(string)) {
 							resultBinding += ", " + _wardCode;
-						} else if (string.equals("_wardName")) {
+						} else if ("_wardName".equals(string)) {
 							resultBinding += ", " + _wardName;
-						} else if (string.equals("_districtCode")) {
+						} else if ("_districtCode".equals(string)) {
 							resultBinding += ", " + _districtCode;
-						} else if (string.equals("_districtName")) {
+						} else if ("_districtName".equals(string)) {
 							resultBinding += ", " + _districtName;
-						} else if (string.equals("_cityCode")) {
+						} else if ("_cityCode".equals(string)) {
 							resultBinding += ", " + _cityCode;
-						} else if (string.equals("_cityName")) {
+						} else if ("_cityName".equals(string)) {
 							resultBinding += ", " + _cityName;
-						} else if (string.equals("_contactName")) {
+						} else if ("_contactName".equals(string)) {
 							resultBinding += ", " + _contactName;
-						} else if (string.equals("_contactTelNo")) {
+						} else if ("_contactTelNo".equals(string)) {
 							resultBinding += ", " + _contactTelNo;
-						} else if (string.equals("_contactEmail")) {
+						} else if ("_contactEmail".equals(string)) {
 							resultBinding += ", " + _contactEmail;
 						}
 					}
@@ -495,6 +498,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 								}
 							} catch (Exception e) {
 								// TODO: handle exception
+								_log.error(e);
 							}
 
 							if (myCHK.startsWith("#")) {
@@ -504,7 +508,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 							}
 						}
 					} catch (SystemException e) {
-						e.printStackTrace();
+//						e.printStackTrace();
+						_log.error(e);
 					}
 				}
 			}
@@ -521,7 +526,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return result.toJSONString();
@@ -535,7 +541,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				retMap = toMap(json);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 		return retMap;
@@ -692,6 +699,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				fileEntryId = fileEntry.getFileEntryId();
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			throw new SystemException(e);
 		}
 
@@ -707,9 +715,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		// Add other fields
 
 		dossierFile.setDossierId(dossierId);
-		if (Validator.isNull(referenceUid)) {
-			referenceUid = PortalUUIDUtil.generate();
-		}
+//		if (Validator.isNull(referenceUid)) {
+//			referenceUid = PortalUUIDUtil.generate();
+//		}
 
 		dossierFile.setFileEntryId(fileEntryId);
 		if (Validator.isNull(displayName)) {
@@ -1082,8 +1090,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierFile.getDossierId());
 
 		if (dossier != null) {
-			if (Validator.isNotNull(dossier.getDossierStatus()) && (!dossier.getDossierStatus().equalsIgnoreCase("new")
-					|| !dossier.getDossierStatus().equalsIgnoreCase("waiting"))) {
+			if (Validator.isNotNull(dossier.getDossierStatus()) && (!"new".equalsIgnoreCase(dossier.getDossierStatus())
+					|| !"waiting".equalsIgnoreCase(dossier.getDossierStatus()))) {
 
 				throw new InvalidDossierStatusException();
 			}
@@ -1099,10 +1107,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		if (Validator.isNotNull(referenceUid)) {
 			//DossierFile dossierFile = dossierFilePersistence.fetchByD_RUID(dossierId, referenceUid, false);
-			DossierFile dossierFile = null;
-			if (dossierFile != null) {
-				throw new DuplicateDossierFileException("dossierId= " + dossierId + "|referenceUid=" + referenceUid);
-			}
+//			DossierFile dossierFile = null;
+//			if (dossierFile != null) {
+//				throw new DuplicateDossierFileException("dossierId= " + dossierId + "|referenceUid=" + referenceUid);
+//			}
 		}
 	}
 
@@ -1160,6 +1168,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		try {
 			return dossierFilePersistence.findByDE_CODE(deliverableCode);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -1169,6 +1178,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		try {
 			return deliverableFinder.findFileTemplateNo(id, fileTemplateNo);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}

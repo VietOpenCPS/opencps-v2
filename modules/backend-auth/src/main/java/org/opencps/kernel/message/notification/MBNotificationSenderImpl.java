@@ -52,8 +52,8 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 						serviceContext[0]);
 				}
 				catch (Exception e) {
-					e.printStackTrace();
-					continue;
+					_log.info("++Not check log++"+e);
+//					continue;
 				}
 			}
 		}

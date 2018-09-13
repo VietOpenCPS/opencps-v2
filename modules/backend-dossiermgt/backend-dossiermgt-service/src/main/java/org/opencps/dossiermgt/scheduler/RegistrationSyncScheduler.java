@@ -190,7 +190,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
                                 
                             }
     				    } catch (NoSuchRegistrationException nsge) {
-    				        
+    				    	_log.error(nsge);
     				    }
 				    }
 				}
@@ -224,7 +224,8 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			}
 
 		} catch (JSONException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return lsServer;
@@ -266,6 +267,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			
 			
 		} catch (Exception e) {
+			_log.error(e);
 			throw new PortalException("RegistrationNotFound");
 		}
 
@@ -289,6 +291,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			params.put("removed", Boolean.valueOf(registrationForm.getRemoved()));
 			
 		} catch (Exception e) {
+			_log.error(e);
 			throw new PortalException("RegistrationFormNotFound");
 		}
 
@@ -308,6 +311,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 		}
 
 		return groupId;

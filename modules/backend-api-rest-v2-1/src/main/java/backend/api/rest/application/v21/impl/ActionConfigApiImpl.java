@@ -12,6 +12,8 @@ import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -24,7 +26,7 @@ import io.swagger.model.ActionConfigItem;
 import io.swagger.model.ActionConfigItemResult;
 
 public class ActionConfigApiImpl implements ActionConfigApi {
-
+	private static Log _log = LogFactoryUtil.getLog(ActionConfigApiImpl.class);
 	@Context
 	private User user;
 
@@ -44,7 +46,7 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		System.out.println("ActionConfigApiImpl.addActionConfig()" + body);
+//		System.out.println("ActionConfigApiImpl.addActionConfig()" + body);
 		try {
 			
 			serviceContext.setUserId(userId);
@@ -59,8 +61,10 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -78,8 +82,10 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 			action.deleteActionConfig(Long.valueOf(actionConfigId), serviceContext);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
@@ -92,7 +98,7 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 
 		try {
 
-			System.out.println("StepConfigApiImpl.updateStepConfig()"+serviceContext);
+//			System.out.println("StepConfigApiImpl.updateStepConfig()"+serviceContext);
 			
 			serviceContext.setUserId(userId);
 			
@@ -106,8 +112,10 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 

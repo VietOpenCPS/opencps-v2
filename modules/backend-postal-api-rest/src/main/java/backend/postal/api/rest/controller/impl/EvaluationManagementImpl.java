@@ -15,8 +15,6 @@ import org.opencps.api.evaluation.model.EvaluationInputModel;
 import org.opencps.api.evaluation.model.EvaluationModels;
 import org.opencps.api.evaluation.model.EvaluationResultDetailModel;
 import org.opencps.api.evaluation.model.EvaluationResultsModel;
-import org.opencps.auth.api.BackendAuth;
-import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 
@@ -46,7 +44,7 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			if(score.equals("")){
+			if("".equals(score)){
 				score = "0";
 			}
 			int number = Integer.parseInt(score);

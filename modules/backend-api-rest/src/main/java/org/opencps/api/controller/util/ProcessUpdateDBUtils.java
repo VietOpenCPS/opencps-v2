@@ -303,14 +303,14 @@ public class ProcessUpdateDBUtils {
 			if (paymentList != null && flagPayment) {
 				List<PaymentConfig> paymentConfigList = paymentList.getPaymentConfig();
 				if (paymentConfigList != null && paymentConfigList.size() > 0) {
-					String govAgencyCode = StringPool.BLANK;
-					String govAgencyName = StringPool.BLANK;
-					String govAgencyTaxNo = StringPool.BLANK;
-					String invoiceTemplateNo = StringPool.BLANK;
-					String invoiceIssueNo = StringPool.BLANK;
-					String invoiceLastNo = StringPool.BLANK;
-					String bankInfo = StringPool.BLANK;
-					String epaymentConfig = StringPool.BLANK;
+					String govAgencyCode;
+					String govAgencyName;
+					String govAgencyTaxNo;
+					String invoiceTemplateNo;
+					String invoiceIssueNo;
+					String invoiceLastNo;
+					String bankInfo;
+					String epaymentConfig;
 					for (PaymentConfig paymentConfig : paymentConfigList) {
 						govAgencyCode = paymentConfig.getGovAgencyCode();
 						govAgencyName = paymentConfig.getGovAgencyName();
@@ -341,16 +341,20 @@ public class ProcessUpdateDBUtils {
 
 		try {
 			//Delete all table ServerConfig
-			ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
+			List<org.opencps.communication.model.ServerConfig> configList = ServerConfigLocalServiceUtil
+					.getGroupId(groupId);
+			if (configList != null && configList.size() > 0) {
+				ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
+			}
 			//Update table ServerConfig
 			if (serverList != null) {
 				List<ServerConfig> serverConfigList = serverList.getServerConfig();
 				if (serverConfigList != null && serverConfigList.size() > 0) {
-					String govAgencyCode = StringPool.BLANK;
-					String serverNo = StringPool.BLANK;
-					String serverName = StringPool.BLANK;
-					String protocol = StringPool.BLANK;
-					String configs = StringPool.BLANK;
+					String govAgencyCode;
+					String serverNo;
+					String serverName;
+					String protocol;
+					String configs;
 					for (ServerConfig serverConfig : serverConfigList) {
 						govAgencyCode = serverConfig.getGovAgencyCode();
 						serverNo = serverConfig.getServerNo();
@@ -384,11 +388,11 @@ public class ProcessUpdateDBUtils {
 			if (notiTempList != null && flagTemp) {
 				List<NotificationTemplate> notiTemplateList = notiTempList.getNotificationTemplate();
 				if (notiTemplateList != null && notiTemplateList.size() > 0) {
-					String notificationType = StringPool.BLANK;
+					String notificationType;
 					Boolean sendEmail = false;
-					String emailSubject = StringPool.BLANK;
-					String emailBody = StringPool.BLANK;
-					String textMessage = StringPool.BLANK;
+					String emailSubject;
+					String emailBody;
+					String textMessage;
 					Boolean sendSMS = false;
 					Integer expireDuration = 0;
 					for (NotificationTemplate notiTemplate : notiTemplateList) {
@@ -450,16 +454,16 @@ public class ProcessUpdateDBUtils {
 			if (employeeList != null && employeeList.size() > 0) {
 				_log.info("employeeList size: "+employeeList.size());
 				EmployeeInterface actionEmployee = new EmployeeActions();
-				String employeeNo = StringPool.BLANK;
-				String fullname = StringPool.BLANK;
-				String title = StringPool.BLANK;
+				String employeeNo;
+				String fullname;
+				String title;
 				Integer gender = 0;
-				String birthdate = StringPool.BLANK;
-				String telNo = StringPool.BLANK;
-				String email = StringPool.BLANK;
+				String birthdate;
+				String telNo;
+				String email;
 				Integer workingStatus = 0;
-				String jobTitle = StringPool.BLANK;
-				String roles = StringPool.BLANK;
+				String jobTitle;
+				String roles;
 				for (Employee employee : employeeList) {
 					employeeNo = employee.getEmployeeNo();
 					fullname = employee.getFullname();
@@ -493,9 +497,9 @@ public class ProcessUpdateDBUtils {
 			List<JobPos> jobPosList = roles.getJobPos();
 			if (jobPosList != null && jobPosList.size() > 0) {
 				JobposInterface actionJob = new JobposActions();
-				String jobCode = StringPool.BLANK;
-				String title = StringPool.BLANK;
-				String description = StringPool.BLANK;
+				String jobCode;
+				String title;
+				String description;
 				for (JobPos jobPos : jobPosList) {
 					jobCode = jobPos.getCode();
 					title = jobPos.getTitle();
@@ -533,7 +537,7 @@ public class ProcessUpdateDBUtils {
 					if (!flagDict) {
 						return flagDict;
 					}
-					flagDict = processUpdateDictGroup(userId, groupId, dictCollectionId, dicts, actionCollection, serviceContext);
+					processUpdateDictGroup(userId, groupId, dictCollectionId, dicts, actionCollection, serviceContext);
 				}
 			}
 		} catch (Exception e) {
@@ -710,9 +714,9 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<FileTemplate> fileTempList = fileTemplate.getFileTemplate();
 			if (fileTempList != null && fileTempList.size() > 0 && flagTemplate) {
-				String fileTemplateNo = StringPool.BLANK;
-				String fileTemplateName = StringPool.BLANK;
-				String fileName = StringPool.BLANK;
+				String fileTemplateNo;
+				String fileTemplateName;
+				String fileName;
 				for (FileTemplate fileTemp : fileTempList) {
 					fileTemplateNo = fileTemp.getFileTemplateNo();
 					fileTemplateName = fileTemp.getTemplateName();
@@ -751,11 +755,11 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<ServiceConfig> configList = configs.getServiceConfig();
 			if (configList != null && configList.size() > 0 && flagConfig) {
-				String govAgencyCode = StringPool.BLANK;
-				String govAgencyName = StringPool.BLANK;
-				String serviceInstruction = StringPool.BLANK;
+				String govAgencyCode;
+				String govAgencyName;
+				String serviceInstruction;
 				Integer serviceLevel = 0;
-				String serviceUrl = StringPool.BLANK;
+				String serviceUrl;
 				boolean forCitizen = false;
 				boolean forBusiness = false;
 				boolean postalService = false;
@@ -800,17 +804,17 @@ public class ProcessUpdateDBUtils {
 			List<ProcessOption> optionList = process.getProcessOption();
 			if (optionList != null && optionList.size() > 0) {
 				_log.info("optionList: "+optionList.size());
-				String optionCode = StringPool.BLANK;
-				String optionName = StringPool.BLANK;
+				String optionCode;
+				String optionName;
 				Integer seqOrder = 0;
-				String autoSelect = StringPool.BLANK;
-				String instructionNote = StringPool.BLANK;
-				String submissionNote = StringPool.BLANK;
-				String templateNo = StringPool.BLANK;
-				String templateName = StringPool.BLANK;
-				String processNo = StringPool.BLANK;
-				String processName = StringPool.BLANK;
-				String registerBookCode = StringPool.BLANK;
+				String autoSelect;
+				String instructionNote;
+				String submissionNote;
+				String templateNo;
+				String templateName;
+				String processNo;
+				String processName;
+				String registerBookCode;
 				Integer sampleCount = 0;
 				for (ProcessOption option : optionList) {
 					optionCode = option.getOptionCode();
@@ -847,18 +851,18 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<DossierPart> dossierPartList = parts.getDossierPart();
 			if (dossierPartList != null && dossierPartList.size() > 0 && flagPart) {
-				String partNo = StringPool.BLANK;
-				String partName = StringPool.BLANK;
-				String partTip = StringPool.BLANK;
+				String partNo;
+				String partName;
+				String partTip;
 				Integer partType = 0;
 				boolean multiple = false;
 				boolean required = false;
 				boolean esign = false;
-				String fileTemplateNo = StringPool.BLANK;
-				String deliverableType = StringPool.BLANK;
+				String fileTemplateNo;
+				String deliverableType;
 				Integer deliverableAction = 0;
 				boolean eForm = false;
-				String sampleData = StringPool.BLANK;
+				String sampleData;
 				String formScript = StringPool.BLANK;
 				String formReport = StringPool.BLANK;
 				Integer fileMark = 0;
@@ -943,22 +947,22 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<ProcessAction> processActionList = actions.getProcessAction();
 			if (processActionList != null && processActionList.size() > 0 && flagProAction) {
-				String actionCode = StringPool.BLANK;
-				String actionName = StringPool.BLANK;
-				String preStepCode = StringPool.BLANK;
-				String postStepCode = StringPool.BLANK;
-				String autoEvent = StringPool.BLANK;
-				String preCondition = StringPool.BLANK;
-				int allowAssignUser = ProcessActionTerm.NOT_ASSIGNED;
+				String actionCode;
+				String actionName;
+				String preStepCode;
+				String postStepCode;
+				String autoEvent;
+				String preCondition;
+				int allowAssignUser;
 				long assignUserId = 0;
-				String assignUserName = StringPool.BLANK;
+				String assignUserName;
 				Integer requestPayment = 0;
-				String paymentFee = StringPool.BLANK;
-				String createDossierFiles = StringPool.BLANK;
-				String returnDossierFiles = StringPool.BLANK;
+				String paymentFee;
+				String createDossierFiles;
+				String returnDossierFiles;
 				boolean eSignature = false;
-				String signatureType = StringPool.BLANK;
-				String createDossiers = StringPool.BLANK;
+				String signatureType;
+				String createDossiers;
 				for (ProcessAction processAction : processActionList) {
 					actionCode = processAction.getActionCode();
 					actionName = processAction.getActionName();
@@ -999,10 +1003,10 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<ProcessRole> processRoleList = processRoles.getProcessRole();
 			if (processRoleList != null && processRoleList.size() > 0 && flagProRole) {
-				String roleCode = StringPool.BLANK;
-				String roleName = StringPool.BLANK;
+				String roleCode;
+				String roleName;
 				boolean moderator = false;
-				String condition = StringPool.BLANK;
+				String condition;
 				for (ProcessRole processRole : processRoleList) {
 					roleCode = processRole.getRoleCode();
 					roleName = processRole.getRoleName();
@@ -1033,17 +1037,17 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<ProcessStep> proStepList = steps.getProcessStep();
 			if (proStepList != null && proStepList.size() > 0 && flagStep) {
-				String stepCode = StringPool.BLANK;
-				String stepName = StringPool.BLANK;
-				String sequenceNo = StringPool.BLANK;
-				String groupName = StringPool.BLANK;
-				String dossierStatus = StringPool.BLANK;
-				String dossierSubStatus = StringPool.BLANK;
+				String stepCode;
+				String stepName;
+				String sequenceNo;
+				String groupName;
+				String dossierStatus;
+				String dossierSubStatus;
 //				Double durationCount = 0d;
-				String durationCount = StringPool.BLANK;
-				String instructionNote = StringPool.BLANK;
-				String briefNote = StringPool.BLANK;
-				String roleAsStep = StringPool.BLANK;
+				String durationCount;
+				String instructionNote;
+				String briefNote;
+				String roleAsStep;
 				Integer checkInput = 0;
 				for (ProcessStep step : proStepList) {
 					stepCode = step.getStepCode();
@@ -1103,9 +1107,9 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<ProcessSequence> sequenceList = sequences.getProcessSequence();
 			if (sequenceList != null && sequenceList.size() > 0 && flagSequence) {
-				String sequenceNo = StringPool.BLANK;
-				String sequenceName = StringPool.BLANK;
-				String sequenceRole = StringPool.BLANK;
+				String sequenceNo;
+				String sequenceName;
+				String sequenceRole;
 				Integer durationCount = 0;
 				for (ProcessSequence sequence : sequenceList) {
 					sequenceNo = sequence.getSequenceNo();
@@ -1132,10 +1136,10 @@ public class ProcessUpdateDBUtils {
 		try {
 			List<StepRole> stepRoleList = stepRoles.getStepRole();
 			if (stepRoleList != null && stepRoleList.size() > 0) {
-				String roleCode = StringPool.BLANK;
-				String roleName = StringPool.BLANK;
+				String roleCode;
+				String roleName;
 				boolean moderator = false;
-				String condition = StringPool.BLANK;
+				String condition;
 				for (StepRole stepRole : stepRoleList) {
 					roleCode = stepRole.getRoleCode();
 					roleName = stepRole.getRoleName();
@@ -1168,14 +1172,14 @@ public class ProcessUpdateDBUtils {
 				// Add list file serviceFileTemplate
 				List<DictItem> dictItemList = itemList.getDictItem();
 				if (dictItemList != null && dictItemList.size() > 0 && flagItem) {
-					String itemCode = StringPool.BLANK;
-					String itemName = StringPool.BLANK;
-					String itemNameEN = StringPool.BLANK;
-					String itemDescription = StringPool.BLANK;
-					String parent = StringPool.BLANK;
+					String itemCode;
+					String itemName;
+					String itemNameEN;
+					String itemDescription;
+					String parent;
 					Integer level = 0;
-					String sibling = StringPool.BLANK;
-					String metadata = StringPool.BLANK;
+					String sibling;
+					String metadata;
 					for (DictItem dictItem : dictItemList) {
 						itemCode = dictItem.getItemCode();
 						itemName = dictItem.getItemName();
@@ -1210,10 +1214,10 @@ public class ProcessUpdateDBUtils {
 				// Add list file serviceFileTemplate
 				List<DictGroup> dictGroupList = groupList.getDictGroup();
 				if (dictGroupList != null && dictGroupList.size() > 0 && flagGroup) {
-					String groupCode = StringPool.BLANK;
-					String groupName = StringPool.BLANK;
-					String groupNameEN = StringPool.BLANK;
-					String groupDescription = StringPool.BLANK;
+					String groupCode;
+					String groupName;
+					String groupNameEN;
+					String groupDescription;
 					for (DictGroup dictGroup : dictGroupList) {
 						groupCode = dictGroup.getGroupCode();
 						groupName = dictGroup.getGroupName();

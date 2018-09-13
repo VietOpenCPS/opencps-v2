@@ -25,6 +25,8 @@ import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
@@ -37,7 +39,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 public class PaymentConfigManagementImpl implements PaymentConfigManagement {
-
+	private static final Log _log = LogFactoryUtil.getLog(PaymentConfigManagementImpl.class);
 	@Override
 	public Response getPaymentConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, PaymentConfigSearchModel query) {
@@ -81,6 +83,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -166,6 +169,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -305,6 +309,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -442,6 +447,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");

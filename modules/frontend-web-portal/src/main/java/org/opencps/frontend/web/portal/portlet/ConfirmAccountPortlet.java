@@ -37,7 +37,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	"com.liferay.portlet.instanceable=true",
 	"javax.portlet.display-name=Confirm Account Portlet",
 	"javax.portlet.init-param.template-path=/",
-	"javax.portlet.init-param.view-template=/templates/applicant/confirm_account.ftl",
+	"javax.portlet.init-param.view-template=/templates/applicant_bvh/confirm_account.ftl",
 	"javax.portlet.name=" +
 		FrontendWebPortalPortletKeys.CONFIRM_ACCOUNT_PORTLET_NAME,
 	"javax.portlet.resource-bundle=content.Language",

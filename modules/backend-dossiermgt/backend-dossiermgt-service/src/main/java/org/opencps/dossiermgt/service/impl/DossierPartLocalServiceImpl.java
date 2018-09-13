@@ -25,6 +25,8 @@ import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.service.base.DossierPartLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -68,6 +70,7 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl {
+	private static Log _log = LogFactoryUtil.getLog(DossierPartLocalServiceImpl.class);
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -225,9 +228,8 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 			object.setESign(eSign);
 		}
 
-		dossierPartPersistence.update(object);
+		return dossierPartPersistence.update(object);
 
-		return object;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -303,9 +305,8 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		}
 
-		dossierPartPersistence.update(object);
+		return dossierPartPersistence.update(object);
 
-		return object;
 	}
 
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
@@ -572,6 +573,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		try {
 			return dossierPartPersistence.findByTP_NO_PART_ESIGN(templateNo, partNo, partType, eSign);
 		} catch (NoSuchDossierPartException e) {
+			_log.error(e);
 			return null;
 		}
 	}

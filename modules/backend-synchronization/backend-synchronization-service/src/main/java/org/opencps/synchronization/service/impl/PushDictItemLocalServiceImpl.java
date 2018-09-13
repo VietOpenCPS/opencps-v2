@@ -29,6 +29,8 @@ import org.opencps.synchronization.service.base.PushDictItemLocalServiceBaseImpl
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -56,7 +58,9 @@ public class PushDictItemLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.synchronization.service.PushDictItemLocalServiceUtil} to access the push dict item local service.
 	 */
-	
+
+	private static Log _log = LogFactoryUtil.getLog(PushDictItemLocalServiceImpl.class);
+
 	@Override
 	public PushDictItem addPushDictItem(
 			long userId, 
@@ -207,8 +211,10 @@ public class PushDictItemLocalServiceImpl
 			return pushDictItemPersistence.remove(pushDictItemId);
 
 		} catch (NoSuchPushDictItemException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
+		return null;
 	}
 	
 	@Override

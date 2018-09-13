@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
@@ -68,6 +67,7 @@ import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -76,11 +76,11 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.taglib.ui.JournalArticleTag;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
 import backend.auth.api.BackendAuthImpl;
@@ -369,7 +369,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				renderRequest.setAttribute("SERVICE_INFO", serviceInfo);
 			}
 			catch (Exception e) {
-
+				_log.error(e);
 			}
 		}
 
@@ -405,6 +405,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		renderRequest.setAttribute("sites", sites);
 		renderRequest.setAttribute("ajax", urlObject);
 		renderRequest.setAttribute("api", apiObject);
+		renderRequest.setAttribute("p_auth", AuthTokenUtil.getToken(PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest))));
 		renderRequest.setAttribute(
 			"applicantId", applicant == null ? "" : applicant.getApplicantId());
 
@@ -468,9 +469,11 @@ public class AdminPortlet extends FreeMarkerPortlet {
 					userId, groupId, notificationType, serviceContext);
 				JSONObject object = ObjectConverterUtil.objectToJSON(
 					notificationTemplate.getClass(), notificationTemplate);
-				Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
-				
-				object.put("typeName", initTemplates.get(notificationTemplate.getNotificationType()));
+				//Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+				//object.put("typeName", initTemplates.get(notificationTemplate.getNotificationType()));
+
+				object.put("typeName",
+						NotificationMGTConstants.getNotificationTemp(notificationTemplate.getNotificationType()));
 				renderRequest.setAttribute("notificationTemplate", object);
 
 			}
@@ -515,7 +518,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 				workingUnit =
 					WorkingUnitLocalServiceUtil.fetchWorkingUnit(workingUnitId);
 
-				JSONObject jsonWorkingUnit = JSONFactoryUtil.createJSONObject();
+				JSONObject jsonWorkingUnit;
 
 				jsonWorkingUnit = ObjectConverterUtil.objectToJSON(
 					workingUnit.getClass(), workingUnit);
@@ -635,9 +638,9 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 				if (Validator.isNotNull(dictItem)) {
 
-					dictItem = collectionActions.getDictItemByItemCode(
-						collectionCode, dictItem.getItemCode(), groupId,
-						serviceContext);
+//					dictItem = collectionActions.getDictItemByItemCode(
+//						collectionCode, dictItem.getItemCode(), groupId,
+//						serviceContext);
 
 				}
 
@@ -679,6 +682,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private String getListDictGroupByDictItem(
 		DictItem dictItem, ServiceContext serviceContext) {
 
@@ -699,7 +703,6 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		try {
 
 			// TODO template commented
-			// @SuppressWarnings("unchecked")
 			List<Document> listResults = (List<Document>) jsonData.get("data");
 
 			for (Document document : listResults) {
@@ -856,7 +859,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 						empjobpos.getEmployeeJobPosId() == employee.getMainJobPostId()
 							? true : false;
 
-					JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+					JSONObject jsonObject;
 
 					jsonObject = ObjectConverterUtil.objectToJSON(
 						empjobpos.getClass(), empjobpos);
@@ -893,6 +896,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 
 					}
 					catch (Exception e) {
+						_log.error(e);
 						continue;
 					}
 
@@ -1010,13 +1014,13 @@ public class AdminPortlet extends FreeMarkerPortlet {
 			}
 
 			if (Validator.isNotNull(dictItem)) {
-				dictItem = collectionActions.getDictItemByItemCode(
-					collectionCode, dictItem.getItemCode(), groupId,
-					serviceContext);
+//				dictItem = collectionActions.getDictItemByItemCode(
+//					collectionCode, dictItem.getItemCode(), groupId,
+//					serviceContext);
 			}
 		}
 		catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		params.put("dictCollection_groupCode", groupCode);
@@ -1591,7 +1595,7 @@ public class AdminPortlet extends FreeMarkerPortlet {
 		String title = ParamUtil.getString(actionRequest, "title");
 		String description = ParamUtil.getString(actionRequest, "description");
 		String permissions = ParamUtil.getString(actionRequest, "permissions");
-		String works = ParamUtil.getString(actionRequest, "works");
+		//String works = ParamUtil.getString(actionRequest, "works");
 
 		int leader = ParamUtil.getInteger(actionRequest, "leader");
 

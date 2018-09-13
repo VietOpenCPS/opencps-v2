@@ -168,18 +168,19 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 			throw new UnauthorizationException();
 		}
 
-		ResourceUser ResourceUser;
+		ResourceUser resourceUser = null;
 
 		try {
 
-			ResourceUser = resourceUserPersistence.remove(resourceUserId);
+			resourceUser = resourceUserPersistence.remove(resourceUserId);
 
 		} catch (NoSuchResourceUserException e) {
 			// TODO Auto-generated catch block
-			throw new NotFoundException();
+			//throw new NotFoundException();
+			_log.error(e);
 		}
 
-		return ResourceUser;
+		return resourceUser;
 
 	}
 

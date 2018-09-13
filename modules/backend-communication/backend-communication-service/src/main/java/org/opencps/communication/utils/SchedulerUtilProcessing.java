@@ -92,8 +92,7 @@ public class SchedulerUtilProcessing {
 										notificationQueue.getNotificationQueueId(), serviceContext);
 								System.out.println("SchedulerUtilProcessing.notificationByType(notificationQueue.getNotificationQueueId())"+notificationQueue.getNotificationQueueId());
 							} catch (NoSuchNotificationQueueException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								_log.error(e);
 							}
 						} else {
 							try {
@@ -101,8 +100,7 @@ public class SchedulerUtilProcessing {
 										notificationQueue.getNotificationQueueId(), serviceContext);
 								System.out.println("SchedulerUtilProcessing.notificationByType(notificationQueue.getNotificationQueueId(1))"+notificationQueue.getNotificationQueueId());
 							} catch (NoSuchNotificationQueueException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								_log.error(e);
 							}
 						}
 					}
@@ -110,8 +108,7 @@ public class SchedulerUtilProcessing {
 				}
 
 			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				_log.error(e1);
 			}
 
 		}

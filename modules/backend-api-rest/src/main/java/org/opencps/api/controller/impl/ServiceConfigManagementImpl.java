@@ -135,6 +135,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -406,6 +407,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -1099,6 +1101,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				return responseBuilder.build();
 
 			} catch (MessageBusException e) {
+				_log.error(e);
 				throw new Exception("Preview rendering not avariable");
 			}
 		} catch (Exception e) {
@@ -1189,7 +1192,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				}
 			}
 			results.put("total", total);
-			results.put("domains", domains);
+			results.put("data", domains);
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

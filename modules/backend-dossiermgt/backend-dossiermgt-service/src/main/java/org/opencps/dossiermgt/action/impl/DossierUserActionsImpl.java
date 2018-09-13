@@ -13,6 +13,8 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -20,7 +22,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierUserActionsImpl implements DossierUserActions {
-
+	private static final Log _log = LogFactoryUtil.getLog(DossierUserActionsImpl.class);
+	
 	@Override
 	public DossierUser addDossierUser(long groupId, long dossierId, long userId, int moderator, boolean visited) {
 		return DossierUserLocalServiceUtil.addDossierUser(groupId, dossierId, userId, moderator, visited);
@@ -31,7 +34,8 @@ public class DossierUserActionsImpl implements DossierUserActions {
 		try {
 			return DossierUserLocalServiceUtil.updateDossierUser(dossierId, userId, moderator, visited);
 		} catch (NoSuchDossierUserException e) {
-			e.printStackTrace();
+			_log.error(e);
+//			e.printStackTrace();
 		}
 		
 		return null;
@@ -42,7 +46,8 @@ public class DossierUserActionsImpl implements DossierUserActions {
 		try {
 			return DossierUserLocalServiceUtil.deleteDossierUser(dossierId, userId);
 		} catch (NoSuchDossierUserException e) {
-			e.printStackTrace();
+			_log.error(e);
+//			e.printStackTrace();
 		}
 		
 		return null;
@@ -98,7 +103,8 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			}
 			
 		} catch (PortalException e) {
-			e.printStackTrace();
+			_log.error(e);
+//			e.printStackTrace();
 		}
 	}
 

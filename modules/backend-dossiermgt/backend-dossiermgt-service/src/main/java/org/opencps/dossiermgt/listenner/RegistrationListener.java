@@ -40,7 +40,7 @@ public class RegistrationListener extends BaseModelListener<Registration> {
 		}
 	}
 
-	public static Registration modelBeforeUpdate;
+	public Registration modelBeforeUpdate;
 
 	private Log _log = LogFactoryUtil.getLog(RegistrationListener.class.getName());
 	

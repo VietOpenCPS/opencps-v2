@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class HashFunction {
 	private Log _log = LogFactoryUtil.getLog(HashFunction.class.getName());
@@ -47,10 +48,13 @@ public class HashFunction {
 			md5 = MessageDigest.getInstance("MD5");
 			ba = md5.digest(buf.toString().getBytes("UTF-8"));
 		} catch (Exception e) {
+			_log.error(e);
 		} // wont happen
 			// return buf.toString();
-		return hex(ba);
-
+		if (ba != null)
+			return hex(ba);
+		else
+			return StringPool.BLANK;
 	}
 
 	/**

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;

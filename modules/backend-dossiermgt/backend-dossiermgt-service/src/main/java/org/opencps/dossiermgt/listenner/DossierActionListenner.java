@@ -121,7 +121,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
 						} catch (Exception e) {
-
+							_log.error(e);
 						}
 
 						if (dossierFileId != 0) {
@@ -148,7 +148,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				
 				if (lstProcessSteps.size() > 0) {
 					JSONObject jsonDataStatusText = getStatusText(model.getGroupId(), DOSSIER_SATUS_DC_CODE, lstProcessSteps.get(0).getDossierStatus(), lstProcessSteps.get(0).getDossierSubStatus());
-					payload.put("dossierStatusText", jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()));					
+					payload.put("dossierStatusText", jsonDataStatusText != null ? jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()) : StringPool.BLANK);					
 				}
 				payload.put("jobPosName", jobPosName);
 				payload.put("stepName", model.getActionName());
@@ -184,7 +184,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				//_log.info("content: "+content);
 				if (ok) {
 					//_log.info("START Dossier Action11111");
-					DossierLog dossierLog = DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
+					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
 							serviceContext);
 					//_log.info("dossierLog: "+dossierLog);

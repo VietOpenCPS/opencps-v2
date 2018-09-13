@@ -4,13 +4,16 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HttpMethod;
 
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.AuthException;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.http.HttpAuthManagerUtil;
 import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifier;
@@ -25,11 +28,15 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auto.login.basic.auth.header.BasicAuthHeaderAutoLogin;
 
 @Component(immediate = true, property = {
-		"auth.verifier.OpenCPSAuthHeaderAuthVerifier.urls.includes=*"
+		"auth.verifier.OpenCPSAuthHeaderAuthVerifier.urls.includes=/o/rest/*"
 })
 
 public class OpenCPSAuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin
 implements AuthVerifier {
+	private static final String AUTHORIZATION_HEADER = "Authorization";
+//	private static final String TOKEN_HEADER = "X-CSRF-Token";
+	private static final String TOKEN_HEADER = "Token";
+	
 	@Override
 	protected String[] doLogin(
 		HttpServletRequest request, HttpServletResponse response)
@@ -39,50 +46,77 @@ implements AuthVerifier {
 		if (!isEnabled(companyId)) {
 			return null;
 		}
-
-		String authorization = request.getHeader("Authorization");
-
-		if (Validator.isNotNull(authorization)) {
-			String[] schemaData =
-				StringUtil.split(authorization, StringPool.SPACE);
-
-			if (schemaData == null || schemaData.length != 2) {
+		String token = request.getHeader(TOKEN_HEADER);
+		String[] credentials = new String[3];
+		if (Validator.isNotNull(token)) {
+			String authToken = AuthTokenUtil.getToken(PortalUtil.getOriginalServletRequest(request));
+			if (authToken == null || (authToken != null && !authToken.equals(token))) {
 				return null;
 			}
+				
+			User u = PortalUtil.getUser(request);
+			if (u != null) {
+				credentials[0] = String.valueOf(u.getUserId());
+				credentials[2] = Boolean.TRUE.toString();				
+			}
 		}
-
-		HttpAuthorizationHeader httpAuthorizationHeader =
-			HttpAuthManagerUtil.parse(request);
-
-		if (httpAuthorizationHeader == null) {
-			return null;
+		else {
+			String authorization = request.getHeader(AUTHORIZATION_HEADER);
+	
+			if (Validator.isNotNull(authorization)) {
+				String[] schemaData =
+					StringUtil.split(authorization, StringPool.SPACE);
+	
+				if (schemaData == null || schemaData.length != 2) {
+					return null;
+				}
+	
+				HttpAuthorizationHeader httpAuthorizationHeader =
+					HttpAuthManagerUtil.parse(request);
+		
+				if (httpAuthorizationHeader == null) {
+					return null;
+				}
+		
+				String scheme = httpAuthorizationHeader.getScheme();
+		
+				// We only handle HTTP Basic authentication
+		
+				if (!StringUtil.equalsIgnoreCase(
+					scheme, HttpAuthorizationHeader.SCHEME_BASIC)) {
+		
+					return null;
+				}
+		
+				long userId =
+					HttpAuthManagerUtil.getUserId(request, httpAuthorizationHeader);
+		
+				if (userId <= 0) {
+					throw new AuthException();
+				}
+		
+		
+				credentials[0] = String.valueOf(userId);
+				credentials[1] = httpAuthorizationHeader.getAuthParameter(
+					HttpAuthorizationHeader.AUTH_PARAMETER_NAME_PASSWORD);
+		
+				credentials[2] = Boolean.TRUE.toString();
+			}
+			else {
+				//Check if GET method
+				if (request.getMethod().equals(HttpMethod.GET)) {
+					User u = PortalUtil.getUser(request);
+					if (u != null) {
+						credentials[0] = String.valueOf(u.getUserId());
+						credentials[2] = Boolean.TRUE.toString();				
+					}					
+				}
+				else {
+					return null;
+				}
+			}
 		}
-
-		String scheme = httpAuthorizationHeader.getScheme();
-
-		// We only handle HTTP Basic authentication
-
-		if (!StringUtil.equalsIgnoreCase(
-			scheme, HttpAuthorizationHeader.SCHEME_BASIC)) {
-
-			return null;
-		}
-
-		long userId =
-			HttpAuthManagerUtil.getUserId(request, httpAuthorizationHeader);
-
-		if (userId <= 0) {
-			throw new AuthException();
-		}
-
-		String[] credentials = new String[3];
-
-		credentials[0] = String.valueOf(userId);
-		credentials[1] = httpAuthorizationHeader.getAuthParameter(
-			HttpAuthorizationHeader.AUTH_PARAMETER_NAME_PASSWORD);
-
-		credentials[2] = Boolean.TRUE.toString();
-
+		
 		return credentials;
 
 	}
@@ -134,6 +168,10 @@ implements AuthVerifier {
 
 					authVerifierResult.setState(
 						AuthVerifierResult.State.INVALID_CREDENTIALS);
+				}
+				else {
+					authVerifierResult.setState(
+							AuthVerifierResult.State.INVALID_CREDENTIALS);
 				}
 			}
 

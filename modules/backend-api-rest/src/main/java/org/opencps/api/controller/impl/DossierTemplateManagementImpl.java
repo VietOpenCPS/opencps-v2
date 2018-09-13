@@ -88,6 +88,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -171,6 +172,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			try {
 				dossierTemplate = actions.getDossierTemplate(dossierTemplateId);
 			} catch (Exception e) {
+				_log.error(e);
 				dossierTemplate = actions.getDossierTemplate(groupId, id);
 			}
 
@@ -183,6 +185,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -219,7 +222,8 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
@@ -323,7 +327,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
-			String templateNo = StringPool.BLANK;
+			String templateNo;
 
 			if (id != 0) {
 				DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(id);
@@ -380,6 +384,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -410,7 +415,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(id);
 
-			DossierPartInputModel result = new DossierPartInputModel();
+			DossierPartInputModel result;
 
 /*			DossierPart dossierPart = actions.updateDossierPart(groupId, 0l, dossierTemplate.getTemplateNo(),
 					query.getPartNo(), query.getPartName(), query.getPartTip(), query.getPartType(),
@@ -425,6 +430,11 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
 					GetterUtil.getBoolean(query.getEsign()), query.getTypeCode(), query.getDeliverableAction(),
 					serviceContext);
+
+			if (dossierPart != null) {
+				dossierPart.setEForm(GetterUtil.getBoolean(query.geteForm()));
+				DossierPartLocalServiceUtil.updateDossierPart(dossierPart);
+			}
 			
 			result = DossierTemplateUtils.mappingForPartPOST(dossierPart);
 
@@ -477,7 +487,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 //				throw new UnauthorizationException();
 //			}
 
-			DossierPartInputModel result = new DossierPartInputModel();
+			DossierPartInputModel result;
 
 			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(id);
 
@@ -496,6 +506,11 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
 					GetterUtil.getBoolean(query.getEsign()), query.getTypeCode(), query.getDeliverableAction(),
 					serviceContext);
+
+			if (dossierPart != null) {
+				dossierPart.setEForm(GetterUtil.getBoolean(query.geteForm()));
+				DossierPartLocalServiceUtil.updateDossierPart(dossierPart);
+			}
 
 			result = DossierTemplateUtils.mappingForPartPOST(dossierPart);
 
@@ -548,7 +563,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 //				throw new UnauthorizationException();
 //			}
 
-			DossierPartInputModel result = new DossierPartInputModel();
+			DossierPartInputModel result;
 
 			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(id);
 
@@ -652,6 +667,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -683,6 +699,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");

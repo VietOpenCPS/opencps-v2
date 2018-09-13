@@ -145,33 +145,34 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	public void copyFile(String orgFileName, String targetFileName) throws IOException {
 		// TODO Auto-generated method stub
 		InputStream inStream = null;
-		OutputStream outStream = null;
 
 		try {
-		File afile = new File(orgFileName);
-		File bfile = new File(targetFileName);
-		if (!bfile.exists()) {
-			bfile.createNewFile();
-		}
-		inStream = new FileInputStream(afile);
-		outStream = new FileOutputStream(bfile);
-
-		byte[] buffer = new byte[1024];
-
-			int length = 0;
-		// copy the file content in bytes
-		while ((length = inStream.read(buffer)) > 0) {
-
-			outStream.write(buffer, 0, length);
-
-		}
+			File afile = new File(orgFileName);
+			File bfile = new File(targetFileName);
+			if (!bfile.exists()) {
+				bfile.createNewFile();
+			}
+			inStream = new FileInputStream(afile);
+			try (OutputStream outStream = new FileOutputStream(bfile)) {
+	
+			byte[] buffer = new byte[1024];
+	
+				int length = 0;
+			// copy the file content in bytes
+			while ((length = inStream.read(buffer)) > 0) {
+	
+				outStream.write(buffer, 0, length);
+	
+			}
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.info(e);
 		} finally{
-		inStream.close();
-		outStream.close();
+			if (inStream != null) 
+				inStream.close();
 		}
-		_log.info("Create file " + targetFileName + " success");
+//		_log.info("Create file " + targetFileName + " success");
 	}
 
 	@Override
@@ -192,7 +193,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		fos = new FileOutputStream(zipDirName);
 		zos = new ZipOutputStream(fos);
 			ZipEntry ze = null;
-			FileInputStream fis = null;
 			try {
 		for (String filePath : filesListInDir) {
 //					System.out.println("Zipping " + filePath);
@@ -201,24 +201,30 @@ public class DossierFileActionsImpl implements DossierFileActions {
 					ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
 			zos.putNextEntry(ze);
 			// read the file and write to ZipOutputStream
-					fis = new FileInputStream(filePath);
+					try (FileInputStream fis = new FileInputStream(filePath)) {
 			byte[] buffer = new byte[1024];
 					int len = 0;
 			while ((len = fis.read(buffer)) > 0) {
 				zos.write(buffer, 0, len);
 			}
 				}
+		}
 			} catch (Exception e) {
 				// TODO: handle exception
-			} finally{
-			zos.closeEntry();
-			fis.close();
-		}
+				_log.error(e);
+			} 
+			finally{
+				if (zos != null)
+					zos.closeEntry();
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 		} finally{
-		zos.close();
-		fos.close();
+			if (zos != null)
+				zos.close();
+			if (fos != null)
+				fos.close();
 		}
 		
 		_log.info("Zip file Successfull");
@@ -315,11 +321,11 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 	@Override
 	public void uploadFileEntry(String name, InputStream inputStream, ServiceContext serviceContext) {
-		long userId = serviceContext.getUserId();
+//		long userId = serviceContext.getUserId();
 
 //		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
 
-		long fileEntryId = 0;
+//		long fileEntryId = 0;
 
 		try {
 //			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, dossierFile.getFileEntryId(),

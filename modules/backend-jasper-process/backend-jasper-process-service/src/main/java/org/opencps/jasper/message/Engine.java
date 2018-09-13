@@ -43,13 +43,12 @@ public class Engine implements MessageListener {
 
 			String className = msgData.getString("className");
 
-			if (className.equals("org.opencps.dossiermgt.model.DossierFile")) {
+			if ("org.opencps.dossiermgt.model.DossierFile".equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
 				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					_log.error(e1);
 				}
 	
 				String fileExport = JRReportUtil.createReportFile(msgData.getString("jrxmlTemplate"),
@@ -69,13 +68,12 @@ public class Engine implements MessageListener {
 					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
 				}				
 			}
-			else if (className.equals("org.opencps.dossiermgt.Deliverable")) {
+			else if ("org.opencps.dossiermgt.Deliverable".equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
 				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					_log.error(e1);
 				}
 
 				String fileExport = JRReportUtil.createReportFile(msgData.getString("jrxmlTemplate"),
@@ -95,13 +93,12 @@ public class Engine implements MessageListener {
 					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
 				}								
 			}
-			else if (className.equals("org.opencps.dossiermgt.model.DossierDocument")) {
+			else if ("org.opencps.dossiermgt.model.DossierDocument".equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
 				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					_log.error(e1);
 				}
 
 				String fileExport = JRReportUtil.createReportFile(msgData.getString("jrxmlTemplate"),
@@ -122,8 +119,7 @@ public class Engine implements MessageListener {
 				}												
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 	}

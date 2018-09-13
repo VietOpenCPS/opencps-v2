@@ -32,6 +32,8 @@ import org.opencps.synchronization.service.base.DictGroupTempLocalServiceBaseImp
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -96,6 +98,9 @@ public class DictGroupTempLocalServiceImpl
 	 * @throws UnauthorizationException
 	 * @throws NoSuchUserException
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(DictGroupTempLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public DictGroupTemp addDictGroupTemp(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
@@ -211,8 +216,8 @@ public class DictGroupTempLocalServiceImpl
 			}
 
 		} catch (NoSuchDictGroupTempException e) {
-
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 
 		}
 

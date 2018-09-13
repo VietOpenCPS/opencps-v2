@@ -36,4 +36,7 @@ Export-Package: \
 	org.python.core,\
 	org.python.util,\
 	org.zeroturnaround.javarebel,\
+	com.liferay.portal.security.auto.login.basic.auth.header,\
+	com.liferay.portal.security.auto.login.basic.auth.header.module.configuration,\
+	
 	

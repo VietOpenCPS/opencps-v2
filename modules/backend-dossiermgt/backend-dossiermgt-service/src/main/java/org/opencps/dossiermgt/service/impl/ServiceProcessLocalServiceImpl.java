@@ -14,8 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -24,14 +22,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.exception.DuplicateProcessNameException;
 import org.opencps.dossiermgt.exception.DuplicateProcessNoException;
 import org.opencps.dossiermgt.exception.HasChildrenException;
-import org.opencps.dossiermgt.exception.NoSuchServiceProcessException;
 import org.opencps.dossiermgt.exception.RequiredDossierNoPatternException;
 import org.opencps.dossiermgt.exception.RequiredDueDatePatternException;
 import org.opencps.dossiermgt.exception.RequiredProcessNameException;
@@ -50,7 +45,6 @@ import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -166,7 +160,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		try {
 			indexer.reindex(cloneServiceProcess);
 		} catch (SearchException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			_log.error(se);
 		}
 
 		Indexer<ProcessStep> stepindexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
@@ -209,7 +204,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			try {
 				stepindexer.reindex(cloneStep);
 			} catch (SearchException se) {
-				se.printStackTrace();
+//				se.printStackTrace();
+				_log.error(se);
 			}
 
 			
@@ -261,7 +257,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			try {
 				actionindexer.reindex(cloneaction);
 			} catch (SearchException se) {
-				se.printStackTrace();
+//				se.printStackTrace();
+				_log.error(se);
 			}
 
 		}
@@ -313,7 +310,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			try {
 				indexer.reindex(object);
 			} catch (SearchException se) {
-				se.printStackTrace();
+//				se.printStackTrace();
+				_log.error(se);
 			}
 
 			Indexer<ProcessStep> stepindexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
@@ -351,7 +349,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 				try {
 					stepindexer.reindex(step);
 				} catch (SearchException se) {
-					se.printStackTrace();
+//					se.printStackTrace();
+					_log.error(se);
 				}
 
 
@@ -366,7 +365,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 				try {
 					input.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
+					_log.error(e);
 				}
 			}
 		}

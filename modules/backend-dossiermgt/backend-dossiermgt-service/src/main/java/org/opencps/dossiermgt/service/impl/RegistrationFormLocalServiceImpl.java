@@ -824,10 +824,12 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				}
 
 			} catch (Exception e) {
+				_log.error(e);
 				try {
 					throw new Exception();
 				} catch (Exception e1) {
-					e1.printStackTrace();
+//					e1.printStackTrace();
+					_log.error(e1);
 				}
 			} finally {
 				this.setOccurs(occurs);
@@ -950,11 +952,11 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		if (conditions != null && conditions.length > 0) {
 			for (int c = 0; c < conditions.length; c++) {
-				if (conditions[c].equalsIgnoreCase("and")) {
+				if ("and".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST);
-				} else if (conditions[c].equalsIgnoreCase("or")) {
+				} else if ("or".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.SHOULD);
-				} else if (conditions[c].equalsIgnoreCase("not")) {
+				} else if ("not".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST_NOT);
 				}
 			}

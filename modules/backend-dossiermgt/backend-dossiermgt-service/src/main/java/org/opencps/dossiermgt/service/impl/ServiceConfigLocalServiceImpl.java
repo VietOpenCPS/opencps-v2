@@ -22,9 +22,7 @@ import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
-import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
 import org.opencps.dossiermgt.exception.ServiceLevelException;
@@ -38,6 +36,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -88,6 +88,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	 * org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil} to access
 	 * the service config local service.
 	 */
+	private Log _log = LogFactoryUtil.getLog(ServiceConfigLocalServiceImpl.class);
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceConfig removeServiceConfigById(long serviceConfigId) throws PortalException {
 
@@ -227,6 +228,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
 
 		} catch (Exception e) {
+			_log.error(e);
 			throw new RequiredServiceCodeException("RequiredServiceCodeException");
 		}
 

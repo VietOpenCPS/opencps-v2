@@ -1,20 +1,15 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
-import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -29,7 +24,6 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -105,7 +99,7 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 			// TODO Auto-generated catch block
 			_log.info("boom boom");
 			_log.info(e);
-			e.printStackTrace();
+//			e.printStackTrace();
 			throw new PortalException();
 		}
 
@@ -242,7 +236,7 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 
 		if (!isSync) {
 		// Add PaymentFileSync
-		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
+//		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
 		// TODO review serverNo on this
 //		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(),
 //				dossier.getReferenceUid(), false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(),

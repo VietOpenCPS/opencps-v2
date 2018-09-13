@@ -11,4 +11,3 @@ Export-Package: \
 	org.apache.commons.lang3.mutable,\
 	org.apache.commons.lang3.reflect,\
 	org.apache.commons.lang3.*,\
-	

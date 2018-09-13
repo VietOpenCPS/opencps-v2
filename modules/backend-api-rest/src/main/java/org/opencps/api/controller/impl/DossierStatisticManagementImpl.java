@@ -126,6 +126,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");

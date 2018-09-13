@@ -74,7 +74,7 @@ public class UserManagementImpl implements UserManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-//			_log.error(e);
+			_log.error(e);
 
 			ErrorMsg error = new ErrorMsg();
 			error.setMessage("file not found!");
@@ -148,7 +148,8 @@ public class UserManagementImpl implements UserManagement {
 
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null)
+					inputStream.close();
 			} catch (IOException e) {
 				_log.error(e);
 			}
@@ -647,7 +648,8 @@ public class UserManagementImpl implements UserManagement {
 
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null)
+					inputStream.close();
 			} catch (IOException e) {
 				_log.error(e);
 			}
@@ -659,7 +661,7 @@ public class UserManagementImpl implements UserManagement {
 			User user, ServiceContext serviceContext, long id, Attachment attachment, String fileName, String fileType,
 			long fileSize) {
 
-		UserInterface actions = new UserActions();
+//		UserInterface actions = new UserActions();
 		InputStream inputStream = null;
 
 		DataHandler dataHandler = attachment.getDataHandler();
@@ -680,17 +682,17 @@ public class UserManagementImpl implements UserManagement {
 			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
 			File targetFile = new File(buildFileName);
 
-			FileOutputStream outStream = new FileOutputStream(targetFile);
+			try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
 
-			int bytesRead = -1;
-			byte[] buffer = new byte[4096];
-			while ((bytesRead = inputStream.read(buffer)) != -1) {
-				outStream.write(buffer, 0, bytesRead);
+				int bytesRead = -1;
+				byte[] buffer = new byte[4096];
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+	
+				outStream.close();
+				inputStream.close();
 			}
-
-			outStream.close();
-			inputStream.close();
-
 			return Response.status(200).entity(buildFileName).build();
 
 		} catch (Exception e) {
@@ -729,7 +731,8 @@ public class UserManagementImpl implements UserManagement {
 
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null)
+					inputStream.close();
 			} catch (IOException e) {
 				_log.error(e);
 			}
@@ -741,7 +744,7 @@ public class UserManagementImpl implements UserManagement {
 	public Response getUserEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
 
-		UserInterface actions = new UserActions();
+//		UserInterface actions = new UserActions();
 
 		// HARD CODE groupId = 55301
 

@@ -25,6 +25,8 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -347,6 +349,7 @@ public class ServiceProcessUtils {
 			roleName = role.getName();
 
 		} catch (Exception e) {
+			_log.error(e);
 		}
 		return roleName;
 	}
@@ -358,4 +361,5 @@ public class ServiceProcessUtils {
 
 		return statusText;
 	}
+	private static Log _log = LogFactoryUtil.getLog(ServiceProcessUtils.class);
 }

@@ -2,10 +2,7 @@ package backend.postal.api.rest.controller.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,7 +26,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.postal.api.rest.controller.EInvoiceManagement;
 
@@ -129,8 +125,6 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 			message.saveChanges();
 			message.writeTo(System.out);
-			
-			
 
 			try {
 				// Create SOAP Connection
@@ -145,34 +139,35 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				soapResponse.writeTo(stream);
 				soapResponse.writeTo(System.out);
-				_log.info("");
+//				_log.info("");
 				results = new String(stream.toByteArray(), "utf-8");
 
 				soapConnection.close();
 			} catch (Exception e) {
-				System.err.println(
-						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
-				e.printStackTrace();
+//				System.err.println(
+//						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
+//				e.printStackTrace();
+				_log.error(e);
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			_log.error(e);
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			_log.error(e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return Response.status(200).entity(results).build();
 
 	}
 	
-	private String formatDate(String string, String formatType){
-		SimpleDateFormat sdf = new SimpleDateFormat(formatType);
-		if(Validator.isNull(string)){
-			Date now = new Date();
-			string = now.toString();
-		}
-		return sdf.format(string);
-	}
+//	private String formatDate(String string, String formatType){
+//		SimpleDateFormat sdf = new SimpleDateFormat(formatType);
+//		if(Validator.isNull(string)){
+//			Date now = new Date();
+//			string = now.toString();
+//		}
+//		return sdf.format(string);
+//	}
 }

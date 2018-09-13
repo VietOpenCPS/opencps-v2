@@ -295,7 +295,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(deliverableId) && !deliverableId.equalsIgnoreCase("0")) {
+		if (Validator.isNotNull(deliverableId) && !"0".equalsIgnoreCase(deliverableId)) {
 			MultiMatchQuery query = new MultiMatchQuery(deliverableId);
 
 			query.addFields(DeliverableTerm.DELIVERABLE_ID);
@@ -508,14 +508,16 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			object.setDeliverableState(String.valueOf(deliverableState));
 		} catch (Exception e) {
 			 //TODO
+			_log.error(e);
 		}
 		//TODO:????
-		try {
+//		try {
 //			DeliverableLog deliverableLog = deliverableLogPersistence.fi(groupId, id);
 			
-		} catch (Exception e) {
+//		} catch (Exception e) {
 			// TODO: handle exception
-		}
+//			_log.error(e);
+//		}
 		return deliverablePersistence.update(object);
 	}
 
@@ -815,12 +817,14 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 				}
 
 			} catch (Exception e) {
-				try {
-					throw new Exception();
-				} catch (Exception e1) {
+				_log.error(e);
+//				try {
+//					throw new Exception();
+//				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+//					e1.printStackTrace();
+//					_log.error(e1);
+//				}
 			} finally {
 				this.setOccurs(occurs);
 				this.setParams(params);
@@ -942,11 +946,11 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		if (conditions != null && conditions.length > 0) {
 			for (int c = 0; c < conditions.length; c++) {
-				if (conditions[c].equalsIgnoreCase("and")) {
+				if ("and".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST);
-				} else if (conditions[c].equalsIgnoreCase("or")) {
+				} else if ("or".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.SHOULD);
-				} else if (conditions[c].equalsIgnoreCase("not")) {
+				} else if ("not".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST_NOT);
 				}
 			}

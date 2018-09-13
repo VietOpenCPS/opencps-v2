@@ -6,5 +6,3 @@ Export-Package: \
 	opencps.statistic.common.webservice.exception,\
 	opencps.statistic.common.webservice.facade,\
 	opencps.statistic.common.webservice.*,\
-	
-	

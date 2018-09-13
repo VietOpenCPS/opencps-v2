@@ -121,7 +121,7 @@ public class StatisticApiImpl implements DossierStatisticApi{
 			}
 //			tt1.put("from", 0);
 //			tt1.put("size", 3);
-			_log.info("tt1: "+tt1.toString());
+//			_log.info("tt1: "+tt1.toString());
 			
 			//
 			String test11 = IOUtils.toString(classLoader.getResourceAsStream("Statistic.json"));
@@ -149,7 +149,7 @@ public class StatisticApiImpl implements DossierStatisticApi{
 //			_log.info("test: "+test);
 			JSONObject data = ElasticQueryWrapUtil.queryMultiple(sb1.toString(), Dossier.class.getName(), company.getCompanyId());
 			_log.info("data: "+data);
-			JSONArray resultData = data.getJSONObject("hits").getJSONArray("hits");
+//			JSONArray resultData = data.getJSONObject("hits").getJSONArray("hits");
 //			_log.info("resultData: "+resultData);
 			results = new DossierStatisticResultModel();
 

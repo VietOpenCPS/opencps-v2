@@ -425,6 +425,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			throw new NotFoundException("NotProcessActionFound");
 		}
 

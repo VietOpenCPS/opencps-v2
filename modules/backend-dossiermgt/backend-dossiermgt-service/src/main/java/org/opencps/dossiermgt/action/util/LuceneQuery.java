@@ -629,7 +629,7 @@ public class LuceneQuery {
 
 		List<Role> rolesUsers = new ArrayList<Role>();
 
-		List<Role> roleGroups = new ArrayList<Role>();
+		List<Role> roleGroups;
 
 		List<Role> resultRoles = new ArrayList<Role>();
 

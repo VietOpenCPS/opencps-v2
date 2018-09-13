@@ -13,6 +13,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import io.jsonwebtoken.Jwts;
 
 @Provider
@@ -21,7 +24,7 @@ import io.jsonwebtoken.Jwts;
 @Priority(Priorities.AUTHENTICATION)
 public class JWSOpenCPSTokenFilter implements ContainerRequestFilter  {
 	private KeyGenerator keyGenerator = new OpenCPSKeyGenerator();
-	
+	static Log _log = LogFactoryUtil.getLog(JWSOpenCPSTokenFilter.class);
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
@@ -40,6 +43,7 @@ public class JWSOpenCPSTokenFilter implements ContainerRequestFilter  {
             Jwts.parser().setSigningKey(key).parseClaimsJws(token);
  
         } catch (Exception e) {
+        	_log.error(e);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
     }

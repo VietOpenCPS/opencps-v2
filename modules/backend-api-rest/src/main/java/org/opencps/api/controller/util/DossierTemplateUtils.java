@@ -15,13 +15,15 @@ import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierTemplateUtils {
-
+	private static final Log _log = LogFactoryUtil.getLog(DossierTemplateUtils.class);
 	public static List<DossierTemplateDataModel> mappingToDossierTemplateList(List<Document> documents) {
 		List<DossierTemplateDataModel> outputs = new ArrayList<DossierTemplateDataModel>();
 
@@ -68,7 +70,7 @@ public class DossierTemplateUtils {
 
 		try {
 
-			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
+			List<DossierPart> dossierParts;
 
 			dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(dossierTemplate.getGroupId(),
 					dossierTemplate.getTemplateNo());
@@ -98,7 +100,7 @@ public class DossierTemplateUtils {
 			}
 
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		output.getDossierParts().addAll(inputs);
@@ -124,6 +126,7 @@ public class DossierTemplateUtils {
 			model.setFileTemplateNo(doc.get(DossierPartTerm.FILE_TEMPLATE_NO));
 			model.setTypeCode(doc.get(DossierPartTerm.DELIVERABLE_TYPE));
 			model.setDeliverableAction(GetterUtil.getInteger(doc.get(DossierPartTerm.DELIVERABLE_ACTION)));
+			model.seteForm(doc.get(DossierPartTerm.EFORM));
 			
 			boolean hasForm = false;
 
@@ -154,6 +157,7 @@ public class DossierTemplateUtils {
 		
 		output.setTypeCode(object.getDeliverableType());
 		output.setDeliverableAction(object.getDeliverableAction());
+		output.seteForm(Boolean.toString(object.getEForm()));
 
 		return output;
 	}

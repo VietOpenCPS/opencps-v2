@@ -25,6 +25,8 @@ import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -156,7 +158,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			try {
 				indexer.reindex(dossier);
 			} catch (SearchException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 			
 			
@@ -239,7 +242,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			try {
 				indexer.reindex(dossier);
 			} catch (SearchException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 			
 			
@@ -410,7 +414,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String secetKey = GetterUtil.getString(params.get("secetKey"));
+//		String secetKey = GetterUtil.getString(params.get("secetKey"));
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -487,4 +491,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public List<DossierAction> findDossierActionByDID_STEP(long dossierId, String fromStepCode) {
 		return dossierActionPersistence.findByDID_STEP(dossierId, fromStepCode);
 	}
+	
+	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }

@@ -60,6 +60,7 @@
 			</li>
 			
 			<div id ="_collectionSub_dictItem_listView"></div>
+			<div id="_collectionSub_dictItem_listView_pager" class="k-pager-wrap full-width-pager pull-right PR15 PB15"></div>
 
 		</ul>
 
@@ -157,7 +158,10 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			transport: {
 	
 				read: function(options) {
-					
+					var page = options.data.page;
+					var pageSize = options.data.pageSize;
+					var start = (page - 1) * pageSize;
+					var end = (page - 1) * pageSize + pageSize;
 					$.ajax({
 					
 						url: _collectionSub_dictItem_BaseUrl_detail,
@@ -168,7 +172,9 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 						},
 						data: {
 							
-							sort: 'sibling'
+							sort: 'sibling',
+							start: start,
+							end: end
 							
 						},
 						success: function(result) {
@@ -205,7 +211,7 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 							},
 							error: function(xhr, textStatus, errorThrown) {
 
-								_collectionSub_dictItem_dataSource_detail.dataSource.error();
+								options.error();
 								showMessageByAPICode(xhr.status);
 								
 							}
@@ -227,6 +233,10 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 					}
 				}
 			},
+			pageSize: 15,
+			serverPaging: true,
+			serverSorting: true,
+			serverFiltering: true,
 			schema: {
 				data: "data",
 				total: "total",
@@ -259,7 +269,13 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			}
 		});
 
-		var itemIndex = 0;
+		$("#_collectionSub_dictItem_listView_pager").kendoPager({
+			dataSource: _collectionSub_dictItem_dataSource_detail,
+			buttonCount: 5,
+			info: false
+		});
+
+		var localIndex = 0;
 		$("#_collectionSub_dictItem_listView").kendoListView({
 			remove: function(e) {
 				
@@ -268,15 +284,21 @@ function _collectionSub_dictItem_autocompleteSearch(val) {
 			dataSource: _collectionSub_dictItem_dataSource_detail,
 
 			template : function(data){
+				var _pageSize = _collectionSub_dictItem_dataSource_detail.pageSize();
 
-				itemIndex++ ;
+				localIndex++;
 
-				data.itemIndex = itemIndex;
+				var currentPage = $("#_collectionSub_dictItem_listView_pager").data("kendoPager").page();
+				var totalPage =  $("#_collectionSub_dictItem_listView_pager").data("kendoPager").totalPages();
+
+				var index = (currentPage-1)*_pageSize + localIndex;
+
+				data.itemIndex = index;
 
 				return kendo.template($("#_collectionSub_dictItem_template").html())(data);
 			},
 			dataBound : function(e){
-				itemIndex = 0;
+				localIndex = 0;
 			},
 			
 			filterable: {

@@ -1,9 +1,7 @@
 package org.opencps.datamgt.util;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -197,12 +195,10 @@ public class HolidayCheckUtils {
 //	}
 	
 	public static Date getEndDate(Date baseDate, String pattern) {
-		
-		Calendar estimateDate = null;
-		
+//		Calendar estimateDate = null;
 //		estimateDate = HolidayUtils.getEndDate(baseDate, pattern);
-		
-		return estimateDate.getTime();
+//		return estimateDate.getTime();
+		return null;
 	}
 
 }

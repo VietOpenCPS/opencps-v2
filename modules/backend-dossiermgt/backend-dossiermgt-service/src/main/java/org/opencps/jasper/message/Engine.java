@@ -65,7 +65,8 @@ public class Engine implements MessageListener {
 			
 		} catch (SearchException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	}
 	
@@ -81,14 +82,15 @@ public class Engine implements MessageListener {
 			long classPK = msgData.getLong("classPK");
 
 			String className = msgData.getString("className");
-
+			
 			String filePath = msgData.getString("filePath");
 
 			File file = new File(filePath);
 
 			_log.info("Engine._doReceiveJasperRequest()" + filePath);
+			Class<?> engineClass = Class.forName(className);
 			
-			if(className.equals(DossierFile.class.getName())) {
+			if(engineClass.isAssignableFrom(DossierFile.class)) {
 
     			DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(classPK);
     
@@ -111,7 +113,7 @@ public class Engine implements MessageListener {
     
     			indexer.reindex(dossierFile);
     
-			} else if(className.equals(RegistrationForm.class.getName())) {
+			} else if(engineClass.isAssignableFrom(RegistrationForm.class)) {
 			    RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.fetchRegistrationForm(classPK);
 			    
 			    if(registrationForm != null) {
@@ -133,10 +135,10 @@ public class Engine implements MessageListener {
 			        RegistrationFormLocalServiceUtil.updateRegistrationForm(registrationForm);
 			    }
 			}
-			else if (className.equals(Deliverable.class.getName())) {
+			else if (engineClass.isAssignableFrom(Deliverable.class)) {
 				
 			}
-			else if (className.equals(DossierDocument.class.getName())) {
+			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
 				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
 				
     			ServiceContext serviceContext = new ServiceContext();

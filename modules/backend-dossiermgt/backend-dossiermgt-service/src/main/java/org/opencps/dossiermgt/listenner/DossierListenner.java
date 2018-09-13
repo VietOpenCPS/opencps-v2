@@ -151,7 +151,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		}
 	}
 
-	public static Dossier modelBeforeUpdate;
+	public Dossier modelBeforeUpdate;
 
 	private Log _log = LogFactoryUtil.getLog(DossierListenner.class.getName());
 }

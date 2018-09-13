@@ -367,7 +367,7 @@ public class DataManagementUtils {
 					parentItem = DictItemLocalServiceUtil.fetchDictItem(dc.getParentItemId());
 				}
 				catch (Exception e) {
-					
+					_log.error(e);
 				}
 				model.setDictCollectionCode(collection.getCollectionCode());
 				model.setItemCode(dc.getItemCode());
@@ -377,7 +377,7 @@ public class DataManagementUtils {
 				model.setMetaData(dc.getMetaData());
 				model.setSibling(dc.getSibling());
 				model.setItemNameEN(dc.getItemNameEN());
-				if (Validator.isNotNull(parentItem)) {
+				if (parentItem != null) {
 					model.setParentItemCode(parentItem.getItemCode());					
 				}
 				model.setTreeIndex(dc.getTreeIndex());
@@ -392,7 +392,7 @@ public class DataManagementUtils {
 				results.add(model);
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 		}
 		return results;
@@ -423,7 +423,7 @@ public class DataManagementUtils {
 				results.add(model);
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 		}
 		return results;
@@ -452,7 +452,7 @@ public class DataManagementUtils {
 				results.add(model);
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 		}
 		return results;
@@ -466,6 +466,6 @@ public class DataManagementUtils {
 		model.setGroupNameEN(dictGroup.getGroupNameEN());
 		return model;
 	}
-	public static Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
+	public static final Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
 
 }

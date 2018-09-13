@@ -20,12 +20,16 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DossierMgtUtils {
+	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
+	
 	public static JSONObject convertDossierToJSON(Dossier dossier) {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		
@@ -84,6 +88,7 @@ public class DossierMgtUtils {
 				return obj.getBoolean(ProcessActionTerm.DUE_DATE_EDITABLE);
 			}
 		} catch (JSONException e) {
+			_log.error(e);
 			return false;
 		}
 		
@@ -122,7 +127,7 @@ public class DossierMgtUtils {
 		
 		for (String preCondition : preConditions) {
 			
-			preCondition.trim();
+			preCondition = preCondition.trim();
 			
 			switch (preCondition) {
 				case "payok":
@@ -275,6 +280,7 @@ public class DossierMgtUtils {
 				return false;
 			}
 		} catch (JSONException e) {
+			_log.error(e);
 //			e.printStackTrace();
 		}
 		
@@ -354,8 +360,8 @@ public class DossierMgtUtils {
 	}
 	
 	private static boolean checkWaiting(String preCondition, Dossier dossier) {
-		long dossierActionId = dossier.getDossierActionId();
-		DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//		long dossierActionId = dossier.getDossierActionId();
+//		DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 //		Date actionDate = action.getModifiedDate();
 		String[] waitingArr = StringUtil.split(preCondition);
 		if (waitingArr.length != 2) {

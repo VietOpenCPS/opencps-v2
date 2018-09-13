@@ -110,6 +110,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -204,6 +205,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -304,6 +306,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -340,6 +343,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -559,6 +563,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -726,6 +731,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -772,6 +778,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1014,6 +1021,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1044,7 +1052,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			}
 
 
-			ProcessActionReturnModel results = new ProcessActionReturnModel();
+			ProcessActionReturnModel results;
 
 /*			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
@@ -1106,7 +1114,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthorizationException("UnauthorizationException");
 			}
 
-			ProcessActionReturnModel results = new ProcessActionReturnModel();
+			ProcessActionReturnModel results;
 
 /*			ProcessAction processAction = actions.updateProcessAction(groupId, actionid, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
@@ -1135,7 +1143,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1165,7 +1174,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthorizationException("UnauthorizationException");
 			}
 
-			ProcessActionReturnModel results = new ProcessActionReturnModel();
+			ProcessActionReturnModel results;
 
 			ProcessAction processAction = actions.deleteProcessAction(actionid);
 
@@ -1174,6 +1183,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1211,6 +1221,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1245,6 +1256,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1290,6 +1302,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1322,6 +1335,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -1357,6 +1371,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 						
 			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");

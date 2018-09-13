@@ -1,7 +1,29 @@
 @import url(font-awesome.min.css);
 @import url(support-class.css);
 @import url(style-home.css);
-
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('../fonts/glyphicons-halflings-regular.eot');
+  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+.alpaca-field .button {
+	     box-shadow: none;
+    border: none;
+    margin: 0;
+}
+.alpaca-array-actionbar {
+	padding: 0;
+	    max-width: 100%;
+    text-align: center;
+}
+.alpaca-array-actionbar .button{
+    min-width: 32px;
+    background-color: transparent !important;
+    max-height: 32px;
+}
+.alpaca-field-tablerow input {
+	    height: 32px !important;
+}
 * {
 	margin: 0;
 	padding: 0;
@@ -257,6 +279,29 @@ body ul {
 }
 #footer .right {
 	text-align: right;
+	display: -webkit-box;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+	-webkit-justify-content: flex-end;
+    justify-content: flex-end;
+}
+#footer .right .hotline {
+	text-align: left;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 60px;
+    padding: 5px 25px 5px 10px;
+	margin-bottom: 5px;
+}
+#footer .right .hotline p {
+	color: white;
+    margin: 0;
+}
+#footer .right .hotline span {
+	display: block;
+    text-align: left;
+    font-size: 26px;
+    font-weight: bold;
 }
 #footer .right p {
 	margin-top: 5px;

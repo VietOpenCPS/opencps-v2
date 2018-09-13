@@ -155,13 +155,12 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 
-		try {
-
-			jobPosWork = jobPosWorkPersistence.remove(jobPosWorkId);
-
-		} catch (NoSuchJobPosWorkException e) {
-			throw new NotFoundException();
+		if (jobPosWork != null) {
+			jobPosWork = jobPosWorkPersistence.remove(jobPosWork);
+		} else {
+			return null;
 		}
+		
 
 		return jobPosWork;
 

@@ -184,7 +184,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -192,7 +192,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			DeliverableActions actions = new DeliverableActionsImpl();
-			DeliverableModel results = new DeliverableModel();
+			DeliverableModel results;
 
 			Deliverable deliverableInfo = actions.getDetailById(id);
 
@@ -205,6 +205,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -223,7 +224,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -232,7 +233,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 //			_log.info("groupId: "+groupId +"*keyword*: "+ id);
 			DeliverableActions actions = new DeliverableActionsImpl();
-			DeliverableModel results = new DeliverableModel();
+			DeliverableModel results;
 
 			Deliverable deliverableInfo = actions.deleteById(id);
 //			_log.info("deliverableInfo: "+ deliverableInfo);
@@ -245,6 +246,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -289,6 +291,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -322,6 +325,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -340,7 +344,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -348,7 +352,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			DeliverableActions actions = new DeliverableActionsImpl();
-			String results = StringPool.BLANK;
+			String results;
 
 			Deliverable deliverableInfo = actions.getDetailById(id);
 
@@ -361,6 +365,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -379,7 +384,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -387,7 +392,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			DeliverableActions actions = new DeliverableActionsImpl();
-			String results = StringPool.BLANK;
+			String results;
 
 			Deliverable deliverableInfo = actions.getDetailById(id);
 
@@ -400,6 +405,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -430,6 +436,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(log)).build();
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -470,6 +477,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -498,7 +506,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			
 			int startSearch = -1;
 			int endSearch = -1;
-			if (Validator.isNotNull(end) && !end.equals("0")) {
+			if (Validator.isNotNull(end) && !"0".equals(end)) {
 				startSearch = Integer.parseInt(start);
 				endSearch = Integer.parseInt(end);
 			}
@@ -555,6 +563,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");

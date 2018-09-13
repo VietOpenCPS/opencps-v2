@@ -1,6 +1,95 @@
 
-#navigation .nav.navbar-nav img {
-    width: 12px;
-    margin-right: 5px;
-    height: 12px;
+.alpaca-array-actionbar, .alpaca-array-actionbar.btn-group {
+    text-align: center;
+    padding: 0;
+}
+.alpaca-field .alpaca-array-actionbar button {
+    min-width: 32px;
+    margin: 0;
+    box-shadow: none !important;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+.alpaca-field .alpaca-array-actionbar button:hover {
+      color: #0072c0;
+}
+body .alpaca-field .row-fluid table td {
+	padding: 5px 15px !important;
+}
+
+body .alpaca-field .row-fluid table td.alpaca-container-item .alpaca-field-text:before,
+body .alpaca-field .row-fluid table td.alpaca-container-item .alpaca-field-date:before,
+body .alpaca-field .row-fluid table td.alpaca-container-item .alpaca-field-datetime:before {
+	border: 1px dashed #70706c;
+}
+
+body .alpaca-field .row-fluid table td.alpaca-container-item .alpaca-field-text:after,
+body .alpaca-field .row-fluid table td.alpaca-container-item .alpaca-field-date:after,
+body .alpaca-field .row-fluid table td.alpaca-container-item .alpaca-field-datetime:after {
+	    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #fdfdf7;
+}
+
+body .alpaca-field .row-fluid table td.alpaca-container-item input {
+    line-height: 40px;
+}
+body .alpaca-field .row-fluid table td.alpaca-container-item .alpaca-field-textarea textarea {
+	    min-height: 150px;
+    padding-top: 5px;
+}
+body .alpaca-field .row-fluid table td.alpaca-container-item {
+        padding: 0 15px !important;
+}
+body .alpaca-field table th {
+	    border: 1px solid #e5e5e6;
+}
+body .alpaca-field .alpaca-field-select {
+	    min-width: 120px;
+	    border-bottom: 1px dashed #70706c;
+}
+
+body .alpaca-field .alpaca-field-select select {
+	width: 100%;
+	display: block;
+	width: 100%;
+	padding: 2px 25px 2px 2px; 
+	border: none; 
+	background: url("https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-arrow-down-512.png") right center no-repeat; 
+	background-size: 16px 16px;
+	appearance: none; 
+	-webkit-appearance: none;
+	-moz-appearance: none; 
+}
+body .alpaca-field textarea {
+	    border: none;
+	    border-bottom: 1px dashed #70706c;
+}
+body .alpaca-field .alpaca-array-toolbar button {
+    margin: 0;
+    padding: 0 15px;
+    background-color: #2a62c8 !important;
+    color: #fff !important;
+    text-transform: unset;
+    height: 28px;
+}
+body .alpaca-field .alpaca-array-toolbar button i {
+	    margin-right: 6px;
+}
+body .alpaca-field * {
+	    font-family: 'Roboto', sans-serif;
+}
+body .alpaca-field .alpaca-control.checkbox {
+	    padding-left: 25px;
+}
+body .alpaca-field-radio {
+	        padding-left: 11px;
+}
+body .alpaca-field p {
+	    overflow: -webkit-paged-y;
 }
