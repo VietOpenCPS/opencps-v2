@@ -21,5 +21,4 @@ public class ServiceInfoTerm {
 	public static final String DOMAIN_INDEX = "domainIndex";
 	public static final String MAX_LEVEL = "maxLevel";
 	public static final String PUBLIC_ = "public";
-	
 }

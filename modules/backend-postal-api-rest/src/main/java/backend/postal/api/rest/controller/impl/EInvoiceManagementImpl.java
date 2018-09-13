@@ -3,6 +3,10 @@ package backend.postal.api.rest.controller.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -130,15 +134,31 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 			message.saveChanges();
 			message.writeTo(System.out);
 			
-			
-
 			try {
 				// Create SOAP Connection
 				SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 				SOAPConnection soapConnection = soapConnectionFactory.createConnection();
+				
+				//Set timeout to call soap 
+				URL endpoint = new URL (null, soapEndpointUrl, new URLStreamHandler() {
+	                protected URLConnection openConnection (URL url) throws IOException {
+	                    URL clone = new URL (url.toString ());
+	                    HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
+	                    connection.setRequestProperty("Content-Type",
+	                            "text/xml");
 
+	                    connection.setRequestProperty("Accept",
+	                            "application/soap+xml, text/*");
+
+	                    connection.setDoOutput(true);
+	                    connection.setConnectTimeout(3 * 1000);
+	                    connection.setReadTimeout(3 * 1000);
+	                    return connection;
+	                }
+	            });
+				
 				// Send SOAP Message to SOAP Server
-				SOAPMessage soapResponse = soapConnection.call(message, soapEndpointUrl);
+				SOAPMessage soapResponse = soapConnection.call(message, endpoint);
 
 				// Print the SOAP Response
 				_log.info("Response SOAP Message:");

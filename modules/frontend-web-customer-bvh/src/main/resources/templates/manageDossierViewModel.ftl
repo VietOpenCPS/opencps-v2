@@ -123,7 +123,10 @@
 					url:"${api.server}/serviceinfos",
 					dataType:"json",
 					type:"GET",
-					headers : {"groupId": ${groupId}}
+					headers : {"groupId": ${groupId}},
+					data:{
+						active: true
+					}
 				}
 			},
 			schema:{

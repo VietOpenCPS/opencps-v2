@@ -162,7 +162,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			
 
 			boolean autoPassword = false;
-			boolean autoScreenName = true;
+			boolean autoScreenName = false;
 			boolean sendEmail = false;
 
 			long[] groupIds = new long [] {groupId};
@@ -171,6 +171,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			long[] userGroupIds = null;
 
 			String screenName = null;
+			
+			String[] For_split_email = contactEmail.split("@");
+			screenName = For_split_email[0];
 
 			if (Validator.isNull(password)) {
 				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);

@@ -14,7 +14,7 @@
   </div>
   <div>
     <div class="col-xs-12 col-sm-6 MT20 MB20">
-      <a href="#"><p class="text-link">Gửi lại mã PIN?</p></a>
+      <a href="#"><p class="text-link" id="btn-resend-activeCode">Gửi lại mã PIN?</p></a>
     </div>
     <div class="col-xs-12 col-sm-6 MT20 MB20">
       <div class="pull-right">
@@ -60,6 +60,36 @@
             message: "Xẩy ra lỗi, vui lòng thử lại."
           }, "error");
         }
+      }
+    });
+  });
+
+  $("#btn-resend-activeCode").click(function(){
+    $.ajax({
+      url : "${api.server}/applicants/${active_user_id}/resendActivateCode",
+      dataType : "json",
+      type : "GET",
+      success : function(result){
+
+      },
+      error : function(xhr){
+
+      },
+      statusCode: {
+        200: function(result) {
+          console.log('Xác thực thành công');
+          console.log(result);
+          notification.show({
+            title: "Success",
+            message: "Yêu cầu thành công"
+          }, "success");
+        },
+        500: function(result) {
+          notification.show({
+            title: "Error",
+            message: "Xẩy ra lỗi, vui lòng thử lại."
+          }, "error");
+        },
       }
     });
   });

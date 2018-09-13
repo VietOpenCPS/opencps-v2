@@ -43,15 +43,11 @@
 					
 				<div class="col-sm-9 PL0">
 				
-					#if (typeName != "" && typeName != null) {#
-						<strong id="notificationTitle#:id#" title="#= typeName #" 
-							class="btn-block">#= typeName #
-						</strong>
-					#} else {#
+					
 						<strong id="notificationTitle#:id#" title="#= emailSubject #" 
 							class="btn-block">#= emailSubject #
 						</strong>
-					#}#
+					
 					
 					<span id="notificationMsg#:id#" class="btn-block">#= notificationType #</span>
 				
@@ -70,6 +66,13 @@
 	<div class="col-md-9 " id="_notification_right-page"> </div>
 
 </div>
+<!-- #if (typeName != "" && typeName != null) {#
+						<strong id="notificationTitle#:id#" title="#= typeName #" 
+							class="btn-block">#= typeName #
+						</strong>
+					#} else {# 
+				#}#
+			-->
 
 <input type="hidden" value="0" id="_notification_hidden_new_id"/>
 

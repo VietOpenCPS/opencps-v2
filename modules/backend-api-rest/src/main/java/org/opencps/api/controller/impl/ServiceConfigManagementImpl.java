@@ -101,6 +101,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ServiceConfigTerm.SERVICE_CODE, service);
 			params.put(ServiceConfigTerm.DOMAIN_CODE, domain);
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
+			params.put(ServiceConfigTerm.ACTIVE_, query.getActive());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
@@ -634,6 +635,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 						params.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
 						params.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
+						params.put(ServiceConfigTerm.ACTIVE_, query.getActive());
 
 						Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
 								Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
@@ -659,6 +661,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 								srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
 								srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
 								srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+								srvElm.put("active", doc.get(ServiceConfigTerm.ACTIVE_));
 
 								arrService.put(srvElm);
 							}
@@ -762,7 +765,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				paramsDomain.put(Field.GROUP_ID, String.valueOf(groupId));
 				paramsDomain.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
 				paramsDomain.put(Field.KEYWORD_SEARCH, query.getKeyword());
-
+				
+				
 				JSONObject domain = JSONFactoryUtil.createJSONObject();
 
 				long countDomain = ServiceConfigLocalServiceUtil.countLucene(paramsDomain, searchContext);
@@ -808,6 +812,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						paramsDomain.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceConfigTerm.SERVICE_CODE));
 						
 						paramsDomain.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
+						
+						paramsDomain.put(ServiceConfigTerm.ACTIVE_, query.getActive());
 //						_log.info("SERVICE_CODE: "+doc.get(ServiceConfigTerm.SERVICE_CODE));
 						
 						List<Document> serviceConfigByInfo = ServiceConfigLocalServiceUtil
@@ -822,6 +828,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 							configElm.put("serviceName", doc.get(ServiceConfigTerm.SERVICE_NAME));
 							configElm.put("level", serDoc.get(ServiceConfigTerm.SERVICE_LEVEL));
 							configElm.put("serviceConfigId", serDoc.get(Field.ENTRY_CLASS_PK));
+							configElm.put("active", serDoc.get(ServiceConfigTerm.ACTIVE_));
 							serviceConfigGroupByGov.put(configElm);
 						}
 						

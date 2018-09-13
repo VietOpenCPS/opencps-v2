@@ -171,6 +171,19 @@
 		</div>
 
 		<div class="row MT10">
+			<div class="col-xs-12 col-sm-12">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">Số thứ tự</div>
+				</div>
+				<div class="row MT5">
+					<div class="col-xs-12 col-sm-12">
+						<input class="form-control" type="text" name="sequenceNo" id="sequenceNo1" value="" data-bind="value: sequenceNo">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row MT10">
 			<div class="col-sm-12">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">

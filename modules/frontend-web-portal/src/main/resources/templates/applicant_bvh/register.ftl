@@ -183,7 +183,7 @@
       }
     });
 
-     var register = function(dataAuthen){
+     var register = function(){
       //var data = $('#fm').serialize();
 
       var applicantIdType = "";
@@ -210,7 +210,7 @@
         dataType : "json",
         headers: {
           "groupId": ${groupId},
-          'cps_auth': dataAuthen
+          // 'cps_auth': dataAuthen
         },
         success: function(result){
 
@@ -267,13 +267,13 @@
          }catch (e) {
           notification.show({
             title: "Error",
-            message: "Mật khẩu yếu!"
+            message: "Xin vui lòng thử lại!"
           }, "error");
          }
        }
      }
    });
-    }
+  }
   // ++++++++++++++++++ fix 27/12 congtrinh0209>
   $('input[type=radio][name=applicantIdType]').change(function() {
     if (this.value == 'citizen') {

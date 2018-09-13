@@ -54,10 +54,10 @@
 			$(".itemStatus").css("pointer-events","auto");
 		});*/
 
-		manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId){
+		manageDossier.route("/taohosomoi/chuanbihoso/(:dossierId)", function(dossierId, params){
 			$("#mainType1").hide();
 			$("#mainType2").show();
-			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId,function(result){
+			$("#mainType2").load("${ajax.customer_dossier_detail}&${portletNamespace}dossierId="+dossierId+"&${portletNamespace}postalService="+params.postalService,function(result){
 			});
 			$("#step3").removeClass("done");
 			$("#step2").addClass("done");

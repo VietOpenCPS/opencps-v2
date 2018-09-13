@@ -73,8 +73,18 @@ public class ServiceInfoSearchModel {
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;
+	@QueryParam(value = "active")
+	protected String active;
 
-    /**
+    public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
+	/**
      * Gets the value of the keyword property.
      * 
      * @return

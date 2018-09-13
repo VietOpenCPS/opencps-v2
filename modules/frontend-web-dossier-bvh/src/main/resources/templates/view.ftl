@@ -37,3 +37,11 @@
 		padding: 2px 5px;
 	}
 </style>
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function (event) {
+		var govAgencyCode = "${(govAgencyCode)!}";
+
+		funLoadVue(govAgencyCode);
+	});
+
+</script>
