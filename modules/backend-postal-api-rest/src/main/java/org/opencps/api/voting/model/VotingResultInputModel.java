@@ -38,7 +38,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "comment",
-    "selected"
+    "selected",
+    "email"
 })
 @XmlRootElement(name = "VotingResultInputModel")
 public class VotingResultInputModel {
@@ -47,6 +48,8 @@ public class VotingResultInputModel {
     protected String comment;
 	@FormParam(value = "selected")
     protected String selected;
+	@FormParam(value = "email")
+    protected String email;
 
     /**
      * Gets the value of the comment property.
@@ -95,5 +98,13 @@ public class VotingResultInputModel {
     public void setSelected(String value) {
         this.selected = value;
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 }
