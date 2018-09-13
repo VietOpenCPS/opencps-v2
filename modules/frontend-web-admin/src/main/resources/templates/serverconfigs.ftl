@@ -64,7 +64,14 @@
 							
 						},
 						success: function(result) {
-							options.success(result);
+							if (result.data) {
+								options.success(result);
+							} else {
+								options.success({
+									data: [],
+									total: 0
+								});
+							}
 							$("#serverconfigs_pager .k-link").css({"border-radius":"0","border-color":"#ddd","height":"27px","margin-right":"0px"})
 						}
 					});

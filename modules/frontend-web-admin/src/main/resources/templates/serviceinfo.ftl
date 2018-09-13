@@ -82,7 +82,14 @@
 					},
 					success: function(result) {
 						console.log(options.data);
-						options.success(result);
+						if (result.data) {
+							options.success(result);
+						} else {
+							options.success({
+								data: [],
+								total: 0
+							});
+						}
 					},
 					error: function(result) {
 						options.error(result);
