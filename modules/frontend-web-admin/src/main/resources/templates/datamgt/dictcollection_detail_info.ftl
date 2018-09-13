@@ -121,6 +121,25 @@
 		
 </div>
 
+<div class="row MB5">
+
+	<label class="col-sm-3">Trạng thái:</label>
+
+	<div class="col-sm-9">
+	
+		<label class="switch">
+			<#if (dictCollection_dictCollection.status)?? && dictCollection_dictCollection.status == 1>
+				<input type="checkbox" id="dictStatus" name="dictStatus" checked>
+			<#else>
+				<input type="checkbox" id="dictStatus" name="dictStatus">
+			</#if>
+			<span class="slider round"></span>
+		</label>
+
+	</div>
+		
+</div>
+
 <div class="row MT30">
 
 	<div class="col-xs-3 col-sm-3">
@@ -287,9 +306,92 @@
 
 </script>
 
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 22px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
 
 
 <script type="text/javascript">
+ $("#dictStatus").change(function (event) {
+ 	console.log('change-----');
+ 	var value = $(this).prop('checked');
+	var url = '';
+	if (value) {
+		url = '${api.endpoint}/dictcollections/' + $("#_collectionSub_code").text().trim() + '/active';
+	} else {
+		url = '${api.endpoint}/dictcollections/' + $("#_collectionSub_code").text().trim() + '/inactive';
+	}
+	$.ajax({
+		url: url,
+		dataType: "json",
+		type: 'PUT',
+		headers: {
+			"groupId": ${groupId}
+		},
+		data: {
+		},
+		success: function (result) {
+			$("#_collection_listView").getKendoListView().dataSource.read();
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			showMessageByAPICode(xhr.status);
+		}
+	})
+ })
 
 function _collectionSub_group_autocompleteSearch(val) {
 	
@@ -400,7 +502,8 @@ function _collectionSub_group_autocompleteSearch(val) {
 						groupCode: options.groupCode,
 						groupName: options.groupName,
 						groupNameEN: options.groupNameEN,
-						groupDescription: options.groupDescription
+						groupDescription: options.groupDescription,
+						status: options.status
 					},
 					type: 'PUT',
 					dataType: 'json',

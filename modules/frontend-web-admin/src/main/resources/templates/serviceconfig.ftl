@@ -87,7 +87,14 @@
 							order : true
 						},
 						success:function(result){
-							options.success(result);
+							if (result.data !== null && result.data !== undefined && result.data !== 'undefined') {
+								options.success(result);
+							} else {
+								options.success({
+									data: [],
+									total: 0
+								});
+							}
 						},
 						error:function(result){
 							options.error(result);

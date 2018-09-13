@@ -97,6 +97,12 @@
 		$(".input-choise-voting").val("");
 		$("#subject").val("");
 	}
+	function setValueAnswer (input, index) {
+		if (listChoises.length > 0) {
+			var value = $(input).val();
+			listChoises[index] = value;
+		}
+	}
 	function onChangeVoting(id) {
 		console.log('id------', id)
 		var item = $("#votingListView").getKendoListView().dataSource.get(id);
@@ -136,7 +142,7 @@
 		$("#listChoises").html("");
 		if (arr.length > 0) {
 			for (var i = 0; i < arr.length; i++) {
-				$("#listChoises").append('<div class="form-group item-choise" data-index="' + i + '"><label>Câu trả lời</label><input class="form-control input-choise-voting" style="width: 95%;" name="choice" value="' + arr[i] + '" /><i style="cursor: pointer;top: -22px;position:  relative; font-size: 15px;" onclick="deleteChoise(' + i + ')" class="fa fa-window-close pull-right" aria-hidden="true"></i></div>')
+				$("#listChoises").append('<div class="form-group item-choise" data-index="' + i + '"><label>Câu trả lời</label><input oninput="setValueAnswer(this, ' + i + ')" class="form-control input-choise-voting" style="width: 95%;" name="choice" value="' + arr[i] + '" /><i style="cursor: pointer;top: -22px;position:  relative; font-size: 15px;" onclick="deleteChoise(' + i + ')" class="fa fa-window-close pull-right" aria-hidden="true"></i></div>')
 			}
 		} else {
 			$("#listChoises").html("")

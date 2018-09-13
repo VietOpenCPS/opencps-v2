@@ -123,7 +123,10 @@
 					read: function(options) {
 						console.log("options");
 						console.log(options);
-						
+						if (!options.data.serviceProcessId) {
+							options.error();
+							return;
+						}
 						$.ajax({
 							url: "${api.server}" + "/serviceprocesses/" + options.data.serviceProcessId + "/steps",
 							type: "GET",
