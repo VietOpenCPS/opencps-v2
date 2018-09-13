@@ -526,8 +526,6 @@ public class DossierActionsImpl implements DossierActions {
 							serviceProcessId, stepCode);
 					for (ProcessAction processAction : lstProcessAction) {
 
-
-						
 						String[] preConditions = StringUtil.split(processAction.getPreCondition());
 
 						String createDossierFiles = processAction.getCreateDossierFiles();

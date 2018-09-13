@@ -963,10 +963,10 @@
 		<column name="eSignature" type="boolean"/>
 		<column name="configNote" type="String"/>
 		<column name="dossierTemplateNo" type="String"/>
+		<column name="sequenceNo" type="int"/>
 		
 		<order>
-			<order-column name="actionCode" case-sensitive="false"
-	order-by="asc" />
+			<order-column name="sequenceNo" order-by="asc" />
 		</order>
 		
 		<finder return-type="Collection" name="S_P_ID">

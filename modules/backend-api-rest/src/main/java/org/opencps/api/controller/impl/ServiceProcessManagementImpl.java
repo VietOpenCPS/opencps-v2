@@ -1034,20 +1034,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ProcessActionReturnModel results = new ProcessActionReturnModel();
 
-			/*
-			 * ProcessAction processAction =
-			 * actions.updateProcessAction(groupId, 0, id,
-			 * input.getPreStepCode(), input.getPostStepCode(),
-			 * input.getAutoEvent(), input.getPreCondition(),
-			 * input.getActionCode(), input.getActionName(),
-			 * GetterUtil.getBoolean(input.getAllowAssignUser()),
-			 * GetterUtil.getLong(input.getAssignUserId()),
-			 * GetterUtil.getBoolean(input.getRequestPayment()),
-			 * input.getPaymentFee(), input.getCreateDossierFiles(),
-			 * input.getReturnDossierFiles(), input.getMakeBriefNote(),
-			 * input.getSyncActionCode(),
-			 * GetterUtil.getBoolean(input.getRollbackable()), serviceContext);
-			 */
 			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
 					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
@@ -1055,7 +1041,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
 					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
-					input.getDossierTemplateNo(), serviceContext);
+					input.getDossierTemplateNo(), input.getSequenceNo(), serviceContext);
 
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
@@ -1115,7 +1101,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
 					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
-					input.getDossierTemplateNo(), serviceContext);
+					input.getDossierTemplateNo(), input.getSequenceNo(), serviceContext);
 
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 

@@ -84,7 +84,7 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 			file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			//_log.error(e);
 		}
 
 		return file;

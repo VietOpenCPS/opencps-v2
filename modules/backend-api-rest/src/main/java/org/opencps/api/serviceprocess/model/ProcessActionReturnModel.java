@@ -72,7 +72,8 @@ import javax.xml.bind.annotation.XmlType;
     "rollbackable",
     "createDossierNo",
     "eSignature",
-    "configNote"
+    "configNote",
+    "sequenceNo"
 })
 @XmlRootElement(name = "ProcessActionReturnModel")
 public class ProcessActionReturnModel {
@@ -97,7 +98,16 @@ public class ProcessActionReturnModel {
     protected boolean createDossierNo;
     protected boolean eSignature;
     protected String configNote;
+    public int getSequenceNo() {
+		return sequenceNo;
+	}
 
+	public void setSequenceNo(int sequenceNo) {
+		this.sequenceNo = sequenceNo;
+	}
+
+	protected int sequenceNo;
+    
     public String getConfigNote() {
 		return configNote;
 	}

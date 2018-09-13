@@ -76,7 +76,8 @@ import javax.xml.bind.annotation.XmlType;
     "createDossierNo",
     "eSignature",
     "configNote",
-    "dossierTemplateNo"
+    "dossierTemplateNo",
+    "sequenceNo"
 })
 public class ProcessActionDataModel {
 
@@ -104,6 +105,15 @@ public class ProcessActionDataModel {
     protected boolean eSignature;
     protected String configNote;
 	protected String dossierTemplateNo;
+	public int getSequenceNo() {
+		return sequenceNo;
+	}
+
+	public void setSequenceNo(int sequenceNo) {
+		this.sequenceNo = sequenceNo;
+	}
+
+	protected int sequenceNo;
 
 	public String getDossierTemplateNo() {
 		return dossierTemplateNo;
