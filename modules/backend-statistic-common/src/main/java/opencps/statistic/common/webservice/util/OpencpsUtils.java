@@ -138,10 +138,12 @@ public final class OpencpsUtils {
 				}
 			}
 		} catch (InstantiationException e) {
+			LOG.error("Error:", e);
 			if (isDebugEnabled) {
 				LOG.debug("Dropping InstantiationException", e.getMessage());
 			}
 		} catch (IllegalAccessException e) {
+			LOG.error("Error:", e);
 			if (isDebugEnabled) {
 				LOG.debug("Dropping IllegalAccessException", e.getMessage());
 			}
@@ -170,7 +172,9 @@ public final class OpencpsUtils {
             String contentFormatted = mapper.writeValueAsString(obj);
             logger.debug("REST request: \n {}", contentFormatted);
         } catch (JsonProcessingException e) {
-            logger.debug("Error printing REST request! {}", e);
+        	logger.error("Error:", e);
+//            logger.debug("Error printing REST request! {}", e);
         }
     }
+
 }

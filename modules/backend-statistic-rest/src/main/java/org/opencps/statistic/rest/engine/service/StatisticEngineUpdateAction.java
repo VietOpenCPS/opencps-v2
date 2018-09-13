@@ -2,14 +2,18 @@ package org.opencps.statistic.rest.engine.service;
 
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
-import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class StatisticEngineUpdateAction {
+
+	private static Log _log = LogFactoryUtil.getLog(StatisticEngineUpdateAction.class);
+
 	public OpencpsDossierStatistic updateStatistic(DossierStatisticData payload) {
 		if (Validator.isNull(payload.getDomainCode())) {
 			payload.setDomainCode((String) null);
@@ -28,8 +32,8 @@ public class StatisticEngineUpdateAction {
 			if (Validator.isNotNull(dossierStatistic)) {
 				dossierStatisticId = dossierStatistic.getDossierStatisticId();
 			}
-		} catch (Exception var7) {
-			;
+		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		byte pausingCount = 0;
@@ -47,8 +51,8 @@ public class StatisticEngineUpdateAction {
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
 					payload.getDomainName(), false, payload.getOnegateCount(), payload.getOutsideCount(),
 					payload.getInsideCount());
-		} catch (PortalException | SystemException var6) {
-			var6.printStackTrace();
+		} catch (PortalException | SystemException e) {
+			_log.error(e);
 			return null;
 		}
 	}

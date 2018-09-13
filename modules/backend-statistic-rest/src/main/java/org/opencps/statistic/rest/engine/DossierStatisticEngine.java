@@ -1,7 +1,5 @@
 package org.opencps.statistic.rest.engine;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,37 +74,56 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			LOG.info("START getDossierStatistic(): " + site.getGroupId());
 
-			GetDossierResponse dossierResponse = new GetDossierResponse();
+//			GetDossierResponse dossierResponse = new GetDossierResponse();
 			
 			GetDossierRequest payload = new GetDossierRequest();
 			
 			payload.setGroupId(site.getGroupId());
 			
-			dossierResponse = callDossierRestService.callRestService(payload);
-			
-			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
-			
-			dossierData.ifPresent(source -> {
-				
-				LOG.info("***** " + site.getGroupId() + source.size());
-				
-				if(source.size() > 0) {
-					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+			GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
+			if (dossierResponse != null) {
+				Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
+				dossierData.ifPresent(source -> {
 					
-					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+					LOG.info("***** " + site.getGroupId() + source.size());
+					
+					if(source.size() > 0) {
+						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+						
+						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-					engineFetch.fecthStatisticData(site.getGroupId(), statisticData, source);
+						engineFetch.fecthStatisticData(site.getGroupId(), statisticData, source);
+						
+						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+						
+						statisticEngineUpdate.updateStatisticData(statisticData);
+						
+					}
 					
-					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-					
-					statisticEngineUpdate.updateStatisticData(statisticData);
-					
-				}
-				
-			});
+				});
+			}
+//			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
+//			
+//			dossierData.ifPresent(source -> {
+//				
+//				LOG.info("***** " + site.getGroupId() + source.size());
+//				
+//				if(source.size() > 0) {
+//					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+//					
+//					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+//
+//					engineFetch.fecthStatisticData(site.getGroupId(), statisticData, source);
+//					
+//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+//					
+//					statisticEngineUpdate.updateStatisticData(statisticData);
+//					
+//				}
+//				
+//			});
 			
 			/* Update summary */
-			
 			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 			
 			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());

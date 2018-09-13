@@ -978,6 +978,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 							}
 							catch (DuplicateCategoryException e) {
+								_log.error(e);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
 							}
 						}
