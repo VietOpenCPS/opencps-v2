@@ -93,9 +93,16 @@
 
 <script>
 	var listChoises = [];
+	var employeeClassPk = '';
 	function clearInputVot () {
 		$(".input-choise-voting").val("");
 		$("#subject").val("");
+	}
+	function setValueAnswer (input, index) {
+		if (listChoises.length > 0) {
+			var value = $(input).val();
+			listChoises[index] = value;
+		}
 	}
 	function onChangeVoting(id) {
 		console.log('id------', id)
@@ -103,7 +110,7 @@
 		if (item) {
 			console.log(item)
 			$("#_voting_hidden_new_id").val(id)
-			$("#subject").val(item.subject);
+			$("#subject").val(item.subject); 
 			$("#commentable").prop('checked', item.commentable);
 			listChoises = item.choices;
 			genChoises(listChoises);
@@ -136,7 +143,7 @@
 		$("#listChoises").html("");
 		if (arr.length > 0) {
 			for (var i = 0; i < arr.length; i++) {
-				$("#listChoises").append('<div class="form-group item-choise" data-index="' + i + '"><label>Câu trả lời</label><input class="form-control input-choise-voting" style="width: 95%;" name="choice" value="' + arr[i] + '" /><i style="cursor: pointer;top: -22px;position:  relative; font-size: 15px;" onclick="deleteChoise(' + i + ')" class="fa fa-window-close pull-right" aria-hidden="true"></i></div>')
+				$("#listChoises").append('<div class="form-group item-choise" data-index="' + i + '"><label>Câu trả lời</label><input oninput="setValueAnswer(this, '+ i +' )" data-index="' + i + '" class="form-control input-choise-voting" style="width: 95%;" name="choice" value="' + arr[i] + '" /><i style="cursor: pointer;top: -22px;position:  relative; font-size: 15px;" onclick="deleteChoise(' + i + ')" class="fa fa-window-close pull-right" aria-hidden="true"></i></div>')
 			}
 		} else {
 			$("#listChoises").html("")
@@ -168,7 +175,12 @@
 			type = "POST";
 			url = "/o/rest/v2/postal/votings"
 		}
-
+		var classpk = "";
+		if ($("#objectVoting").data('kendoComboBox').value() == 'employee') {
+			classpk = employeeClassPk
+		} else {
+			classpk = "0"
+		}
 		$.ajax({
 
 			url: url,
@@ -179,7 +191,7 @@
 			},
 			data: {
 				className: $("#objectVoting").val(),
-				classPK: "0",
+				classPK: classpk,
 				subject: $("#subject").val(),
 				choices: choicesItems,
 				commentable: $("#commentable").prop("checked")
@@ -304,7 +316,7 @@
 
 		},
 
-		template: kendo.template($("#voting_template").html()),
+		template: kendo.template($("#voting_template").html())
 
 		// filterable: {
 		// 	field: "holidayDate", operator: "contains", 	value: $("#_holiday_keySearch").val().trim() 
@@ -327,7 +339,31 @@
 		}],
 		filter: "contains",
 		placeholder: "Chọn đối tượng",
-		noDataTemplate: 'Không có dữ liệu'
+		noDataTemplate: 'Không có dữ liệu',
+		change: function (e) {
+			var value = this.value();
+			if (value == 'employee' && employeeClassPk == '') {
+				$.ajax({
+					url: '/o/rest/v2/employees?sort=employeeNo',
+					dataType: 'GET',
+					headers: {
+						"groupId": ${groupId}
+					},
+					dataType: 'json',
+					success: function (result) {
+						if (result.data) {
+							var employeeItems = result.data;
+							employeeClassPk = employeeItems.map(function (item) {
+								return item.employeeId
+							}).join(',')
+						}
+					},
+					error: function (xhr) {
+
+					}
+				})
+			}
+		}
 	});
 
 	$("#objectVotingSearch").kendoComboBox({
