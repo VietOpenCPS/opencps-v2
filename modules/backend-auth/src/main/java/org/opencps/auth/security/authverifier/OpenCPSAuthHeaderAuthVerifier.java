@@ -1,13 +1,5 @@
 package org.opencps.auth.security.authverifier;
 
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HttpMethod;
-
-import org.osgi.service.component.annotations.Component;
-
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -22,10 +14,15 @@ import com.liferay.portal.kernel.security.auto.login.AutoLoginException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auto.login.basic.auth.header.BasicAuthHeaderAutoLogin;
+
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.osgi.service.component.annotations.Component;
 
 @Component(immediate = true, property = {
 		"auth.verifier.OpenCPSAuthHeaderAuthVerifier.urls.includes=/o/rest/*"
@@ -47,8 +44,8 @@ implements AuthVerifier {
 			return null;
 		}
 		String token = request.getHeader(TOKEN_HEADER);
-		String[] credentials = new String[3];
 		if (Validator.isNotNull(token)) {
+			String[] credentials = new String[3];
 			String authToken = AuthTokenUtil.getToken(PortalUtil.getOriginalServletRequest(request));
 			if (authToken == null || (authToken != null && !authToken.equals(token))) {
 				return null;
@@ -57,68 +54,13 @@ implements AuthVerifier {
 			User u = PortalUtil.getUser(request);
 			if (u != null) {
 				credentials[0] = String.valueOf(u.getUserId());
+				credentials[1] = u.getPassword();
 				credentials[2] = Boolean.TRUE.toString();				
 			}
+			
+			return credentials;
 		}
-		else {
-			String authorization = request.getHeader(AUTHORIZATION_HEADER);
-	
-			if (Validator.isNotNull(authorization)) {
-				String[] schemaData =
-					StringUtil.split(authorization, StringPool.SPACE);
-	
-				if (schemaData == null || schemaData.length != 2) {
-					return null;
-				}
-	
-				HttpAuthorizationHeader httpAuthorizationHeader =
-					HttpAuthManagerUtil.parse(request);
-		
-				if (httpAuthorizationHeader == null) {
-					return null;
-				}
-		
-				String scheme = httpAuthorizationHeader.getScheme();
-		
-				// We only handle HTTP Basic authentication
-		
-				if (!StringUtil.equalsIgnoreCase(
-					scheme, HttpAuthorizationHeader.SCHEME_BASIC)) {
-		
-					return null;
-				}
-		
-				long userId =
-					HttpAuthManagerUtil.getUserId(request, httpAuthorizationHeader);
-		
-				if (userId <= 0) {
-					throw new AuthException();
-				}
-		
-		
-				credentials[0] = String.valueOf(userId);
-				credentials[1] = httpAuthorizationHeader.getAuthParameter(
-					HttpAuthorizationHeader.AUTH_PARAMETER_NAME_PASSWORD);
-		
-				credentials[2] = Boolean.TRUE.toString();
-			}
-			else {
-				//Check if GET method
-				if (request.getMethod().equals(HttpMethod.GET)) {
-					User u = PortalUtil.getUser(request);
-					if (u != null) {
-						credentials[0] = String.valueOf(u.getUserId());
-						credentials[2] = Boolean.TRUE.toString();				
-					}					
-				}
-				else {
-					return null;
-				}
-			}
-		}
-		
-		return credentials;
-
+		return null;
 	}
 
 	@Override
@@ -168,10 +110,6 @@ implements AuthVerifier {
 
 					authVerifierResult.setState(
 						AuthVerifierResult.State.INVALID_CREDENTIALS);
-				}
-				else {
-					authVerifierResult.setState(
-							AuthVerifierResult.State.INVALID_CREDENTIALS);
 				}
 			}
 
