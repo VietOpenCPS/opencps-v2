@@ -5,6 +5,12 @@ import java.util.Locale;
 
 import javax.ws.rs.NotFoundException;
 
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.ResourceUser;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.ResourceUserLocalServiceUtil;
+
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -22,6 +28,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.feedback.action.VotingActions;
+import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.exception.NoSuchVotingResultException;
 import backend.feedback.model.Voting;
@@ -46,6 +53,14 @@ public class VotingActionsImpl implements VotingActions {
 		searchContext.setCompanyId(companyId);
 
 		try {
+
+			String classPK = (String) params.get(VotingTerm.CLASS_PK);
+			if (!"0".equals(classPK)) {
+				long count = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
+				if (count == 0) {
+					params.put(VotingTerm.CLASS_PK, "0");
+				}
+			}
 
 			Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			_log.info("VotingActions.getVotingList(): "+hits.getLength());
@@ -164,30 +179,81 @@ public class VotingActionsImpl implements VotingActions {
 		VotingResultLocalServiceUtil.deleteVoteResult(votingResultId, serviceContext);
 	}
 
+//	@Override
+//	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String comment,
+//			String selected, ServiceContext serviceContext)
+//			throws PortalException, SystemException {
+//
+//		Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
+//
+//		if (Validator.isNull(voting)) {
+//			throw new NotFoundException();
+//		}
+//		User user = UserLocalServiceUtil.fetchUser(userId);
+//
+//		VotingResult votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId, votingId);
+//
+//		if (user != null) {
+//			if (Validator.isNotNull(votingResult)) {
+//
+//				votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId, votingResult.getVotingResultId(),
+//						votingId, user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
+//
+//			} else {
+//				// User user = UserLocalServiceUtil.
+//				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, votingId,
+//						user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
+//			}
+//		}
+//
+//		return votingResult;
+//	}
+
 	@Override
-	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String comment,
-			String selected, ServiceContext serviceContext)
-			throws PortalException, SystemException {
+	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String email,
+			String comment, String selected, ServiceContext serviceContext) throws PortalException, SystemException {
 
 		Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
+		VotingResult votingResult = null;
 
-		if (Validator.isNull(voting)) {
-			throw new NotFoundException();
-		}
-		User user = UserLocalServiceUtil.fetchUser(userId);
+//		MBPermissionCheckerFactoryUtil.checkReadPermisson(
+//			voting.getClassName(), voting.getClassPK(), serviceContext);
 
-		VotingResult votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId, votingId);
+		if (voting != null) {
+			User user = UserLocalServiceUtil.fetchUser(userId);
+			if (user != null && !user.isDefaultUser()) {
+				// Check employee
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				// TODO check customer
+				if (employee != null) {
+					votingResult =
+						VotingResultLocalServiceUtil.fetchByF_votingId_userId(
+							userId, voting.getVotingId());
+					if (Validator.isNotNull(votingResult)) {
 
-		if (user != null) {
-			if (Validator.isNotNull(votingResult)) {
+						votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
+								votingResult.getVotingResultId(), votingId, employee.getFullName(), employee.getEmail(),
+								comment, selected, serviceContext);
+					} else {
+						votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+								voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
+								serviceContext);
 
-				votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId, votingResult.getVotingResultId(),
-						votingId, user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
+					}
+				}
+			}
+			else {
+//				ResourceUser resourceUser =
+//					ResourceUserBusinessFactoryUtil.getResourceUserByEmail(
+//						groupId, voting.getClassName(), voting.getClassPK(), email);
+//				ResourceUser resourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_email(groupId,
+//						voting.getClassName(), voting.getClassPK(), email);
+//				if (resourceUser == null) {
+//					throw new UnauthenticationException();
+//				}
 
-			} else {
-				// User user = UserLocalServiceUtil.
-				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, votingId,
-						user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
+				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, voting.getVotingId(), "",
+						email, comment, selected, serviceContext);
 			}
 		}
 

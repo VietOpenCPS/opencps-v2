@@ -39,6 +39,7 @@ import backend.feedback.action.impl.VotingActionsImpl;
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
+import backend.feedback.service.VotingLocalServiceUtil;
 import backend.postal.api.rest.controller.VotingManagement;
 
 public class VotingManagementImpl implements VotingManagement {
@@ -238,8 +239,12 @@ public class VotingManagementImpl implements VotingManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			String comment = input.getComment();
+			String selected = input.getSelected();
+			String email = input.getEmail();
+
 			VotingResult votingResult = actions.addVotingResult(user.getUserId(), company.getCompanyId(), groupId,
-					votingId, input.getComment(), input.getSelected(), serviceContext);
+					votingId, email, comment, selected, serviceContext);
 
 			result = VotingUtils.mapperVotingResultModel(votingResult);
 

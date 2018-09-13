@@ -24,8 +24,8 @@ public interface VotingActions {
 			String templateNo, String choices, boolean commentable, ServiceContext serviceContext)
 			throws PortalException, SystemException;
 
-	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String comment,
-			String selected, ServiceContext serviceContext) throws PortalException, SystemException;
+	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String email,
+			String comment, String selected, ServiceContext serviceContext) throws PortalException, SystemException;
 
 	public void removeVotingResult(long votingId, long votingResultId, ServiceContext serviceContext)
 			throws NoSuchVotingResultException;
