@@ -30445,3 +30445,6 @@ body .alpaca-field table thead tr {
 body .alpaca-array-actionbar.alpaca-array-actionbar-top {
 	padding-bottom: unset !important;
 }
+body .column {
+    float: inherit !important;
+}

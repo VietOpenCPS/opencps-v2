@@ -37,7 +37,7 @@ import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 	"com.liferay.portlet.instanceable=true",
 	"javax.portlet.display-name=Forgotten Account Portlet",
 	"javax.portlet.init-param.template-path=/",
-	"javax.portlet.init-param.view-template=/templates/applicant/forgotten_account.ftl",
+	"javax.portlet.init-param.view-template=/templates/applicant_bvh/forgotten_account.ftl",
 	"javax.portlet.name=" +
 		FrontendWebPortalPortletKeys.FORGOTTEN_ACCOUNT_PORTLET_NAME,
 	"javax.portlet.resource-bundle=content.Language",
