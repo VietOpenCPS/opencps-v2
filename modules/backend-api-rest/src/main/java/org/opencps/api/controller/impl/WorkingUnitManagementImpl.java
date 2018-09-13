@@ -395,7 +395,8 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null)
+					inputStream.close();
 			} catch (IOException e) {
 				_log.error(e);
 			}
@@ -423,7 +424,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 			error.setMessage("file not found!");
 			error.setCode(404);

@@ -25,6 +25,8 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -33,7 +35,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class ServerConfigManagementImpl implements ServerConfigManagement {
-
+	Log _log = LogFactoryUtil.getLog(ServerConfigManagementImpl.class);
+	
 	@Override
 	public Response getServerConfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
@@ -62,6 +65,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
@@ -158,6 +162,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");

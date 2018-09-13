@@ -7,14 +7,14 @@ import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
@@ -22,7 +22,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class DossierTemplateActionsImpl implements DossierTemplateActions {
-
+	private static final Log _log = LogFactoryUtil.getLog(DossierTemplateActionsImpl.class);
+	
 	public static final int DOSSIER_PART_CONTENT_TYPE_SCRIPT = 1;
 	public static final int DOSSIER_PART_CONTENT_TYPE_REPORT = 2;
 	public static final int DOSSIER_PART_CONTENT_TYPE_SAMPLE = 3;
@@ -197,6 +198,7 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 			dossierPartId = dossierPart.getDossierPartId();
 
 		} catch (Exception e) {
+			_log.error(e);
 			dossierPartId = 0; // :)
 		}
 
@@ -246,6 +248,7 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 				flag = true;
 			}
 		}catch (Exception e) {
+			_log.error(e);
 			return false;
 		}
 

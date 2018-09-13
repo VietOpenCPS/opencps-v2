@@ -193,7 +193,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			double durationUnit = object.getDurationUnit();
 			long durationComing = 0;
 			if (durationCount > 0) {
-				if (durationUnit == 0 ) {
+				if ((int)durationUnit == 0) {
 					durationComing = (long) (durationComing * VALUE_CONVERT_DATE_TIMESTAMP / 5);
 				} else {
 					durationComing = (long) (durationComing * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
@@ -372,7 +372,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.BRIEF_NOTE, object.getBriefNote());
 			// Search follow dossierNo
 			String dossierNo = object.getDossierNo();
-			String dossierNoSearch = StringPool.BLANK;
+			String dossierNoSearch;
 			document.addTextSortable(DossierTerm.DOSSIER_NO, dossierNo);
 			if (Validator.isNotNull(dossierNo)) {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
@@ -500,13 +500,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				ba = md5.digest(object.getReferenceUid().getBytes("UTF-8"));
 
 			} catch (Exception e) {
+				_log.error(e);
 			}
 
 			DateFormat df = new SimpleDateFormat("yy");
 
 			String formattedDate = df.format(Calendar.getInstance().getTime());
 
-			String dossierIDCTN = StringPool.BLANK;
+			String dossierIDCTN;
 
 			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
 
@@ -605,11 +606,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 		// Get info cert Number
 		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
 		if (dossierFileList != null && dossierFileList.size() > 0) {
-			String templateNo = StringPool.BLANK;
-			String partNo = StringPool.BLANK;
+			String templateNo;
+			String partNo;
 			int partType = 2;
 			boolean eSign = true;
-			String deliverableCode = StringPool.BLANK;
+			String deliverableCode;
 			for (DossierFile dossierFile : dossierFileList) {
 				templateNo = dossierFile.getDossierTemplateNo();
 				partNo = dossierFile.getDossierPartNo();
@@ -625,7 +626,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							if (Validator.isNotNull(deliverableCode)) {
 								Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
 								if (deli != null) {
-									String formData = StringPool.BLANK;
+									String formData;
 									formData = deli.getFormData();
 									try {
 										JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);

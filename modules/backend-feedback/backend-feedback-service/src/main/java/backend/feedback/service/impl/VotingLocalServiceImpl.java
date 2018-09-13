@@ -116,15 +116,12 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.DELETE)
 	public Voting deleteVote(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
 
-		try {
+//		try {
+		return votingPersistence.remove(votingId);
 
-			return votingPersistence.remove(votingId);
-
-		} catch (NoSuchVotingException e) {
-
-			throw new NoSuchVotingException();
-		}
-
+//		} catch (NoSuchVotingException e) {
+//			throw new NoSuchVotingException();
+//		}
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

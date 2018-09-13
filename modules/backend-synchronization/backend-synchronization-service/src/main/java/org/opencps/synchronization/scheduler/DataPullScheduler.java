@@ -99,11 +99,13 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 						}
 					}
 					catch (Exception e) {
+						_log.error(e);
 					}
 				}
 			}
 		}
 		catch (Exception e) {
+			_log.error(e);
 		}
 	}
 	
@@ -154,6 +156,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					oldCollection = _dictCollectionLocalService.fetchByF_dictCollectionCode(object.getString("collectionCode"), serverConfig.getGroupId());
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 				try {
 					if (oldCollection == null) {
@@ -162,7 +165,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 							foundDeleteCollection = _pushCollectionLocalService.findByCollectionCode_Method(serverConfig.getGroupId(), collectionCode, SyncServerTerm.METHOD_DELETE);
 						}
 						catch (Exception e) {
-							
+							_log.error(e);
 						}
 						
 						if (foundDeleteCollection == null) {
@@ -194,10 +197,12 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					}					
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 			}			
 		}
 		catch (Exception e) {
+			_log.error(e);
 		}
 		
 //		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
@@ -253,6 +258,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					oldGroup = _dictGroupLocalService.fetchByF_DictGroupCode(groupCode, serverConfig.getGroupId());
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 				
 				DictCollection collection = null;
@@ -260,7 +266,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					collection = _dictCollectionLocalService.fetchByF_dictCollectionCode(collectionCode, serverConfig.getGroupId());
 				}
 				catch (Exception e) {
-					
+					_log.error(e);
 				}
 				try {
 					if (oldGroup == null) {
@@ -269,7 +275,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 							foundDeleteDictGroup = _pushDictGroupLocalService.findByCollectionCode_GroupCode_Method(serverConfig.getGroupId(), collectionCode, groupCode, SyncServerTerm.METHOD_DELETE);
 						}
 						catch (Exception e) {
-							
+							_log.error(e);
 						}
 						
 						if (foundDeleteDictGroup == null) {
@@ -307,10 +313,12 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					}					
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 			}			
 		}
 		catch (Exception e) {
+			_log.error(e);
 		}
 		
 //		_log.info("PULL DICT COLLECTION FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
@@ -372,6 +380,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					oldDictItemGroup = _dictItemGroupLocalService.fetchByF_dictItemId_dictGroupId(serverConfig.getGroupId(), group.getDictGroupId(), item.getDictItemId());
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 				
 				try {
@@ -381,11 +390,11 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 							foundDeleteDictGroup =  _pushDictGroupLocalService.findByCollectionCode_GroupCode_ItemCode_Method(serverConfig.getGroupId(), collectionCode, groupCode, itemCode, SyncServerTerm.METHOD_REMOVE_FROM_GROUP);
 						}
 						catch (Exception e) {
-							
+							_log.error(e);
 						}
 						
 						if (foundDeleteDictGroup == null) {
-							if (collection != null) {
+							if (collection != null && group != null && item != null) {
 								DictItemGroup newDictItemGroup = _dictItemGroupLocalService.addDictItemGroup(
 										serverConfig.getUserId(), 
 										serverConfig.getGroupId(), 
@@ -414,10 +423,12 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					}					
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 			}			
 		}
 		catch (Exception e) {
+			_log.error(e);
 		}
 		
 //		_log.info("PULL DICT ITEM GROUP FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));
@@ -479,6 +490,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					oldItem = dictItemDataUtil.getDictItemByItemCode(dictCollectionCode, itemCode, serverConfig.getGroupId(), serviceContext);					
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 				try {
 					if (oldItem == null) {
@@ -487,7 +499,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 							foundDeleteDictItem = _pushDictItemLocalService.findByCollectionCode_ItemCode_Method(serverConfig.getGroupId(), dictCollectionCode, itemCode, SyncServerTerm.METHOD_DELETE);
 						}
 						catch (Exception e) {
-							
+							_log.error(e);
 						}
 						if (foundDeleteDictItem == null) {
 							DictItem newItem = dictItemDataUtil.addDictItems(
@@ -519,7 +531,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 								parentItem = _dictItemLocalService.fetchByF_dictItemCode(parentItemCode, collection.getDictCollectionId(), serverConfig.getGroupId());
 						}
 						catch (Exception e) {
-							
+							_log.error(e);
 						}
 						Date modifiedDate = new Date(modifiedDateTime);
 						if (modifiedDate.compareTo(oldItem.getModifiedDate()) > 0) {
@@ -546,10 +558,12 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 					}					
 				}
 				catch (Exception e) {
+					_log.error(e);
 				}
 			}			
 		}
 		catch (Exception e) {
+			_log.error(e);
 		}
 		
 //		_log.info("PULL DICT ITEM FROM SERVER " + serverConfig.getServerName() + " HAS BEEN DONE " + APIDateTimeUtils.convertDateToString(new Date()));

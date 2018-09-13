@@ -42,7 +42,7 @@ import com.liferay.portal.kernel.util.Validator;
 public class ReadXMLFileUtils {
 
 	private static Log _log = LogFactoryUtil.getLog(ReadXMLFileUtils.class);
-	private static String strError = StringPool.BLANK;
+	private static volatile String strError = StringPool.BLANK;
 
 	public static String convertFiletoString(File fXmlFile) {
 		BufferedReader bufReader = null;
@@ -63,7 +63,8 @@ public class ReadXMLFileUtils {
 			_log.error(e);
 		} finally {
 			try {
-				bufReader.close();
+				if (bufReader != null)
+					bufReader.close();
 			} catch (IOException e1) {
 				_log.error(e1);
 			}
@@ -73,23 +74,30 @@ public class ReadXMLFileUtils {
 
 	//LamTV_Process delete list file of folder
 	public static boolean deleteFilesForParentFolder(File fileList) {
-		boolean flag = false;
 		File[] filesParent = fileList.listFiles();
 		if (filesParent != null && filesParent.length > 0) {
 			for (File fileEntry : filesParent) {
 				if (fileEntry.isDirectory()) {
 					File[] files = fileEntry.listFiles();
 					for (File file : files) {
-						flag = file.delete();
+						if (!file.delete()) {
+							return false;
+						}
 					}
-					flag = fileEntry.delete();
+					if (!fileEntry.delete()) {
+						return false;
+					}
 				} else {
-					flag = fileEntry.delete();
+					if (!fileEntry.delete()) {
+						return false;
+					}
 				}
 			}
-			flag = fileList.delete();
+			if (!fileList.delete()) {
+				return false;
+			}
 		}
-		return flag;
+		return true;
 	}
 
 	//LamTV_Process get list file of folder
@@ -555,6 +563,7 @@ public class ReadXMLFileUtils {
 									DocumentBuilder parser = builderFactory.newDocumentBuilder();
 									parser.parse(file);
 									} catch (Exception e) {
+										_log.error(e);
 										sb.append(subFolder);
 										sb.append(StringPool.SLASH);
 										sb.append(xmlFile.getName());
@@ -576,6 +585,7 @@ public class ReadXMLFileUtils {
 								DocumentBuilder parser = builderFactory.newDocumentBuilder();
 								parser.parse(fileEntry);
 							} catch (Exception e) {
+								_log.error(e);
 								sb.append(fileName);
 								sb.append(StringPool.COLON + StringPool.SPACE);
 								sb.append(e.getMessage());
@@ -596,6 +606,7 @@ public class ReadXMLFileUtils {
 				DocumentBuilder parser = builderFactory.newDocumentBuilder();
 				parser.parse(xmlFile);
 			} catch (Exception e) {
+				_log.error(e);
 				strError = xmlFile.getName() + StringPool.COLON + e.getMessage(); 
 			}
 			return strError;

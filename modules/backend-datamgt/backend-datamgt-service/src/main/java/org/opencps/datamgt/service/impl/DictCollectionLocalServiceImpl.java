@@ -171,9 +171,9 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		dictCollection.setExpandoBridgeAttributes(serviceContext);
 
-		dictCollectionPersistence.update(dictCollection);
+		return dictCollectionPersistence.update(dictCollection);
 
-		return dictCollection;
+//		return dictCollection;
 	}
 
 	/**
@@ -218,8 +218,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			}
 
 		} catch (NoSuchDictCollectionException e) {
-
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 
 		}
 
@@ -299,9 +299,9 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		
 		dictCollection.setExpandoBridgeAttributes(serviceContext);
 
-		dictCollectionPersistence.update(dictCollection);
+		return dictCollectionPersistence.update(dictCollection);
 
-		return dictCollection;
+//		return dictCollection;
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	 */
 	public DictCollection fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
-		if (collectionCode.equalsIgnoreCase("ADMINISTRATIVE_REGION")) {
+		if ("ADMINISTRATIVE_REGION".toLowerCase().equalsIgnoreCase(collectionCode)) {
 			groupId = 0;
 		}
 

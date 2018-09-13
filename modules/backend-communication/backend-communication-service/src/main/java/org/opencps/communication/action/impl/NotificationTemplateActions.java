@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.NotFoundException;
@@ -187,7 +186,7 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 	public JSONObject getNotificationTypes() {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+		Map<String, String> initTemplates = NotificationMGTConstants.getNotificationTempMap();
 
 		result.put("data", initTemplates);
 

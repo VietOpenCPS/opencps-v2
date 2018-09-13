@@ -36,7 +36,6 @@ import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
 import org.opencps.synchronization.service.SyncQueueLocalService;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -136,9 +135,10 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 			serviceContext.setUserId(serverConfig.getUserId());
 			serviceContext.setScopeGroupId(serverConfig.getGroupId());
 			serviceContext.setSignedIn(true);
-
 			for (SyncQueue pqueue : lstSyncs) {
-				if (DictCollectionTemp.class.getName().equals(pqueue.getClassName())) {
+				Class<?> queueClass = Class.forName(pqueue.getClassName());
+				
+				if (queueClass.isAssignableFrom(DictCollectionTemp.class)) {
 					boolean isFound = false;
 					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(pqueue.getJsonObject());
 
@@ -312,6 +312,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								}
 							}
 							catch (Exception e) {
+								_log.error(e);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());						
 							}
 						}
@@ -366,7 +367,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						}
 					}					
 					}
-				else if (DictGroupTemp.class.getName().equals(pqueue.getClassName())) {
+				else if (queueClass.isAssignableFrom(DictGroupTemp.class)) {
 					StringBuilder putDictGroupRestUrl = new StringBuilder();
 					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(pqueue.getJsonObject());
 
@@ -535,7 +536,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						}
 					}
 				}
-				else if (DictItemTemp.class.getName().equals(pqueue.getClassName())) {
+				else if (queueClass.isAssignableFrom(DictItemTemp.class)) {
 					boolean isFound = false;
 					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(pqueue.getJsonObject());
 
@@ -605,6 +606,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										}
 										_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 									} catch (DuplicateCategoryException e) {
+										_log.error(e);
 										_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 									}
 								} else {
@@ -630,6 +632,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								}
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							} catch (DuplicateCategoryException e) {
+								_log.error(e);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							}
 						}
@@ -875,7 +878,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 						}
 					}
-				} else if (DictItemGroupTemp.class.getName().equals(pqueue.getClassName())) {
+				} else if (queueClass.isAssignableFrom(DictItemGroupTemp.class)) {
 					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(pqueue.getJsonObject());
 
 					JSONObject dictItemGroupObj = jsonObject.getJSONObject("new");
@@ -913,6 +916,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}
 									catch (DuplicateCategoryException e) {
+										_log.error(e);
 										_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());									
 							}
 								}														
@@ -950,6 +954,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							}
 												catch (DuplicateCategoryException e) {
+													_log.error(e);
 													_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());									
 												}
 											}														
@@ -974,6 +979,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());							
 							}
 							catch (DuplicateCategoryException e) {
+								_log.error(e);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
 							}
 						}
@@ -998,6 +1004,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 								}
 								catch (NotFoundException e) {
+									_log.error(e);
 									_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());									
 								}
 							}		
@@ -1011,6 +1018,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());
 							}
 							catch (NotFoundException e) {
+								_log.error(e);
 								_syncQueueLocalService.deleteSyncQueue(pqueue.getSyncQueueId());								
 						}
 					}

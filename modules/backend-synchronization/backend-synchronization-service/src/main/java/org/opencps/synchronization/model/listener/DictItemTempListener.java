@@ -57,11 +57,9 @@ public class DictItemTempListener extends BaseModelListener<DictItemTemp> {
 				try {
 					indexer.reindex(dictItem);
 				} catch (SearchException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					_log.error(e);
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					_log.error(e);
 				}
 
 			} catch (Exception e) {
@@ -110,7 +108,8 @@ public class DictItemTempListener extends BaseModelListener<DictItemTemp> {
 		_log.info("id" + id);
 
 		try {
-			modelBefore = DictItemTempLocalServiceUtil.fetchDictItemTemp(id);
+//			modelBefore = DictItemTempLocalServiceUtil.fetchDictItemTemp(id);
+			DictItemTempLocalServiceUtil.fetchDictItemTemp(id);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -125,14 +124,15 @@ public class DictItemTempListener extends BaseModelListener<DictItemTemp> {
 		_log.info("id" + id);
 
 		try {
-			modelBefore = DictItemTempLocalServiceUtil.fetchDictItemTemp(id);
+//			modelBefore = DictItemTempLocalServiceUtil.fetchDictItemTemp(id);
+			DictItemTempLocalServiceUtil.fetchDictItemTemp(id);
 
 		} catch (Exception e) {
 			_log.error(e);
 		}
 	}
 
-	public static DictItemTemp modelBefore;
+//	public static DictItemTemp modelBefore;
 
 	Log _log = LogFactoryUtil.getLog(DictItemTempListener.class);
 

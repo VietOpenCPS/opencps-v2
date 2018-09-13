@@ -396,7 +396,8 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null)
+					inputStream.close();
 			} catch (IOException e) {
 				_log.error(e);
 			}

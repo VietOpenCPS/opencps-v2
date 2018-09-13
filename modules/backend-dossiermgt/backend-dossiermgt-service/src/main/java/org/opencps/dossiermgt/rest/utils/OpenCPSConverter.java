@@ -474,9 +474,10 @@ public class OpenCPSConverter {
 		if (Validator.isNotNull(strMessage)) {
 			try {
 				jsonObj = JSONFactoryUtil.createJSONObject(strMessage);
-				_log.info("jsonObj2: "+jsonObj);
+//				_log.info("jsonObj2: "+jsonObj);
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 
@@ -610,7 +611,8 @@ public class OpenCPSConverter {
 		try {
 			assignUserArrs = JSONFactoryUtil.createJSONArray(model.getAssignUsers());
 		} catch (JSONException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 	    params.put(ExecuteOneActionTerm.ASSIGN_USERS, assignUserArrs.toJSONString());
 	    params.put(ExecuteOneActionTerm.PAYLOAD, model.getPayload());

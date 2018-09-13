@@ -23,16 +23,16 @@ public class HolidayUtils {
 	public final static String SUNDAY = "SUNDAY";
 
 	// get value day off
-	private static String strDayOff = StringPool.BLANK;
+	private static volatile String strDayOff = StringPool.BLANK;
 	// get value time working
-	private static Integer startHourMorning = 0;
-	private static Integer startMinuteMorning = 0;
-	private static Integer endHourMorning = 0;
-	private static Integer endMinuteMorning = 0;
-	private static Integer startHourAfterNoon = 0;
-	private static Integer startMinuteAfterNoon = 0;
-	private static Integer endHourAfterNoon = 0;
-	private static Integer endMinuteAfterNoon = 0;
+	private static volatile Integer startHourMorning = 0;
+	private static volatile Integer startMinuteMorning = 0;
+	private static volatile Integer endHourMorning = 0;
+	private static volatile Integer endMinuteMorning = 0;
+	private static volatile Integer startHourAfterNoon = 0;
+	private static volatile Integer startMinuteAfterNoon = 0;
+	private static volatile Integer endHourAfterNoon = 0;
+	private static volatile Integer endMinuteAfterNoon = 0;
 
 	public static Date getDueDate(Date startDate, double durationCount, int durationUnit, long groupId) {
 
@@ -71,11 +71,11 @@ public class HolidayUtils {
 		// Get day off and day work.
 		if (workTimeList != null && workTimeList.size() > 0) {
 //			_log.info("workTimeList.size(): "+workTimeList.size());
-			String strHours = StringPool.BLANK;
+//			String strHours = StringPool.BLANK;
 			sbDayOff = new StringBuilder();
 			sbDayWork = new StringBuilder();
 			for (WorkTime work : workTimeList) {
-				strHours = work.getHours();
+				String strHours = work.getHours();
 //				_log.info("strHours: "+strHours);
 				if (Validator.isNull(strHours)) {
 					if (Validator.isNull(sbDayOff.toString())) {
@@ -272,7 +272,11 @@ public class HolidayUtils {
 											}
 											//
 											hoursOverdue = startHourMorning + countTest;
+											//
+											baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
+											baseDateCal.set(Calendar.MINUTE, minutes);
 											
+											return baseDateCal.getTime();
 										}
 									}
 									

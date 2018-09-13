@@ -57,9 +57,9 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
-
-		HttpServletRequest oRequest = PortalUtil.getOriginalServletRequest(request);
+//		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
+//
+//		HttpServletRequest oRequest = PortalUtil.getOriginalServletRequest(request);
 
 		Applicant applicant = UserMgtUtils.getApplicant(themeDisplay.getUser().getEmailAddress());
 
@@ -68,7 +68,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		try {
 			applicantObj = JSONFactoryUtil.createJSONObject(jsonObj);
 		} catch (Exception e) {
-			
+			_log.error(e);
 		}
 
 		String dossierTemplateId = ParamUtil.getString(renderRequest, "dossierTemplateId");
@@ -85,6 +85,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 			_log.info(e.getMessage());
 		}
 		
@@ -100,6 +101,7 @@ public class FrontendWebCustomerPortlet extends FreeMarkerPortlet {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
+			_log.error(e);
 			_log.info(e.getMessage());
 		}
 		

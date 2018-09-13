@@ -41,7 +41,8 @@ public class StepConfigFinderImpl extends StepConfigFinderBaseImpl
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				se.printStackTrace();
+//				se.printStackTrace();
+				_log.error(se);
 			}
 		} finally {
 			closeSession(session);

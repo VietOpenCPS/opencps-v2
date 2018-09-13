@@ -156,7 +156,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
 				for (DossierPart dp : lstParts) {
 					if (dp.getPartNo().equals(dossierPartNo)) {
-						dossierTemplateNo = dossier.getDossierTemplateNo();
 						fileTemplateNo = dp.getFileTemplateNo();
 						dossierTemplateNo = dossier.getDossierTemplateNo();
 					}
@@ -391,7 +390,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -495,7 +495,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				}
 				if (d != null) {
 			for (File f : d.listFiles()) {
-				if (f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("zip")) {
+				if ("zip".equals(f.getName().substring(f.getName().lastIndexOf(".") + 1))) {
 					f.delete();
 				}
 				if (f.isDirectory()) {
@@ -606,7 +606,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			return processException(e);
 		}
 	}
@@ -683,7 +684,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			return processException(e);
 		}
 
@@ -849,7 +851,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
 			_log.info("extFile: "+extFile);
 			if (Validator.isNotNull(extFile)) {
-				if (extFile.toLowerCase().equals("zip")) {
+				if ("zip".equals(extFile.toLowerCase())) {
 					String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
 //					//delete folder if exits
 					File fileOld = new File(pathFolder);
@@ -878,7 +880,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("Folder is not structure").build();
 					}
 					_log.info("LamTV_IMPORT DONE_ZIP");
-				} else if (extFile.toLowerCase().equals("xml")) {
+				} else if ("xml".equals(extFile.toLowerCase())) {
 					String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
 //					//delete folder if exits
 					File fileOld = new File(pathFile);
@@ -910,6 +912,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e.getMessage()).build();
 		}
 	}

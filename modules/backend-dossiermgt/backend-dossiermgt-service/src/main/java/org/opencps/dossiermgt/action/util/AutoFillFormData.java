@@ -57,8 +57,8 @@ public class AutoFillFormData {
 			String _contactEmail = StringPool.BLANK;
 
 			// TODO
-			String _dossierFileNo = StringPool.BLANK;
-			String _dossierFileDate = StringPool.BLANK;
+//			String _dossierFileNo = StringPool.BLANK;
+//			String _dossierFileDate = StringPool.BLANK;
 			String _receiveDate = StringPool.BLANK;
 			String _dossierNo = StringPool.BLANK;
 
@@ -69,7 +69,7 @@ public class AutoFillFormData {
 			String _applicantIdType = StringPool.BLANK;
 			String _applicantIdNo = StringPool.BLANK;
 			String _applicantIdDate = StringPool.BLANK;
-			String _curDate = StringPool.BLANK;
+			String _curDate;
 			String _representative = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -109,7 +109,7 @@ public class AutoFillFormData {
 						_applicantName = applicantJSON.getString("applicantName");
 						_applicantIdType = applicantJSON.getString("applicantIdType");
 						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-						_applicantIdDate = applicantJSON.getString("applicantIdDate");
+//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
 						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
 
 					} else {
@@ -139,7 +139,8 @@ public class AutoFillFormData {
 
 				} catch (PortalException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+//					e1.printStackTrace();
+					_log.error(e1);
 				}
 
 				try {
@@ -166,9 +167,9 @@ public class AutoFillFormData {
 				}
 			}
 			// process sampleData
-			if (Validator.isNull(sampleData)) {
-				sampleData = "{}";
-			}
+//			if (Validator.isNull(sampleData)) {
+//				sampleData = "{}";
+//			}
 
 			Map<String, Object> jsonMap = jsonToMap(result);
 
@@ -178,51 +179,51 @@ public class AutoFillFormData {
 
 				if (value.startsWith("_") && !value.contains(":")) {
 
-					if (value.equals("_subjectName")) {
+					if ("_subjectName".equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
-					} else if (value.equals("_subjectId")) {
+					} else if ("_subjectId".equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectId);
-					} else if (value.equals("_address")) {
+					} else if ("_address".equals(value)) {
 						jsonMap.put(entry.getKey(), _address);
-					} else if (value.equals("_cityCode")) {
+					} else if ("_cityCode".equals(value)) {
 						jsonMap.put(entry.getKey(), _cityCode);
-					} else if (value.equals("_cityName")) {
+					} else if ("_cityName".equals(value)) {
 						jsonMap.put(entry.getKey(), _cityName);
-					} else if (value.equals("_districtCode")) {
+					} else if ("_districtCode".equals(value)) {
 						jsonMap.put(entry.getKey(), _districtCode);
-					} else if (value.equals("_districtName")) {
+					} else if ("_districtName".equals(value)) {
 						jsonMap.put(entry.getKey(), _districtName);
-					} else if (value.equals("_wardCode")) {
+					} else if ("_wardCode".equals(value)) {
 						jsonMap.put(entry.getKey(), _wardCode);
-					} else if (value.equals("_wardName")) {
+					} else if ("_wardName".equals(value)) {
 						jsonMap.put(entry.getKey(), _wardName);
-					} else if (value.equals("_contactName")) {
+					} else if ("_contactName".equals(value)) {
 						jsonMap.put(entry.getKey(), _contactName);
-					} else if (value.equals("_contactTelNo")) {
+					} else if ("_contactTelNo".equals(value)) {
 						jsonMap.put(entry.getKey(), _contactTelNo);
-					} else if (value.equals("_contactEmail")) {
+					} else if ("_contactEmail".equals(value)) {
 						jsonMap.put(entry.getKey(), _contactEmail);
-					} else if (value.equals("_receiveDate")) {
+					} else if ("_receiveDate".equals(value)) {
 						jsonMap.put(entry.getKey(), _receiveDate);
-					} else if (value.equals("_dossierNo")) {
+					} else if ("_dossierNo".equals(value)) {
 						jsonMap.put(entry.getKey(), _dossierNo);
-					} else if (value.equals("_employee_employeeNo")) {
+					} else if ("_employee_employeeNo".equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
-					} else if (value.equals("_employee_fullName")) {
+					} else if ("_employee_fullName".equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_fullName);
-					} else if (value.equals("_employee_title")) {
+					} else if ("_employee_title".equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_title);
-					} else if (value.equals("_applicantName")) {
+					} else if ("_applicantName".equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantName);
-					} else if (value.equals("_applicantIdType")) {
+					} else if ("_applicantIdType".equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdType);
-					} else if (value.equals("_applicantIdNo")) {
+					} else if ("_applicantIdNo".equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdNo);
-					} else if (value.equals("_applicantIdDate")) {
+					} else if ("_applicantIdDate".equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdDate);
-					} else if (value.equals("_curDate")) {
+					} else if ("_curDate".equals(value)) {
 						jsonMap.put(entry.getKey(), _curDate);
-					} else if (value.equals("_representative")) {
+					} else if ("_representative".equals(value)) {
 						jsonMap.put(entry.getKey(), _representative);
 					}
 
@@ -230,51 +231,51 @@ public class AutoFillFormData {
 					String resultBinding = StringPool.BLANK;
 					String[] valueSplit = value.split(":");
 					for (String string : valueSplit) {
-						if (string.equals("_subjectName")) {
+						if ("_subjectName".equals(string)) {
 							resultBinding += ", " + _subjectName;
-						} else if (string.equals("_subjectId")) {
+						} else if ("_subjectId".equals(string)) {
 							resultBinding += ", " + _subjectId;
-						} else if (string.equals("_address")) {
+						} else if ("_address".equals(string)) {
 							resultBinding += ", " + _address;
-						} else if (string.equals("_wardCode")) {
+						} else if ("_wardCode".equals(string)) {
 							resultBinding += ", " + _wardCode;
-						} else if (string.equals("_wardName")) {
+						} else if ("_wardName".equals(string)) {
 							resultBinding += ", " + _wardName;
-						} else if (string.equals("_districtCode")) {
+						} else if ("_districtCode".equals(string)) {
 							resultBinding += ", " + _districtCode;
-						} else if (string.equals("_districtName")) {
+						} else if ("_districtName".equals(string)) {
 							resultBinding += ", " + _districtName;
-						} else if (string.equals("_cityCode")) {
+						} else if ("_cityCode".equals(string)) {
 							resultBinding += ", " + _cityCode;
-						} else if (string.equals("_cityName")) {
+						} else if ("_cityName".equals(string)) {
 							resultBinding += ", " + _cityName;
-						} else if (string.equals("_contactName")) {
+						} else if ("_contactName".equals(string)) {
 							resultBinding += ", " + _contactName;
-						} else if (string.equals("_contactTelNo")) {
+						} else if ("_contactTelNo".equals(string)) {
 							resultBinding += ", " + _contactTelNo;
-						} else if (string.equals("_contactEmail")) {
+						} else if ("_contactEmail".equals(string)) {
 							resultBinding += ", " + _contactEmail;
-						} else if (value.equals("_receiveDate")) {
+						} else if ("_receiveDate".equals(value)) {
 							resultBinding += ", " + _receiveDate;
-						} else if (value.equals("_dossierNo")) {
+						} else if ("_dossierNo".equals(value)) {
 							resultBinding += ", " + _dossierNo;
-						} else if (value.equals("_employee_employeeNo")) {
+						} else if ("_employee_employeeNo".equals(value)) {
 							resultBinding += ", " + _employee_employeeNo;
-						} else if (value.equals("_employee_fullName")) {
+						} else if ("_employee_fullName".equals(value)) {
 							resultBinding += ", " + _employee_fullName;
-						} else if (value.equals("_employee_title")) {
+						} else if ("_employee_title".equals(value)) {
 							resultBinding += ", " + _employee_title;
-						} else if (value.equals("_applicantName")) {
+						} else if ("_applicantName".equals(value)) {
 							resultBinding += ", " + _applicantName;
-						} else if (value.equals("_applicantIdType")) {
+						} else if ("_applicantIdType".equals(value)) {
 							resultBinding += ", " + _applicantIdType;
-						} else if (value.equals("_applicantIdNo")) {
+						} else if ("_applicantIdNo".equals(value)) {
 							resultBinding += ", " + _applicantIdNo;
-						} else if (value.equals("_applicantIdDate")) {
+						} else if ("_applicantIdDate".equals(value)) {
 							resultBinding += ", " + _applicantIdDate;
-						} else if (value.equals("_curDate")) {
+						} else if ("_curDate".equals(value)) {
 							resultBinding += ", " + _curDate;
-						} else if (value.equals("_representative")) {
+						} else if ("_representative".equals(value)) {
 							resultBinding += ", " + _representative;
 						}
 					}
@@ -309,6 +310,7 @@ public class AutoFillFormData {
 								}
 							} catch (Exception e) {
 								// TODO: handle exception
+								_log.error(e);
 							}
 
 							if (myCHK.startsWith("#")) {
@@ -320,7 +322,8 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), "");
 						}
 					} catch (SystemException e) {
-						e.printStackTrace();
+//						e.printStackTrace();
+						_log.error(e);
 					}
 				}
 			}
@@ -335,7 +338,8 @@ public class AutoFillFormData {
 				}
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			_log.error(e);
+//			e.printStackTrace();
 		}
 
 		return result.toJSONString();
@@ -349,7 +353,8 @@ public class AutoFillFormData {
 				retMap = toMap(json);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 		return retMap;

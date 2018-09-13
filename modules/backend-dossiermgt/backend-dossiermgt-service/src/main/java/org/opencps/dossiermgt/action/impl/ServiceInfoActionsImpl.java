@@ -101,6 +101,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			return ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -110,6 +111,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			return ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -180,7 +182,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		if (is instanceof ByteArrayInputStream) {
 			size = is.available();
 			buf = new byte[size];
-			len = is.read(buf, 0, size);
+//			len = is.read(buf, 0, size);
 		} else {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			buf = new byte[size];
@@ -381,6 +383,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					try {
 						DLAppLocalServiceUtil.deleteFileEntry(fileEntryId);
 					} catch (PortalException e) {
+						_log.error(e);
 						return false;
 					}
 				}
@@ -427,6 +430,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				flag = true;
 			}
 		}catch (Exception e) {
+			_log.error(e);
 			return false;
 		}
 

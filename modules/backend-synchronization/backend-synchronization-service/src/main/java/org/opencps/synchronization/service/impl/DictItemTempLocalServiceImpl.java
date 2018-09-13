@@ -253,10 +253,11 @@ public class DictItemTempLocalServiceImpl
 
 		DictItemTemp dictItem = dictItemTempPersistence.fetchByF_parentItemId_level_Last(groupId, dictCollectionId,
 				parentItemId, level, null);
-		if ((Validator.isNotNull(dictItem) && sibling.equals("0")) || sibling.equals("0")) {
+		if ((Validator.isNotNull(dictItem) && "0".equals(sibling)) || "0".equals(sibling)) {
 			try {
 				sibling = GetterUtil.getInteger(dictItem.getSibling(), 1) + 1 + StringPool.BLANK;
 			} catch (Exception e) {
+				_log.error(e);
 				sibling = String.valueOf(1);
 			}
 		}
@@ -325,7 +326,7 @@ public class DictItemTempLocalServiceImpl
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-		DictItemTemp dictItem;
+		DictItemTemp dictItem = null;
 
 		try {
 
@@ -334,13 +335,11 @@ public class DictItemTempLocalServiceImpl
 			if (Validator.isNotNull(listItem) && listItem.size() > 0) {
 				throw new UnauthorizationException();
 			} else {
-
 				dictItem = dictItemTempPersistence.remove(dictItemId);
-
 			}
-
 		} catch (NoSuchDictItemTempException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
 
 		return dictItem;
@@ -372,16 +371,15 @@ public class DictItemTempLocalServiceImpl
 		_log.info("DictItemGroupSize_" + dictItem.getPrimaryKey() + "_" + groupId + "_" + lsDictItem.size());
 		
 		try {
-
-			dictItem = dictItemTempLocalService.deleteDictItemTemp(dictItem.getDictItemId());
-			
+			dictItemTempLocalService.deleteDictItemTemp(dictItem.getDictItemId());
 			//remove DictItemTemp
 			for (DictItemGroupTemp dig : lsDictItem) {
 				dictItemGroupTempPersistence.remove(dig);
 			}
 
 		} catch (NoSuchDictItemTempException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
 
 	}

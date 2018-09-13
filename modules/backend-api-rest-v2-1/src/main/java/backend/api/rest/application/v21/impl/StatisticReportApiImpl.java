@@ -56,7 +56,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 	public Object statisticReportPrint(String code, String body) {
 		File file = null;
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -72,7 +72,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 //		}
 
 		DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, code);
-		String documentScript = StringPool.BLANK;
+		String documentScript;
 		String reportType = "pdf";
 		try {
 			JSONObject bodyObj = JSONFactoryUtil.createJSONObject(body);
@@ -80,6 +80,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 				reportType = bodyObj.getString("reportType");
 			}
 		} catch (JSONException e) {
+			_log.error(e);
 		}
 		
 		if (docType != null) {
@@ -103,12 +104,12 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					if (reportType.equals("excel")) {
+					if ("excel".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",
 								"attachment; filename=\"" + docType.getDocumentName()+ ".xls\"");
 						responseBuilder.header("Content-Type", "application/vnd.ms-excel");						
 					}
-					else if (reportType.equals("word")) {
+					else if ("word".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",
 								"attachment; filename=\"" + docType.getDocumentName()+ ".doc\"");
 						responseBuilder.header("Content-Type", "application/msword");												
@@ -122,6 +123,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 				}
 
 			} catch (MessageBusException e) {
+				_log.error(e);
 				return Response.status(HttpServletResponse.SC_CONFLICT).build();
 			}
 
@@ -269,7 +271,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			result.put("domains", domains);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 		
 		return result;
@@ -380,7 +383,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 		return result;
 	}

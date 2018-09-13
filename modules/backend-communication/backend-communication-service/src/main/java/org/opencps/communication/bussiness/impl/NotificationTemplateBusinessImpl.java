@@ -95,7 +95,7 @@ public class NotificationTemplateBusinessImpl
 
 				// create init Templates
 				Map<String, String> initTemplates =
-					NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+					NotificationMGTConstants.getNotificationTempMap();
 
 				for (String key : initTemplates.keySet()) {
 
@@ -135,7 +135,7 @@ public class NotificationTemplateBusinessImpl
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		Map<String, String> initTemplates =
-			NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+			NotificationMGTConstants.getNotificationTempMap();
 
 		result.put("data", initTemplates);
 

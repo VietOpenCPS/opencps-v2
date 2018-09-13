@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class RegistrationUtils {
@@ -205,7 +204,8 @@ public class RegistrationUtils {
 			return model;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -250,7 +250,8 @@ public class RegistrationUtils {
 			return model;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -284,6 +285,7 @@ public class RegistrationUtils {
 							}
 						} catch (Exception e) {
 							// TODO: handle exception
+							_log.error(e);
 						}
 					}
 				}

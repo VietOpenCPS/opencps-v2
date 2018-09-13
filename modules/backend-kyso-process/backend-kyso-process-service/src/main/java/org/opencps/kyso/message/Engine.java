@@ -10,7 +10,6 @@ import org.opencps.kyso.utils.CertUtil;
 import org.opencps.kyso.utils.ExtractTextLocations;
 import org.opencps.kyso.utils.ImageUtil;
 
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -74,29 +73,23 @@ public class Engine implements MessageListener {
 				float imageZoom = 1;
 				float offsetY = 1;
 				
-				byte[] inHash = null;
+//				byte[] inHash = null;
 				byte[] signature = null;
 				String fieldName = "";
-				String certBase64 = "";
+//				String certBase64 = "";
 
 //				String rootPath = "/Users/binhth/Downloads/apache-tomcat-8.0.45/webapps/WebApplication1/";
 //				String fullPath = rootPath + "TestFile.pdf";
 				String rootPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
-				String fullPath = StringPool.BLANK;
+//				String fullPath = StringPool.BLANK;
 				
 				if (fileEntryId > 0) {
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-					
 					File fileTemp = FileUtil.createTempFile(dlFileEntry.getContentStream());
-					
 					File file = new File(rootPath + dlFileEntry.getFileName());
-					
 					FileUtil.move(fileTemp, file);
-					
-					fullPath = file.getAbsolutePath();
-					
-					
-					
+					String fullPath = file.getAbsolutePath();
+
 					String signImagePath = new File(rootPath + emailUser + ".png").getAbsolutePath();
 					String imageBase64 = ImageUtil.getSignatureImageBase64ByPath(signImagePath);
 	
@@ -162,7 +155,7 @@ public class Engine implements MessageListener {
 					
 //					inHash = signer.computeHash(new Rectangle(0, 0, urx, ury), 1);
 					// TODO # location fixed
-					inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
+//					inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
 					fieldName = signer.getSignatureName();
 	
 					signature = Base64.getDecoder().decode("");
@@ -194,8 +187,7 @@ public class Engine implements MessageListener {
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 	}

@@ -226,9 +226,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		dictItem.setExpandoBridgeAttributes(baseModel);
 		// dictItem.setExpandoBridgeAttributes(serviceContext);
 
-		dictItemPersistence.update(dictItem);
-
-		return dictItem;
+		return dictItemPersistence.update(dictItem);
+		//return dictItem;
 	}
 
 	/**
@@ -253,10 +252,11 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		DictItem dictItem = dictItemPersistence.fetchByF_parentItemId_level_Last(groupId, dictCollectionId,
 				parentItemId, level, null);
-		if ((Validator.isNotNull(dictItem) && sibling.equals("0")) || sibling.equals("0")) {
+		if ((Validator.isNotNull(dictItem) && "0".equals(sibling)) || "0".equals(sibling)) {
 			try {
 				sibling = GetterUtil.getInteger(dictItem.getSibling(), 1) + 1 + StringPool.BLANK;
 			} catch (Exception e) {
+				_log.error(e);
 				sibling = String.valueOf(1);
 			}
 		}
@@ -325,7 +325,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-		DictItem dictItem;
+		DictItem dictItem = null;
 
 		try {
 
@@ -340,7 +340,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			}
 
 		} catch (NoSuchDictItemException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
 
 		return dictItem;
@@ -365,23 +366,31 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			throw new UnauthorizationException();
 		}
 		DictItem dictItem = dictItemPersistence.fetchByF_dictItemCode(itemCode, groupId);
-		
-		List<DictItemGroup> lsDictItem = dictItemGroupPersistence.findByF_dictItemId(groupId, dictItem.getPrimaryKey());
-		
-		_log.info("DictItemGroupSize_" + dictItem.getPrimaryKey() + "_" + groupId + "_" + lsDictItem.size());
-		
-		try {
-
-			dictItem = dictItemLocalService.deleteDictItem(dictItem.getDictItemId());
-			
-			//remove DictItem
-			for (DictItemGroup dig : lsDictItem) {
-				dictItemGroupPersistence.remove(dig);
+		if (dictItem != null) {
+			List<DictItemGroup> lsDictItemGroup = dictItemGroupPersistence.findByF_dictItemId(groupId, dictItem.getPrimaryKey());
+			_log.info("DictItemGroupSize_" + dictItem.getPrimaryKey() + "_" + groupId + "_" + lsDictItemGroup.size());
+			//
+			dictItemLocalService.deleteDictItem(dictItem);
+			//remove DictItemGroup
+			if (lsDictItemGroup != null && lsDictItemGroup.size() > 0) {
+				for (DictItemGroup dig : lsDictItemGroup) {
+					dictItemGroupPersistence.remove(dig);
+				}
 			}
-
-		} catch (NoSuchDictItemException e) {
-			throw new NotFoundException();
 		}
+		
+//		List<DictItemGroup> lsDictItemGroup = dictItemGroupPersistence.findByF_dictItemId(groupId, dictItem.getPrimaryKey());
+//		_log.info("DictItemGroupSize_" + dictItem.getPrimaryKey() + "_" + groupId + "_" + lsDictItem.size());
+		
+//		try {
+//			dictItemLocalService.deleteDictItem(dictItem.getDictItemId());
+//			//remove DictItem
+//			for (DictItemGroup dig : lsDictItem) {
+//				dictItemGroupPersistence.remove(dig);
+//			}
+//		} catch (NoSuchDictItemException e) {
+//			throw new NotFoundException();
+//		}
 
 	}
 
@@ -470,9 +479,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		dictItem.setExpandoBridgeAttributes(baseModel);
 		// dictItem.setExpandoBridgeAttributes(serviceContext);
 
-		dictItemPersistence.update(dictItem);
-
-		return dictItem;
+		return dictItemPersistence.update(dictItem);
+		//return dictItem;
 	}
 
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,

@@ -14,8 +14,6 @@
 
 package org.opencps.synchronization.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import java.util.Date;
 import java.util.List;
 
@@ -31,8 +29,12 @@ import org.opencps.synchronization.service.base.PushDictGroupLocalServiceBaseImp
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the push dict group local service.
@@ -201,8 +203,10 @@ public class PushDictGroupLocalServiceImpl
 			return pushDictGroupPersistence.remove(pushDictGroupId);
 
 		} catch (NoSuchPushDictGroupException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
+		return null;
 	}
 	
 	@Override
@@ -221,5 +225,7 @@ public class PushDictGroupLocalServiceImpl
 	@Override
 	public List<PushDictGroup> findByGroupId_ServerNo(long groupId, String serverNo, int start, int end) {
 		return pushDictGroupPersistence.findByF_groupId_serverNo(groupId, serverNo, start, end);
-	}		
+	}
+
+	private static Log _log = LogFactoryUtil.getLog(PushDictGroupLocalServiceImpl.class);
 }

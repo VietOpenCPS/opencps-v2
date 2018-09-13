@@ -71,6 +71,7 @@ public class FrontendWebDossierPortlet extends FreeMarkerPortlet {
 		catch (Exception e) {
 			// TODO: handle exception
 			_log.info(e.getMessage());
+			_log.error(e);
 		}
 		
 		try {
@@ -84,6 +85,7 @@ public class FrontendWebDossierPortlet extends FreeMarkerPortlet {
 		} catch (Exception e) {
 			// TODO: handle exception
 			_log.info(e.getMessage());
+			_log.error(e);
 		}
 		
 		

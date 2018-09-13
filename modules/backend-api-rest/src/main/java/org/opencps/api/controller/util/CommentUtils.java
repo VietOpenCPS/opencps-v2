@@ -74,6 +74,7 @@ public class CommentUtils {
 				createDate = dateFormat.format(date);
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			_log.warn("Can't not get createDate " + e.getMessage());
 		}
 
@@ -87,6 +88,7 @@ public class CommentUtils {
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			_log.warn("Can't not get modifiedDate " + e.getMessage());
 		}
 
@@ -200,6 +202,7 @@ public class CommentUtils {
 				createDate = dateFormat.format(date);
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			_log.warn("Can't not get createDate " + e.getMessage());
 		}
 
@@ -213,6 +216,7 @@ public class CommentUtils {
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			_log.warn("Can't not get modifiedDate " + e.getMessage());
 		}
 
@@ -359,6 +363,7 @@ public class CommentUtils {
 				createDate = dateFormat.format(date);
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			_log.warn("Can't not get createDate " + e.getMessage());
 		}
 
@@ -372,6 +377,7 @@ public class CommentUtils {
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			_log.warn("Can't not get modifiedDate " + e.getMessage());
 		}
 
@@ -388,5 +394,5 @@ public class CommentUtils {
 		return commentModel;
 	}
 
-	public static Log _log = LogFactoryUtil.getLog(CommentUtils.class);
+	public static final Log _log = LogFactoryUtil.getLog(CommentUtils.class);
 }

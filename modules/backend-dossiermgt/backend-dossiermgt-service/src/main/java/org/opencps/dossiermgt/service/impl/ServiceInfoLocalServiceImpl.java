@@ -34,6 +34,8 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.ServiceInfoLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -87,6 +89,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil} to access the
 	 * service info local service.
 	 */
+	private Log _log = LogFactoryUtil.getLog(ServiceInfoLocalServiceImpl.class);
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceInfo removeServiceInfo(long serviceInfoId) throws PortalException {
 		ServiceInfo serviceInfo = serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
@@ -285,7 +288,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		try {
 			si = serviceInfoPersistence.findBySC_GI(serviceCode, groupId);
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		if (Validator.isNotNull(si)) {
@@ -382,7 +385,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (!level.equalsIgnoreCase("0") && Validator.isNotNull(level)) {
+		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);
@@ -483,7 +486,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (!level.equalsIgnoreCase("0") && Validator.isNotNull(level)) {
+		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
 			MultiMatchQuery query = new MultiMatchQuery(level);
 
 			query.addFields(ServiceInfoTerm.MAX_LEVEL);

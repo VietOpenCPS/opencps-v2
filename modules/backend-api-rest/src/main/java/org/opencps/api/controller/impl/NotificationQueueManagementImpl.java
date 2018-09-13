@@ -63,9 +63,9 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 	public Response getNotificationQueuesByID(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id) {
 		NotificationQueueInterface actions = new NotificationQueueActions();
-		NotificationQueueShortModel notificationQueueModel = new NotificationQueueShortModel();
+		NotificationQueueShortModel notificationQueueModel;
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		NotificationQueue notificationQueue = actions.read(id, serviceContext);
 

@@ -38,6 +38,7 @@ public class PublishEvent implements MessageListener {
 				OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 				client.publishDossier(OpenCPSConverter.convertDossierPublish(dossierObj));
 			} catch (JSONException e) {
+				_log.error(e);
 			}			
 		}
 	}

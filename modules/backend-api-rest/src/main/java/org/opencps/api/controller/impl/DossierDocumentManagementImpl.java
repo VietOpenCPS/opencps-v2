@@ -114,6 +114,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						return responseBuilder.build();
 
 					} catch (MessageBusException e) {
+						_log.error(e);
 						throw new Exception("Preview rendering not avariable");
 					}
 
@@ -272,6 +273,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					return responseBuilder.build();
 
 				} catch (MessageBusException e) {
+					_log.error(e);
 					throw new Exception("Preview rendering not avariable");
 				}
 			}

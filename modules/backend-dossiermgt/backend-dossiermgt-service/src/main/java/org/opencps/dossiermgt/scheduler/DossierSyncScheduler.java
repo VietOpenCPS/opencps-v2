@@ -130,7 +130,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 					} catch (Exception e) {
 						//e.printStackTrace();
-						
+						_log.error(e);
 						_log.info("Can't Sync DossierSyncId = " + elm.getDossierSyncId());
 					}
 				}
@@ -164,7 +164,8 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 			}
 
 		} catch (JSONException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return lsServer;
@@ -185,6 +186,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 		}
 
 		return groupId;

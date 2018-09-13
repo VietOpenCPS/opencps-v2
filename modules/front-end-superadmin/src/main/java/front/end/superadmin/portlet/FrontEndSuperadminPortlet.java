@@ -7,7 +7,6 @@ import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.portlet.ResourceURL;
-import javax.servlet.http.HttpServletRequest;
 
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.MenuConfig;
@@ -17,12 +16,12 @@ import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.util.bridges.freemarker.FreeMarkerPortlet;
 
@@ -39,7 +38,7 @@ import front.end.superadmin.constants.FrontEndSuperadminPortletKeys;
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
-
+	private Log _log = LogFactoryUtil.getLog(FrontEndSuperadminPortlet.class.getName());
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 			throws PortletException {
 		try {
@@ -48,10 +47,10 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 
 			ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
-			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
+//			HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+//			HttpServletRequest requestOrg = PortalUtil.getOriginalServletRequest(request);
 			
-			if (resourceID.equals("renderURLInit")) {
+			if ("renderURLInit".equals(resourceID)) {
 
 				User user = themeDisplay.getUser();
 
@@ -90,7 +89,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 				writeJSON(resourceRequest, resourceResponse, object);
 
-			} else if (resourceID.equals("getActionConfigs")) {
+			} else if ("getActionConfigs".equals(resourceID)) {
 				
 				List<ActionConfig> actionConfigs = ActionConfigLocalServiceUtil.getByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
@@ -100,7 +99,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 				writeJSON(resourceRequest, resourceResponse, object);
 				
-			} else if (resourceID.equals("getMenuConfigs")) {
+			} else if ("getMenuConfigs".equals(resourceID)) {
 				
 				List<MenuConfig> actionConfigs = MenuConfigLocalServiceUtil.getByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
@@ -110,7 +109,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 				
 				writeJSON(resourceRequest, resourceResponse, object);
 				
-			} else if (resourceID.equals("getStepConfigs")) {
+			} else if ("getStepConfigs".equals(resourceID)) {
 				
 				List<StepConfig> actionConfigs = StepConfigLocalServiceUtil.getStepByGroupId(themeDisplay.getScopeGroupId());
 				JSONObject object = JSONFactoryUtil.createJSONObject();
@@ -126,7 +125,7 @@ public class FrontEndSuperadminPortlet extends FreeMarkerPortlet {
 
 			}
 		} catch (Exception e) {
-
+			_log.error(e);
 			throw new PortletException((Throwable) e);
 
 		}

@@ -88,6 +88,7 @@ public class FrontendWebRegisterPortlet extends FreeMarkerPortlet {
 			
 		}
 		catch (Exception e) {
+			_log.error(e);
 		}
 
 		String registrationTemplateId =
@@ -108,6 +109,7 @@ public class FrontendWebRegisterPortlet extends FreeMarkerPortlet {
 		}
 		catch (Exception e) {
 			// TODO: handle exception
+			_log.error(e);
 			_log.info(e.getMessage());
 		}
 		
@@ -179,7 +181,7 @@ public class FrontendWebRegisterPortlet extends FreeMarkerPortlet {
 	
 	private List<JSONObject> getRegistrationStates(ThemeDisplay themeDisplay) {
 
-		JSONObject regObject = JSONFactoryUtil.createJSONObject();
+		JSONObject regObject;
 		List<JSONObject> registrationState = new ArrayList<>();
 		
 		PortletConfig portletConfig = PortletConfigFactoryUtil.get(

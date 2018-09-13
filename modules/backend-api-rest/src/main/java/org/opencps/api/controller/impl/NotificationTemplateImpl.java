@@ -91,7 +91,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			ServiceContext serviceContext, String type) {
 
 		NotificationTemplateInterface actions = new NotificationTemplateActions();
-		NotificationtemplateModel notificationtemplateModel = new NotificationtemplateModel();
+		NotificationtemplateModel notificationtemplateModel;
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 

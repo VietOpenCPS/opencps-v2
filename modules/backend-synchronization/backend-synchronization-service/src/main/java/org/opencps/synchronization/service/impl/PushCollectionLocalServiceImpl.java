@@ -29,6 +29,8 @@ import org.opencps.synchronization.service.base.PushCollectionLocalServiceBaseIm
 
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -56,6 +58,9 @@ public class PushCollectionLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.synchronization.service.PushCollectionLocalServiceUtil} to access the push collection local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(PushCollectionLocalServiceImpl.class);
+
 	@Override
 	public PushCollection addPushCollection(
 			long userId, 
@@ -196,8 +201,11 @@ public class PushCollectionLocalServiceImpl
 			return pushCollectionPersistence.remove(pushCollectionId);
 
 		} catch (NoSuchPushCollectionException e) {
-			throw new NotFoundException();
+			_log.error(e);
+			//throw new NotFoundException();
 		}
+
+		return null;
 	}
 	
 	@Override

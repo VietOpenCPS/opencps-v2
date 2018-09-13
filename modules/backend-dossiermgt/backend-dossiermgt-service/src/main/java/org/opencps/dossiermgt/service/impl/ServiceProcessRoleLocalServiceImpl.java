@@ -23,6 +23,8 @@ import org.opencps.dossiermgt.service.base.ServiceProcessRoleLocalServiceBaseImp
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
@@ -52,6 +54,7 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalServiceBaseImpl {
+	private static Log _log = LogFactoryUtil.getLog(ServiceProcessRoleLocalServiceImpl.class);
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -96,7 +99,8 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 		try {
 			indexer.reindex(serviceProcess);
 		} catch (SearchException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return serviceProcessRole;
@@ -119,7 +123,8 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 		try {
 			indexer.reindex(serviceProcess);
 		} catch (SearchException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 		
 		return serviceProcessRole;

@@ -103,6 +103,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -235,6 +236,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -418,6 +420,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -510,7 +513,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		if (is instanceof ByteArrayInputStream) {
 			size = is.available();
 			buf = new byte[size];
-			len = is.read(buf, 0, size);
+			is.read(buf, 0, size);
 		} else {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			buf = new byte[size];
@@ -544,6 +547,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("No Content.");
@@ -633,6 +637,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("Forbidden.");
@@ -662,6 +667,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("Forbidden.");
@@ -689,6 +695,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("Forbidden.");

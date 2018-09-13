@@ -178,7 +178,7 @@ public class LuceneQueryUtil {
 								* terms.length + t;
 						// String term = terms[t].trim().toLowerCase();
 						String term = terms[t].trim();
-						String key = StringPool.BLANK;
+						String key;
 						if (term.contains((StringPool.EQUAL.toLowerCase()))) {
 							key = term
 									.substring(
@@ -339,11 +339,11 @@ public class LuceneQueryUtil {
 
 		if (conditions != null && conditions.length > 0) {
 			for (int c = 0; c < conditions.length; c++) {
-				if (conditions[c].equalsIgnoreCase("and")) {
+				if ("and".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST);
-				} else if (conditions[c].equalsIgnoreCase("or")) {
+				} else if ("or".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.SHOULD);
-				} else if (conditions[c].equalsIgnoreCase("not")) {
+				} else if ("not".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST_NOT);
 				}
 			}
