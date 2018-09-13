@@ -410,7 +410,7 @@ public interface DataManagement {
 			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
 	
 	@PUT
-	@Path("/{code}/active/{itemCode}")
+	@Path("/{code}/active")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Update DictCollection by its code", response = DictCollectionModel.class)
@@ -424,7 +424,7 @@ public interface DataManagement {
 			@ApiParam(value = "code that need to be updated", required = true) @PathParam("code") String code
 			);
 	@PUT
-	@Path("/{code}/inactive/{itemCode}")
+	@Path("/{code}/inactive")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Update DictCollection by its code", response = DictCollectionModel.class)
