@@ -28,6 +28,7 @@
 		<column name="dataForm" type="String" />
 
 		<!-- Order -->
+        <column name="status" type="int"></column>
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>

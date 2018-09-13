@@ -47,7 +47,8 @@ public interface DataManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getDictCollection(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@BeanParam DataSearchModel query);
+			@BeanParam DataSearchModel query,
+			@QueryParam("status") String status);
 
 	@GET
 	@Path("/{code}")
@@ -407,4 +408,33 @@ public interface DataManagement {
 	public Response getSyncDictGroups(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@BeanParam org.opencps.api.datamgtsync.model.DataSearchModel query);
+	
+	@PUT
+	@Path("/{code}/active/{itemCode}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Update DictCollection by its code", response = DictCollectionModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a certain DictCollection was updated", response = DictCollectionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
+	public Response activeDictCollection(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "code that need to be updated", required = true) @PathParam("code") String code
+			);
+	@PUT
+	@Path("/{code}/inactive/{itemCode}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Update DictCollection by its code", response = DictCollectionModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a certain DictCollection was updated", response = DictCollectionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
+	public Response inActiveDictCollection(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "code that need to be updated", required = true) @PathParam("code") String code
+			);	
 }

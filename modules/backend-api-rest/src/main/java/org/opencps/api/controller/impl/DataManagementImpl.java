@@ -1,5 +1,26 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,34 +76,13 @@ import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
-import com.liferay.asset.kernel.exception.DuplicateCategoryException;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-
 public class DataManagementImpl implements DataManagement {
 
 	Log _log = LogFactoryUtil.getLog(DataManagementImpl.class);
 
 	@Override
 	public Response getDictCollection(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DataSearchModel query) {
+			User user, ServiceContext serviceContext, DataSearchModel query, String status) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionResults result = new DictCollectionResults();
 
@@ -100,6 +100,7 @@ public class DataManagementImpl implements DataManagement {
 
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
+			params.put("status", status);
 
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
@@ -2472,6 +2473,134 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(409).entity(error).build();
 
+		}
+	}
+
+	@Override
+	public Response activeDictCollection(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String code) {
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictCollectionModel dictCollectionModel = new DictCollectionModel();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
+
+			if (dictCollection != null) {
+				dictCollection = DictCollectionLocalServiceUtil.active(dictCollection.getDictCollectionId());
+			}
+			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
+
+			return Response.status(200).entity(dictCollectionModel).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
+		}
+	}
+
+	@Override
+	public Response inActiveDictCollection(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code) {
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictCollectionModel dictCollectionModel = new DictCollectionModel();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
+
+			if (dictCollection != null) {
+				dictCollection = DictCollectionLocalServiceUtil.inactive(dictCollection.getDictCollectionId());
+			}
+			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
+
+			return Response.status(200).entity(dictCollectionModel).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			if (e instanceof UnauthenticationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("authentication failed!");
+				error.setCode(401);
+				error.setDescription("authentication failed!");
+
+				return Response.status(401).entity(error).build();
+
+			}
+
+			if (e instanceof UnauthorizationException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("permission denied!");
+				error.setCode(403);
+				error.setDescription("permission denied!");
+
+				return Response.status(403).entity(error).build();
+
+			}
+
+			if (e instanceof NoSuchUserException) {
+
+				_log.error("@POST: " + e);
+				ErrorMsg error = new ErrorMsg();
+
+				error.setMessage("conflict!");
+				error.setCode(409);
+				error.setDescription("conflict!");
+
+				return Response.status(409).entity(error).build();
+
+			}
+
+			return Response.status(500).build();
 		}
 	}
 }
