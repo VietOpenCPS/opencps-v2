@@ -139,7 +139,7 @@ public class PaymentFileUtils {
 //		model.setGovAgencyName(paymentFile.getGovAgencyName());
 		// TODO:
 		try {
-			Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
+			DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
 //			model.setApplicantName(dossier.getApplicantName());
 //			model.setApplicantIdNo(dossier.getApplicantIdNo());
 		} catch (Exception e) {
@@ -336,7 +336,7 @@ public class PaymentFileUtils {
 				model.setInvoiceFileSize(0L);
 			}
 
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
+			DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(doc.get(PaymentFileTerm.DOSSIER_ID)));
 			
 //			model.setBriefNote(dossier.getBriefNote());
 

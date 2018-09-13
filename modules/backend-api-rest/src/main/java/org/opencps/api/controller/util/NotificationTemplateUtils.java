@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.opencps.api.notificationtemplate.model.NotificationQueueModel;
 import org.opencps.api.notificationtemplate.model.NotificationQueueShortModel;
 import org.opencps.api.notificationtemplate.model.NotificationTypeModel;
 import org.opencps.api.notificationtemplate.model.NotificationtemplateModel;
@@ -99,7 +98,7 @@ public class NotificationTemplateUtils {
 	public static List<NotificationtemplateModel> mapperNotificationtemplateList(List<Document> listDocument) {
 
 		List<NotificationtemplateModel> results = new ArrayList<>();
-		Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+//		Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
 
 		try {
 
@@ -113,7 +112,8 @@ public class NotificationTemplateUtils {
 								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 				ett.setNotificationType(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE));
 
-				ett.setTypeName(initTemplates.get(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
+//				ett.setTypeName(initTemplates.get(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
+//				ett.setTypeName(NotificationMGTConstants.getNotificationTemp(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
 
 				ett.setEmailSubject(document.get(NotificationTemplateTerm.NOTIFICATION_EMAIL_SUBJECT));
 				ett.setEmailBody(document.get(NotificationTemplateTerm.NOTIFICATION_EMAIL_BODY));
@@ -147,9 +147,9 @@ public class NotificationTemplateUtils {
 							notificationtemplate.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 			ett.setNotificationType(notificationtemplate.getNotificationType());
 
-			Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
+//			Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
 
-			ett.setTypeName(initTemplates.get(notificationtemplate.getNotificationType()));
+			ett.setTypeName(NotificationMGTConstants.getNotificationTemp(notificationtemplate.getNotificationType()));
 			ett.setEmailSubject(notificationtemplate.getEmailSubject());
 			ett.setEmailBody(notificationtemplate.getEmailBody());
 			ett.setTextMessage(notificationtemplate.getTextMessage());

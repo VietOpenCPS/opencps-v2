@@ -29,7 +29,7 @@ import vgca.svrsigner.ServerSigner;
 
 public class BCYSignatureUtil extends SignatureUtil {
 
-	public static Log _log = LogFactoryUtil.getLog(BCYSignatureUtil.class);
+	private static Log _log = LogFactoryUtil.getLog(BCYSignatureUtil.class);
 
 	/**
 	 * @param resourceRequest

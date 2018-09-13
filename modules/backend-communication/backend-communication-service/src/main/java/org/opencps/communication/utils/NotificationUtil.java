@@ -107,7 +107,7 @@ public class NotificationUtil {
 
 			}
 			catch (Exception e) {
-				// _log.error(e);
+				 _log.error(e);
 			}
 
 			String guestBaseUrl = StringPool.BLANK;
@@ -126,7 +126,7 @@ public class NotificationUtil {
 
 			}
 			catch (Exception e) {
-				// _log.error(e);
+				 _log.error(e);
 			}
 
 			String security = StringPool.BLANK;
@@ -136,9 +136,8 @@ public class NotificationUtil {
 				Object payload =
 					JSONFactoryUtil.looseDeserialize(queue.getPayload());
 
-				JSONObject payloadJSON =
-					JSONFactoryUtil.createJSONObject(queue.getPayload());
-
+//				JSONObject payloadJSON =
+//					JSONFactoryUtil.createJSONObject(queue.getPayload());
 //				if (payloadJSON.has("Visibility")) {
 //					security =
 //						payloadJSON.getJSONObject("Visibility").getString(
@@ -266,6 +265,7 @@ public class NotificationUtil {
 							}
 						}
 						catch (Exception e) {
+							_log.error(e);
 						}
 					}
 				}

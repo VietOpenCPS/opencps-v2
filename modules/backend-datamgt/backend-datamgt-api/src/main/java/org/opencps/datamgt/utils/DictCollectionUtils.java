@@ -20,11 +20,13 @@ public class DictCollectionUtils {
 		DictItem item = null;
 
 		try {
-
 			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
 
-			item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getDictCollectionId(), groupId);
+			if (dc != null) {
+				item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getDictCollectionId(), groupId);
+			}
 		} catch (Exception e) {
+			_log.error(e);
 		}
 
 		return item;

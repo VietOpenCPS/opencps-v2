@@ -148,6 +148,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 						try {
 							counter = CounterLocalServiceUtil.getCounter(certId);
 						} catch (Exception e) {
+							_log.error(e);
 						}
 						if (counter != null) {
 							String contentError = certId + "đã tồn tại trong hệ thống";
@@ -173,6 +174,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 								try {
 									counter = CounterLocalServiceUtil.getCounter(certId);
 								} catch (Exception e) {
+									_log.error(e);
 								}
 								if (counter != null) continue;
 								Counter counterInit = CounterLocalServiceUtil.createCounter(certId);
@@ -220,6 +222,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			jsObj.put("status", "done");
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
+			_log.error(e);
 			jsObj.put("status", "error");
 
 			return Response.status(500).entity(jsObj.toString()).build();
@@ -334,7 +337,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			return Response.status(200).entity(certNumber).build();
 
 		} catch (Exception e) {
-			
+			_log.error(e);
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 	}

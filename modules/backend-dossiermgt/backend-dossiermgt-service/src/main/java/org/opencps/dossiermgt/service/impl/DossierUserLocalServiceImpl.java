@@ -21,6 +21,8 @@ import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.service.base.DossierUserLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 
@@ -44,6 +46,7 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierUserLocalServiceUtil} to access the dossier user local service.
 	 */
+	private static Log _log = LogFactoryUtil.getLog(DossierUserLocalServiceImpl.class);
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierUser addDossierUser(long groupId, long dossierId, long userId, int moderator, boolean visited) {
 		DossierUserPK pk = new DossierUserPK();
@@ -54,6 +57,7 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 			oldObject = dossierUserPersistence.findByPrimaryKey(pk);
 		} catch (NoSuchDossierUserException e) {
 //			e.printStackTrace();
+			_log.error(e);
 		}
 		DossierUser object = null;
 		

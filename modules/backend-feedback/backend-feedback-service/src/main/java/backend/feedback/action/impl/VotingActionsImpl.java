@@ -31,7 +31,7 @@ import backend.feedback.service.VotingResultLocalServiceUtil;
 
 public class VotingActionsImpl implements VotingActions {
 
-	public static Locale locale = new Locale("vi", "VN");
+	public static final Locale locale = new Locale("vi", "VN");
 
 	private static final Log _log = LogFactoryUtil.getLog(VotingActionsImpl.class);
 

@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.usermgt.action.impl.EmployeeActions;
+import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
 import org.opencps.usermgt.model.Employee;
@@ -192,13 +193,14 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (Validator.isNotNull(listWor) && listWor.size() > 1) {
 			throw new UnauthorizationException();
 		}
-		System.out.println("After check child wu");
+//		System.out.println("After check child wu");
 		try {
 
 			workingUnit = workingUnitPersistence.remove(workingUnitId);
 
 		} catch (NoSuchWorkingUnitException e) {
-			throw new NotFoundException();
+			//throw new NotFoundException();
+			_log.error(e);
 		}
 
 		return workingUnit;
@@ -282,10 +284,12 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 			level = Validator.isNotNull(parentItem)?parentItem.getLevel() + 1: 0;
 		}
 		WorkingUnit workingUnit = workingUnitPersistence.fetchByF_parentId_level_Last(groupId, parentId, level, null);
-		if((Validator.isNotNull(workingUnit) && sibling.equals("0")) || sibling.equals("0")){
+		if ((Validator.isNotNull(workingUnit) && CommonTerm.STR_ZERO.equals(sibling))
+				|| CommonTerm.STR_ZERO.equals(sibling)) {
 			try {
 				sibling = workingUnit.getSibling() + 1 + StringPool.BLANK;
 			} catch (Exception e) {
+				_log.error(e);
 				sibling = String.valueOf(1);
 			}
 		}
@@ -477,17 +481,18 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 				for (int i = 0; i < 4 - sibling.length(); i++) {
 					ext += "0";
 				}
-				
-				System.out.println("WorkingUnitLocalServiceImpl.getTreeIndex()"+parentItem);
-				System.out.println("WorkingUnitLocalServiceImpl.getTreeIndex()"+sibling);
+
 				return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
 			
 			} catch (NoSuchWorkingUnitException e) {
-				throw new NotFoundException();
+				//throw new NotFoundException();
+				_log.error(e);
 			}
-		} else {
-			throw new NotFoundException();
 		}
+//		else {
+//			throw new NotFoundException();
+//		}
+		return StringPool.BLANK;
 	}
 	
 	public WorkingUnit getWorkingUnitbyGidandWid(long groupId, long workingUnitId){

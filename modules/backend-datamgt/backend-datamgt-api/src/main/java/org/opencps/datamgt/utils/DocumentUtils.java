@@ -3,6 +3,7 @@ package org.opencps.datamgt.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
@@ -11,6 +12,8 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
@@ -23,9 +26,10 @@ import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DocumentUtils {
+
+	private static Log _log = LogFactoryUtil.getLog(DocumentUtils.class);
 
 	public static boolean isFolderExist(long groupId, long parentFolderId, String folderName){
 
@@ -36,7 +40,7 @@ public class DocumentUtils {
 					folderName);
 			folderExist = true;
 		} catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 		return folderExist;
 	}
@@ -50,12 +54,8 @@ public class DocumentUtils {
 				folder = DLAppLocalServiceUtil.addFolder(serviceContext.getUserId(), groupId, parentFolderId, folderName, description, serviceContext);
 				
 				setFolderPermissions(folder);
-			} catch (PortalException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.error(e);
 			}
 		}else{
 			folder = DLAppLocalServiceUtil.getFolder(groupId,
@@ -69,13 +69,13 @@ public class DocumentUtils {
 			long groupId, long parentFolderId, String folderName,
 			ServiceContext serviceContext){
 		long fileEntryId = 0;
-		
+		InputStream is = null;
 		try {
 			Folder folder = DLAppLocalServiceUtil.getFolder(groupId,
 					parentFolderId, 
 					folderName);
 			
-			InputStream is = new FileInputStream( file );
+			is = new FileInputStream(file);
 			
 			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(serviceContext.getUserId(), groupId, folder.getFolderId(), fileName, mimeType,
 					title, description, "", is, file.length(), serviceContext);
@@ -83,15 +83,18 @@ public class DocumentUtils {
 			setFilePermissions(fileEntry);
 			
 			fileEntryId = fileEntry.getFileEntryId();
-		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
+			}
 		}
 		
 		return fileEntryId;
@@ -103,9 +106,10 @@ public class DocumentUtils {
 		ResourceAction resourceAction = ResourceActionLocalServiceUtil.getResourceAction(DLFileEntry.class.getName(), ActionKeys.VIEW);
 		String[] actionIdsGuest = new String[] { ActionKeys.VIEW, ActionKeys.ACCESS };
 		try{
-			resourcePermission = ResourcePermissionLocalServiceUtil.getResourcePermission(fileEntry.getCompanyId(),
-					DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(fileEntry
-							.getPrimaryKey()), guestMemberRole.getRoleId());
+//			resourcePermission = 
+			ResourcePermissionLocalServiceUtil.getResourcePermission(fileEntry.getCompanyId(),
+					DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(fileEntry.getPrimaryKey()), guestMemberRole.getRoleId());
 
 			ResourcePermissionLocalServiceUtil.setResourcePermissions(fileEntry.getCompanyId(), 
 					DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
@@ -116,6 +120,7 @@ public class DocumentUtils {
 //				ResourcePermissionLocalServiceUtil.updateResourcePermission(resourcePermission);
 //			}
 		} catch (NoSuchResourcePermissionException e){
+			_log.error(e);
 			resourcePermission = ResourcePermissionLocalServiceUtil
 			.createResourcePermission(CounterLocalServiceUtil.increment());
 			resourcePermission.setCompanyId(fileEntry.getCompanyId());
@@ -142,6 +147,7 @@ public class DocumentUtils {
 					 DLFolder.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
 					 String.valueOf(folder.getPrimaryKey()), siteMemberRole.getRoleId(), actionIds);
 		} catch (NoSuchResourcePermissionException e){
+			_log.error(e);
 			resourcePermission = ResourcePermissionLocalServiceUtil
 			.createResourcePermission(CounterLocalServiceUtil.increment());
 			resourcePermission.setCompanyId(folder.getCompanyId());

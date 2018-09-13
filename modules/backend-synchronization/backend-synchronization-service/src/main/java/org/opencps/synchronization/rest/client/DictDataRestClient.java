@@ -25,12 +25,15 @@ import org.opencps.synchronization.rest.model.DictItemModel;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 public class DictDataRestClient {
 	private String username;
 	private String password;
 	private String baseUrl;
 	private long groupId;
+	private static Log _log = LogFactoryUtil.getLog(DictDataRestClient.class);
 	
 	public long getGroupId() {
 		return groupId;
@@ -105,16 +108,11 @@ public class DictDataRestClient {
 				result = DictCollectionModel.fromJSONObject(obj);
 			}
 		} catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
+			_log.error(e);
 		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		}
-		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
+		} catch (Exception e) {
+			_log.error(e);
 		}			
 		
 		return result;
@@ -156,17 +154,12 @@ public class DictDataRestClient {
 				result = DictItemModel.fromJSONObject(obj);
 			}
 		} catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
+			_log.error(e);
 		} catch (IOException e) {
-
-			e.printStackTrace();
-
+			_log.error(e);
+		} catch (Exception e) {
+			_log.error(e);
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}			
 		
 		return result;
 	}	
@@ -206,17 +199,12 @@ public class DictDataRestClient {
 				result = DictGroupModel.fromJSONObject(obj);
 			}
 		} catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
+			_log.error(e);
 		} catch (IOException e) {
-
-			e.printStackTrace();
-
+			_log.error(e);
+		} catch (Exception e) {
+			_log.error(e);
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}			
 		
 		return result;
 	}	

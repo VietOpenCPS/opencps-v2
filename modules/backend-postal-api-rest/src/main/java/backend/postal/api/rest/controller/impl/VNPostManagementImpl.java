@@ -10,11 +10,9 @@ import javax.ws.rs.core.Response;
 import org.opencps.api.vnpost.model.VNPostInputModel;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import backend.postal.api.rest.controller.VNPostManagement;
 import vn.mitc.ngsp.sdk.VNPost_N_GSP.IOrder;

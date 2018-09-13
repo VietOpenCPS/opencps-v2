@@ -547,6 +547,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("not found!");
@@ -577,7 +578,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			}
 			
 			//
-			results.put("total",JsonArr.length());
+			results.put("total", JsonArr != null ? JsonArr.length() : 0);
 
 			results.put("data", JsonArr);
 

@@ -3,9 +3,7 @@ package backend.postal.api.rest.application;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 
@@ -56,12 +54,11 @@ public class BackendPostalApiRestApplication extends Application {
 		return singletons;
 		
 	}
-	
+
 	@GET
-	@Path("/aabcsbb")
 	@Produces("text/plain")
 	public String working() {
 		return "It works!";
 	}
-	
+
 }

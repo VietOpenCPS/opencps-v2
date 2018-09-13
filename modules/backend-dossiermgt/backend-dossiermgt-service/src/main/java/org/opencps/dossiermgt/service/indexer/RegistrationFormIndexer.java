@@ -106,7 +106,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 
 	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
 
-		List<Object[]> objects = new ArrayList<Object[]>();
+//		List<Object[]> objects = new ArrayList<Object[]>();
 		try {
 
 		Iterator<String> itr = json.keys();
@@ -127,6 +127,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 				keyValues.add(keyValue);
 				parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 			} catch (JSONException e) {
+				_log.error(e);
 				// string
 				Object[] keyValue = new Object[2];
 				keyValue[0] = key;
@@ -141,6 +142,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 		}
 		} catch (Exception e2) {
 			//
+			_log.error(e2);
 		}
 
 		return keyValues;
@@ -148,7 +150,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 
 	protected List<Object[]> parseJSONObjectIndex(List<Object[]> keyValues, JSONObject json, String keyJson) {
 
-		List<Object[]> objects = new ArrayList<Object[]>();
+//		List<Object[]> objects = new ArrayList<Object[]>();
 		if (json != null) {
 			Iterator<String> itr = json.keys();
 			while (itr.hasNext()) {
@@ -168,6 +170,7 @@ public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
+					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + "@" + key;

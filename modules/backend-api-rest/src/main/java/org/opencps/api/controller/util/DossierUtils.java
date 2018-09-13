@@ -389,9 +389,9 @@ public class DossierUtils {
 			subTimeStamp = Math.abs(subTimeStamp);
 		}
 
-		String strOverDue = StringPool.BLANK;
-		double dueCount = 0d;
-		double overDue = 0d;
+		String strOverDue;
+		double dueCount;
+		double overDue;
 		int retval = Double.compare(durationUnit, 1.0);
 		if (retval < 0) {
 			strOverDue = " ngày";
@@ -524,9 +524,9 @@ public class DossierUtils {
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 			//Process OverDue
-			Date now = new Date();
-			long dateNowTimeStamp = now.getTime();
-			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
+//			Date now = new Date();
+//			long dateNowTimeStamp = now.getTime();
+//			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 //			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
 //			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
@@ -617,6 +617,7 @@ public class DossierUtils {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
 		} catch (Exception e) {
+			_log.error(e);
 			model.setDossierIdCTN(StringPool.BLANK);
 		}
 		
@@ -736,6 +737,7 @@ public class DossierUtils {
 							
 						} catch (Exception e) {
 							// TODO: handle exception
+							_log.error(e);
 						}
 					}
 					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
@@ -799,6 +801,7 @@ public class DossierUtils {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
 		} catch (Exception e) {
+			_log.error(e);
 			model.setDossierIdCTN("");
 		}
 		
@@ -874,7 +877,7 @@ public class DossierUtils {
 
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
-			String preStepCode = StringPool.BLANK;
+			String preStepCode;
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();

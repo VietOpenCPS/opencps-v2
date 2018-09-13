@@ -241,6 +241,6 @@ public class UserUtils {
 		return results;
 	}
 	
-	public static Locale locale = new Locale("vi", "VN");
+	public static final Locale locale = new Locale("vi", "VN");
 	static Log _log = LogFactoryUtil.getLog(UserUtils.class);
 }

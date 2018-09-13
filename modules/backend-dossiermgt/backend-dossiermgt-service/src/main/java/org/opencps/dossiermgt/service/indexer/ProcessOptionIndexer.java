@@ -101,7 +101,7 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 			jsonObj.put(ProcessOptionTerm.TEMPLATE_NO, dossierTemplate.getTemplateNo());
 			jsonObj.put(ProcessOptionTerm.TEMPLATE_NAME, dossierTemplate.getTemplateName());
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		try {
@@ -110,7 +110,7 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 			jsonObj.put(ProcessOptionTerm.PROCESS_NAME, serviceProcess.getProcessName());
 
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		try {
@@ -123,7 +123,7 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 				jsonObj.put(ActionKeys.APPLICANT_CTZ, Boolean.toString(serviceConfig.getForCitizen()));
 
 		} catch (Exception e) {
-
+			_log.error(e);
 		}
 
 		return jsonObj;

@@ -51,8 +51,10 @@ public class ImportZipFileUtils {
 			_log.error(e);
 		} finally {
 			try {
-				zipIn.closeEntry();
-				zipIn.close();
+				if (zipIn != null) {
+					zipIn.closeEntry();
+					zipIn.close();
+				}
 			} catch (IOException e1) {
 				_log.error(e1);
 			}
@@ -109,7 +111,8 @@ public class ImportZipFileUtils {
 			_log.error(e);
 		} finally {
 			try {
-				bos.close();
+				if (bos != null)
+					bos.close();
 			} catch (IOException e1) {
 				_log.error(e1);
 			}

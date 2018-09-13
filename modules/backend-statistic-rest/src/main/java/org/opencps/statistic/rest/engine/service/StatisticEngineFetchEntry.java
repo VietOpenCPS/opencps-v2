@@ -10,14 +10,11 @@ import java.util.Date;
 
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
-import org.opencps.statistic.rest.util.DossierStatusContants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.util.Validator;
 
 public class StatisticEngineFetchEntry {
-	private static final Logger LOG = LoggerFactory.getLogger(StatisticEngineFetchEntry.class);
+//	private static final Logger _log = LoggerFactory.getLogger(StatisticEngineFetchEntry.class);
 
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData) {
 		int month = LocalDate.now().getMonthValue();
@@ -44,7 +41,7 @@ public class StatisticEngineFetchEntry {
 			statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
 		} else {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
-			if (Validator.isNotNull(dossierData.getReceiveDate()) && receviedDate.after(getFirstDay())) {
+			if (receviedDate != null && receviedDate.after(getFirstDay())) {
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
@@ -63,13 +60,13 @@ public class StatisticEngineFetchEntry {
 					statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
 				} else {
 					statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
-					if (!dossierData.getDossierStatus().equals("procesing")) {
+					if (!"procesing".equals(dossierData.getDossierStatus())) {
 						statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
 					} else {
 						statisticData.setInsideCount(statisticData.getInsideCount() + 1);
 					}
 
-					if (!Validator.isNull(dueDate) && !dueDate.after(new Date())) {
+					if (dueDate != null && !dueDate.after(new Date())) {
 						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
 						if (dossierData.getDossierStatus().contentEquals("interoperating")) {
 							statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
@@ -93,10 +90,11 @@ public class StatisticEngineFetchEntry {
 					statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
 				}
 
-				if (Validator.isNotNull(dueDate) && Validator.isNotNull(extendDate) && extendDate.before(dueDate)) {
+				if (dueDate != null && extendDate != null && extendDate.before(dueDate)) {
 					statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
 				} else if (!Validator.isNull(dossierData.getDueDate())
-						&& (!Validator.isNotNull(dossierData.getReleaseDate()) || !releaseDate.before(dueDate))) {
+						&& (!Validator.isNotNull(dossierData.getReleaseDate())
+								|| (releaseDate != null && !releaseDate.before(dueDate)))) {
 					statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
 					boolean isOvertimeInside = true;
 					if (isOvertimeInside) {
@@ -120,11 +118,11 @@ public class StatisticEngineFetchEntry {
 		return Date.from(instant);
 	}
 
-	private static Date getLastDay() {
-		LocalDateTime localDateTime = LocalDateTime.now();
-		localDateTime = localDateTime.with(TemporalAdjusters.lastDayOfMonth());
-		localDateTime = localDateTime.with(LocalTime.MAX);
-		Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
-		return Date.from(instant);
-	}
+//	private static Date getLastDay() {
+//		LocalDateTime localDateTime = LocalDateTime.now();
+//		localDateTime = localDateTime.with(TemporalAdjusters.lastDayOfMonth());
+//		localDateTime = localDateTime.with(LocalTime.MAX);
+//		Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+//		return Date.from(instant);
+//	}
 }

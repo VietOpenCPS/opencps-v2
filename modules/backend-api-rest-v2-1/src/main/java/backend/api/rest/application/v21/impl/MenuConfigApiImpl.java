@@ -11,9 +11,8 @@ import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
@@ -21,7 +20,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import backend.api.rest.application.v21.elasticwrap.ElasticQueryWrapUtil;
 import backend.api.rest.application.v21.parser.OpenCPSAPIParsing;
 import io.swagger.api.MenuConfigApi;
 import io.swagger.model.MenuConfigCountItemResults;
@@ -29,7 +27,7 @@ import io.swagger.model.MenuConfigItem;
 import io.swagger.model.MenuConfigItemResult;
 
 public class MenuConfigApiImpl implements MenuConfigApi {
-
+	private static Log _log = LogFactoryUtil.getLog(MenuConfigApiImpl.class);
 	@Context
 	private User user;
 
@@ -51,7 +49,7 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 	public MenuConfigItem addMenuConfig(MenuConfigItem body) {
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		System.out.println("MenuConfigApiImpl.addMenuConfig()" + body);
+//		System.out.println("MenuConfigApiImpl.addMenuConfig()" + body);
 		try {
 
 			serviceContext.setUserId(userId);
@@ -63,8 +61,10 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -82,8 +82,10 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			action.deleteMenuConfig(Long.valueOf(id), serviceContext);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
@@ -116,8 +118,10 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
+			_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -138,7 +142,7 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItemResult getMenuConfigsTodo(String q) {
-		MenuConfigItemResult body = new MenuConfigItemResult();
+		MenuConfigItemResult body;
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 //		try {

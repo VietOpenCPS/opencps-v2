@@ -79,6 +79,7 @@ public class OpenCPSAPIParsing {
 		}
 		catch (Exception e) {
 //			e.printStackTrace();
+			_log.error(e);
 		}
 		return object;
 
@@ -129,7 +130,7 @@ public class OpenCPSAPIParsing {
 				for (MenuConfig menuConfig : lstMenus) {
 					if (menuConfig.getGroupId() == groupId) {
 						MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
-						MenuConfigStepsItem menuConfigStepsItem = new MenuConfigStepsItem();
+						MenuConfigStepsItem menuConfigStepsItem;
 						List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
 						
 						for (StepConfig stepConfig : lstSteps) {
@@ -155,7 +156,7 @@ public class OpenCPSAPIParsing {
 
 			for (MenuConfig menuConfig : lstMenus) {
 				MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
-				MenuConfigStepsItem menuConfigStepsItem = new MenuConfigStepsItem();
+				MenuConfigStepsItem menuConfigStepsItem;
 				List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
 				
 				for (StepConfig stepConfig : lstSteps) {
@@ -230,8 +231,8 @@ public class OpenCPSAPIParsing {
 			
 		}
 		
-		List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
-		MenuConfigStepsItem menuConfigStepsItem = new MenuConfigStepsItem();
+		List<MenuConfigStepsItem> menuConfigStepsItems;
+		MenuConfigStepsItem menuConfigStepsItem;
 		
 		for (MenuConfigItem menuConfigItem : data) {
 			

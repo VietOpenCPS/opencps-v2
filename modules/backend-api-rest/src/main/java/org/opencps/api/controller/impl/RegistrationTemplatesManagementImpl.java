@@ -58,7 +58,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			RegistrationTemplatesActions action = new RegistrationTemplatesActionsImpl();
 
-			JSONObject registrationTemplateJsonObject = JSONFactoryUtil.createJSONObject();
+			JSONObject registrationTemplateJsonObject;
 
 			if (Validator.isNull(formNo) && Validator.isNull(govAgencyCode)) {
 				registrationTemplateJsonObject = action.getRegistrationTemplates(groupId, start, end);

@@ -1,7 +1,5 @@
 package org.opencps.api.controller.util;
 
-import java.util.Map;
-
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
@@ -32,7 +30,7 @@ public class MyBackgroundTaskExecutor extends BaseBackgroundTaskExecutor {
 
     public BackgroundTaskResult execute(BackgroundTask backgroundTask) {
 
-        Map taskContextMap = backgroundTask.getTaskContextMap();
+//        Map taskContextMap = backgroundTask.getTaskContextMap();
 
         // do your business logic here
         

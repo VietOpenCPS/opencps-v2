@@ -132,7 +132,7 @@ public class OneGateControllerImpl implements OneGateController {
 								}
 							}
 							catch (NoSuchDossierTemplateException e) {
-								
+								_log.error(e);
 							}
 							options.put(elmOption);							
 						}
@@ -159,6 +159,7 @@ public class OneGateControllerImpl implements OneGateController {
 			return Response.status(200).entity(results.toJSONString()).build();
 
 		} catch (Exception e) {
+			_log.error(e);
 			return _processException(e);
 		}
 
@@ -171,7 +172,7 @@ public class OneGateControllerImpl implements OneGateController {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		
-		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+//		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 		
 		DossierPermission dossierPermission = new DossierPermission();
 
@@ -333,7 +334,7 @@ public class OneGateControllerImpl implements OneGateController {
 			User user, ServiceContext serviceContext, long dossierId, String serviceCode, String govAgencyCode,
 			String dossierTemplateNo, String dossierActionId) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		long dActionId = GetterUtil.getLong(dossierActionId);
+//		long dActionId = GetterUtil.getLong(dossierActionId);
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 	
 		BackendAuth auth = new BackendAuthImpl();

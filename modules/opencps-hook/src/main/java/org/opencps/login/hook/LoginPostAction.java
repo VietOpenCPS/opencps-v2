@@ -5,6 +5,8 @@ import org.osgi.service.component.annotations.Component;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.events.LifecycleEvent;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -19,7 +21,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
  */
 @Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
 public class LoginPostAction implements LifecycleAction {
-
+	private static final Log _log = LogFactoryUtil.getLog(LoginPostAction.class);
 	@Override
 	public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {
 		User user;
@@ -39,7 +41,8 @@ public class LoginPostAction implements LifecycleAction {
 			lifecycleEvent.getResponse().sendRedirect("/web" + friendlyUrl);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 	}
