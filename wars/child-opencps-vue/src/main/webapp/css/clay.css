@@ -18395,12 +18395,12 @@ th {
 
 .table-bordered thead td,
 .table-bordered thead th {
-    border-top-width: 1px
+    border-top-width: 0
 }
 
 .table-bordered td,
 .table-bordered th {
-    border-width: 1px
+    border-width: 0
 }
 
 .table-striped tbody tr:nth-of-type(odd) td,
@@ -25527,11 +25527,17 @@ a .icon-fb-decimal {
     content: "\f155"
 }
 
+@font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('../fonts/glyphicons-halflings-regular.eot');
+  	src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
 .glyphicon {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     display: inline-block;
-    font-family: 'Glyphicons Halflings';
+    font-family: 'Glyphicons Halflings' !important;
     font-style: normal;
     font-weight: normal;
     line-height: 1;
@@ -27563,8 +27569,8 @@ label {
 .radio,
 .checkbox {
     display: block;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin-bottom: unset !important;
+    margin-top: unset !important;
     position: relative
 }
 
@@ -27574,7 +27580,7 @@ label {
     cursor: pointer;
     font-weight: normal;
     margin-bottom: 0;
-    padding-left: 20px
+    padding-left: unset !important;
 }
 
 .radio input[type="radio"],
@@ -27611,13 +27617,13 @@ label {
 .checkbox label,
 .radio label {
     font-weight: 600;
-    padding-left: 25px
+    padding-left: unset !important;
 }
 
 @media(-webkit-min-device-pixel-ratio:0) {
     .checkbox label,
     .radio label {
-        padding-left: 20px
+        padding-left: unset !important;
     }
 }
 
@@ -30419,4 +30425,23 @@ div.splitter,
 
 .status.expired {
     color: #b95000
+}
+
+
+#navigation .nav.navbar-nav img {
+    width: 12px;
+    margin-right: 5px;
+    height: 12px;
+}
+body .tooltip {
+    padding-top: inherit;
+}
+.datatable__progress, .datatable__progress td, .datatable__progress th, .datatable__progress tr {
+	    display: none !important;
+}
+body .alpaca-field table thead tr {
+  height: auto;
+}
+body .alpaca-array-actionbar.alpaca-array-actionbar-top {
+	padding-bottom: unset !important;
 }

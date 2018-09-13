@@ -16,6 +16,7 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import backend.postal.api.rest.controller.impl.EInvoiceManagementImpl;
 import backend.postal.api.rest.controller.impl.EvaluationManagementImpl;
 import backend.postal.api.rest.controller.impl.VNPostManagementImpl;
+import backend.postal.api.rest.controller.impl.VotingManagementImpl;
 
 /**
  * @author admin
@@ -48,6 +49,7 @@ public class BackendPostalApiRestApplication extends Application {
 		singletons.add(new EvaluationManagementImpl());
 		singletons.add(new EInvoiceManagementImpl());
 		singletons.add(new VNPostManagementImpl());
+		singletons.add(new VotingManagementImpl());
 		
 		singletons.add(this);
 		

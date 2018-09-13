@@ -28,7 +28,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auto.login.basic.auth.header.BasicAuthHeaderAutoLogin;
 
 @Component(immediate = true, property = {
-		"auth.verifier.OpenCPSAuthHeaderAuthVerifier.urls.includes=*"
+		"auth.verifier.OpenCPSAuthHeaderAuthVerifier.urls.includes=/o/rest/*"
 })
 
 public class OpenCPSAuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin
@@ -150,6 +150,7 @@ implements AuthVerifier {
 
 				boolean forcedBasicAuth = MapUtil.getBoolean(
 					accessControlContext.getSettings(), "basic_auth");
+
 				if (!forcedBasicAuth) {
 					forcedBasicAuth = GetterUtil.getBoolean(
 						properties.getProperty("basic_auth"));
