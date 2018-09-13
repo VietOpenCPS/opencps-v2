@@ -180,8 +180,6 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String govAgencyCode, String groupAgenvyCode, boolean reporting, int start, int end)
 			throws PortalException, SystemException {
 		
-		_log.info("RUN HERE ***** searchDossierStatistic");
-		
 		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroupAndReporting(groupId, month, year, domain,
 				govAgencyCode, groupAgenvyCode, reporting, start, end);
 	}

@@ -72,7 +72,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		for (Group site : sites) {
 			
-			LOG.info("START getDossierStatistic(): " + site.getGroupId());
+//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
 
 //			GetDossierResponse dossierResponse = new GetDossierResponse();
 			

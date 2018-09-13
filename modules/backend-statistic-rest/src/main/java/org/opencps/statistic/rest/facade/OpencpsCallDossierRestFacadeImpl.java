@@ -71,7 +71,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
-		LOG.info(url);
+		// LOG.info(url);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
 		DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);

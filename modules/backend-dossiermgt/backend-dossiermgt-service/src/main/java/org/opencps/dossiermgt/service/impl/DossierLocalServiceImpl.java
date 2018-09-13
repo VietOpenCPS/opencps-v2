@@ -252,8 +252,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				if (serviceProcess != null ) {
 					durationCount = serviceProcess.getDurationCount();
 					durationUnit = serviceProcess.getDurationUnit();
-					_log.info("durationCount: "+durationCount);
-					_log.info("durationUnit: "+durationUnit);
+//					_log.info("durationCount: "+durationCount);
+//					_log.info("durationUnit: "+durationUnit);
 //					int durationDays = 0;
 //
 //					if (durationUnit == 0) {
@@ -656,8 +656,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			durationUnit = serviceProcess.getDurationUnit();
 		}
 
-		_log.info("durationCount: "+durationCount);
-		_log.info("durationUnit: "+durationUnit);
+//		_log.info("durationCount: "+durationCount);
+//		_log.info("durationUnit: "+durationUnit);
 		
 		Date dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
 
@@ -736,7 +736,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //		long paymentAmount = 0;
 		if (serviceProcess != null) {
 			paymentFee = serviceProcess.getPaymentFee();
-			_log.info("paymentFee: "+paymentFee);
+//			_log.info("paymentFee: "+paymentFee);
 		}
 //		PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossierId, referenceUid, govAgencyCode,
 //				govAgencyName, applicantName, applicantIdNo, paymentFee, paymentAmount, paymentNote, epaymentProfile,
@@ -1975,10 +1975,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				flagEmail = false;
 			}
 		}
-		_log.info("flagEmail: "+flagEmail);
-		_log.info("emailLogin: "+emailLogin);
+//		_log.info("flagEmail: "+flagEmail);
+//		_log.info("emailLogin: "+emailLogin);
 		if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-			_log.info("TEST: "+true);
+//			_log.info("TEST: "+true);
 			MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
 			queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
 			booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
@@ -2103,7 +2103,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (year > 0) {
-			_log.info("year: "+year);
+//			_log.info("year: "+year);
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
 			MultiMatchQuery queryYearTwo = new MultiMatchQuery(String.valueOf(year));
 
@@ -2184,7 +2184,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (month > 0) {
-			_log.info("month: "+month);
+//			_log.info("month: "+month);
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
 			MultiMatchQuery queryMonthTwo = new MultiMatchQuery(String.valueOf(month));
 			
@@ -2229,7 +2229,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(top)) {
 			if (DossierTerm.PASSED.equals(top.toLowerCase())) {
-				_log.info("top: "+top);
+//				_log.info("top: "+top);
 				MultiMatchQuery queryAction = new MultiMatchQuery(String.valueOf(userId));
 				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
 				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
@@ -2629,7 +2629,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		try {
 			List<ServerConfig> sc = ServerConfigLocalServiceUtil.getGroupId(groupId);
-			_log.info("sc.get(0).getServerNo():" + sc.get(0).getServerNo());
+//			_log.info("sc.get(0).getServerNo():" + sc.get(0).getServerNo());
 			return sc.get(0).getServerNo();
 		} catch (Exception e) {
 			_log.error(e);
@@ -2847,7 +2847,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateDossier(long dossierId, JSONObject obj) throws NoSuchDossierException {
-		_log.info("Object dossier update: " + obj.toJSONString());
+//		_log.info("Object dossier update: " + obj.toJSONString());
 		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
 		
 		if (obj.has(DossierTerm.DOSSIER_NOTE)) {
@@ -2861,9 +2861,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 		if (obj.has(DossierTerm.DOSSIER_NO)) {
-			_log.info("Sync dossier no");
+//			_log.info("Sync dossier no");
 			if (Validator.isNotNull(obj.getString(DossierTerm.DOSSIER_NO)) && !obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
-				_log.info("Sync set dossier no");
+//				_log.info("Sync set dossier no");
 				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
 			}
 		}

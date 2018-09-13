@@ -168,8 +168,8 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 		String emailLogin = user.getEmailAddress();
-		_log.info("userId: "+userId);
-		_log.info("emailLogin: "+emailLogin);
+//		_log.info("userId: "+userId);
+//		_log.info("emailLogin: "+emailLogin);
 //		BackendAuth auth = new BackendAuthImpl();
 //		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -218,7 +218,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (isCitizen) {
 				owner = String.valueOf(true);
 			}
-			_log.info("owner: "+owner);
+//			_log.info("owner: "+owner);
 			String follow = query.getFollow();
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
@@ -236,8 +236,8 @@ public class DossierManagementImpl implements DossierManagement {
 					year = baseDateCal.get(Calendar.YEAR);
 				}
 			}
-			_log.info("month: "+month);
-			_log.info("year: "+year);
+//			_log.info("month: "+month);
+//			_log.info("year: "+year);
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
 			String dossierNoSearch = StringPool.BLANK;

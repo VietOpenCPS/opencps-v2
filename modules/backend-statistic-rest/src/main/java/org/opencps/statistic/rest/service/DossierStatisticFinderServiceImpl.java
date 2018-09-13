@@ -23,7 +23,7 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest)
 			throws PortalException, SystemException {
 		
-		LOG.info("***DossierStatisticFinderServiceImpl");
+//		LOG.info("***DossierStatisticFinderServiceImpl");
 		
 		DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 		
