@@ -19,13 +19,12 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
@@ -33,7 +32,7 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 
 public class StatisticSumYearCalcular {
 	
-	//private final static Logger LOG = LoggerFactory.getLogger(StatisticSumYearCalcular.class);
+	private static Log _log = LogFactoryUtil.getLog(StatisticSumYearCalcular.class);
 
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
@@ -87,16 +86,15 @@ public class StatisticSumYearCalcular {
 										domainResponse.getItemName(), null, null, source,
 										latestMonthStatisticData);
 							} catch (SystemException e) {
-								e.printStackTrace();
+								_log.error(e);
 							} catch (PortalException e) {
-								e.printStackTrace();
+								_log.error(e);
 							}
 						}
-
 					});
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					_log.error(e);
 				}
 
 			}
@@ -129,16 +127,16 @@ public class StatisticSumYearCalcular {
 							getDetailData(companyId, groupId, 0, year, null, null,
 									null, null, source, latestMonthStatisticData);
 						} catch (SystemException e) {
-							e.printStackTrace();
+							_log.error(e);
 						} catch (PortalException e) {
-							e.printStackTrace();
+							_log.error(e);
 						}
 					}
 
 				});
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 		}
@@ -176,19 +174,16 @@ public class StatisticSumYearCalcular {
 									getDetailData(companyId, groupId, 0, year, null, null,
 											data.getItemCode(), data.getItemName(), source2, latestMonthStatisticData);
 								} catch (SystemException e) {
-
-									e.printStackTrace();
+									_log.error(e);
 								} catch (PortalException e) {
-
-									e.printStackTrace();
+									_log.error(e);
 								}
 							}
 
 						});
 
 					} catch (PortalException e) {
-
-						e.printStackTrace();
+						_log.error(e);
 					}
 
 				}
@@ -238,19 +233,16 @@ public class StatisticSumYearCalcular {
 													domainResponse.getItemName(), data.getItemCode(),
 													data.getItemName(), source2, latestMonthStatisticData);
 										} catch (SystemException e) {
-
-											e.printStackTrace();
+											_log.error(e);
 										} catch (PortalException e) {
-
-											e.printStackTrace();
+											_log.error(e);
 										}
 									}
 
 								});
 
 							} catch (PortalException e) {
-
-								e.printStackTrace();
+								_log.error(e);
 							}
 						}
 					}
@@ -297,7 +289,7 @@ public class StatisticSumYearCalcular {
 			});
 
 		} catch (PortalException e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		/* remove duplicate */

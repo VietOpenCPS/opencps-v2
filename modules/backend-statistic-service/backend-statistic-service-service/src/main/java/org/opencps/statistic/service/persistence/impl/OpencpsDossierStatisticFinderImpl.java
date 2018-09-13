@@ -101,10 +101,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 
 		} catch (Exception e) {
+			LOG.error(e);
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				se.printStackTrace();
+				LOG.error(se);
 			}
 		} finally {
 			closeSession(session);
@@ -170,10 +171,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 
 		} catch (Exception e) {
+			LOG.error(e);
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				se.printStackTrace();
+				LOG.error(se);
 			}
 		} finally {
 			closeSession(session);
@@ -262,10 +264,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			return (List<OpencpsDossierStatistic>) QueryUtil.list(q, getDialect(), start, end);
 
 		} catch (Exception e) {
+			LOG.error(e);
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				se.printStackTrace();
+				LOG.error(se);
 			}
 		} finally {
 			closeSession(session);
