@@ -26,7 +26,7 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 		try {
 			doProcessNotification(message);
 
-			String[] notificationTypeList = { "USER-01", "USER-02", "USER-03", "USER-04" };
+//			String[] notificationTypeList = { "USER-01", "USER-02", "USER-03", "USER-04" };
 //			SchedulerUtilProcessing.notificationByType(notificationTypeList);
 
 		} catch (Exception e) {

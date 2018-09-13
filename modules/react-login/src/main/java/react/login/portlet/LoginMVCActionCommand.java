@@ -92,7 +92,7 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 			AuthenticatedSessionManagerUtil.login(
 				request, response, login, password, rememberMe, authType);
 
-			if (action != null && action.equals("confirm_account")) {
+			if (action != null && "confirm_account".equals(action)) {
 				actionResponse.sendRedirect(
 					themeDisplay.getPortalURL() + "/profile");
 			}
