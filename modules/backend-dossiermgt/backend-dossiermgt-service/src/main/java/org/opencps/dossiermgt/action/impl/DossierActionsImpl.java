@@ -1665,7 +1665,7 @@ public class DossierActionsImpl implements DossierActions {
 
 				// Cap nhat ngay tiep nhan khi duoc cap so
 
-				dossier.setReceiveDate(new Date());
+				// dossier.setReceiveDate(new Date());
 
 				dossier.setDossierNo(dossierRef.trim());
 				// To index
