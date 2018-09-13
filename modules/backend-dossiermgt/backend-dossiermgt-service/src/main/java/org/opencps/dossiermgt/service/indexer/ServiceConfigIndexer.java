@@ -6,6 +6,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -83,6 +84,7 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 			document.addTextSortable(ServiceConfigTerm.SERVICE_NAME, serviceInfo.getServiceName());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+			document.addKeywordSortable(ServiceConfigTerm.ACTIVE_, Boolean.toString(serviceInfo.getPublic_()));
 		}
 		return document;
 	}

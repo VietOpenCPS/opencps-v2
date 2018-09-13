@@ -123,7 +123,7 @@
 							</div>
 							<div class="col-sm-2 PR0">
 								<div class="form-group"> 
-									<input type="text" class="form-control" id="contactTelNo" name="contactTelNo" data-bind="value : contactTelNo" required="required" validationMessage="Bạn phải điền số điện thoại">
+									<input type="tel" class="k-textbox" id="contactTelNo" name="contactTelNo" data-bind="value : contactTelNo" required="required" pattern="^0(1\d{9}|9\d{8})$" validationMessage="Bạn phải điền số điện thoại 10 số hoặc 11 số">
 									<span data-for="contactTelNo" class="k-invalid-msg"></span> 
 								</div>
 							</div>
@@ -236,7 +236,6 @@
 							formdata.dinh_danh = dinh_danh;
 						}
 					} -->
-					
 					alpaca.data = formdata; 
 
 					setTimeout(function(){
@@ -260,31 +259,32 @@
 
 <div class="row-parts-content">
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-sm-12 PB10">
 			<label>Ghi chú</label>
 			<input class="form-control" name="applicantNote" id="applicantNote" placeholder="Ghi chú">
 		</div>
 	</div>
-
-	<div class="ML15 MT15">
-		<input type="checkbox" id="viaPostal" name="viaPostal" data-bind="attr : {viaPostal : viaPostal}"> <label class="text-normal" for="viaPostal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
-	</div>
-	
-	<div class="row MB20">
-		<div class="col-xs-12 col-sm-7">
-			<label>Địa chỉ nhận kết quả</label>
-			<input type="text" class="form-control input-small" placeholder="Ghi rõ thôn, số nhà, tên đường - phố" id="postalAddress" name="postalAddress" required="required" validationMessage="Bạn phải nhập địa chỉ nhận kết quả" data-bind="value : postalAddress">
-			<span data-for="postalAddress" class="k-invalid-msg"></span> 
+	<div id="postal">
+		<div class="ML15 MT5">
+			<input type="checkbox" id="viaPostal" name="viaPostal" data-bind="attr : {viaPostal : viaPostal}"> <label class="text-normal" for="viaPostal">Ông bà muốn sử dụng phương thức nhận kết quả hồ sơ qua đường bưu điện</label>
 		</div>
-		<div class="col-xs-12 col-sm-2">
-			<label>Tỉnh/Thành phố</label>
-			<input class="form-control MB0" name="postalCityCode" id="postalCityCode" required="required" validationMessage="Bạn phải nhập Tỉnh/ Thành phố" data-bind="value : postalCityCode">
-			<span data-for="postalCityCode" class="k-invalid-msg"></span> 
-		</div>
-		<div class="col-xs-12 col-sm-3">
-			<label>Số điện thoại</label>
-			<input type="text" class="form-control input-small" placeholder="" id="postalTelNo" name="postalTelNo" required="required" validationMessage="Bạn phải nhập số điện thoại" data-bind="value: postalTelNo">
-			<span data-for="postalTelNo" class="k-invalid-msg"></span> 
+		
+		<div class="row MB20">
+			<div class="col-xs-12 col-sm-7">
+				<label>Địa chỉ nhận kết quả</label>
+				<input type="text" class="form-control input-small" placeholder="Ghi rõ thôn, số nhà, tên đường - phố" id="postalAddress" name="postalAddress" required="required" validationMessage="Bạn phải nhập địa chỉ nhận kết quả" data-bind="value : postalAddress">
+				<span data-for="postalAddress" class="k-invalid-msg"></span> 
+			</div>
+			<div class="col-xs-12 col-sm-2">
+				<label>Tỉnh/Thành phố</label>
+				<input class="form-control MB0" name="postalCityCode" id="postalCityCode" required="required" validationMessage="Bạn phải nhập Tỉnh/ Thành phố" data-bind="value : postalCityCode">
+				<span data-for="postalCityCode" class="k-invalid-msg"></span> 
+			</div>
+			<div class="col-xs-12 col-sm-3">
+				<label>Số điện thoại</label>
+				<input type="text" class="form-control input-small" placeholder="" id="postalTelNo" name="postalTelNo" required="required" validationMessage="Bạn phải nhập số điện thoại" data-bind="value: postalTelNo">
+				<span data-for="postalTelNo" class="k-invalid-msg"></span> 
+			</div>
 		</div>
 	</div>
 </div>
@@ -567,10 +567,10 @@
 				}	
 			});
 		}else {
-			showMessageByAPICode (400)
-			// notification.show({
-			// 	message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
-			// }, "error");
+			// showMessageByAPICode (400)
+			notification.show({
+				message: "Vui lòng kiểm tra lại các thông tin bắt buộc trước khi lưu!"
+			}, "error");
 		}
 
 	}
@@ -623,6 +623,10 @@
 						headers: {"groupId": ${groupId}},
 						data : {
 							parent : 0
+						},
+						sort:{
+							field:"itemName",
+							dir:"asc"
 						},
 						success : function(result){
 							if (result.data) {
@@ -679,6 +683,10 @@
 							headers: {"groupId": ${groupId}},
 							data : {
 								parent : parent
+							},
+							sort:{
+								field:"itemName",
+								dir:"asc"
 							},
 							success : function(result){
 								
@@ -740,6 +748,10 @@
 							headers: {"groupId": ${groupId}},
 							data : {
 								parent : parent
+							},
+							sort:{
+								field:"data.itemName",
+								dir:"asc"
 							},
 							success : function(result){
 								if (result.data) {
@@ -821,6 +833,15 @@
 			});
 		});
 	});
+	$.urlParam = function(name){
+	    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+	    if (results==null){
+	       return null;
+	    }
+	    else{
+	       return decodeURI(results[1]) || 0;
+	    }
+	}
 
 	var printDetailDossier = function(dossierId){
 		if(dossierId){
@@ -860,15 +881,25 @@
 							return "";
 						},
 						viaPostal : function(){
-							if(result.viaPostal === 2){
+							/*if(result.viaPostal === 2){
 								$("#viaPostal").prop('checked', true);
 								$("#postalAddress").prop('disabled', false);
 								$("#postalCityCode").data("kendoComboBox").enable(true);
 								$("#postalTelNo").prop('disabled', false);
 							}else {
 								$("#viaPostal").prop('checked', false);
+							}*/
+
+							var postalService = decodeURIComponent($.urlParam('postalService'));
+							console.log("postalService = " + postalService);
+							if(postalService === "true"){
+								$("#viaPostal").prop('checked', true);
+								$("#postalAddress").prop('disabled', false);
+								$("#postalCityCode").data("kendoComboBox").enable(true);
+								$("#postalTelNo").prop('disabled', false);
+							}else{
+								$("#postal").hide()
 							}
-							
 						},
 						postalAddress : result.postalAddress,
 						postalCityCode : result.postalCityCode,
@@ -1074,7 +1105,7 @@ var fnGetFormData = function(dossierId,referentUid){
 			async : false,
 			success : function(result){
 				value = result;
-
+				
 			},
 			error : function(result){
 

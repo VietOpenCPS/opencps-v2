@@ -300,19 +300,18 @@
 											<span class="text-normal">Chọn ảnh từ máy</span>
 										</label>
 									</div>
-								</div>
+									<div class="row">
+										<div class="col-sm-11">
+											<div class="form-group"> 
+												<label class="control-label">Ghi chú kèm theo</label> 
+												<textarea class="form-control" rows="2" id="confirmNote" name="confirmNote" data-bind="text:confirmNote">
 
-								<div class="row">
-									<div class="col-sm-11">
-										<div class="form-group"> 
-											<label class="control-label">Ghi chú kèm theo</label> 
-											<textarea class="form-control" rows="2" id="confirmNote" name="confirmNote" data-bind="text:confirmNote">
-
-											</textarea> 
+												</textarea> 
+											</div>
+										</div> 
+										<div class="col-sm-1 MT30">
+											<button class="btn" data-bind="attr : {data-pk : referenceUid}" id="btn-dossier-payment-confirm">Gửi</button>
 										</div>
-									</div> 
-									<div class="col-sm-1 MT30">
-										<button class="btn">Gửi</button>
 									</div>
 								</div>
 							</div>
@@ -372,7 +371,7 @@
 		}
 
 		return resultModel;
-	}
+	};
 	var fnBack = function(){
 		window.history.back();
 	};
@@ -458,7 +457,9 @@
 									$("#so_HDDT").hide();
 									return "Báo đã nộp";
 								}else if(this.get('paymentDossier').paymentStatus === 2){
-									$("#dossier-payment-confirm").prop("disabled",false);
+									$("#dossier-payment-online").prop("disabled",true);
+									$("#dossier-payment-confirm").prop("disabled",true);
+									$("#btn-dossier-payment-confirm").prop("disabled",true);
 									$("#dossier-payment-viewpdf").show();
 									$("#uploadFile").show();
 									$("#so_HDDT").show();
@@ -518,7 +519,7 @@
 
 			});
 		}
-	}
+	};
 
 	printDetailDossier(${dossierId});
 
@@ -540,7 +541,6 @@
 				error :  function(result){
 					
 				}
-
 			});
 		}
 	});
@@ -548,40 +548,40 @@
 	
 	$("#dossier-payment-confirm").click(function(){
 
-		var referenceUid = $(this).attr("data-pk");
-		if(referenceUid){
+		// var referenceUid = $(this).attr("data-pk");
+		// if(referenceUid){
 
-			var data = new FormData();
+		// 	var data = new FormData();
 
-			data.append( 'file', $("#filePayment")[0].files[0]);
-			data.append( 'confirmNote', $("textarea#confirmNote").val());
-			data.append( 'paymentMethod', "Chuyển khoản");
-			data.append( 'confirmPayload', null);
-			$.ajax({
-				url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/confirm",
-				dataType : "json",
-				type : "PUT",
-				headers : {"groupId": ${groupId}},
-				processData: false,
-				contentType: false,
-				cache: false,
-				data : data,
-				success : function(result){
-					notification.show({
-						message: "Yêu cầu được thực hiện thành công"
-					}, "success");
+		// 	data.append( 'file', $("#filePayment")[0].files[0]);
+		// 	data.append( 'confirmNote', $("textarea#confirmNote").val());
+		// 	data.append( 'paymentMethod', "Chuyển khoản");
+		// 	data.append( 'confirmPayload', null);
+		// 	$.ajax({
+		// 		url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/confirm",
+		// 		dataType : "json",
+		// 		type : "PUT",
+		// 		headers : {"groupId": ${groupId}},
+		// 		processData: false,
+		// 		contentType: false,
+		// 		cache: false,
+		// 		data : data,
+		// 		success : function(result){
+		// 			notification.show({
+		// 				message: "Yêu cầu được thực hiện thành công"
+		// 			}, "success");
 					$("#dossier-payment-confirm").prop("disabled",true);
 					$("#dossier-payment-viewpdf").show();
 					$("#uploadFile").show();
-				},
-				error :  function(result){
-					notification.show({
-						message: "Thực hiện không thành công, xin vui lòng thử lại"
-					}, "error");
-				}
+		// 		},
+		// 		error :  function(result){
+		// 			notification.show({
+		// 				message: "Thực hiện không thành công, xin vui lòng thử lại"
+		// 			}, "error");
+		// 		}
 
-			});
-		}
+		// 	});
+		// }
 	});
 
 	$("#filePayment").change(function(event){
@@ -618,6 +618,41 @@
 				},
 				error :  function(result){
 					
+				}
+
+			});
+		}
+	});
+
+	$("#btn-dossier-payment-confirm").click(function(){
+
+		var referenceUid = $(this).attr("data-pk");
+		if(referenceUid){
+
+			var data = new FormData();
+
+			data.append( 'file', $("#filePayment")[0].files[0]);
+			data.append( 'confirmNote', $("textarea#confirmNote").val());
+			data.append( 'paymentMethod', "Chuyển khoản");
+			data.append( 'confirmPayload', null);
+			$.ajax({
+				url : "${api.server}/dossiers/${dossierId}/payments/"+referenceUid+"/confirm",
+				dataType : "json",
+				type : "PUT",
+				headers : {"groupId": ${groupId}},
+				processData: false,
+				contentType: false,
+				cache: false,
+				data : data,
+				success : function(result){
+					notification.show({
+						message: "Yêu cầu được thực hiện thành công"
+					}, "success");
+				},
+				error :  function(result){
+					notification.show({
+						message: "Thực hiện không thành công, xin vui lòng thử lại"
+					}, "error");
 				}
 
 			});

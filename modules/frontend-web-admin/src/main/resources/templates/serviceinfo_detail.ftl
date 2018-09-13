@@ -49,7 +49,7 @@
 					<div class="col-sm-6">
 						<div class="row">
 							<div class="col-sm-4">
-								<label>Cơ quan quản lý <span class="red">*</span></label>
+								<label>Cơ quan thực hiện <span class="red">*</span></label>
 							</div>
 							<div class="col-sm-8">
 								<select class="form-control" id="administration" name="administration" data-bind="value: administrationCode" required="required" validationMessage="Bạn phải chọn cơ quan">

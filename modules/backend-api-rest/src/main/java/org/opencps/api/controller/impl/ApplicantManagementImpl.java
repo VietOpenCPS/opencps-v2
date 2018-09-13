@@ -920,5 +920,164 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 		}
 	}
+	
+	@Override
+	public Response resendActivateCodeApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+//		ApplicantModel results = new ApplicantModel();
+		
+		long applicantId = 0;
+		
+		try {
+			ApplicantLocalServiceUtil.getApplicant(id);
+			
+			applicantId = id;
+			
+		} catch (Exception e) {
+			try {
+				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
+				
+				if (Validator.isNotNull(applc)) {
+					applicantId = applc.getApplicantId();
+				}
+			} catch (Exception e2) {
+				// TODO: handle exception
+			}
+			
+		}
+
+		Applicant applicant = null;
+		try {
+
+			applicant = actions.resendActivateCodeApplicant(applicantId);
+
+//			results = ApplicantUtils.mappingToApplicantModel(applicant);
+			
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
+			
+			resultObj.put("activeCode", applicant.getActivationCode());
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					if (e instanceof NoSuchUserException) {
+						error.setMessage("Not Found");
+						error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+						error.setDescription("Not Found");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
+
+					} else {
+						error.setMessage("Internal Server Error");
+						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
+						error.setDescription(e.getMessage());
+
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+					}
+
+				}
+			}
+		}
+	}
+	
+	@Override
+	public Response activateApplicant2(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String code) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+		ApplicantModel results = new ApplicantModel();
+		
+		long applicantId = 0;
+		
+		try {
+			ApplicantLocalServiceUtil.getApplicant(id);
+			
+			applicantId = id;
+			
+		} catch (Exception e) {
+			try {
+				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
+				
+				if (Validator.isNotNull(applc)) {
+					applicantId = applc.getApplicantId();
+				}
+			} catch (Exception e2) {
+				// TODO: handle exception
+			}
+			
+		}
+
+		Applicant applicant = null;
+		try {
+			
+			
+
+			applicant = actions.activationApplicant(serviceContext, applicantId, code);
+
+			results = ApplicantUtils.mappingToApplicantModel(applicant);
+			
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
+			
+			resultObj.put("email", applicant.getContactEmail());
+			resultObj.put("token", applicant.getTmpPass());
+
+			return Response.status(200).entity("KICH HOAT THANH CONG!!! MOI BAN ").build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Non-Authoritative Information.");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+
+					if (e instanceof NoSuchUserException) {
+						error.setMessage("Not Found");
+						error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+						error.setDescription("Not Found");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
+
+					} else {
+						error.setMessage("Internal Server Error");
+						error.setCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
+						error.setDescription(e.getMessage());
+
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
+					}
+
+				}
+			}
+		}
+	}
 
 }

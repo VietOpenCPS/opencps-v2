@@ -1,11 +1,19 @@
 package org.opencps.usermgt.action.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
+import org.opencps.usermgt.listener.ApplicantListenerUtils;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -143,6 +151,66 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	@Override
 	public Applicant getApplicantByMappingUserId(long userId) throws PortalException {
 		return ApplicantLocalServiceUtil.fetchByMappingID(userId);
+	}
+	
+	@Override
+	public Applicant resendActivateCodeApplicant(long applicantId) throws PortalException {
+		
+		Applicant model = null;
+		
+		try {
+			model = ApplicantLocalServiceUtil.getApplicant(applicantId);
+			
+			NotificationQueue queue = null;
+			
+			long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+			
+			queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+			
+			Date now = new Date();
+			
+			Calendar cal = Calendar.getInstance();
+			
+			cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+			
+			queue.setCreateDate(now);
+			queue.setModifiedDate(now);
+			queue.setGroupId(model.getGroupId());
+			queue.setCompanyId(model.getCompanyId());
+			
+			queue.setNotificationType(NotificationType.APPLICANT_01);
+			queue.setClassName(Applicant.class.getName());
+			queue.setClassPK(String.valueOf(model.getPrimaryKey()));
+			queue.setToUsername(model.getApplicantName());
+			queue.setToUserId(model.getUserId());
+			queue.setToEmail(model.getContactEmail());
+			queue.setToTelNo(model.getContactTelNo());
+			
+			JSONObject object = JSONFactoryUtil.createJSONObject();
+			
+			object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, model.getActivationCode());
+//			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, "/confirm-account?active_user_id="+ model.getApplicantId());
+			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, "/o/rest/v2/applicants/"+ model.getApplicantId() +"/activate2/"+model.getActivationCode());
+			object.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
+			object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
+			object.put("toName", model.getApplicantName());
+			object.put("toAddress", model.getContactEmail());
+			
+			long groupId = 55217;
+			
+			String payload = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, groupId).toString();
+			
+			queue.setPayload(payload);
+			
+			queue.setExpireDate(cal.getTime());
+			
+			NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+			
+			
+		} catch (Exception e) {
+			_log.info(e);
+		}
+		return model;
 	}
 
 	Log _log = LogFactoryUtil.getLog(ApplicantActionsImpl.class);

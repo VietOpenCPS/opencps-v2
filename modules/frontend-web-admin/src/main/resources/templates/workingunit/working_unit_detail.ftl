@@ -294,21 +294,67 @@
 		if (workingUnitId!=null && workingUnitId !="" && workingUnitId > 0) {
 			
 			// create a new working unit
-			$("#_workingUnit_listView").getKendoListView().dataSource.transport.update({
+			// $("#_workingUnit_listView").getKendoListView().dataSource.transport.update({
 				
-				workingUnitId: workingUnitId,
-				parentWorkingUnitId: _parentWorkingUnitId_val,
-				govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val().trim(),
-				name: $( "#_workingUnitDetail_name" ).val().trim(),
-				enName: $( "#_workingUnitDetail_enName" ).val().trim(),
-				address: $( "#_workingUnitDetail_address" ).val().trim(),
-				telNo: $( "#_workingUnitDetail_telNo" ).val().trim(),
-				faxNo: $( "#_workingUnitDetail_faxNo" ).val().trim(),
-				email: $( "#_workingUnitDetail_email" ).val().trim(),
-				website: $( "#_workingUnitDetail_website" ).val().trim(),
-				sibling: _workingUnitDetail_sibling_val,
-				ceremonyDate: ceremonyDate
+			// 	workingUnitId: workingUnitId,
+			// 	parentWorkingUnitId: _parentWorkingUnitId_val,
+			// 	govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val().trim(),
+			// 	name: $( "#_workingUnitDetail_name" ).val().trim(),
+			// 	enName: $( "#_workingUnitDetail_enName" ).val().trim(),
+			// 	address: $( "#_workingUnitDetail_address" ).val().trim(),
+			// 	telNo: $( "#_workingUnitDetail_telNo" ).val().trim(),
+			// 	faxNo: $( "#_workingUnitDetail_faxNo" ).val().trim(),
+			// 	email: $( "#_workingUnitDetail_email" ).val().trim(),
+			// 	website: $( "#_workingUnitDetail_website" ).val().trim(),
+			// 	sibling: _workingUnitDetail_sibling_val,
+			// 	ceremonyDate: ceremonyDate
 				
+			// });
+
+			$.ajax({
+						
+				url: "/o/rest/v2/workingunits/"+workingUnitId,
+				dataType : "json",
+				type: 'PUT',
+				headers: {"groupId": ${groupId}},
+				data: {
+					workingUnitId: workingUnitId,
+					parentWorkingUnitId: _parentWorkingUnitId_val,
+					govAgencyCode: $( "#_workingUnitDetail_govAgencyCode" ).val().trim(),
+					name: $( "#_workingUnitDetail_name" ).val().trim(),
+					enName: $( "#_workingUnitDetail_enName" ).val().trim(),
+					address: $( "#_workingUnitDetail_address" ).val().trim(),
+					telNo: $( "#_workingUnitDetail_telNo" ).val().trim(),
+					faxNo: $( "#_workingUnitDetail_faxNo" ).val().trim(),
+					email: $( "#_workingUnitDetail_email" ).val().trim(),
+					website: $( "#_workingUnitDetail_website" ).val().trim(),
+					sibling: _workingUnitDetail_sibling_val,
+					ceremonyDate: ceremonyDate
+				},
+				success: function(result) {
+					
+				},
+				error: function(xhr, textStatus, errorThrown) {
+				
+					showMessageByAPICode(xhr.status);
+			
+				},
+				statusCode: {
+			        200: function(result) {
+			          console.log('Xác thực thành công');
+			          console.log(result);
+			          notification.show({
+			            title: "Success",
+			            message: "Yêu cầu thành công"
+			          }, "success");
+			        },
+			        500: function(result) {
+			          notification.show({
+			            title: "Error",
+			            message: "Xẩy ra lỗi, vui lòng thử lại."
+			          }, "error");
+			        },
+		      	}
 			});
 
 		} else {
@@ -490,7 +536,7 @@ function _workingUnitDetail_uploadLogoFileEntry(fileInput, workingUnitId) {
 			}
 		
 		});*/
-		getImageBlob(_workingUnitDetail_uploadLogo_BaseUrl+"/"+workingUnitId+"/logo", $("#_workingUnitDetail_logo_thumbnil"), "${groupId}");
+		/*getImageBlob(_workingUnitDetail_uploadLogo_BaseUrl+"/"+workingUnitId+"/logo", $("#_workingUnitDetail_logo_thumbnil"), "${groupId}");*/
 	}
 	
 

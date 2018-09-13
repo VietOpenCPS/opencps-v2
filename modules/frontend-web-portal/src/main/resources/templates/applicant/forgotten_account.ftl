@@ -34,10 +34,20 @@
 				type : "GET",
 				data : data,
 				success : function(result){
-					if($("#emailOrPhone").val()!= ""){
+					if(result.userId === 0){
+						// $("#password_workflow_content").html("<div class='row MA' style='max-width: 550px;'><div class='col-sm-12 text-center MB5'><span style='color: red;font-size: 16px;'>Tài khoản hiện không có trong hệ thống </span></div></div>");
+						notification.show({
+							title: "Error",
+							message: "Tài khoản hiện không có trong hệ thống !!!"
+						}, "error");
+					}else {
 						$("#password_workflow_content").load("${ajax.confirm_password}",function(result){
 
 						});
+						notification.show({
+							title: "Success",
+							message: "Mời bạn vào hòm thư để lấy mã xác nhận !!!"
+						}, "success");
 					}
 				},
 				error : function(xhr){

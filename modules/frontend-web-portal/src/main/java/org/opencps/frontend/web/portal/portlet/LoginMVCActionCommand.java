@@ -95,10 +95,15 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 
 			if (action != null && action.equals("confirm_account")) {
 				actionResponse.sendRedirect(
-					themeDisplay.getPortalURL() + "/profile");
+					themeDisplay.getPortalURL() + "/en/group/cong-tiep-nhan/thong-tin-tai-khoan");
 			}
 			else {
-				actionResponse.sendRedirect(themeDisplay.getPathMain());
+//				if(applicant.getCityCode() == "" || applicant.getWardCode() == "" || applicant.getDistrictCode() == ""){
+//					actionResponse.sendRedirect(
+//							"/en/group/cong-tiep-nhan/thong-tin-tai-khoan");
+//				}else {
+					actionResponse.sendRedirect(themeDisplay.getPathMain());
+//				}
 			}
 		}
 

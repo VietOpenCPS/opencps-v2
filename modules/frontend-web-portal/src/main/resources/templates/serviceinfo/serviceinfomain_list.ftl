@@ -10,8 +10,8 @@
       <span class="show-per-page">Hiển thị
         <span class="select-wrapper">
          <select class="ML5" id="slPageSize">
-           <option value="5" selected="">5</option>
-           <option value="10">10</option>
+           <option value="5">5</option>
+           <option value="10" selected="">10</option>
            <option value="15">15</option>
            <option value="25">25</option>
            <option value="50">50</option>
@@ -215,6 +215,7 @@
   #}# -->
 </div>
 </li>
+
 </script>
 </div>
 </div>
@@ -240,7 +241,8 @@
           pageSize: options.data.pageSize,
           administration: options.data.administration,
           domain: options.data.domain,
-          level: options.data.level
+          level: options.data.level,
+          active: true
         },
         success: function(result) {
           if (result.data) {
@@ -290,7 +292,7 @@
   data: "data",
   model : { id: "serviceInfoId" }
 },
-pageSize: 5,
+pageSize: 10,
 serverPaging: false,
 serverSorting: false,
 serverFiltering: false

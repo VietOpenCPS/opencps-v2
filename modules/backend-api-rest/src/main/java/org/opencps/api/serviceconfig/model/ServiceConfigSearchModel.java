@@ -82,8 +82,18 @@ public class ServiceConfigSearchModel {
     protected String domain;
 	@QueryParam(value = "applicant")
     protected String applicant;
+	@QueryParam(value = "active")
+    protected String active;
 
-    /**
+    public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
+	/**
      * Gets the value of the keyword property.
      * 
      * @return
