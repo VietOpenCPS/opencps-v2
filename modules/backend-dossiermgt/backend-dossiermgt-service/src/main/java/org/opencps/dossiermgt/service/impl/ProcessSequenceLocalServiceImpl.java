@@ -102,8 +102,12 @@ public class ProcessSequenceLocalServiceImpl
 	}	
 	
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessSequence deleteProcessSequence(long processSequenceId) throws NoSuchProcessSequenceException {
-		return processSequencePersistence.remove(processSequenceId);
+	public ProcessSequence deleteProcessSequence(long processSequenceId) throws PortalException {
+		ProcessSequence processSequence = processSequencePersistence.fetchByPrimaryKey(processSequenceId);
+		if (processSequence != null) {
+			return processSequencePersistence.remove(processSequence);
+		}
+		return null;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

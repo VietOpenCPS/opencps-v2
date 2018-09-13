@@ -29,6 +29,7 @@ import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -523,8 +524,13 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	//5
 	@Indexable(type=IndexableType.DELETE)
-	public Deliverable deleteDeliverable(long id) throws NoSuchDeliverableException {
-		return deliverablePersistence.remove(id);
+	public Deliverable deleteDeliverable(long id) throws PortalException {
+		Deliverable deliverable = deliverablePersistence.findByPrimaryKey(id);
+		if (deliverable != null) {
+			return deliverablePersistence.remove(deliverable);
+		}
+		
+		return null;
 	}
 
 	//7
