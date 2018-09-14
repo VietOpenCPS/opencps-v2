@@ -74,8 +74,8 @@
 							</div>	
 						</script>
 						<div class="MT5">
-							<input type="checkbox" id="commentable" class="k-checkbox">
-							<label class="k-checkbox-label" for="commentable">Sử dụng câu trả lời khác</label>
+							<#-- <input type="checkbox" id="commentable" class="k-checkbox">
+							<label class="k-checkbox-label" for="commentable">Sử dụng câu trả lời khác</label> -->
 							<i style="cursor: pointer; font-size: 17px;" onclick="addChoise()" class="fa fa-plus-circle pull-right" aria-hidden="true"></i>
 						</div>
 					</form>

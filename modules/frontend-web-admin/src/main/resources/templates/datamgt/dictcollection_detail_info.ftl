@@ -419,7 +419,11 @@ function _collectionSub_group_autocompleteSearch(val) {
 		transport: {
 
 			read: function(options) {
-				
+				if (!$("#_collectionSub_code").text().trim()) {
+					console.log('not!!')
+					options.error();
+					return;
+				}
 				$.ajax({
 				
 					url: _collectionSub_group_BaseUrl_detail,

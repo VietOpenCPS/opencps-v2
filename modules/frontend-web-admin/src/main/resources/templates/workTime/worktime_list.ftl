@@ -312,31 +312,31 @@
 			dataValueField : "value",
 			dataSource : [
 			{
-				value: 0,
+				value: 1,
 				text: 'Chủ nhật'
 			},
 			{
-				value: 1,
+				value: 2,
 				text: 'Thứ 2'
 			},
 			{
-				value: 2,
+				value: 3,
 				text: 'Thứ 3'
 			},
 			{
-				value: 3,
+				value: 4,
 				text: 'Thứ 4'
 			},
 			{
-				value: 4,
+				value: 5,
 				text: 'Thứ 5'
 			},
 			{
-				value: 5,
+				value: 6,
 				text: 'Thứ 6'
 			},
 			{
-				value: 6,
+				value: 7,
 				text: 'Thứ 7'
 			}
 			],

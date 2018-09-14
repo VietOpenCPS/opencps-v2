@@ -238,6 +238,7 @@
 			noDataTemplate: 'Không có dữ liệu',
 			change: function (e) {
 				var value = this.value();
+				console.log('change---------');
 				$("#_collection_listView").getKendoListView().dataSource.read({
 					status: value
 				})
@@ -308,7 +309,7 @@
 			});
 			
 			$("#_collection_hidden_new_id").val(selected[0]);
-	
+			console.log('value----', selected[0]);
 			$("#_collection_right-page").load(
 				'${url.adminDataMgtPortlet.dictcollection_detail}&${portletNamespace}type=${constant.type_dictCollection}&${portletNamespace}collectionCode='+selected[0]);
 			
