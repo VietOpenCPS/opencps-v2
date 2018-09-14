@@ -248,9 +248,9 @@ public class OpenCPSRestClient {
 			HashMap<String, String> properties = OpenCPSConverter.convertDossierFileEFormHttpParams(model);
 			ServiceContext context = new ServiceContext();
 			
-			JSONObject jsonObj = callRest.callPostFileAPI(groupId, HttpMethod.POST, "application/json", 
+			JSONObject jsonObj = callRest.callPostFileAPIWithFileName(groupId, HttpMethod.POST, "application/json", 
 					 baseUrl, requestURL, username,
-					password, properties, file, context);
+					password, properties, file, model.getDisplayName(), context);
 //			_log.info("Post dossier file eform: " + jsonObj);
 			result = OpenCPSConverter.convertDossierFile(jsonObj);
 			
