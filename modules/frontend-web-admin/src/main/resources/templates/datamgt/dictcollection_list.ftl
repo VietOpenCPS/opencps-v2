@@ -21,7 +21,10 @@
 				</div>
 
 			</div>
-	
+			<div class="MT5">
+				<input  type="text" id="typeSearchDict" name="typeSearchDict" />
+			</div>
+
 			<span data-toggle="modal" class="btn btn-active btn-block MT15"
 				href="${url.adminDataMgtPortlet.dictcollection_create_dictcollection}" data-target="#modal"> 
 				<i class="fa fa-book" aria-hidden="true"></i>
@@ -114,7 +117,10 @@
 			transport: {
 	
 				read: function(options) {
-					
+					var status = options.data.status;
+					if (status == null || status == undefined || status == '') {
+						status = 1
+					}
 					$.ajax({
 					
 						url: _collection_BaseUrl,
@@ -124,7 +130,8 @@
 							"groupId": ${groupId}
 						},
 						data: {
-							sort: 'collectionName'
+							sort: 'collectionName',
+							status: status
 						},
 						success: function(result) {
 						
@@ -214,6 +221,27 @@
 				
 			}
 			
+		});
+
+		$("#typeSearchDict").kendoComboBox({
+			dataTextField : "text",
+			dataValueField: "value",
+			dataSource: [{
+				text: 'Đang xử dụng',
+				value: 1
+			}, {
+				text: 'Không xử dụng',
+				value: 0
+			}],
+			filter: "contains",
+			placeholder: "Chọn loại danh mục",
+			noDataTemplate: 'Không có dữ liệu',
+			change: function (e) {
+				var value = this.value();
+				$("#_collection_listView").getKendoListView().dataSource.read({
+					status: value
+				})
+			}
 		});
 	
 		$("#_collection_listView").kendoListView({

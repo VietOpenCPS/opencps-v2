@@ -51,6 +51,10 @@
 		dossierTemplatePartDataSource = new kendo.data.DataSource({
 			transport: {
 				read: function(options) {
+					if (!options.data.dossierTemplateId) {
+						options.error();
+						return;
+					}
 					var url = "${api.server}" + "/dossiertemplates/" + options.data.dossierTemplateId  + "/parts";
 					console.log("url===============>",url);
 					/*var dossierTemplateId = options.data.dossierTemplateId;*/
