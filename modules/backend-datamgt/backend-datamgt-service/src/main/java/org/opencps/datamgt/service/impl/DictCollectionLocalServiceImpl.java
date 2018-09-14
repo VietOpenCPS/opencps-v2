@@ -367,7 +367,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		String groupId = (String) params.get(DictCollectionTerm.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTerm.COLLECTION_CODE);
-
+		String status = (String) params.get(DictCollectionTerm.STATUS);
+		
 		Indexer<DictCollection> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictCollection.class);
 
 		searchContext.addFullQueryEntryClassName(DictCollection.class.getName());
@@ -453,6 +454,16 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
+		if (Validator.isNotNull(status)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(status);
+
+			query.addFields(DictCollectionTerm.STATUS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictCollection.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -467,7 +478,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		String groupId = (String) params.get(DictCollectionTerm.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTerm.COLLECTION_CODE);
-
+		String status = (String) params.get(DictCollectionTerm.STATUS);
+		
 		Indexer<DictCollection> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictCollection.class);
 
 		searchContext.addFullQueryEntryClassName(DictCollection.class.getName());
@@ -550,6 +562,16 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
+		if (Validator.isNotNull(status)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(status);
+
+			query.addFields(DictCollectionTerm.STATUS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictCollection.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
@@ -617,5 +639,41 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		}
 
 		return dictCollectionPersistence.update(dictCollection);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection active(long dictCollectionId) {
+		DictCollection dc = dictCollectionPersistence.fetchByPrimaryKey(dictCollectionId);
+		if (dc != null) {
+			dc.setStatus(DictCollectionTerm.STATUS_ACTIVE);
+			return dictCollectionPersistence.update(dc);
+		}
+		else {
+			return dc;
+		}
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection inactive(long dictCollectionId) {
+		DictCollection dc = dictCollectionPersistence.fetchByPrimaryKey(dictCollectionId);
+		if (dc != null) {
+			dc.setStatus(DictCollectionTerm.STATUS_INACTIVE);
+			return dictCollectionPersistence.update(dc);
+		}
+		else {
+			return dc;
+		}
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection changeStatus(long dictCollectionId, int status) {
+		DictCollection dc = dictCollectionPersistence.fetchByPrimaryKey(dictCollectionId);
+		if (dc != null) {
+			dc.setStatus(status);
+			return dictCollectionPersistence.update(dc);
+		}
+		else {
+			return dc;
+		}
 	}
 }

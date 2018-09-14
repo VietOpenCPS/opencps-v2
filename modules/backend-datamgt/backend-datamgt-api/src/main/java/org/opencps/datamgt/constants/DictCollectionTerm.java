@@ -47,7 +47,9 @@ public class DictCollectionTerm {
 	public static final String IS_GLOBAL = "isGlobal";
 	
 	public static final String DATAFORM = "dataForm";
-
+	
+	public static final String STATUS = "status";
+	
 	// sortable
 	public static final String DICT_COLLECTION_ID_SORTABLE = "dictCollectionId_sortable";
 
@@ -69,6 +71,9 @@ public class DictCollectionTerm {
 
 	public static final String DESCRIPTION_SORTABLE = "description_sortable";
 
+	public static final int STATUS_ACTIVE = 1;
+	public static final int STATUS_INACTIVE = 0;
+	
 	public DictCollectionTerm() {
 
 		// TODO Auto-generated constructor stub
