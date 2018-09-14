@@ -15,7 +15,10 @@
 package org.opencps.usermgt.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.constants.UserMGTConstants;
@@ -31,6 +34,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -180,9 +184,14 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		String role_name = title + jobPosId;
 
 		// add role
+//		Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+//				role_name, null, null, 1, "", serviceContext);
+		Map<Locale, String> titleMap = new HashMap<>();
+		titleMap.put(Locale.getDefault(), title);
+		
 		Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-				role_name, null, null, 1, "", serviceContext);
-
+				role_name, titleMap, null, RoleConstants.TYPE_SITE, "", serviceContext);
+		
 		JobPos jobPos = jobPosPersistence.create(jobPosId);
 
 		// Group instance
@@ -440,13 +449,19 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			jobPos = jobPosPersistence.create(jobPosId);
 			// create role name
 //			String role_name = title;
-			String role_name = title + jobPosId;
+			String role_name = title + StringPool.UNDERLINE + jobPosCode + StringPool.UNDERLINE + jobPosId;
 
 			// add role
 			_log.info("role_name:"+role_name);
-			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-					role_name, null, null, 1, "", serviceContext);
+//			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+//					role_name, null, null, 1, "", serviceContext);
 
+			Map<Locale, String> titleMap = new HashMap<>();
+			titleMap.put(Locale.getDefault(), title);
+			
+			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+					role_name, titleMap, null, RoleConstants.TYPE_SITE, "", serviceContext);
+			
 			// Audit fields
 			jobPos.setUserId(user.getUserId());
 			jobPos.setUserName(user.getFullName());
