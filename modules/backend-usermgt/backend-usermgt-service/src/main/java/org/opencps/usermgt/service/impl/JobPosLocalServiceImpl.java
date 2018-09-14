@@ -449,7 +449,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			jobPos = jobPosPersistence.create(jobPosId);
 			// create role name
 //			String role_name = title;
-			String role_name = title + StringPool.UNDERLINE + jobPosCode + StringPool.UNDERLINE + jobPosId;
+			String role_name = jobPosCode + StringPool.UNDERLINE + jobPosId;
 
 			// add role
 			_log.info("role_name:"+role_name);
