@@ -1,8 +1,8 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -46,10 +45,7 @@ import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.datamgt.model.Groups;
 import org.opencps.api.dictcollection.model.DictGroupModel;
-import org.opencps.auth.api.exception.DataInUsedException;
 import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
@@ -76,10 +72,13 @@ import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
+import backend.auth.api.exception.BusinessExcetionImpl;
+
 public class DataManagementImpl implements DataManagement {
 
 	Log _log = LogFactoryUtil.getLog(DataManagementImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDictCollection(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DataSearchModel query, String status) {
@@ -115,14 +114,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -142,15 +134,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} else {
-
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(409).entity(error).build();
-
+			return null;
 		}
 	}
 
@@ -186,60 +170,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -283,47 +214,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -358,59 +249,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NotFoundException) {
-
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("not found!");
-				error.setCode(404);
-				error.setDescription("not found!");
-
-				return Response.status(404).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -467,63 +306,11 @@ public class DataManagementImpl implements DataManagement {
 				throw new DuplicateCategoryException();
 			}
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDictgroups(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
@@ -561,14 +348,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -608,60 +388,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -699,47 +426,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -779,74 +466,11 @@ public class DataManagementImpl implements DataManagement {
 
 		} catch (Exception e) {
 
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NotFoundException) {
-
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("not found!");
-				error.setCode(404);
-				error.setDescription("not found!");
-
-				return Response.status(404).entity(error).build();
-
-			}
-
-			if (e instanceof DataInUsedException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("data is in used!");
-				error.setCode(406);
-				error.setDescription("data is in used!");
-
-				return Response.status(406).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDictgroupsDictItems(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String groupCode, boolean full) {
@@ -875,14 +499,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -950,60 +567,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupItemModel).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -1058,7 +622,6 @@ public class DataManagementImpl implements DataManagement {
 					serviceContext);
 			}
 			catch (NotFoundException e) {
-//				e.printStackTrace();
 				_log.error(e);
 			}
 			try {
@@ -1115,62 +678,11 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			_log.error("@DELETE: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NotFoundException) {
-
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("not found!");
-				error.setCode(404);
-				error.setDescription("not found!");
-
-				return Response.status(404).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDictItems(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
@@ -1214,14 +726,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -1305,60 +810,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictItemModel).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -1472,60 +924,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -1599,59 +998,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			_log.error("@DELETE: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NotFoundException) {
-
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("not found!");
-				error.setCode(404);
-				error.setDescription("not found!");
-
-				return Response.status(404).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -1821,47 +1168,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -1974,60 +1281,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof DuplicateCategoryException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2103,47 +1357,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2183,14 +1397,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2229,14 +1436,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2275,14 +1475,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2356,47 +1549,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2436,14 +1589,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			_log.error("@GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2496,47 +1642,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -2560,47 +1666,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 }

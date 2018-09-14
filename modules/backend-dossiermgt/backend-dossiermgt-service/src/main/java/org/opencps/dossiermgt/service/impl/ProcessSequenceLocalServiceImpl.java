@@ -17,7 +17,6 @@ package org.opencps.dossiermgt.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.dossiermgt.exception.NoSuchProcessSequenceException;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.service.base.ProcessSequenceLocalServiceBaseImpl;
 

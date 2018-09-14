@@ -1,5 +1,13 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -7,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverableTypesManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DeliverableTypesUtils;
 import org.opencps.api.deliverabletype.model.DeliverableTypeDetailModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypeInputModel;
@@ -17,26 +23,18 @@ import org.opencps.api.deliverabletype.model.DeliverableTypesResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
+import backend.auth.api.exception.BusinessExcetionImpl;
 
 public class DeliverableTypesManagementImpl implements DeliverableTypesManagement {
-	private Log _log = LogFactoryUtil.getLog(DeliverableTypesManagementImpl.class);
+//	private Log _log = LogFactoryUtil.getLog(DeliverableTypesManagementImpl.class);
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDeliverableTypes(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
@@ -66,7 +64,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -95,7 +93,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -126,7 +124,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -153,7 +151,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -174,7 +172,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(deliverableType.getFormScript()).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -201,8 +199,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -223,7 +220,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(deliverableType.getFormReport()).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -250,7 +247,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -271,7 +268,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(deliverableType.getMappingData()).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -298,7 +295,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -321,36 +318,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
-		}
-	}
-
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-			}
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -379,9 +347,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(200).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
-//			e.printStackTrace();
-			_log.error(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 }

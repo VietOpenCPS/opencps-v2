@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.action;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.RegistrationLog;

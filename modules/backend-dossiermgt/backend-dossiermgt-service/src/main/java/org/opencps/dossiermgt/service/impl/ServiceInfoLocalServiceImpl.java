@@ -14,25 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.datamgt.constants.DataMGTConstants;
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.utils.DictCollectionUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
-import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
-import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
-import org.opencps.dossiermgt.exception.RequiredServiceNameException;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceFileTemplate;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.base.ServiceInfoLocalServiceBaseImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -57,8 +39,24 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
+import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
+import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
+import org.opencps.dossiermgt.exception.RequiredServiceNameException;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.base.ServiceInfoLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 

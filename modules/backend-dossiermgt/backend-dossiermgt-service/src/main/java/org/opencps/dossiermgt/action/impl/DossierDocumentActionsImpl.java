@@ -6,7 +6,6 @@ import java.util.List;
 import org.opencps.dossiermgt.action.DossierDocumentActions;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;

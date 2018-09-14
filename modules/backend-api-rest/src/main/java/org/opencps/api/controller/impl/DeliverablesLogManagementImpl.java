@@ -6,11 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverablesLogManagement;
-import org.opencps.dossiermgt.action.DeliverableLogActions;
-import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
-import org.opencps.dossiermgt.model.DeliverableLog;
 
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;

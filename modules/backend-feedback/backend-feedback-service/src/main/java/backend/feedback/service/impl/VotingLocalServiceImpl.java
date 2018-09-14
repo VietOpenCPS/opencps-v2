@@ -16,6 +16,7 @@ package backend.feedback.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.ws.rs.NotFoundException;
 
@@ -319,4 +320,13 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
+
+	public List<Voting> getVotingByClass_Name_PK(String className, String classPK) {
+		return votingPersistence.findByF_CLNAME_CLPK(className, classPK);
+	}
+
+	public long countVotingByClass_Name_PK(String className, String classPK) {
+		return votingPersistence.countByF_CLNAME_CLPK(className, classPK);
+	}
+
 }

@@ -1,5 +1,22 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.counter.kernel.model.Counter;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,25 +34,9 @@ import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
-import com.liferay.counter.kernel.model.Counter;
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 import backend.auth.api.BackendAuth;
 import backend.auth.api.BackendAuthImpl;
+import backend.auth.api.exception.BusinessExcetionImpl;
 
 public class CertNumberManagementImpl implements CertNumberManagement{
 
@@ -82,8 +83,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
-			_log.error(e);
-			return Response.status(500).entity("error").build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -114,8 +114,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			return Response.status(200).entity(elm.toString()).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return Response.status(500).entity("error").build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -337,8 +336,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			return Response.status(200).entity(certNumber).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return Response.status(500).entity(e.getMessage()).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
