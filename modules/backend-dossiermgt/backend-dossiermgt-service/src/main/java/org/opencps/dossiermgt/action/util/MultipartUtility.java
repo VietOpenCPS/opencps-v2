@@ -158,6 +158,50 @@ public class MultipartUtility {
 	}
 
 	/**
+	 * Adds a upload file section to the request
+	 * 
+	 * @param fieldName
+	 *            name attribute in <input type="file" name="..." />
+	 * @param uploadFile
+	 *            a File to be uploaded
+	 * @throws IOException
+	 */
+	public void addFilePartWithFileName(String fieldName, File uploadFile, String fileName) throws IOException {
+		writer.append("--" + boundary).append(LINE_FEED);
+		writer.append("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"")
+				.append(LINE_FEED);
+		writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(fileName)).append(LINE_FEED);
+		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+		writer.append(LINE_FEED);
+		writer.flush();
+		FileInputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(uploadFile);
+		byte[] buffer = new byte[4096];
+		int bytesRead = -1;
+		while ((bytesRead = inputStream.read(buffer)) != -1) {
+			outputStream.write(buffer, 0, bytesRead);
+		}
+		outputStream.flush();
+		} catch (Exception e) {
+			// TODO: handle exception
+			_log.error(e);
+		} finally{
+			if (inputStream != null) {
+                try {
+		inputStream.close();
+                } catch (IOException ex1) {
+                    //TODO:
+                	_log.error(ex1);
+                }
+            }
+		}
+
+		writer.append(LINE_FEED);
+		writer.flush();
+	}
+	
+	/**
 	 * Adds a header field to the request.
 	 * 
 	 * @param name
