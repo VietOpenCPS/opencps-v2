@@ -3454,7 +3454,7 @@ public class DossierActionsImpl implements DossierActions {
 
 					dossier.setDossierNo(dossierRef.trim());
 					
-					DossierLocalServiceUtil.updateDossier(dossier);
+//					DossierLocalServiceUtil.updateDossier(dossier);
 					
 					bResult.put(DossierTerm.DOSSIER_NO, true);					
 				}
@@ -3466,21 +3466,21 @@ public class DossierActionsImpl implements DossierActions {
 		
 		if (DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus)
 				&& DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus)) {
-			try {
-				DossierLocalServiceUtil.updateSubmittingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+//			try {
+//				DossierLocalServiceUtil.updateSubmittingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				dossier.setSubmitDate(now);
 				bResult.put(DossierTerm.SUBMIT_DATE, true);
-			} catch (PortalException e) {
-				_log.error(e);
+//			} catch (PortalException e) {
+//				_log.error(e);
 //				e.printStackTrace();
-			}
+//			}
 		}
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT &&
 				(DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus))
 				&& dossier.getReceiveDate() == null) {
-			try {
-				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+//			try {
+//				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				dossier.setReceiveDate(now);
 				bResult.put(DossierTerm.RECEIVE_DATE, true);
 
@@ -3493,29 +3493,29 @@ public class DossierActionsImpl implements DossierActions {
 				
 				if (Validator.isNotNull(dueDate)) {
 					dossier.setDueDate(dueDate);
-					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
+//					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
 					bResult.put(DossierTerm.DUE_DATE, true);
 				}
 				
 				dossier.setDurationCount(durationCount);
 				dossier.setDurationUnit(durationUnit);
 				
-				dossier = DossierLocalServiceUtil.updateDossier(dossier);
-			} catch (PortalException e) {
-				_log.error(e);
+//				dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//			} catch (PortalException e) {
+//				_log.error(e);
 //				e.printStackTrace();
-			}
+//			}
 		}
 
 		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus) && DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
-			try {
-				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+//			try {
+//				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				dossier.setProcessDate(now);
 				bResult.put(DossierTerm.PROCESS_DATE, true);
-			} catch (PortalException e) {
-				_log.error(e);
+//			} catch (PortalException e) {
+//				_log.error(e);
 //				e.printStackTrace();
-			}
+//			}
 		}
 		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
@@ -3523,14 +3523,14 @@ public class DossierActionsImpl implements DossierActions {
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 			if (Validator.isNull(dossier.getReleaseDate())) {
-				try {
-					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+//				try {
+//					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
 					bResult.put(DossierTerm.RELEASE_DATE, true);
-				} catch (PortalException e) {
-					_log.error(e);
+//				} catch (PortalException e) {
+//					_log.error(e);
 //					e.printStackTrace();
-				}				
+//				}				
 			}
 		}
 		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
@@ -3538,14 +3538,14 @@ public class DossierActionsImpl implements DossierActions {
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 			if (Validator.isNull(dossier.getFinishDate())) {
-				try {
-					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+//				try {
+//					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setFinishDate(now);
 					bResult.put(DossierTerm.FINISH_DATE, true);
-				} catch (PortalException e) {
-					_log.error(e);
+//				} catch (PortalException e) {
+//					_log.error(e);
 //					e.printStackTrace();
-				}				
+//				}				
 			}
 		}
 		
@@ -3577,7 +3577,10 @@ public class DossierActionsImpl implements DossierActions {
 //		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0) {
 			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
-		}			
+		}		
+	
+		dossier = DossierLocalServiceUtil.updateDossier(dossier);
+		
 //		_log.info("Due date in do action: " + dueDate);
 		if (dossierAction != null) {
 			if (dueDate != null) {
