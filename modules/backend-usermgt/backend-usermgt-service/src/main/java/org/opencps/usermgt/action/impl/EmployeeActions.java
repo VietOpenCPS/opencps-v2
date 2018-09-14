@@ -959,6 +959,10 @@ public class EmployeeActions implements EmployeeInterface {
 						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0],
 						fml[1], fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, StringPool.BLANK, groupIds,
 						organizationIds, resultRoles, userGroupIds, false, serviceContext);
+				if (newUser != null) {
+					newUser.setPasswordReset(false);
+					UserLocalServiceUtil.updateUser(newUser);
+				}
 
 				Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 

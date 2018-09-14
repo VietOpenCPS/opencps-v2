@@ -14,13 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-
-import org.opencps.dossiermgt.constants.PaymentConfigTerm;
-import org.opencps.dossiermgt.model.PaymentConfig;
-import org.opencps.dossiermgt.service.base.PaymentConfigLocalServiceBaseImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -39,8 +33,14 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+
+import org.opencps.dossiermgt.constants.PaymentConfigTerm;
+import org.opencps.dossiermgt.model.PaymentConfig;
+import org.opencps.dossiermgt.service.base.PaymentConfigLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 

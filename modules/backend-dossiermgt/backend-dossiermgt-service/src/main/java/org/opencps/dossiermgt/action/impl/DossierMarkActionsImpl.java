@@ -8,13 +8,11 @@ import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public class DossierMarkActionsImpl implements DossierMarkActions {
 
-	private static final Log _log = LogFactoryUtil.getLog(DossierMarkActionsImpl.class);
+//	private static final Log _log = LogFactoryUtil.getLog(DossierMarkActionsImpl.class);
 
 	@Override
 	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Integer fileMark,

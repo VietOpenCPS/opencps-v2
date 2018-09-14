@@ -14,21 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -54,9 +40,23 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 

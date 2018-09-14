@@ -1,16 +1,17 @@
 
 package org.opencps.dossiermgt.service.comparator;
 
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.util.Date;
-import org.opencps.datamgt.model.DictItem;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.Date;
+
+import org.opencps.datamgt.model.DictItem;
 
 /**
  * @author trungnt

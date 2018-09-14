@@ -108,6 +108,7 @@ public class VotingUtils {
 			if (Validator.isNotNull(votingResult)) {
 				ett.setSelected(GetterUtil.get(votingResult.getSelected(), 0));
 			}
+//			ett.setSelected(0);
 
 			int votingCount = 0;
 			int i = 0;
@@ -137,68 +138,69 @@ public class VotingUtils {
 		return results;
 	}
 	
-	public static List<VotingDataModel> mappingVotingDataList(List<Document> list, ServiceContext serviceContext) {
+	public static List<VotingDataModel> mappingVotingDataList(List<Voting> votingList, ServiceContext serviceContext) {
 
 		List<VotingDataModel> results = new ArrayList<>();
 
 		VotingDataModel ett = null;
 
-		for (Document doc : list) {
-			ett = new VotingDataModel();
+		if (votingList != null) {
+			for (Voting voting : votingList) {
+				ett = new VotingDataModel();
 
-			ett.setVotingId(Long.valueOf(doc.get(VotingTerm.VOTING_ID)));
-			ett.setUserId(Long.valueOf(doc.get(VotingTerm.USER_ID)));
-			ett.setUserName(doc.get(VotingTerm.USER_NAME));
-			try {
-
-				ett.setCreateDate(APIDateTimeUtils.convertDateToString(doc.getDate(VotingTerm.CREATE_DATE),
-						APIDateTimeUtils._TIMESTAMP));
-
+//				ett.setVotingId(Long.valueOf(doc.get(VotingTerm.VOTING_ID)));
+//				ett.setUserId(Long.valueOf(doc.get(VotingTerm.USER_ID)));
+//				ett.setUserName(doc.get(VotingTerm.USER_NAME));
+				ett.setVotingId(voting.getVotingId());
+				ett.setUserId(voting.getUserId());
+				ett.setUserName(voting.getUserName());
+				ett.setCreateDate(
+						APIDateTimeUtils.convertDateToString(voting.getCreateDate(), APIDateTimeUtils._TIMESTAMP));
 				ett.setModifiedDate(
-						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
+						APIDateTimeUtils.convertDateToString(voting.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
 
-			} catch (ParseException e) {
-				_log.error(e);
+//				ett.setTemplateNo(doc.get(VotingTerm.TEMPLATE_NO));
+//				ett.setSubject(doc.get(VotingTerm.SUBJECT));
+//				ett.setCommentable(Boolean.valueOf(doc.get(VotingTerm.COMMENTABLE)));
+				ett.setTemplateNo(voting.getTemplateNo());
+				ett.setSubject(voting.getSubject());
+				ett.setCommentable(voting.getCommentable());
+
+				List<String> listChoices = convertAnswers(voting.getChoices());
+				ett.getChoices().addAll(listChoices);
+
+//				VotingResult votingResult = VotingResultLocalServiceUtil
+//						.fetchByF_votingId_userId(serviceContext.getUserId(), ett.getVotingId());
+	//
+//				if (Validator.isNotNull(votingResult)) {
+//					ett.setSelected(GetterUtil.get(votingResult.getSelected(), 0));
+//				}
+				ett.setSelected(0);
+
+				int votingCount = 0;
+				int i = 0;
+				int totalCounter = 0;
+
+				List<String> answers = new ArrayList<>();
+
+				for (String string : listChoices) {
+
+					votingCount = VotingResultLocalServiceUtil.countByF_votingId_selected(ett.getVotingId(),
+							String.valueOf(i + 1));
+
+					i++;
+
+					totalCounter = totalCounter + votingCount;
+
+					answers.add(String.valueOf(votingCount));
+
+				}
+
+				ett.getAnswers().addAll(answers);
+				ett.setAnswersCount(Long.valueOf(totalCounter));
+
+				results.add(ett);
 			}
-
-			ett.setTemplateNo(doc.get(VotingTerm.TEMPLATE_NO));
-			ett.setSubject(doc.get(VotingTerm.SUBJECT));
-			ett.setCommentable(Boolean.valueOf(doc.get(VotingTerm.COMMENTABLE)));
-
-			List<String> listChoices = convertAnswers(doc.get(VotingTerm.CHOICES));
-
-			ett.getChoices().addAll(listChoices);
-
-			VotingResult votingResult = VotingResultLocalServiceUtil
-					.fetchByF_votingId_userId(serviceContext.getUserId(), ett.getVotingId());
-
-			if (Validator.isNotNull(votingResult)) {
-				ett.setSelected(GetterUtil.get(votingResult.getSelected(), 0));
-			}
-
-			int votingCount = 0;
-			int i = 0;
-			int totalCounter = 0;
-
-			List<String> answers = new ArrayList<>();
-
-			for (String string : listChoices) {
-
-				votingCount = VotingResultLocalServiceUtil.countByF_votingId_selected(ett.getVotingId(),
-						String.valueOf(i + 1));
-
-				i++;
-
-				totalCounter = totalCounter + votingCount;
-
-				answers.add(String.valueOf(votingCount));
-
-			}
-
-			ett.getAnswers().addAll(answers);
-			ett.setAnswersCount(Long.valueOf(totalCounter));
-
-			results.add(ett);
 		}
 
 		return results;

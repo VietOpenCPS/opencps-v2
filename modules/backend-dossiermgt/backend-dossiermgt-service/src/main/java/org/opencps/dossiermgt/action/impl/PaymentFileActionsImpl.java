@@ -7,9 +7,7 @@ import java.util.List;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;

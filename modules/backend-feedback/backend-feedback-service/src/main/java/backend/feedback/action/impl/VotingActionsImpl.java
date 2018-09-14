@@ -1,16 +1,14 @@
 package backend.feedback.action.impl;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.ws.rs.NotFoundException;
 
 import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.ResourceUser;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.opencps.usermgt.service.ResourceUserLocalServiceUtil;
 
-import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -28,7 +26,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.feedback.action.VotingActions;
-import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.exception.NoSuchVotingResultException;
 import backend.feedback.model.Voting;
@@ -43,36 +40,45 @@ public class VotingActionsImpl implements VotingActions {
 	private static final Log _log = LogFactoryUtil.getLog(VotingActionsImpl.class);
 
 	@Override
-	public JSONObject getVotingList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
-			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+	public JSONObject getVotingList(long userId, long companyId, long groupId, String className,
+			String classPK, int start, int end, ServiceContext serviceContext) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		SearchContext searchContext = new SearchContext();
-
-		searchContext.setCompanyId(companyId);
-
 		try {
-
-			String classPK = (String) params.get(VotingTerm.CLASS_PK);
 			if (!"0".equals(classPK)) {
-				long count = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
+				long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 				if (count == 0) {
-					params.put(VotingTerm.CLASS_PK, "0");
+					// Add new voting with classPK
+					List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
+					if (votingList != null) {
+						String subject;
+						String choices;
+						String templateNo;
+						Boolean commentable;
+						for (Voting voting : votingList) {
+							subject = voting.getSubject();
+							choices = voting.getChoices();
+							templateNo = voting.getTemplateNo();
+							commentable = voting.getCommentable();
+							voting.setClassPK(classPK);
+							VotingLocalServiceUtil.addVoting(userId, groupId, className, classPK, subject, choices,
+									templateNo, commentable, serviceContext);
+						}
+					}
 				}
 			}
 
-			Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-			_log.info("VotingActions.getVotingList(): "+hits.getLength());
-			result.put("data", hits.toList());
-
-			long total = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
-
+			List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
+			result.put("data", votingList);
+			// Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start,
+			// end, searchContext);
+			// _log.info("VotingActions.getVotingList(): "+hits.getLength());
+			// result.put("data", hits.toList());
+			// long total = VotingLocalServiceUtil.countLuceneSearchEngine(params,
+			// searchContext);
+			long total = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 			result.put("total", total);
-
-		} catch (ParseException e) {
-			_log.error(e);
-		} catch (SearchException e) {
+		} catch (Exception e) {
 			_log.error(e);
 		}
 

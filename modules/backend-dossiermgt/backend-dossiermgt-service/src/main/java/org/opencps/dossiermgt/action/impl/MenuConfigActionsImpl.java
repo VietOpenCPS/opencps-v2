@@ -1,5 +1,13 @@
 package org.opencps.dossiermgt.action.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.List;
 
 import javax.naming.AuthenticationException;
@@ -10,14 +18,6 @@ import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.BackendAuthImpl;
 

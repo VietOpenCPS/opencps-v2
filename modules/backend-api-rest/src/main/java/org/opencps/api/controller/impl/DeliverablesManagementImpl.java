@@ -8,15 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DeliverablesManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DeliverableUtils;
-import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
-import org.opencps.api.deliverable.model.DeliverableResultModel;
 import org.opencps.api.deliverable.model.DeliverableSearchModel;
 import org.opencps.api.deliverable.model.DeliverableUpdateModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
@@ -25,10 +21,8 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
-import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
-import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -37,6 +31,8 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+
+import backend.auth.api.exception.BusinessExcetionImpl;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -51,13 +47,13 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 	private static Log _log = LogFactoryUtil.getLog(DeliverablesManagementImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDeliverables(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DeliverableSearchModel search) {
@@ -132,7 +128,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 //			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
@@ -172,7 +168,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
@@ -205,14 +201,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -246,18 +235,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getFormData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Long id) {
@@ -291,14 +274,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
@@ -325,14 +301,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -365,14 +334,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
@@ -405,14 +367,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -436,14 +391,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(log)).build();
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -477,19 +425,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
 
 	//18
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDataFormByTypeCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String agencyNo, String typeCode,
@@ -563,14 +505,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
@@ -611,14 +546,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(dossierInfo).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(500);
-			error.setDescription("not found!");
-
-			return Response.status(500).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 

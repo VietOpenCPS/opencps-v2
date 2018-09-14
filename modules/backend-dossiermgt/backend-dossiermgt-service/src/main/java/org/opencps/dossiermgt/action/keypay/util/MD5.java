@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class MD5 {
     private Logger log = Logger.getLogger(MD5.class.getName());
-    private Logger logError = Logger.getLogger("ErrorLog");
+//    private Logger logError = Logger.getLogger("ErrorLog");
 
     public String getMD5Hash(String value)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {

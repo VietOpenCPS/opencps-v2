@@ -14,18 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.model.ServiceFileTemplate;
-import org.opencps.dossiermgt.service.base.ServiceFileTemplateLocalServiceBaseImpl;
-import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
-
-import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -35,8 +24,16 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.service.base.ServiceFileTemplateLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the file template local service.

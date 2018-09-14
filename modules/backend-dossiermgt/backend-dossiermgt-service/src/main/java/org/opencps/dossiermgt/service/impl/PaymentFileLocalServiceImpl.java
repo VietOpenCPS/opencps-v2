@@ -14,22 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -54,8 +39,23 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 

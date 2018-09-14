@@ -1,5 +1,21 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -11,11 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierActionManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierActionUtils;
-import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
@@ -29,7 +42,6 @@ import org.opencps.api.processsequence.model.StepModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DossierActions;
@@ -60,21 +72,7 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
+import backend.auth.api.exception.BusinessExcetionImpl;
 
 public class DossierActionManagementImpl implements DossierActionManagement {
 
@@ -83,7 +81,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 	@Override
 	public Response getListActions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierActionSearchModel query, String id) {
-		// TODO Auto-generated method stub
 
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -248,8 +245,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -286,8 +282,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -332,8 +327,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -420,15 +414,14 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				return Response.status(403).entity(null).build();	
 			}
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getListContacts(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
-		// TODO Auto-generated method stub
 
 		DossierActions actions = new DossierActionsImpl();
 		List<ListContacts> listContacts = new ArrayList<ListContacts>();
@@ -448,8 +441,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(listContacts).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -470,7 +462,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 	@Override
 	public Response getByDeliverableState(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Long id, String state) {
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 //		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -560,41 +551,10 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 //			_log.info("Result: "+ results);
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
-			_log.error(e);
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
 
-
-	//LamTV_Process Exception
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("Internal Server Error");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-
-				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-			}
-		}
-	}
 
 }

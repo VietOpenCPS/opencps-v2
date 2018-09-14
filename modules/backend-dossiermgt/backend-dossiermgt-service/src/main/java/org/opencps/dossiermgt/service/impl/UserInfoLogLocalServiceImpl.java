@@ -17,15 +17,11 @@ package org.opencps.dossiermgt.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.UserInfoLog;
 import org.opencps.dossiermgt.service.base.UserInfoLogLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-
 import aQute.bnd.annotation.ProviderType;
 
 /**

@@ -1,7 +1,6 @@
 package org.opencps.dossiermgt.action.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -10,8 +9,6 @@ import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
-import org.opencps.dossiermgt.model.impl.RegistrationImpl;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
@@ -19,7 +16,6 @@ import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;

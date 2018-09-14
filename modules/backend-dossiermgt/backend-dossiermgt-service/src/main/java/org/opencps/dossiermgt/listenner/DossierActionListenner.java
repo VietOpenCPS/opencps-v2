@@ -1,5 +1,21 @@
 package org.opencps.dossiermgt.listenner;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.List;
 
 import org.opencps.datamgt.model.DictCollection;
@@ -17,28 +33,9 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
-import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.utils.APIDateTimeUtils;
 
@@ -214,28 +211,28 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 		}
 	}
 
-	private String getUserName(long userId, long groupId) {
-		String userName = StringPool.BLANK;
-
-		Employee employee = null;
-
-		Applicant applicant = null;
-
-		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-
-		if (Validator.isNotNull(employee)) {
-			return employee.getFullName();
-
-		}
-
-		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
-
-		if (Validator.isNotNull(applicant)) {
-			return applicant.getApplicantName();
-		}
-
-		return userName;
-	}
+//	private String getUserName(long userId, long groupId) {
+//		String userName = StringPool.BLANK;
+//
+//		Employee employee = null;
+//
+//		Applicant applicant = null;
+//
+//		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+//
+//		if (Validator.isNotNull(employee)) {
+//			return employee.getFullName();
+//
+//		}
+//
+//		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+//
+//		if (Validator.isNotNull(applicant)) {
+//			return applicant.getApplicantName();
+//		}
+//
+//		return userName;
+//	}
 
 	private Log _log = LogFactoryUtil.getLog(DossierActionListenner.class.getName());
 }

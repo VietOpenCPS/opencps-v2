@@ -1,5 +1,12 @@
 package org.opencps.dossiermgt.action.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.List;
 
 import javax.naming.AuthenticationException;
@@ -7,13 +14,6 @@ import javax.naming.AuthenticationException;
 import org.opencps.dossiermgt.action.StepConfigActions;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.BackendAuthImpl;
 

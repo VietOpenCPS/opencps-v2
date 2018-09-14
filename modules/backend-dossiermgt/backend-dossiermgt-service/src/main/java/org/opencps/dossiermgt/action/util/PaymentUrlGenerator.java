@@ -1,5 +1,15 @@
 package org.opencps.dossiermgt.action.util;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
@@ -20,16 +30,6 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentUrlGenerator {
 
@@ -228,18 +228,18 @@ public class PaymentUrlGenerator {
 	 * @param dossierId
 	 * @return
 	 */
-	private static Dossier _getDossier(long dossierId) {
-
-		Dossier dossier = null;
-
-		try {
-			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		} catch (Exception e) {
-			_log.error(e);
-		}
-
-		return dossier;
-	}
+//	private static Dossier _getDossier(long dossierId) {
+//
+//		Dossier dossier = null;
+//
+//		try {
+//			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//		return dossier;
+//	}
 
 	private static List<String> _putPaymentMessage(String pattern) {
 
@@ -283,38 +283,38 @@ public class PaymentUrlGenerator {
 	 * @param paymentFileId
 	 * @return
 	 */
-	private static PaymentFile _getPaymentFileById(long paymentFileId) {
-
-		PaymentFile paymentFile = null;
-
-		try {
-			paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
-		} catch (Exception e) {
-			_log.error(e);
-			paymentFile = null;
-		}
-
-		return paymentFile;
-	}
+//	private static PaymentFile _getPaymentFileById(long paymentFileId) {
+//
+//		PaymentFile paymentFile = null;
+//
+//		try {
+//			paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
+//		} catch (Exception e) {
+//			_log.error(e);
+//			paymentFile = null;
+//		}
+//
+//		return paymentFile;
+//	}
 
 	/**
 	 * @param groupId
 	 * @param govAgencyOrganizationId
 	 * @return
 	 */
-	private static PaymentConfig _getPaymentConfig(long groupId, String govAgencyCode) {
-
-		PaymentConfig paymentConfig = null;
-
-		try {
-			paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, govAgencyCode);
-		} catch (Exception e) {
-			_log.error(e);
-			paymentConfig = null;
-		}
-
-		return paymentConfig;
-	}
+//	private static PaymentConfig _getPaymentConfig(long groupId, String govAgencyCode) {
+//
+//		PaymentConfig paymentConfig = null;
+//
+//		try {
+//			paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, govAgencyCode);
+//		} catch (Exception e) {
+//			_log.error(e);
+//			paymentConfig = null;
+//		}
+//
+//		return paymentConfig;
+//	}
 
 	/**
 	 * @param length
@@ -372,7 +372,6 @@ public class PaymentUrlGenerator {
 		boolean isContains = false;
 
 		try {
-			// TODO
 			PaymentFile paymentFile = null;//PaymentFileLocalServiceUtil.getByGoodCode(keypayGoodCode);
 
 			if (Validator.isNotNull(paymentFile)) {

@@ -24,9 +24,6 @@ import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.persistence.ApplicantPersistence;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.portal.kernel.exception.PortalException;

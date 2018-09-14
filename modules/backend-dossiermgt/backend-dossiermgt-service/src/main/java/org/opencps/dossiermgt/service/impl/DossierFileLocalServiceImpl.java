@@ -14,33 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.exception.DuplicateDossierFileException;
-import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
-import org.opencps.dossiermgt.exception.NoSuchDossierFileException;
-import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
-import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
-import org.opencps.usermgt.action.ApplicantActions;
-import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -71,10 +45,34 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
+import org.opencps.dossiermgt.exception.NoSuchDossierFileException;
+import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 
 import aQute.bnd.annotation.ProviderType;
 

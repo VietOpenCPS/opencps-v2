@@ -14,20 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.constants.ProcessStepTerm;
-import org.opencps.dossiermgt.exception.InvalidPostStepCodeException;
-import org.opencps.dossiermgt.exception.InvalidPreStepCodeException;
-import org.opencps.dossiermgt.exception.RequiredAssignUserIdException;
-import org.opencps.dossiermgt.exception.RequiredPaymentFeeException;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.service.base.ProcessActionLocalServiceBaseImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -48,9 +35,19 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.exception.InvalidPostStepCodeException;
+import org.opencps.dossiermgt.exception.InvalidPreStepCodeException;
+import org.opencps.dossiermgt.exception.RequiredPaymentFeeException;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.service.base.ProcessActionLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 

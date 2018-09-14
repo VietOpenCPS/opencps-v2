@@ -1,7 +1,19 @@
 package org.opencps.dossiermgt.action.util;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import com.liferay.counter.kernel.model.Counter;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -24,24 +36,9 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
-import com.liferay.counter.kernel.model.Counter;
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 public class DossierNumberGenerator {
 
 	public static String generateReferenceUID(long groupId) {
-		// TODO add more logic here for the generate by pattern
 
 		return UUID.randomUUID().toString();
 	}
@@ -53,6 +50,7 @@ public class DossierNumberGenerator {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		String dossierNumber = StringPool.BLANK;
 
+		_log.info("seriNumberPattern: "+seriNumberPattern);
 		if (dossier != null) {
 			String codePattern = "\\{(n+|N+)\\}";
 			String codePatternGov = "\\{(a+|A+)\\}";
@@ -86,6 +84,7 @@ public class DossierNumberGenerator {
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.fetchServiceConfig(processOption.getServiceConfigId());
 				if (serviceConfig != null) {
 					govAgencyCode = serviceConfig.getGovAgencyCode();
+					_log.info("govAgencyCode: "+govAgencyCode);
 				}
 				_log.info("SERVICECODE____"+serviceProcessCode);
 				
@@ -107,7 +106,7 @@ public class DossierNumberGenerator {
 					if (r.toString().equals(codePattern)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						
-						String number = countByInit(serviceProcessCode, dossierId, tmp);
+						String number = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
 						_log.info("//////////////////////////////////////////////////////////// " + number
 								+ "|processOtionId= " + number);
@@ -122,9 +121,10 @@ public class DossierNumberGenerator {
 
 						// Pattern follow GovAgencyCode
 					} if (r.toString().equals(codePatternGov)) {
+						_log.info("codePatternGov: "+ true);
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 
-						String number = countByInit(govAgencyCode, dossierId, tmp);
+						String number = countByInit(govAgencyCode, dossierId, tmp, groupId);
 
 						_log.info("//////////////////////////////////////////////////////////// " + number
 								+ "|processOtionId= " + number);
@@ -291,7 +291,7 @@ public class DossierNumberGenerator {
 		return DossierLocalServiceUtil.countByUserId(userId, groupId) + 1;
 	}
 
-	private static String countByInit(String pattern, long dossierid, String tmp) {
+	private static String countByInit(String pattern, long dossierid, String tmp, long groupId) {
 		
 		String certNumber = "0";
 
@@ -305,23 +305,22 @@ public class DossierNumberGenerator {
 
 			//int curYear = cal.get(Calendar.YEAR);
 			
-			DateFormat df = new SimpleDateFormat("yyyy");
+//			DateFormat df = new SimpleDateFormat("yyyy");
 //			DateFormat sdf = new SimpleDateFormat("yy");
-			
-			String curYear = df.format(cal.getTime());
+//			String curYear = df.format(cal.getTime());
 //			String shortCurYear = sdf.format(cal.getTime());
 
-			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + curYear;
+			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
 			
 			_log.info("___certConfigId" + certConfigId);
 
-			String certConfigCurrId = ConstantsUtils.PRE_FIX_CERT_CURR + pattern + StringPool.AT + curYear;
+			String certConfigCurrId = ConstantsUtils.PRE_FIX_CERT_CURR + pattern + StringPool.AT + groupId;
 			
 			_log.info("___certConfigCurrId" + certConfigCurrId);
 
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
 
-			String elmCertId = ConstantsUtils.PRE_FIX_CERT_ELM + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
+			String elmCertId = ConstantsUtils.PRE_FIX_CERT_ELM + pattern + StringPool.AT + groupId + StringPool.AT + dossierid;
 
 			//Counter counter = CounterLocalServiceUtil.fetchCounter(certId);
 
@@ -392,10 +391,8 @@ public class DossierNumberGenerator {
 	}
 	
 	public static String generatePassword(String pattern, int length) {
-		String password;
 
-		// TODO add more logic here if that is necessary
-		password = PwdGenerator.getPassword(pattern, length);
+		String password = PwdGenerator.getPassword(pattern, length);
 
 		return password;
 	}

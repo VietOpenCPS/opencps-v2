@@ -1,5 +1,13 @@
 package org.opencps.dossiermgt.action.util;
 
+import com.liferay.counter.kernel.model.Counter;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,17 +20,9 @@ import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
-import com.liferay.counter.kernel.model.Counter;
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-
 public class DeliverableNumberGenerator {
+
 	public static String generateReferenceUID(long groupId) {
-		// TODO add more logic here for the generate by pattern
 
 		return UUID.randomUUID().toString();
 	}

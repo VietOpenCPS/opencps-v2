@@ -14,21 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Pattern;
-
-import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.RegistrationFormTerm;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.service.base.RegistrationFormLocalServiceBaseImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -57,9 +43,23 @@ import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
+
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.RegistrationFormTerm;
+import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.service.base.RegistrationFormLocalServiceBaseImpl;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the registration form local service.

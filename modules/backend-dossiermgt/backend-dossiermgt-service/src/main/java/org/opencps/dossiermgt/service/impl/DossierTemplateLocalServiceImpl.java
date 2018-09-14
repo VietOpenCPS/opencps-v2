@@ -14,20 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.dossiermgt.constants.DossierTemplateTerm;
-import org.opencps.dossiermgt.exception.DuplicateTemplateNameException;
-import org.opencps.dossiermgt.exception.DuplicateTemplateNoException;
-import org.opencps.dossiermgt.exception.HasChildrenException;
-import org.opencps.dossiermgt.exception.RequiredFileTemplateNoException;
-import org.opencps.dossiermgt.exception.RequiredTemplateNameException;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.service.base.DossierTemplateLocalServiceBaseImpl;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -46,8 +33,21 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.dossiermgt.constants.DossierTemplateTerm;
+import org.opencps.dossiermgt.exception.DuplicateTemplateNameException;
+import org.opencps.dossiermgt.exception.DuplicateTemplateNoException;
+import org.opencps.dossiermgt.exception.HasChildrenException;
+import org.opencps.dossiermgt.exception.RequiredFileTemplateNoException;
+import org.opencps.dossiermgt.exception.RequiredTemplateNameException;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.service.base.DossierTemplateLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 

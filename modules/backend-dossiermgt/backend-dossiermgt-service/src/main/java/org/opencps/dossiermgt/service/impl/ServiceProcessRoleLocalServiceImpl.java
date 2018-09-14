@@ -16,11 +16,9 @@ package org.opencps.dossiermgt.service.impl;
 
 import java.util.List;
 
-import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.base.ServiceProcessRoleLocalServiceBaseImpl;
-import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 
 import com.liferay.portal.kernel.log.Log;

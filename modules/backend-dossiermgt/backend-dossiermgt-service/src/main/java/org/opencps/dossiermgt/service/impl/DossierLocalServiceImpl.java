@@ -14,7 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +49,7 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -80,7 +80,6 @@ import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -234,7 +233,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
 				ServiceProcess serviceProcess = null;
+				_log.info("option: "+option);
 				if (option != null) {
+					_log.info("option: "+true);
 					long serviceProcessId = option.getServiceProcessId();
 					serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
 
