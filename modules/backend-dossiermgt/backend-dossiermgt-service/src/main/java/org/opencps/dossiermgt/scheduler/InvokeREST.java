@@ -217,5 +217,55 @@ public class InvokeREST {
 		return response;
 	}
 
+	public JSONObject callPostFileAPIWithFileName(long groupId, String httpMethod, String accept, String pathBase, String endPoint,
+			String username, String password, HashMap<String, String> properties, File file, String fileName,
+			ServiceContext serviceContext) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			String authString = username + ":" + password;
+
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
+			String requestURL = pathBase + endPoint;
+
+			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
+			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
+
+			if (!properties.isEmpty()) {
+				for (Map.Entry m : properties.entrySet()) {
+					multipart.addFormField(m.getKey().toString(), m.getValue().toString());
+				}
+			}
+
+			if (file != null) {
+				multipart.addFilePartWithFileName("file", file, fileName);				
+			}
+			else {
+				multipart.addFormField("file", StringPool.BLANK);
+			}
+
+			List<String> res = multipart.finish();
+
+			StringBuilder sb = new StringBuilder();
+
+			for (String line : res) {
+				sb.append(line);
+			}
+
+			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_OK);
+			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+
+		} catch (Exception e) {
+			_log.error(e);
+			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
+			response.put(RESTFulConfiguration.MESSAGE, e.getMessage());
+		}
+
+		return response;
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(InvokeREST.class.getName());
 }
