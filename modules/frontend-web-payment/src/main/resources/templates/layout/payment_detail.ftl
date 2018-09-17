@@ -76,13 +76,12 @@
 					
 				</v-layout>
 			
-			<div style="" v-if="detailModel.hasFile">
-				<object id="objectView2" data="" width="100%" height="100%">
+			
+				<object id="objectView2">
 				<!--TODO: append iframe-->
 
 				</object>
-			</div>
-			<div v-else>
+			<div v-if="detailModel.hasFile !== 1">
 				<div id="paymentPDFViewNotFound" class="text-center">Không tìm thấy file</div>
 			</div>
 		</div>

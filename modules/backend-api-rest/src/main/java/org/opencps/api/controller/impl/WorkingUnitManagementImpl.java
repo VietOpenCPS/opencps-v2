@@ -28,6 +28,7 @@ import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -36,6 +37,10 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -74,7 +79,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(WorkingUnitTerm.PARENT_WORKING_UNIT_ID, query.getParent());
-			
+
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, Boolean.valueOf(query.getOrder())) };
 
@@ -195,7 +200,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 				return Response.status(409).entity(error).build();
 
 			}
-			
+
 			return Response.status(500).build();
 		}
 	}
@@ -272,7 +277,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 				return Response.status(409).entity(error).build();
 
 			}
-			
+
 			return Response.status(500).build();
 		}
 	}
@@ -346,8 +351,8 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			inputStream = dataHandler.getInputStream();
 
-			File file = actions.updateLogo(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "WorkingUnit/", "WorkingUnit file upload", serviceContext);
+			File file = actions.updateLogo(user.getUserId(), company.getCompanyId(), groupId, id, inputStream, fileName,
+					fileType, fileSize, "WorkingUnit/", "WorkingUnit file upload", serviceContext);
 
 			FileEntry fileEntry = actions.getFileEntry(id, serviceContext);
 
@@ -432,4 +437,52 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 		}
 	}
 
+	// sondt start
+	@Override
+	public Response resovleConflict(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		WorkingUnitInterface actions = new WorkingUnitActions();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			Indexer<WorkingUnit> indexer = IndexerRegistryUtil.nullSafeGetIndexer(WorkingUnit.class);
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			
+			JSONObject jsonData = actions.getWorkingUnits(user.getUserId(), company.getCompanyId(), groupId, params, null,
+					-1, -1, serviceContext);
+
+			long total = jsonData.getLong("total");
+
+			if (total > 0) {
+				List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+				for (Document document : lstDocuments) {
+					long workingUnitId = GetterUtil.getLong(document.get(WorkingUnitTerm.WORKINGUNIT_ID));
+					long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
+					String uid = document.get(Field.UID);
+					WorkingUnit oldWorkingUnit = WorkingUnitLocalServiceUtil.fetchWorkingUnit(workingUnitId);
+					if (oldWorkingUnit == null) {
+						try {
+							indexer.delete(companyId, uid);
+						} catch (SearchException e) {
+						}
+					}
+				}
+			} else {
+
+			}
+			
+			return Response.status(200).entity("{}").build();
+		} catch (Exception e) {
+
+			ErrorMsg error = new ErrorMsg();
+			error.setMessage("file not found!");
+			error.setCode(404);
+			error.setDescription("file not found!");
+			return Response.status(404).entity(error).build();
+		}
+	}
+	// sondt end
 }

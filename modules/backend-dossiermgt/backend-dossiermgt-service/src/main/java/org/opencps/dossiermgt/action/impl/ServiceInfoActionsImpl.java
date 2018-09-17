@@ -205,9 +205,10 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		LinkedHashMap<String, Object> paramsData = new LinkedHashMap<String, Object>();
 
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
+		params.put(ServiceInfoTerm.PUBLIC_, "true");
 
 		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
-		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.ADMINTRATION_CODE);
+		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.GOVERNMENT_AGENCY);
 
 		Sort[] sorts = new Sort[] { SortFactoryUtil.create(StringPool.BLANK + "_sortable", Sort.STRING_TYPE, true) };
 
@@ -260,6 +261,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		LinkedHashMap<String, Object> paramsData = new LinkedHashMap<String, Object>();
 
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
+		params.put(ServiceInfoTerm.PUBLIC_, "true");
 
 		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
 		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.SERVICE_DOMAIN);
@@ -313,6 +315,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
+		params.put(ServiceInfoTerm.PUBLIC_, "true");
 
 		for (int i = 1; i <= 4; i++) {
 

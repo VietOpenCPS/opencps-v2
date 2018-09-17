@@ -1784,6 +1784,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// _log.info("STATUS_REG Local Search: "+statusReg);
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
+		
+		//sondt start
+		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
+		//sondt end
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2224,6 +2228,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 		}
+		//sondt start Search Like
+		if (Validator.isNotNull(applicantName)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] {DossierTerm.APPLICANT_NAME};
+
+			String[] keywordArr = applicantName.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+		}
+		//sondt end
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2274,6 +2297,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long statusReg = GetterUtil.getLong(params.get(DossierTerm.STATUS_REG));
 		Long notStatusReg = GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
 		// _log.info("statusReg: "+statusReg);
+		
+		//sondt start
+		String applicantName = GetterUtil.getString(params.get(DossierTerm.APPLICANT_NAME));
+		//sondt end
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2756,6 +2783,26 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 		}
+		
+		//sondt start Search Like
+		if (Validator.isNotNull(applicantName)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] {DossierTerm.APPLICANT_NAME};
+
+			String[] keywordArr = applicantName.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+		}
+		//sondt end
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 

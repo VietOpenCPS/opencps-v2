@@ -84,5 +84,12 @@ public interface WorkingUnitManagement {
 	public Response getLogo(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@PathParam("id") long id);
+	
+	//sondt start
+	@GET
+	@Path("/lucene/resovleConflict")
+	public Response resovleConflict(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext);
+	//sondt
 
 }

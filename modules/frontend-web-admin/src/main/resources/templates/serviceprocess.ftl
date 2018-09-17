@@ -119,7 +119,17 @@
 		schema: {
 			total: "total",
 			data: "data",
-			model : { id: "serviceProcessId" },
+			model : { 
+				id: "serviceProcessId",
+				fields: {
+			        processNo: {
+			          	type: "String"
+			        },
+			        processName:{
+		        		type: "String"
+			        }
+			 	}
+			}		
 		},
 		pageSize: 10,
 		serverPaging: false,

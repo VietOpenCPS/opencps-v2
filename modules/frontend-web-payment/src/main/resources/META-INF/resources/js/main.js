@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							{
 								text: 'Tên thủ tục / Tên doanh nghiệp',
 								align: 'left',
-								sortable: true,
+								sortable: false,
 								value: 'serviceName'
 							},
 							{
@@ -326,25 +326,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 							{
 								text: 'Tổng tiền',
 								align: 'center',
-								sortable: true,
+								sortable: false,
 								value: 'paymentAmount'
 							},
 							{
 								text: 'Tình trạng thanh toán',
 								align: 'left',
-								sortable: true,
+								sortable: false,
 								value: 'dossierNo'
 							},
 							{
 								text: 'Hình thức thanh toán',
 								align: 'center',
-								sortable: true,
+								sortable: false,
 								value: 'createDate'
 							},
 							{
 								text: 'Ngày xác nhận thu phí',
 								align: 'center',
-								sortable: true,
+								sortable: false,
 								value: 'confirmDatetime'
 							}
 						];
@@ -372,7 +372,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						};
 
 						var url = '/o/rest/v2/dossiers/paymentfiles';
-
 						axios.get(url, config).then(function (response) {
 							var serializable = response.data;
 							var data = serializable.data;
@@ -436,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						console.log("detail================",vm.detailModel);
 						
 						// TODO: call API lay file
-						var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/payments/"+vm.detailModel.referenceUid+"/invoicefile" ;
+						var url ="/o/rest/v2/dossiers/"+vm.detailModel.dossierId+"/payments/"+vm.detailModel.referenceUid+"/confirmfile" ;
 						vm._showFile({
 							config : {
 								headers: {'groupId': themeDisplay.getScopeGroupId()},
@@ -450,21 +449,30 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					_showFile: function (options) {
 						var vm = this;
 						axios.get(options.url, options.config).then(function (response) {
-							vm.detailModel.hasFile = true;
-							var url = window.URL.createObjectURL(response.data);
-							var iFrame = document.getElementById("objectView2");
-							
-							iFrame.innerHTML = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
+							var status = response.status;
+							if(status === 200){
+								vm.detailModel.hasFile = 1;
+								var url = window.URL.createObjectURL(response.data);
+								// var iFrame = document.getElementById("objectView2");
+								
+								// iFrame.innerHTML = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
+								var htmlStr = "";
+								htmlStr = '<iframe src="'+url+'" width="100%" height="100%"> </iframe>';
+								$("#objectView2").html(htmlStr);
+							}else{
+								vm.detailModel.hasFile = 0;
+							}
 						})
-							.catch(function (error) {
-								vm.detailModel.hasFile = false;
-								console.log(error);
-							});
+						.catch(function (error) {
+							vm.detailModel.hasFile = 0;
+							console.log(error);
+						});
 						
 					},
 					backToList : function(){
 						var vm = this;
 						vm.detailPage = !vm.detailPage;
+						vm.paymentListItems = [];
 						vm._inipaymentList();
 
 					},

@@ -172,8 +172,19 @@ public class DossierSearchModel {
     
     @QueryParam(value = "online")
     protected String online;
+    
+    @QueryParam(value = "applicantName")
+    protected String applicantName;
 
-    public String getOnline() {
+    public String getApplicantName() {
+		return applicantName;
+	}
+
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
+
+	public String getOnline() {
 		return online;
 	}
 

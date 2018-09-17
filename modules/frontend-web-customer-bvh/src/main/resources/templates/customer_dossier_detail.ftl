@@ -622,11 +622,8 @@
 						type : "GET",
 						headers: {"groupId": ${groupId}},
 						data : {
-							parent : 0
-						},
-						sort:{
-							field:"itemName",
-							dir:"asc"
+							parent : 0,
+							sort: "itemName"
 						},
 						success : function(result){
 							if (result.data) {
@@ -682,11 +679,8 @@
 							type : "GET",
 							headers: {"groupId": ${groupId}},
 							data : {
-								parent : parent
-							},
-							sort:{
-								field:"itemName",
-								dir:"asc"
+								parent : parent,
+								sort: "itemName"
 							},
 							success : function(result){
 								
@@ -747,11 +741,8 @@
 							type : "GET",
 							headers: {"groupId": ${groupId}},
 							data : {
-								parent : parent
-							},
-							sort:{
-								field:"data.itemName",
-								dir:"asc"
+								parent : parent,
+								sort: "itemName"
 							},
 							success : function(result){
 								if (result.data) {

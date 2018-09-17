@@ -157,7 +157,7 @@
 				
 				<div class="form-group col-sm-6" >
 				
-					<label for="_workingUnitDetail_website">Website :</label>
+					<label for="_workingUnitDetail_website">Bản đồ :</label>
 					<input type="text" id="_workingUnitDetail_website" name="_workingUnitDetail_website" class="form-control"
 						placeholder="Website" value="${(workingUnit.website)!}"  />
 				
