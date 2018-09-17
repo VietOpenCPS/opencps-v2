@@ -1,6 +1,16 @@
 
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,16 +22,6 @@ import org.opencps.api.voting.model.VotingResultModel;
 import org.opencps.api.voting.model.VotingStatisticsModel;
 import org.opencps.api.voting.model.VotingTopModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;

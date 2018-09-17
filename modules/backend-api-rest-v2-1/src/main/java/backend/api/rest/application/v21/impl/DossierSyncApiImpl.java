@@ -2,7 +2,6 @@ package backend.api.rest.application.v21.impl;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,16 +10,12 @@ import javax.ws.rs.core.HttpHeaders;
 
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
-import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.DossierSync;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -42,6 +37,7 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 
 	private static Log _log = LogFactoryUtil.getLog(DocumentTypeApiImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public DossierSyncResultModel getDossierSyncList(String action, String top, Integer start, Integer end) {
 		//TODO
@@ -81,6 +77,7 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 		return results;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public DossierSyncResultModel getSyncByDossierId(Integer info, String id, Integer start, Integer end) {
 		//TODO

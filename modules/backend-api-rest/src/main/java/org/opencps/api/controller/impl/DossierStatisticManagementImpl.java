@@ -9,34 +9,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierStatisticManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierStatisticUtils;
 import org.opencps.api.dossierstatistic.model.DossierStatisticDetailModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticInputModel;
-import org.opencps.api.dossierstatistic.model.DossierStatisticModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticResultsModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticSearchModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticYearDataModel;
-import org.opencps.api.dossierstatistic.model.DossierStatisticYearModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticYearResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierStatisticAction;
 import org.opencps.dossiermgt.action.impl.DossierStatisticActionImpl;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierStatistic;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+
+import backend.auth.api.exception.BusinessExcetionImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -56,7 +51,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 	@Override
 	public Response getYears(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, int year) {
-		// TODO Auto-generated method stub
+
 		DossierStatisticAction actions = new DossierStatisticActionImpl();
 
 		DossierStatisticYearResultsModel results = new DossierStatisticYearResultsModel();
@@ -94,6 +89,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 		return Response.status(200).entity(results).build();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierStatisticSearchModel search) {
@@ -126,14 +122,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -163,37 +152,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
-		}
-	}
-
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("Internal Server Error");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-
-				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-			}
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 

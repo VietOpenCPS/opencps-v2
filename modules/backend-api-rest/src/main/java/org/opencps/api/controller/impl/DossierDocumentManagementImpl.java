@@ -1,39 +1,8 @@
 package org.opencps.api.controller.impl;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.opencps.api.controller.DossierDocumentManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
-import org.opencps.api.controller.util.DossierDucumentUtils;
-import org.opencps.api.controller.util.DossierUtils;
-import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
-import org.opencps.auth.api.BackendAuth;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.ProcessSequence;
-import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
-
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -47,8 +16,39 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.controller.DossierDocumentManagement;
+import org.opencps.api.controller.util.DossierDucumentUtils;
+import org.opencps.api.controller.util.DossierUtils;
+import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.ProcessSequence;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+
+import backend.auth.api.exception.BusinessExcetionImpl;
 
 public class DossierDocumentManagementImpl implements DossierDocumentManagement {
 
@@ -127,8 +127,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 
 		}
 
@@ -138,7 +137,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	public Response printDossierDocument(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		// TODO: check user is loged or password for access dossier file
 		BackendAuth auth = new BackendAuthImpl();
 		long dossierId = GetterUtil.getLong(id);
 		_log.info("START");
@@ -172,7 +170,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				}
 			}
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
@@ -279,8 +277,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExcetionImpl.processException(e);
 
 		}
 
@@ -291,7 +288,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	public Response downloadDocByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid) {
 
-		// TODO: check user is loged or password for access dossier file
 //		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
@@ -328,35 +324,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
-		}
-	}
-
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-				error.setMessage("Internal Server Error");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-
-				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-			}
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 

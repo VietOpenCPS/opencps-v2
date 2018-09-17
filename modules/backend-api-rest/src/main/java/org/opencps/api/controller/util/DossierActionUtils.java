@@ -190,6 +190,7 @@ public class DossierActionUtils {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<DossierActionNextActionModel> mappingToDoListReadNextActions(JSONArray jsonData) {
 		List<DossierActionNextActionModel> outputs = new ArrayList<DossierActionNextActionModel>();
 

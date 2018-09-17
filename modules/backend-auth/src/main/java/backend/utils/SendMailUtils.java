@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.Validator;
  */
 public class SendMailUtils {
 
+	@SuppressWarnings("deprecation")
 	public static void sendEmailNotification(JSONObject payLoad, ServiceContext serviceContext) throws SystemException {
 
 		if(Validator.isNotNull(payLoad)){

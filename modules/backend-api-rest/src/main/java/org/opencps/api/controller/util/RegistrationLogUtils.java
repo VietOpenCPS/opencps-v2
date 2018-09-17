@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.opencps.api.registrationlog.model.RegistrationLogModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.RegistrationLogTerm;
 import org.opencps.dossiermgt.model.RegistrationLog;
 

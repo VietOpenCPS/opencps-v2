@@ -1,15 +1,6 @@
 package org.opencps.api.controller.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.opencps.api.officesite.model.AdminUser;
-import org.opencps.api.officesite.model.OfficeSiteModel;
-import org.opencps.api.officesite.model.SiteGroup;
-import org.opencps.datamgt.constants.LocationTerm;
-import org.opencps.usermgt.constants.OfficeSiteTerm;
-import org.opencps.usermgt.model.OfficeSite;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -17,10 +8,18 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opencps.api.officesite.model.AdminUser;
+import org.opencps.api.officesite.model.OfficeSiteModel;
+import org.opencps.api.officesite.model.SiteGroup;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.constants.LocationTerm;
+import org.opencps.usermgt.constants.OfficeSiteTerm;
+import org.opencps.usermgt.model.OfficeSite;
 
 public class OfficeSiteUtils {
 

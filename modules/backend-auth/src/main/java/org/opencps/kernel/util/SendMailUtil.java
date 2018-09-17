@@ -17,7 +17,6 @@
 
 package org.opencps.kernel.util;
 
-import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -38,6 +37,7 @@ public class SendMailUtil {
 
 	private static Log _log = LogFactoryUtil.getLog(SendMailUtil.class);
 
+	@SuppressWarnings("deprecation")
 	public static void sendEmailNotification(JSONObject payLoad, ServiceContext serviceContext) throws SystemException {
 
 		if(Validator.isNotNull(payLoad)){

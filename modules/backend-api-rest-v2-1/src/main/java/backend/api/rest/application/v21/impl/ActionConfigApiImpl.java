@@ -2,7 +2,6 @@ package backend.api.rest.application.v21.impl;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 

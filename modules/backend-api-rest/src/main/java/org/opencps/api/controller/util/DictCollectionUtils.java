@@ -1,15 +1,13 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.api.dictcollection.model.DictCollectionModel;
 import org.opencps.datamgt.model.DictCollection;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DictCollectionUtils {
 	public static List<DictCollectionModel> mapperDictCollectionList(List<DictCollection> dictCollectionList) {
