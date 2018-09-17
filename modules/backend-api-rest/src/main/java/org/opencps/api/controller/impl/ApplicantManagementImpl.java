@@ -47,7 +47,7 @@ import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
 
@@ -98,7 +98,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -173,7 +173,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -218,7 +218,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -266,7 +266,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -300,7 +300,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -344,7 +344,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -391,7 +391,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -446,7 +446,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -493,7 +493,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -543,7 +543,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

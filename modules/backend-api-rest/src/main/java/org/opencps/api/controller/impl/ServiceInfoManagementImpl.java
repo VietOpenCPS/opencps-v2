@@ -37,7 +37,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -100,7 +100,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -140,7 +140,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -172,7 +172,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -245,7 +245,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -270,7 +270,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -317,7 +317,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -365,7 +365,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 
@@ -399,7 +399,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -423,7 +423,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -444,7 +444,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -465,7 +465,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

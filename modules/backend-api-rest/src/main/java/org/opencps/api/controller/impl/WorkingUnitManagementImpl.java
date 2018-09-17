@@ -41,7 +41,7 @@ import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
@@ -86,7 +86,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -134,7 +134,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			return Response.status(200).entity(workingUnitModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -206,7 +206,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			return responseBuilder.build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		} finally {
 			try {
@@ -239,7 +239,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

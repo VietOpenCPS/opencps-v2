@@ -51,7 +51,7 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
@@ -115,7 +115,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -165,7 +165,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -214,7 +214,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -336,7 +336,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -601,7 +601,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

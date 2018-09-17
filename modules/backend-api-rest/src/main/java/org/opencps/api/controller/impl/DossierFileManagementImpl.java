@@ -63,7 +63,7 @@ import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class DossierFileManagementImpl implements DossierFileManagement {
 
@@ -91,7 +91,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -198,7 +198,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -226,7 +226,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -267,7 +267,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -304,7 +304,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -332,7 +332,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(dossierFile.getFormData()).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -353,7 +353,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(dossierFile.getFormScript()).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -388,7 +388,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -415,7 +415,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -451,7 +451,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -539,7 +539,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity("No Content").build();
 			}
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -573,7 +573,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -649,7 +649,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -689,7 +689,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -714,7 +714,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -758,7 +758,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -874,7 +874,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

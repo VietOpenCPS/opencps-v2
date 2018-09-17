@@ -55,7 +55,7 @@ import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.utils.DateTimeUtils;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class EmployeeManagementImpl implements EmployeeManagement {
 
@@ -108,7 +108,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -160,7 +160,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(employeeModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -188,7 +188,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(employeeModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -235,7 +235,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -268,7 +268,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			return responseBuilder.build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		} finally {
 			try {
@@ -314,7 +314,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -337,7 +337,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(employeeJobposModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -360,7 +360,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(employeeJobposModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -375,7 +375,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -417,7 +417,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -439,7 +439,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(employeeAccountModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -457,7 +457,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -515,7 +515,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -594,7 +594,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

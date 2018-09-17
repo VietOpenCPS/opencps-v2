@@ -23,7 +23,7 @@ import org.opencps.dossiermgt.action.impl.RegistrationTemplatesActionsImpl;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -75,7 +75,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -166,7 +166,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -192,7 +192,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -221,7 +221,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -247,7 +247,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -276,7 +276,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -302,7 +302,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -331,7 +331,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -356,7 +356,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

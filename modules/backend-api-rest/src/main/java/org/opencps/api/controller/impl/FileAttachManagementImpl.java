@@ -40,7 +40,7 @@ import org.opencps.datamgt.action.impl.FileAttachActions;
 import org.opencps.datamgt.constants.FileAttachTerm;
 import org.opencps.datamgt.model.FileAttach;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class FileAttachManagementImpl implements FileAttachManagement {
 
@@ -87,7 +87,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -145,7 +145,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			return Response.status(200).entity(fileAttachModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -161,7 +161,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -191,7 +191,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			return Response.status(200).entity(fileAttachModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		} finally {
 			if (inputStream != null) {
 				try {
@@ -229,7 +229,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			return Response.status(200).entity(fileAttachModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		} finally {
 			if (inputStream != null) {
 				try {
@@ -266,7 +266,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -299,7 +299,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 				return Response.status(404).entity(error).build();
 			}
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

@@ -44,7 +44,7 @@ import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class UserManagementImpl implements UserManagement {
 
@@ -69,7 +69,7 @@ public class UserManagementImpl implements UserManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class UserManagementImpl implements UserManagement {
 
 			return responseBuilder.build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		} finally {
 			try {
@@ -130,7 +130,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -152,7 +152,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -191,7 +191,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -208,7 +208,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -242,7 +242,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -262,7 +262,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(String.valueOf(flagNo)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 	}
@@ -283,7 +283,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -302,7 +302,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(userAccountModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -322,7 +322,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(userAccountModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 	}
@@ -345,7 +345,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -365,7 +365,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(userModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -382,7 +382,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -430,7 +430,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(buildFileName).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		} finally {
 			try {
 				if (inputStream != null)
@@ -481,7 +481,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(buildFileName).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		} finally {
 			try {
 				if (inputStream != null)
@@ -520,7 +520,7 @@ public class UserManagementImpl implements UserManagement {
 			
 			
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -549,7 +549,7 @@ public class UserManagementImpl implements UserManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 	}
@@ -572,7 +572,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -592,7 +592,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

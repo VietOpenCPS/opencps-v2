@@ -17,7 +17,7 @@ import org.opencps.communication.action.NotificationQueueInterface;
 import org.opencps.communication.action.impl.NotificationQueueActions;
 import org.opencps.communication.model.NotificationQueue;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -47,7 +47,7 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

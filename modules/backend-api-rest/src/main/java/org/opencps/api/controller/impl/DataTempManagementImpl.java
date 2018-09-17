@@ -41,7 +41,7 @@ import org.opencps.synchronization.service.DictItemGroupTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 import org.opencps.synchronization.service.SyncQueueLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONException;
@@ -99,7 +99,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -188,7 +188,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -250,7 +250,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -317,7 +317,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -395,7 +395,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			
 			return Response.status(200).entity(dictCollection.getDataForm()).build();				
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -438,7 +438,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -494,7 +494,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -554,7 +554,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -630,7 +630,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -664,7 +664,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -721,7 +721,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(dictGroupItemModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -793,7 +793,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -842,7 +842,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -912,7 +912,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			return Response.status(200).entity(dictItemModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1019,7 +1019,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -1085,7 +1085,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -1190,7 +1190,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

@@ -48,7 +48,7 @@ import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class DossierDocumentManagementImpl implements DossierDocumentManagement {
 
@@ -127,7 +127,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 
@@ -170,7 +170,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				}
 			}
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
@@ -277,7 +277,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 
@@ -324,7 +324,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

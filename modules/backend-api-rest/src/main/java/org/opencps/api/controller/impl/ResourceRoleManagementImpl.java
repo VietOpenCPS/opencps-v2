@@ -32,7 +32,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
@@ -76,7 +76,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			return Response.status(200).entity(ResourceRoleModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -166,7 +166,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -200,7 +200,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

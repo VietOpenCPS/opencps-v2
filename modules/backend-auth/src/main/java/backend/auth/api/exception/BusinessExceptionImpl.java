@@ -10,9 +10,9 @@ import javax.ws.rs.core.Response;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 
-public class BusinessExcetionImpl {
+public class BusinessExceptionImpl {
 
-	private static Log _log = LogFactoryUtil.getLog(BusinessExcetionImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(BusinessExceptionImpl.class);
 
 	public static Response processException(Exception e) {
 

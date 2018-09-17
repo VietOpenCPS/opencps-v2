@@ -18,7 +18,7 @@ import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
@@ -46,7 +46,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -67,7 +67,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(registrationForm.getFormData()).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -112,7 +112,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).entity(registrationForm.getFormScript()).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -132,7 +132,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

@@ -14,7 +14,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.NotificationManagement;
 import org.opencps.api.notification.model.NotificationSearchModel;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -84,7 +84,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 			result.put("data", data);
 //			writeJSON(actionRequest, actionResponse, result);
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}

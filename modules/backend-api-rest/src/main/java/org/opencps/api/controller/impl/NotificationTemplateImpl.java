@@ -29,7 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class NotificationTemplateImpl implements NotificationTemplateManagement {
 
@@ -72,7 +72,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -126,7 +126,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			return Response.status(200).entity(notificationtemplateModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -158,7 +158,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			return Response.status(200).entity(notificationtemplateModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

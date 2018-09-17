@@ -42,7 +42,7 @@ import org.opencps.usermgt.action.impl.OfficeSiteActions;
 import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
@@ -82,7 +82,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -106,7 +106,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 			return Response.status(200).entity(officeSiteModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -156,7 +156,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -170,7 +170,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -234,7 +234,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			return responseBuilder.build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		} finally {
 			try {
 				if (inputStream != null)
@@ -321,7 +321,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -341,7 +341,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 }

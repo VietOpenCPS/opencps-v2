@@ -61,7 +61,7 @@ import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
@@ -109,7 +109,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -146,7 +146,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -172,7 +172,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -208,7 +208,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -241,7 +241,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -272,7 +272,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -303,7 +303,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -335,7 +335,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -363,7 +363,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -411,7 +411,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -452,7 +452,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -491,7 +491,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -522,7 +522,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -563,7 +563,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -601,7 +601,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -641,7 +641,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -678,7 +678,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -725,7 +725,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -778,7 +778,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -833,7 +833,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -865,7 +865,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -896,7 +896,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -924,7 +924,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -963,7 +963,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -989,7 +989,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -1018,7 +1018,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 						
 			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 

@@ -19,7 +19,7 @@ import org.opencps.datamgt.action.HolidayInterface;
 import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.model.Holiday;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -73,7 +73,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -123,7 +123,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			return Response.status(200).entity(holidayModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			return Response.status(200).entity(holidayModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -177,7 +177,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

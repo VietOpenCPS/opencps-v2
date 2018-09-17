@@ -72,7 +72,7 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class DossierActionManagementImpl implements DossierActionManagement {
 
@@ -245,7 +245,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -282,7 +282,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -327,7 +327,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -414,7 +414,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				return Response.status(403).entity(null).build();	
 			}
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -441,7 +441,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			return Response.status(200).entity(listContacts).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -551,7 +551,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 //			_log.info("Result: "+ results);
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}

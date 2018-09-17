@@ -72,7 +72,7 @@ import org.opencps.synchronization.model.DictGroupTemp;
 import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class DataManagementImpl implements DataManagement {
 
@@ -114,7 +114,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -170,7 +170,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -214,7 +214,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -249,7 +249,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -306,7 +306,7 @@ public class DataManagementImpl implements DataManagement {
 				throw new DuplicateCategoryException();
 			}
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -348,7 +348,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -388,7 +388,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -426,7 +426,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -466,7 +466,7 @@ public class DataManagementImpl implements DataManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -499,7 +499,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -567,7 +567,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupItemModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -678,7 +678,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -726,7 +726,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -810,7 +810,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictItemModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -924,7 +924,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -998,7 +998,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1168,7 +1168,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1281,7 +1281,7 @@ public class DataManagementImpl implements DataManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1357,7 +1357,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1397,7 +1397,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1436,7 +1436,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1475,7 +1475,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1549,7 +1549,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictGroupModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1589,7 +1589,7 @@ public class DataManagementImpl implements DataManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1642,7 +1642,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1666,7 +1666,7 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(dictCollectionModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 }

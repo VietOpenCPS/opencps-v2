@@ -24,7 +24,7 @@ import org.opencps.dossiermgt.action.UserInfoLogActions;
 import org.opencps.dossiermgt.action.impl.UserInfoLogActionsImpl;
 import org.opencps.dossiermgt.model.UserInfoLog;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class UserInfoLogManagementImpl implements UserInfoLogManagement{
 
@@ -62,7 +62,7 @@ public class UserInfoLogManagementImpl implements UserInfoLogManagement{
 
 			return Response.status(200).entity(payLoad).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class UserInfoLogManagementImpl implements UserInfoLogManagement{
 
 			return Response.status(200).entity(userInfo.getPayload()).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

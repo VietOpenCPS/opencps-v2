@@ -14,7 +14,7 @@ import org.opencps.api.notificationtemplate.model.NotificationTypeResults;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -43,7 +43,7 @@ public class NotificationTypeManagementImpl implements NotificationTypeManagemen
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

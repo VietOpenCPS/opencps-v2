@@ -71,7 +71,7 @@ import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class RegistrationManagementImpl implements RegistrationManagement {
 	private static Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
@@ -124,7 +124,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -191,7 +191,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(detail);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -247,7 +247,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -277,7 +277,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -313,7 +313,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -347,7 +347,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -383,7 +383,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -402,7 +402,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(registration).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -515,7 +515,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -546,7 +546,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

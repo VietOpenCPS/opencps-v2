@@ -19,7 +19,7 @@ import org.opencps.datamgt.action.WorkTimeInterface;
 import org.opencps.datamgt.action.impl.WorkTimeActions;
 import org.opencps.datamgt.model.WorkTime;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -70,7 +70,7 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 			return Response.status(200).entity(workTimeModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 
 		} catch (Exception e) {
 
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -175,7 +175,7 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

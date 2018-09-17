@@ -46,7 +46,7 @@ import org.opencps.datamgt.constants.CommentTerm;
 import org.opencps.datamgt.model.Comment;
 import org.opencps.datamgt.service.CommentLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 /**
  * @author trungnt
@@ -75,7 +75,7 @@ public class CommentManagementImpl implements CommentManagement {
 			return Response.status(200).entity(commentModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			return Response.status(200).entity(commentModel).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		} finally {
 			try {
 				if (inputStream != null)
@@ -152,7 +152,7 @@ public class CommentManagementImpl implements CommentManagement {
 			}
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -203,7 +203,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			return Response.status(200).entity(result.toString()).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -252,7 +252,7 @@ public class CommentManagementImpl implements CommentManagement {
 			return Response.status(200).entity(commentModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -281,7 +281,7 @@ public class CommentManagementImpl implements CommentManagement {
 			return Response.status(200).entity(commentModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -307,7 +307,7 @@ public class CommentManagementImpl implements CommentManagement {
 			return Response.status(200).entity(commentModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -343,7 +343,7 @@ public class CommentManagementImpl implements CommentManagement {
 			return Response.status(200).entity(results).build();
 			
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

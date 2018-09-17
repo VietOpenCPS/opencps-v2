@@ -34,7 +34,7 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 //	private static final Log _log = LogFactoryUtil.getLog(PaymentConfigManagementImpl.class);
@@ -81,7 +81,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -112,7 +112,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -135,7 +135,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -166,7 +166,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -193,7 +193,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -218,7 +218,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -246,7 +246,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -274,7 +274,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 
@@ -299,7 +299,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -328,7 +328,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -361,7 +361,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

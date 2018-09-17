@@ -72,7 +72,7 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
@@ -127,7 +127,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -163,7 +163,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -184,7 +184,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -221,7 +221,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -251,7 +251,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -302,7 +302,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -335,7 +335,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -368,7 +368,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -399,7 +399,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -522,7 +522,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -655,7 +655,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -869,7 +869,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new Exception("Preview rendering not avariable");
 			}
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 	}
@@ -931,7 +931,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

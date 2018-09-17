@@ -46,7 +46,7 @@ import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class DossierTemplateManagementImpl implements DossierTemplateManagement {
 
@@ -86,7 +86,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -117,7 +117,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -151,7 +151,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -181,7 +181,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -209,7 +209,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -292,7 +292,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -342,7 +342,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -393,7 +393,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -428,7 +428,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -463,7 +463,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 //			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(result)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -486,7 +486,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -511,7 +511,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -546,7 +546,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -579,7 +579,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -612,7 +612,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -641,7 +641,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
