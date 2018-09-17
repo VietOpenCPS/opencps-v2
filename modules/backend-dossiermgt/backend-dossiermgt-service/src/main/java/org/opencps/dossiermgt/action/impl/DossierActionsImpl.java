@@ -159,12 +159,10 @@ public class DossierActionsImpl implements DossierActions {
 			String statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
 
 			String subStatusCode = GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
-			if (groupId == 55217 || groupId == 55301) {
+			if (groupId == 55217) {
 				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 				result.put("data", hits.toList());
-				
-				_log.info("GO HERE ***** ...... *****" + groupId);
 
 				long total = DossierLocalServiceUtil.countLucene(params, searchContext);
 
@@ -172,42 +170,6 @@ public class DossierActionsImpl implements DossierActions {
 
 				return result;
 			}
-			
-//			if (Validator.isNotNull(statusCode) && statusCode.indexOf(StringPool.COMMA) != -1) {
-//				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
-//
-//				result.put("data", hits.toList());
-//
-//				long total = DossierLocalServiceUtil.countLucene(params, searchContext);
-//
-//				result.put("total", total);
-//				
-//				return result;
-//			}
-
-			// Get list dossierActionId
-//			List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getListUserByUserId(userId);
-//			long dossierActionId = 0;
-//			StringBuilder sb = null;
-//			if (dauList != null && dauList.size() > 0) {
-//				sb = new StringBuilder();
-//				int length = dauList.size();
-//				DossierActionUser dau = null;
-//				for (int i = 0; i < length; i++) {
-//					dau = dauList.get(i);
-//					dossierActionId = dau.getDossierActionId();
-//					// StringBuilder sb = new StringBuilder();
-//					if (dossierActionId > 0) {
-//
-//						if (i == 0) {
-//							sb.append(dossierActionId);
-//						} else {
-//							sb.append(StringPool.COMMA);
-//							sb.append(dossierActionId);
-//						}
-//					}
-//				}
-//			}
 
 			// Get collection with collection Code
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
@@ -215,7 +177,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			// Get list dossier follow status Code
 			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
-//				_log.info("52" + sb.toString());
+				// _log.info("52" + sb.toString());
 
 				DictItem dictItem = null;
 				if (Validator.isNotNull(subStatusCode)) {
@@ -236,7 +198,7 @@ public class DossierActionsImpl implements DossierActions {
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
 							specialStatus = metaJson.getString("specialStatus");
-//							_log.info("specialStatus: " + specialStatus);
+							_log.info("specialStatus: " + specialStatus);
 
 						} catch (Exception e) {
 							// TODO: handle exception
@@ -244,7 +206,8 @@ public class DossierActionsImpl implements DossierActions {
 					}
 
 					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-//						params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
+						// params.put(DossierTerm.DOSSIER_ACTION_ID,
+						// sb.toString());
 						params.put(DossierTerm.FOLLOW, String.valueOf(true));
 					} else {
 						params.put(DossierTerm.FOLLOW, false);
@@ -253,9 +216,9 @@ public class DossierActionsImpl implements DossierActions {
 					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 					if (hits != null && hits.getLength() > 0) {
 						result.put("data", hits.toList());
-//						_log.info("hits.toList(): " + hits.toList().size());
+						_log.info("hits.toList(): " + hits.toList().size());
 						total = DossierLocalServiceUtil.countLucene(params, searchContext);
-//						_log.info("total: " + total);
+						_log.info("total: " + total);
 						result.put("total", total);
 					}
 				}
@@ -264,18 +227,18 @@ public class DossierActionsImpl implements DossierActions {
 				List<DictItem> dictItems = DictItemLocalServiceUtil
 						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
 
-				//TODO:   
-//				if (dictItems != null && dictItems.size() > 0) {
-//					StringBuilder sbNormal = new StringBuilder();
-//					StringBuilder sbSpecial = new StringBuilder();
-//					List<Document> allDocsList = new ArrayList<Document>();
-//					for (DictItem dictItem : dictItems) {
-//						boolean flagSpecial = checkSpecialStatus(dictItem);
-//						if (flagSpecial) {
-//							
-//						}
-//					}
-//				}
+				// TODO:
+				// if (dictItems != null && dictItems.size() > 0) {
+				// StringBuilder sbNormal = new StringBuilder();
+				// StringBuilder sbSpecial = new StringBuilder();
+				// List<Document> allDocsList = new ArrayList<Document>();
+				// for (DictItem dictItem : dictItems) {
+				// boolean flagSpecial = checkSpecialStatus(dictItem);
+				// if (flagSpecial) {
+				//
+				// }
+				// }
+				// }
 				// Get list dossier follow each status
 				if (dictItems != null && dictItems.size() > 0) {
 					List<Document> allDocsList = new ArrayList<Document>();
@@ -284,11 +247,11 @@ public class DossierActionsImpl implements DossierActions {
 						String metaData = dictItem.getMetaData();
 						String specialStatus = StringPool.BLANK;
 						if (Validator.isNotNull(metaData)) {
-//							_log.info("metaData: " + metaData);
+							_log.info("metaData: " + metaData);
 							try {
 								JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
 								specialStatus = metaJson.getString("specialStatus");
-//								_log.info("specialStatus: " + specialStatus);
+								_log.info("specialStatus: " + specialStatus);
 
 							} catch (Exception e) {
 								// TODO: handle exception
@@ -300,21 +263,21 @@ public class DossierActionsImpl implements DossierActions {
 						// Get info status of dossier
 						if (dictItem.getParentItemId() != 0) {
 							subStatusCode = dictItem.getItemCode();
-//							_log.info("subStatusCode: " + subStatusCode);
+							_log.info("subStatusCode: " + subStatusCode);
 							DictItem parentDictItem = DictItemLocalServiceUtil.getDictItem(dictItem.getParentItemId());
 							statusCode = parentDictItem.getItemCode();
-//							_log.info("statusCode: " + statusCode);
+							_log.info("statusCode: " + statusCode);
 						} else {
 							statusCode = dictItem.getItemCode();
-//							_log.info("statusCode: " + statusCode);
+							_log.info("statusCode: " + statusCode);
 						}
 
 						// Check permission user login
 						boolean isPermission = checkPermission(statusCode, subStatusCode, groupId, userId);
 
 						if (isPermission) {
-//							_log.info("isPermission: " + isPermission);
-//							_log.info("userId: " + userId);
+							_log.info("isPermission: " + isPermission);
+							_log.info("userId: " + userId);
 							// _log.info("strdossierActionId: " +
 							// sb.toString());
 
@@ -330,10 +293,10 @@ public class DossierActionsImpl implements DossierActions {
 
 								if (hits != null && hits.getLength() > 0) {
 									long count = DossierLocalServiceUtil.countLucene(params, searchContext);
-//									_log.info("count: " + count);
+									_log.info("count: " + count);
 									if (dictItem.getParentItemId() != 0) {
 										allDocsList.addAll(hits.toList());
-//										_log.info("SizeList1: " + hits.toList().size());
+										_log.info("SizeList1: " + hits.toList().size());
 										total += count;
 									}
 								}
@@ -2757,6 +2720,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return isPermission;
 	}
 
+
 	@Override
 	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId,
 			LinkedHashMap<String, Object> params, Sort[] sorts, ServiceContext serviceContext) {
@@ -2811,30 +2775,6 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				List<DictItem> dictItems = DictItemLocalServiceUtil
 						.findByF_dictCollectionId(dictCollection.getDictCollectionId());
 
-				// Get list dossierActionId
-//				List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getListUserByUserId(userId);
-//				long dossierActionId = 0;
-//				StringBuilder sb = null;
-//				if (dauList != null && dauList.size() > 0) {
-//					sb = new StringBuilder();
-//					int length = dauList.size();
-//					DossierActionUser dau = null;
-//					for (int i = 0; i < length; i++) {
-//						dau = dauList.get(i);
-//						dossierActionId = dau.getDossierActionId();
-//						// StringBuilder sb = new StringBuilder();
-//						if (dossierActionId > 0) {
-//
-//							if (i == 0) {
-//								sb.append(dossierActionId);
-//							} else {
-//								sb.append(StringPool.COMMA);
-//								sb.append(dossierActionId);
-//							}
-//						}
-//					}
-//				}
-
 				for (DictItem dictItem : dictItems) {
 					String metaData = dictItem.getMetaData();
 					String specialStatus = StringPool.BLANK;
@@ -2877,7 +2817,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							// Add params
 							params.put(DossierTerm.STATUS, statusCode);
 							params.put(DossierTerm.SUBSTATUS, subStatusCode);
-//							params.put(DossierTerm.DOSSIER_ACTION_ID, sb.toString());
+							// params.put(DossierTerm.DOSSIER_ACTION_ID,
+							// sb.toString());
 							params.put(DossierTerm.FOLLOW, String.valueOf(true));
 
 							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
@@ -2924,6 +2865,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 		return result;
 	}
+
 
 	@Override
 	public JSONObject getDossierCountTodoPermission(long userId, long companyId, long groupId,

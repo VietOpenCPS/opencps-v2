@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -311,30 +312,51 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				Boolean.toString(getDossierOverDue(object.getPrimaryKey())));
 
 		//TODO: index dossierAction StepCode
-		StringBundler sb = new StringBundler();
-		long dossierActionsUserId = object.getDossierActionId();
-		if (dossierActionsUserId > 0) {
-			List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
-					.getListUser(dossierActionsUserId);
-			if (dossierActionUsers != null && dossierActionUsers.size() > 0) {
-				int length = dossierActionUsers.size();
-				for (int i = 0; i < length; i ++) {
-					DossierActionUser dau = dossierActionUsers.get(i);
-					long userId = dau.getUserId();
-					if (i == 0) {
-						sb.append(userId);
-					} else {
-						sb.append(StringPool.SPACE);
-						sb.append(userId);
-						
-					}
-				}
-			}
-		}
-		_log.info("Mapping user:"+sb.toString());
-		document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
+
 		
-//		 Indexing DossierActionUsers
+		StringBundler sb = new StringBundler();
+
+		// Get list DossierAction
+
+		Optional<List<DossierAction>> listDossierAction = Optional
+				.ofNullable(DossierActionLocalServiceUtil.getDossierActionById(dossierId));
+
+		listDossierAction.ifPresent(source -> {
+			
+			_log.info("TEST GET NEW CODE");
+			
+			if (source.size() != 0) {
+
+				for (DossierAction dossierAction : source) {
+
+					Optional<List<DossierActionUser>> listDossierActionUser = Optional.ofNullable(
+							DossierActionUserLocalServiceUtil.getListUser(dossierAction.getDossierActionId()));
+
+					listDossierActionUser.ifPresent(source_2 -> {
+						
+						if (source_2.size() != 0) {
+							for (DossierActionUser dossierActionUser : source_2) {
+
+								sb.append(StringPool.SPACE);
+								sb.append(dossierActionUser.getUserId());
+							}
+
+						}
+					});
+
+				}
+
+			}
+			
+			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
+
+		});
+
+
+		_log.info("Mapping user:" + sb.toString());
+		document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
+
+		// Indexing DossierActionUsers
 		List<Long> actionUserIds = new ArrayList<>();
 		try {
 			List<DossierAction> dossierActions = DossierActionLocalServiceUtil.getDossierActionById(dossierId);
@@ -356,8 +378,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
 		}
 
-		_log.info("Action user:"+StringUtil.merge(actionUserIds, StringPool.SPACE));
+		_log.info("Action user:" + StringUtil.merge(actionUserIds, StringPool.SPACE));
 		document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
+
 		
 		//binhth index dossierId CTN
 		// TODO

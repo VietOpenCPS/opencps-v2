@@ -261,7 +261,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 	}
-
+	
 	@Override
 	public Response getDossiersTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -285,7 +285,6 @@ public class DossierManagementImpl implements DossierManagement {
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 
 			// _log.info("31" + query.getEnd());
-
 			if (query.getEnd() == 0) {
 
 				query.setStart(-1);
@@ -441,6 +440,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 	}
+
 
 	@Override
 	public Response addDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
