@@ -73,7 +73,7 @@ public interface ServiceProcessActions {
 			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
-			String dossierTemplateNo, ServiceContext context) throws PortalException;
+			String dossierTemplateNo, int sequenceNo, ServiceContext context) throws PortalException;
 
 	public ProcessAction deleteProcessAction(long processActionId) throws PortalException;
 

@@ -90,7 +90,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
-			String dossierTemplateNo, ServiceContext context) throws PortalException {
+			String dossierTemplateNo, int sequenceNo, ServiceContext context) throws PortalException {
 
 		Date now = new Date();
 		
@@ -138,6 +138,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setESignature(eSignature);
 			object.setConfigNote(configNote);
 			object.setDossierTemplateNo(dossierTemplateNo);
+			object.setSequenceNo(sequenceNo);
 
 		} else {
 			object = processActionPersistence.fetchByPrimaryKey(processActionId);
@@ -167,6 +168,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setESignature(eSignature);
 			object.setConfigNote(configNote);
 			object.setDossierTemplateNo(dossierTemplateNo);
+			object.setSequenceNo(sequenceNo);
 
 		}
 

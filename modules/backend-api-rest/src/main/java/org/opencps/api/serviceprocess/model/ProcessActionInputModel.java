@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -72,7 +71,8 @@ import javax.xml.bind.annotation.XmlType;
     "createDossierNo",
     "eSignature",
     "configNote",
-    "dossierTemplateNo"
+    "dossierTemplateNo",
+    "sequenceNo"
 })
 @XmlRootElement(name = "ProcessActionInputModel")
 public class ProcessActionInputModel {
@@ -116,7 +116,18 @@ public class ProcessActionInputModel {
     protected boolean eSignature;
 	@FormParam("dossierTemplateNo")
 	protected String dossierTemplateNo;
+	@FormParam("sequenceNo")
+	protected int sequenceNo;
+
 	
+	public int getSequenceNo() {
+		return sequenceNo;
+	}
+
+	public void setSequenceNo(int sequenceNo) {
+		this.sequenceNo = sequenceNo;
+	}
+
 	@FormParam("configNote")
 	protected String configNote;
 	

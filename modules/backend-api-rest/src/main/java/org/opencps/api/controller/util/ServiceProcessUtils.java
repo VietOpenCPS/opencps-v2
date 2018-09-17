@@ -263,6 +263,7 @@ public class ServiceProcessUtils {
 
 			}
 			model.setDossierTemplateNo(doc.get("dossierTemplateNo"));
+			model.setSequenceNo(GetterUtil.getInteger(doc.get("sequenceNo")));
 			
 			outputs.add(model);
 		}
@@ -332,6 +333,7 @@ public class ServiceProcessUtils {
 		model.setCreateDossierNo(action.getCreateDossierNo());
 		model.seteSignature(action.getESignature());
 		model.setConfigNote(action.getConfigNote());
+		model.setSequenceNo(action.getSequenceNo());
 		
 		return model;
 	}

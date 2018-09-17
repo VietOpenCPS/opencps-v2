@@ -233,14 +233,13 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			String actionName, boolean allowAssignUser, long assignUserId, boolean requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
 			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
-			String dossierTemplateNo, ServiceContext context) throws PortalException {
-		
+			String dossierTemplateNo, int sequenceNo, ServiceContext context) throws PortalException {
 		
 		
 		return ProcessActionLocalServiceUtil.updateProcessAction(groupId, processActionId, serviceProcessId,
 				preStepCode, postStepCode, autoEvent, preCondition, actionCode, actionName, allowAssignUser,
 				assignUserId, requestPayment, paymentFee, createDossierFiles, returnDossierFiles, makeBriefNote,
-				syncActionCode, rollbackable, createDossierNo, eSignature,configNote, dossierTemplateNo, context);
+				syncActionCode, rollbackable, createDossierNo, eSignature,configNote, dossierTemplateNo, sequenceNo, context);
 	}
 
 	@Override
