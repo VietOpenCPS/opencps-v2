@@ -181,6 +181,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DossierSyncManagementImpl());
 		
 		singletons.add(new SystemManagementImpl());
+		singletons.add(this);
 		
 		// add service provider
 		singletons.add(_serviceContextProvider);

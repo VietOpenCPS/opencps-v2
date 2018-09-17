@@ -55,7 +55,7 @@ public abstract class OpencpsRestFacade<T, R> {
 		this.proxy = proxy;
 	}
 
-	abstract protected R makeServiceCall(T payload)
+	protected abstract R makeServiceCall(T payload)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException;
 
 	/**
