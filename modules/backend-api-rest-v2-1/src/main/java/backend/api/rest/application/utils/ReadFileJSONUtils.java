@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 
 public class ReadFileJSONUtils {
 
-	private static final String SOURCE_JSON = "../backend-api-rest-v2-1/src/main/resources/";
+//	private static final String SOURCE_JSON = "../backend-api-rest-v2-1/src/main/resources/";
 	private static Log _log = LogFactoryUtil.getLog(ReadFileJSONUtils.class);
 
 //	public static String test(String className) throws FileNotFoundException, IOException, ParseException{

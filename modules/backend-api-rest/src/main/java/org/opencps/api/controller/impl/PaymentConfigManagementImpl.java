@@ -1,5 +1,18 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
@@ -7,9 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.PaymentConfigManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.PaymentConfigUtils;
 import org.opencps.api.paymentconfig.model.PaymentConfigInputModel;
 import org.opencps.api.paymentconfig.model.PaymentConfigResultsModel;
@@ -23,23 +34,10 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class PaymentConfigManagementImpl implements PaymentConfigManagement {
-	private static final Log _log = LogFactoryUtil.getLog(PaymentConfigManagementImpl.class);
+//	private static final Log _log = LogFactoryUtil.getLog(PaymentConfigManagementImpl.class);
 	@Override
 	public Response getPaymentConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, PaymentConfigSearchModel query) {
@@ -83,14 +81,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("Content not found!");
-			error.setCode(404);
-			error.setDescription(e.getMessage());
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -121,32 +112,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -169,14 +135,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("Content not found!");
-			error.setCode(404);
-			error.setDescription(e.getMessage());
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -207,32 +166,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -259,32 +193,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -309,14 +218,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("Content not found!");
-			error.setCode(404);
-			error.setDescription(e.getMessage());
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -344,32 +246,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -397,32 +274,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 
@@ -447,14 +299,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("Content not found!");
-			error.setCode(404);
-			error.setDescription(e.getMessage());
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -483,32 +328,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -541,34 +361,8 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
-
 	}
 
 }

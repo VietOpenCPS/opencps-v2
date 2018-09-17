@@ -15,10 +15,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.ServiceInfoManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
@@ -34,14 +32,12 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
-import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
-import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
-import org.opencps.dossiermgt.exception.RequiredServiceNameException;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
+
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -62,6 +58,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getServiceInfos(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
@@ -103,14 +100,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -150,61 +140,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					if (e instanceof RequiredServiceCodeException) {
-						error.setMessage("RequiredServiceCodeException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("RequiredServiceCodeException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else if (e instanceof RequiredServiceNameException) {
-						error.setMessage("RequiredServiceNameException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("RequiredServiceNameException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else if (e instanceof RequiredAdministrationCodeException) {
-						error.setMessage("RequiredAdministrationCodeException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("RequiredAdministrationCodeException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else if (e instanceof DuplicateServiceCodeException) {
-						error.setMessage("DuplicateServiceCodeException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("DuplicateServiceCodeException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else {
-						error.setMessage("Internal Server Error");
-						error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-						error.setDescription(e.getMessage());
-
-						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-					}
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -236,14 +172,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -281,61 +210,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					if (e instanceof RequiredServiceCodeException) {
-						error.setMessage("RequiredServiceCodeException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("RequiredServiceCodeException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else if (e instanceof RequiredServiceNameException) {
-						error.setMessage("RequiredServiceNameException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("RequiredServiceNameException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else if (e instanceof RequiredAdministrationCodeException) {
-						error.setMessage("RequiredAdministrationCodeException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("RequiredAdministrationCodeException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else if (e instanceof DuplicateServiceCodeException) {
-						error.setMessage("DuplicateServiceCodeException");
-						error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-						error.setDescription("DuplicateServiceCodeException");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_ACCEPTABLE).entity(error).build();
-
-					} else {
-						error.setMessage("Internal Server Error");
-						error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-						error.setDescription(e.getMessage());
-
-						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-					}
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -370,36 +245,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 
 		} catch (Exception e) {
-
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("No Content.");
-					error.setCode(HttpURLConnection.HTTP_NOT_ACCEPTABLE);
-					error.setDescription("No Content.");
-
-					return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getFileTemplatesOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
@@ -420,14 +270,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -474,32 +317,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("No Content.");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription("No Content.");
-
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -547,14 +365,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("No Content.");
-			error.setCode(HttpURLConnection.HTTP_NO_CONTENT);
-			error.setDescription("No Content.");
-
-			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 
 		}
 
@@ -588,32 +399,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		} catch (Exception e) {
 
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("No Content.");
-					error.setCode(HttpURLConnection.HTTP_NO_CONTENT);
-					error.setDescription("No Content.");
-
-					return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -622,7 +408,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	@Override
 	public Response getStatisticByLevel(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
+
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -637,17 +423,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("Forbidden.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("Forbidden.");
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
-		
-		
 	}
 
 	@Override
@@ -667,14 +444,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("Forbidden.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("Forbidden.");
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -695,14 +465,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("Forbidden.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("Forbidden.");
-				
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

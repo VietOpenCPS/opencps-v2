@@ -1,68 +1,6 @@
 package org.opencps.api.controller.impl;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.opencps.api.controller.ServiceConfigManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
-import org.opencps.api.controller.util.ServiceConfigUtils;
-import org.opencps.api.controller.util.ServiceInfoUtils;
-import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
-import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
-import org.opencps.api.serviceconfig.model.ProcessOptionResultsModel;
-import org.opencps.api.serviceconfig.model.ProcessOptionSearchModel;
-import org.opencps.api.serviceconfig.model.ServiceConfigDetailModel;
-import org.opencps.api.serviceconfig.model.ServiceConfigInputModel;
-import org.opencps.api.serviceconfig.model.ServiceConfigResultsModel;
-import org.opencps.api.serviceconfig.model.ServiceConfigSearchModel;
-import org.opencps.api.serviceinfo.model.ServiceInfoModel;
-import org.opencps.api.serviceinfo.model.ServiceInfoSearchModel;
-import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
-import org.opencps.auth.api.BackendAuth;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.datamgt.model.DictCollection;
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.dossiermgt.action.ServiceConfigActions;
-import org.opencps.dossiermgt.action.ServiceInfoActions;
-import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
-import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierTemplateTerm;
-import org.opencps.dossiermgt.constants.ProcessOptionTerm;
-import org.opencps.dossiermgt.constants.ServiceConfigTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.constants.ServiceProcessTerm;
-import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -80,11 +18,65 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+import org.opencps.api.controller.ServiceConfigManagement;
+import org.opencps.api.controller.util.ServiceConfigUtils;
+import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
+import org.opencps.api.serviceconfig.model.ProcessOptionResultsModel;
+import org.opencps.api.serviceconfig.model.ProcessOptionSearchModel;
+import org.opencps.api.serviceconfig.model.ServiceConfigDetailModel;
+import org.opencps.api.serviceconfig.model.ServiceConfigInputModel;
+import org.opencps.api.serviceconfig.model.ServiceConfigResultsModel;
+import org.opencps.api.serviceconfig.model.ServiceConfigSearchModel;
+import org.opencps.api.serviceinfo.model.ServiceInfoSearchModel;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.ServiceConfigActions;
+import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierTemplateTerm;
+import org.opencps.dossiermgt.constants.ProcessOptionTerm;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getServiceConfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServiceConfigSearchModel query) {
@@ -135,14 +127,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -178,33 +163,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -225,22 +184,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof NotFoundException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
-			} else {
-				error.setMessage("Internal Server Error");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-
-				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -277,32 +221,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -332,36 +251,12 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getProcessOptions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ProcessOptionSearchModel query) {
@@ -407,14 +302,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -447,32 +335,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -505,32 +368,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -561,32 +399,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(returnModel).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -709,32 +522,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -867,132 +655,108 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
 
-	private List<JSONObject> generateGovAgencys(ServiceContext serviceContext) {
+//	private List<JSONObject> generateGovAgencys(ServiceContext serviceContext) {
+//
+//		List<JSONObject> govAgencys = new ArrayList<>();
+//
+//		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
+//				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", serviceContext.getScopeGroupId());
+//
+//		List<DictItem> govItems = DictItemLocalServiceUtil
+//				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
+//
+//		for (DictItem govItem : govItems) {
+//			JSONObject govJsonObj = JSONFactoryUtil.createJSONObject();
+//
+//			govJsonObj.put("govAgencyCode", govItem.getItemCode());
+//			govJsonObj.put("govAgencyName", govItem.getItemName());
+//
+//			govJsonObj.put("domains", generateDomains(serviceContext));
+//
+//			govAgencys.add(govJsonObj);
+//		}
+//
+//		return govAgencys;
+//	}
 
-		List<JSONObject> govAgencys = new ArrayList<>();
+//	private List<JSONObject> generateDomains(ServiceContext serviceContext) {
+//
+//		List<JSONObject> domains = new ArrayList<>();
+//
+//		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+//				serviceContext.getScopeGroupId());
+//
+//		List<DictItem> domainItems = DictItemLocalServiceUtil
+//				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
+//
+//		for (DictItem domainItem : domainItems) {
+//			JSONObject domainJsonObj = JSONFactoryUtil.createJSONObject();
+//
+//			domainJsonObj.put("domainCode", domainItem.getItemCode());
+//			domainJsonObj.put("domainName", domainItem.getItemName());
+//
+//			domainJsonObj.put("serviceInfos", generateServiceInfos(serviceContext, domainItem.getItemCode()));
+//
+//			domains.add(domainJsonObj);
+//		}
+//
+//		return domains;
+//	}
 
-		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
-				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", serviceContext.getScopeGroupId());
+//	@SuppressWarnings("unchecked")
+//	private List<JSONObject> generateServiceInfos(ServiceContext serviceContext, String domainCode) {
+//
+//		List<JSONObject> serviceInfos = new ArrayList<>();
+//
+//		ServiceInfoActions serviceInfoActions = new ServiceInfoActionsImpl();
+//
+//		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+//		params.put(Field.GROUP_ID, String.valueOf(serviceContext.getScopeGroupId()));
+//		params.put(ServiceInfoTerm.DOMAIN_CODE, domainCode);
+//
+//		JSONObject serviceInfoJson = serviceInfoActions.getServiceInfos(serviceContext.getUserId(),
+//				serviceContext.getCompanyId(), serviceContext.getScopeGroupId(), params, null, QueryUtil.ALL_POS,
+//				QueryUtil.ALL_POS, serviceContext);
+//
+//		List<ServiceInfoModel> serviceInfoList = ServiceInfoUtils
+//				.mappingToServiceInfoResultModel((List<Document>) serviceInfoJson.get("data"), serviceContext);
+//
+//		if (Validator.isNotNull(serviceInfoList)) {
+//			for (ServiceInfoModel serviceInfo : serviceInfoList) {
+//				JSONObject serviceInfoJsonObj = JSONFactoryUtil.createJSONObject();
+//
+//				serviceInfoJsonObj.put("serviceCode", serviceInfo.getServiceCode());
+//				serviceInfoJsonObj.put("serviceName", serviceInfo.getServiceName());
+//
+//				serviceInfoJsonObj.put("serviceConfigs", generateServiceConfigs(serviceInfo.getServiceConfigs()));
+//
+//				serviceInfos.add(serviceInfoJsonObj);
+//			}
+//		}
+//
+//		return serviceInfos;
+//	}
 
-		List<DictItem> govItems = DictItemLocalServiceUtil
-				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
-
-		for (DictItem govItem : govItems) {
-			JSONObject govJsonObj = JSONFactoryUtil.createJSONObject();
-
-			govJsonObj.put("govAgencyCode", govItem.getItemCode());
-			govJsonObj.put("govAgencyName", govItem.getItemName());
-
-			govJsonObj.put("domains", generateDomains(serviceContext));
-
-			govAgencys.add(govJsonObj);
-		}
-
-		return govAgencys;
-	}
-
-	private List<JSONObject> generateDomains(ServiceContext serviceContext) {
-
-		List<JSONObject> domains = new ArrayList<>();
-
-		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
-				serviceContext.getScopeGroupId());
-
-		List<DictItem> domainItems = DictItemLocalServiceUtil
-				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
-
-		for (DictItem domainItem : domainItems) {
-			JSONObject domainJsonObj = JSONFactoryUtil.createJSONObject();
-
-			domainJsonObj.put("domainCode", domainItem.getItemCode());
-			domainJsonObj.put("domainName", domainItem.getItemName());
-
-			domainJsonObj.put("serviceInfos", generateServiceInfos(serviceContext, domainItem.getItemCode()));
-
-			domains.add(domainJsonObj);
-		}
-
-		return domains;
-	}
-
-	private List<JSONObject> generateServiceInfos(ServiceContext serviceContext, String domainCode) {
-
-		List<JSONObject> serviceInfos = new ArrayList<>();
-
-		ServiceInfoActions serviceInfoActions = new ServiceInfoActionsImpl();
-
-		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
-		params.put(Field.GROUP_ID, String.valueOf(serviceContext.getScopeGroupId()));
-		params.put(ServiceInfoTerm.DOMAIN_CODE, domainCode);
-
-		JSONObject serviceInfoJson = serviceInfoActions.getServiceInfos(serviceContext.getUserId(),
-				serviceContext.getCompanyId(), serviceContext.getScopeGroupId(), params, null, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, serviceContext);
-
-		List<ServiceInfoModel> serviceInfoList = ServiceInfoUtils
-				.mappingToServiceInfoResultModel((List<Document>) serviceInfoJson.get("data"), serviceContext);
-
-		if (Validator.isNotNull(serviceInfoList)) {
-			for (ServiceInfoModel serviceInfo : serviceInfoList) {
-				JSONObject serviceInfoJsonObj = JSONFactoryUtil.createJSONObject();
-
-				serviceInfoJsonObj.put("serviceCode", serviceInfo.getServiceCode());
-				serviceInfoJsonObj.put("serviceName", serviceInfo.getServiceName());
-
-				serviceInfoJsonObj.put("serviceConfigs", generateServiceConfigs(serviceInfo.getServiceConfigs()));
-
-				serviceInfos.add(serviceInfoJsonObj);
-			}
-		}
-
-		return serviceInfos;
-	}
-
-	private List<JSONObject> generateServiceConfigs(List<ServiceInfoServiceConfig> serviceConfigList) {
-
-		List<JSONObject> serviceConfigs = new ArrayList<>();
-
-		for (ServiceInfoServiceConfig cf : serviceConfigList) {
-			JSONObject cfJson = JSONFactoryUtil.createJSONObject();
-
-			cfJson.put("level", cf.getServiceLevel());
-			cfJson.put("govAgencyCode", cf.getGovAgencyCode());
-			cfJson.put("govAgencyName", cf.getGovAgencyName());
-			// cfJson.put("serviceConfigId", cf.) // TODO need serviceConfigId
-		}
-
-		return serviceConfigs;
-	}
+//	private List<JSONObject> generateServiceConfigs(List<ServiceInfoServiceConfig> serviceConfigList) {
+//
+//		List<JSONObject> serviceConfigs = new ArrayList<>();
+//
+//		for (ServiceInfoServiceConfig cf : serviceConfigList) {
+//			JSONObject cfJson = JSONFactoryUtil.createJSONObject();
+//
+//			cfJson.put("level", cf.getServiceLevel());
+//			cfJson.put("govAgencyCode", cf.getGovAgencyCode());
+//			cfJson.put("govAgencyName", cf.getGovAgencyName());
+//			// cfJson.put("serviceConfigId", cf.) // need serviceConfigId
+//		}
+//
+//		return serviceConfigs;
+//	}
 
 	@Override
 	public Response getGuide(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
@@ -1105,38 +869,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new Exception("Preview rendering not avariable");
 			}
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 
-		}
-	}
-
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-			}
 		}
 	}
 
@@ -1197,8 +931,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

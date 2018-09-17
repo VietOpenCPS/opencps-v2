@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.RegistrationTemplatesManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.RegistrationTemplatesUtils;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplateDetailModel;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplateFormReportInputUpdateModel;
@@ -20,13 +18,13 @@ import org.opencps.api.registrationtemplate.model.RegistrationTemplatesResultsMo
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.RegistrationTemplatesActions;
 import org.opencps.dossiermgt.action.impl.RegistrationTemplatesActionsImpl;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import backend.auth.api.exception.BusinessExceptionImpl;
+
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -40,10 +38,11 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 	
 	Log _log = LogFactoryUtil.getLog(RegistrationTemplatesManagementImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getRegistrationTemplates(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String formNo, String govAgencyCode) {
-		// TODO Get All RegistrationTemplates
+
 		BackendAuth auth = new BackendAuthImpl();
 		int start = 0, end = 0;
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -76,15 +75,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@Override
 	public Response addRegistrationTemplate(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, RegistrationTemplateInputModel input) {
-		// TODO Add RegistrationTemplates
+
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -107,8 +105,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -116,7 +113,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 	public Response updateRegistrationTemplate(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, RegistrationTemplateInputModel input,
 			long registrationTemplateId) {
-		// TODO Update RegistrationTemplates
+
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -140,15 +137,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@Override
 	public Response removeRegistrationTemplate(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
-		// TODO Remove RegistrationTemplates
+
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -170,15 +166,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@Override
 	public Response getFormScriptByRegistrationTemplateId(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
-		// TODO Get FormScript of RegistrationTemplates
+		// Get FormScript of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
 		RegistrationTemplateFormScriptInputUpdateModel result = new RegistrationTemplateFormScriptInputUpdateModel();
@@ -197,15 +192,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	public Response updateRegistrationTemplateFormScript(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId,
 			String formScript) {
-		// TODO Update FormScript of RegistrationTemplates
+
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -227,15 +221,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@Override
 	public Response getFormReportByRegistrationTemplateId(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
-		// TODO Get FormReport of RegistrationTemplates
+		// Get FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
 		RegistrationTemplateFormReportInputUpdateModel result = new RegistrationTemplateFormReportInputUpdateModel();
@@ -254,15 +247,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	public Response updateRegistrationTemplateFormReport(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId,
 			String formReport) {
-		// TODO Update FormReport of RegistrationTemplates
+		//  Update FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -284,15 +276,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@Override
 	public Response getSampleDataByRegistrationTemplateId(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplateId) {
-		// TODO Get SampleData of RegistrationTemplates
+		// Get SampleData of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
 		RegistrationTemplateSampleDataInputUpdateModel result = new RegistrationTemplateSampleDataInputUpdateModel();
@@ -311,15 +302,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	public Response updateRegistrationTemplateSampleData(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, long registrationTemplatesId,
 			String sampleData) {
-		// TODO Update FormReport of RegistrationTemplates
+		// Update FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -341,15 +331,14 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@Override
 	public Response getRegistrationTemplatebyId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
-		// TODO Get RegistrationTemplates by Id
+		// Get RegistrationTemplates by Id
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -367,37 +356,8 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-			}
-		}
-	}
 }

@@ -8,7 +8,6 @@
 
 package org.opencps.api.dossier.model;
 
-import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;

@@ -10,7 +10,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.PaymentFileManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.PaymentFileUtils;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
@@ -25,6 +24,8 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -548,7 +549,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -597,8 +598,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			}
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -666,35 +666,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			return processException(e);
 //		}
 //	}
-
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-			}
-		}
-	}
 
 //	@Override
 //	public Response processingKeyPay(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -779,7 +750,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -831,7 +802,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.status(200).entity(PaymentFileInput).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 }

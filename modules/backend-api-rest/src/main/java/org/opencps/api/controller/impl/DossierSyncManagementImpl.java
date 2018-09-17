@@ -1,7 +1,6 @@
 package org.opencps.api.controller.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,7 +11,6 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierSyncManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
-import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21DataModel;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21ResultsModel;
 import org.opencps.auth.api.BackendAuth;
@@ -22,17 +20,11 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.model.DossierSync;
-import org.opencps.usermgt.constants.ApplicantTerm;
-
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -708,6 +700,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 
 	Log _log = LogFactoryUtil.getLog(DossierSyncManagementImpl.class.getName());
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierSyncsByApplicant(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String action, Integer start, Integer end) {

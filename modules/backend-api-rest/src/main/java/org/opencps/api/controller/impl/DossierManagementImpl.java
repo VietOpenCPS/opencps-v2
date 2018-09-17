@@ -1,5 +1,28 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -22,7 +45,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.DossierManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
@@ -39,9 +61,6 @@ import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultDetailModel;
 import org.opencps.api.dossiermark.model.DossierMarkResultsModel;
-import org.opencps.api.processsequence.model.ActionModel;
-import org.opencps.api.processsequence.model.DossierSequenceModel;
-import org.opencps.api.processsequence.model.DossierSequenceResultModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21DataModel;
@@ -50,13 +69,11 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
@@ -124,30 +141,7 @@ import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-
+import backend.auth.api.exception.BusinessExceptionImpl;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
@@ -369,8 +363,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -563,8 +556,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -743,7 +735,7 @@ public class DossierManagementImpl implements DossierManagement {
 			} else {
 				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, StringPool.BLANK);
 			}
-			//TODO
+
 			String permission = user.getUserId() + StringPool.UNDERLINE + "write";
 			params.put(DossierTerm.MAPPING_PERMISSION, permission);
 			// Add param original
@@ -800,8 +792,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1028,8 +1019,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1079,8 +1069,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
-//			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1173,8 +1162,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1203,8 +1191,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1236,8 +1223,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1269,8 +1255,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1303,8 +1288,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1330,8 +1314,7 @@ public class DossierManagementImpl implements DossierManagement {
 					.build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1461,8 +1444,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1537,8 +1519,7 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject result = action.getContacts(groupId, dossierId, referenceUid);
 			return Response.status(200).entity(result).build();
 		} catch (PortalException e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1563,8 +1544,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1602,10 +1582,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity("OK").build();
 
 		} catch (Exception e) {
-
-			_log.error("Can't syncDossierNo with id = " + id, e);
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 
 		}
 
@@ -1649,8 +1626,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1679,8 +1655,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1711,7 +1686,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1737,7 +1712,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1778,8 +1753,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1821,8 +1795,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1864,8 +1837,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -1908,8 +1880,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(restrictDossier).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -1951,36 +1922,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
-		}
-	}
-
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -2013,8 +1955,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(pendding).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -2148,8 +2089,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -2292,8 +2232,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -2417,8 +2356,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			return Response.status(200).entity(reAssign).build();
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -2450,8 +2388,7 @@ public class DossierManagementImpl implements DossierManagement {
 						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
 						DossierLocalServiceUtil.rollback(dossier, previousAction);
 					} catch (PortalException e) {
-//						e.printStackTrace();
-						return processException(e);
+						return BusinessExceptionImpl.processException(e);
 					}
 				}
 			}
@@ -2496,14 +2433,7 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("Content not found!");
-			error.setCode(404);
-			error.setDescription(e.getMessage());
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}	
 
 	}
@@ -2602,62 +2532,62 @@ public class DossierManagementImpl implements DossierManagement {
 		return result;
 	}
 	
-	private DossierSequenceResultModel getDossierProcessSequences(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
-		DossierSequenceResultModel result = new DossierSequenceResultModel();
-		List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
-		result.setProcessNo(serviceProcess.getProcessNo());
-		result.setDurationUnit(serviceProcess.getDurationUnit());
-		result.setDurationCount(serviceProcess.getDurationCount());
-		result.setTotal(lstSequences.size());
-		
-		List<DossierSequenceModel> lstDsms = new ArrayList<>();
-		for (ProcessSequence ps : lstSequences) {
-			DossierSequenceModel dsm = new DossierSequenceModel();
-			dsm.setSequenceNo(ps.getSequenceNo());
-			dsm.setSequenceName(ps.getSequenceName());
-			dsm.setSequenceRole(ps.getSequenceRole());
-			dsm.setDurationCount(ps.getDurationCount());
-			
-			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByDID_FSN(dossier.getDossierId(), dsm.getSequenceNo());
-			List<ActionModel> lstActionModels = new ArrayList<>();
-			
-			for (DossierAction da : lstDossierActions) {
-				ActionModel am = new ActionModel();
-				am.setUserId(da.getUserId());
-				am.setFromStepCode(da.getFromStepCode());
-				am.setFromStepName(da.getFromStepName());
-				am.setSequenceNo(da.getSequenceNo());
-				am.setDossierId(da.getDossierId());
-				am.setServiceProcessId(da.getServiceProcessId());
-				am.setPreviousActionId(da.getPreviousActionId());
-				am.setActionCode(da.getActionCode());
-				am.setActionName(da.getActionName());
-				am.setActionNote(da.getActionNote());
-				am.setActionUser(da.getActionUser());
-				am.setActionOverdue(da.getActionOverdue());
-				am.setPayload(da.getPayload());
-				am.setPending(da.getPending());
-				am.setRoolbackable(da.getRollbackable());
-				am.setCreateDate(DateTimeUtils.convertDateToString(da.getCreateDate(), DateTimeUtils._TIMESTAMP));
-				am.setModifiedDate(DateTimeUtils.convertDateToString(da.getModifiedDate(), DateTimeUtils._TIMESTAMP));
-				am.setDueDate(DateTimeUtils.convertDateToString(da.getDueDate(), DateTimeUtils._TIMESTAMP));
-				am.setNextActionId(da.getNextActionId());
-				am.setState(da.getState());
-				am.setStepCode(da.getStepCode());
-				am.setStepName(da.getStepName());
-				am.setUserId(da.getUserId());
-				
-				lstActionModels.add(am);
-			}
-			
-			dsm.getActions().addAll(lstActionModels);
-			
-			lstDsms.add(dsm);
-		}
-					
-		result.getData().addAll(lstDsms);		
-		return result;
-	}
+//	private DossierSequenceResultModel getDossierProcessSequences(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
+//		DossierSequenceResultModel result = new DossierSequenceResultModel();
+//		List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
+//		result.setProcessNo(serviceProcess.getProcessNo());
+//		result.setDurationUnit(serviceProcess.getDurationUnit());
+//		result.setDurationCount(serviceProcess.getDurationCount());
+//		result.setTotal(lstSequences.size());
+//		
+//		List<DossierSequenceModel> lstDsms = new ArrayList<>();
+//		for (ProcessSequence ps : lstSequences) {
+//			DossierSequenceModel dsm = new DossierSequenceModel();
+//			dsm.setSequenceNo(ps.getSequenceNo());
+//			dsm.setSequenceName(ps.getSequenceName());
+//			dsm.setSequenceRole(ps.getSequenceRole());
+//			dsm.setDurationCount(ps.getDurationCount());
+//			
+//			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByDID_FSN(dossier.getDossierId(), dsm.getSequenceNo());
+//			List<ActionModel> lstActionModels = new ArrayList<>();
+//			
+//			for (DossierAction da : lstDossierActions) {
+//				ActionModel am = new ActionModel();
+//				am.setUserId(da.getUserId());
+//				am.setFromStepCode(da.getFromStepCode());
+//				am.setFromStepName(da.getFromStepName());
+//				am.setSequenceNo(da.getSequenceNo());
+//				am.setDossierId(da.getDossierId());
+//				am.setServiceProcessId(da.getServiceProcessId());
+//				am.setPreviousActionId(da.getPreviousActionId());
+//				am.setActionCode(da.getActionCode());
+//				am.setActionName(da.getActionName());
+//				am.setActionNote(da.getActionNote());
+//				am.setActionUser(da.getActionUser());
+//				am.setActionOverdue(da.getActionOverdue());
+//				am.setPayload(da.getPayload());
+//				am.setPending(da.getPending());
+//				am.setRoolbackable(da.getRollbackable());
+//				am.setCreateDate(DateTimeUtils.convertDateToString(da.getCreateDate(), DateTimeUtils._TIMESTAMP));
+//				am.setModifiedDate(DateTimeUtils.convertDateToString(da.getModifiedDate(), DateTimeUtils._TIMESTAMP));
+//				am.setDueDate(DateTimeUtils.convertDateToString(da.getDueDate(), DateTimeUtils._TIMESTAMP));
+//				am.setNextActionId(da.getNextActionId());
+//				am.setState(da.getState());
+//				am.setStepCode(da.getStepCode());
+//				am.setStepName(da.getStepName());
+//				am.setUserId(da.getUserId());
+//				
+//				lstActionModels.add(am);
+//			}
+//			
+//			dsm.getActions().addAll(lstActionModels);
+//			
+//			lstDsms.add(dsm);
+//		}
+//					
+//		result.getData().addAll(lstDsms);		
+//		return result;
+//	}
 	
 	@Override
 	public Response addDossierFileByEForm(HttpServletRequest request, HttpHeaders header, Company company,
@@ -2727,8 +2657,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -2766,8 +2695,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(formData).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -2785,6 +2713,7 @@ public class DossierManagementImpl implements DossierManagement {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getConflictDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
@@ -2836,12 +2765,12 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			return Response.status(200).entity(dossierArr.toJSONString()).build();
         } catch (Exception e) {
-        	_log.error(e);
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+        	return BusinessExceptionImpl.processException(e);
         }
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response resolveConflictDossier(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext) {
@@ -2968,8 +2897,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -3025,9 +2953,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
-//			e.printStackTrace();
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -3081,12 +3007,11 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
-//			e.printStackTrace();
-			_log.error(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierSyncsByDossier(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, Integer info, Integer start, Integer end) {
@@ -3142,33 +3067,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}	
 	}
 
@@ -3269,8 +3168,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 	

@@ -1,18 +1,18 @@
 package backend.api.rest.application.v21.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.opencps.dossiermgt.model.DossierDocument;
-
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.util.StringPool;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opencps.dossiermgt.model.DossierDocument;
 
 import io.swagger.model.DossierDocumentModel;
 

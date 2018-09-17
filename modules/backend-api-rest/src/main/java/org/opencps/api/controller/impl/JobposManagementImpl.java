@@ -22,10 +22,7 @@ import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
-import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -35,13 +32,13 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import backend.auth.api.exception.UnauthenticationException;
-import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class JobposManagementImpl implements JobposManagement {
 
-	private static final Log _log = LogFactoryUtil.getLog(JobposManagementImpl.class);
+//	private static final Log _log = LogFactoryUtil.getLog(JobposManagementImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getJobposs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DataSearchModel query) {
@@ -77,14 +74,7 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("/ @GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -131,47 +121,7 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(200).entity(jobposModel).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -194,46 +144,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 		} catch (Exception e) {
 
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -247,47 +158,7 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			_log.error("@DELETE: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -307,14 +178,7 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("/ @GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -333,14 +197,7 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("/ @GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -355,47 +212,7 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(200).build();
 
 		} catch (Exception e) {
-			_log.error("@DELETE: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -421,50 +238,8 @@ public class JobposManagementImpl implements JobposManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
-
 
 }

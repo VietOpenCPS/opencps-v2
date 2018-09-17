@@ -1,49 +1,11 @@
 package org.opencps.api.controller.impl;
 
-import java.io.File;
-import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-
-import org.opencps.api.controller.SignatureManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
-import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
-import org.opencps.auth.api.BackendAuth;
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.dossiermgt.action.DossierActions;
-import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.scheduler.InvokeREST;
-import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -53,10 +15,37 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.json.JSONArray;
+
+import java.io.File;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+
+import org.opencps.api.controller.SignatureManagement;
+import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class SignatureManagementImpl implements SignatureManagement{
 
@@ -324,32 +313,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			ErrorMsg error = new ErrorMsg();
-
-			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
-
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-			} else {
-				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
-
-					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-				} else {
-
-					error.setMessage("Internal Server Error");
-					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-					error.setDescription(e.getMessage());
-
-					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(error).build();
-
-				}
-			}
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -379,58 +343,58 @@ public class SignatureManagementImpl implements SignatureManagement{
 
 	}
 
-	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
-			long groupId) throws PortalException {
-
-		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
-
-		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
-				config.getServiceConfigId());
-	}
-
-	protected ProcessAction getProcessAction(long groupId, long dossierId, String refId, String actionCode,
-			long serviceProcessId) throws PortalException {
-		
-		_log.info("GET PROCESS ACTION____");
-		
-		ProcessAction action = null;
-		
-		try {
-			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
-					serviceProcessId);
-
-			Dossier dossier = getDossier(groupId, dossierId, refId);
-
-			String dossierStatus = dossier.getDossierStatus();
-
-			String dossierSubStatus = dossier.getDossierSubStatus();
-
-			for (ProcessAction act : actions) {
-
-				String preStepCode = act.getPreStepCode();
-
-				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-
-				if (Validator.isNull(step)) {
-					action = act;
-					break;
-				} else {
-					if (step.getDossierStatus().contentEquals(dossierStatus)
-							&& StringUtil.containsIgnoreCase(step.getDossierSubStatus(), dossierSubStatus)) {
-
-						action = act;
-						break;
-					}
-				}
-			}
-
-		} catch (Exception e) {
-			_log.error(e);
-			throw new NotFoundException("NotProcessActionFound");
-		}
-
-		return action;
-	}
+//	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
+//			long groupId) throws PortalException {
+//
+//		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+//
+//		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
+//				config.getServiceConfigId());
+//	}
+//
+//	protected ProcessAction getProcessAction(long groupId, long dossierId, String refId, String actionCode,
+//			long serviceProcessId) throws PortalException {
+//		
+//		_log.info("GET PROCESS ACTION____");
+//		
+//		ProcessAction action = null;
+//		
+//		try {
+//			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+//					serviceProcessId);
+//
+//			Dossier dossier = getDossier(groupId, dossierId, refId);
+//
+//			String dossierStatus = dossier.getDossierStatus();
+//
+//			String dossierSubStatus = dossier.getDossierSubStatus();
+//
+//			for (ProcessAction act : actions) {
+//
+//				String preStepCode = act.getPreStepCode();
+//
+//				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+//
+//				if (Validator.isNull(step)) {
+//					action = act;
+//					break;
+//				} else {
+//					if (step.getDossierStatus().contentEquals(dossierStatus)
+//							&& StringUtil.containsIgnoreCase(step.getDossierSubStatus(), dossierSubStatus)) {
+//
+//						action = act;
+//						break;
+//					}
+//				}
+//			}
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//			throw new NotFoundException("NotProcessActionFound");
+//		}
+//
+//		return action;
+//	}
 
 	protected Dossier getDossier(long groupId, long dossierId, String refId) throws PortalException {
 

@@ -1,12 +1,5 @@
 package org.opencps.background.executor;
 
-import java.io.Serializable;
-import java.util.Map;
-
-import org.opencps.api.controller.util.SystemUtils;
-import org.opencps.background.siteclean.BackgroundSiteClean;
-import org.osgi.service.component.annotations.Component;
-
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
@@ -20,7 +13,13 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
+
+import java.io.Serializable;
+import java.util.Map;
+
+import org.opencps.api.controller.util.SystemUtils;
+import org.opencps.background.siteclean.BackgroundSiteClean;
+import org.osgi.service.component.annotations.Component;
 
 @Component(
         immediate = true,

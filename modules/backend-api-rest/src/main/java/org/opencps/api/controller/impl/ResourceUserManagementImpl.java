@@ -9,26 +9,19 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.ResourceUserManagement;
-import org.opencps.api.controller.util.ResourceRoleUtils;
 import org.opencps.api.controller.util.ResourceUserUtils;
 import org.opencps.api.error.model.ErrorMsg;
-import org.opencps.api.resourcerole.model.ResourceRoleResults;
 import org.opencps.api.resourceuser.model.DataSearchModel;
 import org.opencps.api.resourceuser.model.ResourceUserInputModel;
 import org.opencps.api.resourceuser.model.ResourceUserModel;
 import org.opencps.api.resourceuser.model.ResourceUserResults;
-import org.opencps.usermgt.action.ResourceRoleInterface;
 import org.opencps.usermgt.action.ResourceUserInterface;
-import org.opencps.usermgt.action.impl.ResourceRoleActions;
 import org.opencps.usermgt.action.impl.ResourceUserActions;
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.model.ResourceUser;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -37,14 +30,13 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import backend.auth.api.exception.NotFoundException;
-import backend.auth.api.exception.UnauthenticationException;
-import backend.auth.api.exception.UnauthorizationException;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ResourceUserManagementImpl implements ResourceUserManagement {
 
-	private static final Log _log = LogFactoryUtil.getLog(ResourceUserManagementImpl.class);
+//	private static final Log _log = LogFactoryUtil.getLog(ResourceUserManagementImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getResourceUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String className, String classPK, DataSearchModel query) {
@@ -82,14 +74,7 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("/ @GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -111,59 +96,7 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			return Response.status(200).entity(ResourceUserModel).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof NotFoundException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("notfound!");
-				error.setCode(404);
-				error.setDescription("notfound!");
-
-				return Response.status(404).entity(error).build();
-
-			}
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -197,50 +130,11 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			}
 
 		} catch (Exception e) {
-			_log.error("@DELETE: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@DELETE: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response createResourceUserPatch(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ResourceUserInputModel input, String users) {
@@ -271,62 +165,11 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			if (e instanceof NotFoundException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("notfound!");
-				error.setCode(404);
-				error.setDescription("notfound!");
-
-				return Response.status(404).entity(error).build();
-
-			}
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response clone(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, String className, String classPK, String sourcePK) {
@@ -357,47 +200,7 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("@POST: " + e);
-			if (e instanceof UnauthenticationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("authentication failed!");
-				error.setCode(401);
-				error.setDescription("authentication failed!");
-
-				return Response.status(401).entity(error).build();
-
-			}
-
-			if (e instanceof UnauthorizationException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("permission denied!");
-				error.setCode(403);
-				error.setDescription("permission denied!");
-
-				return Response.status(403).entity(error).build();
-
-			}
-
-			if (e instanceof NoSuchUserException) {
-
-				_log.error("@POST: " + e);
-				ErrorMsg error = new ErrorMsg();
-
-				error.setMessage("conflict!");
-				error.setCode(409);
-				error.setDescription("conflict!");
-
-				return Response.status(409).entity(error).build();
-
-			}
-
-			return Response.status(500).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 }

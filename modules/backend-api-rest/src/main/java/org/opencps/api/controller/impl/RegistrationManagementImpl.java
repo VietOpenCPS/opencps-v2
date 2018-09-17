@@ -1,5 +1,25 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +41,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.RegistrationManagement;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.RegistrationFormUtils;
 import org.opencps.api.controller.util.RegistrationUtils;
 import org.opencps.api.registration.model.RegistrationDetailModel;
@@ -35,7 +54,6 @@ import org.opencps.api.registrationform.model.RegistrationFormResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -44,7 +62,6 @@ import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationActionsImpl;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
@@ -54,32 +71,14 @@ import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class RegistrationManagementImpl implements RegistrationManagement {
 	private static Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 
 	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 
+	@SuppressWarnings("unchecked")
 	@GET
 	@Path("/registrations")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -125,7 +124,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -172,7 +171,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -192,7 +191,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(detail);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -231,7 +230,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -248,7 +247,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -278,7 +277,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -314,39 +313,9 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
 			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
-	}
-
-	private Response processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-				_log.error(e);
-
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-			}
-		}
 	}
 
 	public long getfileEntryId(String formdata, String formScript, String formReport) {
@@ -378,7 +347,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).build();
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -414,7 +383,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -433,7 +402,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			return Response.status(200).entity(registration).build();
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -525,7 +494,6 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			JSONObject jsonData = actions.getFormDataByFormNo(serviceContext.getUserId(), serviceContext.getCompanyId(), params, sorts,
 					-1, -1, serviceContext);
 
-			//TODO
 			results.put("total", jsonData.getInt("total"));
 			List<Document> docList =(List<Document>) jsonData.get("data");
 
@@ -547,14 +515,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -585,7 +546,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 

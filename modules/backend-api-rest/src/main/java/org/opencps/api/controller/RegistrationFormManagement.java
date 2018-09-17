@@ -4,7 +4,6 @@ import java.net.HttpURLConnection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -19,8 +18,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.opencps.api.registration.model.RegistrationInputModel;
-import org.opencps.api.registrationform.model.RegistrationFormInfoModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.exception.PortalException;

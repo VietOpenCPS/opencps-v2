@@ -7,6 +7,8 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public class NotFoundException extends PortalException{
 
+	private static final long serialVersionUID = 8938586786236040782L;
+
 	public NotFoundException() {
 	}
 

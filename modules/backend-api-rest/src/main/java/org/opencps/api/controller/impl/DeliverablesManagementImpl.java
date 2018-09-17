@@ -32,7 +32,7 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
-import backend.auth.api.exception.BusinessExcetionImpl;
+import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -128,7 +128,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 //			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -168,7 +168,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -201,7 +201,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -235,7 +235,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 		
 	}
@@ -274,7 +274,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -301,7 +301,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -334,7 +334,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -367,7 +367,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -391,7 +391,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(log)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
@@ -425,7 +425,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -505,7 +505,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 
 	}
@@ -546,7 +546,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return Response.status(200).entity(dossierInfo).build();
 
 		} catch (Exception e) {
-			return BusinessExcetionImpl.processException(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
