@@ -43,6 +43,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	HttpServletResponse respones;
 
 	private static Log _log = LogFactoryUtil.getLog(DocumentTypeApiImpl.class);
+	@SuppressWarnings("unchecked")
 	@Override
 	public DocumentTypeResultModel getAllDocumentTypes(String keyword, Integer start, Integer end) {
 		//TODO

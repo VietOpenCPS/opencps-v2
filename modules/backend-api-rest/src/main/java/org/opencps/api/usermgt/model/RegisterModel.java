@@ -8,15 +8,14 @@
 
 package org.opencps.api.usermgt.model;
 
+import com.liferay.petra.string.StringPool;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import com.liferay.portal.kernel.util.StringPool;
-
 
 /**
  * <p>Java class for RegisterModel complex type.

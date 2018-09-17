@@ -11,26 +11,25 @@ import org.opencps.api.controller.NotificationQueueManagement;
 import org.opencps.api.controller.util.NotificationTemplateUtils;
 import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.notificationtemplate.model.DataSearchModel;
-import org.opencps.api.notificationtemplate.model.NotificationQueueModel;
 import org.opencps.api.notificationtemplate.model.NotificationQueueResults;
 import org.opencps.api.notificationtemplate.model.NotificationQueueShortModel;
 import org.opencps.communication.action.NotificationQueueInterface;
 import org.opencps.communication.action.impl.NotificationQueueActions;
 import org.opencps.communication.model.NotificationQueue;
 
+import backend.auth.api.exception.BusinessExcetionImpl;
+
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class NotificationQueueManagementImpl implements NotificationQueueManagement {
 
-	private static final Log _log = LogFactoryUtil.getLog(NotificationQueueManagementImpl.class);
+//	private static final Log _log = LogFactoryUtil.getLog(NotificationQueueManagementImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response getNotificationQueues(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, DataSearchModel query) {
@@ -48,14 +47,7 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.error("/ @GET: " + e);
-			ErrorMsg error = new ErrorMsg();
-
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
-
-			return Response.status(404).entity(error).build();
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 

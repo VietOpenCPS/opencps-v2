@@ -1,5 +1,13 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +21,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
@@ -30,14 +37,7 @@ import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.api.v21.model.UserManagement;
-
-import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
+import org.xml.sax.SAXException;
 
 public class ReadXMLFileUtils {
 

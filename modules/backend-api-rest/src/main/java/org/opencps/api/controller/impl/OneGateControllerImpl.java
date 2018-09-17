@@ -1,6 +1,17 @@
 package org.opencps.api.controller.impl;
 
-import java.util.Arrays;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -8,16 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.OneGateController;
-import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierOnegateInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
@@ -42,17 +50,7 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
+import backend.auth.api.exception.BusinessExcetionImpl;
 
 public class OneGateControllerImpl implements OneGateController {
 
@@ -159,8 +157,7 @@ public class OneGateControllerImpl implements OneGateController {
 			return Response.status(200).entity(results.toJSONString()).build();
 
 		} catch (Exception e) {
-			_log.error(e);
-			return _processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 
 	}
@@ -218,37 +215,7 @@ public class OneGateControllerImpl implements OneGateController {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return _processException(e);
-		}
-	}
-
-	private Response _processException(Exception e) {
-		ErrorMsg error = new ErrorMsg();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
-
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
-			} else {
-
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-
-			}
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -295,8 +262,7 @@ public class OneGateControllerImpl implements OneGateController {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return _processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -324,8 +290,7 @@ public class OneGateControllerImpl implements OneGateController {
 //			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return _processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 
@@ -381,8 +346,7 @@ public class OneGateControllerImpl implements OneGateController {
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
-			_log.info(e);
-			return _processException(e);
+			return BusinessExcetionImpl.processException(e);
 		}
 	}
 

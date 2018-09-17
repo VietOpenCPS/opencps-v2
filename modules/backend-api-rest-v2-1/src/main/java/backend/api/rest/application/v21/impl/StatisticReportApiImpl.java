@@ -8,8 +8,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.opencps.auth.api.BackendAuth;
-import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 
@@ -29,7 +27,6 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import io.swagger.api.StatisticReportApi;

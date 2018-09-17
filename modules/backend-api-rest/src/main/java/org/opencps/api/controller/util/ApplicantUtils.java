@@ -15,8 +15,6 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class ApplicantUtils {
 
@@ -34,7 +32,7 @@ public class ApplicantUtils {
 		model.setApplicantName(applicant.getApplicantName());
 		model.setApplicantIdType(applicant.getApplicantIdType());
 		model.setApplicantIdNo(applicant.getApplicantIdNo());
-		model.setApplicantIdDate(StringUtil.valueOf(applicant.getApplicantIdDate()));
+		model.setApplicantIdDate(String.valueOf(applicant.getApplicantIdDate()));
 		model.setContactEmail(applicant.getContactEmail());
 		model.setAddress(applicant.getAddress());
 		model.setCityCode(applicant.getCityCode());
@@ -55,7 +53,6 @@ public class ApplicantUtils {
 		try {
 			user = UserLocalServiceUtil.getUser(mappingUserId);
 		} catch (Exception e) {
-			// TODO: handle exception
 			_log.error(e);
 		}
 
@@ -111,7 +108,6 @@ public class ApplicantUtils {
 			try {
 				user = UserLocalServiceUtil.getUser(mappingUserId);
 			} catch (Exception e) {
-				// TODO: handle exception
 				_log.error(e);
 			}
 

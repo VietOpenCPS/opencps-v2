@@ -32,7 +32,6 @@ import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
-import org.opencps.api.filter.JWTOpenCPSToken;
 import org.opencps.api.processsequence.model.DossierSequenceResultModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
@@ -390,7 +389,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "dossier referenceUid", required = true) @PathParam("referenceUid") String referenceUid);
 
-	//TODO: Get dossier pending
+	//Get dossier pending
 	@GET
 	@Path("/processing/pending")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

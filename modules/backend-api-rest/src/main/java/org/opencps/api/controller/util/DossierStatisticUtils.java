@@ -3,19 +3,11 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencps.api.dossierlog.model.DossierLogModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticDetailModel;
-import org.opencps.api.dossierstatistic.model.DossierStatisticInputModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticModel;
-import org.opencps.api.dossierstatistic.model.DossierStatisticYearDataModel;
 import org.opencps.api.dossierstatistic.model.DossierStatisticYearModel;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
-import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.model.DossierStatistic;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.WorkingUnit;
-
 import com.liferay.portal.kernel.search.Document;
 
 public class DossierStatisticUtils {

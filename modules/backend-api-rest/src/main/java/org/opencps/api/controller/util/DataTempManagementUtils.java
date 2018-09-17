@@ -1,5 +1,17 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,18 +36,6 @@ import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
 import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DataTempManagementUtils {
 
@@ -252,6 +252,7 @@ public class DataTempManagementUtils {
 		return results;
 	}	
 	
+	@SuppressWarnings("unchecked")
 	public static DictItemTempDetailModel mapperDictItemTempModel(DictItemTemp dictItem, DictCollectionTempInterface dictItemDataUtil,
 			long userId, long companyId, long groupId, ServiceContext serviceContext) {
 

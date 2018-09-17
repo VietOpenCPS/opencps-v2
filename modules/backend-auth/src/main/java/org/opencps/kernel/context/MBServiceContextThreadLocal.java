@@ -21,6 +21,7 @@ public class MBServiceContextThreadLocal {
 		_serviceContext.set(serviceContext);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static final ThreadLocal<ServiceContext> _serviceContext =
 		new AutoResetThreadLocal<>(
 			PortalSessionThreadLocal.class + "._serviceContext");

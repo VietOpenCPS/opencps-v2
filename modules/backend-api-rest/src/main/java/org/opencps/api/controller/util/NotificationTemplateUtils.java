@@ -1,5 +1,12 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,13 +20,6 @@ import org.opencps.communication.constants.NotificationMGTConstants;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.utils.APIDateTimeUtils;
 

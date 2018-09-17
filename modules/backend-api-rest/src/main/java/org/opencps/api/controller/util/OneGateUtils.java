@@ -1,7 +1,12 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.util.Date;
-import java.util.List;
 
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -21,12 +26,6 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 public class OneGateUtils {
 	private static Log _log = LogFactoryUtil.getLog(OneGateUtils.class);

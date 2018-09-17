@@ -1,5 +1,17 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,18 +55,6 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierUtils {
 
@@ -834,11 +834,11 @@ public class DossierUtils {
 		return StringPool.FALSE;
 	}
 
-	private static String getApplicationNote(long dossierId) {
-		// TODO add logic here
-		// return true or false in String type
-		return StringPool.BLANK;
-	}
+//	private static String getApplicationNote(long dossierId) {
+//		// TODO add logic here
+//		// return true or false in String type
+//		return StringPool.BLANK;
+//	}
 
 	//LamTV: Process get dossier follow dossierId and groupId
 	public static Dossier getDossier(String id, long groupId) {

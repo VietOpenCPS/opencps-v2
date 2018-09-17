@@ -1,7 +1,5 @@
 package org.opencps.auth.security.authverifier;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.AuthException;
@@ -30,7 +28,7 @@ import org.osgi.service.component.annotations.Component;
 
 public class OpenCPSAuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin
 implements AuthVerifier {
-	private static final String AUTHORIZATION_HEADER = "Authorization";
+//	private static final String AUTHORIZATION_HEADER = "Authorization";
 //	private static final String TOKEN_HEADER = "X-CSRF-Token";
 	private static final String TOKEN_HEADER = "Token";
 	
@@ -125,7 +123,7 @@ implements AuthVerifier {
 		return true;
 	}
 
-	private Log _log =
-		LogFactoryUtil.getLog(OpenCPSAuthHeaderAuthVerifier.class.getName());
+//	private Log _log =
+//		LogFactoryUtil.getLog(OpenCPSAuthHeaderAuthVerifier.class.getName());
 
 }

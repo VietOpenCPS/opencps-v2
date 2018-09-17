@@ -1,5 +1,17 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.document.library.kernel.model.DLFileVersion;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,18 +25,6 @@ import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-
-import com.liferay.document.library.kernel.model.DLFileVersion;
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileUtils {
 
@@ -137,7 +137,7 @@ public class PaymentFileUtils {
 		model.setReferenceUid(paymentFile.getReferenceUid());
 //		model.setGovAgencyCode(paymentFile.getGovAgencyCode());
 //		model.setGovAgencyName(paymentFile.getGovAgencyName());
-		// TODO:
+
 		try {
 			DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
 //			model.setApplicantName(dossier.getApplicantName());
