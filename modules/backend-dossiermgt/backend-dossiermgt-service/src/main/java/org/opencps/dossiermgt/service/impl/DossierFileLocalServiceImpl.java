@@ -143,7 +143,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			} catch (Exception e) {
 //				e.printStackTrace();
 //				throw new SystemException(e);
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		_log.info("****End uploadFile file at:" + new Date());
@@ -255,7 +256,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			} catch (Exception e) {
 //				e.printStackTrace();
 //				throw new SystemException(e);
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		_log.info("****End uploadFile file at:" + new Date());
@@ -540,7 +542,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 //				e.printStackTrace();
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		return retMap;
@@ -697,7 +700,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				fileEntryId = fileEntry.getFileEntryId();
 			}
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			throw new SystemException(e);
 		}
 
@@ -1166,7 +1170,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		try {
 			return dossierFilePersistence.findByDE_CODE(deliverableCode);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 	}
@@ -1176,7 +1181,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		try {
 			return deliverableFinder.findFileTemplateNo(id, fileTemplateNo);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 	}

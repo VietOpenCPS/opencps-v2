@@ -4,6 +4,7 @@ package org.opencps.api.controller.util;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -30,6 +31,7 @@ import org.opencps.api.comment.model.CommentModel;
 import org.opencps.api.comment.model.CommentSearchModel;
 import org.opencps.api.comment.model.CommentTopList;
 import org.opencps.api.comment.model.CommentTopModel;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.constants.CommentTerm;
 import org.opencps.datamgt.model.Comment;
 import org.opencps.usermgt.utils.DateTimeUtils;
@@ -42,119 +44,46 @@ import backend.auth.api.keys.ModelNameKeys;
  */
 public class CommentUtils {
 
-	public static CommentModel mappingComment(Comment comment, ServiceContext serviceContext) throws Exception {
+	private static Log _log = LogFactoryUtil.getLog(CommentUtils.class);
 
-		CommentModel commentModel = new CommentModel();
+	public static CommentModel mappingComment(Comment comment, ServiceContext serviceContext) throws Exception {
 
 		long userId = comment.getUserId();
 		long fileEntryId = comment.getFileEntryId();
-
-		boolean isAdmin = false;
 		boolean isNew = false;
-		boolean hasUpvoted = false;
 		boolean createdByCurrentUser = false;
-
-		String createDate = StringPool.BLANK;
-		String modifiedDate = StringPool.BLANK;
 		String fullname = StringPool.BLANK;
 		String emailAddress = StringPool.BLANK;
-		String pictureUrl = StringPool.BLANK;
 		String profileURL = StringPool.BLANK;
-		String fileName = StringPool.BLANK;
-		String fileType = StringPool.BLANK;
-		String fileUrl = StringPool.BLANK;
 		String userHasUpvoted = comment.getUserHasUpvoted();
+		String createDate = APIDateTimeUtils.convertDateToString(comment.getCreateDate(), DateTimeUtils._TIMESTAMP);
+		String modifiedDate = APIDateTimeUtils.convertDateToString(comment.getCreateDate(), DateTimeUtils._TIMESTAMP);
 
-		// Convert createDate
-		try {
-			Date date = comment.getCreateDate();
-			if (date != null) {
-				// convert to ICT format
-				SimpleDateFormat dateFormat = new SimpleDateFormat(DateTimeUtils._TIMESTAMP);
-				createDate = dateFormat.format(date);
-			}
-		} catch (Exception e) {
-			_log.error(e);
-			_log.warn("Can't not get createDate " + e.getMessage());
-		}
-
-		// Convert modifiedDate
-		try {
-			Date date = comment.getModifiedDate();
-			if (date != null) {
-				// convert to ICT format
-				SimpleDateFormat dateFormat = new SimpleDateFormat(DateTimeUtils._TIMESTAMP);
-				modifiedDate = dateFormat.format(date);
-			}
-
-		} catch (Exception e) {
-			_log.error(e);
-			_log.warn("Can't not get modifiedDate " + e.getMessage());
-		}
-
-		// Check user
-		if (userId > 0) {
-			User user = UserLocalServiceUtil.getUser(userId);
-			fullname = user.getFullName();
-			emailAddress = user.getEmailAddress();
-
-			BackendAuthImpl authImpl = new BackendAuthImpl();
-			isAdmin = authImpl.isAdmin(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER);
-
-			if (serviceContext.getThemeDisplay() != null) {
-				pictureUrl = user.getPortraitURL(serviceContext.getThemeDisplay());
-			}
-
-		}
-
-		if (Validator.isNotNull(userHasUpvoted) && StringUtil.contains(userHasUpvoted, emailAddress)) {
-			hasUpvoted = true;
-		}
-
-		if (fileEntryId > 0) {
-
-			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
-
-			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
-
-			PermissionThreadLocal.setPermissionChecker(checker);
-
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-
-			fileName = fileEntry.getFileName();
-			fileType = fileEntry.getMimeType();
-			fileUrl = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), serviceContext.getThemeDisplay(),
-					StringPool.BLANK);
-
+		User userComment = UserLocalServiceUtil.getUser(userId);
+		if (userComment != null) {
+			emailAddress = userComment.getEmailAddress();
 		}
 
 		if (serviceContext.getUserId() == userId && userId > 0) {
 			createdByCurrentUser = true;
 		}
 
-		// TODO get profileURL
+		// Set permission User
+		User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
+		PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(checker);
 
+		// get profileURL
+		CommentModel commentModel = processUpdateComment(createDate, createdByCurrentUser, emailAddress, fileEntryId,
+				isNew, fullname, modifiedDate, profileURL, userHasUpvoted, userId, serviceContext);
+		//
 		commentModel.setClassName(comment.getClassName());
 		commentModel.setClassPK(comment.getClassPK());
 		commentModel.setCommentId(comment.getCommentId());
 		commentModel.setContent(comment.getContent() + StringPool.SPACE);
-		commentModel.setCreateDate(createDate);
-		commentModel.setCreatedByCurrentUser(createdByCurrentUser);
-		commentModel.setEmail(emailAddress);
-		commentModel.setFileName(fileName);
-		commentModel.setFileType(fileType);
-		commentModel.setFileUrl(fileUrl);
-		commentModel.setFullname(fullname);
-		commentModel.setIsAdmin(isAdmin);
-		commentModel.setIsNew(isNew);
-		commentModel.setModifiedDate(modifiedDate);
 		commentModel.setParent(comment.getParent());
-		commentModel.setPictureUrl(pictureUrl);
 		commentModel.setPings(comment.getPings());
-		commentModel.setProfileUrl(profileURL);
 		commentModel.setUpvoteCount(comment.getUpvoteCount());
-		commentModel.setUserHasUpvoted(hasUpvoted);
-		commentModel.setUserId(userId);
 		commentModel.setOpinion(comment.getOpinion());
 
 		return commentModel;
@@ -172,89 +101,23 @@ public class CommentUtils {
 	public static CommentModel mappingComment(Document document, HttpHeaders header, ServiceContext serviceContext,
 			CommentSearchModel query, String... email) throws Exception {
 
-		CommentModel commentModel = new CommentModel();
-
-		long userId = GetterUtil.getLong(document.get("userId"));
-		long fileEntryId = GetterUtil.getLong(document.get("fileEntryId"));
-
-		boolean isAdmin = false;
+		long userId = GetterUtil.getLong(document.get(Field.USER_ID));
+		long fileEntryId = GetterUtil.getLong(document.get(CommentTerm.FILE_ENTRY_ID));
 		boolean isNew = false;
-		boolean hasUpvoted = false;
 		boolean createdByCurrentUser = false;
-
-		String createDate = StringPool.BLANK;
-		String modifiedDate = StringPool.BLANK;
 		String fullname = StringPool.BLANK;
 		String emailAddress = StringPool.BLANK;
-		String pictureUrl = StringPool.BLANK;
 		String profileURL = StringPool.BLANK;
-		String fileName = StringPool.BLANK;
-		String fileType = StringPool.BLANK;
-		String fileUrl = StringPool.BLANK;
 		String userHasUpvoted = document.get("userHasUpvoted");
 
-		// Convert createDate
-		try {
-			Date date = document.getDate(Field.CREATE_DATE);
-			if (date != null) {
-				// convert to ICT format
-				SimpleDateFormat dateFormat = new SimpleDateFormat(DateTimeUtils._TIMESTAMP);
-				createDate = dateFormat.format(date);
-			}
-		} catch (Exception e) {
-			_log.error(e);
-			_log.warn("Can't not get createDate " + e.getMessage());
-		}
+		String createDate = APIDateTimeUtils.convertDateToString(document.getDate(Field.CREATE_DATE),
+				DateTimeUtils._TIMESTAMP);
+		String modifiedDate = APIDateTimeUtils.convertDateToString(document.getDate(Field.MODIFIED_DATE),
+				DateTimeUtils._TIMESTAMP);
 
-		// Convert modifiedDate
-		try {
-			Date date = document.getDate(Field.MODIFIED_DATE);
-			if (date != null) {
-				// convert to ICT format
-				SimpleDateFormat dateFormat = new SimpleDateFormat(DateTimeUtils._TIMESTAMP);
-				modifiedDate = dateFormat.format(date);
-			}
-
-		} catch (Exception e) {
-			_log.error(e);
-			_log.warn("Can't not get modifiedDate " + e.getMessage());
-		}
-
-		
-		// Check user
-		if (userId > 0) {
-			User user = UserLocalServiceUtil.getUser(userId);
-			fullname = user.getFullName();
-			//emailAddress = user.getEmailAddress();
-			
-			BackendAuthImpl authImpl = new BackendAuthImpl();
-			isAdmin = authImpl.isAdmin(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER);
-
-			if (serviceContext.getThemeDisplay() != null) {
-				pictureUrl = user.getPortraitURL(serviceContext.getThemeDisplay());
-			}
-
-		} 
-		
 		User userLogin = UserLocalServiceUtil.fetchUser(serviceContext.getUserId());
-
-		if (Validator.isNotNull(userHasUpvoted) && StringUtil.contains(userHasUpvoted, userLogin.getEmailAddress())) {
-			hasUpvoted = true;
-		}
-
-		if (fileEntryId > 0) {
-
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-
-			fileName = fileEntry.getFileName();
-			fileType = fileEntry.getMimeType();
-			fileUrl = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), serviceContext.getThemeDisplay(),
-					StringPool.BLANK);
-
-		}
-
-		if (serviceContext.getUserId() == userId && userId > 0) {
-			createdByCurrentUser = true;
+		if (userLogin != null) {
+			emailAddress = userLogin.getEmailAddress();
 		}
 
 		if(userLogin.getEmailAddress().contains("default")) {
@@ -262,42 +125,29 @@ public class CommentUtils {
 				emailAddress = email[0];
 				
 				// TODO check createdByCurrentUser by email
-				if (Validator.isNotNull(emailAddress) && emailAddress.equals(document.get("email"))) {
+				if (Validator.isNotNull(emailAddress) && emailAddress.equals(document.get(CommentTerm.EMAIL))) {
 					createdByCurrentUser = true;
 				}
 				
 			}
 		}
-		
-		// TODO get profileURL
+
+		// get profileURL
+		CommentModel commentModel = processUpdateComment(createDate, createdByCurrentUser, emailAddress, fileEntryId,
+				isNew, fullname, modifiedDate, profileURL, userHasUpvoted, userId, serviceContext);
 
 		commentModel.setClassName(document.get(CommentTerm.CLASS_NAME));
 		commentModel.setClassPK(document.get(CommentTerm.CLASS_PK));
 		commentModel.setCommentId(GetterUtil.getLong(document.get(CommentTerm.COMMENT_ID)));
 		commentModel.setContent(document.get(CommentTerm.CONTENT) + StringPool.SPACE);
-		commentModel.setCreateDate(createDate);
-		commentModel.setCreatedByCurrentUser(createdByCurrentUser);
-		commentModel.setEmail(emailAddress);
-		commentModel.setFileName(fileName);
-		commentModel.setFileType(fileType);
-		commentModel.setFileUrl(fileUrl);
-		commentModel.setFullname(fullname);
-		commentModel.setIsAdmin(isAdmin);
-		commentModel.setIsNew(isNew);
-		commentModel.setModifiedDate(modifiedDate);
 		commentModel.setParent(GetterUtil.getLong(document.get(CommentTerm.PARENT)));
-		commentModel.setPictureUrl(pictureUrl);
 		commentModel.setPings(document.get(CommentTerm.PINGS));
-		commentModel.setProfileUrl(profileURL);
 		commentModel.setUpvoteCount(GetterUtil.getInteger(document.get(CommentTerm.UPVOTE_COUNT)));
-		commentModel.setUserHasUpvoted(hasUpvoted);
-		commentModel.setUserId(userId);
 		commentModel.setOpinion(
 				Validator.isNotNull(document.get(CommentTerm.OPINION))
 					? Boolean.parseBoolean(document.get(CommentTerm.OPINION))
 					: false);
 
-		
 		return commentModel;
 	}
 
@@ -318,8 +168,8 @@ public class CommentUtils {
 			try {
 				commentListModel.getCommentModel().add(mappingComment(doc, header, serviceContext, query, email));
 			} catch (Exception e) {
-				_log.error(e);
-				continue;
+				//_log.error(e);
+				_log.debug(e);
 			}
 		}
 
@@ -336,8 +186,8 @@ public class CommentUtils {
 			try {
 				commentListModel.getCommentTopModel().add(mappingCommentTopModel(comment, serviceContext));
 			} catch (Exception e) {
-				_log.error(e);
-				continue;
+				//_log.error(e);
+				_log.debug(e);
 			}
 		}
 
@@ -363,7 +213,8 @@ public class CommentUtils {
 				createDate = dateFormat.format(date);
 			}
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 			_log.warn("Can't not get createDate " + e.getMessage());
 		}
 
@@ -377,7 +228,8 @@ public class CommentUtils {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 			_log.warn("Can't not get modifiedDate " + e.getMessage());
 		}
 
@@ -394,5 +246,55 @@ public class CommentUtils {
 		return commentModel;
 	}
 
-	public static final Log _log = LogFactoryUtil.getLog(CommentUtils.class);
+	private static CommentModel processUpdateComment(String createDate, boolean createdByCurrentUser,
+			String emailAddress, long fileEntryId, boolean isNew, String fullname, String modifiedDate,
+			String profileURL, String userHasUpvoted, long userId, ServiceContext serviceContext)
+			throws PortalException {
+
+		CommentModel commentModel = new CommentModel();
+
+		// Check user
+		if (userId > 0) {
+			User user = UserLocalServiceUtil.getUser(userId);
+			fullname = user.getFullName();
+
+			BackendAuthImpl authImpl = new BackendAuthImpl();
+			boolean isAdmin = authImpl.isAdmin(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER);
+			commentModel.setIsAdmin(isAdmin);
+
+			if (serviceContext.getThemeDisplay() != null) {
+				String pictureUrl = user.getPortraitURL(serviceContext.getThemeDisplay());
+				commentModel.setPictureUrl(pictureUrl);
+			}
+		}
+
+		if (fileEntryId > 0) {
+			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+			if (fileEntry != null) {
+				commentModel.setFileName(fileEntry.getFileName());
+				commentModel.setFileType(fileEntry.getMimeType());
+				String fileUrl = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), serviceContext.getThemeDisplay(),
+						StringPool.BLANK);
+				commentModel.setFileUrl(fileUrl);
+			}
+		}
+
+		if (Validator.isNotNull(userHasUpvoted) && StringUtil.contains(userHasUpvoted, emailAddress)) {
+			commentModel.setUserHasUpvoted(true);
+		} else {
+			commentModel.setUserHasUpvoted(false);
+		}
+
+		commentModel.setCreatedByCurrentUser(createdByCurrentUser);
+		commentModel.setCreateDate(createDate);
+		commentModel.setEmail(emailAddress);
+		commentModel.setFullname(fullname);
+		commentModel.setIsNew(isNew);
+		commentModel.setModifiedDate(modifiedDate);
+		commentModel.setProfileUrl(profileURL);
+		commentModel.setUserId(userId);
+		//
+		return commentModel;
+	}
+
 }

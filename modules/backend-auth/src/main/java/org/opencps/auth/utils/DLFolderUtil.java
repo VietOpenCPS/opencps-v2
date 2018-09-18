@@ -120,7 +120,8 @@ public class DLFolderUtil {
 				groupId, parentFolderId, name);
 		}
 		catch (SystemException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return dlFolder;
@@ -195,7 +196,8 @@ public class DLFolderUtil {
 				groupId, parentFolderId, name);
 		}
 		catch (SystemException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		result = dlFolder != null ? true : false;
@@ -250,7 +252,8 @@ public class DLFolderUtil {
 			// }
 		}
 		catch (NoSuchResourcePermissionException e) {
-			_log.error("==Not check log=="+e);
+			_log.debug(e);
+			//_log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());
@@ -298,7 +301,8 @@ public class DLFolderUtil {
 				siteMemberRole.getRoleId(), actionIds);
 		}
 		catch (NoSuchResourcePermissionException e) {
-			_log.error("==Not check log=="+e);
+			_log.debug(e);
+			//_log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());
@@ -346,7 +350,8 @@ public class DLFolderUtil {
 				siteMemberRole.getRoleId(), actionIds);
 		}
 		catch (NoSuchResourcePermissionException e) {
-			_log.error("==Not check log=="+e);
+			_log.debug(e);
+			//_log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());

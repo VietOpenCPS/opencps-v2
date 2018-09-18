@@ -119,10 +119,12 @@ public class NotificationTemplateBusinessImpl
 
 		}
 		catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;

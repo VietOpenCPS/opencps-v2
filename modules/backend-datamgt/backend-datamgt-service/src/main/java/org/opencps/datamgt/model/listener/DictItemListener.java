@@ -56,9 +56,11 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 				try {
 					indexer.reindex(dictItem);
 				} catch (SearchException e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 				} catch (NumberFormatException e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 				}
 
 			} catch (Exception e) {

@@ -121,8 +121,10 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
+							_log.debug(pe);
+							//_log.error(e);
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index DictCollectionIndexer " + dictCollection.getDictCollectionId(), pe);
+								_log.warn("Unable to index DictCollectionIndexer " + dictCollection.getDictCollectionId());
 							}
 						}
 					}

@@ -33,7 +33,8 @@ public class DossierPermission {
 			}
 			return false;
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return false;
 		}
 	}

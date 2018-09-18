@@ -50,7 +50,7 @@ public class PaymentFileUtils {
 			Date createDate = null;
 
 			if (Validator.isNotNull(strCreateDate)) {
-				createDate = APIDateTimeUtils.convertStringToDate(strCreateDate, "yyyyMMddHHmmss");
+				createDate = APIDateTimeUtils.convertStringToDate(strCreateDate, APIDateTimeUtils._LUCENE_PATTERN);
 			}
 
 			model.setCreateDate(createDate != null
@@ -61,7 +61,7 @@ public class PaymentFileUtils {
 			Date modifiedDate = null;
 
 			if (Validator.isNotNull(strModifiedDate)) {
-				modifiedDate = APIDateTimeUtils.convertStringToDate(strModifiedDate, "yyyyMMddHHmmss");
+				modifiedDate = APIDateTimeUtils.convertStringToDate(strModifiedDate, APIDateTimeUtils._LUCENE_PATTERN);
 			}
 
 			model.setModifiedDate(modifiedDate != null
@@ -143,7 +143,8 @@ public class PaymentFileUtils {
 //			model.setApplicantName(dossier.getApplicantName());
 //			model.setApplicantIdNo(dossier.getApplicantIdNo());
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		model.setPaymentFee(paymentFile.getPaymentFee());
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
@@ -175,7 +176,8 @@ public class PaymentFileUtils {
 			dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		model.setApplicantName((dossier != null && Validator.isNotNull(dossier.getApplicantName()))
@@ -361,7 +363,8 @@ public class PaymentFileUtils {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileId);
 				dlFileVersion = DLFileVersionLocalServiceUtil.getLatestFileVersion(fileEntry.getFileEntryId(), true);
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		return dlFileVersion;

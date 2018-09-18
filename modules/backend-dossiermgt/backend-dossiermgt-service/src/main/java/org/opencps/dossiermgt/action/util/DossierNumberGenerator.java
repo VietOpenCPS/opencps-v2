@@ -89,7 +89,8 @@ public class DossierNumberGenerator {
 				_log.info("SERVICECODE____"+serviceProcessCode);
 				
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				_log.info("SERVICECODE____ERROR");
 
 			}
@@ -138,7 +139,7 @@ public class DossierNumberGenerator {
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
 
 					} else if (r.toString().equals(datetimePattern)) {
-						System.out.println(tmp);
+//						System.out.println(tmp);
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
 
@@ -212,7 +213,9 @@ public class DossierNumberGenerator {
 								}
 
 							} catch (Exception e) {
-								_log.error("Can not get data from online form! " + e);
+								_log.debug(e);
+								//_log.error(e);
+								_log.error("Can not get data from online form! ");
 
 								seriNumberPattern = seriNumberPattern.replace(m.group(0), defaultValue);
 							}
@@ -383,7 +386,8 @@ public class DossierNumberGenerator {
 				
 			}
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return certNumber;

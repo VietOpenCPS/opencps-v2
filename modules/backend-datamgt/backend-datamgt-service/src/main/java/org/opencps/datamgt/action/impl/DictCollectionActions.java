@@ -116,10 +116,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		}
 		catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -349,10 +351,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		}
 		catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -394,10 +398,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		}
 		catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -549,7 +555,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 			collection = getDictCollectionDetail(collectionCode, groupId);
 		}
 		catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		if (collection != null) {
 			DictGroup dictColl = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
@@ -725,10 +732,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		}
 		catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -758,10 +767,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		}
 		catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -942,9 +953,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 			}
 		}
 		catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
 			_log.info(
 				"Can't not get DictItemGroups by groupId, dictItemId " +
-					groupId + "|" + dictItemId+ "|" + e);
+					groupId + "|" + dictItemId);
 		}
 		if (Validator.isNotNull(groupCodes)) {
 			String[] arrGroupCode = StringUtil.split(groupCodes);
@@ -966,7 +979,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 							groupCodeList.add(arrGroupCode[i]);
 						}
 						catch (Exception e) {
-							_log.error(e);
+							_log.debug(e);
+							//_log.error(e);
 						}
 					}
 
@@ -1083,7 +1097,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 				collectionCode = collection.getCollectionCode();
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 			obj.put(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
 			obj.put(DictGroupTerm.GROUP_CODE, dg.getGroupCode());
@@ -1142,7 +1157,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 			collection = getDictCollectionDetail(collectionCode, groupId);
 		}
 		catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		if (collection != null) {
 			DictGroup dictColl = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
@@ -1180,7 +1196,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 			collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(dictCollectionCode, groupId);
 		}
 		catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		if (collection != null) {
 			DictGroup dictGroup = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
@@ -1238,7 +1255,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 				flag = true;
 			}
 		}catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return false;
 		}
 

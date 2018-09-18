@@ -190,7 +190,8 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			try {
 				userActionName = UserLocalServiceUtil.getUser(userId).getFullName();
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				_log.info("DEFAULT_NAME");
 
 				userActionName = defaultName;

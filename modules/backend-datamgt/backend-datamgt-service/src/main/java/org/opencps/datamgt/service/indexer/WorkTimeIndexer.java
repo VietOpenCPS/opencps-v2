@@ -1,6 +1,5 @@
 package org.opencps.datamgt.service.indexer;
 
-import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
@@ -26,7 +25,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 @Component(
     immediate = true,

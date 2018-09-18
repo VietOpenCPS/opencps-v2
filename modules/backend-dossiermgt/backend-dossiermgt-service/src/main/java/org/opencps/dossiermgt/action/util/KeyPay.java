@@ -147,7 +147,8 @@ public class KeyPay {
 			}
 			url_redirect += param + "secure_hash=" + secure_hash;
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			_log.error("ERROR Build URL");
 		}
 		return url_redirect;
@@ -180,7 +181,8 @@ public class KeyPay {
 			this.desc_4 = new String(request.getParameter("desc_4").getBytes("ISO-8859-1"), "UTF-8");
 			this.desc_5 = request.getParameter("desc_5");
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 //			System.out.println("ERROE get data KeyPay return");
 		}
 	}
@@ -339,7 +341,8 @@ public class KeyPay {
 			MD5 md5 = new MD5();
 			sc_querry = md5.getMD5Hash(merchant_trans_id + good_code + trans_id + merchant_code + merchant_secure_key);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		KPJsonRest kpJson = new KPJsonRest();
 		return kpJson.QuerryBillStatus(merchant_trans_id, good_code, trans_id, merchant_code, sc_querry);
@@ -357,7 +360,8 @@ public class KeyPay {
 			MD5 md5 = new MD5();
 			sc_querry = md5.getMD5Hash(merchant_trans_id + good_code + trans_id + merchant_code + merchant_secure_key);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 //			System.out.println("ERROR calculate secure hash Query Bill");
 		}
 		KPJsonRest kpJson = new KPJsonRest();

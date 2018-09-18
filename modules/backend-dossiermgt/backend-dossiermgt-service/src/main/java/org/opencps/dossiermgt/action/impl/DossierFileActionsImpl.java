@@ -166,7 +166,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			_log.info(e);
 		} finally{
 			if (inStream != null) 
@@ -190,27 +189,26 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		// now zip files one by one
 		// create ZipOutputStream to write to the zip file
 		try {
-		fos = new FileOutputStream(zipDirName);
-		zos = new ZipOutputStream(fos);
+			fos = new FileOutputStream(zipDirName);
+			zos = new ZipOutputStream(fos);
 			ZipEntry ze = null;
 			try {
-		for (String filePath : filesListInDir) {
-//					System.out.println("Zipping " + filePath);
-			// for ZipEntry we need to keep only relative file path, so we
-			// used substring on absolute path
+				for (String filePath : filesListInDir) {
+					// System.out.println("Zipping " + filePath);
+					// for ZipEntry we need to keep only relative file path, so we
+					// used substring on absolute path
 					ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
-			zos.putNextEntry(ze);
-			// read the file and write to ZipOutputStream
+					zos.putNextEntry(ze);
+					// read the file and write to ZipOutputStream
 					try (FileInputStream fis = new FileInputStream(filePath)) {
-			byte[] buffer = new byte[1024];
-					int len = 0;
-			while ((len = fis.read(buffer)) > 0) {
-				zos.write(buffer, 0, len);
-			}
+						byte[] buffer = new byte[1024];
+						int len = 0;
+						while ((len = fis.read(buffer)) > 0) {
+							zos.write(buffer, 0, len);
+						}
+					}
 				}
-		}
 			} catch (Exception e) {
-				// TODO: handle exception
 				_log.error(e);
 			} 
 			finally{
@@ -218,7 +216,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 					zos.closeEntry();
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			_log.error(e);
 		} finally{
 			if (zos != null)

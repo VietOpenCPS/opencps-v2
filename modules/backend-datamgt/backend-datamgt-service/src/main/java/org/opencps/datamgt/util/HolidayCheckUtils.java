@@ -1,19 +1,17 @@
 package org.opencps.datamgt.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-
 public class HolidayCheckUtils {
 
-	private static Log _log = LogFactoryUtil.getLog(HolidayCheckUtils.class);
+//	private static Log _log = LogFactoryUtil.getLog(HolidayCheckUtils.class);
 
 	/**
 	 * @param startDate

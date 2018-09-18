@@ -1,15 +1,14 @@
 package org.opencps.communication.utils;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -62,7 +61,8 @@ public class DateTimeUtils {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;
@@ -78,7 +78,8 @@ public class DateTimeUtils {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;
@@ -94,7 +95,8 @@ public class DateTimeUtils {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;
@@ -110,7 +112,8 @@ public class DateTimeUtils {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;

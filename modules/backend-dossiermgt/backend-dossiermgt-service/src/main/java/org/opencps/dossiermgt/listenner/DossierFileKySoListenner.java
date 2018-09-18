@@ -59,7 +59,8 @@ public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 		try {
 			modelBeforeUpdate = DossierFileLocalServiceUtil.getDossierFile(model.getPrimaryKey());
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 	}
 	

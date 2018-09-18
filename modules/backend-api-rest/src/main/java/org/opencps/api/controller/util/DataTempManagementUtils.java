@@ -314,7 +314,8 @@ public class DataTempManagementUtils {
 				}
 
 			} catch (Exception e) {
-				_log.error(e);
+				//_log.error(e);
+				_log.debug(e);
 			}
 
 		} catch (Exception e) {
@@ -348,7 +349,8 @@ public class DataTempManagementUtils {
 				result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		else if (o instanceof DictItemTemp) {
@@ -368,14 +370,16 @@ public class DataTempManagementUtils {
 				result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}			
 			try {
 				DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItem.getParentItemId());
 				result.put(DictItemTempTerm.PARENT_ITEM_CODE, parentItem.getItemCode());
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}			
 		}
 		else if (o instanceof DictItemGroupTemp) {
@@ -393,24 +397,27 @@ public class DataTempManagementUtils {
 					result.put(DictCollectionTempTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
 				}
 				catch (Exception e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 				}			
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}			
 			try {
 				DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchDictGroupTemp(dictItemGroup.getDictGroupId());
 				result.put(DictGroupTempTerm.GROUP_CODE, dictGroup.getGroupCode());
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		
 		return result;
 	}
 	
-	public static final Log _log = LogFactoryUtil.getLog(DataTempManagementUtils.class);
+	private static final Log _log = LogFactoryUtil.getLog(DataTempManagementUtils.class);
 
 }

@@ -31,8 +31,8 @@ public class HttpDownloadUtility {
 		if (responseCode == HttpURLConnection.HTTP_OK) {
 			String fileName = "";
 			String disposition = httpConn.getHeaderField("Content-Disposition");
-			String contentType = httpConn.getContentType();
-			int contentLength = httpConn.getContentLength();
+//			String contentType = httpConn.getContentType();
+//			int contentLength = httpConn.getContentLength();
 
 			if (disposition != null) {
 				// extracts file name from header field
@@ -47,10 +47,10 @@ public class HttpDownloadUtility {
 						fileURL.length());
 			}
 
-			System.out.println("Content-Type = " + contentType);
-			System.out.println("Content-Disposition = " + disposition);
-			System.out.println("Content-Length = " + contentLength);
-			System.out.println("fileName = " + fileName);
+//			System.out.println("Content-Type = " + contentType);
+//			System.out.println("Content-Disposition = " + disposition);
+//			System.out.println("Content-Length = " + contentLength);
+//			System.out.println("fileName = " + fileName);
 
 			// opens input stream from the HTTP connection
 			InputStream inputStream = httpConn.getInputStream();

@@ -34,7 +34,8 @@ public class StatisticActionsImpl implements StatisticActions {
 //				_log.info("total: "+total);
 			}
 		} catch (Exception e) {
-			 _log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return total;

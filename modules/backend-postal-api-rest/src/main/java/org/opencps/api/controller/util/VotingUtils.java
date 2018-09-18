@@ -91,7 +91,8 @@ public class VotingUtils {
 						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
-				_log.error(e);
+//				_log.error(e);
+				_log.debug(e);
 			}
 
 			ett.setTemplateNo(doc.get(VotingTerm.TEMPLATE_NO));

@@ -60,10 +60,12 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -81,10 +83,12 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 			action.deleteActionConfig(Long.valueOf(actionConfigId), serviceContext);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
@@ -111,10 +115,12 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 

@@ -71,7 +71,8 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}			
@@ -107,7 +108,8 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}			
@@ -144,7 +146,8 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}			
@@ -158,7 +161,8 @@ public class SystemUtils {
 					DLAppLocalServiceUtil.deleteFileEntry(df.getFileEntryId());		
 				}
 				catch (PortalException e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 				}
 			}
 			DossierFileLocalServiceUtil.permanentDeleteDossierFile(df.getDossierFileId());
@@ -190,7 +194,8 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}			
@@ -229,7 +234,8 @@ public class SystemUtils {
 					try {
 						indexer.delete(companyId, uid);
 					} catch (SearchException e) {
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}			

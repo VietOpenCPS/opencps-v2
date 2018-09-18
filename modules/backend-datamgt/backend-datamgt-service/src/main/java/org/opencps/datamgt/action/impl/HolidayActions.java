@@ -65,9 +65,11 @@ public class HolidayActions implements HolidayInterface {
 			result.put("total", total);
 
 		} catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		} catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;

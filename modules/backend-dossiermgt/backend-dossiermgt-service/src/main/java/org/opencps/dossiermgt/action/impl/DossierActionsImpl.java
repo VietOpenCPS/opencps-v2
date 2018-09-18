@@ -236,8 +236,8 @@ public class DossierActionsImpl implements DossierActions {
 //							_log.info("specialStatus: " + specialStatus);
 
 						} catch (Exception e) {
-							// TODO: handle exception
-							_log.info(e);
+							_log.debug(e);
+							//_log.error(e);
 						}
 					}
 
@@ -280,8 +280,8 @@ public class DossierActionsImpl implements DossierActions {
 								_log.info("specialStatus: " + specialStatus);
 
 							} catch (Exception e) {
-								// TODO: handle exception
-								_log.info(e);
+								_log.debug(e);
+								//_log.error(e);
 							}
 						}
 
@@ -711,7 +711,8 @@ public class DossierActionsImpl implements DossierActions {
 																		fileTemplateNo, 2, false, new DossierFileComparator(
 																				false, "createDate", Date.class));
 													} catch (Exception e) {
-														_log.info(e);
+														_log.debug(e);
+														//_log.error(e);
 													}
 													if (Validator.isNull(dossierFile)) {
 	
@@ -830,7 +831,8 @@ public class DossierActionsImpl implements DossierActions {
 																							fileTemplateNo, 2, false, new DossierFileComparator(
 																									false, "createDate", Date.class));
 																		} catch (Exception e) {
-																			_log.info(e);
+																			_log.debug(e);
+																			//_log.error(e);
 																		}
 																		if (Validator.isNull(dossierFile)) {
 						
@@ -873,7 +875,8 @@ public class DossierActionsImpl implements DossierActions {
 																									fileTemplateNo, 2, false, new DossierFileComparator(
 																											false, "createDate", Date.class));
 																				} catch (Exception e) {
-																					_log.info(e);
+																					_log.debug(e);
+																					//_log.error(e);
 																				}
 																				DossierFileActions actions = new DossierFileActionsImpl();
 																				
@@ -936,8 +939,8 @@ public class DossierActionsImpl implements DossierActions {
 																	fileTemplateNo, 2, false, new DossierFileComparator(
 																			false, "createDate", Date.class));
 												} catch (Exception e) {
-													// TODO: handle exception
-													_log.info(e);
+													_log.debug(e);
+													//_log.error(e);
 												}
 												DossierFileActions actions = new DossierFileActionsImpl();
 												if (Validator.isNull(dossierFile)) {
@@ -1072,7 +1075,8 @@ public class DossierActionsImpl implements DossierActions {
 																							fileTemplateNo, 2, false, new DossierFileComparator(
 																									false, "createDate", Date.class));
 																		} catch (Exception e) {
-																			_log.info(e);
+																			_log.debug(e);
+																			//_log.error(e);
 																		}
 																		if (Validator.isNull(dossierFile)) {
 						
@@ -1802,7 +1806,8 @@ public class DossierActionsImpl implements DossierActions {
 																			new DossierFileComparator(false,
 																					"createDate", Date.class));
 														} catch (Exception e) {
-															_log.info(e);
+															_log.debug(e);
+															//_log.error(e);
 														}
 														if (Validator.isNull(dossierFile)) {
 
@@ -2030,7 +2035,8 @@ public class DossierActionsImpl implements DossierActions {
 			_log.info("UPDATE FORM DATA GENERATE RESULT FILE");
 			actions.updateDossierFileFormData(groupId, dossierId, docFileReferenceUid, formData, serviceContext);
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		createFile.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
 		createFile.put(DossierFileTerm.FORM_DATA, formData);
@@ -2070,7 +2076,8 @@ public class DossierActionsImpl implements DossierActions {
 			dossierFile.setFormData(formData);
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		createFile.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
 		createFile.put(DossierFileTerm.FORM_DATA, formData);
@@ -2108,7 +2115,8 @@ public class DossierActionsImpl implements DossierActions {
 				docFileReferenceUid = dossierFile.getReferenceUid();
 				dossierFileId = dossierFile.getDossierFileId();
 			} catch (Exception e) {
-				_log.info(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		createFile.put(DossierFileTerm.E_FORM, eForm);
@@ -2386,7 +2394,8 @@ public class DossierActionsImpl implements DossierActions {
 												fileTemplateNo, 2, false, new DossierFileComparator(
 														false, "createDate", Date.class));
 							} catch (Exception e) {
-								_log.info(e);
+								_log.debug(e);
+								//_log.error(e);
 							}
 
 							if (Validator.isNull(dossierFile)) {
@@ -2427,7 +2436,8 @@ public class DossierActionsImpl implements DossierActions {
 																			fileTemplateNo, 2, false, new DossierFileComparator(
 																					false, "createDate", Date.class));
 											} catch (Exception e) {
-												_log.info(e);
+												_log.debug(e);
+												//_log.error(e);
 											}
 											if (Validator.isNull(dossierFile)) {
 												dossierFile = actions.addDossierFile(groupId, dossier.getDossierId(),
@@ -2460,7 +2470,8 @@ public class DossierActionsImpl implements DossierActions {
 																					fileTemplateNo, 2, false, new DossierFileComparator(
 																							false, "createDate", Date.class));
 												} catch (Exception e) {
-													_log.info(e);
+													_log.debug(e);
+													//_log.error(e);
 												}
 												if (Validator.isNull(dossierFile)) {
 													dossierFile = actions.addDossierFile(groupId, dossier.getDossierId(),
@@ -2505,7 +2516,8 @@ public class DossierActionsImpl implements DossierActions {
 																			fileTemplateNo, 2, false, new DossierFileComparator(
 																false, "createDate", Date.class));
 														} catch (Exception e) {
-															_log.info(e);
+															_log.debug(e);
+															//_log.error(e);
 														}
 														if (Validator.isNull(dossierFile)) {
 															dossierFile = actions.addDossierFile(groupId, dossier.getDossierId(),
@@ -2929,7 +2941,8 @@ public class DossierActionsImpl implements DossierActions {
 				generateCreateDossierFiles(groupId, userId, dossier, proAction);
 			}
 			catch (Exception e) {
-				_log.info(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 		else {
@@ -3372,7 +3385,8 @@ public class DossierActionsImpl implements DossierActions {
 									expired, 
 									context);
 						} catch (NoSuchUserException e) {
-							_log.error(e);
+							_log.debug(e);
+							//_log.error(e);
 //							e.printStackTrace();
 						}
 					}
@@ -3407,7 +3421,8 @@ public class DossierActionsImpl implements DossierActions {
 								}
 							}
 						} catch (NoSuchUserException e) {
-							_log.error(e);
+							_log.debug(e);
+							//_log.error(e);
 //							e.printStackTrace();
 						}
 					}					
@@ -3439,7 +3454,8 @@ public class DossierActionsImpl implements DossierActions {
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 //			e.printStackTrace();
 		}		
 		
@@ -3459,7 +3475,8 @@ public class DossierActionsImpl implements DossierActions {
 					bResult.put(DossierTerm.DOSSIER_NO, true);					
 				}
 			} catch (PortalException e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 //				e.printStackTrace();
 			}		
 		}
@@ -3669,7 +3686,8 @@ public class DossierActionsImpl implements DossierActions {
 			option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 					dossier.getDossierTemplateNo(), groupId);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			throw new NotFoundException("ServiceProcessNotFoundException");
 		}
 
@@ -3702,7 +3720,8 @@ public class DossierActionsImpl implements DossierActions {
 						context, serviceProcess.getServerNo());
 			} catch (Exception e) {
 
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				_log.info("Can not create PaymentFile with pattern \"" + processAction.getPaymentFee() + "\"");
 			}
 
@@ -4294,7 +4313,8 @@ public class DossierActionsImpl implements DossierActions {
 			actions.updateDossierFileFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData, context);
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
 		}
 
@@ -4538,7 +4558,8 @@ public class DossierActionsImpl implements DossierActions {
 
 		} catch (Exception e) {
 
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 
 			throw new NotFoundException("ProcessActionNotFoundException with actionCode= " + actionCode
 					+ "|serviceProcessId= " + serviceProcessId + "|referenceUid= " + refId + "|groupId= " + groupId);
@@ -4564,7 +4585,8 @@ public class DossierActionsImpl implements DossierActions {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		Dossier dossier = null;
@@ -5418,7 +5440,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					delegateWardCode, sampleCount, serviceContext);
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 	}
@@ -5444,7 +5467,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		Dossier dossier = null;
@@ -5462,7 +5486,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					processDate, context);
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return dossier;	

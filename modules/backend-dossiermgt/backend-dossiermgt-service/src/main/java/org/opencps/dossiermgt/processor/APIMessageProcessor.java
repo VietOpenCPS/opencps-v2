@@ -220,7 +220,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			}
 		} catch (JSONException e) {
 //			e.printStackTrace();
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return false;
 		}
 		
@@ -245,7 +246,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			}
 		}
 		catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
@@ -381,7 +383,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				}			
 			} catch (JSONException e) {
 //				e.printStackTrace();
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				return false;
 			}	
 		}
@@ -438,7 +441,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											}
 										} catch (PortalException e) {
 //											e.printStackTrace();
-											_log.error(e);
+											_log.debug(e);
+											//_log.error(e);
 										}
 										
 										
@@ -522,7 +526,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				}			
 			} catch (JSONException e) {
 //				e.printStackTrace();
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				return false;
 			}	
 		}

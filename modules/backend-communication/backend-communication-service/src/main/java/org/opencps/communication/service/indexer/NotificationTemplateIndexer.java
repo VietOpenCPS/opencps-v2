@@ -41,6 +41,7 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 		return CLASS_NAME;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {

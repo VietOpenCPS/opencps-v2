@@ -198,7 +198,8 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 			dossierPartId = dossierPart.getDossierPartId();
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			dossierPartId = 0; // :)
 		}
 
@@ -248,7 +249,8 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 				flag = true;
 			}
 		}catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return false;
 		}
 

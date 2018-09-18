@@ -37,7 +37,8 @@ public class OneGateUtils {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 			model.setDossierIdCTN("");
 		}
 		
@@ -158,7 +159,8 @@ public class OneGateUtils {
 			processUnit = serviceProcess.getDurationUnit();
 			
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		if (input.getDossierActionId() != 0) {

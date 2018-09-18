@@ -40,7 +40,7 @@ public class RegistrationUtils {
 			
 			String createDate = doc.get(Field.CREATE_DATE);
             if (Validator.isNotNull(createDate)) {
-                Date date = APIDateTimeUtils.convertStringToDate(createDate, "yyyyMMddHHmmss");
+                Date date = APIDateTimeUtils.convertStringToDate(createDate, APIDateTimeUtils._LUCENE_PATTERN);
                 
                 createDate = APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP);
             }
@@ -48,7 +48,7 @@ public class RegistrationUtils {
 			
             String modifiedDate = doc.get(Field.MODIFIED_DATE);
             if (Validator.isNotNull(modifiedDate)) {
-                Date date = APIDateTimeUtils.convertStringToDate(modifiedDate, "yyyyMMddHHmmss");
+                Date date = APIDateTimeUtils.convertStringToDate(modifiedDate, APIDateTimeUtils._LUCENE_PATTERN);
                 
                 modifiedDate = APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP);
             }
@@ -56,7 +56,7 @@ public class RegistrationUtils {
             
 			String applicantIdDate = doc.get(RegistrationTerm.APPLICATION_ID_DATE);
 			if (Validator.isNotNull(applicantIdDate)) {
-			    Date date = APIDateTimeUtils.convertStringToDate(applicantIdDate, "yyyyMMddHHmmss");
+			    Date date = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._LUCENE_PATTERN);
 			    
 			    applicantIdDate = APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP);
 			}

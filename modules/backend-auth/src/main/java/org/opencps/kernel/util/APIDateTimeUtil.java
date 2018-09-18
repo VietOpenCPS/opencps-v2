@@ -58,7 +58,9 @@ public class APIDateTimeUtil {
 			}
 		}
 		catch (ParseException e) {
-			_log.error("Can't convert lucene date");
+			_log.debug(e);
+			//_log.error(e);
+			//_log.error("Can't convert lucene date");
 		}
 
 		return result;
