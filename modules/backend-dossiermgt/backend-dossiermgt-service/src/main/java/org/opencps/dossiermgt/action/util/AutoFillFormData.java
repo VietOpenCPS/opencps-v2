@@ -164,7 +164,8 @@ public class AutoFillFormData {
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 				}
 			}
 			// process sampleData
@@ -311,7 +312,8 @@ public class AutoFillFormData {
 								}
 							} catch (Exception e) {
 								// TODO: handle exception
-								_log.error(e);
+								_log.debug(e);
+								//_log.error(e);
 							}
 
 							if (myCHK.startsWith("#")) {

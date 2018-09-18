@@ -118,7 +118,8 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
 						} catch (Exception e) {
-							_log.error(e);
+							_log.debug(e);
+							//_log.error(e);
 						}
 
 						if (dossierFileId != 0) {

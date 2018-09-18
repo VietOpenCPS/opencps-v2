@@ -58,7 +58,8 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		return results;
@@ -85,7 +86,8 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		return results;
@@ -113,7 +115,8 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		return results;
@@ -165,7 +168,8 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		return results;
@@ -192,7 +196,8 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		return ett;
@@ -221,7 +226,8 @@ public class DataManagementUtils {
 			// StringPool.BLANK);
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		return ett;
@@ -254,7 +260,8 @@ public class DataManagementUtils {
 			// StringPool.BLANK);
 
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 
 		return ett;
@@ -323,7 +330,8 @@ public class DataManagementUtils {
 				}
 
 			} catch (Exception e) {
-				_log.error(e);
+				//_log.error(e);
+				_log.debug(e);
 			}
 
 			ett.getGroups().addAll(listGroup);
@@ -368,7 +376,8 @@ public class DataManagementUtils {
 					parentItem = DictItemLocalServiceUtil.fetchDictItem(dc.getParentItemId());
 				}
 				catch (Exception e) {
-					_log.error(e);
+					//_log.error(e);
+					_log.debug(e);
 				}
 				model.setDictCollectionCode(collection.getCollectionCode());
 				model.setItemCode(dc.getItemCode());
@@ -467,6 +476,7 @@ public class DataManagementUtils {
 		model.setGroupNameEN(dictGroup.getGroupNameEN());
 		return model;
 	}
-	public static final Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
+
+	private static final Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
 
 }

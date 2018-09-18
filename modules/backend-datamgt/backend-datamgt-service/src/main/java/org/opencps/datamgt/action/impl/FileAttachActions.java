@@ -1,22 +1,10 @@
 package org.opencps.datamgt.action.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.datamgt.action.FileAttachInterface;
-import org.opencps.datamgt.model.FileAttach;
-import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.datamgt.utils.DateTimeUtils;
-
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -31,8 +19,20 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.datamgt.action.FileAttachInterface;
+import org.opencps.datamgt.model.FileAttach;
+import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
+import org.opencps.datamgt.utils.DateTimeUtils;
 
 import backend.utils.FileUploadUtils;
 
@@ -63,9 +63,11 @@ public class FileAttachActions implements FileAttachInterface {
 			result.put("total", total);
 
 		} catch (ParseException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		} catch (SearchException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -119,7 +121,8 @@ public class FileAttachActions implements FileAttachInterface {
 			file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return file;
@@ -135,7 +138,8 @@ public class FileAttachActions implements FileAttachInterface {
 		try {
 			fileEntry = DLAppLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return fileEntry;
@@ -174,7 +178,8 @@ public class FileAttachActions implements FileAttachInterface {
 					serviceContext);
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return fileAttach;
@@ -205,7 +210,8 @@ public class FileAttachActions implements FileAttachInterface {
 					StringPool.BLANK, fileEntryId, StringPool.BLANK, StringPool.BLANK, 0, fileName, serviceContext);
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		return fileAttach;
 	}
@@ -232,7 +238,8 @@ public class FileAttachActions implements FileAttachInterface {
 			file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), version, true);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return file;

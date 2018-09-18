@@ -145,9 +145,13 @@ public class InvokeREST {
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
-			_log.error("Can't invoke api " + pathBase + endPoint, e);
+			_log.debug(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
 		} catch (IOException e) {
-			_log.error("Can't invoke api " + pathBase + endPoint, e);
+			_log.debug(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
 
 		} finally {
 			if (conn != null) {
@@ -158,7 +162,8 @@ public class InvokeREST {
 				try {
 					br.close();
 				} catch (IOException e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 				}
 			}
 
@@ -209,7 +214,8 @@ public class InvokeREST {
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
 			response.put(RESTFulConfiguration.MESSAGE, e.getMessage());
 		}
@@ -259,7 +265,8 @@ public class InvokeREST {
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
 			response.put(RESTFulConfiguration.MESSAGE, e.getMessage());
 		}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.MappingUser;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
@@ -17,6 +18,8 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 public class ApplicantUtils {
+
+	private static Log _log = LogFactoryUtil.getLog(ApplicantUtils.class);
 
 	/**
 	 * @author khoavu
@@ -45,25 +48,25 @@ public class ApplicantUtils {
 		model.setContactTelNo(applicant.getContactTelNo());
 		
 		long mappingUserId = applicant.getMappingUserId();
-
-		MappingUser mappingUser = new MappingUser();
-
-		User user = null;
-		
-		try {
-			user = UserLocalServiceUtil.getUser(mappingUserId);
-		} catch (Exception e) {
-			_log.error(e);
+		MappingUser mappingUser = processMappingUser(mappingUserId);
+		if (mappingUser != null) {
+			model.setMappingUser(mappingUser);
 		}
 
-		if (user != null) {
-			mappingUser.setUserId(Long.toString(mappingUserId));
-			mappingUser.setScreenName(user.getScreenName());
-			mappingUser.setLocking(user.getLockout());
-		}
-		
-		 model.setMappingUser(mappingUser);
-
+//		MappingUser mappingUser = new MappingUser();
+//		User user = null;
+//		try {
+//			user = UserLocalServiceUtil.getUser(mappingUserId);
+//		} catch (Exception e) {
+//			//_log.error(e);
+//			_log.debug(e);
+//		}
+//		if (user != null) {
+//			mappingUser.setUserId(Long.toString(mappingUserId));
+//			mappingUser.setScreenName(user.getScreenName());
+//			mappingUser.setLocking(user.getLockout());
+//		}
+//		model.setMappingUser(mappingUser);
 
 		return model;
 	}
@@ -77,54 +80,39 @@ public class ApplicantUtils {
 
 		List<ApplicantModel> data = new ArrayList<ApplicantModel>();
 
-
 		for (Document doc : documents) {
 			ApplicantModel model = new ApplicantModel();
 
 			model.setApplicantId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setCreateDate(GetterUtil.getString(doc.get(Field.CREATE_DATE)));
 			model.setModifiedDate(GetterUtil.getString(doc.get(Field.MODIFIED_DATE)));
-			model.setApplicantName(GetterUtil.getString(doc.get("applicantName")));
-			model.setApplicantIdType(GetterUtil.getString(doc.get("applicantIdType")));
-			model.setApplicantIdNo(GetterUtil.getString(doc.get("applicantIdNo")));
-			model.setApplicantIdDate(GetterUtil.getString(doc.get("applicantIdDate")));
-			model.setAddress(GetterUtil.getString(doc.get("address")));
-			model.setCityCode(GetterUtil.getString(doc.get("cityCode")));
-			model.setCityName(GetterUtil.getString(doc.get("cityName")));
-			model.setDistrictCode(GetterUtil.getString(doc.get("districtCode")));
-			model.setDistrictName(GetterUtil.getString(doc.get("districtName")));
-			model.setWardCode(GetterUtil.getString(doc.get("wardCode")));
-			model.setWardName(GetterUtil.getString(doc.get("wardName")));
-			model.setContactName(GetterUtil.getString(doc.get("contactName")));
-			model.setContactTelNo(GetterUtil.getString(doc.get("contactTelNo")));
-			model.setContactEmail(GetterUtil.getString(doc.get("contactEmail")));
+			model.setApplicantName(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTNAME)));
+			model.setApplicantIdType(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDTYPE)));
+			model.setApplicantIdNo(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDNO)));
+			model.setApplicantIdDate(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDDATE)));
+			model.setAddress(GetterUtil.getString(doc.get(ApplicantTerm.ADDRESS)));
+			model.setCityCode(GetterUtil.getString(doc.get(ApplicantTerm.CITYCODE)));
+			model.setCityName(GetterUtil.getString(doc.get(ApplicantTerm.CITYNAME)));
+			model.setDistrictCode(GetterUtil.getString(doc.get(ApplicantTerm.DISTRICTCODE)));
+			model.setDistrictName(GetterUtil.getString(doc.get(ApplicantTerm.DISTRICTNAME)));
+			model.setWardCode(GetterUtil.getString(doc.get(ApplicantTerm.WARDCODE)));
+			model.setWardName(GetterUtil.getString(doc.get(ApplicantTerm.WARDNAME)));
+			model.setContactName(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTNAME)));
+			model.setContactTelNo(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTTELNO)));
+			model.setContactEmail(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTEMAIL)));
 
-			MappingUser mappingUser = new MappingUser();
-
-			long mappingUserId = GetterUtil.getLong(doc.get("mappingUserId"));
-			
-			User user = null;
-			
-			try {
-				user = UserLocalServiceUtil.getUser(mappingUserId);
-			} catch (Exception e) {
-				_log.error(e);
+			long mappingUserId = GetterUtil.getLong(doc.get(ApplicantTerm.MAPPINGUSERID));
+			MappingUser mappingUser = processMappingUser(mappingUserId);
+			if (mappingUser != null) {
+				model.setMappingUser(mappingUser);
 			}
-
-			if (user != null) {
-				mappingUser.setUserId(Long.toString(mappingUserId));
-				mappingUser.setScreenName(user.getScreenName());
-				mappingUser.setLocking(user.getLockout());
-			}
-
-			model.setMappingUser(mappingUser);
 
 			data.add(model);
 		}
 
 		return data;
 	}
-	
+
 	public static User getUser(long applicantId) {
 		User user = null;
 		
@@ -133,11 +121,32 @@ public class ApplicantUtils {
 			
 			user = UserLocalServiceUtil.fetchUser(applicant.getMappingUserId());
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 		}
 		
 		return user;
 	}
-	
-	static Log _log = LogFactoryUtil.getLog(ApplicantUtils.class);
+
+	private static MappingUser processMappingUser(long mappingUserId) {
+
+		try {
+			User user = UserLocalServiceUtil.getUser(mappingUserId);
+			if (user != null) {
+				MappingUser mappingUser = new MappingUser();
+
+				mappingUser.setUserId(Long.toString(mappingUserId));
+				mappingUser.setScreenName(user.getScreenName());
+				mappingUser.setLocking(user.getLockout());
+				//
+				return mappingUser;
+			}
+		} catch (Exception e) {
+			//_log.error(e);
+			_log.debug(e);
+		}
+
+		return null;
+	}
+
 }

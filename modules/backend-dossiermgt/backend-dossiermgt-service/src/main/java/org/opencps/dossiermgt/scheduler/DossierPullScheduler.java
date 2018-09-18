@@ -183,7 +183,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				}
 
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				_log.info("NOProcess");
 			}
 
@@ -216,7 +217,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					_log.info("submitDate: " + submitDate);
 
 				} catch (Exception e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 					_log.info("SUBMITDATE_NOT_VALID");
 				}
 
@@ -290,7 +292,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
 
 				} catch (Exception e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 					_log.info("SyncDossierUnsuccessfuly" + desDossier.getReferenceUid());
 				}
 
@@ -347,7 +350,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					} catch (Exception e) {
 						// TODO: handle exception
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 
 					// TODO add sync DOSSIERFILE and PAYMENTFILE
@@ -574,7 +578,8 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 							}	
 						}
 						catch (Exception e) {
-							_log.error(e);
+							_log.debug(e);
+							//_log.error(e);
 						}
 						finally {
 							if (outStream != null)

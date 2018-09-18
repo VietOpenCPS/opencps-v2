@@ -99,7 +99,8 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			_log.info("groupId: "+groupId);
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return results;
@@ -143,7 +144,8 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			_log.info("groupId_"+groupId);
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 
@@ -177,7 +179,8 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 				result = DocumentTypeParser.mappingDocumentTypeModel(docType);
 			}
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return result;
@@ -211,7 +214,8 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			_log.info("groupId_"+groupId);
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 
@@ -257,7 +261,8 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			_log.info("groupId_"+groupId);
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 

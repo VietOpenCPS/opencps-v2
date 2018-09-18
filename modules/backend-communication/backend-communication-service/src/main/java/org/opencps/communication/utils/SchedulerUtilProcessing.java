@@ -86,21 +86,23 @@ public class SchedulerUtilProcessing {
 							JSONObject payLoad = EmailUtilities.createEmailBody(notificationtemplate, notificationQueue);
 														
 							SendMailUtils.sendEmailNotification(payLoad, serviceContext);
-							System.out.println("SchedulerUtilProcessing.notificationByType(SendMailUtil)");
+//							System.out.println("SchedulerUtilProcessing.notificationByType(SendMailUtil)");
 							try {
 								NotificationQueueLocalServiceUtil.deleteNotificationQueue(
 										notificationQueue.getNotificationQueueId(), serviceContext);
-								System.out.println("SchedulerUtilProcessing.notificationByType(notificationQueue.getNotificationQueueId())"+notificationQueue.getNotificationQueueId());
+//								System.out.println("SchedulerUtilProcessing.notificationByType(notificationQueue.getNotificationQueueId())"+notificationQueue.getNotificationQueueId());
 							} catch (NoSuchNotificationQueueException e) {
-								_log.error(e);
+								_log.debug(e);
+								//_log.error(e);
 							}
 						} else {
 							try {
 								NotificationQueueLocalServiceUtil.deleteNotificationQueue(
 										notificationQueue.getNotificationQueueId(), serviceContext);
-								System.out.println("SchedulerUtilProcessing.notificationByType(notificationQueue.getNotificationQueueId(1))"+notificationQueue.getNotificationQueueId());
+//								System.out.println("SchedulerUtilProcessing.notificationByType(notificationQueue.getNotificationQueueId(1))"+notificationQueue.getNotificationQueueId());
 							} catch (NoSuchNotificationQueueException e) {
-								_log.error(e);
+								_log.debug(e);
+								//_log.error(e);
 							}
 						}
 					}

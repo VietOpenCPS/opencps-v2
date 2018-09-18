@@ -71,7 +71,8 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return results;
@@ -105,7 +106,8 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		

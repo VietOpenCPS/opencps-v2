@@ -69,14 +69,14 @@ public class DossierPaymentUtils {
 				_log.info("NAMES___" + ft.getNames());
 			}
 
-			for (ScriptEngineFactory se : new ScriptEngineManager().getEngineFactories()) {
-				System.out.println("se = " + se.getEngineName());
-				System.out.println("se = " + se.getEngineVersion());
-				System.out.println("se = " + se.getLanguageName());
-				System.out.println("se = " + se.getLanguageVersion());
-				System.out.println("se = " + se.getNames());
-				System.out.println("se = " + se.getExtensions());
-			}
+//			for (ScriptEngineFactory se : new ScriptEngineManager().getEngineFactories()) {
+//				System.out.println("se = " + se.getEngineName());
+//				System.out.println("se = " + se.getEngineVersion());
+//				System.out.println("se = " + se.getLanguageName());
+//				System.out.println("se = " + se.getLanguageVersion());
+//				System.out.println("se = " + se.getNames());
+//				System.out.println("se = " + se.getExtensions());
+//			}
 
 			String netScript = matcherName.group(1);
 
@@ -84,8 +84,8 @@ public class DossierPaymentUtils {
 
 				engine.eval(netScript);
 
-				long net = GetterUtil.getInteger(engine.get("payment"));
-				System.out.println("DossierPaymentUtils.main()" + net);
+//				long net = GetterUtil.getInteger(engine.get("payment"));
+//				System.out.println("DossierPaymentUtils.main()" + net);
 			} catch (ScriptException e) {
 //				e.printStackTrace();
 				_log.error(e);
@@ -335,7 +335,8 @@ public class DossierPaymentUtils {
 				}
 			}
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return msgPayments;
@@ -504,7 +505,8 @@ public class DossierPaymentUtils {
 				_log.info("net__________" + net);
 
 			} catch (Exception e) {
-				_log.info(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 
 		}

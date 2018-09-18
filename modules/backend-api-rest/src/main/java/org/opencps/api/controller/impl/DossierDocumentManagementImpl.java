@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.DossierDocumentManagement;
-import org.opencps.api.controller.util.DossierDucumentUtils;
+import org.opencps.api.controller.util.DossierDocumentUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
 import org.opencps.auth.api.BackendAuth;
@@ -90,7 +90,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					if (Validator.isNotNull(payload)) {
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
 					}
-					jsonData = DossierDucumentUtils.processMergeDossierFormData(dossier, jsonData);
+					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
 					jsonData.put("url", serviceContext.getPortalURL());
 					Message message = new Message();
 					message.put("formReport", documentScript);
@@ -237,7 +237,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								}
 								//Mapping FormData with dossier
 								jsonData = JSONFactoryUtil.createJSONObject(payload);
-								jsonData = DossierDucumentUtils.processMergeDossierFormData(dossier, jsonData);
+								jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
 								formDataArr.put(jsonData);
 								_log.info("jsonData: "+jsonData);
 								_log.info("formDataArr: "+formDataArr);

@@ -51,7 +51,8 @@ public class TemplateProcessor {
 						out.close();
 					}
 					catch (IOException e) {
-						_log.warn(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}
@@ -87,7 +88,8 @@ public class TemplateProcessor {
 						out.close();
 					}
 					catch (IOException e) {
-						_log.warn(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}
@@ -123,7 +125,8 @@ public class TemplateProcessor {
 						out.close();
 					}
 					catch (IOException e) {
-						_log.warn(e);
+						_log.debug(e);
+						//_log.error(e);
 					}
 				}
 			}

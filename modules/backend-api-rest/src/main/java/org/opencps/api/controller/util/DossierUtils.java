@@ -617,7 +617,8 @@ public class DossierUtils {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 			model.setDossierIdCTN(StringPool.BLANK);
 		}
 		
@@ -737,7 +738,8 @@ public class DossierUtils {
 							
 						} catch (Exception e) {
 							// TODO: handle exception
-							_log.error(e);
+							//_log.error(e);
+							_log.debug(e);
 						}
 					}
 					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
@@ -801,7 +803,8 @@ public class DossierUtils {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
 		} catch (Exception e) {
-			_log.error(e);
+			//_log.error(e);
+			_log.debug(e);
 			model.setDossierIdCTN("");
 		}
 		

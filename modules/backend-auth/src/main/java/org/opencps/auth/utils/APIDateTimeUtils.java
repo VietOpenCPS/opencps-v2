@@ -77,7 +77,8 @@ public class APIDateTimeUtils {
 		try {
 			return sdf.parse(source);
 		} catch (Exception e) {
-			_log.info("==Not check log=="+e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 		

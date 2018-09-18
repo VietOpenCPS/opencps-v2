@@ -23,7 +23,8 @@ public class ObjectConverterUtil {
 				propertyDescriptors = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				
 				return json;
 			}
@@ -54,7 +55,9 @@ public class ObjectConverterUtil {
 							json.put(pd.getDisplayName(), pd.getReadMethod().invoke(object));
 						}
 					} catch (Exception e) {
-						_log.info("==Not check log==" + e);
+						_log.debug(e);
+						//_log.error(e);
+						//_log.info("==Not check log==" + e);
 						// continue;
 					}
 

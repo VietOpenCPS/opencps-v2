@@ -189,7 +189,8 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		try {
 			return serverConfigPersistence.findByCF_GID(groupId);
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 		

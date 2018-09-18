@@ -76,15 +76,14 @@ public class DossierActionUtils {
 						moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator());
 						user.setModelAttributes(moderator);
 						user.setModelAttributes(assigned);
-								
+
 						lstUser.add(user);
-						
 						break;
 					}
 				}
 			}
 		}
-		
+
 		return lstUser;
 	}
 	
@@ -104,11 +103,11 @@ public class DossierActionUtils {
 				moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
 				u.setModelAttributes(moderator);
 				u.setModelAttributes(assigned);
-				
+
 				lstUser.add(u);
 			}
 		}
-		
+
 		return lstUser;
 	}
 	
@@ -174,8 +173,6 @@ public class DossierActionUtils {
 
 	public static DossierActionNextActionModel mappingToDoActionModel(ProcessAction processAction) {
 
-
-
 		DossierActionNextActionModel model = new DossierActionNextActionModel();
 
 		model.setActionCode(processAction.getActionCode());
@@ -183,8 +180,6 @@ public class DossierActionUtils {
 		model.setPostStepCode(processAction.getPostStepCode());
 		model.setAutoEvent(processAction.getAutoEvent());
 		model.setAssignUserId((processAction.getAssignUserId()));
-
-
 
 		return model;
 
@@ -482,9 +477,7 @@ public class DossierActionUtils {
 				}
 				model.getCreateFiles().addAll(outputCreeateFiles);
 			}
-			
 
-				
 				List<DossierActionNextActionReturnFiles> outputReturnFiles = null;
 				if (returnFiles != null && returnFiles.size() > 0) {
 					outputReturnFiles = new ArrayList<DossierActionNextActionReturnFiles>();

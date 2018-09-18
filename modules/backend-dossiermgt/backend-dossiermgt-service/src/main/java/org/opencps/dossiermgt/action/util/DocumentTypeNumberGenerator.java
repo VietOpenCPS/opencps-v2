@@ -66,7 +66,7 @@ public class DocumentTypeNumberGenerator {
 						}
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
 					} else if (r.toString().equals(datetimePattern)) {
-						System.out.println(tmp);
+//						System.out.println(tmp);
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
 
@@ -156,7 +156,8 @@ public class DocumentTypeNumberGenerator {
 
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			certNumber = "" + count;
 		}
 		

@@ -1,19 +1,6 @@
 package org.opencps.datamgt.service.indexer;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.datamgt.constants.DictGroupTerm;
-import org.opencps.datamgt.constants.DictItemGroupTerm;
-import org.opencps.datamgt.model.DictCollection;
-import org.opencps.datamgt.model.DictGroup;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
-import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -29,8 +16,19 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.datamgt.constants.DictGroupTerm;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 @Component(
     immediate = true,
@@ -132,8 +130,10 @@ public class DictGroupIndexer extends BaseIndexer<DictGroup> {
 
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
+							_log.debug(pe);
+							//_log.error(e);
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index DictGroupIndexer " + dictGroup.getDictGroupId(), pe);
+								_log.warn("Unable to index DictGroupIndexer " + dictGroup.getDictGroupId());
 							}
 						}
 					}

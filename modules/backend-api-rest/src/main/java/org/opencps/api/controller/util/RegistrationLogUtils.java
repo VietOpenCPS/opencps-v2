@@ -46,7 +46,7 @@ public class RegistrationLogUtils {
 			Date date = null;
 			
 			if (Validator.isNotNull(strDate)) {
-				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+				date = APIDateTimeUtils.convertStringToDate(strDate, APIDateTimeUtils._LUCENE_PATTERN);
 			}
 			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);
 			model.setAuthor(document.get(RegistrationLogTerm.AUTHOR));

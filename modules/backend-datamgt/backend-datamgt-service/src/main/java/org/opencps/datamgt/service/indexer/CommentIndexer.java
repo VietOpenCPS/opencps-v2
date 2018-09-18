@@ -202,11 +202,12 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 						indexableActionableDynamicQuery.addDocuments(document);
 					}
 					catch (PortalException pe) {
+						_log.debug(pe);
+						//_log.error(e);
 						if (_log.isWarnEnabled()) {
 							_log.warn(
 								"Unable to index Comment " +
-									comment.getCommentId(),
-								pe);
+									comment.getCommentId());
 						}
 					}
 				}

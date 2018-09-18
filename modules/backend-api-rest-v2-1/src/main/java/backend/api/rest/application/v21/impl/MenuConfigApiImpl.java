@@ -61,10 +61,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -82,10 +84,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			action.deleteMenuConfig(Long.valueOf(id), serviceContext);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
@@ -118,10 +122,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 

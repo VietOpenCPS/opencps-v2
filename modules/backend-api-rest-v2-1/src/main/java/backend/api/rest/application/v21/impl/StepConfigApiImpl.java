@@ -47,7 +47,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 	public StepConfigItem addStepConfig(StepConfigItem body) {
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		System.out.println("StepConfigApiImpl.addStepConfig()" + body);
+//		System.out.println("StepConfigApiImpl.addStepConfig()" + body);
 		try {
 			
 			serviceContext.setUserId(userId);
@@ -59,10 +59,12 @@ public class StepConfigApiImpl implements StepConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -80,10 +82,12 @@ public class StepConfigApiImpl implements StepConfigApi {
 			action.deleteStepConfig(Long.valueOf(id), serviceContext);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
@@ -116,10 +120,12 @@ public class StepConfigApiImpl implements StepConfigApi {
 			body = parsing.getModel(ett);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 

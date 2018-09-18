@@ -14,19 +14,9 @@
 
 package org.opencps.datamgt.service.impl;
 
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.opencps.datamgt.constants.CommentTerm;
-import org.opencps.datamgt.exception.NoSuchCommentException;
-import org.opencps.datamgt.model.Comment;
-import org.opencps.datamgt.service.base.CommentLocalServiceBaseImpl;
-
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -55,9 +45,19 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.datamgt.constants.CommentTerm;
+import org.opencps.datamgt.exception.NoSuchCommentException;
+import org.opencps.datamgt.model.Comment;
+import org.opencps.datamgt.service.base.CommentLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.exception.NotFoundException;
@@ -297,11 +297,13 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		}
 		catch (NoSuchCommentException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			//throw new NotFoundException();
 		}
 		catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			//throw new PortalException();
 		}
 
@@ -335,11 +337,13 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		}
 		catch (NoSuchCommentException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			//throw new NotFoundException();
 		}
 		catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			//throw new PortalException();
 		}
 

@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.Validator;
 
-public class DossierDucumentUtils {
+public class DossierDocumentUtils {
 
 	//LamTV_ Mapping process dossier and formData
 	public static JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {

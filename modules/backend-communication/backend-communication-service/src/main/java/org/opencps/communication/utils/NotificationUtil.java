@@ -1,15 +1,6 @@
 package org.opencps.communication.utils;
 
-import org.opencps.communication.constants.MailVariables;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.communication.model.Preferences;
-import org.opencps.communication.service.PreferencesLocalServiceUtil;
-import org.opencps.kernel.message.MBMessageEntry;
-import org.opencps.kernel.prop.PropValues;
-import org.opencps.kernel.template.MessageDataModel;
-import org.opencps.kernel.template.freemarker.TemplateProcessor;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -19,8 +10,17 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import org.opencps.communication.constants.MailVariables;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.model.Preferences;
+import org.opencps.communication.service.PreferencesLocalServiceUtil;
+import org.opencps.kernel.message.MBMessageEntry;
+import org.opencps.kernel.prop.PropValues;
+import org.opencps.kernel.template.MessageDataModel;
+import org.opencps.kernel.template.freemarker.TemplateProcessor;
 
 /**
  * @author trungnt
@@ -265,7 +265,8 @@ public class NotificationUtil {
 							}
 						}
 						catch (Exception e) {
-							_log.error(e);
+							_log.debug(e);
+							//_log.error(e);
 						}
 					}
 				}
@@ -282,7 +283,8 @@ public class NotificationUtil {
 			}
 			catch (Exception e) {
 				// _log.warn("Can't not create MBMessageEntry " + e);
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			}
 		}
 

@@ -38,7 +38,7 @@ public class DeliverableUtils {
 		String strCreateDate = doc.get(Field.CREATE_DATE);
 		Date createDate = null;
 		if (Validator.isNotNull(strCreateDate)) {
-			createDate = APIDateTimeUtils.convertStringToDate(strCreateDate, "yyyyMMddHHmmss");
+			createDate = APIDateTimeUtils.convertStringToDate(strCreateDate, APIDateTimeUtils._LUCENE_PATTERN);
 		}
 		model.setCreateDate(createDate != null
 				? APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._TIMESTAMP) : strCreateDate);
@@ -46,7 +46,7 @@ public class DeliverableUtils {
 		String strModifiedDate = doc.get(Field.MODIFIED_DATE);
 		Date modifiedDate = null;
 		if (Validator.isNotNull(strModifiedDate)) {
-			modifiedDate = APIDateTimeUtils.convertStringToDate(strModifiedDate, "yyyyMMddHHmmss");
+			modifiedDate = APIDateTimeUtils.convertStringToDate(strModifiedDate, APIDateTimeUtils._LUCENE_PATTERN);
 		}
 		model.setModifiedDate(modifiedDate != null
 				? APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._TIMESTAMP)
@@ -86,7 +86,7 @@ public class DeliverableUtils {
 		String strRevalidate = doc.get(DeliverableTerm.REVALIDATE);
 		Date revalidate = null;
 		if (Validator.isNotNull(strRevalidate)) {
-			revalidate = APIDateTimeUtils.convertStringToDate(strRevalidate, "yyyyMMddHHmmss");
+			revalidate = APIDateTimeUtils.convertStringToDate(strRevalidate, APIDateTimeUtils._LUCENE_PATTERN);
 		}
 		model.setRevalidate(revalidate != null
 				? APIDateTimeUtils.convertDateToString(revalidate, APIDateTimeUtils._TIMESTAMP)

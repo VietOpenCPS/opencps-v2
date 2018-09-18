@@ -33,7 +33,8 @@ public class DossierLogListenner extends BaseModelListener<DossierLog> {
 		try {
 			modelBeforeUpdate = DossierLogLocalServiceUtil.getDossierLog(model.getPrimaryKey());
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 	}
 
