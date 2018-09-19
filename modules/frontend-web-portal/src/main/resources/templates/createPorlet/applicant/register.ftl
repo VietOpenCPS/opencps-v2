@@ -74,6 +74,12 @@
 </div>
 </div>
 
+<style>
+  div.checkbox:not(.alpaca-control) label:before, div.checkbox-inline:not(.alpaca-control) label:before, div.radio:not(.alpaca-control) label:before, div.radio-inline:not(.alpaca-control) label:before {
+    border: 1px solid #111 !important;
+  }
+</style>
+
 <script type="text/javascript">
   (function($){
     var validator = $("#fm").kendoValidator().data("kendoValidator");
