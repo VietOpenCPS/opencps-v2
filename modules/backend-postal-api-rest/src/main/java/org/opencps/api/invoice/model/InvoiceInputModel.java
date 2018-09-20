@@ -5,7 +5,6 @@
 // Generated on: 2018.05.22 at 02:29:40 PM ICT 
 //
 
-
 package org.opencps.api.invoice.model;
 
 import com.liferay.petra.string.StringPool;
@@ -17,11 +16,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -77,1130 +78,972 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "userName",
-    "passWord",
-    "soCG",
-    "soid",
-    "maHoadon",
-    "ngayHd",
-    "seri",
-    "maNthue",
-    "kieuSo",
-    "maKhackHang",
-    "ten",
-    "phone",
-    "tax",
-    "dchi",
-    "maTk",
-    "tenNh",
-    "mailH",
-    "phoneH",
-    "tenM",
-    "maKhL",
-    "maNt",
-    "tg",
-    "hthuc",
-    "han",
-    "tlGgia",
-    "ggia",
-    "phi",
-    "noidung",
-    "tien",
-    "ttoan",
-    "ngayHT",
-    "maVt",
-    "tenDetail",
-    "dvt",
-    "luong",
-    "gia",
-    "tienDetail",
-    "ts",
-    "thue",
-    "ttoanDetail"
-})
+@XmlType(name = "", propOrder = { "userName", "passWord", "soCG", "soid", "maHoadon", "ngayHd", "seri", "maNthue",
+		"kieuSo", "maKhackHang", "ten", "phone", "tax", "dchi", "maTk", "tenNh", "mailH", "phoneH", "tenM", "maKhL",
+		"maNt", "tg", "hthuc", "han", "tlGgia", "ggia", "phi", "noidung", "tien", "ttoan", "ngayHT", "maVtDetail",
+		"tenDetail", "dvtDetail", "luongDetail", "giaDetail", "tienDetail", "tsDetail", "thueDetail", "ttoanDetail" })
 @XmlRootElement(name = "InvoiceInputModel")
 public class InvoiceInputModel {
 
 	@FormParam(value = "userName")
 	@DefaultValue(StringPool.BLANK)
-    protected String userName;
+	protected String userName;
 	@FormParam(value = "passWord")
 	@DefaultValue(StringPool.BLANK)
-    protected String passWord;
+	protected String passWord;
 	@FormParam(value = "soCG")
 	@DefaultValue(StringPool.BLANK)
-    protected String soCG;
+	protected String soCG;
 	@FormParam(value = "soid")
 	@DefaultValue(StringPool.BLANK)
-    protected String soid;
+	protected String soid;
 	@FormParam(value = "maHoadon")
 	@DefaultValue(StringPool.BLANK)
-    protected String maHoadon;
+	protected String maHoadon;
 	@FormParam(value = "ngayHd")
 	@DefaultValue(StringPool.BLANK)
-    protected String ngayHd;
+	protected String ngayHd;
 	@FormParam(value = "seri")
 	@DefaultValue(StringPool.BLANK)
-    protected String seri;
+	protected String seri;
 	@FormParam(value = "maNthue")
 	@DefaultValue(StringPool.BLANK)
-    protected String maNthue;
+	protected String maNthue;
 	@FormParam(value = "kieuSo")
 	@DefaultValue(StringPool.BLANK)
-    protected String kieuSo;
+	protected String kieuSo;
 	@FormParam(value = "maKhackHang")
 	@DefaultValue(StringPool.BLANK)
-    protected String maKhackHang;
+	protected String maKhackHang;
 	@FormParam(value = "ten")
 	@DefaultValue(StringPool.BLANK)
-    protected String ten;
+	protected String ten;
 	@FormParam(value = "phone")
 	@DefaultValue(StringPool.BLANK)
-    protected String phone;
+	protected String phone;
 	@FormParam(value = "tax")
 	@DefaultValue(StringPool.BLANK)
-    protected String tax;
+	protected String tax;
 	@FormParam(value = "dchi")
 	@DefaultValue(StringPool.BLANK)
-    protected String dchi;
+	protected String dchi;
 	@FormParam(value = "maTk")
 	@DefaultValue(StringPool.BLANK)
-    protected String maTk;
+	protected String maTk;
 	@FormParam(value = "tenNh")
 	@DefaultValue(StringPool.BLANK)
-    protected String tenNh;
+	protected String tenNh;
 	@FormParam(value = "mailH")
 	@DefaultValue(StringPool.BLANK)
-    protected String mailH;
+	protected String mailH;
 	@FormParam(value = "phoneH")
 	@DefaultValue(StringPool.BLANK)
-    protected String phoneH;
+	protected String phoneH;
 	@FormParam(value = "tenM")
 	@DefaultValue(StringPool.BLANK)
-    protected String tenM;
+	protected String tenM;
 	@FormParam(value = "maKhL")
 	@DefaultValue(StringPool.BLANK)
-    protected String maKhL;
+	protected String maKhL;
 	@FormParam(value = "maNt")
 	@DefaultValue(StringPool.BLANK)
-    protected String maNt;
+	protected String maNt;
 	@FormParam(value = "tg")
 	@DefaultValue(StringPool.BLANK)
-    protected String tg;
+	protected String tg;
 	@FormParam(value = "hthuc")
 	@DefaultValue(StringPool.BLANK)
-    protected String hthuc;
+	protected String hthuc;
 	@FormParam(value = "han")
 	@DefaultValue(StringPool.BLANK)
-    protected String han;
+	protected String han;
 	@FormParam(value = "tlGgia")
 	@DefaultValue(StringPool.BLANK)
-    protected String tlGgia;
+	protected String tlGgia;
 	@FormParam(value = "ggia")
 	@DefaultValue(StringPool.BLANK)
-    protected String ggia;
+	protected String ggia;
 	@FormParam(value = "phi")
 	@DefaultValue(StringPool.BLANK)
-    protected String phi;
+	protected String phi;
 	@FormParam(value = "noidung")
 	@DefaultValue(StringPool.BLANK)
-    protected String noidung;
+	protected String noidung;
 	@FormParam(value = "tien")
 	@DefaultValue(StringPool.BLANK)
-    protected String tien;
+	protected String tien;
 	@FormParam(value = "ttoan")
 	@DefaultValue(StringPool.BLANK)
-    protected String ttoan;
+	protected String ttoan;
 	@FormParam(value = "ngayHT")
 	@DefaultValue(StringPool.BLANK)
-    protected String ngayHT;
-	@FormParam(value = "maVt")
+	protected String ngayHT;
+	@FormParam(value = "maVtDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String maVt;
+	protected String maVtDetail;
 	@FormParam(value = "tenDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String tenDetail;
-	@FormParam(value = "dvt")
+	protected String tenDetail;
+	@FormParam(value = "dvtDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String dvt;
-	@FormParam(value = "luong")
+	protected String dvtDetail;
+	@FormParam(value = "luongDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String luong;
-	@FormParam(value = "gia")
+	protected Integer luongDetail;
+	@FormParam(value = "giaDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String gia;
+	protected String giaDetail;
 	@FormParam(value = "tienDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String tienDetail;
-	@FormParam(value = "ts")
+	protected String tienDetail;
+	@FormParam(value = "tsDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String ts;
-	@FormParam(value = "thue")
+	protected String tsDetail;
+	@FormParam(value = "thueDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String thue;
+	protected String thueDetail;
 	@FormParam(value = "ttoanDetail")
 	@DefaultValue(StringPool.BLANK)
-    protected String ttoanDetail;
-
-    /**
-     * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUserName() {
-        return userName;
-    }
-
-    /**
-     * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUserName(String value) {
-        this.userName = value;
-    }
-
-    /**
-     * Gets the value of the passWord property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPassWord() {
-        return passWord;
-    }
-
-    /**
-     * Sets the value of the passWord property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPassWord(String value) {
-        this.passWord = value;
-    }
-
-    /**
-     * Gets the value of the soCG property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSoCG() {
-        return soCG;
-    }
-
-    /**
-     * Sets the value of the soCG property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSoCG(String value) {
-        this.soCG = value;
-    }
-
-    /**
-     * Gets the value of the soid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSoid() {
-        return soid;
-    }
-
-    /**
-     * Sets the value of the soid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSoid(String value) {
-        this.soid = value;
-    }
-
-    /**
-     * Gets the value of the maHoadon property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaHoadon() {
-        return maHoadon;
-    }
-
-    /**
-     * Sets the value of the maHoadon property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaHoadon(String value) {
-        this.maHoadon = value;
-    }
-
-    /**
-     * Gets the value of the ngayHd property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNgayHd() {
-        return ngayHd;
-    }
-
-    /**
-     * Sets the value of the ngayHd property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNgayHd(String value) {
-        this.ngayHd = value;
-    }
-
-    /**
-     * Gets the value of the seri property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSeri() {
-        return seri;
-    }
-
-    /**
-     * Sets the value of the seri property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSeri(String value) {
-        this.seri = value;
-    }
-
-    /**
-     * Gets the value of the maNthue property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaNthue() {
-        return maNthue;
-    }
-
-    /**
-     * Sets the value of the maNthue property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaNthue(String value) {
-        this.maNthue = value;
-    }
-
-    /**
-     * Gets the value of the kieuSo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getKieuSo() {
-        return kieuSo;
-    }
-
-    /**
-     * Sets the value of the kieuSo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setKieuSo(String value) {
-        this.kieuSo = value;
-    }
-
-    /**
-     * Gets the value of the maKhackHang property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaKhackHang() {
-        return maKhackHang;
-    }
-
-    /**
-     * Sets the value of the maKhackHang property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaKhackHang(String value) {
-        this.maKhackHang = value;
-    }
-
-    /**
-     * Gets the value of the ten property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTen() {
-        return ten;
-    }
-
-    /**
-     * Sets the value of the ten property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTen(String value) {
-        this.ten = value;
-    }
-
-    /**
-     * Gets the value of the phone property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPhone() {
-        return phone;
-    }
-
-    /**
-     * Sets the value of the phone property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPhone(String value) {
-        this.phone = value;
-    }
-
-    /**
-     * Gets the value of the tax property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTax() {
-        return tax;
-    }
-
-    /**
-     * Sets the value of the tax property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTax(String value) {
-        this.tax = value;
-    }
-
-    /**
-     * Gets the value of the dchi property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDchi() {
-        return dchi;
-    }
-
-    /**
-     * Sets the value of the dchi property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDchi(String value) {
-        this.dchi = value;
-    }
-
-    /**
-     * Gets the value of the maTk property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaTk() {
-        return maTk;
-    }
-
-    /**
-     * Sets the value of the maTk property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaTk(String value) {
-        this.maTk = value;
-    }
-
-    /**
-     * Gets the value of the tenNh property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTenNh() {
-        return tenNh;
-    }
-
-    /**
-     * Sets the value of the tenNh property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTenNh(String value) {
-        this.tenNh = value;
-    }
-
-    /**
-     * Gets the value of the mailH property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMailH() {
-        return mailH;
-    }
-
-    /**
-     * Sets the value of the mailH property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMailH(String value) {
-        this.mailH = value;
-    }
-
-    /**
-     * Gets the value of the phoneH property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPhoneH() {
-        return phoneH;
-    }
-
-    /**
-     * Sets the value of the phoneH property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPhoneH(String value) {
-        this.phoneH = value;
-    }
-
-    /**
-     * Gets the value of the tenM property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTenM() {
-        return tenM;
-    }
-
-    /**
-     * Sets the value of the tenM property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTenM(String value) {
-        this.tenM = value;
-    }
-
-    /**
-     * Gets the value of the maKhL property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaKhL() {
-        return maKhL;
-    }
-
-    /**
-     * Sets the value of the maKhL property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaKhL(String value) {
-        this.maKhL = value;
-    }
-
-    /**
-     * Gets the value of the maNt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaNt() {
-        return maNt;
-    }
-
-    /**
-     * Sets the value of the maNt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaNt(String value) {
-        this.maNt = value;
-    }
-
-    /**
-     * Gets the value of the tg property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTg() {
-        return tg;
-    }
-
-    /**
-     * Sets the value of the tg property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTg(String value) {
-        this.tg = value;
-    }
-
-    /**
-     * Gets the value of the hthuc property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getHthuc() {
-        return hthuc;
-    }
-
-    /**
-     * Sets the value of the hthuc property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHthuc(String value) {
-        this.hthuc = value;
-    }
-
-    /**
-     * Gets the value of the han property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getHan() {
-        return han;
-    }
-
-    /**
-     * Sets the value of the han property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHan(String value) {
-        this.han = value;
-    }
-
-    /**
-     * Gets the value of the tlGgia property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTlGgia() {
-        return tlGgia;
-    }
-
-    /**
-     * Sets the value of the tlGgia property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTlGgia(String value) {
-        this.tlGgia = value;
-    }
-
-    /**
-     * Gets the value of the ggia property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getGgia() {
-        return ggia;
-    }
-
-    /**
-     * Sets the value of the ggia property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setGgia(String value) {
-        this.ggia = value;
-    }
-
-    /**
-     * Gets the value of the phi property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPhi() {
-        return phi;
-    }
-
-    /**
-     * Sets the value of the phi property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPhi(String value) {
-        this.phi = value;
-    }
-
-    /**
-     * Gets the value of the noidung property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNoidung() {
-        return noidung;
-    }
-
-    /**
-     * Sets the value of the noidung property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNoidung(String value) {
-        this.noidung = value;
-    }
-
-    /**
-     * Gets the value of the tien property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTien() {
-        return tien;
-    }
-
-    /**
-     * Sets the value of the tien property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTien(String value) {
-        this.tien = value;
-    }
-
-    /**
-     * Gets the value of the ttoan property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTtoan() {
-        return ttoan;
-    }
-
-    /**
-     * Sets the value of the ttoan property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTtoan(String value) {
-        this.ttoan = value;
-    }
-
-    /**
-     * Gets the value of the ngayHT property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNgayHT() {
-        return ngayHT;
-    }
-
-    /**
-     * Sets the value of the ngayHT property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNgayHT(String value) {
-        this.ngayHT = value;
-    }
-
-    /**
-     * Gets the value of the maVt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaVt() {
-        return maVt;
-    }
-
-    /**
-     * Sets the value of the maVt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaVt(String value) {
-        this.maVt = value;
-    }
-
-    /**
-     * Gets the value of the tenDetail property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTenDetail() {
-        return tenDetail;
-    }
-
-    /**
-     * Sets the value of the tenDetail property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTenDetail(String value) {
-        this.tenDetail = value;
-    }
-
-    /**
-     * Gets the value of the dvt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDvt() {
-        return dvt;
-    }
-
-    /**
-     * Sets the value of the dvt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDvt(String value) {
-        this.dvt = value;
-    }
-
-    /**
-     * Gets the value of the luong property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLuong() {
-        return luong;
-    }
-
-    /**
-     * Sets the value of the luong property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLuong(String value) {
-        this.luong = value;
-    }
-
-    /**
-     * Gets the value of the gia property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getGia() {
-        return gia;
-    }
-
-    /**
-     * Sets the value of the gia property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setGia(String value) {
-        this.gia = value;
-    }
-
-    /**
-     * Gets the value of the tienDetail property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTienDetail() {
-        return tienDetail;
-    }
-
-    /**
-     * Sets the value of the tienDetail property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTienDetail(String value) {
-        this.tienDetail = value;
-    }
-
-    /**
-     * Gets the value of the ts property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTs() {
-        return ts;
-    }
-
-    /**
-     * Sets the value of the ts property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTs(String value) {
-        this.ts = value;
-    }
-
-    /**
-     * Gets the value of the thue property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getThue() {
-        return thue;
-    }
-
-    /**
-     * Sets the value of the thue property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setThue(String value) {
-        this.thue = value;
-    }
-
-    /**
-     * Gets the value of the ttoanDetail property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTtoanDetail() {
-        return ttoanDetail;
-    }
-
-    /**
-     * Sets the value of the ttoanDetail property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTtoanDetail(String value) {
-        this.ttoanDetail = value;
-    }
+	protected String ttoanDetail;
+
+	/**
+	 * Gets the value of the userName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * Sets the value of the userName property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setUserName(String value) {
+		this.userName = value;
+	}
+
+	/**
+	 * Gets the value of the passWord property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPassWord() {
+		return passWord;
+	}
+
+	/**
+	 * Sets the value of the passWord property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPassWord(String value) {
+		this.passWord = value;
+	}
+
+	/**
+	 * Gets the value of the soCG property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getSoCG() {
+		return soCG;
+	}
+
+	/**
+	 * Sets the value of the soCG property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setSoCG(String value) {
+		this.soCG = value;
+	}
+
+	/**
+	 * Gets the value of the soid property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getSoid() {
+		return soid;
+	}
+
+	/**
+	 * Sets the value of the soid property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setSoid(String value) {
+		this.soid = value;
+	}
+
+	/**
+	 * Gets the value of the maHoadon property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMaHoadon() {
+		return maHoadon;
+	}
+
+	/**
+	 * Sets the value of the maHoadon property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMaHoadon(String value) {
+		this.maHoadon = value;
+	}
+
+	/**
+	 * Gets the value of the ngayHd property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getNgayHd() {
+		return ngayHd;
+	}
+
+	/**
+	 * Sets the value of the ngayHd property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setNgayHd(String value) {
+		this.ngayHd = value;
+	}
+
+	/**
+	 * Gets the value of the seri property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getSeri() {
+		return seri;
+	}
+
+	/**
+	 * Sets the value of the seri property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setSeri(String value) {
+		this.seri = value;
+	}
+
+	/**
+	 * Gets the value of the maNthue property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMaNthue() {
+		return maNthue;
+	}
+
+	/**
+	 * Sets the value of the maNthue property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMaNthue(String value) {
+		this.maNthue = value;
+	}
+
+	/**
+	 * Gets the value of the kieuSo property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getKieuSo() {
+		return kieuSo;
+	}
+
+	/**
+	 * Sets the value of the kieuSo property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setKieuSo(String value) {
+		this.kieuSo = value;
+	}
+
+	/**
+	 * Gets the value of the maKhackHang property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMaKhackHang() {
+		return maKhackHang;
+	}
+
+	/**
+	 * Sets the value of the maKhackHang property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMaKhackHang(String value) {
+		this.maKhackHang = value;
+	}
+
+	/**
+	 * Gets the value of the ten property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTen() {
+		return ten;
+	}
+
+	/**
+	 * Sets the value of the ten property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTen(String value) {
+		this.ten = value;
+	}
+
+	/**
+	 * Gets the value of the phone property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * Sets the value of the phone property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPhone(String value) {
+		this.phone = value;
+	}
+
+	/**
+	 * Gets the value of the tax property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTax() {
+		return tax;
+	}
+
+	/**
+	 * Sets the value of the tax property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTax(String value) {
+		this.tax = value;
+	}
+
+	/**
+	 * Gets the value of the dchi property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getDchi() {
+		return dchi;
+	}
+
+	/**
+	 * Sets the value of the dchi property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setDchi(String value) {
+		this.dchi = value;
+	}
+
+	/**
+	 * Gets the value of the maTk property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMaTk() {
+		return maTk;
+	}
+
+	/**
+	 * Sets the value of the maTk property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMaTk(String value) {
+		this.maTk = value;
+	}
+
+	/**
+	 * Gets the value of the tenNh property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTenNh() {
+		return tenNh;
+	}
+
+	/**
+	 * Sets the value of the tenNh property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTenNh(String value) {
+		this.tenNh = value;
+	}
+
+	/**
+	 * Gets the value of the mailH property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMailH() {
+		return mailH;
+	}
+
+	/**
+	 * Sets the value of the mailH property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMailH(String value) {
+		this.mailH = value;
+	}
+
+	/**
+	 * Gets the value of the phoneH property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPhoneH() {
+		return phoneH;
+	}
+
+	/**
+	 * Sets the value of the phoneH property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPhoneH(String value) {
+		this.phoneH = value;
+	}
+
+	/**
+	 * Gets the value of the tenM property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTenM() {
+		return tenM;
+	}
+
+	/**
+	 * Sets the value of the tenM property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTenM(String value) {
+		this.tenM = value;
+	}
+
+	/**
+	 * Gets the value of the maKhL property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMaKhL() {
+		return maKhL;
+	}
+
+	/**
+	 * Sets the value of the maKhL property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMaKhL(String value) {
+		this.maKhL = value;
+	}
+
+	/**
+	 * Gets the value of the maNt property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMaNt() {
+		return maNt;
+	}
+
+	/**
+	 * Sets the value of the maNt property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMaNt(String value) {
+		this.maNt = value;
+	}
+
+	/**
+	 * Gets the value of the tg property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTg() {
+		return tg;
+	}
+
+	/**
+	 * Sets the value of the tg property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTg(String value) {
+		this.tg = value;
+	}
+
+	/**
+	 * Gets the value of the hthuc property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getHthuc() {
+		return hthuc;
+	}
+
+	/**
+	 * Sets the value of the hthuc property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setHthuc(String value) {
+		this.hthuc = value;
+	}
+
+	/**
+	 * Gets the value of the han property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getHan() {
+		return han;
+	}
+
+	/**
+	 * Sets the value of the han property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setHan(String value) {
+		this.han = value;
+	}
+
+	/**
+	 * Gets the value of the tlGgia property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTlGgia() {
+		return tlGgia;
+	}
+
+	/**
+	 * Sets the value of the tlGgia property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTlGgia(String value) {
+		this.tlGgia = value;
+	}
+
+	/**
+	 * Gets the value of the ggia property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getGgia() {
+		return ggia;
+	}
+
+	/**
+	 * Sets the value of the ggia property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setGgia(String value) {
+		this.ggia = value;
+	}
+
+	/**
+	 * Gets the value of the phi property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPhi() {
+		return phi;
+	}
+
+	/**
+	 * Sets the value of the phi property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPhi(String value) {
+		this.phi = value;
+	}
+
+	/**
+	 * Gets the value of the noidung property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getNoidung() {
+		return noidung;
+	}
+
+	/**
+	 * Sets the value of the noidung property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setNoidung(String value) {
+		this.noidung = value;
+	}
+
+	/**
+	 * Gets the value of the tien property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTien() {
+		return tien;
+	}
+
+	/**
+	 * Sets the value of the tien property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTien(String value) {
+		this.tien = value;
+	}
+
+	/**
+	 * Gets the value of the ttoan property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTtoan() {
+		return ttoan;
+	}
+
+	/**
+	 * Sets the value of the ttoan property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTtoan(String value) {
+		this.ttoan = value;
+	}
+
+	/**
+	 * Gets the value of the ngayHT property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getNgayHT() {
+		return ngayHT;
+	}
+
+	/**
+	 * Sets the value of the ngayHT property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setNgayHT(String value) {
+		this.ngayHT = value;
+	}
+
+	/**
+	 * Gets the value of the maVt property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMaVtDetail() {
+		return maVtDetail;
+	}
+
+	/**
+	 * Sets the value of the maVt property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMaVtDetail(String value) {
+		this.maVtDetail = value;
+	}
+
+	/**
+	 * Gets the value of the tenDetail property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTenDetail() {
+		return tenDetail;
+	}
+
+	/**
+	 * Sets the value of the tenDetail property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTenDetail(String value) {
+		this.tenDetail = value;
+	}
+
+	/**
+	 * Gets the value of the dvt property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getDvtDetail() {
+		return dvtDetail;
+	}
+
+	/**
+	 * Sets the value of the dvt property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setDvtDetail(String value) {
+		this.dvtDetail = value;
+	}
+
+	/**
+	 * Gets the value of the luong property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public Integer getLuongDetail() {
+		return luongDetail;
+	}
+
+	/**
+	 * Sets the value of the luong property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setLuongDetail(Integer value) {
+		this.luongDetail = value;
+	}
+
+	/**
+	 * Gets the value of the gia property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getGiaDetail() {
+		return giaDetail;
+	}
+
+	/**
+	 * Sets the value of the gia property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setGiaDetail(String value) {
+		this.giaDetail = value;
+	}
+
+	/**
+	 * Gets the value of the tienDetail property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTienDetail() {
+		return tienDetail;
+	}
+
+	/**
+	 * Sets the value of the tienDetail property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTienDetail(String value) {
+		this.tienDetail = value;
+	}
+
+	/**
+	 * Gets the value of the ts property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTsDetail() {
+		return tsDetail;
+	}
+
+	/**
+	 * Sets the value of the ts property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTsDetail(String value) {
+		this.tsDetail = value;
+	}
+
+	/**
+	 * Gets the value of the thue property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getThueDetail() {
+		return thueDetail;
+	}
+
+	/**
+	 * Sets the value of the thue property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setThueDetail(String value) {
+		this.thueDetail = value;
+	}
+
+	/**
+	 * Gets the value of the ttoanDetail property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTtoanDetail() {
+		return ttoanDetail;
+	}
+
+	/**
+	 * Sets the value of the ttoanDetail property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTtoanDetail(String value) {
+		this.ttoanDetail = value;
+	}
 
 }
