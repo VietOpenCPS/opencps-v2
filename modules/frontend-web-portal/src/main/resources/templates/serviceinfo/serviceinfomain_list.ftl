@@ -364,6 +364,7 @@ serverFiltering: true
       },
       change: function (e) {
         console.log('administrationCodeSearch-------', this.value())
+        $("#domainCodeSearch").data('kendoComboBox').select(-1)
         var url = "";
         if (this.value()) {
           url = "${api.server}/serviceconfigs/pubish/" + this.value() + "/domains";
