@@ -1,5 +1,16 @@
 package org.opencps.dossiermgt.action.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierActionUser;
@@ -23,17 +34,6 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierActionUserImpl implements DossierActionUser {
 
@@ -301,6 +301,10 @@ public class DossierActionUserImpl implements DossierActionUser {
 		model.setDossierId(dossierId);
 		model.setStepCode(stepCode);
 		_log.info("Allow assign user: " + allowAssignUser);
+		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
+		
+		org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+		
 		if (allowAssignUser == ProcessActionTerm.NOT_ASSIGNED) {
 			model.setUserId(userId);
 			model.setDossierActionId(dossierActionId);
@@ -312,7 +316,12 @@ public class DossierActionUserImpl implements DossierActionUser {
 			}
 			// Add User
 			_log.info("Add assigned user by step role: " + model);
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);					
+			if (dau == null) {
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+			}
+			else {
+				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+			}
 		}
 		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH) {
 			model.setUserId(userId);
@@ -321,7 +330,12 @@ public class DossierActionUserImpl implements DossierActionUser {
 			assigned = DossierActionUserTerm.ASSIGNED_TH;
 			model.setAssigned(assigned);
 			// Add User
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
+			if (dau == null) {
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+			}
+			else {
+				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+			}
 		}
 		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH) {
 			model.setUserId(userId);
@@ -339,7 +353,12 @@ public class DossierActionUserImpl implements DossierActionUser {
 			assigned = DossierActionUserTerm.ASSIGNED_PH;
 			model.setAssigned(assigned);
 			// Add User
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
+			if (dau == null) {
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+			}
+			else {
+				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+			}
 		}
 		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH_TD) {
 			model.setUserId(userId);
@@ -364,7 +383,12 @@ public class DossierActionUserImpl implements DossierActionUser {
 			assigned = DossierActionUserTerm.ASSIGNED_TD;
 			model.setAssigned(assigned);
 			// Add User
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);																			
+			if (dau == null) {
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+			}
+			else {
+				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+			}
 		}		
 	}
 
