@@ -34,5 +34,5 @@ public class DictCollectionUtils {
 		return dcmList;
 	}
 
-	static Log _log = LogFactoryUtil.getLog(DictCollectionUtils.class);
+	private static Log _log = LogFactoryUtil.getLog(DictCollectionUtils.class);
 }

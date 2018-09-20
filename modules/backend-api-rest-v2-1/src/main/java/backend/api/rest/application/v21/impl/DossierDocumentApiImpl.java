@@ -87,7 +87,8 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 			}
 
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 
@@ -123,7 +124,8 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 						DossierDocumentParser.mappingDocumentResultModel((List<DossierDocument>) jsonData.get("data")));
 			}
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return results;
@@ -193,7 +195,8 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 				result = DossierDocumentParser.mappingDocumentTypeModel(dossierDoc);
 			}
 		} catch (Exception e) {
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return result;

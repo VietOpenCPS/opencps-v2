@@ -43,7 +43,8 @@ public class JWSOpenCPSTokenFilter implements ContainerRequestFilter  {
             Jwts.parser().setSigningKey(key).parseClaimsJws(token);
  
         } catch (Exception e) {
-        	_log.error(e);
+        	_log.debug(e);
+			//_log.error(e);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
     }

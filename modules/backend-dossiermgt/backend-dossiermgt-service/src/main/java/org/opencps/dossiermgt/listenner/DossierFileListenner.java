@@ -105,7 +105,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					}
 
 				} catch (Exception e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 					_log.error("Parser JSONDATA error_DELIVERABLE");
 				}
 
@@ -142,7 +143,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 	}
@@ -236,7 +238,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			_log.info("File" + fileTemplateNo + "is null or json is not correct");
 		}
 
@@ -262,7 +265,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				elmValue = jsformData.getString(keyJs);
 
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				_log.info("File" + formTemplate + "is null or json is not correct");
 			}
 		}
@@ -396,7 +400,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		try {
 			modelBeforeUpdate = DossierFileLocalServiceUtil.getDossierFile(model.getPrimaryKey());
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 	}
 
@@ -510,7 +515,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					}
 
 				} catch (Exception e) {
-					_log.error(e);
+					_log.debug(e);
+					//_log.error(e);
 					_log.error("Parser JSONDATA error_DELIVERABLE");
 				}
 

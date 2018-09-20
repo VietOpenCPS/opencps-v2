@@ -26,7 +26,6 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.FileAttachTerm;
-import org.opencps.datamgt.exception.NoSuchFileAttachException;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.base.FileAttachLocalServiceBaseImpl;
 

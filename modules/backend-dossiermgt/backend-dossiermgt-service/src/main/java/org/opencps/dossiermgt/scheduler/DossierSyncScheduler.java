@@ -104,7 +104,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 				DossierSyncUtils.orderSync(origin);
 				
 				for (DossierSyncOrderedModel elm : origin) {
-					System.out.println("dossierId_" + elm.getDossierId() + "_method_" + elm.getMethodId());
+//					System.out.println("dossierId_" + elm.getDossierId() + "_method_" + elm.getMethodId());
 					
 					try {
 
@@ -129,7 +129,8 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 					} catch (Exception e) {
 						//e.printStackTrace();
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 						_log.info("Can't Sync DossierSyncId = " + elm.getDossierSyncId());
 					}
 				}

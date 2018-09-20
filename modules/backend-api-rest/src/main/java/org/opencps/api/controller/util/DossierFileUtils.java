@@ -75,7 +75,8 @@ public class DossierFileUtils {
                 fileVersion = dlFileVersion.getVersion();
             }
             catch (Exception e) {
-            	_log.error(e);
+            	//_log.error(e);
+            	_log.debug(e);
             }
         }
 
@@ -135,7 +136,8 @@ public class DossierFileUtils {
                    // fileVersion = dlFileVersion.getVersion();
                 }
                 catch (Exception e) {
-                	_log.error(e);
+                	//_log.error(e);
+                	_log.debug(e);
                 }
             }
             

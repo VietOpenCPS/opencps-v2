@@ -14,17 +14,8 @@
 
 package org.opencps.communication.service.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.communication.constants.NotificationTemplateTerm;
-import org.opencps.communication.exception.NoSuchNotificationtemplateException;
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -45,8 +36,16 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.exception.NoSuchNotificationtemplateException;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;

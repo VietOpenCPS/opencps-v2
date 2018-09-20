@@ -101,7 +101,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			return ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 	}
@@ -111,7 +112,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			return ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 	}
@@ -167,7 +169,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					fileTemplateNo, templateName, fileEntry.getFileEntryId(), serviceContext);
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return serviceFileTemplate;
@@ -383,7 +386,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					try {
 						DLAppLocalServiceUtil.deleteFileEntry(fileEntryId);
 					} catch (PortalException e) {
-						_log.error(e);
+						_log.debug(e);
+						//_log.error(e);
 						return false;
 					}
 				}
@@ -430,7 +434,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				flag = true;
 			}
 		}catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return false;
 		}
 

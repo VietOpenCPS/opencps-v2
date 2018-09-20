@@ -248,7 +248,7 @@ public class BackendAPIRestApplication extends Application {
 
 		} catch (Exception e) {
 //			e.printStackTrace();
-			_log.error(e);
+			_log.debug(e);
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}		
 	}
@@ -299,7 +299,7 @@ public class BackendAPIRestApplication extends Application {
 
 		} catch (Exception e) {
 //			e.printStackTrace();
-			_log.error(e);
+			_log.debug(e);
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}		
 	}
@@ -329,7 +329,7 @@ public class BackendAPIRestApplication extends Application {
 
         } catch (Exception e) {
 //        	e.printStackTrace();
-        	_log.error(e);
+        	_log.debug(e);
             return Response.status(UNAUTHORIZED).build();
         }
     }

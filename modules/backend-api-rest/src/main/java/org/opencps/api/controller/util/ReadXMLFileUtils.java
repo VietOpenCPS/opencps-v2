@@ -66,7 +66,8 @@ public class ReadXMLFileUtils {
 				if (bufReader != null)
 					bufReader.close();
 			} catch (IOException e1) {
-				_log.error(e1);
+				_log.debug(e1);
+				//_log.error(e);
 			}
 		}
 		return StringPool.BLANK;
@@ -563,7 +564,8 @@ public class ReadXMLFileUtils {
 									DocumentBuilder parser = builderFactory.newDocumentBuilder();
 									parser.parse(file);
 									} catch (Exception e) {
-										_log.error(e);
+										_log.debug(e);
+										//_log.error(e);
 										sb.append(subFolder);
 										sb.append(StringPool.SLASH);
 										sb.append(xmlFile.getName());
@@ -585,7 +587,8 @@ public class ReadXMLFileUtils {
 								DocumentBuilder parser = builderFactory.newDocumentBuilder();
 								parser.parse(fileEntry);
 							} catch (Exception e) {
-								_log.error(e);
+								_log.debug(e);
+								//_log.error(e);
 								sb.append(fileName);
 								sb.append(StringPool.COLON + StringPool.SPACE);
 								sb.append(e.getMessage());
@@ -606,7 +609,8 @@ public class ReadXMLFileUtils {
 				DocumentBuilder parser = builderFactory.newDocumentBuilder();
 				parser.parse(xmlFile);
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				strError = xmlFile.getName() + StringPool.COLON + e.getMessage(); 
 			}
 			return strError;

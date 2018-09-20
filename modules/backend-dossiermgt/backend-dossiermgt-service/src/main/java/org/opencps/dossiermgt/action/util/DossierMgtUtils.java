@@ -88,7 +88,8 @@ public class DossierMgtUtils {
 				return obj.getBoolean(ProcessActionTerm.DUE_DATE_EDITABLE);
 			}
 		} catch (JSONException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return false;
 		}
 		

@@ -40,7 +40,8 @@ public class ServiceConfigUtils {
 			model.setTemplateNo_0020(dossierTemplate.getTemplateNo());
 			model.setTemplateName(dossierTemplate.getTemplateName());
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		try {
@@ -49,7 +50,8 @@ public class ServiceConfigUtils {
 			model.setProcessNo(serviceProcess.getProcessNo());
 			model.setProcessName(serviceProcess.getProcessName());
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		model.setServiceProcessId(GetterUtil.getInteger(input.getServiceProcessId()));

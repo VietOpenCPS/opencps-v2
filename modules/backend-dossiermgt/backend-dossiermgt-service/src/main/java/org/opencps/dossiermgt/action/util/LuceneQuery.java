@@ -70,7 +70,8 @@ public class LuceneQuery {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		} finally {
 			this.setOccurs(occurs);
 			this.setParams(params);
@@ -197,7 +198,8 @@ public class LuceneQuery {
 				}
 
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 			} finally {
 				this.setOccurs(occurs);
 				this.setParams(params);

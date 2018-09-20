@@ -85,7 +85,8 @@ public class DossierContentGenerator {
 			return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
 					config.getServiceConfigId());
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 
@@ -149,7 +150,8 @@ public class DossierContentGenerator {
 								briefNotePattern = briefNotePattern.replace(tmpKey,
 										Validator.isNotNull(value) ? value : StringPool.BLANK);
 							} catch (Exception e) {
-								_log.error(e);
+								_log.debug(e);
+								//_log.error(e);
 								briefNotePattern = briefNotePattern.replace(tmpKey, StringPool.BLANK);
 							}
 						}

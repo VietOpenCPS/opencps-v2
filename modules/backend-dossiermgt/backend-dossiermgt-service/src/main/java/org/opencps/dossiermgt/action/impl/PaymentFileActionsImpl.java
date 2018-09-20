@@ -94,9 +94,8 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 			return result;
 
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			_log.info("boom boom");
-			_log.info(e);
+			_log.debug(e);
+			//_log.error(e);
 //			e.printStackTrace();
 			throw new PortalException();
 		}

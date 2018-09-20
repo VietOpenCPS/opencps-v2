@@ -189,6 +189,19 @@
         $("#service_info_list_view").getKendoListView().dataSource.read({
           "administration": administrationCode
         });
+        // TODO
+        var url = "";
+        if (administrationCode) {
+          url = "${api.server}/serviceconfigs/pubish/" + administrationCode + "/domains";
+          $("#domainCodeSearch").data('kendoComboBox').dataSource.read({
+            url: url
+          })
+        } else {
+          url = "${api.server}/serviceinfos/statistics/domains";
+          $("#domainCodeSearch").data('kendoComboBox').dataSource.read({
+            url: url
+          })
+        }
       });
 
     });

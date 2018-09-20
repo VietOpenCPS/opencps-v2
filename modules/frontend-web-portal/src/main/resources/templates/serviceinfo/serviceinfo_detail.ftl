@@ -248,7 +248,7 @@
                                 if(result.serviceConfigs.serviceLevel>=3){
                                     submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small  dropdown-toggle" type="button" data-toggle="dropdown">Nộp hồ sơ <span class="caret"></span></button><ul class="dropdown-menu">';
                                     // submitDsier += '<li><a href='+result.serviceConfigs.serviceUrl+'>'+result.serviceConfigs.govAgencyName+'</a></li>';
-                                     submitDsier += '<li><a href="/web${(Request.layoutfriendurl)!}/dich-vu-cong#/add-dvc/' + result.serviceConfigs.serviceConfigId + '">'+item.govAgencyName+'</a></li>';
+                                     submitDsier += '<li><a href="/web${(Request.layoutfriendurl)!}/dich-vu-cong#/add-dvc/' + result.serviceConfigs.serviceConfigId + '">'+result.serviceConfigs.govAgencyName+'</a></li>';
                                 }else{
                                     submitDsier = '<div class="dropdown"><button class="btn btn-active btn-small dropdown-toggle" type="button" data-toggle="dropdown">Xem hướng dẫn<span class="caret"></span></button><ul class="dropdown-menu">';
                                     submitDsier += '<li><a href="javascript:;" class="showInstruction" serviceInstruction='+result.serviceConfigs.serviceInstruction+'>'+result.serviceConfigs.govAgencyName+'</a></li>';

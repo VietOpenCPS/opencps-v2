@@ -294,7 +294,8 @@ public class DossierListennerUltils {
 			return StringUtil.replace(emailBody, oldSubs, newSubs);
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return StringPool.BLANK;
 		}
 

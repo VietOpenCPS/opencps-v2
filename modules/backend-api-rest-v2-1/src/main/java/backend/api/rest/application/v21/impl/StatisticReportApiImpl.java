@@ -120,7 +120,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 				}
 
 			} catch (MessageBusException e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				return Response.status(HttpServletResponse.SC_CONFLICT).build();
 			}
 

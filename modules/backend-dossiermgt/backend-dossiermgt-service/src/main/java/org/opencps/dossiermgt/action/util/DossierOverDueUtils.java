@@ -59,10 +59,10 @@ public class DossierOverDueUtils {
 		return dateFormat.format(estimateDate);
 	}
 
-	public static void main(String[] args) {
-		System.out.println(calculateEndDate(new Date(), 5));
-		
-	}
+//	public static void main(String[] args) {
+//		System.out.println(calculateEndDate(new Date(), 5));
+//		
+//	}
 	public static Date calculateEndDate(Date startDate, int duration) {
 		Calendar startCal = Calendar.getInstance();
 

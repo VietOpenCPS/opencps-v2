@@ -65,7 +65,8 @@ public class DateTimeUtil {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;
@@ -90,7 +91,8 @@ public class DateTimeUtil {
 				}
 			}
 			catch (ParseException e) {
-				_log.error(pe);
+				_log.debug(pe);
+				//_log.error(pe);
 			}
 		}
 
@@ -109,7 +111,8 @@ public class DateTimeUtil {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;
@@ -126,7 +129,8 @@ public class DateTimeUtil {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;
@@ -144,7 +148,8 @@ public class DateTimeUtil {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;
@@ -161,7 +166,8 @@ public class DateTimeUtil {
 			}
 		}
 		catch (ParseException pe) {
-			_log.error(pe);
+			_log.debug(pe);
+			//_log.error(pe);
 		}
 
 		return date;

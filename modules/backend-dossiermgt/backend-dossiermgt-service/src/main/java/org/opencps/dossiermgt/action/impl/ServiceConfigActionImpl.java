@@ -65,7 +65,8 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 		try {
 			return ServiceConfigLocalServiceUtil.getServiceConfig(serviceConfigId);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			throw new NotFoundException();
 		}
 	}

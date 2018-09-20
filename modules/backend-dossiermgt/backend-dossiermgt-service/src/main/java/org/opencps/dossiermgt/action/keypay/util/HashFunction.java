@@ -48,7 +48,8 @@ public class HashFunction {
 			md5 = MessageDigest.getInstance("MD5");
 			ba = md5.digest(buf.toString().getBytes("UTF-8"));
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		} // wont happen
 			// return buf.toString();
 		if (ba != null)
