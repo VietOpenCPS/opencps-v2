@@ -8,6 +8,8 @@
 
 package org.opencps.api.einvoice.model;
 
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -64,232 +66,70 @@ public class HoadonGtgtCtT {
     @XmlElement(required = true)
     protected String dvt;
     @XmlElement(required = true)
-    protected String luong;
+    protected Integer luong;
     @XmlElement(required = true)
     protected String gia;
     @XmlElement(required = true)
-    protected String tien;
+    protected BigDecimal tien;
     @XmlElement(required = true)
     protected String ts;
     @XmlElement(required = true)
     protected String thue;
     @XmlElement(required = true)
     protected String ttoan;
-
-    /**
-     * Gets the value of the maVt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMaVt() {
-        return maVt;
-    }
-
-    /**
-     * Sets the value of the maVt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMaVt(String value) {
-        this.maVt = value;
-    }
-
-    /**
-     * Gets the value of the ten property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTEN() {
-        return ten;
-    }
-
-    /**
-     * Sets the value of the ten property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTEN(String value) {
-        this.ten = value;
-    }
-
-    /**
-     * Gets the value of the dvt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDvt() {
-        return dvt;
-    }
-
-    /**
-     * Sets the value of the dvt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDvt(String value) {
-        this.dvt = value;
-    }
-
-    /**
-     * Gets the value of the luong property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLuong() {
-        return luong;
-    }
-
-    /**
-     * Sets the value of the luong property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLuong(String value) {
-        this.luong = value;
-    }
-
-    /**
-     * Gets the value of the gia property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getGia() {
-        return gia;
-    }
-
-    /**
-     * Sets the value of the gia property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setGia(String value) {
-        this.gia = value;
-    }
-
-    /**
-     * Gets the value of the tien property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTien() {
-        return tien;
-    }
-
-    /**
-     * Sets the value of the tien property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTien(String value) {
-        this.tien = value;
-    }
-
-    /**
-     * Gets the value of the ts property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTs() {
-        return ts;
-    }
-
-    /**
-     * Sets the value of the ts property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTs(String value) {
-        this.ts = value;
-    }
-
-    /**
-     * Gets the value of the thue property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getThue() {
-        return thue;
-    }
-
-    /**
-     * Sets the value of the thue property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setThue(String value) {
-        this.thue = value;
-    }
-
-    /**
-     * Gets the value of the ttoan property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTtoan() {
-        return ttoan;
-    }
-
-    /**
-     * Sets the value of the ttoan property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTtoan(String value) {
-        this.ttoan = value;
-    }
-
+	public String getMaVt() {
+		return maVt;
+	}
+	public void setMaVt(String maVt) {
+		this.maVt = maVt;
+	}
+	public String getTen() {
+		return ten;
+	}
+	public void setTen(String ten) {
+		this.ten = ten;
+	}
+	public String getDvt() {
+		return dvt;
+	}
+	public void setDvt(String dvt) {
+		this.dvt = dvt;
+	}
+	public Integer getLuong() {
+		return luong;
+	}
+	public void setLuong(Integer luong) {
+		this.luong = luong;
+	}
+	public String getGia() {
+		return gia;
+	}
+	public void setGia(String gia) {
+		this.gia = gia;
+	}
+	public BigDecimal getTien() {
+		return tien;
+	}
+	public void setTien(BigDecimal tien) {
+		this.tien = tien;
+	}
+	public String getTs() {
+		return ts;
+	}
+	public void setTs(String ts) {
+		this.ts = ts;
+	}
+	public String getThue() {
+		return thue;
+	}
+	public void setThue(String thue) {
+		this.thue = thue;
+	}
+	public String getTtoan() {
+		return ttoan;
+	}
+	public void setTtoan(String ttoan) {
+		this.ttoan = ttoan;
+	}
+    
 }
