@@ -78,7 +78,8 @@ public class ApplicantIndexer extends BaseIndexer<Applicant> {
 			User user = UserLocalServiceUtil.getUser(object.getMappingUserId());
 			document.addTextSortable(ApplicantTerm.LOCK, Boolean.toString(user.getLockout()));
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return document;

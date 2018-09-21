@@ -962,32 +962,32 @@ public class EmployeeActions implements EmployeeInterface {
 				if (newUser != null) {
 					newUser.setPasswordReset(false);
 					UserLocalServiceUtil.updateUser(newUser);
+
+					Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+					indexer.reindex(newUser);
+
+					employee.setMappingUserId(newUser.getUserId());
+
+					employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(),
+							employee.getFullName(), employee.getEmployeeNo(), employee.getGender(),
+							employee.getBirthdate(), employee.getTelNo(), employee.getMobile(), employee.getEmail(),
+							employee.getWorkingStatus(), employee.getMainJobPostId(), employee.getPhotoFileEntryId(),
+							employee.getMappingUserId(), employee.getTitle(), employee.getRecruitDate(),
+							employee.getLeaveDate(), serviceContext);
+
+					User fromUser = UserLocalServiceUtil.fetchUser(userId);
+
+					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+
+					payLoad.put("USERNAME", newUser.getScreenName());
+					payLoad.put("USEREMAIL", newUser.getEmailAddress());
+					payLoad.put("PASSWORD", passWord);
+
+					NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
+							User.class.getName(), String.valueOf(newUser.getUserId()), payLoad.toJSONString(),
+							fromUser.getFullName(), employee.getFullName(), employee.getMappingUserId(),
+							employee.getEmail(), employee.getTelNo(), new Date(), null, serviceContext);
 				}
-
-				Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
-
-				indexer.reindex(newUser);
-
-				employee.setMappingUserId(newUser.getUserId());
-
-				employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(),
-						employee.getFullName(), employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(),
-						employee.getTelNo(), employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(),
-						employee.getMainJobPostId(), employee.getPhotoFileEntryId(), employee.getMappingUserId(),
-						employee.getTitle(), employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
-
-				User fromUser = UserLocalServiceUtil.fetchUser(userId);
-
-				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
-
-				payLoad.put("USERNAME", newUser.getScreenName());
-				payLoad.put("USEREMAIL", newUser.getEmailAddress());
-				payLoad.put("PASSWORD", passWord);
-
-				NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
-						User.class.getName(), String.valueOf(newUser.getUserId()), payLoad.toJSONString(),
-						fromUser.getFullName(), employee.getFullName(), employee.getMappingUserId(),
-						employee.getEmail(), employee.getTelNo(), new Date(), null, serviceContext);
 			}
 			// JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
@@ -999,7 +999,8 @@ public class EmployeeActions implements EmployeeInterface {
 			// jsonObject.put("duplicate", Boolean.FALSE.toString());
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			// jsonObject.put("screenName", StringPool.BLANK);
 			// jsonObject.put("email", StringPool.BLANK);
 			// jsonObject.put("exist", Boolean.TRUE);
