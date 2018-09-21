@@ -118,17 +118,16 @@ public class CommentUtils {
 		User userLogin = UserLocalServiceUtil.fetchUser(serviceContext.getUserId());
 		if (userLogin != null) {
 			emailAddress = userLogin.getEmailAddress();
-		}
-
-		if(userLogin.getEmailAddress().contains("default")) {
-			if (email != null && email.length > 0) {
-				emailAddress = email[0];
-				
-				// TODO check createdByCurrentUser by email
-				if (Validator.isNotNull(emailAddress) && emailAddress.equals(document.get(CommentTerm.EMAIL))) {
-					createdByCurrentUser = true;
+			if(emailAddress.contains("default")) {
+				if (email != null && email.length > 0) {
+					emailAddress = email[0];
+					
+					// TODO check createdByCurrentUser by email
+					if (Validator.isNotNull(emailAddress) && emailAddress.equals(document.get(CommentTerm.EMAIL))) {
+						createdByCurrentUser = true;
+					}
+					
 				}
-				
 			}
 		}
 

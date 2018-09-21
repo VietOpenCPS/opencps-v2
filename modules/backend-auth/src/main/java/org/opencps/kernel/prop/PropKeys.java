@@ -46,4 +46,7 @@ public class PropKeys {
 	public static final String ONLINE_EDITOR_DOCUMENT_SERVER_API_PATH =
 		"online.editor.document.server.api.path";
 
+	public static final String SMS_JAXRS_USERNAME = "org.sms.jaxrs.username";
+
+	public static final String SMS_JAXRS_PASSWORD = "org.sms.jaxrs.password";
 }

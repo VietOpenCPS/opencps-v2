@@ -115,15 +115,18 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			
 			JSONObject object = JSONFactoryUtil.createJSONObject();
 			
+//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
+			String guestBaseUrl = "http://119.17.200.7/web/cong-dich-vu-cong";
+			
 			object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, model.getActivationCode());
-			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, "/confirm-account?active_user_id="+ model.getApplicantId());
+			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/confirm-account?active_user_id="+ model.getApplicantId());
 			object.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
 			//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
 			object.put("toName", model.getApplicantName());
 			object.put("toAddress", model.getContactEmail());
 //			
-			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
-			_log.info("payloadTest1: "+payload1);
+//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
+//			_log.info("payloadTest1: "+payload1);
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
 			try {
 				_log.info("START PAYLOAD: ");

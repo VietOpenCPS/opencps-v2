@@ -53,4 +53,10 @@ public class PropValues {
 	public static final String ONLINE_EDITOR_DOCUMENT_SERVER_API_PATH =
 		PropsUtil.get(PropKeys.ONLINE_EDITOR_DOCUMENT_SERVER_API_PATH);
 
+	public static final String SMS_JAXRS_USERNAME =
+		PropsUtil.get(PropKeys.SMS_JAXRS_USERNAME);
+
+	public static final String SMS_JAXRS_PASSWORD =
+		PropsUtil.get(PropKeys.SMS_JAXRS_PASSWORD);
+
 }

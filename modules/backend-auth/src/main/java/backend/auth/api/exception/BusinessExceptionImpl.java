@@ -18,7 +18,7 @@ public class BusinessExceptionImpl {
 		_log.debug(e);
 		//_log.error(e);
 
-		ErrorMsg error = new ErrorMsg();
+		ErrorMsgModel error = new ErrorMsgModel();
 
 		if (e instanceof UnauthenticationException) {
 			error.setMessage("Non-Authoritative Information.");

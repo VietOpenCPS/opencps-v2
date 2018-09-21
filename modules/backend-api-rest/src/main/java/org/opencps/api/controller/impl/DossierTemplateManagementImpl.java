@@ -138,7 +138,8 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			try {
 				dossierTemplate = actions.getDossierTemplate(dossierTemplateId);
 			} catch (Exception e) {
-				_log.error(e);
+				_log.debug(e);
+				//_log.error(e);
 				dossierTemplate = actions.getDossierTemplate(groupId, id);
 			}
 

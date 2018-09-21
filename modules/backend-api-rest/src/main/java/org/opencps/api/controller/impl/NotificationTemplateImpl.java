@@ -45,11 +45,8 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 		try {
 
 			if (query.getEnd() == 0) {
-
 				query.setStart(-1);
-
 				query.setEnd(-1);
-
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));

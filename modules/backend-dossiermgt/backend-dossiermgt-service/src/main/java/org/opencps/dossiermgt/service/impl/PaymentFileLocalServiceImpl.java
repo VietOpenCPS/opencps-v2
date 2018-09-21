@@ -681,7 +681,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		try {
 			return paymentFilePersistence.findByDossierId(groupId, dossierId);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 			return null;
 		}
 	}

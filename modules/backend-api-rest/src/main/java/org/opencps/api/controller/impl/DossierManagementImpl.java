@@ -2892,6 +2892,10 @@ public class DossierManagementImpl implements DossierManagement {
 						serviceContext);
 
 			dossier.setDossierNo(input.getDossierNo());
+			dossier.setDossierStatus(input.getDossierStatus());
+			dossier.setDossierStatusText(input.getDossierStatusText());
+			dossier.setDossierSubStatus(input.getDossierSubStatus());
+			dossier.setDossierSubStatusText(input.getDossierSubStatusText());
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();

@@ -78,7 +78,7 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 
 	@Override
 	protected Document doGetDocument(Notificationtemplate notificationtemplates) throws Exception {
-
+		_log.info("START"+notificationtemplates.getGroupId() +"| "+notificationtemplates.getInterval());
 		Document document = getBaseModelDocument(CLASS_NAME, notificationtemplates);
 
 		document.addNumberSortable(NotificationTemplateTerm.GROUP_ID, notificationtemplates.getGroupId());

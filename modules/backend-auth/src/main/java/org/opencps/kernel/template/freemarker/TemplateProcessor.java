@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.opencps.kernel.template.MessageDataModel;
 
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 /**
@@ -143,8 +144,9 @@ public class TemplateProcessor {
 		Template template = null;
 		if (Validator.isNotNull(ftlTemplate)) {
 			try {
+
 				TemplateConfiguration templateConfiguration =
-					new TemplateConfiguration();
+					new TemplateConfiguration();        
 
 				template = new Template(
 					"tmp_" + System.currentTimeMillis(), ftlTemplate,
@@ -170,4 +172,5 @@ public class TemplateProcessor {
 	}
 
 	private Log _log = LogFactoryUtil.getLog(TemplateProcessor.class);
+
 }

@@ -84,8 +84,13 @@ public class OneGateControllerImpl implements OneGateController {
 	
 					elmData.put("serviceConfigId", serviceConfig.getServiceConfigId());
 	
-					ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
-					
+					//Hot fix
+					ServiceInfo serviceInfo = null;
+					try {
+						serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
+					} catch (Exception e1) {
+						break;
+					}
 					elmData.put("serviceCode", serviceInfo.getServiceCode());
 					elmData.put("serviceName", serviceInfo.getServiceName());
 					elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
