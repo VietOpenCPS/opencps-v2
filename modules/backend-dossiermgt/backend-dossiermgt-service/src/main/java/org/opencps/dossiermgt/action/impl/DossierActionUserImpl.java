@@ -320,7 +320,10 @@ public class DossierActionUserImpl implements DossierActionUser {
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
 			}
 			else {
-				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+				}
 			}
 		}
 		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH) {
@@ -334,7 +337,10 @@ public class DossierActionUserImpl implements DossierActionUser {
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
 			}
 			else {
-				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+				}
 			}
 		}
 		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH) {
@@ -357,7 +363,10 @@ public class DossierActionUserImpl implements DossierActionUser {
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
 			}
 			else {
-				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+				}
 			}
 		}
 		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH_TD) {
@@ -387,7 +396,10 @@ public class DossierActionUserImpl implements DossierActionUser {
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
 			}
 			else {
-				DossierActionUserLocalServiceUtil.updateDossierActionUser(model);
+				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+				}
 			}
 		}		
 	}
