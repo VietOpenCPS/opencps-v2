@@ -154,7 +154,10 @@ public class DossierActionUserImpl implements DossierActionUser {
 		}
 		else {
 			try {
-				DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), du.getModerator() == 0 ? (processStepRole.getModerator() ? 1 : 0) : 1, true);
+				if ((processStepRole.getModerator() && du.getModerator() != DossierActionUserTerm.ASSIGNED_PH)
+						|| (!processStepRole.getModerator() && du.getModerator() != DossierActionUserTerm.ASSIGNED_PH)) {
+					DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), du.getModerator() == 0 ? (processStepRole.getModerator() ? 1 : 0) : 1, true);					
+				}
 			} catch (NoSuchDossierUserException e) {
 				_log.error(e);
 //				e.printStackTrace();
@@ -321,7 +324,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			}
 			else {
 				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
 				}
 			}
@@ -338,7 +341,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			}
 			else {
 				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
 				}
 			}
@@ -364,7 +367,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			}
 			else {
 				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
 				}
 			}
@@ -397,7 +400,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 			}
 			else {
 				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_PH) {
+						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
 				}
 			}
