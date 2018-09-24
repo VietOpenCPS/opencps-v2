@@ -48,5 +48,10 @@ public class PropKeys {
 
 	public static final String SMS_JAXRS_USERNAME = "org.sms.jaxrs.username";
 
-	public static final String SMS_JAXRS_PASSWORD = "org.sms.jaxrs.password";
+	public static final String SMS_JAXRS_SECRETKEY = "org.sms.jaxrs.password";
+
+	public static final String SMS_SWITCH_BOARD = "org.sms.jaxrs.switchboard";
+
+	public static final String SMS_END_POINT = "org.sms.jaxrs.endpoint";
+
 }

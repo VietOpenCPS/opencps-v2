@@ -6,7 +6,7 @@
 //
 
 
-package org.opencps.api.sendmt.model;
+package org.opencps.kernel.template;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -172,42 +172,42 @@ import javax.xml.bind.annotation.XmlType;
     "username",
     "password"
 })
-@XmlRootElement(name = "SendMT")
+@XmlRootElement(name = "tem:SendMT")
 public class SendMT {
 
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:mtseq", required = true)
     protected String mtseq;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:moid", required = true)
     protected String moid;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:moseq", required = true)
     protected String moseq;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:src", required = true)
     protected String src;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:dest", required = true)
     protected String dest;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:cmdcode", required = true)
     protected String cmdcode;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:msgbody", required = true)
     protected String msgbody;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:msgtype", required = true)
     protected String msgtype;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:msgtitle", required = true)
     protected String msgtitle;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:mttotalseg", required = true)
     protected String mttotalseg;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:mtseqref", required = true)
     protected String mtseqref;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:cpid", required = true)
     protected String cpid;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:serviceid", required = true)
     protected String serviceid;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:reqtime", required = true)
     protected String reqtime;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:procresult", required = true)
     protected String procresult;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:username", required = true)
     protected String username;
-    @XmlElement(required = true)
+    @XmlElement(name = "tem:password", required = true)
     protected String password;
 
     /**

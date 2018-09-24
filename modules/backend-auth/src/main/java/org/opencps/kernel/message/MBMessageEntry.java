@@ -106,6 +106,7 @@ public class MBMessageEntry {
 	private File attachement;
 	private String attachementName;
 	private String className;
+	private String toTelNo;
 
 	public long getGroupId() {
 
@@ -405,5 +406,12 @@ public class MBMessageEntry {
 		this.guestUrl = guestUrl;
 	}
 
-	
+	public String getToTelNo() {
+		return toTelNo;
+	}
+
+	public void setToTelNo(String toTelNo) {
+		this.toTelNo = toTelNo;
+	}
+
 }
