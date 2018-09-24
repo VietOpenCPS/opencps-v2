@@ -89,7 +89,7 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 		document.addTextSortable(ServiceProcessTerm.GENERATE_DOSSIER_NO,
 				Boolean.toString(object.getGenerateDossierNo()));
 		document.addTextSortable(ServiceProcessTerm.GENERATE_DUE_DATE, Boolean.toString(object.getGenerateDueDate()));
-		document.addTextSortable(ServiceProcessTerm.GENERATE_PASSWORD, Boolean.toString(object.getGeneratePassword()));
+		document.addTextSortable(ServiceProcessTerm.GENERATE_SECRET, Boolean.toString(object.getGeneratePassword()));
 		document.addTextSortable(ServiceProcessTerm.DIRECT_NOTIFICATION,
 				Boolean.toString(object.getDirectNotification()));
 		

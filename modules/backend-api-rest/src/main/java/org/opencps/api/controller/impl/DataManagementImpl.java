@@ -541,7 +541,7 @@ public class DataManagementImpl implements DataManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
 								if (groupId == sc.getGroupId()) {
@@ -638,7 +638,7 @@ public class DataManagementImpl implements DataManagement {
 										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_SECRET)
 										&& configObj.has(SyncServerTerm.SERVER_URL)
 										&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
 									if (groupId == sc.getGroupId()) {
@@ -782,7 +782,7 @@ public class DataManagementImpl implements DataManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
 								if (groupId == sc.getGroupId()) {
@@ -885,7 +885,7 @@ public class DataManagementImpl implements DataManagement {
 								&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 										.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+								&& configObj.has(SyncServerTerm.SERVER_SECRET)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
 								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
 							if (groupId == sc.getGroupId()) {
@@ -974,7 +974,7 @@ public class DataManagementImpl implements DataManagement {
 										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_SECRET)
 										&& configObj.has(SyncServerTerm.SERVER_URL)
 										&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
 									if (groupId == sc.getGroupId()) {
@@ -1129,7 +1129,7 @@ public class DataManagementImpl implements DataManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
 								if (groupId == sc.getGroupId()) {

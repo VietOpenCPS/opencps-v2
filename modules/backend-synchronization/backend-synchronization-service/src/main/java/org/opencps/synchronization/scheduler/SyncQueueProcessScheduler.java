@@ -88,7 +88,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 										.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+								&& configObj.has(SyncServerTerm.SERVER_SECRET)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
 								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
 								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -177,7 +177,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST,
 										"application/json", rootApiUrl, putDictCollectionRestUrl.toString(),
 										configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params,
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params,
 										serviceContext);
 
 								if (SyncServerUtil.isSyncOk(resDictCollection.getInt(RESTFulConfiguration.STATUS))) {
@@ -228,7 +228,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (isFound) {
 								JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 										rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(oldCollectionCode, serverConfig.getGroupId());
@@ -248,7 +248,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							else {
 								JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 										rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(oldCollectionCode, serverConfig.getGroupId());
@@ -289,7 +289,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 								if (isFound) {
 									JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
 											rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-											configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+											configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 									if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 										DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
 										
@@ -338,7 +338,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (isFound) {
 								JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
 										rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 								
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 									DictCollection oldDict = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
@@ -403,7 +403,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						if (!lstExcludes.contains(collectionCode)) {
 							JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 									rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+									configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 								DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
@@ -444,7 +444,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						if (!lstExcludes.contains(collectionCode)) {
 							JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 									rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+									configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 							
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 								DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
@@ -481,7 +481,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (isFound) {
 								JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
 										rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 								
 								if (resDictGroup != null && resDictGroup.has(RESTFulConfiguration.STATUS) && SyncServerUtil.isSyncDeleteGroupOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 									DictCollection collection = dictItemDataUtil.getDictCollectionDetail(collectionCode, serverConfig.getGroupId());
@@ -585,7 +585,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST,
 										"application/json", rootApiUrl, putDictItemRestUrl.toString(),
 										configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params,
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params,
 										serviceContext);
 
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
@@ -660,7 +660,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST,
 										"application/json", rootApiUrl, putDictItemRestUrl.toString(),
 										configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params,
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params,
 										serviceContext);
 
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
@@ -707,7 +707,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST,
 										"application/json", rootApiUrl, putDictItemRestUrl.toString(),
 										configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params,
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params,
 										serviceContext);
 
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
@@ -801,7 +801,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE,
 										"application/json", rootApiUrl, putDictItemRestUrl.toString(),
 										configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params,
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params,
 										serviceContext);
 
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
@@ -848,7 +848,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 										configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT,
 										"application/json", rootApiUrl, putDictItemRestUrl.toString(),
 										configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params,
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params,
 										serviceContext);
 
 								if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
@@ -908,7 +908,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 							if (isFoundGroup) {
 								JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 										rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-										configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+										configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 								
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 								try {
@@ -941,12 +941,12 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 									if (!lstExcludes.contains(collectionCode)) {
 										JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 												rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-												configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+												configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 										
 										if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 											JSONObject resDictGroupAdd = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 													rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-													configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+													configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 											
 											if (SyncServerUtil.isSyncOk(resDictGroupAdd.getInt(RESTFulConfiguration.STATUS))) {
 							try {
@@ -996,7 +996,7 @@ public class SyncQueueProcessScheduler extends BaseSchedulerEntryMessageListener
 						if (!lstExcludes.contains(collectionCode)) {
 							JSONObject resDictGroup = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
 									rootApiUrl, putDictGroupRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+									configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 												
 							if (SyncServerUtil.isSyncOk(resDictGroup.getInt(RESTFulConfiguration.STATUS))) {
 								try {

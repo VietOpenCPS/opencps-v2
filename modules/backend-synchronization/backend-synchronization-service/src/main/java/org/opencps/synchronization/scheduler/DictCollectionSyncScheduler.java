@@ -60,7 +60,7 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 						if (configObj.has(SyncServerTerm.SERVER_TYPE) 
 								&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+								&& configObj.has(SyncServerTerm.SERVER_SECRET)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
 								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
 								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))
@@ -125,7 +125,7 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 					if (!isFound) {
 						JSONObject resDictCollection = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 								rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+								configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictCollection.getInt(RESTFulConfiguration.STATUS))) {
 							_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
@@ -151,7 +151,7 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 					if (isFound) {
 						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 								rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+								configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 							_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
@@ -172,7 +172,7 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 						if (isFound) {
 							JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
 									rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-									configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+									configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 							if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 								_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());
 							}																					
@@ -200,7 +200,7 @@ public class DictCollectionSyncScheduler extends BaseSchedulerEntryMessageListen
 					if (isFound) {
 						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
 								rootApiUrl, putDictCollectionRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+								configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 							_pushCollectionLocalService.deletePushCollection(pcollection.getPushCollectionId());

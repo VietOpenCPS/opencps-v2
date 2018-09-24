@@ -932,7 +932,7 @@ public class EmployeeActions implements EmployeeInterface {
 				long[] groupIds = { groupId, 20143 };
 
 				// String passWord = PwdGenerator.getPassword();
-				String passWord = "12345";
+				String secret = "12345";
 
 				String fullName = employee.getFullName();
 				String[] fml = new String[3];
@@ -955,7 +955,7 @@ public class EmployeeActions implements EmployeeInterface {
 				_log.info("//////1" + fml[1]);
 				_log.info("//////2" + fml[2]);
 
-				User newUser = UserLocalServiceUtil.addUser(0, companyId, false, passWord, passWord, false,
+				User newUser = UserLocalServiceUtil.addUser(0, companyId, false, secret, secret, false,
 						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0],
 						fml[1], fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, StringPool.BLANK, groupIds,
 						organizationIds, resultRoles, userGroupIds, false, serviceContext);
@@ -981,7 +981,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 					payLoad.put("USERNAME", newUser.getScreenName());
 					payLoad.put("USEREMAIL", newUser.getEmailAddress());
-					payLoad.put("PASSWORD", passWord);
+					payLoad.put("PASSWORD", secret);
 
 					NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
 							User.class.getName(), String.valueOf(newUser.getUserId()), payLoad.toJSONString(),

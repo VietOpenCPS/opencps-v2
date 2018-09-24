@@ -222,17 +222,21 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 				soapConnection.close();
 			} catch (Exception e) {
-				System.err.println(
-						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
-				e.printStackTrace();
+//				System.err.println(
+//						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
+//				e.printStackTrace();
+				_log.error(e);
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		} catch (JAXBException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.error(e);
 		}
 
 		return Response.status(200).entity(results).build();
