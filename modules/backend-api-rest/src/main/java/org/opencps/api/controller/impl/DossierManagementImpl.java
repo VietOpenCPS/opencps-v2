@@ -1,8 +1,10 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -69,7 +71,10 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -132,6 +137,7 @@ import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -1377,9 +1383,51 @@ public class DossierManagementImpl implements DossierManagement {
 									input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
 									serviceContext);
 						}
+						//Process send email or sms
+						if (dossierResult != null) {
+							String notificationType = actConfig.getNotificationType();
+							//
+							long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+							
+							NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+							//Process add notification queue
+							Date now = new Date();
+
+							Calendar cal = Calendar.getInstance();
+							cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+							
+							queue.setCreateDate(now);
+							queue.setModifiedDate(now);
+							queue.setGroupId(groupId);
+							queue.setCompanyId(company.getCompanyId());
+							
+							queue.setNotificationType(notificationType);
+							queue.setClassName(Dossier.class.getName());
+							queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
+							queue.setToUsername(dossier.getUserName());
+							queue.setToUserId(dossier.getUserId());
+							queue.setToEmail(dossier.getContactEmail());
+							queue.setToTelNo(dossier.getContactTelNo());
+							
+							JSONObject payload = JSONFactoryUtil.createJSONObject();
+							try {
+								_log.info("START PAYLOAD: ");
+								payload.put(
+									"Dossier", JSONFactoryUtil.createJSONObject(
+										JSONFactoryUtil.looseSerialize(dossier)));
+							}
+							catch (JSONException parse) {
+								_log.error(parse);
+							}
+							_log.info("payloadTest: "+payload.toJSONString());
+							queue.setPayload(payload.toJSONString());
+							queue.setExpireDate(cal.getTime());
+
+							NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+						}
 					} else {
-						ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode,
-								dossierTempNo, groupId);
+						ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode, dossierTempNo,
+								groupId);
 						if (option != null) {
 							long serviceProcessId = option.getServiceProcessId();
 							ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
@@ -1389,12 +1437,12 @@ public class DossierManagementImpl implements DossierManagement {
 										actionCode, input.getActionUser(), input.getActionNote(), input.getPayload(),
 										input.getAssignUsers(), input.getPayment(), 0, serviceContext);
 							} else {
-								//TODO: Error
+								// TODO: Error
 							}
-						
+
+						}
 					}
 				}
-			}
 			}
 			
 //			DossierAction dossierAction = actions.doAction(groupId, dossier, option, proAction,

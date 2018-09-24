@@ -56,7 +56,13 @@ public class PropValues {
 	public static final String SMS_JAXRS_USERNAME =
 		PropsUtil.get(PropKeys.SMS_JAXRS_USERNAME);
 
-	public static final String SMS_JAXRS_PASSWORD =
-		PropsUtil.get(PropKeys.SMS_JAXRS_PASSWORD);
+	public static final String SMS_JAXRS_SECRETKEY =
+		PropsUtil.get(PropKeys.SMS_JAXRS_SECRETKEY);
+
+	public static final String SMS_SWITCH_BOARD =
+			PropsUtil.get(PropKeys.SMS_SWITCH_BOARD);
+
+	public static final String SMS_END_POINT =
+			PropsUtil.get(PropKeys.SMS_END_POINT);
 
 }

@@ -25,5 +25,6 @@ Export-Package: \
 	org.opencps.kernel.context,\
 	com.liferay.portal.security.auto.login.basic.auth.header,\
 	com.liferay.portal.security.auto.login.basic.auth.header.module.configuration,\
+	org.opencps.kernel.message.sms
 	
 	

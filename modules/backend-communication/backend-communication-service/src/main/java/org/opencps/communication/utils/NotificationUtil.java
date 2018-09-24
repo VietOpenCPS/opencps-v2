@@ -83,26 +83,13 @@ public class NotificationUtil {
 //			_log.info("guestUrlPatternTemplate: "+guestUrlPatternTemplate);
 
 			String baseUrl = StringPool.BLANK;
-
-//			_log.info("PropValues.PORTAL_DOMAIN: "+PropValues.PORTAL_DOMAIN);
-//			_log.info("serviceContext.getPortalURL(): "+serviceContext.getPortalURL());
-//			_log.info("serviceContext.getCurrentURL(): "+serviceContext.getCurrentURL());
-//			_log.info("serviceContext.getPathFriendlyURLPublic(): "+serviceContext.getPathFriendlyURLPublic());
-//			_log.info("serviceContext.getPathFriendlyURLPublic(): "+serviceContext.getPathFriendlyURLPublic());
-
 			try {
 				Group group = GroupLocalServiceUtil.getGroup(
 					serviceContext.getScopeGroupId());
 
-//				baseUrl = PropValues.PORTAL_DOMAIN +
-//				jsonData.put("url", serviceContext.getPortalURL());
-//				baseUrl = "http://119.17.200.7" +
-//				baseUrl = serviceContext.getPortalURL() +
 				baseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPrivateGroup() +
 					group.getFriendlyURL();
-//				_log.info("group.getFriendlyURL(): "+group.getFriendlyURL());
-//				_log.info("group.getFriendlyURL(): "+PortalUtil.getPathFriendlyURLPublic());
 				_log.info("baseUrl: "+baseUrl);
 
 			}
@@ -116,9 +103,6 @@ public class NotificationUtil {
 				Group group = GroupLocalServiceUtil.getGroup(
 					serviceContext.getScopeGroupId());
 
-//				guestBaseUrl = PropValues.PORTAL_DOMAIN +
-//				guestBaseUrl = "http://119.17.200.7" +
-//				baseUrl = serviceContext.getPortalURL() +
 				guestBaseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPublic() +
 					group.getFriendlyURL();
@@ -126,7 +110,7 @@ public class NotificationUtil {
 
 			}
 			catch (Exception e) {
-				 _log.error(e);
+				_log.error(e);
 			}
 
 			String security = StringPool.BLANK;
@@ -230,6 +214,7 @@ public class NotificationUtil {
 				messageEntry.setClassName(queue.getClassName());
 				messageEntry.setUserUrl(userUrl);
 				messageEntry.setGuestUrl(guestUrl);
+				messageEntry.setToTelNo(queue.getToTelNo());
 
 				// _log.info(emailBody);
 
@@ -283,8 +268,7 @@ public class NotificationUtil {
 			}
 			catch (Exception e) {
 				// _log.warn("Can't not create MBMessageEntry " + e);
-				_log.debug(e);
-				//_log.error(e);
+				_log.error(e);
 			}
 		}
 
