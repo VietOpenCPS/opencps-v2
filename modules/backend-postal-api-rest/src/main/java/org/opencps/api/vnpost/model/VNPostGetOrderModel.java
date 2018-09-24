@@ -13,6 +13,17 @@ public class VNPostGetOrderModel {
 	
 	@FormParam(value = "lastId")
 	private String lastId; // id bản ghi mới nhất đã lấy được từ lần gọi trước đó. Lưu ý: trong lần gọi đầu tiên, đặt lastId = “000000000000000000000000”
+	
+	@FormParam(value = "orderNumber")
+	private String orderNumber;
+	
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 
 	public Integer getPageSize() {
 		return pageSize;
