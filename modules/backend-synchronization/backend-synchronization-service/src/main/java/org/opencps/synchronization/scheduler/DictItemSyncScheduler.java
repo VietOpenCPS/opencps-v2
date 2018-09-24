@@ -60,7 +60,7 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 						if (configObj.has(SyncServerTerm.SERVER_TYPE) 
 								&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+								&& configObj.has(SyncServerTerm.SERVER_SECRET)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
 								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
 								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))
@@ -130,7 +130,7 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					if (isFound) {
 						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+								configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
@@ -161,7 +161,7 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					if (isFound) {
 						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.POST, "application/json",
 								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+								configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
@@ -184,7 +184,7 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					if (isFound) {
 						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.DELETE, "application/json",
 								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+								configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());
@@ -210,7 +210,7 @@ public class DictItemSyncScheduler extends BaseSchedulerEntryMessageListener {
 					if (isFound) {
 						JSONObject resDictItem = rest.callPostAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.PUT, "application/json",
 								rootApiUrl, putDictItemRestUrl.toString(), configObj.getString(SyncServerTerm.SERVER_USERNAME),
-								configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, params, serviceContext);
+								configObj.getString(SyncServerTerm.SERVER_SECRET), properties, params, serviceContext);
 						
 						if (SyncServerUtil.isSyncOk(resDictItem.getInt(RESTFulConfiguration.STATUS))) {
 							_pushDictItemLocalService.deletePushDictItem(pitem.getPushDictItemId());

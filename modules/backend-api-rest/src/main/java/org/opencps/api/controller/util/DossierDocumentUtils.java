@@ -49,7 +49,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
-		jsonData.put(DossierTerm.PASSWORD, dossier.getPassword());
+		jsonData.put(DossierTerm.SECRET, dossier.getPassword());
 		//
 		long groupId = dossier.getGroupId();
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();

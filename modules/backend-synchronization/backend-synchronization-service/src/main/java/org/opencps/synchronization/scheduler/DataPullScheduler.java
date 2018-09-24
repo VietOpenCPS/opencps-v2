@@ -70,7 +70,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 						if (configObj.has(SyncServerTerm.SERVER_TYPE) 
 								&& configObj.getString(SyncServerTerm.SERVER_TYPE).equals(SyncServerTerm.SYNC_SERVER_TYPE)
 								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-								&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+								&& configObj.has(SyncServerTerm.SERVER_SECRET)
 								&& configObj.has(SyncServerTerm.SERVER_URL)
 								&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)
 								&& (configObj.has(SyncServerTerm.PULL) && configObj.getBoolean(SyncServerTerm.PULL))
@@ -127,7 +127,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			
 			JSONObject resDictCollection = rest.callAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.GET, "application/json",
 					configObj.getString(SyncServerTerm.SERVER_URL), dataEndpoint, configObj.getString(SyncServerTerm.SERVER_USERNAME),
-					configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, serviceContext);
+					configObj.getString(SyncServerTerm.SERVER_SECRET), properties, serviceContext);
 			
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictCollection.getString(RESTFulConfiguration.MESSAGE));
@@ -228,7 +228,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			
 			JSONObject resDictCollection = rest.callAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.GET, "application/json",
 					configObj.getString(SyncServerTerm.SERVER_URL), dataEndpoint, configObj.getString(SyncServerTerm.SERVER_USERNAME),
-					configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, serviceContext);
+					configObj.getString(SyncServerTerm.SERVER_SECRET), properties, serviceContext);
 			
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictCollection.getString(RESTFulConfiguration.MESSAGE));
@@ -344,7 +344,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			
 			JSONObject resDictItemGroup = rest.callAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.GET, "application/json",
 					configObj.getString(SyncServerTerm.SERVER_URL), dataEndpoint, configObj.getString(SyncServerTerm.SERVER_USERNAME),
-					configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, serviceContext);
+					configObj.getString(SyncServerTerm.SERVER_SECRET), properties, serviceContext);
 			
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictItemGroup.getString(RESTFulConfiguration.MESSAGE));
@@ -454,7 +454,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			
 			JSONObject resDictCollection = rest.callAPI(configObj.getLong(SyncServerTerm.SERVER_GROUP_ID), HttpMethods.GET, "application/json",
 					configObj.getString(SyncServerTerm.SERVER_URL), dataEndpoint, configObj.getString(SyncServerTerm.SERVER_USERNAME),
-					configObj.getString(SyncServerTerm.SERVER_PASSWORD), properties, serviceContext);
+					configObj.getString(SyncServerTerm.SERVER_SECRET), properties, serviceContext);
 			
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictCollection.getString(RESTFulConfiguration.MESSAGE));

@@ -61,7 +61,7 @@ public class ServiceProcessUtils {
 			model.setDossierNoPattern(doc.get(ServiceProcessTerm.DOSSIER_NO_PATTERN));
 			model.setGenerateDueDate(doc.get(ServiceProcessTerm.GENERATE_DUE_DATE));
 			model.setDueDatePattern(doc.get(ServiceProcessTerm.DUEDATE_PATTERN));
-			model.setGeneratePassword(doc.get(ServiceProcessTerm.GENERATE_PASSWORD));
+			model.setGeneratePassword(doc.get(ServiceProcessTerm.GENERATE_SECRET));
 			model.setDirectNotification(doc.get(ServiceProcessTerm.DIRECT_NOTIFICATION));
 			model.setServerNo(doc.get(ServiceProcessTerm.SERVER_NO));
 			model.setServerName(doc.get(ServiceProcessTerm.SERVER_NAME));

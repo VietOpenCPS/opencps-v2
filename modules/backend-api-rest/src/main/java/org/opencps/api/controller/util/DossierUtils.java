@@ -308,7 +308,7 @@ public class DossierUtils {
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
-			model.setHasPassword(doc.get(DossierTerm.PASSWORD));
+			model.setHasPassword(doc.get(DossierTerm.SECRET));
 			model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 			model.setServerNo(doc.get(DossierTerm.SERVER_NO));
 			
@@ -545,7 +545,7 @@ public class DossierUtils {
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setOnline(doc.get(DossierTerm.ONLINE));
-			model.setHasPassword(doc.get(DossierTerm.PASSWORD));
+			model.setHasPassword(doc.get(DossierTerm.SECRET));
 			model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 			model.setServerNo(doc.get(DossierTerm.SERVER_NO));
 			

@@ -16,7 +16,7 @@ public class ServiceProcessTerm {
 	public static final String DOSSIER_NO_PATTERN = "dossierNoPattern";
 	public static final String GENERATE_DUE_DATE = "generateDueDate";
 	public static final String DUEDATE_PATTERN = "dueDatePattern";
-	public static final String GENERATE_PASSWORD = "generatePassword";
+	public static final String GENERATE_SECRET = "generatePassword";
 	public static final String DIRECT_NOTIFICATION = "directNotification";
 	public static final String SERVER_NO = "serverNo";
 	public static final String SERVER_NAME = "serverName";

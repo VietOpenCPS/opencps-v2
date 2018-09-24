@@ -4,7 +4,7 @@ public class SyncServerTerm {
 	public static final String SYNC_SERVER_TYPE = "SYNC_SERVER";
 	public static final String SERVER_TYPE = "serverType";
 	public static final String SERVER_USERNAME = "username";
-	public static final String SERVER_PASSWORD = "password";
+	public static final String SERVER_SECRET = "password";
 	public static final String SERVER_URL = "url";
 	public static final String SERVER_GROUP_ID = "groupId";
 	public static final String SERVER_EXCLUDES = "excludes";

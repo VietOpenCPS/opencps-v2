@@ -2787,7 +2787,6 @@ public class DossierActionsImpl implements DossierActions {
 			else {
 				
 			}
-
 			if (curStep != null) {
 				String curStatus = curStep.getDossierStatus();
 				String curSubStatus = curStep.getDossierSubStatus();
@@ -2849,6 +2848,8 @@ public class DossierActionsImpl implements DossierActions {
 				//Update dossier processing date
 				flagChanged = updateProcessingDate(previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
 			}
+			System.out.println("GO GO AFTER CUR STEP");
+
 				// update reference dossier
 //				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
 				// Add DossierActionUser
@@ -2857,6 +2858,7 @@ public class DossierActionsImpl implements DossierActions {
 				int allowAssignUser = proAction.getAllowAssignUser();
 //				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
+					System.out.println("GO GO NOT ASSIGN");
 					if (Validator.isNotNull(assignUsers)) {
 //						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -2869,10 +2871,13 @@ public class DossierActionsImpl implements DossierActions {
 								proAction.getAssignUserId());
 					}
 				} else {
+					System.out.println("GO GO ASSIGN: " + allowAssignUser + ", " + (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED));
 //					_log.info("PROCESS subUsers == null");
 //					_log.info("Dossier action: " + dossierAction);
+					System.out.println("GO GO BEFORE INIT DAU: " + proAction + ", " + dossierAction);
 					dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
+					System.out.println("GO GO ROLE AS STEP");
 					
 					//Process role as step
 					if (Validator.isNotNull(curStep.getRoleAsStep())) {
@@ -2894,11 +2899,12 @@ public class DossierActionsImpl implements DossierActions {
 //				}
 			
 			//Update dossier document and dossier sync
-			
+			System.out.println("GO GO BEFORE NEXT STEP");
 			//Get next step
 			ProcessStep nextStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			if (nextStep != null) {
 			}
+			System.out.println("GO GO ACTION CONFIG HSTL");
 						
 			//Check if generate dossier document
 			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
@@ -2948,10 +2954,10 @@ public class DossierActionsImpl implements DossierActions {
 		else {
 			
 		}
-		
+		System.out.println("GO GO HSTL NOTI QUEUE");
+
 		//Create notification
 		createNotificationQueue(userId, groupId, dossier, actionConfig, context);
-				
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();

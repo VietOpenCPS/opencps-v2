@@ -63,7 +63,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
 
 	    if (Validator.isNotNull(model.getPassword())) {
-		    params.put(DossierTerm.PASSWORD, model.getPassword());	    	
+		    params.put(DossierTerm.SECRET, model.getPassword());	    	
 	    }
 	    if (Validator.isNotNull(model.getOnline())) {
 		    params.put(DossierTerm.ONLINE, model.getOnline());	    	
@@ -139,7 +139,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, model.getDossierSubStatusText());
 
 	    if (Validator.isNotNull(model.getPassword())) {
-		    params.put(DossierTerm.PASSWORD, model.getPassword());	    	
+		    params.put(DossierTerm.SECRET, model.getPassword());	    	
 	    }
 	    if (Validator.isNotNull(model.getOnline())) {
 		    params.put(DossierTerm.ONLINE, model.getOnline());	    	
@@ -270,8 +270,8 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.CONTACT_EMAIL)) {
 			model.setContactEmail(jsonObj.getString(DossierTerm.CONTACT_EMAIL));
 		}
-		if (jsonObj.has(DossierTerm.PASSWORD)) {
-			model.setPassword(jsonObj.getString(DossierTerm.PASSWORD));
+		if (jsonObj.has(DossierTerm.SECRET)) {
+			model.setPassword(jsonObj.getString(DossierTerm.SECRET));
 		}
 		if (jsonObj.has(DossierTerm.ONLINE)) {
 			model.setOnline(jsonObj.getString(DossierTerm.ONLINE));
@@ -373,8 +373,8 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.CONTACT_EMAIL)) {
 			model.setContactEmail(jsonObj.getString(DossierTerm.CONTACT_EMAIL));
 		}
-		if (jsonObj.has(DossierTerm.PASSWORD)) {
-			model.setPassword(jsonObj.getString(DossierTerm.PASSWORD));
+		if (jsonObj.has(DossierTerm.SECRET)) {
+			model.setPassword(jsonObj.getString(DossierTerm.SECRET));
 		}
 		if (jsonObj.has(DossierTerm.ONLINE)) {
 			model.setOnline(jsonObj.getString(DossierTerm.ONLINE));

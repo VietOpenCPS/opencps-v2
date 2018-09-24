@@ -62,7 +62,7 @@ public class DossierTerm {
 	public static final String POSTAL_CITY_CODE = "postalCityCode";
 	public static final String POSTAL_CITY_NAME = "postalCityName";
 	public static final String POSTAL_TEL_NO = "postalTelNo";
-	public static final String PASSWORD = "password";
+	public static final String SECRET = "password";
 	public static final String NOTIFICATION = "notification";
 	public static final String ONLINE = "online";
 	public static final String SERVER_NO = "serverNo";

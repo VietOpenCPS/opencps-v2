@@ -75,7 +75,7 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.DOSSIER_SUB_STATUS, dossier.getDossierSubStatus());
 		obj.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, dossier.getDossierSubStatusText());
 		obj.put(DossierTerm.ONLINE, dossier.getOnline());
-		obj.put(DossierTerm.PASSWORD, dossier.getPassword());
+		obj.put(DossierTerm.SECRET, dossier.getPassword());
 		
 		
 		return obj;

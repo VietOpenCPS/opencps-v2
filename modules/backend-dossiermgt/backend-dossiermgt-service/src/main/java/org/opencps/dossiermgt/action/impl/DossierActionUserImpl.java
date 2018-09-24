@@ -61,11 +61,15 @@ public class DossierActionUserImpl implements DossierActionUser {
 	public void initDossierActionUser(ProcessAction processAction, Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId)
 			throws PortalException {
 		// Delete record in dossierActionUser
+		System.out.println("GO GO GET LIST");
 		List<org.opencps.dossiermgt.model.DossierActionUser> dossierActionUser = DossierActionUserLocalServiceUtil
 				.getListUser(dossierActionId);
 		if (dossierActionUser != null && dossierActionUser.size() > 0) {
+			System.out.println("GO GO FOR");
 			for (org.opencps.dossiermgt.model.DossierActionUser dau : dossierActionUser) {
+				System.out.println("GO GO DELETE");
 				DossierActionUserLocalServiceUtil.deleteDossierActionUser(dau);
+				System.out.println("GO GO AFTER DELELE");
 			}
 		}
 		// Get DossierAction
@@ -79,7 +83,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		String actionCode = dossierAction.getActionCode();
 		long serviceProcessId = dossierAction != null ? dossierAction.getServiceProcessId() : 0l;
 //		_log.info("serviceProcessId: "+dossierAction.getServiceProcessId());
-		
+		System.out.println("GO GO POST STEP");
 		String stepCode = processAction.getPostStepCode();
 
 //		_log.info("1");

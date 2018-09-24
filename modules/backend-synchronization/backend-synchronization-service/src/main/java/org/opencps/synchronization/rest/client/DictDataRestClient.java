@@ -47,12 +47,12 @@ public class DictDataRestClient {
 	
 	public static DictDataRestClient fromJSONObject(JSONObject configObj) {
 		if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
-				&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+				&& configObj.has(SyncServerTerm.SERVER_SECRET)
 				&& configObj.has(SyncServerTerm.SERVER_URL)
 				&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
 			return new DictDataRestClient(
 					configObj.getString(SyncServerTerm.SERVER_USERNAME), 
-					configObj.getString(SyncServerTerm.SERVER_PASSWORD), 
+					configObj.getString(SyncServerTerm.SERVER_SECRET), 
 					configObj.getString(SyncServerTerm.SERVER_URL),
 					configObj.getLong(SyncServerTerm.SERVER_GROUP_ID));
 		}

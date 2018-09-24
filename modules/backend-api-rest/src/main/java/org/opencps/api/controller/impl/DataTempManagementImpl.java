@@ -162,7 +162,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH)
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -225,7 +225,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH)
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -282,7 +282,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_SECRET)
 										&& configObj.has(SyncServerTerm.SERVER_URL)
 										&& (configObj.has(SyncServerTerm.PUSH)
 												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -374,7 +374,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH)
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -469,7 +469,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH)
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -530,7 +530,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH)
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -595,7 +595,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 											&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 													.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 											&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-											&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+											&& configObj.has(SyncServerTerm.SERVER_SECRET)
 											&& configObj.has(SyncServerTerm.SERVER_URL)
 											&& (configObj.has(SyncServerTerm.PUSH)
 													&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -695,7 +695,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH)
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -758,7 +758,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_SECRET)
 										&& configObj.has(SyncServerTerm.SERVER_URL)
 										&& (configObj.has(SyncServerTerm.PUSH)
 												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -885,7 +885,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+									&& configObj.has(SyncServerTerm.SERVER_SECRET)
 									&& configObj.has(SyncServerTerm.SERVER_URL)
 									&& (configObj.has(SyncServerTerm.PUSH)
 											&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -989,7 +989,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_SECRET)
 										&& configObj.has(SyncServerTerm.SERVER_URL)
 										&& (configObj.has(SyncServerTerm.PUSH)
 												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
@@ -1061,7 +1061,7 @@ public class DataTempManagementImpl implements DataTempManagement {
 										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
 												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
 										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_PASSWORD)
+										&& configObj.has(SyncServerTerm.SERVER_SECRET)
 										&& configObj.has(SyncServerTerm.SERVER_URL)
 										&& (configObj.has(SyncServerTerm.PUSH)
 												&& configObj.getBoolean(SyncServerTerm.PUSH))) {
