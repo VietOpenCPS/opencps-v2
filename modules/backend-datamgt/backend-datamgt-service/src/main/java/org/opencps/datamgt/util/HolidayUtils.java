@@ -38,15 +38,15 @@ public class HolidayUtils {
 
 		//Get info day off and day work
 		getDayByGroupId(groupId);
-//		_log.info("strDayOff: "+strDayOff);
+		_log.info("strDayOff: "+strDayOff);
 		// Calculator time working
 		long hoursCount = processHoursCount(durationCount, durationUnit);
-//		_log.info("hoursCount: "+hoursCount);
+		_log.info("hoursCount: "+hoursCount);
 
 		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 
 		Date dueDate = getEndDate( groupId,  startDate,  hoursCount, holidayList);
-//		_log.info("dueDate: "+dueDate);
+		_log.info("dueDate: "+dueDate);
 //		Calendar cal = Calendar.getInstance();
 //		cal.setTime(startDate);
 //		int day = cal.get(Calendar.DAY_OF_WEEK);
@@ -65,7 +65,9 @@ public class HolidayUtils {
 
 	// Calculator day off and day work
 	private static void getDayByGroupId(long groupId) {
+		_log.info("groupId: "+groupId);
 		List<WorkTime> workTimeList = WorkTimeLocalServiceUtil.getByGroupId(groupId);
+		_log.info("workTimeList: "+workTimeList);
 		StringBuilder sbDayOff = null;
 		StringBuilder sbDayWork = null;
 		// Get day off and day work.
@@ -95,13 +97,17 @@ public class HolidayUtils {
 				}
 			}
 			//Process day off
+			_log.info("sbDayOff: "+sbDayOff.toString());
+			_log.info("sbDayWork: "+sbDayWork.toString());
 			getDayOff(sbDayOff, sbDayWork);
 		}
+		_log.info("sbDayOff: "+sbDayOff.toString());
 	}
 
 	private static void getDayOff(StringBuilder sbDayOff, StringBuilder sbDayWork) {
 		if (Validator.isNotNull(sbDayOff)) {
 			strDayOff = sbDayOff.toString();
+			_log.info("sbDayOff: "+sbDayOff.toString());
 		} else if (Validator.isNotNull(sbDayWork)) {
 			StringBuilder sb = new StringBuilder();
 			String strDayWork = sbDayWork.toString();
@@ -112,7 +118,8 @@ public class HolidayUtils {
 				} else {
 					sb.append(Calendar.SUNDAY);
 				}
-			} 
+			}
+			_log.info("sbDayOff11: "+sbDayOff.toString());
 			if (!strDayWork.contains(String.valueOf(Calendar.MONDAY))) {
 				if (Validator.isNotNull(sbDayOff)) {
 					sb.append(StringPool.COMMA);
@@ -162,6 +169,7 @@ public class HolidayUtils {
 				}
 			}
 
+			_log.info("sbDayOff112: "+sbDayOff.toString());
 			if (Validator.isNotNull(sb)) {
 				strDayOff = sb.toString();
 			}
@@ -208,6 +216,9 @@ public class HolidayUtils {
 				baseDateCal = checkDay(baseDateCal, startDate, holidayList);
 			} else if (countDay > 1) {
 				for (int i = 0; i < countDay; i++) {
+					_log.info("STRAT Calculator DueDate");
+					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DATE));
+					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DAY_OF_MONTH));
 					baseDateCal.add(Calendar.DATE, 1);
 					baseDateCal = checkDay(baseDateCal, startDate, holidayList);
 //							saturdayIsHoliday, sundayIsHoliday);
