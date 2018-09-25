@@ -2914,7 +2914,7 @@ public class DossierActionsImpl implements DossierActions {
 				//Update dossier processing date
 				flagChanged = updateProcessingDate(previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
 			}
-			System.out.println("GO GO AFTER CUR STEP");
+			_log.info("GO GO AFTER CUR STEP");
 
 				// update reference dossier
 //				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
@@ -2924,7 +2924,7 @@ public class DossierActionsImpl implements DossierActions {
 				int allowAssignUser = proAction.getAllowAssignUser();
 //				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
-					System.out.println("GO GO NOT ASSIGN");
+					_log.info("GO GO NOT ASSIGN");
 					if (Validator.isNotNull(assignUsers)) {
 //						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -2937,13 +2937,13 @@ public class DossierActionsImpl implements DossierActions {
 								proAction.getAssignUserId());
 					}
 				} else {
-					System.out.println("GO GO ASSIGN: " + allowAssignUser + ", " + (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED));
+					_log.info("GO GO ASSIGN: " + allowAssignUser + ", " + (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED));
 //					_log.info("PROCESS subUsers == null");
 //					_log.info("Dossier action: " + dossierAction);
-					System.out.println("GO GO BEFORE INIT DAU: " + proAction + ", " + dossierAction);
+					_log.info("GO GO BEFORE INIT DAU: " + proAction + ", " + dossierAction);
 					dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
-					System.out.println("GO GO ROLE AS STEP");
+					_log.info("GO GO ROLE AS STEP");
 					
 					//Process role as step
 					if (Validator.isNotNull(curStep.getRoleAsStep())) {
@@ -2965,46 +2965,54 @@ public class DossierActionsImpl implements DossierActions {
 //				}
 			
 			//Update dossier document and dossier sync
-			System.out.println("GO GO BEFORE NEXT STEP");
+			_log.info("GO GO BEFORE NEXT STEP");
 			//Get next step
 			ProcessStep nextStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			if (nextStep != null) {
 			}
-			System.out.println("GO GO ACTION CONFIG HSTL");
+			_log.info("GO GO ACTION CONFIG HSTL");
 						
 			//Check if generate dossier document
 			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+			_log.info("ac: " + ac);
 			if (ac != null) {
 				//Only create dossier document if 2 && 3
 				if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
+					_log.info("ac.getDocumentType(): " + ac.getDocumentType());
+					_log.info("ac.getActionCode(): " + ac.getActionCode());
 					if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
 						//Generate document
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, ac.getDocumentType());
-						String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
-						
-						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
-											
-						//Generate PDF
-						String formData = dossierAction.getPayload();
-//						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
-						JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
-						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
-						formDataObj.put("url", context.getPortalURL());
-						_log.info("Dossier document form data: " + formDataObj.toJSONString());
-						Message message = new Message();
-//						_log.info("Document script: " + dt.getDocumentScript());
-						JSONObject msgData = JSONFactoryUtil.createJSONObject();
-						msgData.put("className", DossierDocument.class.getName());
-						msgData.put("classPK", dossierDocument.getDossierDocumentId());
-						msgData.put("jrxmlTemplate", dt.getDocumentScript());
-						msgData.put("formData", formDataObj.toJSONString());
-						msgData.put("userId", userId);
+						if (dt != null) {
+							String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
+							_log.info("documentCode: " + documentCode);
+							DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
+									dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
+									dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
+												
+							//Generate PDF
+							String formData = dossierAction.getPayload();
+							_log.info("formData: " + formData);
+//							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
+							JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
+							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
+							formDataObj.put("url", context.getPortalURL());
+							_log.info("Dossier document form data: " + formDataObj.toJSONString());
+							Message message = new Message();
+//							_log.info("Document script: " + dt.getDocumentScript());
+							JSONObject msgData = JSONFactoryUtil.createJSONObject();
+							msgData.put("className", DossierDocument.class.getName());
+							msgData.put("classPK", dossierDocument.getDossierDocumentId());
+							msgData.put("jrxmlTemplate", dt.getDocumentScript());
+							msgData.put("formData", formDataObj.toJSONString());
+							msgData.put("userId", userId);
 
-						message.put("msgToEngine", msgData);
-						MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
-						
-						payloadObject.put("dossierDocument", dossierDocument.getDossierDocumentId());
-					}					
+							message.put("msgToEngine", msgData);
+							MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+							
+							payloadObject.put("dossierDocument", dossierDocument.getDossierDocumentId());
+						}
+					}
 				}
 			}
 			
@@ -3013,14 +3021,14 @@ public class DossierActionsImpl implements DossierActions {
 				generateCreateDossierFiles(groupId, userId, dossier, proAction);
 			}
 			catch (Exception e) {
-				_log.debug(e);
-				//_log.error(e);
+//				_log.debug(e);
+				_log.error(e);
 			}
 		}
 		else {
 			
 		}
-		System.out.println("GO GO HSTL NOTI QUEUE");
+		_log.info("GO GO HSTL NOTI QUEUE");
 
 		//Create notification
 		createNotificationQueue(userId, groupId, dossier, actionConfig, context);
