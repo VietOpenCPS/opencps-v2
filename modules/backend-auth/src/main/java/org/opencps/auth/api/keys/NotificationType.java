@@ -16,9 +16,6 @@ public class NotificationType {
 	public static final String DOSSIER_09 = "DOSSIER-09";
 	public static final String DOSSIER_10 = "DOSSIER-10";
 	public static final String APPLICANT_01 = "APPLICANT-01";
-	public static final String USER_01 = "USER-01";
-	public static final String USER_02 = "USER-02";
-	public static final String USER_03 = "USER-03";
 	
 	*/
 	
@@ -39,6 +36,9 @@ public class NotificationType {
 	public static final String APPLICANT_05 = "APPLICANT-05";
 	public static final String REGISTRATION_01 = "REGISTRATION-01";
 	public static final String REGISTRATION_02 = "REGISTRATION-02";
+	public static final String USER_01 = "USER-01";
+	public static final String USER_02 = "USER-02";
+	public static final String USER_03 = "USER-03";
 	//Value
 	public static final String VALUE_DOSSIER_01 = "Y\u00EAu c\u1EA7u b\u1ED5 sung h\u1ED3 s\u01A1";
 	public static final String VALUE_DOSSIER_02 = "Y\u00EAu c\u1EA7u thanh to\u00E1n";
