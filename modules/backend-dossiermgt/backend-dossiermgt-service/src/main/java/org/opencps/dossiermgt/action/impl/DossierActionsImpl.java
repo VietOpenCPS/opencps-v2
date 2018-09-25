@@ -5,6 +5,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -49,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.Notificationtemplate;
@@ -61,6 +65,7 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
@@ -69,6 +74,7 @@ import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
+import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -94,6 +100,7 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -118,6 +125,7 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -2606,6 +2614,8 @@ public class DossierActionsImpl implements DossierActions {
 				((DecimalFormat)fmt).setDecimalFormatSymbols(customSymbol);
 				fmt.setGroupingUsed(true);
 				
+				
+				
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
 //					_log.info("Payment object in do action: " + paymentObj);
@@ -2675,7 +2685,63 @@ public class DossierActionsImpl implements DossierActions {
 					
 					paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 					
-					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);										
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+					_log.info("==========Dossier Action SONDT START ========= ");
+					//sondt create ePaymentProfile
+					
+					// create paymentFileActions
+					PaymentFileActions actions = new PaymentFileActionsImpl();
+
+					// get paymentConfig
+					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
+							dossier.getGovAgencyCode());
+					_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
+					_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
+					// generator epaymentProfile
+					JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
+					
+					
+					JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+
+					if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+
+						try {
+							String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+									paymentFile.getPaymentFileId(), paymentFee, dossierId);
+
+							epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+
+							// fill good_code to keypayGoodCode
+							String pattern1 = "good_code=";
+							String pattern2 = "&";
+
+							String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+
+							Pattern p = Pattern.compile(regexString);
+							Matcher m = p.matcher(generatorPayURL);
+
+							if (m.find()) {
+								String goodCode = m.group(1);
+
+								epaymentProfileJSON.put("keypayGoodCode", goodCode);
+							} else {
+								epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+							}
+
+							epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+
+							actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+									context);
+
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+//							e.printStackTrace();
+							_log.error(e);
+						}
+
+					}
+					
+					// end sondt
 				}
 //				try {
 //					String serveNo = serviceProcess.getServerNo();
