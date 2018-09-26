@@ -2708,7 +2708,7 @@ public class DossierActionsImpl implements DossierActions {
 						try {
 							String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 									paymentFile.getPaymentFileId(), paymentFee, dossierId);
-
+							_log.info("Dossier Action SONDT generatorPayURL ========= "+ generatorPayURL);
 							epaymentProfileJSON.put("keypayUrl", generatorPayURL);
 
 							// fill good_code to keypayGoodCode
