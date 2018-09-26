@@ -103,19 +103,19 @@ public interface PaymentFileManagement {
 
 	//4
 	/* Get info epaymentProfile - START */
-//	@GET
-//	@Path("/{id}/payments/{referenceUid}/epaymentprofile")
-//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-//	@ApiOperation(value = "get info epayment profile", response = String.class)
-//	@ApiResponses(value = {
-//				@ApiResponse (code = HttpURLConnection.HTTP_OK, message = "Get info epayment profile", response = String.class),
-//				@ApiResponse (code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
-//				@ApiResponse (code = HttpURLConnection.HTTP_FORBIDDEN, message = "Accsess denied", response = ExceptionModel.class),
-//				@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)})
-//	public Response getEpaymentProfile(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-//			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-//			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
-//			@ApiParam (value = "referenceUid of Payment", required = true) @PathParam("referenceUid") String referenceUid);
+	@GET
+	@Path("/{id}/payments/{referenceUid}/epaymentprofile")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "get info epayment profile", response = String.class)
+	@ApiResponses(value = {
+				@ApiResponse (code = HttpURLConnection.HTTP_OK, message = "Get info epayment profile", response = String.class),
+				@ApiResponse (code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+				@ApiResponse (code = HttpURLConnection.HTTP_FORBIDDEN, message = "Accsess denied", response = ExceptionModel.class),
+				@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)})
+	public Response getEpaymentProfile(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
+			@ApiParam (value = "referenceUid of Payment", required = true) @PathParam("referenceUid") String referenceUid);
 	/* Get info epaymentProfile - END */
 
 	//5

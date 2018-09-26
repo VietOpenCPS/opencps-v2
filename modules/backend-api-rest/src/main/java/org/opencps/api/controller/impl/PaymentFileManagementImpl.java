@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.PaymentFileManagement;
+import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.PaymentFileUtils;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
@@ -30,6 +31,8 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -233,41 +236,41 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 * @param referenceUid
 	 * @return Response
 	 */
-//	@Override
-//	public Response getEpaymentProfile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-//			User user, ServiceContext serviceContext, String id, String referenceUid) {
-//		BackendAuth auth = new BackendAuthImpl();
-//
-//		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
-//
-//			PaymentFileActions actions = new PaymentFileActionsImpl();
-//
-//			long dossierId = GetterUtil.getLong(id);
-//
-//			// TODO get Dossier by referenceUid if dossierId = 0
-//			// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
-//
-//			PaymentFile paymentFile = actions.getPaymentFile(dossierId, referenceUid);
-//
-//			String ePaymentProfile = paymentFile.getEpaymentProfile();
-//
-//			JSONObject result = JSONFactoryUtil.createJSONObject(ePaymentProfile);
-//
-//			return Response.status(200).entity(result.toJSONString()).build();
-//
-//		} catch (Exception e) {
-//			ErrorMsg error = new ErrorMsg();
-//
-//			error.setMessage("Content not found!");
-//			error.setCode(404);
-//			error.setDescription(e.getMessage());
-//
-//			return Response.status(404).entity(error).build();
-//		}
-//	}
+	@Override
+	public Response getEpaymentProfile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			PaymentFileActions actions = new PaymentFileActionsImpl();
+
+			long dossierId = GetterUtil.getLong(id);
+			//_log.info("dossierId ============ " + dossierId);
+			// TODO get Dossier by referenceUid if dossierId = 0
+			// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+
+			PaymentFile paymentFile = actions.getPaymentFile(dossierId, referenceUid);
+
+			String ePaymentProfile = paymentFile.getEpaymentProfile();
+			//_log.info("ePaymentProfile ============ " + ePaymentProfile);
+			JSONObject result = JSONFactoryUtil.createJSONObject(ePaymentProfile);
+
+			return Response.status(200).entity(result.toJSONString()).build();
+
+		} catch (Exception e) {
+			ErrorMsg error = new ErrorMsg();
+
+			error.setMessage("Content not found!");
+			error.setCode(404);
+			error.setDescription(e.getMessage());
+
+			return Response.status(404).entity(error).build();
+		}
+	}
 
 	/**
 	 * Update info EpaymentProfile of DossierId and referenceUid
