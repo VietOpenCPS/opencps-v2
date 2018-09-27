@@ -711,7 +711,7 @@ public class DossierUtils {
 			model.setLastActionDate(APIDateTimeUtils.convertDateToString(dossierAction.getCreateDate(),
 					APIDateTimeUtils._NORMAL_PARTTERN));
 			model.setLastActionName(dossierAction.getActionName());
-			model.setLastActionUser(dossierAction.getActionUser());
+			model.setLastActionUser(dossierAction.getActionUser() != null ? dossierAction.getActionUser().toUpperCase() : StringPool.BLANK);
 			model.setLastActionNote(dossierAction.getActionNote());
 			model.setLastActionCode(dossierAction.getActionCode());
 			model.setLastActionUserId(dossierAction.getUserId());
