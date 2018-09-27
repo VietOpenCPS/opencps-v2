@@ -74,7 +74,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		// LOG.info(url);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
-		DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
+		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
 		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
 		return (GetDossierResponse) this

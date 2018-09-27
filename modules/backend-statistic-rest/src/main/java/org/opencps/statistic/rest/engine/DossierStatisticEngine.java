@@ -85,7 +85,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
 				dossierData.ifPresent(source -> {
 					
-					LOG.info("***** " + site.getGroupId() + source.size());
+					//LOG.info("***** " + site.getGroupId() + source.size());
 					
 					if(source.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
