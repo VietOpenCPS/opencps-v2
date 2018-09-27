@@ -153,13 +153,11 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
 								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
+									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
+											dueDateTimeStamp, groupId, true);
 									if (subTimeStamp > 0) {
-										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
-												dueDateTimeStamp, groupId);
 										result.setStepOverdue("Quá hạn " + strOverDue);
 									} else {
-										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
-												dueDateTimeStamp, groupId);
 										result.setStepOverdue("Còn " + strOverDue);
 									}
 								} else {
@@ -169,16 +167,11 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 //									_log.info("subTimeStamp: "+subTimeStamp);
+									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
+											dueDateTimeStamp, groupId, true);
 									if (subTimeStamp > 0) {
-//										_log.info("START Qua han: ");
-										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
-												dueDateTimeStamp, groupId);
 										result.setStepOverdue("Quá hạn " + strOverDue);
 									} else {
-//										_log.info("START Con han: ");
-										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
-												dueDateTimeStamp, groupId);
-//										_log.info("strOverDue: "+strOverDue);
 										result.setStepOverdue("Còn " + strOverDue);
 									}
 								} else {
