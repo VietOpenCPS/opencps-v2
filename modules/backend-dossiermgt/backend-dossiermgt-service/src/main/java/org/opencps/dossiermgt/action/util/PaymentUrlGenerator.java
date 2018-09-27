@@ -62,7 +62,7 @@ public class PaymentUrlGenerator {
 		byte[] ba = null;
 		// create the md5 hash and UTF-8 encode it
 		try {
-			md5 = MessageDigest.getInstance("MD5");
+			md5 = MessageDigest.getInstance("SHA-256");
 			ba = md5.digest(buf.toString().getBytes("UTF-8"));
 		} catch (Exception e) {
 			_log.error(e);

@@ -3,7 +3,6 @@ package org.opencps.kernel.message.sms;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -74,66 +73,67 @@ public class SendMTConverterUtils {
 //			String soapEndpointUrl = config.getEndPointUrl();
 
 			SOAPMessage message = convertSendMTToXML(sendMT);
-			//
-			MimeHeaders mimeHeader = message.getMimeHeaders();
-			mimeHeader.setHeader("SOAPACTION", "http://tempuri.org/SendMT");
-			mimeHeader.setHeader("Content-Type", "text/xml; charset=utf-8");
-			mimeHeader.setHeader("Proxy-Connection", "keep-alive");
-
-			ByteArrayOutputStream stream = null;
-			try {
-				// Create SOAP Connection
-				SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
-				SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-
-				// Set timeout to call soap
-				URL endpoint = new URL(null, soapEndpointUrl, new URLStreamHandler() {
-					protected URLConnection openConnection(URL url) throws IOException {
-						URL clone = new URL(url.toString());
-						HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
-
-						connection.setRequestProperty("Content-Type", "text/xml");
-						connection.setRequestProperty("Accept", "application/soap+xml, text/*");
-
-						connection.setDoOutput(true);
-						connection.setConnectTimeout(3 * 1000);
-						connection.setReadTimeout(3 * 1000);
-
-						return connection;
-					}
-				});
-
-				// Send SOAP Message to SOAP Server
-				SOAPMessage soapResponse = soapConnection.call(message, endpoint);
-
-				SOAPBody bodyResponse = soapResponse.getSOAPBody();
-				results = bodyResponse.getTextContent();
-				_log.info("results: "+results);
-
-				// Print the SOAP Response
-//				_log.info("Response SOAP Message:");
-//				stream = new ByteArrayOutputStream();
-//				soapResponse.writeTo(stream);
-////				soapResponse.writeTo(System.out);
-//				results = new String(stream.toByteArray(), "utf-8");
-//				_log.info("results: "+results);
-//				//Convert xml to Object
-//				SendMTResponse sendMTResponse = convertXMLToSendMTResponse(results);
-//				if (sendMTResponse != null) {
-//					return sendMTResponse.getSendMTResult();
-//				}
-
-				soapConnection.close();
-			} catch (Exception e) {
-				_log.debug(e);
-				_log.info(
-						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
-			} finally {
-				if (stream != null) {
-					stream.close();
+			if (message != null) {
+				//
+				MimeHeaders mimeHeader = message.getMimeHeaders();
+				mimeHeader.setHeader("SOAPACTION", "http://tempuri.org/SendMT");
+				mimeHeader.setHeader("Content-Type", "text/xml; charset=utf-8");
+				mimeHeader.setHeader("Proxy-Connection", "keep-alive");
+	
+//				ByteArrayOutputStream stream = null;
+				try {
+					// Create SOAP Connection
+					SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
+					SOAPConnection soapConnection = soapConnectionFactory.createConnection();
+	
+					// Set timeout to call soap
+					URL endpoint = new URL(null, soapEndpointUrl, new URLStreamHandler() {
+						protected URLConnection openConnection(URL url) throws IOException {
+							URL clone = new URL(url.toString());
+							HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
+	
+							connection.setRequestProperty("Content-Type", "text/xml");
+							connection.setRequestProperty("Accept", "application/soap+xml, text/*");
+	
+							connection.setDoOutput(true);
+							connection.setConnectTimeout(3 * 1000);
+							connection.setReadTimeout(3 * 1000);
+	
+							return connection;
+						}
+					});
+	
+					// Send SOAP Message to SOAP Server
+					SOAPMessage soapResponse = soapConnection.call(message, endpoint);
+	
+					SOAPBody bodyResponse = soapResponse.getSOAPBody();
+					results = bodyResponse.getTextContent();
+					_log.info("results: "+results);
+	
+					// Print the SOAP Response
+	//				_log.info("Response SOAP Message:");
+	//				stream = new ByteArrayOutputStream();
+	//				soapResponse.writeTo(stream);
+	////				soapResponse.writeTo(System.out);
+	//				results = new String(stream.toByteArray(), "utf-8");
+	//				_log.info("results: "+results);
+	//				//Convert xml to Object
+	//				SendMTResponse sendMTResponse = convertXMLToSendMTResponse(results);
+	//				if (sendMTResponse != null) {
+	//					return sendMTResponse.getSendMTResult();
+	//				}
+	
+					soapConnection.close();
+				} catch (Exception e) {
+					_log.debug(e);
+					_log.info(
+							"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
+				} finally {
+//					if (stream != null) {
+//						stream.close();
+//					}
 				}
 			}
-
 		} catch (Exception e) {
 			_log.error(e);
 		}

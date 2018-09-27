@@ -500,7 +500,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			try {
 
-				md5 = MessageDigest.getInstance("MD5");
+				md5 = MessageDigest.getInstance("SHA-256");
 
 				ba = md5.digest(object.getReferenceUid().getBytes("UTF-8"));
 

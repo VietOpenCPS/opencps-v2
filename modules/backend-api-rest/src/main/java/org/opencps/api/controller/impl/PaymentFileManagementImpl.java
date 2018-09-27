@@ -262,6 +262,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.status(200).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
+			_log.debug(e);
 			ErrorMsg error = new ErrorMsg();
 
 			error.setMessage("Content not found!");
