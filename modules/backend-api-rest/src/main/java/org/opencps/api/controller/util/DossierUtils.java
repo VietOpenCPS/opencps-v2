@@ -89,7 +89,7 @@ public class DossierUtils {
 			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
-			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME));
+			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase() : StringPool.BLANK);
 			model.setApplicantNote(doc.get(DossierTerm.APPLICANT_NOTE));
 			model.setApplicantIdType(doc.get(DossierTerm.APPLICANT_ID_TYPE));
 			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
@@ -298,7 +298,7 @@ public class DossierUtils {
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
 			model.setLastActionCode(doc.get(DossierTerm.LAST_ACTION_CODE));
 			model.setLastActionName(doc.get(DossierTerm.LAST_ACTION_NAME));
-			model.setLastActionUser(doc.get(DossierTerm.LAST_ACTION_USER));
+			model.setLastActionUser(doc.get(DossierTerm.LAST_ACTION_USER) != null ? doc.get(DossierTerm.LAST_ACTION_USER).toUpperCase() : StringPool.BLANK);
 			model.setLastActionNote(doc.get(DossierTerm.LAST_ACTION_NOTE));
 			model.setLastActionUserId(GetterUtil.getLong(doc.get(DossierTerm.USER_DOSSIER_ACTION_ID)));
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
@@ -636,7 +636,7 @@ public class DossierUtils {
 		model.setGovAgencyCode(input.getGovAgencyCode());
 		model.setGovAgencyName(input.getGovAgencyName());
 		model.setDossierTemplateNo(input.getDossierTemplateNo());
-		model.setApplicantName(input.getApplicantName());
+		model.setApplicantName(input.getApplicantName() != null ? input.getApplicantName().toUpperCase() : StringPool.BLANK);
 		model.setApplicantIdType(input.getApplicantIdType());
 		model.setApplicantIdNo(input.getApplicantIdNo());
 		model.setApplicantIdDate(
