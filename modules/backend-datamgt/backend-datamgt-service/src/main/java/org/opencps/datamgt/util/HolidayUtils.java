@@ -37,15 +37,15 @@ public class HolidayUtils {
 
 		//Get info day off and day work
 		getDayByGroupId(groupId);
-//		_log.info("strDayOff: "+strDayOff);
+		_log.info("strDayOff: "+strDayOff);
 		// Calculator time working
 		long hoursCount = processHoursCount(durationCount, durationUnit);
-//		_log.info("hoursCount: "+hoursCount);
+		_log.info("hoursCount: "+hoursCount);
 
 		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 
 		Date dueDate = getEndDate(groupId, startDate, hoursCount, holidayList);
-//		_log.info("dueDate: "+dueDate);
+		_log.info("dueDate: "+dueDate);
 //		Calendar cal = Calendar.getInstance();
 //		cal.setTime(startDate);
 //		int day = cal.get(Calendar.DAY_OF_WEEK);
@@ -221,14 +221,23 @@ public class HolidayUtils {
 					flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
 				}
 			} else if (countDay > 1) {
-				for (int i = 0; i < countDay; i++) {
-//					_log.info("STRAT Calculator DueDate");
-//					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DATE));
-//					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DAY_OF_MONTH));
+//				for (int i = 0; i < countDay; i++) {
+////					_log.info("STRAT Calculator DueDate");
+////					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DATE));
+////					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DAY_OF_MONTH));
+//					baseDateCal.add(Calendar.DATE, 1);
+//					boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
+//					if(!flagCheckDay) {
+//						i++;
+//					}
+//				}
+
+				int i = 0;
+				while(i < countDay) {
 					baseDateCal.add(Calendar.DATE, 1);
 					boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
-					if(flagCheckDay) {
-						i --;
+					if(!flagCheckDay) {
+						i++;
 					}
 				}
 			}
