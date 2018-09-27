@@ -19,9 +19,8 @@ public class HolidayUtils {
 
 	private static Log _log = LogFactoryUtil.getLog(HolidayUtils.class);
 
-	public final static String SATURDAY = "SATURDAY";
-	public final static String SUNDAY = "SUNDAY";
-
+	public static final int VALUE_HOUR = 60;
+	public static final int VALUE_TIME_ZONE = 7;
 	// get value day off
 	private static volatile String strDayOff = StringPool.BLANK;
 	// get value time working
@@ -393,56 +392,36 @@ public class HolidayUtils {
 
 	private static void processTimeWorking(String[] hourArr1, String[] hourArr2) {
 		if (Validator.isNotNull(hourArr1[0])) {
-//			_log.info("hourArr1[0]: "+hourArr1[0]);
 //			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.PERIOD);
-			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.COLON);
+			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.PERIOD);
 			if (strMorningSplit != null) {
-				for (int i = 0; i < strMorningSplit.length; i++) {
-//					_log.info("hourArr1[0]11: "+strMorningSplit[i]);
-					if (i == 0) {
-						startHourMorning = Integer.parseInt(strMorningSplit[i]) - 7;
-					} else {
-						startMinuteMorning = Integer.parseInt(strMorningSplit[i]);
-					}
-				}
+				startHourMorning = Integer.parseInt(strMorningSplit[0]) - VALUE_TIME_ZONE;
+				startMinuteMorning = Integer.parseInt(strMorningSplit[1]);
 			}
 		}
 		if (Validator.isNotNull(hourArr1[1])) {
 			//TODO
-			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.COLON);
+			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.PERIOD);
 //			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.COLON);
 			if (strMorningSplit != null) {
-				for (int i = 0; i < strMorningSplit.length; i++) {
-					if (i == 0) {
-						endHourMorning = Integer.parseInt(strMorningSplit[i]) - 7;
-					} else {
-						endMinuteMorning = Integer.parseInt(strMorningSplit[i]);
-					}
-				}
+				endHourMorning = Integer.parseInt(strMorningSplit[0]) - VALUE_TIME_ZONE;
+				endMinuteMorning = Integer.parseInt(strMorningSplit[1]);
 			}
 		}
+
 		if (Validator.isNotNull(hourArr2[0])) {
-			String[] strAfternoonSplit = StringUtil.split(hourArr2[0], StringPool.COLON);
+			String[] strAfternoonSplit = StringUtil.split(hourArr2[0], StringPool.PERIOD);
 			if (strAfternoonSplit != null) {
-				for (int i = 0; i < strAfternoonSplit.length; i++) {
-					if (i == 0) {
-						startHourAfterNoon = Integer.parseInt(strAfternoonSplit[i]) - 7;
-					} else {
-						startMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[i]);
-					}
-				}
+				startHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]) - VALUE_TIME_ZONE;
+				startMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[1]);
 			}
 		}
+
 		if (Validator.isNotNull(hourArr2[1])) {
-			String[] strAfternoonSplit = StringUtil.split(hourArr2[1], StringPool.COLON);
+			String[] strAfternoonSplit = StringUtil.split(hourArr2[1], StringPool.PERIOD);
 			if (strAfternoonSplit != null) {
-				for (int i = 0; i < strAfternoonSplit.length; i++) {
-					if (i == 0) {
-						endHourAfterNoon = Integer.parseInt(strAfternoonSplit[i]) - 7;
-					} else {
-						endMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[i]);
-					}
-				}
+				endHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]) - VALUE_TIME_ZONE;
+				endMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[1]);
 			}
 		}
 	}
@@ -475,125 +454,6 @@ public class HolidayUtils {
 
 		return flagCheckDay;
 	}
-
-	
-//	private static Calendar checkDay(Calendar baseDateCal, Date startDate, List<Holiday> holidayList,
-//			int saturdayIsHoliday, int sundayIsHoliday) {
-//
-//		boolean isHoliday = false;
-//
-//		try {
-//			/**
-//			 * Kiem tra ngay xu ly co trung vao list ngay nghi da config hay
-//			 * chua, Neu trung thi + them ngay xu ly
-//			 */
-//			isHoliday = isHoliday(baseDateCal, holidayList);
-//
-//			if (isHoliday) {
-//				if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))) {
-//					baseDateCal.add(Calendar.DATE, 2);
-//				} else {
-//					baseDateCal.add(Calendar.DATE, 1);
-//				}
-//
-//			} else {
-//				if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))) {
-//					baseDateCal.add(Calendar.DATE, 1);
-//				}
-//			}
-//			
-////			if (baseDateCal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ||
-////				baseDateCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || isHoliday) {
-////
-////				baseDateCal = isHolidayCal(baseDateCal, holidayList);
-////
-////				/*
-////				 * Neu flag saturday,sunday bat thi tinh la ngay nghi, + them
-////				 * ngay xu ly
-////				 */
-////
-//////				if (saturdayIsHoliday == ACTIVE) {
-//////
-//////					baseDateCal = checkSaturday(baseDateCal);
-//////				}
-////
-//////				if (sundayIsHoliday == ACTIVE) {
-//////					baseDateCal = checkSunday(baseDateCal);
-//////				}
-////
-////				checkDay(baseDateCal, baseDate, holidayConfigList, saturdayIsHoliday, sundayIsHoliday);
-////			}
-//		}
-//		catch (Exception e) {
-//			_log.error(e);
-//		}
-//
-//		return baseDateCal;
-//	}
-
-//	private static Calendar checkSaturday(Calendar baseDateCal) {
-//
-//		if (baseDateCal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-//			baseDateCal.add(Calendar.DATE, 2);
-//		}
-//		return baseDateCal;
-//	}
-
-//	private static Calendar checkSunday(Calendar baseDateCal) {
-//
-//		if (baseDateCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-//			baseDateCal.add(Calendar.DATE, 1);
-//		}
-//		return baseDateCal;
-//	}
-
-//	private static int checkCountHoliday(long groupId) {
-//
-//		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
-////		if
-//		
-//		
-//		return 0;
-//	}
-
-//	private static Calendar isHolidayCal(Calendar baseDateCal, List<Holiday> holidayList) {
-//
-//		int baseDay = 0;
-//		int baseMonth = 0;
-//		int baseYear = 0;
-//
-//		int holidayDay = 0;
-//		int holidayMonth = 0;
-//		int holidayYear = 0;
-//
-//		Calendar holidayCal = Calendar.getInstance();
-//
-//		try {
-//			if (holidayList != null && holidayList.size() > 0) {
-//				for (Holiday holiday: holidayList) {
-//
-//					holidayCal.setTime(holiday.getHolidayDate());
-//
-////					baseDay = baseDateCal.get(Calendar.DATE);
-//					holidayDay = holidayCal.get(Calendar.DATE);
-//
-////					baseMonth = baseDateCal.get(Calendar.MONTH);
-//					holidayMonth = holidayCal.get(Calendar.MONTH);
-//
-////					baseYear = baseDateCal.get(Calendar.YEAR);
-//					holidayYear = holidayCal.get(Calendar.YEAR);
-//
-//					if (baseDay == holidayDay && baseMonth == holidayMonth && baseYear == holidayYear) {
-//						baseDateCal.add(Calendar.DATE, 1);
-//					}
-//				}
-//			}
-//		}
-//		catch (Exception e) {
-//			_log.error(e);
-//		}
-//		return baseDateCal;
-//	}
 
 	private static boolean isHoliday(Calendar baseDateCal, List<Holiday> holidayList) {
 
@@ -654,10 +514,10 @@ public class HolidayUtils {
 		
 		//Get info day off and day work
 		getDayByGroupId(groupId);
-//		_log.info("strDayOff: "+strDayOff);
+		_log.info("strDayOff: "+strDayOff);
 
 		boolean flagCompareDate = false;
-//		_log.info("numberDate: "+numberDate);
+		_log.info("numberDate: "+numberDate);
 		for (int i = 0; i < numberDate; i++) {
 			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 			boolean isHoliday = false;
@@ -699,62 +559,182 @@ public class HolidayUtils {
 		return count;
 	}
 
-//	public static int getCountHoursByHoliday(long startDate, long endDate, int numberDate, long groupId) {
-//
-//		int count = 0;
-//		Calendar startDateCal = Calendar.getInstance();
-//		startDateCal.setTimeInMillis(startDate);
-////		_log.info("startDateCal: "+startDateCal.get(Calendar.DATE));
-//
-//		Calendar endDateCal = Calendar.getInstance();
-//		endDateCal.setTimeInMillis(endDate);
-////		_log.info("endDateCal: "+endDateCal.get(Calendar.DATE));
-//		
-//		//Get info day off and day work
-//		getDayByGroupId(groupId);
-//		_log.info("strDayOff: "+strDayOff);
-//
-//		boolean flagCompareDate = false;
-//		_log.info("numberDate: "+numberDate);
-//		for (int i = 0; i < numberDate; i++) {
-//			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
-//			boolean isHoliday = false;
-//			if (holidayList != null && holidayList.size() > 0) {
-//				isHoliday = isHoliday(startDateCal, holidayList);
+	//Process count hours
+	public static int getCountHoursByHoliday(long startDate, long endDate, long groupId) {
+
+		Calendar startDateCal = Calendar.getInstance();
+		startDateCal.setTimeInMillis(startDate);
+		_log.info("startDateCalHOUR: "+startDateCal.get(Calendar.DATE));
+
+		Calendar endDateCal = Calendar.getInstance();
+		endDateCal.setTimeInMillis(endDate);
+		_log.info("endDateCalHOUR: "+endDateCal.get(Calendar.DATE));
+		
+		//Get info day off and day work
+		getDayByGroupId(groupId);
+		_log.info("strDayOff: "+strDayOff);
+
+		int startDayOfWeek = startDateCal.get(Calendar.DAY_OF_WEEK);
+		int startHourOfDay = startDateCal.get(Calendar.HOUR_OF_DAY);
+
+		int endDayOfWeek = endDateCal.get(Calendar.DAY_OF_WEEK);
+		int endHourOfDay = endDateCal.get(Calendar.HOUR_OF_DAY);
+
+		int hasOverDue = 0;
+		boolean flagCompareDate = compareDate(startDateCal, endDateCal);
+		if (flagCompareDate) {
+			_log.info("111: ");
+			if (startHourMorning > startHourOfDay) {
+				// Process hours of morning
+				if (endHourOfDay < endHourMorning) {
+					hasOverDue = endHourOfDay - startHourMorning;
+				} else if (endHourOfDay == endHourMorning) {
+					hasOverDue = endHourMorning - startHourMorning;
+					// hasOverDue = countHoursWork(hourArr1);
+				}
+				// Process hours of afternoon
+				if (startHourAfterNoon <= endHourOfDay && endHourOfDay < endHourAfterNoon) {
+					hasOverDue = (endHourOfDay - startHourAfterNoon) + (endHourMorning - startHourMorning);
+				} else if (endHourOfDay == endHourAfterNoon) {
+					hasOverDue = (endHourAfterNoon - startHourAfterNoon) + (endHourMorning - startHourMorning);
+					// hasOverDue = countHoursWork(hourArr1) + countHoursWork(hourArr1);
+				}
+			}
+			//
+			if (startHourMorning <= startHourOfDay && startHourOfDay < endHourMorning) {
+				if (endHourOfDay <= endHourMorning) {
+					hasOverDue = endHourOfDay - startHourOfDay;
+				} else if (endHourOfDay <= endHourAfterNoon) {
+					hasOverDue = (endHourOfDay - startHourAfterNoon) + (endHourMorning - startHourOfDay);
+				}
+			}
+
+			if (endHourMorning < startHourOfDay) {
+				if (startHourOfDay < startHourAfterNoon) {
+					hasOverDue = endHourOfDay - startHourAfterNoon;
+				} else if (startHourOfDay <= endHourAfterNoon) {
+					hasOverDue = endHourOfDay - startHourOfDay;
+				}
+			}
+
+//			return hasOverDue;
+		} else {
+			_log.info("222: ");
+			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
+			boolean isHoliday = false;
+			if (holidayList != null && holidayList.size() > 0) {
+				isHoliday = isHoliday(startDateCal, holidayList);
+			}
+			// Check day is Day off
+			boolean isDayOff = false;
+			if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
+				isDayOff = true;
+			}
+
+			if (isHoliday || isDayOff) {
+				_log.info("333: ");
+				// Process hours of morning
+				if (endHourOfDay <= endHourMorning) {
+					hasOverDue = endHourOfDay - startHourMorning;
+				} else if (startHourAfterNoon <= endHourOfDay && endHourOfDay <= endHourAfterNoon) {
+					hasOverDue = (endHourOfDay - startHourAfterNoon) + (endHourMorning - startHourMorning);
+				}
+			} else {
+				_log.info("444: ");
+				WorkTime startWorkTime = WorkTimeLocalServiceUtil.fetchByF_day(groupId, startDayOfWeek);
+				if (startWorkTime != null) {
+					String strHours = startWorkTime.getHours();
+					String[] hoursList = StringUtil.split(strHours);
+
+					if (hoursList != null && hoursList.length > 0) {
+						String[] hourArrOne = hoursList[0].split(StringPool.DASH);
+						String[] hourArrTwo = hoursList[1].split(StringPool.DASH);
+
+						if (hourArrOne != null && hourArrTwo != null) {
+							processTimeWorking(hourArrOne, hourArrTwo);
+
+							if (startHourMorning <= startHourOfDay && startHourOfDay <= endHourMorning) {
+								hasOverDue += (endHourMorning - startHourOfDay)
+										+ (endHourAfterNoon - startHourAfterNoon);
+							}
+
+							if (endHourMorning < startHourOfDay) {
+								if (startHourOfDay < startHourAfterNoon) {
+									hasOverDue += endHourAfterNoon - startHourAfterNoon;
+								} else if (startHourOfDay <= endHourAfterNoon) {
+									hasOverDue += endHourAfterNoon - startHourOfDay;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			WorkTime endWorkTime = WorkTimeLocalServiceUtil.fetchByF_day(groupId, endDayOfWeek);
+			if (endWorkTime != null) {
+				String strHours = endWorkTime.getHours();
+				String[] hoursList = StringUtil.split(strHours);
+
+				if (hoursList != null && hoursList.length > 0) {
+					String[] hourArrOne = hoursList[0].split(StringPool.DASH);
+					String[] hourArrTwo = hoursList[1].split(StringPool.DASH);
+
+					if (hourArrOne != null && hourArrTwo != null) {
+						processTimeWorking(hourArrOne, hourArrTwo);
+						//
+						if (startHourMorning <= endHourOfDay && endHourOfDay <= endHourMorning) {
+							hasOverDue += endHourOfDay - startHourMorning;
+						}
+
+						if (startHourAfterNoon <= endHourOfDay && endHourOfDay <= endHourAfterNoon) {
+							hasOverDue += (endHourMorning - startHourMorning) + (endHourOfDay - startHourAfterNoon);
+						}
+					}
+				}
+			}
+		}
+		_log.info("hasOverDue: "+hasOverDue);
+		return hasOverDue;
+	}
+
+	public static void main(String[] args) {
+		double subHours = (double) 31 / VALUE_HOUR;
+		double startFullHour = 7 + subHours;
+		long test = (int) startFullHour;
+		System.out.println(subHours);
+		System.out.println(startFullHour);
+		System.out.println(test);
+	}
+
+	//Process calculator time work follow half day
+//	private static int countHoursWork (String[] hourArr) {
+//		double startFullHour = 0;
+//		double endFullHour = 0;
+//		if (Validator.isNotNull(hourArr[0])) {
+//			String[] startHourSplit = StringUtil.split(hourArr[0], StringPool.PERIOD);
+//			if (startHourSplit != null) {
+//				int startHours = Integer.parseInt(startHourSplit[0]) - VALUE_TIME_ZONE;
+//				int startMinute = Integer.parseInt(startHourSplit[1]);
+//				double subHours = (double) startMinute / VALUE_HOUR;
+//				startFullHour += startHours + subHours;
 //			}
-//			//Check day is Day off
-//			boolean isDayOff = false;
-//			if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
-//				isDayOff = true;
-//			}
-////			_log.info("isHoliday: "+isHoliday);
-////			_log.info("isDayOff: "+isDayOff);
-//			startDateCal.add(Calendar.DATE, 1);
-//			if (isHoliday || isDayOff) {
-////				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
-////					startDateCal.add(Calendar.DAY_OF_MONTH, 2);
-////					count += 2;
-////					flagCompareDate = compareDate(startDateCal, endDateCal);
-////				} else {
-////				startDateCal.add(Calendar.DATE, 1);
-//				count += 1;
-////				}
-//
-//			}
-//			flagCompareDate = compareDate(startDateCal, endDateCal);
-////			else {
-////				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
-////					startDateCal.add(Calendar.DAY_OF_MONTH, 1);
-////					count += 1;
-////					flagCompareDate = compareDate(startDateCal, endDateCal);
-////				}
-////			}
-//			if (flagCompareDate) {
-//				return count;
+//		}
+//		if (Validator.isNotNull(hourArr[1])) {
+//			String[] endHourSplit = StringUtil.split(hourArr[1], StringPool.PERIOD);
+//			if (endHourSplit != null) {
+//				int endHours = Integer.parseInt(endHourSplit[0]) - VALUE_TIME_ZONE;
+//				int endMinute = Integer.parseInt(endHourSplit[1]);
+//				double subHours = (double) endMinute / VALUE_HOUR;
+//				endFullHour += endHours + subHours;
 //			}
 //		}
 //
-//		return count;
+//		if (startFullHour > 0 && endFullHour > 0) {
+//			return (int) (endFullHour - startFullHour);
+//			
+//		}
+//
+//		return 0;
 //	}
 
 	//Compare startDate and endDate
@@ -770,109 +750,6 @@ public class HolidayUtils {
 		}
 		return false;
 	}
-
-//	private void checkDay1(int saturdayIsHoliday, int sundayIsHoliday) {
-//
-//		boolean isHoliday = false;
-//
-//		try {
-//
-//			if (Validator.isNull(holidayConfigList1) || (holidayConfigList1.size() <= 0)) {
-////				holidayConfigList1 = HolidayConfigLocalServiceUtil.getHolidayConfig(ACTIVE);
-//			}
-//
-//			isHoliday = isHoliday(baseCalendar, holidayConfigList1);
-//
-//			if (baseCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ||
-//				baseCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || isHoliday) {
-//
-//				if (isHoliday) {
-//					isHolidayCal1();
-//				}
-//
-//				if (saturdayIsHoliday == ACTIVE) {
-//
-//					checkSaturday1();
-//				}
-//
-//				if (sundayIsHoliday == ACTIVE) {
-//					checkSunday1();
-//				}
-//
-//			}
-//			else {
-//
-//			}
-//		}
-//		catch (Exception e) {
-//			_log.error(e);
-//		}
-//	}
-
-//	private void isHolidayCal1() {
-//
-//		int baseDay = 0;
-//		int baseMonth = 0;
-//		int baseYear = 0;
-//
-//		int holidayDay = 0;
-//		int holidayMonth = 0;
-//		int holidayYear = 0;
-//
-//		Calendar holidayCal = Calendar.getInstance();
-//
-//		try {
-//
-//			if (Validator.isNull(holidayConfigList1) || (holidayConfigList1.size() <= 0)) {
-//
-////				holidayConfigList1 = HolidayConfigLocalServiceUtil.getHolidayConfig(ACTIVE);
-//			}
-//
-//			for (int i = 0; i < holidayConfigList1.size(); i++) {
-//
-//				holidayCal.setTime(holidayConfigList1.get(i).getHolidayDate());
-//
-//				baseDay = baseCalendar.get(Calendar.DATE);
-//				holidayDay = holidayCal.get(Calendar.DATE);
-//
-//				baseMonth = baseCalendar.get(Calendar.MONTH);
-//				holidayMonth = holidayCal.get(Calendar.MONTH);
-//
-//				baseYear = baseCalendar.get(Calendar.YEAR);
-//				holidayYear = holidayCal.get(Calendar.YEAR);
-//
-//				if (baseDay == holidayDay && baseMonth == holidayMonth && baseYear == holidayYear) {
-//					--dayGoing;
-//					minutesGoing = minutesGoing - 1440;
-//				}
-//			}
-//		}
-//		catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			_log.error(e);
-//		}
-//
-//	}
-
-//	private Calendar checkSunday1() {
-//
-//		if (baseCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-//
-//			--dayGoing;
-//			minutesGoing = minutesGoing - 1440;
-//		}
-//		return baseCalendar;
-//	}
-
-//	private Calendar checkSaturday1() {
-//
-//		if (baseCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-//			--dayGoing;
-//			minutesGoing = minutesGoing - 1440;
-//
-//		}
-//		return baseCalendar;
-//	}
 
 	private static Calendar processHourCalendar(Calendar baseDateCal) {
 
