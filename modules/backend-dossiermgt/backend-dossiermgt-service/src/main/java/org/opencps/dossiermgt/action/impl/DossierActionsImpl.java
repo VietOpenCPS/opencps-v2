@@ -3673,7 +3673,7 @@ public class DossierActionsImpl implements DossierActions {
 		_log.info("durationCountStep: "+durationCount);
 		int durationUnit = serviceProcess.getDurationUnit();
 		
-//		_log.info("Calculate do action duration count: " + durationCount);
+		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0) {
 			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
 			_log.info("dueDateAction: "+dueDate);
