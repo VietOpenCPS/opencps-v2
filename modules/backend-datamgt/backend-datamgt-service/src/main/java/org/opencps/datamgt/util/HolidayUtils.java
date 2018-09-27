@@ -38,15 +38,15 @@ public class HolidayUtils {
 
 		//Get info day off and day work
 		getDayByGroupId(groupId);
-		_log.info("strDayOff: "+strDayOff);
+//		_log.info("strDayOff: "+strDayOff);
 		// Calculator time working
 		long hoursCount = processHoursCount(durationCount, durationUnit);
-		_log.info("hoursCount: "+hoursCount);
+//		_log.info("hoursCount: "+hoursCount);
 
 		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 
-		Date dueDate = getEndDate( groupId,  startDate,  hoursCount, holidayList);
-		_log.info("dueDate: "+dueDate);
+		Date dueDate = getEndDate(groupId, startDate, hoursCount, holidayList);
+//		_log.info("dueDate: "+dueDate);
 //		Calendar cal = Calendar.getInstance();
 //		cal.setTime(startDate);
 //		int day = cal.get(Calendar.DAY_OF_WEEK);
@@ -55,19 +55,22 @@ public class HolidayUtils {
 
 	private static long processHoursCount(double durationCount, int durationUnit) {
 		long resultHours = 0;
+//		_log.info("durationCount: "+durationCount);
+//		_log.info("durationUnit: "+durationUnit);
 		if (durationUnit == 0) {
-			resultHours = (long) durationCount * 8;
+			resultHours = (long) (durationCount * 8);
 		} else {
 			resultHours = (long) durationCount;
 		}
+//		_log.info("resultHours: "+resultHours);
 		return resultHours;
 	}
 
 	// Calculator day off and day work
 	private static void getDayByGroupId(long groupId) {
-		_log.info("groupId: "+groupId);
+//		_log.info("groupId: "+groupId);
 		List<WorkTime> workTimeList = WorkTimeLocalServiceUtil.getByGroupId(groupId);
-		_log.info("workTimeList: "+workTimeList);
+//		_log.info("workTimeList: "+workTimeList);
 		StringBuilder sbDayOff = null;
 		StringBuilder sbDayWork = null;
 		// Get day off and day work.
@@ -97,31 +100,30 @@ public class HolidayUtils {
 				}
 			}
 			//Process day off
-			_log.info("sbDayOff: "+sbDayOff.toString());
-			_log.info("sbDayWork: "+sbDayWork.toString());
+//			_log.info("sbDayOff: "+sbDayOff.toString());
+//			_log.info("sbDayWork: "+sbDayWork.toString());
 			getDayOff(sbDayOff, sbDayWork);
 		}
-		_log.info("sbDayOff: "+sbDayOff.toString());
 	}
 
 	private static void getDayOff(StringBuilder sbDayOff, StringBuilder sbDayWork) {
-		if (Validator.isNotNull(sbDayOff)) {
+		if (Validator.isNotNull(sbDayOff.toString())) {
 			strDayOff = sbDayOff.toString();
-			_log.info("sbDayOff: "+sbDayOff.toString());
-		} else if (Validator.isNotNull(sbDayWork)) {
+//			_log.info("sbDayOff: "+sbDayOff.toString());
+		} else if (Validator.isNotNull(sbDayWork.toString())) {
 			StringBuilder sb = new StringBuilder();
 			String strDayWork = sbDayWork.toString();
 			if (!strDayWork.contains(String.valueOf(Calendar.SUNDAY))) {
-				if (Validator.isNotNull(sbDayOff)) {
-					sb.append(StringPool.COMMA);
-					sb.append(Calendar.SUNDAY);
-				} else {
-					sb.append(Calendar.SUNDAY);
-				}
+//				if (Validator.isNotNull(sbDayOff.toString())) {
+//					sb.append(StringPool.COMMA);
+//					sb.append(Calendar.SUNDAY);
+//				} else {
+				sb.append(Calendar.SUNDAY);
+//				}
 			}
-			_log.info("sbDayOff11: "+sbDayOff.toString());
+//			_log.info("sbDayOff11: "+sb.toString());
 			if (!strDayWork.contains(String.valueOf(Calendar.MONDAY))) {
-				if (Validator.isNotNull(sbDayOff)) {
+				if (Validator.isNotNull(sb.toString())) {
 					sb.append(StringPool.COMMA);
 					sb.append(Calendar.MONDAY);
 				} else {
@@ -129,7 +131,7 @@ public class HolidayUtils {
 				}
 			}
 			if (!strDayWork.contains(String.valueOf(Calendar.TUESDAY))) {
-				if (Validator.isNotNull(sbDayOff)) {
+				if (Validator.isNotNull(sb.toString())) {
 					sb.append(StringPool.COMMA);
 					sb.append(Calendar.TUESDAY);
 				} else {
@@ -137,7 +139,7 @@ public class HolidayUtils {
 				}
 			}
 			if (!strDayWork.contains(String.valueOf(Calendar.WEDNESDAY))) {
-				if (Validator.isNotNull(sbDayOff)) {
+				if (Validator.isNotNull(sb.toString())) {
 					sb.append(StringPool.COMMA);
 					sb.append(Calendar.WEDNESDAY);
 				} else {
@@ -145,7 +147,7 @@ public class HolidayUtils {
 				}
 			}
 			if (!strDayWork.contains(String.valueOf(Calendar.THURSDAY))) {
-				if (Validator.isNotNull(sbDayOff)) {
+				if (Validator.isNotNull(sb.toString())) {
 					sb.append(StringPool.COMMA);
 					sb.append(Calendar.THURSDAY);
 				} else {
@@ -153,7 +155,7 @@ public class HolidayUtils {
 				}
 			}
 			if (!strDayWork.contains(String.valueOf(Calendar.FRIDAY))) {
-				if (Validator.isNotNull(sbDayOff)) {
+				if (Validator.isNotNull(sb.toString())) {
 					sb.append(StringPool.COMMA);
 					sb.append(Calendar.FRIDAY);
 				} else {
@@ -161,7 +163,7 @@ public class HolidayUtils {
 				}
 			}
 			if (!strDayWork.contains(String.valueOf(Calendar.SATURDAY))) {
-				if (Validator.isNotNull(sbDayOff)) {
+				if (Validator.isNotNull(sb.toString())) {
 					sb.append(StringPool.COMMA);
 					sb.append(Calendar.SATURDAY);
 				} else {
@@ -169,8 +171,8 @@ public class HolidayUtils {
 				}
 			}
 
-			_log.info("sbDayOff112: "+sbDayOff.toString());
-			if (Validator.isNotNull(sb)) {
+//			_log.info("sbDayOff112: "+sb.toString());
+			if (Validator.isNotNull(sb.toString())) {
 				strDayOff = sb.toString();
 			}
 		}
@@ -211,22 +213,30 @@ public class HolidayUtils {
 
 			long countDay = hoursCount / 8;
 			int countHours = (int) hoursCount % 8;
+//			int count = 0;
 			if (countDay > 0 && countDay == 1) {
 				baseDateCal.add(Calendar.DATE, 1);
-				baseDateCal = checkDay(baseDateCal, startDate, holidayList);
+				boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
+				while(flagCheckDay) {
+					baseDateCal.add(Calendar.DATE, 1);
+					flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
+				}
 			} else if (countDay > 1) {
 				for (int i = 0; i < countDay; i++) {
-					_log.info("STRAT Calculator DueDate");
-					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DATE));
-					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DAY_OF_MONTH));
+//					_log.info("STRAT Calculator DueDate");
+//					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DATE));
+//					_log.info("baseDateCal: "+baseDateCal.get(Calendar.DAY_OF_MONTH));
 					baseDateCal.add(Calendar.DATE, 1);
-					baseDateCal = checkDay(baseDateCal, startDate, holidayList);
-//							saturdayIsHoliday, sundayIsHoliday);
+					boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
+					if(flagCheckDay) {
+						i --;
+					}
 				}
 			}
 
 			if (countHours > 0) {
 //				_log.info("countHours: "+countHours);
+				
 				int hours = baseDateCal.get(Calendar.HOUR_OF_DAY);
 //				_log.info("hours: "+hours);
 				int minutes = baseDateCal.get(Calendar.MINUTE);
@@ -254,61 +264,50 @@ public class HolidayUtils {
 							int hoursOverdue = 0;
 							if (hourArr1 != null && hourArr2 != null) {
 								processTimeWorking(hourArr1, hourArr2);
-//								_log.info("startMorning: "+startMorning);
-//								_log.info("endMorning: "+endMorning);
-//								_log.info("startAfterNoon: "+startAfterNoon);
-//								_log.info("endAfterNoon: "+endAfterNoon);
-//								_log.info("hours: "+hours);
 								if (startHourMorning < hours && hours < endHourMorning) {
 									hoursOverdue = hours + countHours;
 									if (hoursOverdue == endHourMorning && minutes > endMinuteMorning) {
 										hoursOverdue = startHourAfterNoon;
-										//
-										baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
-										baseDateCal.set(Calendar.MINUTE, minutes);
-										
-										return baseDateCal.getTime();
 									} else if (hoursOverdue > endHourMorning){
+//										_log.info("hoursOverdue1: "+hoursOverdue);
 										int countTest2 = hoursOverdue - endHourMorning;
+//										_log.info("countTest2: "+countTest2);
 										hoursOverdue = startHourAfterNoon + countTest2;
+//										_log.info("hoursOverdueAfter: "+hoursOverdue);
 										if (hoursOverdue > endHourAfterNoon) {
-											baseDateCal.add(Calendar.DATE, 1);
-											int countTest = hoursOverdue - endHourAfterNoon;
-											//
-											dayOfWeek += 1;
+											baseDateCal = processHourCalendar(baseDateCal);
+											//baseDateCal.add(Calendar.DATE, 1);
+											//int countTest = hoursOverdue - endHourAfterNoon;
+											//dayOfWeek += 1;
+											//int dayOfWeekCheck = baseDateCal.get(Calendar.DAY_OF_WEEK);
 											//Check dayOfWeek is dayOff or dayWork
-											while (strDayOff.contains(String.valueOf(dayOfWeek))) {
-												baseDateCal.add(Calendar.DATE, 1);
-												dayOfWeek += 1;
-											}
-											//
-											hoursOverdue = startHourMorning + countTest;
-											//
-											baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
-											baseDateCal.set(Calendar.MINUTE, minutes);
-											
-											return baseDateCal.getTime();
+											//while (strDayOff.contains(String.valueOf(dayOfWeekCheck))) {
+											//	baseDateCal.add(Calendar.DATE, 1);
+											//	dayOfWeekCheck = baseDateCal.get(Calendar.DAY_OF_WEEK);
+											//}
+											hoursOverdue = startHourMorning + (hoursOverdue - endHourAfterNoon);
 										}
 									}
+									baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
+									baseDateCal.set(Calendar.MINUTE, minutes);
 									
-								} else if (hours == endHourMorning && minutes == endMinuteMorning) {
+									return baseDateCal.getTime();
+								} else if (hours == endHourMorning && minutes <= endMinuteMorning) {
 									hoursOverdue = startHourAfterNoon + countHours;
 									if (hoursOverdue > endHourAfterNoon) {
-										baseDateCal.add(Calendar.DATE, 1);
-										int countTest = hoursOverdue - endHourAfterNoon;
-										//
-										dayOfWeek += 1;
+										baseDateCal = processHourCalendar(baseDateCal);
+										//baseDateCal.add(Calendar.DATE, 1);
+										//int countTest = hoursOverdue - endHourAfterNoon;
+										//dayOfWeek += 1;
 										//Check dayOfWeek is dayOff or dayWork
-										while (strDayOff.contains(String.valueOf(dayOfWeek))) {
-											baseDateCal.add(Calendar.DATE, 1);
-											dayOfWeek += 1;
-										}
-										
-										//
-										hoursOverdue = startHourMorning + countTest;
+										//while (strDayOff.contains(String.valueOf(dayOfWeek))) {
+										//	baseDateCal.add(Calendar.DATE, 1);
+										//	dayOfWeek += 1;
+										//}
+										hoursOverdue = startHourMorning + (hoursOverdue - endHourAfterNoon);
 										if (hoursOverdue > endHourMorning) {
-											int countTest1 = hoursOverdue - endHourMorning;
-											hoursOverdue = startHourAfterNoon + countTest1;
+											//int countTest1 = hoursOverdue - endHourMorning;
+											hoursOverdue = startHourAfterNoon + (hoursOverdue - endHourMorning);
 										}
 									}
 									//
@@ -317,45 +316,38 @@ public class HolidayUtils {
 									
 									return baseDateCal.getTime();
 								}
-							
-								//TODO:
+
 								if (startHourAfterNoon < hours && hours < endHourAfterNoon) {
 									hoursOverdue = hours + countHours;
 //									_log.info("hoursOverdue: "+hoursOverdue);
 									if (hoursOverdue == endHourAfterNoon && minutes > endMinuteAfterNoon) {
-										baseDateCal.add(Calendar.DATE, 1);
-										//
-										dayOfWeek += 1;
+										baseDateCal = processHourCalendar(baseDateCal);
+										//baseDateCal.add(Calendar.DATE, 1);
+										//dayOfWeek += 1;
 										//Check dayOfWeek is dayOff or dayWork
-										while (strDayOff.contains(String.valueOf(dayOfWeek))) {
-											baseDateCal.add(Calendar.DATE, 1);
-											dayOfWeek += 1;
-										}
-										//
+										//while (strDayOff.contains(String.valueOf(dayOfWeek))) {
+										//	baseDateCal.add(Calendar.DATE, 1);
+										//	dayOfWeek += 1;
+										//}
 										hoursOverdue = startHourMorning;
-										//
 									} else if (hoursOverdue > endHourAfterNoon){
-										int countTest11 = hoursOverdue - endHourAfterNoon;
-//										_log.info("countTest11: "+countTest11);
-										//
-										baseDateCal.add(Calendar.DATE, 1);
-										//
-										dayOfWeek += 1;
+										baseDateCal = processHourCalendar(baseDateCal);
+										//int countTest11 = hoursOverdue - endHourAfterNoon;
+										//_log.info("countTest11: "+countTest11);
+										//baseDateCal.add(Calendar.DATE, 1);
+										//dayOfWeek += 1;
 										//Check dayOfWeek is dayOff or dayWork
-										while (strDayOff.contains(String.valueOf(dayOfWeek))) {
-											baseDateCal.add(Calendar.DATE, 1);
-											dayOfWeek += 1;
-										}
-										//
-										hoursOverdue = startHourMorning + countTest11;
+										//while (strDayOff.contains(String.valueOf(dayOfWeek))) {
+										//	baseDateCal.add(Calendar.DATE, 1);
+										//	dayOfWeek += 1;
+										//}
+										hoursOverdue = startHourMorning + (hoursOverdue - endHourAfterNoon);
 //										_log.info("hoursOverdue: "+hoursOverdue);
-//										_log.info("startMorning: "+startMorning);
-//										_log.info("endMorning: "+endMorning);
+//										_log.info("startMorning: "+startHourMorning);
+//										_log.info("endMorning: "+endHourAfterNoon);
 										if (hoursOverdue > endHourMorning) {
-											int countTest12 = hoursOverdue - endHourMorning;
-											//
-											hoursOverdue = startHourAfterNoon + countTest12;
-											
+											//int countTest12 = hoursOverdue - endHourMorning;
+											hoursOverdue = startHourAfterNoon + (hoursOverdue - endHourMorning);
 										} else if (hoursOverdue == endHourMorning && minutes > endMinuteMorning) {
 											hoursOverdue = startHourAfterNoon;
 //											_log.info("hoursOverdue: "+hoursOverdue);
@@ -365,26 +357,22 @@ public class HolidayUtils {
 									baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
 									baseDateCal.set(Calendar.MINUTE, minutes);
 									
-//									_log.info("baseDateCal.getTime(): "+baseDateCal.getTime());
 									return baseDateCal.getTime();
-									
-								} else if (hours == endHourAfterNoon && minutes == endMinuteAfterNoon) {
-									baseDateCal.add(Calendar.DATE, 1);
-									//
-									dayOfWeek += 1;
+								} else if (hours == endHourAfterNoon && minutes <= endMinuteAfterNoon) {
+									baseDateCal = processHourCalendar(baseDateCal);
+									//baseDateCal.add(Calendar.DATE, 1);
+									//dayOfWeek += 1;
 									//Check dayOfWeek is dayOff or dayWork
-									while (strDayOff.contains(String.valueOf(dayOfWeek))) {
-										baseDateCal.add(Calendar.DATE, 1);
-										dayOfWeek += 1;
-									}
-									//
+									//while (strDayOff.contains(String.valueOf(dayOfWeek))) {
+									//	baseDateCal.add(Calendar.DATE, 1);
+									//	dayOfWeek += 1;
+									//}
 									hoursOverdue = startHourMorning + countHours;
 									if (hoursOverdue > endHourMorning) {
-										int countTest13 = hoursOverdue - endHourMorning;
-										hoursOverdue = startHourAfterNoon + countTest13;
-										
+										//int countTest13 = hoursOverdue - endHourMorning;
+										hoursOverdue = startHourAfterNoon + (hoursOverdue - endHourMorning);
 									}
-								
+
 									baseDateCal.set(Calendar.HOUR_OF_DAY, hoursOverdue);
 									baseDateCal.set(Calendar.MINUTE, minutes);
 
@@ -405,11 +393,14 @@ public class HolidayUtils {
 
 	private static void processTimeWorking(String[] hourArr1, String[] hourArr2) {
 		if (Validator.isNotNull(hourArr1[0])) {
+//			_log.info("hourArr1[0]: "+hourArr1[0]);
+//			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.PERIOD);
 			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.COLON);
 			if (strMorningSplit != null) {
 				for (int i = 0; i < strMorningSplit.length; i++) {
+//					_log.info("hourArr1[0]11: "+strMorningSplit[i]);
 					if (i == 0) {
-						startHourMorning = Integer.parseInt(strMorningSplit[i]);
+						startHourMorning = Integer.parseInt(strMorningSplit[i]) - 7;
 					} else {
 						startMinuteMorning = Integer.parseInt(strMorningSplit[i]);
 					}
@@ -417,11 +408,13 @@ public class HolidayUtils {
 			}
 		}
 		if (Validator.isNotNull(hourArr1[1])) {
+			//TODO
 			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.COLON);
+//			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.COLON);
 			if (strMorningSplit != null) {
 				for (int i = 0; i < strMorningSplit.length; i++) {
 					if (i == 0) {
-						endHourMorning = Integer.parseInt(strMorningSplit[i]);
+						endHourMorning = Integer.parseInt(strMorningSplit[i]) - 7;
 					} else {
 						endMinuteMorning = Integer.parseInt(strMorningSplit[i]);
 					}
@@ -433,7 +426,7 @@ public class HolidayUtils {
 			if (strAfternoonSplit != null) {
 				for (int i = 0; i < strAfternoonSplit.length; i++) {
 					if (i == 0) {
-						startHourAfterNoon = Integer.parseInt(strAfternoonSplit[i]);
+						startHourAfterNoon = Integer.parseInt(strAfternoonSplit[i]) - 7;
 					} else {
 						startMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[i]);
 					}
@@ -445,7 +438,7 @@ public class HolidayUtils {
 			if (strAfternoonSplit != null) {
 				for (int i = 0; i < strAfternoonSplit.length; i++) {
 					if (i == 0) {
-						endHourAfterNoon = Integer.parseInt(strAfternoonSplit[i]);
+						endHourAfterNoon = Integer.parseInt(strAfternoonSplit[i]) - 7;
 					} else {
 						endMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[i]);
 					}
@@ -455,8 +448,9 @@ public class HolidayUtils {
 	}
 
 	//LamTV_ Process checkDay
-	private static Calendar checkDay(Calendar baseDateCal, Date startDate, List<Holiday> holidayList) {
+	private static boolean checkDay(Calendar baseDateCal, Date startDate, List<Holiday> holidayList) {
 
+		boolean flagCheckDay = false;
 		try {
 			/**
 			 * Kiem tra ngay xu ly co trung vao list ngay nghi da config hay
@@ -465,12 +459,13 @@ public class HolidayUtils {
 			boolean isHoliday = isHoliday(baseDateCal, holidayList);
 			//Check day is Day off
 			boolean isDayOff = false;
+//			_log.info("baseDateCal.get(Calendar.DAY_OF_WEEK): "+baseDateCal.get(Calendar.DAY_OF_WEEK));
 			if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))) {
 				isDayOff = true;
 			}
 
 			if (isHoliday || isDayOff) {
-				baseDateCal.add(Calendar.DATE, 1);
+				flagCheckDay = true;
 			}
 			
 		}
@@ -478,7 +473,7 @@ public class HolidayUtils {
 			_log.error(e);
 		}
 
-		return baseDateCal;
+		return flagCheckDay;
 	}
 
 	
@@ -651,11 +646,18 @@ public class HolidayUtils {
 		int count = 0;
 		Calendar startDateCal = Calendar.getInstance();
 		startDateCal.setTimeInMillis(startDate);
+//		_log.info("startDateCal: "+startDateCal.get(Calendar.DATE));
 
 		Calendar endDateCal = Calendar.getInstance();
 		endDateCal.setTimeInMillis(endDate);
+//		_log.info("endDateCal: "+endDateCal.get(Calendar.DATE));
+		
+		//Get info day off and day work
+		getDayByGroupId(groupId);
+//		_log.info("strDayOff: "+strDayOff);
 
 		boolean flagCompareDate = false;
+//		_log.info("numberDate: "+numberDate);
 		for (int i = 0; i < numberDate; i++) {
 			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 			boolean isHoliday = false;
@@ -667,18 +669,21 @@ public class HolidayUtils {
 			if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
 				isDayOff = true;
 			}
+//			_log.info("isHoliday: "+isHoliday);
+//			_log.info("isDayOff: "+isDayOff);
+			startDateCal.add(Calendar.DATE, 1);
 			if (isHoliday || isDayOff) {
 //				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
 //					startDateCal.add(Calendar.DAY_OF_MONTH, 2);
 //					count += 2;
 //					flagCompareDate = compareDate(startDateCal, endDateCal);
 //				} else {
-				startDateCal.add(Calendar.DAY_OF_MONTH, 1);
+//				startDateCal.add(Calendar.DATE, 1);
 				count += 1;
-				flagCompareDate = compareDate(startDateCal, endDateCal);
 //				}
 
 			}
+			flagCompareDate = compareDate(startDateCal, endDateCal);
 //			else {
 //				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
 //					startDateCal.add(Calendar.DAY_OF_MONTH, 1);
@@ -693,6 +698,64 @@ public class HolidayUtils {
 
 		return count;
 	}
+
+//	public static int getCountHoursByHoliday(long startDate, long endDate, int numberDate, long groupId) {
+//
+//		int count = 0;
+//		Calendar startDateCal = Calendar.getInstance();
+//		startDateCal.setTimeInMillis(startDate);
+////		_log.info("startDateCal: "+startDateCal.get(Calendar.DATE));
+//
+//		Calendar endDateCal = Calendar.getInstance();
+//		endDateCal.setTimeInMillis(endDate);
+////		_log.info("endDateCal: "+endDateCal.get(Calendar.DATE));
+//		
+//		//Get info day off and day work
+//		getDayByGroupId(groupId);
+//		_log.info("strDayOff: "+strDayOff);
+//
+//		boolean flagCompareDate = false;
+//		_log.info("numberDate: "+numberDate);
+//		for (int i = 0; i < numberDate; i++) {
+//			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
+//			boolean isHoliday = false;
+//			if (holidayList != null && holidayList.size() > 0) {
+//				isHoliday = isHoliday(startDateCal, holidayList);
+//			}
+//			//Check day is Day off
+//			boolean isDayOff = false;
+//			if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
+//				isDayOff = true;
+//			}
+////			_log.info("isHoliday: "+isHoliday);
+////			_log.info("isDayOff: "+isDayOff);
+//			startDateCal.add(Calendar.DATE, 1);
+//			if (isHoliday || isDayOff) {
+////				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
+////					startDateCal.add(Calendar.DAY_OF_MONTH, 2);
+////					count += 2;
+////					flagCompareDate = compareDate(startDateCal, endDateCal);
+////				} else {
+////				startDateCal.add(Calendar.DATE, 1);
+//				count += 1;
+////				}
+//
+//			}
+//			flagCompareDate = compareDate(startDateCal, endDateCal);
+////			else {
+////				if (strDayOff.contains(String.valueOf(startDateCal.get(Calendar.DAY_OF_WEEK)))) {
+////					startDateCal.add(Calendar.DAY_OF_MONTH, 1);
+////					count += 1;
+////					flagCompareDate = compareDate(startDateCal, endDateCal);
+////				}
+////			}
+//			if (flagCompareDate) {
+//				return count;
+//			}
+//		}
+//
+//		return count;
+//	}
 
 	//Compare startDate and endDate
 	private static boolean compareDate(Calendar startDateCal, Calendar endDateCal) {
@@ -810,5 +873,18 @@ public class HolidayUtils {
 //		}
 //		return baseCalendar;
 //	}
+
+	private static Calendar processHourCalendar(Calendar baseDateCal) {
+
+		baseDateCal.add(Calendar.DATE, 1);
+		int dayOfWeekCheck = baseDateCal.get(Calendar.DAY_OF_WEEK);
+		//Check dayOfWeek is dayOff or dayWork
+		while (strDayOff.contains(String.valueOf(dayOfWeekCheck))) {
+			baseDateCal.add(Calendar.DATE, 1);
+			dayOfWeekCheck = baseDateCal.get(Calendar.DAY_OF_WEEK);
+		}
+
+		return baseDateCal;
+	}
 
 }

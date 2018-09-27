@@ -14,17 +14,17 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import org.opencps.dossiermgt.model.ProcessSequence;
-import org.opencps.dossiermgt.service.base.ProcessSequenceLocalServiceBaseImpl;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.Date;
+import java.util.List;
+
+import org.opencps.dossiermgt.model.ProcessSequence;
+import org.opencps.dossiermgt.service.base.ProcessSequenceLocalServiceBaseImpl;
 
 /**
  * The implementation of the process sequence local service.
@@ -111,7 +111,7 @@ public class ProcessSequenceLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	public void updateProcessSequenceDB(long userId, long groupId, long serviceProcessId, String sequenceNo,
-			String sequenceName, String sequenceRole, Integer durationCount, ServiceContext serviceContext)
+			String sequenceName, String sequenceRole, Double durationCount, ServiceContext serviceContext)
 			throws PortalException {
 		User user = userLocalService.getUser(userId);
 		
