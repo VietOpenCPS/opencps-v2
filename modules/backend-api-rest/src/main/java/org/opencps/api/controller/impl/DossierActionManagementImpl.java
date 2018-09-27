@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.util.DossierActionUtils;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
@@ -146,23 +147,44 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
 
 							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
+							Long releaseDateTimeStamp = (dossier.getReleaseDate() != null ? dossier.getReleaseDate() .getTime(): 0l);
 							
 							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
-//							int durationUnit = dossier.getDurationUnit();
-							if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-								long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-								if (subTimeStamp > 0) {
-//									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
-									String strOverDue = StringPool.BLANK;
-									result.setStepOverdue("Quá hạn "+strOverDue);
+							if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
+								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
+									if (subTimeStamp > 0) {
+										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
+												dueDateTimeStamp, groupId);
+										result.setStepOverdue("Quá hạn " + strOverDue);
+									} else {
+										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
+												dueDateTimeStamp, groupId);
+										result.setStepOverdue("Còn " + strOverDue);
+									}
 								} else {
-//									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
-									String strOverDue = StringPool.BLANK;
-									result.setStepOverdue("Còn "+strOverDue);
+									result.setStepOverdue(StringPool.BLANK);
 								}
 							} else {
-							}
-							
+								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+//									_log.info("subTimeStamp: "+subTimeStamp);
+									if (subTimeStamp > 0) {
+//										_log.info("START Qua han: ");
+										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
+												dueDateTimeStamp, groupId);
+										result.setStepOverdue("Quá hạn " + strOverDue);
+									} else {
+//										_log.info("START Con han: ");
+										String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
+												dueDateTimeStamp, groupId);
+//										_log.info("strOverDue: "+strOverDue);
+										result.setStepOverdue("Còn " + strOverDue);
+									}
+								} else {
+									result.setStepOverdue(StringPool.BLANK);
+								}
+							}							
 						}
 					}
 	
@@ -217,7 +239,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							}
 
 							modelUser.setUserId(userId);
-							modelUser.setUserName(u.getFullName());
+							modelUser.setUserName(u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
 							modelUser.setModerator(moderator);
 							modelUser.setAssigned(assigned);
 							boolean flag = true;
