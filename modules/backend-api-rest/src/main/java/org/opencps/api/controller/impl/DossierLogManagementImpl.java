@@ -21,6 +21,7 @@ import org.opencps.dossiermgt.model.DossierLog;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -136,7 +137,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 				model.put("dossierLogId", dossierLogId);
 
-				model.put("author", document.get(DossierLogTerm.AUTHOR));
+				model.put("author", document.get(DossierLogTerm.AUTHOR) != null ? document.get(DossierLogTerm.AUTHOR).toUpperCase() : StringPool.BLANK);
 
 				model.put("content", document.get(DossierLogTerm.CONTENT));
 

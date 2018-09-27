@@ -217,7 +217,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							}
 
 							modelUser.setUserId(userId);
-							modelUser.setUserName(u.getFullName());
+							modelUser.setUserName(u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
 							modelUser.setModerator(moderator);
 							modelUser.setAssigned(assigned);
 							boolean flag = true;
