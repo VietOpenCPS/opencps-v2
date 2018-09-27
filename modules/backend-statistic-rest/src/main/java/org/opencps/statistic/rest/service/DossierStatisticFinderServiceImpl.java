@@ -25,7 +25,7 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 		
 //		LOG.info("***DossierStatisticFinderServiceImpl");
 		
-		DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+		//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 		
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
 				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),

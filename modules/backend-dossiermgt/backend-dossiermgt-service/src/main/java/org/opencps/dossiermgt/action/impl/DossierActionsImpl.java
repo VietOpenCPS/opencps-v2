@@ -2639,11 +2639,11 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				}
 				catch (JSONException e) {
-					_log.error(e);
-//					e.printStackTrace();
+					_log.debug(e);
+					//_log.error(e);
 				} catch (ParseException e) {
-					_log.error(e);
-//					e.printStackTrace();
+					_log.debug(e);
+					//_log.error(e);
 				}
 //				_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
@@ -3657,6 +3657,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		//Calculate step due date
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		_log.info("dossierAction: "+dossierAction);
 		Date rootDate = now;
 		Date dueDate = null;
 		
@@ -3669,11 +3670,13 @@ public class DossierActionsImpl implements DossierActions {
 		}
 
 		Double durationCount = processStep.getDurationCount();
+		_log.info("durationCountStep: "+durationCount);
 		int durationUnit = serviceProcess.getDurationUnit();
 		
 //		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0) {
 			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
+			_log.info("dueDateAction: "+dueDate);
 		}		
 	
 		DossierLocalServiceUtil.updateDossier(dossier);

@@ -432,7 +432,7 @@ public class DossierManagementImpl implements DossierManagement {
 				owner = String.valueOf(true);
 			}
 			if (Boolean.valueOf(query.getSpecialKey())){
-				_log.info("TESSSSST");
+//				_log.info("TESSSSST");
 				owner = String.valueOf(false);
 			}
 			String follow = query.getFollow();
@@ -548,7 +548,7 @@ public class DossierManagementImpl implements DossierManagement {
 						if (query.getEnd() == -1) {
 							results.getData().addAll(DossierUtils.mappingForGetList(docs, userId));
 						} else {
-							_log.info("669999");
+//							_log.info("669999");
 							results.getData().addAll(
 									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
 						}
@@ -575,7 +575,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
-		_log.info("userId: "+userId);
+//		_log.info("userId: "+userId);
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -670,17 +670,17 @@ public class DossierManagementImpl implements DossierManagement {
 					year = baseDateCal.get(Calendar.YEAR);
 				}
 			}
-			_log.info("month: "+month);
-			_log.info("year: "+year);
+//			_log.info("month: "+month);
+//			_log.info("year: "+year);
 
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
-			_log.info("dossierIdNo: "+dossierIdNo);
+//			_log.info("dossierIdNo: "+dossierIdNo);
 			String dossierNoSearch = StringPool.BLANK;
 			if (Validator.isNotNull(dossierIdNo)) {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierIdNo);
 			}
-			_log.info("dossierNoSearch: "+dossierNoSearch);
+//			_log.info("dossierNoSearch: "+dossierNoSearch);
 			String soChungChi = query.getSoChungChi();
 			String certNo = StringPool.BLANK;
 			if (Validator.isNotNull(soChungChi)) {
@@ -1344,18 +1344,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
-			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
+//			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
+//			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
 
 			if (dossier != null) {
-				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
+//				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
 				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-					_log.info("Action config: " + actConfig);
+//					_log.info("Action config: " + actConfig);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
@@ -1411,7 +1411,7 @@ public class DossierManagementImpl implements DossierManagement {
 							
 							JSONObject payload = JSONFactoryUtil.createJSONObject();
 							try {
-								_log.info("START PAYLOAD: ");
+//								_log.info("START PAYLOAD: ");
 								payload.put(
 									"Dossier", JSONFactoryUtil.createJSONObject(
 										JSONFactoryUtil.looseSerialize(dossier)));
@@ -1419,7 +1419,7 @@ public class DossierManagementImpl implements DossierManagement {
 							catch (JSONException parse) {
 								_log.error(parse);
 							}
-							_log.info("payloadTest: "+payload.toJSONString());
+//							_log.info("payloadTest: "+payload.toJSONString());
 							queue.setPayload(payload.toJSONString());
 							queue.setExpireDate(cal.getTime());
 
