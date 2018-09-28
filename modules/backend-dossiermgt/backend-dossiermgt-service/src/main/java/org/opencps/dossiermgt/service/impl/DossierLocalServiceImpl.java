@@ -235,6 +235,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				ServiceProcess serviceProcess = null;
 				_log.info("option: "+option);
 				if (option != null) {
+					//Process submition note
+					_log.info("option: "+option.getSubmissionNote());
+					dossier.setSubmissionNote(option.getSubmissionNote());
 					_log.info("option: "+true);
 					long serviceProcessId = option.getServiceProcessId();
 					serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
@@ -243,8 +246,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 							dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
 					dossier.setDossierNo(dossierRef.trim());
-					//Process submition note
-					dossier.setSubmissionNote(option.getSubmissionNote());
 				}
 				
 				//Update submit date
@@ -279,7 +280,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
 //				}
-			}
+				}
+				dossierPersistence.update(dossier);
 		} else {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
