@@ -485,6 +485,11 @@
 		<finder return-type="Collection" name="G">
 			<finder-column name="groupId" />
 		</finder>
+		
+		<finder return-type="Collection" name="DN_AN">
+			<finder-column name="dossierNo" />
+			<finder-column name="applicantIdNo" />
+		</finder>
 
 	</entity>
 

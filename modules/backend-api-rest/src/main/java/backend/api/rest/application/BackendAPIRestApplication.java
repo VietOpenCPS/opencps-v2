@@ -76,6 +76,7 @@ import org.opencps.api.controller.impl.StatisticManagementImpl;
 import org.opencps.api.controller.impl.SystemManagementImpl;
 import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
+import org.opencps.api.controller.impl.VotingManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
 import org.opencps.api.filter.KeyGenerator;
@@ -181,6 +182,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DossierSyncManagementImpl());
 		
 		singletons.add(new SystemManagementImpl());
+		singletons.add(new VotingManagementImpl());
+		
 		singletons.add(this);
 		
 		// add service provider

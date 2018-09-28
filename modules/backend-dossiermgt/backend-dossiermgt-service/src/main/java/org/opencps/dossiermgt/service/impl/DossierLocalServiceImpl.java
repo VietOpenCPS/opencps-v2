@@ -3115,5 +3115,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByG(groupId);
 	}
 	
+	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo) {
+		return dossierPersistence.findByDN_AN(dossierNo, applicantIdNo);
+	}
+	
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 }
