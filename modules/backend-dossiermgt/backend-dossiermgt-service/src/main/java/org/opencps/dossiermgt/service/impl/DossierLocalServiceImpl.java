@@ -243,6 +243,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 							dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
 					dossier.setDossierNo(dossierRef.trim());
+					//Process submition note
+					dossier.setSubmissionNote(option.getSubmissionNote());
 				}
 				
 				//Update submit date

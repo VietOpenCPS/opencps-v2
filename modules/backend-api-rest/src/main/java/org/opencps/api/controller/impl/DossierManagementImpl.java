@@ -1013,7 +1013,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
 			}
-			
+
 			DossierLocalServiceUtil.updateDossier(dossier);
 
 			//Add to dossier user based on service process role
