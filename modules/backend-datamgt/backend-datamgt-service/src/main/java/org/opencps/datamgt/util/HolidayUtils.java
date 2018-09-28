@@ -402,7 +402,7 @@ public class HolidayUtils {
 	private static void processTimeWorking(String[] hourArr1, String[] hourArr2) {
 		if (Validator.isNotNull(hourArr1[0])) {
 //			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.PERIOD);
-			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.PERIOD);
+			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.COLON);
 			if (strMorningSplit != null) {
 				startHourMorning = Integer.parseInt(strMorningSplit[0]) - VALUE_TIME_ZONE;
 				startMinuteMorning = Integer.parseInt(strMorningSplit[1]);
@@ -410,8 +410,8 @@ public class HolidayUtils {
 		}
 		if (Validator.isNotNull(hourArr1[1])) {
 			//TODO
-			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.PERIOD);
-//			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.COLON);
+//			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.PERIOD);
+			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.COLON);
 			if (strMorningSplit != null) {
 				endHourMorning = Integer.parseInt(strMorningSplit[0]) - VALUE_TIME_ZONE;
 				endMinuteMorning = Integer.parseInt(strMorningSplit[1]);
@@ -419,7 +419,7 @@ public class HolidayUtils {
 		}
 
 		if (Validator.isNotNull(hourArr2[0])) {
-			String[] strAfternoonSplit = StringUtil.split(hourArr2[0], StringPool.PERIOD);
+			String[] strAfternoonSplit = StringUtil.split(hourArr2[0], StringPool.COLON);
 			if (strAfternoonSplit != null) {
 				startHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]) - VALUE_TIME_ZONE;
 				startMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[1]);
@@ -427,7 +427,7 @@ public class HolidayUtils {
 		}
 
 		if (Validator.isNotNull(hourArr2[1])) {
-			String[] strAfternoonSplit = StringUtil.split(hourArr2[1], StringPool.PERIOD);
+			String[] strAfternoonSplit = StringUtil.split(hourArr2[1], StringPool.COLON);
 			if (strAfternoonSplit != null) {
 				endHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]) - VALUE_TIME_ZONE;
 				endMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[1]);
@@ -527,7 +527,7 @@ public class HolidayUtils {
 
 		boolean flagCompareDate = false;
 		_log.info("numberDate: "+numberDate);
-		for (int i = 0; i < numberDate; i++) {
+		for (int i = 0; i <= numberDate; i++) {
 			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 			boolean isHoliday = false;
 			if (holidayList != null && holidayList.size() > 0) {
