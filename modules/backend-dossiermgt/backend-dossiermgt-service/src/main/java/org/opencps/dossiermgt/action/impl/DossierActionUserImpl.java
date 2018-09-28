@@ -251,49 +251,52 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		DossierActionUserLocalServiceUtil.addDossierActionUser(model);
 		for (int n = 0; n < assignedUsers.length(); n++) {
 			JSONObject subUser = assignedUsers.getJSONObject(n);
-//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
-			DossierActionUserPK pk = new DossierActionUserPK();
-			long userIdAssigned = subUser.getLong("userId");
-			
-			pk.setDossierActionId(dossierActionId);
-			_log.info("userIdAssign: "+subUser.getLong("userId"));
-			
-			pk.setUserId(subUser.getLong("userId"));
-
-			DossierUserPK duPk = new DossierUserPK();
-//			if (dossierActionId > 0) {
-//				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-//				if (dAction != null) {
-//					model.setStepCode(dAction.getStepCode());
-//				}
-//			}
-			duPk.setDossierId(dossier.getDossierId());
-			duPk.setUserId(subUser.getLong("userId"));
-			DossierUser dossierUser = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
-			
-			if (dossierUser != null) {
-				//Update dossier user if assigned
-				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
-					dossierUser.setModerator(1);
-					DossierUserLocalServiceUtil.updateDossierUser(dossierUser.getDossierId(), dossierUser.getUserId(),
-							dossierUser.getModerator(), dossierUser.getVisited());
-					
-//					model.setModerator(dossierUser.getModerator());
-					moderator = dossierUser.getModerator();
+			if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
+					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.ASSIGNED_TH) {
+	//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
+				DossierActionUserPK pk = new DossierActionUserPK();
+				long userIdAssigned = subUser.getLong("userId");
+				
+				pk.setDossierActionId(dossierActionId);
+				_log.info("userIdAssign: "+subUser.getLong("userId"));
+				
+				pk.setUserId(subUser.getLong("userId"));
+	
+				DossierUserPK duPk = new DossierUserPK();
+	//			if (dossierActionId > 0) {
+	//				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+	//				if (dAction != null) {
+	//					model.setStepCode(dAction.getStepCode());
+	//				}
+	//			}
+				duPk.setDossierId(dossier.getDossierId());
+				duPk.setUserId(subUser.getLong("userId"));
+				DossierUser dossierUser = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
+				
+				if (dossierUser != null) {
+					//Update dossier user if assigned
+					if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
+						dossierUser.setModerator(1);
+						DossierUserLocalServiceUtil.updateDossierUser(dossierUser.getDossierId(), dossierUser.getUserId(),
+								dossierUser.getModerator(), dossierUser.getVisited());
+						
+	//					model.setModerator(dossierUser.getModerator());
+						moderator = dossierUser.getModerator();
+					}
+	
 				}
-
-			}
-			
-			org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
-			
-			if (Validator.isNull(dau)) {
-				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-				if (dAction != null) {
-					addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierActionId, moderator, false,
-							dAction.getStepCode(), dossier.getDossierId());
-				} else {
-					addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierActionId, moderator, false,
-							StringPool.BLANK, dossier.getDossierId());
+				
+				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+				
+				if (Validator.isNull(dau)) {
+					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					if (dAction != null) {
+						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierActionId, moderator, false,
+								dAction.getStepCode(), dossier.getDossierId());
+					} else {
+						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierActionId, moderator, false,
+								StringPool.BLANK, dossier.getDossierId());
+					}
 				}
 			}
 		}
