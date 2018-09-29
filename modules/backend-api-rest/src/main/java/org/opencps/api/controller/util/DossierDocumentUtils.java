@@ -44,6 +44,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
 		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
 		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+		jsonData.put(DossierTerm.SECRET_KEY, dossier.getPassword());
 		jsonData.put(DossierTerm.RECEIVE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		jsonData.put(DossierTerm.DUE_DATE,

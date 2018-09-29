@@ -2275,14 +2275,23 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+//		if (Validator.isNotNull(dossierNo)) {
+//			String[] keyDossier = dossierNo.split(StringPool.SPACE);
+//			for (String key : keyDossier) {
+//				MultiMatchQuery query = new MultiMatchQuery(key);
+//				query.addFields(new String[] { DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN });
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//			}
+//		}
 		if (Validator.isNotNull(dossierNo)) {
-
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
-			for (String key : keyDossier) {
-				MultiMatchQuery query = new MultiMatchQuery(key);
-				query.addFields(new String[] { DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN });
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keyDossier) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.DOSSIER_NO_SEARCH,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(certificateNo)) {

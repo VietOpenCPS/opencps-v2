@@ -182,4 +182,5 @@ public class DossierTerm {
 	public static final String FROM_FINISH_DATE = "fromFinishDate";
 	public static final String TO_FINISH_DATE = "toFinishDate";
 	public static final String FINISH_DATE_LUCENE = "finishDateLucene";
+	public static final String SECRET_KEY = "secretKey";
 }

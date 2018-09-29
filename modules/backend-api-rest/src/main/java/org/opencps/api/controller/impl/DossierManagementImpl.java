@@ -1032,7 +1032,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response getDetailDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
+			User user, ServiceContext serviceContext, String id, String secretKey) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String secretCode = GetterUtil.getString(header.getHeaderString("secretCode"));
@@ -1041,7 +1041,22 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
-			if (Validator.isNotNull(secretCode)) {
+			if (Validator.isNotNull(secretKey)) {
+				try {
+					Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+					dossierPermission.checkPassword(dossier, secretKey);
+
+					DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+
+					return Response.status(200).entity(result).build();
+				} catch (Exception e) {
+					_log.error(e);
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+							.build();
+				}
+
+			} else if (Validator.isNotNull(secretCode)) {
 				try {
 					Dossier dossier = DossierUtils.getDossier(id, groupId);
 
@@ -1055,8 +1070,8 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretCode not sucess")
 							.build();
 				}
-
-			} else {
+			}
+			else {
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
