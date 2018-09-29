@@ -580,5 +580,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		return serviceInfoPersistence.update(serviceInfo);
 
 	}
+	
+	public List<ServiceInfo> findByGroup(long groupId) {
+		return serviceInfoPersistence.findByGroupId(groupId);
+	}
 	public static final String CLASS_NAME = ServiceInfo.class.getName();
 }
