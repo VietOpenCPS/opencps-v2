@@ -189,7 +189,7 @@ public class DossierUtils {
 //			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0.0;
 //			if (Double.compare(durationCount, 0.0) != 0) {
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
-			_log.info("dossierActionId: "+dossierActionId);
+//			_log.info("dossierActionId: "+dossierActionId);
 			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			if (dAction != null) {
 				int state = dAction.getState();
@@ -202,17 +202,17 @@ public class DossierUtils {
 					}
 				} else {
 					Date dueDate = dAction.getDueDate();
-					_log.info("dueDate: "+dueDate);
+//					_log.info("dueDate: "+dueDate);
 					if (dueDate != null) {
 						long dueDateActionTimeStamp = dueDate.getTime();
 						long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
-						_log.info("START STEP OVERDUE");
+//						_log.info("START STEP OVERDUE");
 						String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateActionTimeStamp, groupId, true);
 						if (subTimeStamp > 0) {
 							model.setStepOverdue("Quá hạn " + stepOverDue);
 						} else {
-							_log.info("START STEP OVERDUE");
+//							_log.info("START STEP OVERDUE");
 							model.setStepOverdue("Còn " + stepOverDue);
 						}
 					} else {
@@ -383,15 +383,15 @@ public class DossierUtils {
 		int dueCountInt = (int) dueCountLong;
 		double countDayHoliday = 0;
 		if (dueCountInt > 0) {
-			_log.info("START 1");
+//			_log.info("START 1");
 			countDayHoliday = HolidayUtils.getCountDateByHoliday(dueDateTimeStamp, releaseDateTimeStamp,
 					dueCountInt, groupId);
 		} else if (dueCountInt < 0) {
-			_log.info("START 2");
+//			_log.info("START 2");
 			countDayHoliday = HolidayUtils.getCountDateByHoliday(releaseDateTimeStamp, dueDateTimeStamp,
 					Math.abs(dueCountInt), groupId);
 		}
-		_log.info("countDayHoliday: "+countDayHoliday);
+//		_log.info("countDayHoliday: "+countDayHoliday);
 
 		double countWork = 0;
 		if (flagStepDue) {
@@ -399,16 +399,16 @@ public class DossierUtils {
 			double balance = (double) (subTimeStamp % VALUE_CONVERT_DATE_TIMESTAMP) / VALUE_CONVERT_HOUR_TIMESTAMP;
 			if (balance > 1) {
 				int countHours = HolidayUtils.getCountHoursByHoliday(dueDateTimeStamp, releaseDateTimeStamp, groupId);
-				_log.info("countHours: "+countHours);
+//				_log.info("countHours: "+countHours);
 				countWork += (double) countHours / VALUE_HOUR_TO_DAY;
 			} else if (balance < -1){
 				int countHours = HolidayUtils.getCountHoursByHoliday(releaseDateTimeStamp, dueDateTimeStamp, groupId);
-				_log.info("countHours: "+countHours);
+//				_log.info("countHours: "+countHours);
 				countWork += (double) countHours / VALUE_HOUR_TO_DAY;
 			}
 		}
 		
-		_log.info("countDayHoliday: "+countDayHoliday);
+//		_log.info("countDayHoliday: "+countDayHoliday);
 
 		if (subTimeStamp < 0) {
 			subTimeStamp = Math.abs(subTimeStamp);
@@ -425,12 +425,12 @@ public class DossierUtils {
 			} else {
 				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
 			}
-			_log.info("dueCount: "+dueCount);
-			_log.info("countDayHoliday: "+countDayHoliday);
+//			_log.info("dueCount: "+dueCount);
+//			_log.info("countDayHoliday: "+countDayHoliday);
 			double dueCountReal = dueCount - countDayHoliday + countWork;
 			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
 			overDue = (double) Math.ceil(subDueCount * 4) / 4;
-			_log.info("overDue: "+overDue);
+//			_log.info("overDue: "+overDue);
 			//TODO: Process a.0 = a
 			boolean flagCeil = false;
 			String strOverDueConvert = String.valueOf(overDue);
@@ -456,8 +456,8 @@ public class DossierUtils {
 			overDue = (double) Math.round(dueCountReal);
 		}
 
-		_log.info("overDue: "+overDue);
-		_log.info("strOverDue: "+strOverDue);
+//		_log.info("overDue: "+overDue);
+//		_log.info("strOverDue: "+strOverDue);
 		return (int)overDue + strOverDue;
 	}
 
