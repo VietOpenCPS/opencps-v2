@@ -15,6 +15,9 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -57,6 +60,7 @@ import org.opencps.dossiermgt.exception.ServiceURLOnlineException;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.impl.ServiceConfigImpl;
 import org.opencps.dossiermgt.service.base.ServiceConfigLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -511,6 +515,28 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfigPersistence.findByF_GAC(govAgencyCode);
 	}
 
+	public long countByGovAgency(String keyword, String govAgencyCode, long groupId) {
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(ServiceConfigImpl.class);
+		if (Validator.isNotNull(keyword)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.like(ServiceConfigTerm.GOVAGENCY_NAME, keyword));			
+		}
+		dynamicQuery.add(RestrictionsFactoryUtil.eq(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode));
+		dynamicQuery.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
+		
+		return serviceConfigPersistence.countWithDynamicQuery(dynamicQuery);
+	}
+
+	public List<ServiceConfig> searchByGovAgency(String keyword, String govAgencyCode, long groupId, int start, int end) {
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(ServiceConfigImpl.class);
+		if (Validator.isNotNull(keyword)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.like(ServiceConfigTerm.GOVAGENCY_NAME, keyword));			
+		}
+		dynamicQuery.add(RestrictionsFactoryUtil.eq(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode));
+		dynamicQuery.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
+		
+		return serviceConfigPersistence.findWithDynamicQuery(dynamicQuery, start, end);
+	}
+	
 	public static final String CLASS_NAME = ServiceConfig.class.getName();
 
 }
