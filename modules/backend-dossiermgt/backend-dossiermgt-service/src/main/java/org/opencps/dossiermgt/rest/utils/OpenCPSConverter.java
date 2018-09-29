@@ -470,7 +470,7 @@ public class OpenCPSConverter {
 		}
 
 		String strMessage = jsonObj.getString("message");
-		_log.info("strMessage: "+strMessage);
+//		_log.info("strMessage: "+strMessage);
 		if (Validator.isNotNull(strMessage)) {
 			try {
 				jsonObj = JSONFactoryUtil.createJSONObject(strMessage);

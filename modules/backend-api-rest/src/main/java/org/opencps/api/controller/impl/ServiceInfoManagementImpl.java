@@ -418,7 +418,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		try {
 			results = actions.getStatisticByLevel(serviceContext, groupId);
 			
-			_log.info(results);
+//			_log.info(results);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -439,7 +439,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		try {
 			results = actions.getStatisticByAdministration(serviceContext, groupId);
 			
-			_log.info(results);
+//			_log.info(results);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -460,7 +460,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		try {
 			results = actions.getStatisticByDomain(serviceContext, groupId);
 			
-			_log.info(results);
+//			_log.info(results);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
