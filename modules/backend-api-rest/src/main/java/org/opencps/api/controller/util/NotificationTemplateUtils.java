@@ -113,7 +113,8 @@ public class NotificationTemplateUtils {
 				ett.setNotificationType(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE));
 
 //				ett.setTypeName(initTemplates.get(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
-//				ett.setTypeName(NotificationMGTConstants.getNotificationTemp(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
+				ett.setTypeName(NotificationMGTConstants
+						.getNotificationTemp(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
 
 				ett.setEmailSubject(document.get(NotificationTemplateTerm.NOTIFICATION_EMAIL_SUBJECT));
 				ett.setEmailBody(document.get(NotificationTemplateTerm.NOTIFICATION_EMAIL_BODY));
