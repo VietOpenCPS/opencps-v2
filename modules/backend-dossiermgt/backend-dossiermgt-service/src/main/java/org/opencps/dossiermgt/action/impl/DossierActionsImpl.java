@@ -154,6 +154,8 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	private static final String EXTEND_ONE_VALUE = ".0";
+	private static final String EXTEND_TWO_VALUE = ".00";
 
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -2909,7 +2911,7 @@ public class DossierActionsImpl implements DossierActions {
 						jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
 				
 				//Update dossier processing date
-				flagChanged = updateProcessingDate(previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
+				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
 			}
 
 				// update reference dossier
@@ -3166,7 +3168,7 @@ public class DossierActionsImpl implements DossierActions {
 		Indexer<Dossier> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 		indexer.reindex(dossier);
-		
+		_log.info("dossierActionFINISH: "+dossierAction);
 		return dossierAction;		
 	}
 	
@@ -3498,7 +3500,7 @@ public class DossierActionsImpl implements DossierActions {
 		}		
 	}
 	
-	private Map<String, Boolean> updateProcessingDate(DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, ServiceContext context) {
+	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
 		String serviceCode = dossier.getServiceCode();
@@ -3640,18 +3642,18 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		//Calculate step due date
-		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-		_log.info("dossierAction: "+dossierAction);
+//		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+//		_log.info("dossierAction: "+dossierAction);
 		Date rootDate = now;
 		Date dueDate = null;
-		
-		if (prevAction != null) {
-			if (prevAction.getDueDate() != null) {
-				if (rootDate.getTime() < prevAction.getDueDate().getTime()) {
-					rootDate = prevAction.getDueDate();
-				}
-			}
-		}
+
+//		if (prevAction != null) {
+//			if (prevAction.getDueDate() != null) {
+//				if (rootDate.getTime() < prevAction.getDueDate().getTime()) {
+//					rootDate = prevAction.getDueDate();
+//				}
+//			}
+//		}
 
 		Double durationCount = processStep.getDurationCount();
 		_log.info("durationCountStep: "+durationCount);
@@ -3671,21 +3673,29 @@ public class DossierActionsImpl implements DossierActions {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
 				int overdue = 0;
+//				_log.info("dueDateTEST: "+dueDate);
 //				_log.info("Due date timestamp: " + dueDateTimeStamp);
 				if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 					long subTimeStamp = dueDateTimeStamp - dateNowTimeStamp;
 					if (subTimeStamp > 0) {
 						overdue = calculatorOverDue(durationUnit, subTimeStamp);
+//						overdue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp, dueDateTimeStamp,
+//								dossierAction.getGroupId(), true);
 					} else {
 						overdue = -calculatorOverDue(durationUnit, subTimeStamp);
+////						calculatorOverDue(int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
+////								long dueDateTimeStamp, long groupId, true);
+//						overdue = -calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp, dueDateTimeStamp,
+//								dossierAction.getGroupId(), true);
 					}
 				} else {
 				}
-
+				_log.info("dueDateTEST111: "+dueDate);
 				dossierAction.setActionOverdue(overdue);
 				dossierAction.setDueDate(dueDate);
 				
-				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				_log.info("dActTest: "+dActTest);
 			}
 		}
 	
@@ -3711,6 +3721,92 @@ public class DossierActionsImpl implements DossierActions {
 
 		return (int)overDue;
 	}
+
+//	private static int calculatorOverDue(int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
+//			long dueDateTimeStamp, long groupId, boolean flagStepDue) {
+//
+//		//Process count day off work
+//		long dueCountLong = (long) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
+//		int dueCountInt = (int) dueCountLong;
+//		double countDayHoliday = 0;
+//		if (dueCountInt > 0) {
+//			_log.info("START 1");
+//			countDayHoliday = HolidayUtils.getCountDateByHoliday(dueDateTimeStamp, releaseDateTimeStamp,
+//					dueCountInt, groupId);
+//		} else if (dueCountInt < 0) {
+//			_log.info("START 2");
+//			countDayHoliday = HolidayUtils.getCountDateByHoliday(releaseDateTimeStamp, dueDateTimeStamp,
+//					Math.abs(dueCountInt), groupId);
+//		}
+//		_log.info("countDayHoliday: "+countDayHoliday);
+//
+//		double countWork = 0;
+//		if (flagStepDue) {
+//			//Process balance
+//			double balance = (double) (subTimeStamp % VALUE_CONVERT_DATE_TIMESTAMP) / VALUE_CONVERT_HOUR_TIMESTAMP;
+//			if (balance > 1) {
+//				int countHours = HolidayUtils.getCountHoursByHoliday(dueDateTimeStamp, releaseDateTimeStamp, groupId);
+//				_log.info("countHours: "+countHours);
+//				countWork += (double) countHours / 8;
+//			} else if (balance < -1){
+//				int countHours = HolidayUtils.getCountHoursByHoliday(releaseDateTimeStamp, dueDateTimeStamp, groupId);
+//				_log.info("countHours: "+countHours);
+//				countWork += (double) countHours / 8;
+//			}
+//		}
+//		
+//		_log.info("countDayHoliday: "+countDayHoliday);
+//
+//		if (subTimeStamp < 0) {
+//			subTimeStamp = Math.abs(subTimeStamp);
+//		}
+//
+//		String strOverDue;
+//		double dueCount;
+//		double overDue;
+//		int retval = Double.compare(durationUnit, 1.0);
+//		if (retval < 0) {
+//			strOverDue = " ngày";
+//			if (flagStepDue) {
+//				dueCount = (int) (subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP);
+//			} else {
+//				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
+//			}
+//			_log.info("dueCount: "+dueCount);
+//			_log.info("countDayHoliday: "+countDayHoliday);
+//			double dueCountReal = dueCount - countDayHoliday + countWork;
+//			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
+//			overDue = (double) Math.ceil(subDueCount * 4) / 4;
+//			_log.info("overDue: "+overDue);
+//			//TODO: Process a.0 = a
+//			boolean flagCeil = false;
+//			String strOverDueConvert = String.valueOf(overDue);
+//			if (Validator.isNotNull(strOverDueConvert)) {
+//				if (strOverDueConvert.contains(EXTEND_ONE_VALUE) || strOverDueConvert.contains(EXTEND_TWO_VALUE)) {
+//					flagCeil = true;
+//				}
+//			}
+//			if (!flagCeil) {
+////				_log.info("flagCeil: "+flagCeil);
+////				_log.info("overDue: "+overDue);
+////				_log.info("strOverDue: "+strOverDue);
+//				return overDue + strOverDue;
+//			}
+//		} else {
+//			strOverDue = " giờ";
+//			if (flagStepDue) {
+//				dueCount = (int) (subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP);
+//			} else {
+//				dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
+//			}
+//			double dueCountReal = dueCount - countDayHoliday * 8 + countWork * 8;
+//			overDue = (double) Math.round(dueCountReal);
+//		}
+//
+//		_log.info("overDue: "+overDue);
+//		_log.info("strOverDue: "+strOverDue);
+//		return (int)overDue + strOverDue;
+//	}
 	
 	@Override
 	public DossierAction doAction(long groupId, long dossierId, String referenceUid, String actionCode,
@@ -4709,7 +4805,7 @@ public class DossierActionsImpl implements DossierActions {
 
 	}
 
-	protected Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
+	protected static Log _log = LogFactoryUtil.getLog(DossierActionsImpl.class);
 
 	@Override
 	public Dossier cloneDossier(long groupId, long dossierId, ServiceContext context) throws PortalException {

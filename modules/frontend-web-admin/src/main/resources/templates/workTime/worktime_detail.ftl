@@ -249,22 +249,22 @@
 	})
 	$('#worktimeStartMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
+		format: "HH:mm",
 		placeholder: 'Thời gian bắt đầu'
 	});
 	$('#worktimeEndMorning').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
+		format: "HH:mm",
 		placeholder: 'Thời gian kết thúc'
 	});
 	$('#worktimeStartAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
+		format: "HH:mm",
 		placeholder: 'Thời gian bắt đầu'
 	});
 	$('#worktimeEndAfter').kendoTimePicker({
 		dateInput: true,
-		format: "HH.mm",
+		format: "HH:mm",
 		placeholder: 'Thời gian kết thúc'
 	});
 	$("#worktimeDay").kendoComboBox({
