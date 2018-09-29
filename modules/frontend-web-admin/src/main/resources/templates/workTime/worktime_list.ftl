@@ -47,13 +47,13 @@
 					
 				<div class="col-sm-9 PL0">
 					#
-						if (day == 0) {
+						if (day == 1) {
 					#
 						<strong class="btn-block">Chủ nhật</strong>
 					#
 						} else {
 					#
-						<strong class="btn-block">Thứ #= parseInt(day) + 1 #</strong>
+						<strong class="btn-block">Thứ #= parseInt(day) #</strong>
 					#
 						}
 					#
@@ -266,10 +266,10 @@
 				$("#worktimeEndAfter").data('kendoTimePicker').value(worktimeEndAfter);
 			} else {
 				$("#worktimeDay").data('kendoComboBox').value(0);
-				$("#worktimeStartMorning").data('kendoTimePicker').value('06.00');
-				$("#worktimeEndMorning").data('kendoTimePicker').value('12.00');
-				$("#worktimeStartAfter").data('kendoTimePicker').value('12.30');
-				$("#worktimeEndAfter").data('kendoTimePicker').value('18.00');
+				$("#worktimeStartMorning").data('kendoTimePicker').value('06:00');
+				$("#worktimeEndMorning").data('kendoTimePicker').value('12:00');
+				$("#worktimeStartAfter").data('kendoTimePicker').value('12:30');
+				$("#worktimeEndAfter").data('kendoTimePicker').value('18:00');
 			}
 		}
 		
