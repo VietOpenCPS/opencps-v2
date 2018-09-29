@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -22,9 +23,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -441,16 +444,23 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			for (DictItem govItem : govItems) {
 
-				LinkedHashMap<String, Object> paramsGovAgent = new LinkedHashMap<String, Object>();
-
-				paramsGovAgent.put(Field.GROUP_ID, String.valueOf(groupId));
-				paramsGovAgent.put(Field.KEYWORD_SEARCH, query.getKeyword());
-				paramsGovAgent.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
+//				LinkedHashMap<String, Object> paramsGovAgent = new LinkedHashMap<String, Object>();
+//
+//				paramsGovAgent.put(Field.GROUP_ID, String.valueOf(groupId));
+//				paramsGovAgent.put(Field.KEYWORD_SEARCH, query.getKeyword());
+//				paramsGovAgent.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
 
 				JSONObject govElm = JSONFactoryUtil.createJSONObject();
 
-				long countGov = ServiceConfigLocalServiceUtil.countLucene(paramsGovAgent, searchContext);
-
+//				long countGov = ServiceConfigLocalServiceUtil.countLucene(paramsGovAgent, searchContext);
+				List<ServiceConfig> lstGovs = ServiceConfigLocalServiceUtil.searchByGovAgency(query.getKeyword(), govItem.getItemCode(), groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
+				List<ServiceInfo> lstServiceInfos =	ServiceInfoLocalServiceUtil.findByGroup(groupId);
+				for (ServiceInfo si : lstServiceInfos) {
+					mapServiceInfos.put(si.getServiceInfoId(), si);
+				}
+				long countGov = lstGovs.size();
+				
 				if (countGov != 0) {
 
 					govElm.put("govAgencyCode", govItem.getItemCode());
@@ -462,42 +472,62 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 						JSONObject domElm = JSONFactoryUtil.createJSONObject();
 
-						LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
-						params.put(Field.GROUP_ID, String.valueOf(groupId));
-						params.put(Field.KEYWORD_SEARCH, query.getKeyword());
-						params.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
-						params.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
-
-						Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
-								Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
-
-						long countGovDomain = ServiceConfigLocalServiceUtil.countLucene(params, searchContext);
-
+//						LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+//
+//						params.put(Field.GROUP_ID, String.valueOf(groupId));
+//						params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+//						params.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
+//						params.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
+//
+//						Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
+//								Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
+//
+//						long countGovDomain = ServiceConfigLocalServiceUtil.countLucene(params, searchContext);
+						List<ServiceConfig> lstGovDomains = new ArrayList<>();
+						for (ServiceConfig sc : lstGovs) {
+							if (mapServiceInfos.containsKey(sc.getServiceInfoId())
+									&& mapServiceInfos.get(sc.getServiceInfoId()).getDomainCode().equals(domainItem.getItemCode())) {
+								lstGovDomains.add(sc);
+							}
+						}
+						long countGovDomain = lstGovDomains.size();
+						
 						if (countGovDomain != 0) {
 
 							domElm.put("domainCode", domainItem.getItemCode());
 							domElm.put("domainName", domainItem.getItemName());
 
-							List<Document> docs = ServiceConfigLocalServiceUtil
-									.searchLucene(params, sorts, query.getStart(), query.getEnd(), searchContext)
-									.toList();
+//							List<Document> docs = ServiceConfigLocalServiceUtil
+//									.searchLucene(params, sorts, query.getStart(), query.getEnd(), searchContext)
+//									.toList();
 
 							JSONArray arrService = JSONFactoryUtil.createJSONArray();
-
-							for (Document doc : docs) {
-								int level = GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+							for (ServiceConfig sc : lstGovDomains) {
+								int level = sc.getServiceLevel();
 								if (level > 2) {
 									JSONObject srvElm = JSONFactoryUtil.createJSONObject();
 
-									srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
-									srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
-									srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
-									srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+									srvElm.put("serviceInfoId", sc.getServiceInfoId());
+									srvElm.put("serviceConfigId", sc.getServiceConfigId());
+									srvElm.put("serviceInfoName", (mapServiceInfos.containsKey(sc.getServiceInfoId()) ? mapServiceInfos.get(sc.getServiceInfoId()).getServiceName() : StringPool.BLANK));
+									srvElm.put("level", sc.getServiceLevel());
 
 									arrService.put(srvElm);									
-								}
+								}								
 							}
+//							for (Document doc : docs) {
+//								int level = GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+//								if (level > 2) {
+//									JSONObject srvElm = JSONFactoryUtil.createJSONObject();
+//
+//									srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
+//									srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
+//									srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
+//									srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+//
+//									arrService.put(srvElm);									
+//								}
+//							}
 
 							if (arrService.length() > 0) {
 								domElm.put("serviceConfigs", arrService);								
