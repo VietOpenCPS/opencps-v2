@@ -490,7 +490,15 @@
 			<finder-column name="dossierNo" />
 			<finder-column name="applicantIdNo" />
 		</finder>
-
+		
+        <finder name="U_G_GAC_SC_DTNO_DAI_O" return-type="Collection">
+        	<finder-column name="userId"></finder-column>
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="govAgencyCode"></finder-column>
+            <finder-column name="serviceCode"></finder-column>
+            <finder-column name="dossierActionId"></finder-column>
+            <finder-column name="originality"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

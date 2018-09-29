@@ -629,6 +629,7 @@ public class OpenCPSConverter {
 	public static HashMap<String, String> convertDossierFileHttpParams(DossierFileModel model) {
 		HashMap<String, String> params = new HashMap<>();
 		params.put(DossierFileTerm.REFERENCE_UID, StringPool.BLANK);
+		params.put(DossierFileTerm.MODIFIED_DATE, model.getModifiedDate());
 		params.put(DossierFileTerm.DOSSIER_PART_NO, model.getDossierPartNo());
 		params.put(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
 		params.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());
