@@ -1017,6 +1017,47 @@ public class DossierManagementImpl implements DossierManagement {
 
 			DossierLocalServiceUtil.updateDossier(dossier);
 
+			if (dossier != null) {
+				//
+				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+
+				NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+				//Process add notification queue
+				Date now = new Date();
+
+				Calendar cal = Calendar.getInstance();
+				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+				
+				queue.setCreateDate(now);
+				queue.setModifiedDate(now);
+				queue.setGroupId(groupId);
+				queue.setCompanyId(company.getCompanyId());
+				
+				queue.setNotificationType(NotificationType.DOSSIER_01);
+				queue.setClassName(Dossier.class.getName());
+				queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
+				queue.setToUsername(dossier.getUserName());
+				queue.setToUserId(dossier.getUserId());
+				queue.setToEmail(dossier.getContactEmail());
+				queue.setToTelNo(dossier.getContactTelNo());
+				
+				JSONObject payload = JSONFactoryUtil.createJSONObject();
+				try {
+//					_log.info("START PAYLOAD: ");
+					payload.put(
+						"Dossier", JSONFactoryUtil.createJSONObject(
+							JSONFactoryUtil.looseSerialize(dossier)));
+				}
+				catch (JSONException parse) {
+					_log.error(parse);
+				}
+//				_log.info("payloadTest: "+payload.toJSONString());
+				queue.setPayload(payload.toJSONString());
+				queue.setExpireDate(cal.getTime());
+
+				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+			}
+
 			//Add to dossier user based on service process role
 			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);

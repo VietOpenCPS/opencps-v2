@@ -37,15 +37,15 @@ public class HolidayUtils {
 
 		//Get info day off and day work
 		getDayByGroupId(groupId);
-		_log.info("strDayOff: "+strDayOff);
+//		_log.info("strDayOff: "+strDayOff);
 		// Calculator time working
 		long hoursCount = processHoursCount(durationCount, durationUnit);
-		_log.info("hoursCount: "+hoursCount);
+//		_log.info("hoursCount: "+hoursCount);
 
 		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 
 		Date dueDate = getEndDate(groupId, startDate, hoursCount, holidayList);
-		_log.info("dueDate: "+dueDate);
+//		_log.info("dueDate: "+dueDate);
 //		Calendar cal = Calendar.getInstance();
 //		cal.setTime(startDate);
 //		int day = cal.get(Calendar.DAY_OF_WEEK);
@@ -523,10 +523,10 @@ public class HolidayUtils {
 		
 		//Get info day off and day work
 		getDayByGroupId(groupId);
-		_log.info("strDayOff: "+strDayOff);
+//		_log.info("strDayOff: "+strDayOff);
 
 		boolean flagCompareDate = false;
-		_log.info("numberDate: "+numberDate);
+//		_log.info("numberDate: "+numberDate);
 		for (int i = 0; i <= numberDate; i++) {
 			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 			boolean isHoliday = false;
@@ -573,15 +573,15 @@ public class HolidayUtils {
 
 		Calendar startDateCal = Calendar.getInstance();
 		startDateCal.setTimeInMillis(startDate);
-		_log.info("startDateCalHOUR: "+startDateCal.get(Calendar.DATE));
+//		_log.info("startDateCalHOUR: "+startDateCal.get(Calendar.DATE));
 
 		Calendar endDateCal = Calendar.getInstance();
 		endDateCal.setTimeInMillis(endDate);
-		_log.info("endDateCalHOUR: "+endDateCal.get(Calendar.DATE));
+//		_log.info("endDateCalHOUR: "+endDateCal.get(Calendar.DATE));
 		
 		//Get info day off and day work
 		getDayByGroupId(groupId);
-		_log.info("strDayOff: "+strDayOff);
+//		_log.info("strDayOff: "+strDayOff);
 
 		int startDayOfWeek = startDateCal.get(Calendar.DAY_OF_WEEK);
 		int startHourOfDay = startDateCal.get(Calendar.HOUR_OF_DAY);
@@ -592,7 +592,7 @@ public class HolidayUtils {
 		int hasOverDue = 0;
 		boolean flagCompareDate = compareDate(startDateCal, endDateCal);
 		if (flagCompareDate) {
-			_log.info("111: ");
+//			_log.info("111: ");
 			if (startHourMorning > startHourOfDay) {
 				// Process hours of morning
 				if (endHourOfDay < endHourMorning) {
@@ -628,7 +628,7 @@ public class HolidayUtils {
 
 //			return hasOverDue;
 		} else {
-			_log.info("222: ");
+//			_log.info("222: ");
 			List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 			boolean isHoliday = false;
 			if (holidayList != null && holidayList.size() > 0) {
@@ -641,7 +641,7 @@ public class HolidayUtils {
 			}
 
 			if (isHoliday || isDayOff) {
-				_log.info("333: ");
+//				_log.info("333: ");
 				// Process hours of morning
 				if (endHourOfDay <= endHourMorning) {
 					hasOverDue = endHourOfDay - startHourMorning;
@@ -649,7 +649,7 @@ public class HolidayUtils {
 					hasOverDue = (endHourOfDay - startHourAfterNoon) + (endHourMorning - startHourMorning);
 				}
 			} else {
-				_log.info("444: ");
+//				_log.info("444: ");
 				WorkTime startWorkTime = WorkTimeLocalServiceUtil.fetchByF_day(groupId, startDayOfWeek);
 				if (startWorkTime != null) {
 					String strHours = startWorkTime.getHours();
@@ -702,18 +702,18 @@ public class HolidayUtils {
 				}
 			}
 		}
-		_log.info("hasOverDue: "+hasOverDue);
+//		_log.info("hasOverDue: "+hasOverDue);
 		return hasOverDue;
 	}
 
-	public static void main(String[] args) {
-		double subHours = (double) 31 / VALUE_HOUR;
-		double startFullHour = 7 + subHours;
-		long test = (int) startFullHour;
-		System.out.println(subHours);
-		System.out.println(startFullHour);
-		System.out.println(test);
-	}
+//	public static void main(String[] args) {
+//		double subHours = (double) 31 / VALUE_HOUR;
+//		double startFullHour = 7 + subHours;
+//		long test = (int) startFullHour;
+//		System.out.println(subHours);
+//		System.out.println(startFullHour);
+//		System.out.println(test);
+//	}
 
 	//Process calculator time work follow half day
 //	private static int countHoursWork (String[] hourArr) {
