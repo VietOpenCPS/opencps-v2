@@ -5,7 +5,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -2551,7 +2550,7 @@ public class DossierActionsImpl implements DossierActions {
 		}	
 	}
 	
-	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
+	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
@@ -2574,8 +2573,6 @@ public class DossierActionsImpl implements DossierActions {
 
 		long dossierId = dossier.getDossierId();
 		ServiceProcess serviceProcess = null;
-		ActionConfig actionConfig = null;
-		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 		String prevStatus = dossier.getDossierStatus();
 		
 		DossierAction previousAction = null;
@@ -2914,7 +2911,6 @@ public class DossierActionsImpl implements DossierActions {
 				//Update dossier processing date
 				flagChanged = updateProcessingDate(previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
 			}
-			_log.info("GO GO AFTER CUR STEP");
 
 				// update reference dossier
 //				DossierAction prvAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0l);
@@ -2924,7 +2920,6 @@ public class DossierActionsImpl implements DossierActions {
 				int allowAssignUser = proAction.getAllowAssignUser();
 //				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
-					_log.info("GO GO NOT ASSIGN");
 					if (Validator.isNotNull(assignUsers)) {
 //						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -2937,13 +2932,10 @@ public class DossierActionsImpl implements DossierActions {
 								proAction.getAssignUserId());
 					}
 				} else {
-					_log.info("GO GO ASSIGN: " + allowAssignUser + ", " + (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED));
 //					_log.info("PROCESS subUsers == null");
 //					_log.info("Dossier action: " + dossierAction);
-					_log.info("GO GO BEFORE INIT DAU: " + proAction + ", " + dossierAction);
 					dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId,
 							proAction.getAssignUserId());
-					_log.info("GO GO ROLE AS STEP");
 					
 					//Process role as step
 					if (Validator.isNotNull(curStep.getRoleAsStep())) {
@@ -2965,12 +2957,10 @@ public class DossierActionsImpl implements DossierActions {
 //				}
 			
 			//Update dossier document and dossier sync
-			_log.info("GO GO BEFORE NEXT STEP");
 			//Get next step
 			ProcessStep nextStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			if (nextStep != null) {
 			}
-			_log.info("GO GO ACTION CONFIG HSTL");
 						
 			//Check if generate dossier document
 			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
@@ -2978,26 +2968,21 @@ public class DossierActionsImpl implements DossierActions {
 			if (ac != null) {
 				//Only create dossier document if 2 && 3
 				if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
-					_log.info("ac.getDocumentType(): " + ac.getDocumentType());
-					_log.info("ac.getActionCode(): " + ac.getActionCode());
 					if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
 						//Generate document
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, ac.getDocumentType());
 						if (dt != null) {
 							String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
-							_log.info("documentCode: " + documentCode);
 							DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
 									dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
 									dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
 												
 							//Generate PDF
 							String formData = dossierAction.getPayload();
-							_log.info("formData: " + formData);
 //							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 							JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
 							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 							formDataObj.put("url", context.getPortalURL());
-							_log.info("Dossier document form data: " + formDataObj.toJSONString());
 							Message message = new Message();
 //							_log.info("Document script: " + dt.getDocumentScript());
 							JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -3028,7 +3013,6 @@ public class DossierActionsImpl implements DossierActions {
 		else {
 			
 		}
-		_log.info("GO GO HSTL NOTI QUEUE");
 
 		//Create notification
 		createNotificationQueue(userId, groupId, dossier, actionConfig, context);
@@ -3186,7 +3170,7 @@ public class DossierActionsImpl implements DossierActions {
 		return dossierAction;		
 	}
 	
-	private DossierAction doActionOutsideProcess(long groupId, long userId, Dossier dossier, ProcessOption option, ProcessAction proAction,
+	private DossierAction doActionOutsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
@@ -3280,10 +3264,10 @@ public class DossierActionsImpl implements DossierActions {
 		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 		
 		if (actionConfig != null && !actionConfig.getInsideProcess()) {
-			dossierAction = doActionOutsideProcess(groupId, userId, dossier, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);			
+			dossierAction = doActionOutsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);			
 		}
 		else {
-			dossierAction = doActionInsideProcess(groupId, userId, dossier, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);
+			dossierAction = doActionInsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);
 		}
 				
 		return dossierAction;
