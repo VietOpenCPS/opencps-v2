@@ -538,6 +538,7 @@
 
 		<order>
 			<order-column name="dossierPartNo" order-by="asc" />
+			<order-column name="modifiedDate" order-by="desc" />
 		</order>
 
 		<!-- Finder methods -->
@@ -618,6 +619,11 @@
         <finder return-type="Collection" name="G">
         	<finder-column name="groupId" />
         </finder>
+		<finder return-type="Collection" name="D_FTN_DTN">
+			<finder-column name="dossierId" />
+			<finder-column name="fileTemplateNo" />
+			<finder-column name="dossierTemplateNo" />
+		</finder>        
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"

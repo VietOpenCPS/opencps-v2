@@ -1205,5 +1205,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.remove(dossierFileId);
 	}
 	
+	public DossierFile findLastDossierFile(long dossierId, String fileTemplateNo, String dossierTemplateNo) {
+		return dossierFilePersistence.fetchByD_FTN_DTN_First(dossierId, fileTemplateNo, dossierTemplateNo, null);
+	}
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

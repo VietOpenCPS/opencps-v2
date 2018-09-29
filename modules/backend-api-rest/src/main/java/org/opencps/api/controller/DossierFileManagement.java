@@ -80,7 +80,8 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("displayName") String displayName,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("fileType") String fileType,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("isSync") String isSync,
-			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("formData") @Nullable String formData);
+			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("formData") @Nullable String formData,
+			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("modifiedDate") @Nullable Long modifiedDate);
 
 	@POST
 	@Path("/{id}/files/copyfile")
