@@ -47,6 +47,9 @@ public class DossierActionUserLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil} to access the dossier action user local service.
 	 */
+	public void deleteByDossierAction(long dossierActionId) {
+		dossierActionUserPersistence.removeByDID(dossierActionId);
+	}
 	public List<DossierActionUser> getListUser(long dossierActionId) {
 		return dossierActionUserPersistence.findByDID(dossierActionId);
 	}

@@ -384,5 +384,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		// TODO add more business logic here
 	}
 	
-	
+	public List<ProcessOption> findAll(int start, int end) {
+		return processOptionPersistence.findAll(start, end);
+	}
 }

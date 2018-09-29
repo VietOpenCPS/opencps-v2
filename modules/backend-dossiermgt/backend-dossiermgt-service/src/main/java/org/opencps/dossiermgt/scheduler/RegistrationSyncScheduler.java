@@ -1,28 +1,5 @@
 package org.opencps.dossiermgt.scheduler;
 
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.constants.RegistrationTerm;
-import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.utils.DateTimeUtils;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -48,13 +25,34 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.dossiermgt.constants.RegistrationTerm;
+import org.opencps.dossiermgt.exception.NoSuchRegistrationException;
+import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.utils.DateTimeUtils;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+
 @Component(immediate = true, service = RegistrationSyncScheduler.class)
 public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
-		_log.info("OpenCPS SYNC Registration IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("OpenCPS SYNC Registration IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 		ServiceContext serviceContext = new ServiceContext();
@@ -73,7 +71,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 				RESTFulConfiguration.SERVER_PASS, properties, serviceContext);
 		
 		List<String> lsServerNo = getListServerNo(resServerConfig);
-		_log.info("resServerConfig lsServerNo ---------- :" + lsServerNo);
+//		_log.info("resServerConfig lsServerNo ---------- :" + lsServerNo);
 		for (String serverNo : lsServerNo) {
 
 			String dossierSyncEndpoint = "serverconfigs/" + serverNo;
@@ -86,14 +84,14 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 				
 
 				long groupId = getGroupId(resDossierSync);
-				_log.info("resServerConfig groupId ---------- :" + groupId);
+//				_log.info("resServerConfig groupId ---------- :" + groupId);
 				
 				// TODO GROUP EMPLOYEE
 				long desGroupId = 55301;
 
 				// listener submiting of server
 				List<Registration> registrations = RegistrationLocalServiceUtil.getdByF_submitting(groupId, Boolean.TRUE);
-				_log.info("resServerConfig registrations ---------- :" + registrations);
+//				_log.info("resServerConfig registrations ---------- :" + registrations);
 				String registrationEndpoint = "registrations/syncs";
 				String registrationFormEndpoint = "registrations/syncs/form";
 				
@@ -198,7 +196,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 			}
 		}
 		
-		_log.info("OpenCPS SYNC Registration HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+//		_log.info("OpenCPS SYNC Registration HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 	}
 	
