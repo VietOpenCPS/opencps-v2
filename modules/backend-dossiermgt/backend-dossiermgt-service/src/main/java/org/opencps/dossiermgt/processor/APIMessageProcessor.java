@@ -150,6 +150,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											true);
 									DossierFileModel dfModel = new DossierFileModel();
 									dfModel.setReferenceUid(df.getReferenceUid());
+									dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 									dfModel.setDossierPartNo(df.getDossierPartNo());
 									dfModel.setDisplayName(df.getDisplayName());
 									dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
@@ -319,6 +320,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 												true);
 										DossierFileModel dfModel = new DossierFileModel();
 										dfModel.setReferenceUid(df.getReferenceUid());
+										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 										dfModel.setDossierPartNo(df.getDossierPartNo());
 										dfModel.setDisplayName(df.getDisplayName());
 										dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
@@ -344,6 +346,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							else if (df != null && df.getEForm()) {
 								DossierFileModel dfModel = new DossierFileModel();
 								dfModel.setReferenceUid(df.getReferenceUid());
+								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 								dfModel.setDossierPartNo(df.getDossierPartNo());
 								dfModel.setDisplayName(df.getDisplayName());
 								dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
@@ -462,6 +465,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 												true);
 										DossierFileModel dfModel = new DossierFileModel();
 										dfModel.setReferenceUid(df.getReferenceUid());
+										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 										dfModel.setDossierPartNo(dossierPartNo);
 										dfModel.setDisplayName(df.getDisplayName());
 										dfModel.setDossierTemplateNo(dossierTemplateNo);
@@ -487,6 +491,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							else if (df != null && df.getEForm()) {
 								DossierFileModel dfModel = new DossierFileModel();
 								dfModel.setReferenceUid(df.getReferenceUid());
+								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 								dfModel.setDossierPartNo(dossierPartNo);
 								dfModel.setDisplayName(df.getDisplayName());
 								dfModel.setDossierTemplateNo(dossierTemplateNo);

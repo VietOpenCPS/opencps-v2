@@ -137,7 +137,6 @@ import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -924,8 +923,11 @@ public class DossierManagementImpl implements DossierManagement {
 				password = PwdGenerator.getPinNumber();
 			}
 
-			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
-					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
+//			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
+//					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
+			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByU_G_C_DS_SC_GC_O(
+					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), 0l, Integer.valueOf(input.getOriginality()));
+
 			Dossier dossier = null;
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT
@@ -933,7 +935,7 @@ public class DossierManagementImpl implements DossierManagement {
 				online = true;
 			}
 			boolean flagOldDossier = false;
-			if (oldDossiers.size() > 0 && oldDossiers.get(0).getOriginality() == Integer.valueOf(input.getOriginality())) {
+			if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
 				dossier = oldDossiers.get(0);
 				dossier.setApplicantName(input.getApplicantName());
