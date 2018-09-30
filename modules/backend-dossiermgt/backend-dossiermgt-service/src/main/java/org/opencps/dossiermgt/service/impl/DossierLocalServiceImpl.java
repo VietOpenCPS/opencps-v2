@@ -1786,8 +1786,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
 		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
-		String fromFinishDate = GetterUtil.getString(params.get(DossierTerm.FROM_FINISH_DATE));
-		String toFinishDate = GetterUtil.getString(params.get(DossierTerm.TO_FINISH_DATE));
+		String fromReleaseDate = GetterUtil.getString(params.get(DossierTerm.FROM_RELEASE_DATE));
+		String toReleaseDate = GetterUtil.getString(params.get(DossierTerm.TO_RELEASE_DATE));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1816,7 +1816,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName, applicantIdNo,
-				serviceName, fromFinishDate, toFinishDate, booleanCommon);
+				serviceName, fromReleaseDate, toReleaseDate, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1873,8 +1873,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
 		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
-		String fromFinishDate = GetterUtil.getString(params.get(DossierTerm.FROM_FINISH_DATE));
-		String toFinishDate = GetterUtil.getString(params.get(DossierTerm.TO_FINISH_DATE));
+		String fromReleaseDate = GetterUtil.getString(params.get(DossierTerm.FROM_RELEASE_DATE));
+		String toReleaseDate = GetterUtil.getString(params.get(DossierTerm.TO_RELEASE_DATE));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1900,7 +1900,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName, applicantIdNo,
-				serviceName, fromFinishDate, toFinishDate, booleanCommon);
+				serviceName, fromReleaseDate, toReleaseDate, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2004,7 +2004,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toSubmitDate, String notState, Long statusReg, Long notStatusReg, String originality,
 			String assigned, String statusStep, String subStatusStep, String permission, String domain,
 			String domainName, String applicantName, String applicantIdNo, String serviceName,
-			String fromFinishDate, String toFinishDate, BooleanQuery booleanQuery) throws ParseException {
+			String fromReleaseDate, String toReleaseDate, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2564,25 +2564,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String fromFinishDateFilter = fromFinishDate + ConstantsTerm.HOUR_START;
-		String toFinishDateFilter = toFinishDate + ConstantsTerm.HOUR_END;
+		String fromReleaseDateFilter = fromReleaseDate + ConstantsTerm.HOUR_START;
+		String toReleaseDateFilter = toReleaseDate + ConstantsTerm.HOUR_END;
 
-		if (Validator.isNotNull(fromFinishDate)) {
-			if (Validator.isNotNull(toFinishDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, true, true);
+		if (Validator.isNotNull(fromReleaseDate)) {
+			if (Validator.isNotNull(toReleaseDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromReleaseDateFilter, toReleaseDateFilter, true, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, true, false);
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromReleaseDateFilter, toReleaseDateFilter, true, false);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		} else {
-			if (Validator.isNotNull(toFinishDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, false, true);
+			if (Validator.isNotNull(toReleaseDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromReleaseDateFilter, toReleaseDateFilter, false, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
