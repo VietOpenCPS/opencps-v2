@@ -3239,12 +3239,12 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
-			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
+			String fromReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReleaseDate());
+			String toReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReleaseDate());
 
 			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
-			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
-			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
+			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep != null ? strStatusStep.toString() : StringPool.BLANK);
