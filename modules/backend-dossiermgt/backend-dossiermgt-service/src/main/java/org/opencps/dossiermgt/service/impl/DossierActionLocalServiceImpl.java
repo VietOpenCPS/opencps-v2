@@ -491,5 +491,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.findByDID_STEP(dossierId, fromStepCode);
 	}
 	
+	public List<DossierAction> getByDossierAndStepCode(long dossierId, String stepCode) {
+		return dossierActionPersistence.findByDID_SC(dossierId, stepCode);
+	}
+	
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }

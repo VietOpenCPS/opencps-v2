@@ -1249,6 +1249,10 @@
 			<finder-column name="dossierId" />
 			<finder-column name="fromStepCode" />
 		</finder>
+     	<finder return-type="Collection" name="DID_SC">
+			<finder-column name="dossierId" />
+			<finder-column name="stepCode" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
