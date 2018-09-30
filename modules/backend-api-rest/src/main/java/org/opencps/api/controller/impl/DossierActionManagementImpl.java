@@ -237,7 +237,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							modelUser = new DossierActionNextActiontoUser();
 							Map<String, Object> attr = u.getModelAttributes();
 							long userId = GetterUtil.getLong(u.getUserId());
-
 							moderator = false;
 							assigned = 0;
 							if (attr != null) {

@@ -1,5 +1,17 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,18 +51,6 @@ import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
-import com.liferay.document.library.kernel.service.DLAppServiceUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-
 public class DossierActionUtils {
 
 	private static Log _log = LogFactoryUtil.getLog(DossierActionUtils.class);
@@ -73,7 +73,7 @@ public class DossierActionUtils {
 						HashMap<String, Object> assigned = new HashMap<>();
 						assigned.put(ProcessStepRoleTerm.ASSIGNED, dau.getAssigned());
 						HashMap<String, Object> moderator = new HashMap<>();
-						moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator());
+						moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator() == 1 ? true : false);
 						user.setModelAttributes(moderator);
 						user.setModelAttributes(assigned);
 
