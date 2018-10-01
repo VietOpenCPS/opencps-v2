@@ -1306,6 +1306,21 @@ public class DossierActionsImpl implements DossierActions {
 						if (assign == 1 && !pending)
 							enable = 1;
 					}
+					//Check if user if admin
+					User checkAU = UserLocalServiceUtil.fetchUser(userId);
+					if (checkAU != null) {
+						List<Role> userRoles = checkAU.getRoles();
+						boolean isAdmin = false;
+						for (Role r : userRoles) {
+							if ("Administrator".equalsIgnoreCase(r.getName())) {
+								isAdmin = true;
+								break;
+							}
+						}
+						if (isAdmin) {
+							enable = 1;
+						}
+					}
 					// _log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
