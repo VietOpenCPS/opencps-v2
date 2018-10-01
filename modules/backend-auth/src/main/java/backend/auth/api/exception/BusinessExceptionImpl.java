@@ -37,7 +37,7 @@ public class BusinessExceptionImpl {
 			} else {
 				error.setMessage("No Content.");
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
+				error.setDescription(e.getMessage());
 
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 			}

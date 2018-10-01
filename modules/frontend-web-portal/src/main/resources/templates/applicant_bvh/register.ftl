@@ -168,7 +168,7 @@
            window.location.href = "${portalURL}/web${(themeDisplay.getScopeGroup().getFriendlyURL())!}/confirm-account?active_user_id=" + result.applicantId;
          }, 2000);
         },
-        500: function(result) {
+        403: function(result) {
           if (JSON.parse(result.responseText).description == 'DuplicateContactEmailException'){
            notification.show({
             title: "Error",
