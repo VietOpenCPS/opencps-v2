@@ -29,6 +29,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -39,6 +40,7 @@ import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
@@ -47,6 +49,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
@@ -169,6 +172,16 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									_log.error(e);
 								}
 
+							}
+							
+							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
+							if (dossierMark != null) {
+								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+								markInputModel.setFileCheck(dossierMark.getFileCheck());
+								markInputModel.setFileMark(dossierMark.getFileMark());
+								markInputModel.setFileComment(dossierMark.getFileComment());
+								
+								client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
 							}
 						}
 					}
@@ -381,6 +394,15 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								
 							}
 							
+							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
+							if (dossierMark != null) {
+								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+								markInputModel.setFileCheck(dossierMark.getFileCheck());
+								markInputModel.setFileMark(dossierMark.getFileMark());
+								markInputModel.setFileComment(dossierMark.getFileComment());
+								
+								client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
+							}							
 						}
 					}
 				}			
@@ -525,7 +547,16 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								}
 								
 							}
-							
+						
+							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
+							if (dossierMark != null) {
+								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+								markInputModel.setFileCheck(dossierMark.getFileCheck());
+								markInputModel.setFileMark(dossierMark.getFileMark());
+								markInputModel.setFileComment(dossierMark.getFileComment());
+								
+								client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
+							}							
 						}
 					}
 				}			
