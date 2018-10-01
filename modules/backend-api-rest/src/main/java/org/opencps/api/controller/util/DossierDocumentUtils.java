@@ -54,6 +54,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
 		jsonData.put(DossierTerm.SECRET, dossier.getPassword());
 		jsonData.put(DossierTerm.BRIEF_NOTE, dossier.getBriefNote());
+		jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
 		//
 		long groupId = dossier.getGroupId();
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
