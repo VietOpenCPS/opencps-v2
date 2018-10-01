@@ -965,4 +965,58 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		}
 	}
 
+	@Override
+	public Response getConfigByGovAgencys(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		int level = query.getLevel();
+
+		try {
+			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByLevel(groupId, level);
+
+			int total = 0;
+			JSONArray agencys = JSONFactoryUtil.createJSONArray();
+			if (configList != null && configList.size() > 0) {
+				for (ServiceConfig config : configList) {
+							String govAgencyCode = config.getGovAgencyCode();
+							if (Validator.isNotNull(govAgencyCode)) {
+								boolean flag = true;
+								JSONObject jsonGovAgency = JSONFactoryUtil.createJSONObject();
+								if (agencys != null && agencys.length() > 0) {
+									for (int i = 0; i < agencys.length(); i++) {
+										JSONObject jsonData = agencys.getJSONObject(i);
+										if (govAgencyCode.equals(jsonData.getString(ServiceConfigTerm.GOVAGENCY_CODE))) {
+											flag = false;
+											break;
+										}
+									}
+									if (flag) {
+										total += 1;
+										jsonGovAgency.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
+										jsonGovAgency.put(ServiceConfigTerm.GOVAGENCY_NAME, config.getGovAgencyName());
+										//
+										agencys.put(jsonGovAgency);
+									}
+								} else {
+									total += 1;
+									jsonGovAgency.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
+									jsonGovAgency.put(ServiceConfigTerm.GOVAGENCY_NAME, config.getGovAgencyName());
+									//
+									agencys.put(jsonGovAgency);
+								}
+							}
+				}
+			}
+			results.put("total", total);
+			results.put("data", agencys);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }
