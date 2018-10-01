@@ -987,7 +987,8 @@ public class DossierManagementImpl implements DossierManagement {
 			//Create DossierMark
 			_log.info("flagOldDossier: "+flagOldDossier);
 			_log.info("originality: "+originality);
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA && !flagOldDossier) {
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA && originality == DossierTerm.ORIGINALITY_LIENTHONG
+					&& !flagOldDossier) {
 				String templateNo = dossier.getDossierTemplateNo();
 				_log.info("templateNo: "+templateNo);
 				if (Validator.isNotNull(templateNo)) {
@@ -1079,6 +1080,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String secretCode = GetterUtil.getString(header.getHeaderString("secretCode"));
+		_log.info("secretCode: "+secretCode);
+		_log.info("secretKey: "+secretKey);
 		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1115,11 +1118,13 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 			else {
+				_log.info("START");
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
 
 				Dossier dossier = DossierUtils.getDossier(id, groupId);
+				_log.info("dossier: "+dossier);
 
 //				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 //						dossier.getDossierTemplateNo(), groupId);
@@ -1133,6 +1138,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 
@@ -3239,12 +3245,12 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
-			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
+			String fromReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReleaseDate());
+			String toReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReleaseDate());
 
 			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
-			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
-			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
+			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep != null ? strStatusStep.toString() : StringPool.BLANK);

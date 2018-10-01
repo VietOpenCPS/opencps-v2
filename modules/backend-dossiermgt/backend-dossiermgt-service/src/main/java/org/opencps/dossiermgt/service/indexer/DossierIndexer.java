@@ -133,10 +133,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addTextSortable(DossierTerm.FINISH_DATE, StringPool.BLANK);
 			}
 			//
-			if (Validator.isNotNull(object.getFinishDate())) {
-				document.addDateSortable(DossierTerm.FINISH_DATE_LUCENE, object.getFinishDate());
+			if (Validator.isNotNull(object.getReleaseDate())) {
+				document.addDateSortable(DossierTerm.RELEASE_DATE_LUCENE, object.getReleaseDate());
 			} else {
-				document.addTextSortable(DossierTerm.FINISH_DATE_LUCENE, StringPool.BLANK);
+				document.addTextSortable(DossierTerm.RELEASE_DATE_LUCENE, StringPool.BLANK);
 			}
 
 			if (Validator.isNotNull(object.getCancellingDate())) {
