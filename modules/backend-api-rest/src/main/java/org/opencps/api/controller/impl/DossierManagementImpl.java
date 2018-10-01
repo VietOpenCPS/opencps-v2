@@ -295,7 +295,11 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.SUBMITTING, submitting);
 			params.put(DossierTerm.FOLLOW, follow);
 			params.put(DossierTerm.TOP, top);
-			params.put(DossierTerm.USER_ID, user.getUserId());
+			
+			backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+			if (!auth2.isAdmin(serviceContext, "admin")) {
+				params.put(DossierTerm.USER_ID, user.getUserId());				
+			}
 			params.put("secetKey", query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
