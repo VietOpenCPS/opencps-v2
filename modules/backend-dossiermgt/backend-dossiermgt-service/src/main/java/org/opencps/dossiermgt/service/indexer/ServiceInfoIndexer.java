@@ -5,6 +5,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -60,6 +61,8 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE, object.getServiceCode());
 
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME, object.getServiceName());
+		//Convert serviceName
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME_SEARCH, AccentUtils.removeAccent(object.getServiceName()));
 		document.addKeywordSortable(ServiceInfoTerm.PROCESS_TEXT, object.getProcessText());
 		document.addKeywordSortable(ServiceInfoTerm.METHOD_TEXT, object.getMethodText());
 		document.addKeywordSortable(ServiceInfoTerm.DOSSIER_EXT, object.getDossierText());

@@ -342,15 +342,32 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 //			}
 //		}
 		// LamTV: Process search LIKE
+//		if (Validator.isNotNull(keywords)) {
+//			String[] keywordArr = keywords.split(StringPool.SPACE);
+//				BooleanQuery query = new BooleanQueryImpl();
+//				for (String key : keywordArr) {
+//					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
+//							key.toLowerCase() + StringPool.STAR);
+//					query.add(wildQuery, BooleanClauseOccur.MUST);
+//				}
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+		//
 		if (Validator.isNotNull(keywords)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME, ServiceInfoTerm.SERVICE_NAME_SEARCH };
+
 			String[] keywordArr = keywords.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
 				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
-							key.toLowerCase() + StringPool.STAR);
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(groupId)) {
@@ -442,15 +459,32 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 //		}
 
 		// LamTV: Process search LIKE
+//		if (Validator.isNotNull(keywords)) {
+//			String[] keywordArr = keywords.split(StringPool.SPACE);
+//				BooleanQuery query = new BooleanQueryImpl();
+//				for (String key : keywordArr) {
+//					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
+//							key.toLowerCase() + StringPool.STAR);
+//					query.add(wildQuery, BooleanClauseOccur.MUST);
+//				}
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+		//
 		if (Validator.isNotNull(keywords)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME, ServiceInfoTerm.SERVICE_NAME_SEARCH };
+
 			String[] keywordArr = keywords.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
 				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
-							key.toLowerCase() + StringPool.STAR);
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
+							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(groupId)) {

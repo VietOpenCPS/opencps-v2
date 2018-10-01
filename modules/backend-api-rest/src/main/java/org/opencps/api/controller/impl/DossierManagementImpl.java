@@ -987,7 +987,7 @@ public class DossierManagementImpl implements DossierManagement {
 			//Create DossierMark
 			_log.info("flagOldDossier: "+flagOldDossier);
 			_log.info("originality: "+originality);
-			if (originality == DossierTerm.ORIGINALITY_MOTCUA && originality == DossierTerm.ORIGINALITY_LIENTHONG
+			if ((originality == DossierTerm.ORIGINALITY_MOTCUA || originality == DossierTerm.ORIGINALITY_LIENTHONG)
 					&& !flagOldDossier) {
 				String templateNo = dossier.getDossierTemplateNo();
 				_log.info("templateNo: "+templateNo);
