@@ -157,10 +157,14 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
 									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
 											dueDateTimeStamp, groupId, true);
-									if (subTimeStamp > 0) {
-										result.setStepOverdue("Quá hạn " + strOverDue);
+									if (Validator.isNotNull(strOverDue)) {
+										if (subTimeStamp > 0) {
+											result.setStepOverdue("Quá hạn " + strOverDue);
+										} else {
+											result.setStepOverdue("Còn " + strOverDue);
+										}
 									} else {
-										result.setStepOverdue("Còn " + strOverDue);
+										result.setStepOverdue(StringPool.BLANK);
 									}
 								} else {
 									result.setStepOverdue(StringPool.BLANK);
@@ -171,15 +175,19 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 //									_log.info("subTimeStamp: "+subTimeStamp);
 									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
 											dueDateTimeStamp, groupId, true);
-									if (subTimeStamp > 0) {
-										result.setStepOverdue("Quá hạn " + strOverDue);
+									if (Validator.isNotNull(strOverDue)) {
+										if (subTimeStamp > 0) {
+											result.setStepOverdue("Quá hạn " + strOverDue);
+										} else {
+											result.setStepOverdue("Còn " + strOverDue);
+										}
 									} else {
-										result.setStepOverdue("Còn " + strOverDue);
+										result.setStepOverdue(StringPool.BLANK);
 									}
 								} else {
 									result.setStepOverdue(StringPool.BLANK);
 								}
-							}							
+							}
 						}
 					}
 	
