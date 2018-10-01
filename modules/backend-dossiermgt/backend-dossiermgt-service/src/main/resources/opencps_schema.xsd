@@ -103,6 +103,10 @@
 				<xsd:element name="endorsementDate" type="xsd:long" minOccurs="0"/>
 				<xsd:element name="extendDate" type="xsd:long" minOccurs="0"/>
 				<xsd:element name="processDate" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="dossierStatus" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="dossierStatusText" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="dossierSubStatus" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="dossierSubStatusText" type="xsd:string" minOccurs="0"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -266,5 +270,26 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>						
+		
+	<xsd:element name="DossierMarkInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="fileMark" type="xsd:int" minOccurs="0" />
+				<xsd:element name="fileCheck" type="xsd:int" minOccurs="0" />
+				<xsd:element name="fileComment" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DossierMarkResultModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dossierMarkId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="fileMark" type="xsd:int" minOccurs="0" />
+				<xsd:element name="fileCheck" type="xsd:int" minOccurs="0" />
+				<xsd:element name="fileComment" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 					
 </xsd:schema>
