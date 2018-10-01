@@ -548,7 +548,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								
 							}
 							
-							_log.info("HSLT MARK: " + df.getGroupId() + ", " + dossier.getDossierId() + "," + dossier.getOriginDossierId() + "," + df.getDossierPartNo());
 							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(df.getGroupId(), dossier.getOriginDossierId(), df.getDossierPartNo());
 							if (dossierMark != null) {
 								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
