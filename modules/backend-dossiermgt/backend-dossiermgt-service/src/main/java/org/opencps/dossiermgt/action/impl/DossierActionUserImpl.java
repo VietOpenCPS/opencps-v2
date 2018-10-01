@@ -78,7 +78,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		}
 		
 //		String actionCode = dossierAction.getActionCode();
-		long serviceProcessId = dossierAction != null ? dossierAction.getServiceProcessId() : 0l;
+		long serviceProcessId = dossierAction.getServiceProcessId();
 //		_log.info("serviceProcessId: "+dossierAction.getServiceProcessId());
 		String stepCode = processAction.getPostStepCode();
 

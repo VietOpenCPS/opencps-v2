@@ -394,15 +394,17 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								
 							}
 							
-							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
-							if (dossierMark != null) {
-								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
-								markInputModel.setFileCheck(dossierMark.getFileCheck());
-								markInputModel.setFileMark(dossierMark.getFileMark());
-								markInputModel.setFileComment(dossierMark.getFileComment());
-								
-								client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
-							}							
+							if (df != null) {
+								DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
+								if (dossierMark != null) {
+									DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+									markInputModel.setFileCheck(dossierMark.getFileCheck());
+									markInputModel.setFileMark(dossierMark.getFileMark());
+									markInputModel.setFileComment(dossierMark.getFileComment());
+									
+									client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
+								}		
+							}
 						}
 					}
 				}			
