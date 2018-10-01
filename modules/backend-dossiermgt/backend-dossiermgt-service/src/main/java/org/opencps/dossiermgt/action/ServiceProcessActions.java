@@ -117,7 +117,7 @@ public interface ServiceProcessActions {
 			ServiceContext serviceContext);
 
 	public void updateProcessSequenceDB(long userId, long groupId, long serviceProcessId, String sequenceNo,
-			String sequenceName, String sequenceRole, Integer durationCount, ServiceContext serviceContext)
+			String sequenceName, String sequenceRole, Double durationCount, ServiceContext serviceContext)
 			throws PortalException;
 
 	public long getByRoleCode(long groupId, String roleCode);

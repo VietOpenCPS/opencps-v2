@@ -13,7 +13,7 @@ public class MD5 {
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         log.info("String input secure : " + value);
         final StringBuilder sbMd5Hash = new StringBuilder();
-        final MessageDigest m = MessageDigest.getInstance("MD5");
+        final MessageDigest m = MessageDigest.getInstance("SHA-256");
         m.update(value.getBytes("UTF-8"));
 
         final byte data[] = m.digest();

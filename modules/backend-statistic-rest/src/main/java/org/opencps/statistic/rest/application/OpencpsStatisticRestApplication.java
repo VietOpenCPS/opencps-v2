@@ -64,7 +64,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			@QueryParam("group") String groupAgencyCode, @QueryParam("reporting") boolean reporting,
 			@QueryParam("start") int start, @QueryParam("end") int end) {
 
-		LOG.info("GET DossierStatisticResponse");
+		//LOG.info("GET DossierStatisticResponse");
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 

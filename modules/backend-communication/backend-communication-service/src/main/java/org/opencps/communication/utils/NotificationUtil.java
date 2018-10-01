@@ -261,7 +261,7 @@ public class NotificationUtil {
 
 				messageEntry.setSendEmail(sendEmail);
 				messageEntry.setSendNotify(sendNotify);
-				messageEntry.setSendSMS(sendSMS);
+				messageEntry.setSendSMS(false);
 
 				_log.info("create mail message: " + messageEntry);
 

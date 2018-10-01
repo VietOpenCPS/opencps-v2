@@ -14,41 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.datamgt.model.DictCollection;
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.util.HolidayUtils;
-import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.constants.ConstantsTerm;
-import org.opencps.dossiermgt.constants.DossierActionTerm;
-import org.opencps.dossiermgt.constants.DossierStatusConstants;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.exception.NoSuchDossierException;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
-
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -83,6 +48,41 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.exception.NoSuchDossierException;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -235,6 +235,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				ServiceProcess serviceProcess = null;
 				_log.info("option: "+option);
 				if (option != null) {
+					//Process submition note
+					_log.info("option: "+option.getSubmissionNote());
+					dossier.setSubmissionNote(option.getSubmissionNote());
 					_log.info("option: "+true);
 					long serviceProcessId = option.getServiceProcessId();
 					serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
@@ -277,7 +280,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
 //				}
-			}
+				}
+				dossierPersistence.update(dossier);
 		} else {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
@@ -1782,8 +1786,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
 		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
-		String fromFinishDate = GetterUtil.getString(params.get(DossierTerm.FROM_FINISH_DATE));
-		String toFinishDate = GetterUtil.getString(params.get(DossierTerm.TO_FINISH_DATE));
+		String fromReleaseDate = GetterUtil.getString(params.get(DossierTerm.FROM_RELEASE_DATE));
+		String toReleaseDate = GetterUtil.getString(params.get(DossierTerm.TO_RELEASE_DATE));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1812,7 +1816,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName, applicantIdNo,
-				serviceName, fromFinishDate, toFinishDate, booleanCommon);
+				serviceName, fromReleaseDate, toReleaseDate, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1869,8 +1873,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_ID_NO));
 		String serviceName = GetterUtil.getString(params.get(DossierTerm.SERVICE_NAME));
 		String emailLogin = GetterUtil.getString(params.get(DossierTerm.EMAIL_USER_LOGIN));
-		String fromFinishDate = GetterUtil.getString(params.get(DossierTerm.FROM_FINISH_DATE));
-		String toFinishDate = GetterUtil.getString(params.get(DossierTerm.TO_FINISH_DATE));
+		String fromReleaseDate = GetterUtil.getString(params.get(DossierTerm.FROM_RELEASE_DATE));
+		String toReleaseDate = GetterUtil.getString(params.get(DossierTerm.TO_RELEASE_DATE));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1896,7 +1900,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName, applicantIdNo,
-				serviceName, fromFinishDate, toFinishDate, booleanCommon);
+				serviceName, fromReleaseDate, toReleaseDate, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2000,7 +2004,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toSubmitDate, String notState, Long statusReg, Long notStatusReg, String originality,
 			String assigned, String statusStep, String subStatusStep, String permission, String domain,
 			String domainName, String applicantName, String applicantIdNo, String serviceName,
-			String fromFinishDate, String toFinishDate, BooleanQuery booleanQuery) throws ParseException {
+			String fromReleaseDate, String toReleaseDate, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2271,14 +2275,23 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+//		if (Validator.isNotNull(dossierNo)) {
+//			String[] keyDossier = dossierNo.split(StringPool.SPACE);
+//			for (String key : keyDossier) {
+//				MultiMatchQuery query = new MultiMatchQuery(key);
+//				query.addFields(new String[] { DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN });
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//			}
+//		}
 		if (Validator.isNotNull(dossierNo)) {
-
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
-			for (String key : keyDossier) {
-				MultiMatchQuery query = new MultiMatchQuery(key);
-				query.addFields(new String[] { DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN });
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keyDossier) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.DOSSIER_NO_SEARCH,
+							key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(certificateNo)) {
@@ -2551,25 +2564,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String fromFinishDateFilter = fromFinishDate + ConstantsTerm.HOUR_START;
-		String toFinishDateFilter = toFinishDate + ConstantsTerm.HOUR_END;
+		String fromReleaseDateFilter = fromReleaseDate + ConstantsTerm.HOUR_START;
+		String toReleaseDateFilter = toReleaseDate + ConstantsTerm.HOUR_END;
 
-		if (Validator.isNotNull(fromFinishDate)) {
-			if (Validator.isNotNull(toFinishDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, true, true);
+		if (Validator.isNotNull(fromReleaseDate)) {
+			if (Validator.isNotNull(toReleaseDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromReleaseDateFilter, toReleaseDateFilter, true, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, true, false);
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromReleaseDateFilter, toReleaseDateFilter, true, false);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		} else {
-			if (Validator.isNotNull(toFinishDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, false, true);
+			if (Validator.isNotNull(toReleaseDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromReleaseDateFilter, toReleaseDateFilter, false, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
@@ -3111,5 +3124,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByG(groupId);
 	}
 	
+	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo) {
+		return dossierPersistence.findByDN_AN(dossierNo, applicantIdNo);
+	}
+	
+	public List<Dossier> getByU_G_C_DS_SC_GC_O(long userId, long groupId, String serviceCode, String govAgencyCode, long dossierActionId, int originality) {
+		return dossierPersistence.findByU_G_GAC_SC_DTNO_DAI_O(userId, groupId, serviceCode, govAgencyCode, dossierActionId, originality);
+	}
+
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 }

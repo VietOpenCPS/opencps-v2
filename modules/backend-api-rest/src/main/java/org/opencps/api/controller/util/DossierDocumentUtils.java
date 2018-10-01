@@ -1,20 +1,22 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.List;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierDocumentUtils {
 
@@ -42,6 +44,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
 		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
 		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+		jsonData.put(DossierTerm.SECRET_KEY, dossier.getPassword());
 		jsonData.put(DossierTerm.RECEIVE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		jsonData.put(DossierTerm.DUE_DATE,
@@ -79,6 +82,31 @@ public class DossierDocumentUtils {
 				dossierMarkArr.put(jsonMark);
 			}
 		}
+		//Hot fix TP99
+		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
+		if (dossierMark != null) {
+			JSONObject jsonMark = JSONFactoryUtil.createJSONObject();
+			String partNo = dossierMark.getDossierPartNo();
+			if (Validator.isNotNull(partNo)) {
+				List<DossierFile> fileList = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, partNo, false);
+				DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
+				if (fileList != null && part != null) {
+					for (DossierFile dossierFile : fileList) {
+						jsonMark.put(DossierPartTerm.PART_NAME, dossierFile.getDisplayName());
+						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
+						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
+						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
+						jsonMark.put(DossierPartTerm.PART_NO, partNo);
+						jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+						jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
+						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
+//						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
+						dossierMarkArr.put(jsonMark);
+					}
+				}
+			}
+		}
+
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
 		return jsonData;
 	}

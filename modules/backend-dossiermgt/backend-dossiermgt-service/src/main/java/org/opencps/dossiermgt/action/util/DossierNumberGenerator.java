@@ -50,7 +50,7 @@ public class DossierNumberGenerator {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		String dossierNumber = StringPool.BLANK;
 
-		_log.info("seriNumberPattern: "+seriNumberPattern);
+//		_log.info("seriNumberPattern: "+seriNumberPattern);
 		if (dossier != null) {
 			String codePattern = "\\{(n+|N+)\\}";
 			String codePatternGov = "\\{(a+|A+)\\}";
@@ -84,9 +84,9 @@ public class DossierNumberGenerator {
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.fetchServiceConfig(processOption.getServiceConfigId());
 				if (serviceConfig != null) {
 					govAgencyCode = serviceConfig.getGovAgencyCode();
-					_log.info("govAgencyCode: "+govAgencyCode);
+//					_log.info("govAgencyCode: "+govAgencyCode);
 				}
-				_log.info("SERVICECODE____"+serviceProcessCode);
+//				_log.info("SERVICECODE____"+serviceProcessCode);
 				
 			} catch (Exception e) {
 				_log.debug(e);
@@ -122,7 +122,7 @@ public class DossierNumberGenerator {
 
 						// Pattern follow GovAgencyCode
 					} if (r.toString().equals(codePatternGov)) {
-						_log.info("codePatternGov: "+ true);
+//						_log.info("codePatternGov: "+ true);
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 
 						String number = countByInit(govAgencyCode, dossierId, tmp, groupId);

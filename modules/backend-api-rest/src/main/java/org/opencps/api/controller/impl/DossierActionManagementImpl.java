@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.util.DossierActionUtils;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
@@ -49,6 +51,7 @@ import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
@@ -146,23 +149,37 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
 
 							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
+							Long releaseDateTimeStamp = (dossier.getReleaseDate() != null ? dossier.getReleaseDate() .getTime(): 0l);
 							
 							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
-//							int durationUnit = dossier.getDurationUnit();
-							if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-								long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-								if (subTimeStamp > 0) {
-//									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
-									String strOverDue = StringPool.BLANK;
-									result.setStepOverdue("Quá hạn "+strOverDue);
+							if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
+								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
+									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
+											dueDateTimeStamp, groupId, true);
+									if (subTimeStamp > 0) {
+										result.setStepOverdue("Quá hạn " + strOverDue);
+									} else {
+										result.setStepOverdue("Còn " + strOverDue);
+									}
 								} else {
-//									String strOverDue = DossierUtils.calculatorOverDue(durationUnit, subTimeStamp);
-									String strOverDue = StringPool.BLANK;
-									result.setStepOverdue("Còn "+strOverDue);
+									result.setStepOverdue(StringPool.BLANK);
 								}
 							} else {
-							}
-							
+								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+//									_log.info("subTimeStamp: "+subTimeStamp);
+									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
+											dueDateTimeStamp, groupId, true);
+									if (subTimeStamp > 0) {
+										result.setStepOverdue("Quá hạn " + strOverDue);
+									} else {
+										result.setStepOverdue("Còn " + strOverDue);
+									}
+								} else {
+									result.setStepOverdue(StringPool.BLANK);
+								}
+							}							
 						}
 					}
 	
@@ -173,25 +190,41 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 					if (processStep != null) {	
 						List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 								.findByP_S_ID(processStep.getProcessStepId());
-						if (Validator.isNotNull(processStep.getRoleAsStep())) {
-							String[] steps = StringUtil.split(processStep.getRoleAsStep());
-							for (String sc : steps) {
-								if (sc.startsWith("!")) {
-									int index = sc.indexOf("!");
-									String stepCodePunc = sc.substring(index + 1);
-									lstUser.addAll(DossierActionUtils.processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep));
-								}
-								else {
-									lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, sc, serviceProcessId, processStep));								
-								}
-							}							
+						ProcessAction processAction = null;
+						
+						if (dossierAction != null) {
+							processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
 						}
-						else {
-							if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
-								lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
-							}							
+						if (processAction != null && processAction.getAllowAssignUser() == ProcessActionTerm.NOT_ASSIGNED) {
+							if (Validator.isNotNull(processStep.getRoleAsStep())) {
+								String[] steps = StringUtil.split(processStep.getRoleAsStep());
+								for (String sc : steps) {
+									if (sc.startsWith("!")) {
+										int index = sc.indexOf("!");
+										String stepCodePunc = sc.substring(index + 1);
+										lstUser.addAll(DossierActionUtils.processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep));
+									}
+									else {
+										lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, sc, serviceProcessId, processStep));								
+									}
+								}							
+							}
+							else {
+								if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+									lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
+								}							
+							}
+							if (lstUser != null && !lstUser.isEmpty()) {
+							}
 						}
-						if (lstUser != null && !lstUser.isEmpty()) {
+						else if (processAction != null) {
+							List<DossierActionUser> assignedUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
+							for (DossierActionUser dau : assignedUsers) {
+								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH) {
+									User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+									lstUser.add(u);
+								}
+							}
 						}
 					}
 					
@@ -204,7 +237,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							modelUser = new DossierActionNextActiontoUser();
 							Map<String, Object> attr = u.getModelAttributes();
 							long userId = GetterUtil.getLong(u.getUserId());
-
 							moderator = false;
 							assigned = 0;
 							if (attr != null) {
@@ -217,7 +249,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							}
 
 							modelUser.setUserId(userId);
-							modelUser.setUserName(u.getFullName());
+							modelUser.setUserName(u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
 							modelUser.setModerator(moderator);
 							modelUser.setAssigned(assigned);
 							boolean flag = true;

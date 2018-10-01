@@ -137,7 +137,6 @@ import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -432,7 +431,7 @@ public class DossierManagementImpl implements DossierManagement {
 				owner = String.valueOf(true);
 			}
 			if (Boolean.valueOf(query.getSpecialKey())){
-				_log.info("TESSSSST");
+//				_log.info("TESSSSST");
 				owner = String.valueOf(false);
 			}
 			String follow = query.getFollow();
@@ -548,7 +547,7 @@ public class DossierManagementImpl implements DossierManagement {
 						if (query.getEnd() == -1) {
 							results.getData().addAll(DossierUtils.mappingForGetList(docs, userId));
 						} else {
-							_log.info("669999");
+//							_log.info("669999");
 							results.getData().addAll(
 									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
 						}
@@ -575,7 +574,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
-		_log.info("userId: "+userId);
+//		_log.info("userId: "+userId);
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -670,17 +669,17 @@ public class DossierManagementImpl implements DossierManagement {
 					year = baseDateCal.get(Calendar.YEAR);
 				}
 			}
-			_log.info("month: "+month);
-			_log.info("year: "+year);
+//			_log.info("month: "+month);
+//			_log.info("year: "+year);
 
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
-			_log.info("dossierIdNo: "+dossierIdNo);
+//			_log.info("dossierIdNo: "+dossierIdNo);
 			String dossierNoSearch = StringPool.BLANK;
 			if (Validator.isNotNull(dossierIdNo)) {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierIdNo);
 			}
-			_log.info("dossierNoSearch: "+dossierNoSearch);
+//			_log.info("dossierNoSearch: "+dossierNoSearch);
 			String soChungChi = query.getSoChungChi();
 			String certNo = StringPool.BLANK;
 			if (Validator.isNotNull(soChungChi)) {
@@ -924,8 +923,11 @@ public class DossierManagementImpl implements DossierManagement {
 				password = PwdGenerator.getPinNumber();
 			}
 
-			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
-					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
+//			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
+//					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
+			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByU_G_C_DS_SC_GC_O(
+					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), 0l, Integer.valueOf(input.getOriginality()));
+
 			Dossier dossier = null;
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT
@@ -933,7 +935,7 @@ public class DossierManagementImpl implements DossierManagement {
 				online = true;
 			}
 			boolean flagOldDossier = false;
-			if (oldDossiers.size() > 0 && oldDossiers.get(0).getOriginality() == Integer.valueOf(input.getOriginality())) {
+			if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
 				dossier = oldDossiers.get(0);
 				dossier.setApplicantName(input.getApplicantName());
@@ -1013,8 +1015,49 @@ public class DossierManagementImpl implements DossierManagement {
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
 			}
-			
+
 			DossierLocalServiceUtil.updateDossier(dossier);
+
+			if (dossier != null) {
+				//
+				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+
+				NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+				//Process add notification queue
+				Date now = new Date();
+
+				Calendar cal = Calendar.getInstance();
+				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+				
+				queue.setCreateDate(now);
+				queue.setModifiedDate(now);
+				queue.setGroupId(groupId);
+				queue.setCompanyId(company.getCompanyId());
+				
+				queue.setNotificationType(NotificationType.DOSSIER_01);
+				queue.setClassName(Dossier.class.getName());
+				queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
+				queue.setToUsername(dossier.getUserName());
+				queue.setToUserId(dossier.getUserId());
+				queue.setToEmail(dossier.getContactEmail());
+				queue.setToTelNo(dossier.getContactTelNo());
+				
+				JSONObject payload = JSONFactoryUtil.createJSONObject();
+				try {
+//					_log.info("START PAYLOAD: ");
+					payload.put(
+						"Dossier", JSONFactoryUtil.createJSONObject(
+							JSONFactoryUtil.looseSerialize(dossier)));
+				}
+				catch (JSONException parse) {
+					_log.error(parse);
+				}
+//				_log.info("payloadTest: "+payload.toJSONString());
+				queue.setPayload(payload.toJSONString());
+				queue.setExpireDate(cal.getTime());
+
+				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+			}
 
 			//Add to dossier user based on service process role
 			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
@@ -1032,7 +1075,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response getDetailDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
+			User user, ServiceContext serviceContext, String id, String secretKey) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String secretCode = GetterUtil.getString(header.getHeaderString("secretCode"));
@@ -1041,7 +1084,22 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
-			if (Validator.isNotNull(secretCode)) {
+			if (Validator.isNotNull(secretKey)) {
+				try {
+					Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+					dossierPermission.checkPassword(dossier, secretKey);
+
+					DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+
+					return Response.status(200).entity(result).build();
+				} catch (Exception e) {
+					_log.error(e);
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+							.build();
+				}
+
+			} else if (Validator.isNotNull(secretCode)) {
 				try {
 					Dossier dossier = DossierUtils.getDossier(id, groupId);
 
@@ -1055,8 +1113,8 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretCode not sucess")
 							.build();
 				}
-
-			} else {
+			}
+			else {
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
@@ -1344,18 +1402,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
-			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
+//			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
+//			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
 
 			if (dossier != null) {
-				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
+//				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
 				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-					_log.info("Action config: " + actConfig);
+//					_log.info("Action config: " + actConfig);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
@@ -1411,7 +1469,7 @@ public class DossierManagementImpl implements DossierManagement {
 							
 							JSONObject payload = JSONFactoryUtil.createJSONObject();
 							try {
-								_log.info("START PAYLOAD: ");
+//								_log.info("START PAYLOAD: ");
 								payload.put(
 									"Dossier", JSONFactoryUtil.createJSONObject(
 										JSONFactoryUtil.looseSerialize(dossier)));
@@ -1419,7 +1477,7 @@ public class DossierManagementImpl implements DossierManagement {
 							catch (JSONException parse) {
 								_log.error(parse);
 							}
-							_log.info("payloadTest: "+payload.toJSONString());
+//							_log.info("payloadTest: "+payload.toJSONString());
 							queue.setPayload(payload.toJSONString());
 							queue.setExpireDate(cal.getTime());
 
@@ -3181,12 +3239,12 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
-			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
+			String fromReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReleaseDate());
+			String toReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReleaseDate());
 
 			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
-			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
-			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
+			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep != null ? strStatusStep.toString() : StringPool.BLANK);

@@ -111,7 +111,7 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 
 			try {
 				
-				md5 = MessageDigest.getInstance("MD5");
+				md5 = MessageDigest.getInstance("SHA-256");
 				
 				ba = md5.digest(dossier.getReferenceUid().getBytes("UTF-8"));
 				

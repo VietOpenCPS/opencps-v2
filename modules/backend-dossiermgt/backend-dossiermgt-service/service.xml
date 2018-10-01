@@ -485,7 +485,20 @@
 		<finder return-type="Collection" name="G">
 			<finder-column name="groupId" />
 		</finder>
-
+		
+		<finder return-type="Collection" name="DN_AN">
+			<finder-column name="dossierNo" />
+			<finder-column name="applicantIdNo" />
+		</finder>
+		
+        <finder name="U_G_GAC_SC_DTNO_DAI_O" return-type="Collection">
+        	<finder-column name="userId"></finder-column>
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="govAgencyCode"></finder-column>
+            <finder-column name="serviceCode"></finder-column>
+            <finder-column name="dossierActionId"></finder-column>
+            <finder-column name="originality"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -533,6 +546,7 @@
 
 		<order>
 			<order-column name="dossierPartNo" order-by="asc" />
+			<order-column name="modifiedDate" order-by="desc" />
 		</order>
 
 		<!-- Finder methods -->
@@ -613,6 +627,11 @@
         <finder return-type="Collection" name="G">
         	<finder-column name="groupId" />
         </finder>
+		<finder return-type="Collection" name="D_FTN_DTN">
+			<finder-column name="dossierId" />
+			<finder-column name="fileTemplateNo" />
+			<finder-column name="dossierTemplateNo" />
+		</finder>        
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -1229,6 +1248,10 @@
      	<finder return-type="Collection" name="DID_STEP">
 			<finder-column name="dossierId" />
 			<finder-column name="fromStepCode" />
+		</finder>
+     	<finder return-type="Collection" name="DID_SC">
+			<finder-column name="dossierId" />
+			<finder-column name="stepCode" />
 		</finder>
 	</entity>
 

@@ -76,7 +76,8 @@ public class UserActions implements UserInterface {
 		try {
 			file = FileUtil.createTempFile(image.getTextObj());
 		} catch (IOException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return file;
@@ -161,7 +162,8 @@ public class UserActions implements UserInterface {
 			result.put("total", total);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -241,7 +243,8 @@ public class UserActions implements UserInterface {
 			result = jsonObject.getString(key);
 
 		} catch (JSONException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return result;
@@ -289,7 +292,8 @@ public class UserActions implements UserInterface {
 					jsonObject.toJSONString(), serviceContext);
 
 		} catch (JSONException e) {
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 
 		return preferences.getPreferences();
@@ -585,7 +589,7 @@ public class UserActions implements UserInterface {
 					flagNo = 1;
 				}
 			} catch (PortalException e) {
-				_log.info("END 22222: "+e);
+				_log.debug("END 22222: "+e);
 				flagNo = 1;
 			}
 		}
@@ -635,7 +639,7 @@ public class UserActions implements UserInterface {
 
 			} catch (PortalException e) {
 				flag = false;
-				_log.info("BUGGGG: "+e);
+				_log.debug("BUGGGG: "+e);
 			}
 		}
 

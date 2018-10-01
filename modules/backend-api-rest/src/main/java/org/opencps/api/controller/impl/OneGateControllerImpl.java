@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -12,8 +13,11 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -71,88 +75,107 @@ public class OneGateControllerImpl implements OneGateController {
 			}
 
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
-
+			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
+			List<ServiceInfo> lstServiceInfos = ServiceInfoLocalServiceUtil.findByGroup(groupId);
+			for (ServiceInfo serviceInfo : lstServiceInfos) {
+				mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
+			}
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-
+			Map<Long, List<ProcessOption>> mapProcessOptions = new HashMap<>();
+			List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			for (ProcessOption po : lstOptions) {
+				if (mapProcessOptions.get(po.getServiceConfigId()) == null) {
+					List<ProcessOption> lstPos = new ArrayList<>();
+					mapProcessOptions.put(po.getServiceConfigId(), lstPos);
+					lstPos.add(po);
+				}
+				else {
+					List<ProcessOption> lstPos = mapProcessOptions.get(po.getServiceConfigId());
+					lstPos.add(po);
+				}
+			}
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
+			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
 
 			for (ServiceConfig serviceConfig : serviceConfigs) {
 				if (serviceConfig.getServiceLevel() >= 2) {
-					total++;
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	
 					elmData.put("serviceConfigId", serviceConfig.getServiceConfigId());
 	
 					//Hot fix
 					ServiceInfo serviceInfo = null;
-					try {
-						serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
-					} catch (Exception e1) {
-						_log.debug(e1);
-						break;
-					}
-					elmData.put("serviceCode", serviceInfo.getServiceCode());
-					elmData.put("serviceName", serviceInfo.getServiceName());
-					elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
-					elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
-	
-					List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
-							.getByServiceProcessId(serviceConfig.getServiceConfigId());
-	
-					JSONArray options = JSONFactoryUtil.createJSONArray();
-					for (ProcessOption processOption : processOptions) {
-	//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
-						long serviceProcessId = processOption.getServiceProcessId();
-						List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
-						
-						boolean hasPermission = false;
-//						_log.info("List role: " + lstRoles);
-						if (lstRoles.size() > 0) {
-							long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
-//							_log.info("Role of users : " + user);
-							for (ServiceProcessRole spr : lstRoles) {
-								for (int i = 0; i < roleIds.length; i++) {
-									if (roleIds[i] == spr.getRoleId()) {
-										hasPermission = true;
-										break;										
+					if (mapServiceInfos.containsKey(serviceConfig.getServiceInfoId())) {
+						serviceInfo = mapServiceInfos.get(serviceConfig.getServiceInfoId());
+	//					try {
+	//						serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
+	//					} catch (Exception e1) {
+	//						_log.debug(e1);
+	//						break;
+	//					}
+						elmData.put("serviceCode", serviceInfo.getServiceCode());
+						elmData.put("serviceName", serviceInfo.getServiceName());
+						elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
+						elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
+		
+//						List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
+//								.getByServiceProcessId(serviceConfig.getServiceConfigId());
+						List<ProcessOption> processOptions = mapProcessOptions.get(serviceConfig.getServiceConfigId()) != null ? mapProcessOptions.get(serviceConfig.getServiceConfigId())
+								: new ArrayList<>();
+		
+						JSONArray options = JSONFactoryUtil.createJSONArray();
+						for (ProcessOption processOption : processOptions) {
+		//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
+							long serviceProcessId = processOption.getServiceProcessId();
+							List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
+							
+							boolean hasPermission = false;
+	//						_log.info("List role: " + lstRoles);
+							if (lstRoles.size() > 0) {
+	//							_log.info("Role of users : " + user);
+								for (ServiceProcessRole spr : lstRoles) {
+									for (int i = 0; i < roleIds.length; i++) {
+										if (roleIds[i] == spr.getRoleId()) {
+											hasPermission = true;
+											break;										
+										}
+									}
+									if (hasPermission) break;
+								}
+							}
+							if (hasPermission) {
+								JSONObject elmOption = JSONFactoryUtil.createJSONObject();
+								
+								elmOption.put("processOptionId", processOption.getProcessOptionId());
+								elmOption.put("optionName", processOption.getOptionName());
+								elmOption.put("instructionNote", processOption.getInstructionNote());
+								
+								try {
+									DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
+									if (dossierTemplate != null) {
+										elmOption.put("templateNo", dossierTemplate.getTemplateNo());
+										elmOption.put("templateName", dossierTemplate.getTemplateName());						
 									}
 								}
-								if (hasPermission) break;
-							}
-						}
-						if (hasPermission) {
-							JSONObject elmOption = JSONFactoryUtil.createJSONObject();
-							
-							elmOption.put("processOptionId", processOption.getProcessOptionId());
-							elmOption.put("optionName", processOption.getOptionName());
-							elmOption.put("instructionNote", processOption.getInstructionNote());
-							
-							try {
-								DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
-								if (dossierTemplate != null) {
-									elmOption.put("templateNo", dossierTemplate.getTemplateNo());
-									elmOption.put("templateName", dossierTemplate.getTemplateName());						
+								catch (NoSuchDossierTemplateException e) {
+									_log.error(e);
 								}
+								options.put(elmOption);							
 							}
-							catch (NoSuchDossierTemplateException e) {
-								_log.error(e);
+							
+							if (options.length() > 0) {
+								elmData.put("options", options);							
 							}
-							options.put(elmOption);							
+		
 						}
 						
-						if (options.length() > 0) {
-							elmData.put("options", options);							
+						if (elmData.has("options")) {
+							total++;
+							data.put(elmData);						
 						}
-	
 					}
-					
-					if (elmData.has("options")) {
-						data.put(elmData);						
-					}
-				
 				}
-				
 			}
 			
 			results.put("total", total);

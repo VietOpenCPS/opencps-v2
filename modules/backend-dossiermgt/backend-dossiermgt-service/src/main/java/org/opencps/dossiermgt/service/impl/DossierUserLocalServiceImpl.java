@@ -54,8 +54,8 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 		try {
 			oldObject = dossierUserPersistence.findByPrimaryKey(pk);
 		} catch (NoSuchDossierUserException e) {
-//			e.printStackTrace();
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		DossierUser object = null;
 		

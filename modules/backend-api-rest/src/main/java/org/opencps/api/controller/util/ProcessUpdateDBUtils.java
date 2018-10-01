@@ -1103,22 +1103,31 @@ public class ProcessUpdateDBUtils {
 		try {
 			// Delete all ServiceFileTemplate with serviceInfoId
 			boolean flagSequence = actionService.deleteAllProcessSequence(userId, groupId, serviceProcessId, serviceContext);
+			_log.info("flagSequence"+flagSequence);
 			// Add list file serviceFileTemplate
 			List<ProcessSequence> sequenceList = sequences.getProcessSequence();
 			if (sequenceList != null && sequenceList.size() > 0 && flagSequence) {
 				String sequenceNo;
 				String sequenceName;
 				String sequenceRole;
-				Integer durationCount = 0;
+				//Integer durationCount = 0;
+				String durationCount;
 				for (ProcessSequence sequence : sequenceList) {
 					sequenceNo = sequence.getSequenceNo();
 					sequenceName = sequence.getSequenceName();
 					sequenceRole = sequence.getSequenceRole();
 					durationCount = sequence.getDurationCount();
+					_log.info("durationCount: "+durationCount);
+					Double durationCountConvert = 0d;
+					if (Validator.isNotNull(durationCount)) {
+						durationCount = durationCount.replaceAll(StringPool.COMMA, StringPool.PERIOD);
+						_log.info("strDurationCount: "+durationCount);
+						durationCountConvert = Double.valueOf(durationCount);
+						_log.info("durationCountConvert: "+durationCountConvert);
+					}
 					//
 					actionService.updateProcessSequenceDB(userId, groupId, serviceProcessId, sequenceNo, sequenceName,
-							sequenceRole, durationCount, serviceContext);
-					//
+							sequenceRole, durationCountConvert, serviceContext);
 				}
 			}
 		} catch (Exception e) {
