@@ -909,7 +909,7 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(200).entity(result).build();
 			}
 			
-			String serviceName = getServiceName(input.getServiceCode(), groupId);
+			String serviceName = getServiceName(input.getServiceCode(), input.getDossierTemplateNo(), groupId);
 
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
 
@@ -948,6 +948,8 @@ public class DossierManagementImpl implements DossierManagement {
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
 				dossier.setOnline(online);
+				if (Validator.isNotNull(serviceName))
+					dossier.setServiceName(serviceName);
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
@@ -1225,8 +1227,12 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDelegateWardCode(), input.getSampleCount(), serviceContext);
 			if (Validator.isNotNull(input.getBriefNote())) {
 				dossier.setBriefNote(input.getBriefNote());
-				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
+			if (Validator.isNotNull(input.getServiceName())) {
+				dossier.setServiceName(input.getServiceName());
+			}
+			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+			
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
@@ -1586,17 +1592,30 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
-	protected String getServiceName(String serviceCode, long groupId) throws PortalException {
+	protected String getServiceName(String serviceCode, String templateNo, long groupId) throws PortalException {
 
 		try {
 			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+			if (service != null) {
+				List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId,
+						service.getServiceInfoId());
+				if (configList != null && configList.size() > 0) {
+					for (ServiceConfig config : configList) {
+						ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
+								templateNo, config.getServiceConfigId());
+						if (option != null) {
+							return option.getOptionName();
+						}
+					}
+				}
+			}
 
-			return service.getServiceName();
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 			throw new NotFoundException("NotFoundExceptionWithServiceCode");
 		}
 
+		return StringPool.BLANK;
 	}
 
 	protected String getDossierTemplateName(String dossierTemplateCode, long groupId) throws PortalException {

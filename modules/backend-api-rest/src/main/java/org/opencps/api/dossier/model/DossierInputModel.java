@@ -93,7 +93,8 @@ import javax.xml.bind.annotation.XmlType;
 	"delegateCityCode",
 	"delegateDistrictCode",
 	"delegateWardCode",
-	"sampleCount"
+	"sampleCount",
+	"serviceName"
 
 })
 @XmlRootElement(name = "DossierInputModel")
@@ -184,6 +185,8 @@ public class DossierInputModel {
 	private Long sampleCount;
 	@FormParam(value = "briefNote")
 	private String briefNote;
+	@FormParam(value = "serviceName")
+	private String serviceName;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -880,4 +883,13 @@ public class DossierInputModel {
 	public void setBriefNote(String value) {
 		this.briefNote = value;
 	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
 }
