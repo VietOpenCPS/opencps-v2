@@ -245,7 +245,7 @@ public class NotificationUtil {
 										queue.getClassName());
 									sendEmail = conf.getBoolean("email");
 									sendNotify = conf.getBoolean("notify");
-									sendSMS = conf.getBoolean("sms");
+//									sendSMS = conf.getBoolean("sms");
 								}
 							}
 						}
