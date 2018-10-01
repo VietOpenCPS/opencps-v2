@@ -15,6 +15,8 @@ import java.util.Map;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierMarkTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -23,6 +25,8 @@ import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
+import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
@@ -207,6 +211,22 @@ public class OpenCPSConverter {
 	    
 	    return params;
 	}	
+	
+	public static Map<String, Object> convertDossierMarkInputHttpParams(DossierMarkInputModel model) {
+	    Map<String, Object> params = new HashMap<>();
+	    
+	    if (Validator.isNotNull(model.getFileMark())) {
+		    params.put(DossierPartTerm.FILE_MARK, model.getFileMark());	    	
+	    }
+	    if (Validator.isNotNull(model.getFileCheck())) {
+		    params.put(DossierPartTerm.FILE_CHECK, model.getFileCheck());	    	
+	    }
+	    if (Validator.isNotNull(model.getFileComment())) {
+		    params.put(DossierPartTerm.FILE_COMMENT, model.getFileComment());	    	
+	    }
+	    return params;
+	}
+	
 	public static DossierInputModel convertDossierSummary(JSONObject jsonObj) {
 		DossierInputModel model = new DossierInputModel();
 	
@@ -796,6 +816,23 @@ public class OpenCPSConverter {
 		result.setDocumentName(dossierDocument.getDocumentName());
 		result.setDocumentType(dossierDocument.getDocumentType());
 		result.setReferenceUid(dossierDocument.getReferenceUid());
+		return result;
+	}
+	
+	public static DossierMarkResultModel convertDossierMark(JSONObject jsonObj) {
+		DossierMarkResultModel result = new DossierMarkResultModel();
+		if (jsonObj.has(DossierMarkTerm.DOSSIER_MARK_ID)) {
+			result.setDossierMarkId(jsonObj.getLong(DossierMarkTerm.DOSSIER_MARK_ID));
+		}
+		if (jsonObj.has(DossierPartTerm.FILE_MARK)) {
+			result.setFileMark(jsonObj.getInt(DossierPartTerm.FILE_MARK));
+		}
+		if (jsonObj.has(DossierPartTerm.FILE_CHECK)) {
+			result.setFileCheck(jsonObj.getInt(DossierPartTerm.FILE_CHECK));
+		}
+		if (jsonObj.has(DossierPartTerm.FILE_COMMENT)) {
+			result.setFileComment(DossierPartTerm.FILE_COMMENT);
+		}
 		return result;
 	}
 }

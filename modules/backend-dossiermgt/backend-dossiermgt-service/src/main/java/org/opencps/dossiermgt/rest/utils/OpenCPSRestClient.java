@@ -15,6 +15,8 @@ import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
+import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
@@ -303,6 +305,34 @@ public class OpenCPSRestClient {
 				baseUrl,DOSSIERS_BASE_PATH + "/publish", username,
 				password, properties, params, context);
 		result = OpenCPSConverter.convertDossierDetail(resultObj);
+		
+		return result;
+	}	
+	
+	public DossierMarkResultModel postDossierMark(String id, String dossierPartNo, DossierMarkInputModel model) {
+		DossierMarkResultModel result = new DossierMarkResultModel();
+
+		try {
+
+			String requestURL = DOSSIERS_BASE_PATH + "/" + id + "/marks/" + dossierPartNo;
+			
+			HashMap<String, String> properties = new HashMap<String, String>();
+			
+			Map<String, Object> params = OpenCPSConverter.convertDossierMarkInputHttpParams(model);
+			InvokeREST callRest = new InvokeREST();
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
+					baseUrl, requestURL, username,
+					password, properties, params, context);
+			
+			
+			result = OpenCPSConverter.convertDossierMark(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+			_log.error(e);
+		}
 		
 		return result;
 	}	
