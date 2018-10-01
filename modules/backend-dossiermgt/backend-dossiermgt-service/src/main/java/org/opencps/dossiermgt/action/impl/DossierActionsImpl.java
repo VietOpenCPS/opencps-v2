@@ -2614,8 +2614,6 @@ public class DossierActionsImpl implements DossierActions {
 				((DecimalFormat)fmt).setDecimalFormatSymbols(customSymbol);
 				fmt.setGroupingUsed(true);
 				
-				
-				
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
 //					_log.info("Payment object in do action: " + paymentObj);
@@ -2686,7 +2684,7 @@ public class DossierActionsImpl implements DossierActions {
 					paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 					
 					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-					_log.info("==========Dossier Action SONDT START ========= ");
+					//_log.info("==========Dossier Action SONDT START ========= ");
 					//sondt create ePaymentProfile
 					
 					// create paymentFileActions
@@ -2695,8 +2693,8 @@ public class DossierActionsImpl implements DossierActions {
 					// get paymentConfig
 					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
 							dossier.getGovAgencyCode());
-					_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
-					_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
+					//_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
+					//_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
 					// generator epaymentProfile
 					JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
 					
@@ -2708,7 +2706,7 @@ public class DossierActionsImpl implements DossierActions {
 						try {
 							String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 									paymentFile.getPaymentFileId(), paymentFee, dossierId);
-							_log.info("Dossier Action SONDT generatorPayURL ========= "+ generatorPayURL);
+							_log.info("Dossier Action SONDT paymentFee ========= "+ paymentFee);
 							epaymentProfileJSON.put("keypayUrl", generatorPayURL);
 
 							// fill good_code to keypayGoodCode
@@ -3014,6 +3012,12 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 				}
+			}
+			
+			if(proAction.getPreCondition().toLowerCase().contentEquals("viapostal")) {
+				_log.info("GO GO SEND VNPOST");
+				
+				
 			}
 			
 			//Generate output
