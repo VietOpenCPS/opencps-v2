@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -82,6 +84,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -2881,27 +2884,27 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
 			}
 		}
-		if (obj.has(DossierTerm.DUE_DATE)) {
+		if (obj.has(DossierTerm.DUE_DATE) && Validator.isNotNull(obj.get(DossierTerm.DUE_DATE))) {
 			if (dossier.getDueDate() == null || obj.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
 				dossier.setDueDate(new Date(obj.getLong(DossierTerm.DUE_DATE)));
 			}
 		}
-		if (obj.has(DossierTerm.FINISH_DATE)) {
+		if (obj.has(DossierTerm.FINISH_DATE) && Validator.isNotNull(obj.get(DossierTerm.FINISH_DATE))) {
 			if (dossier.getFinishDate() == null || obj.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
 				dossier.setFinishDate(new Date(obj.getLong(DossierTerm.FINISH_DATE)));	
 			}
 		}
-		if (obj.has(DossierTerm.RECEIVE_DATE)) {
+		if (obj.has(DossierTerm.RECEIVE_DATE) && Validator.isNotNull(obj.get(DossierTerm.RECEIVE_DATE))) {
 			if (dossier.getReceiveDate() == null || obj.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
 				dossier.setReceiveDate(new Date(obj.getLong(DossierTerm.RECEIVE_DATE)));	
 			}
 		}
-		if (obj.has(DossierTerm.SUBMIT_DATE)) {
+		if (obj.has(DossierTerm.SUBMIT_DATE) && Validator.isNotNull(obj.get(DossierTerm.SUBMIT_DATE))) {
 			if (dossier.getSubmitDate() == null || obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime()) {
 				dossier.setSubmitDate(new Date(obj.getLong(DossierTerm.SUBMIT_DATE)));	
 			}
 		}
-		if (obj.has(DossierTerm.EXTEND_DATE)) {
+		if (obj.has(DossierTerm.EXTEND_DATE) && Validator.isNotNull(obj.get(DossierTerm.EXTEND_DATE))) {
 			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
 				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));	
 			}
@@ -3132,5 +3135,96 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByU_G_GAC_SC_DTNO_DAI_O(userId, groupId, serviceCode, govAgencyCode, dossierActionId, originality);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier cloneDossier(Dossier srcDossier) throws PortalException {
+		long desDossierId = counterLocalService.increment(Dossier.class.getName());
+		Dossier desDossier = dossierPersistence.create(desDossierId);
+		
+		int counter = DossierNumberGenerator.counterDossier(srcDossier.getUserId(), desDossierId);
+		String referenceUid = DossierNumberGenerator.generateReferenceUID(desDossier.getGroupId());
+
+		desDossier.setCounter(counter);
+		desDossier.setReferenceUid(referenceUid);
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(DossierTerm.GOV_AGENCY_CODE, srcDossier.getGovAgencyCode());
+		params.put(DossierTerm.SERVICE_CODE, srcDossier.getServiceCode());
+		params.put(DossierTerm.DOSSIER_TEMPLATE_NO, srcDossier.getDossierTemplateNo());
+		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+
+		Date now = new Date();
+		
+		desDossier.setCreateDate(now);
+		desDossier.setModifiedDate(now);
+		desDossier.setCompanyId(srcDossier.getCompanyId());
+		desDossier.setGroupId(srcDossier.getGroupId());
+		desDossier.setUserId(srcDossier.getUserId());
+		desDossier.setUserName(srcDossier.getUserName());
+
+		// Add extent fields
+		desDossier.setServiceCode(srcDossier.getServiceCode());
+		desDossier.setServiceName(srcDossier.getServiceName());
+		desDossier.setGovAgencyCode(srcDossier.getGovAgencyCode());
+		desDossier.setGovAgencyName(srcDossier.getGovAgencyName());
+		desDossier.setDossierTemplateNo(srcDossier.getDossierTemplateNo());
+		desDossier.setDossierTemplateName(srcDossier.getDossierTemplateName());
+
+		desDossier.setApplicantName(srcDossier.getApplicantName());
+		desDossier.setApplicantIdType(srcDossier.getApplicantIdType());
+		desDossier.setApplicantIdNo(srcDossier.getApplicantIdNo());
+		desDossier.setApplicantIdDate(srcDossier.getApplicantIdDate());
+		desDossier.setPassword(srcDossier.getPassword());
+		desDossier.setOnline(srcDossier.getOnline());
+		desDossier.setDossierNote(srcDossier.getDossierNote());
+
+		desDossier.setAddress(srcDossier.getAddress());
+		desDossier.setCityCode(srcDossier.getCityCode());
+		desDossier.setCityName(srcDossier.getCityName());
+		desDossier.setDistrictCode(srcDossier.getDistrictCode());
+		desDossier.setDistrictName(srcDossier.getDistrictName());
+		desDossier.setWardCode(srcDossier.getWardCode());
+		desDossier.setWardName(srcDossier.getWardName());
+		desDossier.setContactName(srcDossier.getContactName());
+		desDossier.setContactEmail(srcDossier.getContactEmail());
+		desDossier.setContactTelNo(srcDossier.getContactTelNo());
+
+		desDossier.setViaPostal(srcDossier.getViaPostal());
+		desDossier.setPostalAddress(srcDossier.getPostalAddress());
+		desDossier.setPostalCityCode(srcDossier.getPostalCityCode());
+		desDossier.setPostalCityName(srcDossier.getPostalCityName());
+		desDossier.setPostalTelNo(srcDossier.getPostalTelNo());
+		desDossier.setApplicantNote(srcDossier.getApplicantNote());
+		desDossier.setServerNo(getServerNo(srcDossier.getGroupId()));
+		desDossier.setOriginality(srcDossier.getOriginality());
+				
+		desDossier.setDurationCount(srcDossier.getDurationCount());
+		desDossier.setDurationUnit(srcDossier.getDurationUnit());
+		desDossier.setDossierStatus(srcDossier.getDossierStatus());
+		desDossier.setDossierStatusText(srcDossier.getDossierStatusText());
+		desDossier.setDossierSubStatus(srcDossier.getDossierSubStatus());
+		desDossier.setDossierSubStatusText(srcDossier.getDossierSubStatusText());
+		
+		dossierPersistence.update(desDossier);
+		
+		ServiceProcess serviceProcess = null;
+		ProcessOption option = getProcessOption(srcDossier.getServiceCode(), srcDossier.getGovAgencyCode(), srcDossier.getDossierTemplateNo(), srcDossier.getGroupId());
+		_log.info("Process option: " + option);
+		if (option != null) {
+			long serviceProcessId = option.getServiceProcessId();
+			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+
+			String dossierRef = DossierNumberGenerator.generateDossierNumber(srcDossier.getGroupId(), srcDossier.getCompanyId(),
+					desDossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+			_log.info("Dossier no: " + dossierRef);
+			desDossier.setDossierNo(dossierRef.trim());
+		}
+		
+		// set dueDate
+		desDossier.setDueDate(srcDossier.getDueDate());
+
+		// set receivedDate
+		desDossier.setReceiveDate(srcDossier.getReceiveDate());
+		
+		return dossierPersistence.update(desDossier);
+	}
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 }

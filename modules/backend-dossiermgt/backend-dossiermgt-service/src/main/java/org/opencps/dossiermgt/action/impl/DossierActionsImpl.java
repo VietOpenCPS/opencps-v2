@@ -4812,22 +4812,7 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier srcDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
-
-		srcDossier.setUuid(UUID.randomUUID().toString());
-		srcDossier.setDossierId(desDossierId);
-		srcDossier.setDossierStatus(StringPool.BLANK);
-		srcDossier.setDossierStatusText(StringPool.BLANK);
-		srcDossier.setDossierSubStatus(StringPool.BLANK);
-		srcDossier.setDossierSubStatusText(StringPool.BLANK);
-
-		int counter = DossierNumberGenerator.counterDossier(srcDossier.getUserId(), groupId);
-		String referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
-
-		srcDossier.setCounter(counter);
-		srcDossier.setReferenceUid(referenceUid);
-
-		Dossier desDossier = DossierLocalServiceUtil.addDossier(srcDossier);
+		Dossier desDossier = DossierLocalServiceUtil.cloneDossier(srcDossier);
 
 		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, srcDossier.getPrimaryKey(), dossierId, 1,
 				context);
