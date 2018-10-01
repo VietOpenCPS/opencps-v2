@@ -600,6 +600,7 @@ public class OpenCPSConverter {
 		DossierInputModel model = new DossierInputModel();
 		model.setReferenceUid(dossier.getReferenceUid());
 		model.setServiceCode(dossier.getServiceCode());
+		model.setServiceName(dossier.getServiceName());
 		model.setGovAgencyCode(dossier.getGovAgencyCode());
 		model.setDossierTemplateNo(dossier.getDossierTemplateNo());
 		model.setApplicantName(dossier.getApplicantName());
