@@ -89,14 +89,14 @@ public class DossierDocumentUtils {
 		//Hot fix TP99
 		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
 		if (dossierMark != null) {
-			JSONObject jsonMark = JSONFactoryUtil.createJSONObject();
+			JSONObject jsonMark = null;
 			String partNo = dossierMark.getDossierPartNo();
 			if (Validator.isNotNull(partNo)) {
 				List<DossierFile> fileList = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, partNo, false);
 				DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
 				if (fileList != null && part != null) {
 					for (DossierFile dossierFile : fileList) {
-						_log.info("PART_NAME: "+dossierFile.getDisplayName());
+						jsonMark = JSONFactoryUtil.createJSONObject();
 						jsonMark.put(DossierPartTerm.PART_NAME, dossierFile.getDisplayName());
 						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
 						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
