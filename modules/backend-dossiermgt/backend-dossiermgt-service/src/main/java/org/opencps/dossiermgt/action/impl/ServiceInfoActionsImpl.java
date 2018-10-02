@@ -442,4 +442,60 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		return flag;
 	}
 
+	@Override
+	public JSONObject getStatisticByDomainFilterAdministration(ServiceContext context, long groupId,
+			String administration) throws ParseException, SearchException {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONArray data = JSONFactoryUtil.createJSONArray();
+
+		long count = 0;
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(context.getCompanyId());
+
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+		LinkedHashMap<String, Object> paramsData = new LinkedHashMap<String, Object>();
+
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
+		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.SERVICE_DOMAIN);
+
+		Sort[] sorts = new Sort[] { SortFactoryUtil.create(StringPool.BLANK + "_sortable", Sort.STRING_TYPE, true) };
+
+		Hits hits = DictItemLocalServiceUtil.luceneSearchEngine(paramsData, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				searchContext);
+
+		List<Document> documents = hits.toList();
+
+		for (Document doc : documents) {
+
+			long admCount = 0;
+
+			params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, administration);
+
+			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+
+			if (admCount != 0) {
+				count = admCount + count;
+
+				JSONObject elm = JSONFactoryUtil.createJSONObject();
+
+				elm.put("domainCode", doc.get(DictItemTerm.ITEM_CODE));
+				elm.put("domainName", doc.get(DictItemTerm.ITEM_NAME));
+				elm.put("count", admCount);
+
+				data.put(elm);
+			}
+
+			result.put("total", count);
+			result.put("data", data);
+
+		}
+
+		return result;
+	}
+
 }
