@@ -69,4 +69,5 @@ public interface ServiceInfoActions {
 
 	public boolean deleteAllServiceConfig(long userId, long groupId, long serviceInfoId, ServiceContext serviceContext);
 
+	public JSONObject getStatisticByDomainFilterAdministration(ServiceContext context, long groupId, String administration)  throws ParseException, SearchException;
 }

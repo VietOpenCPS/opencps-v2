@@ -450,7 +450,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByDomain(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, String agency) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -458,8 +458,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
 		try {
-			results = actions.getStatisticByDomain(serviceContext, groupId);
-			
+			if (Validator.isNotNull(agency)) {
+				results = actions.getStatisticByDomainFilterAdministration(serviceContext, groupId, agency);
+			}
+			else {
+				results = actions.getStatisticByDomain(serviceContext, groupId);
+			}
 //			_log.info(results);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
