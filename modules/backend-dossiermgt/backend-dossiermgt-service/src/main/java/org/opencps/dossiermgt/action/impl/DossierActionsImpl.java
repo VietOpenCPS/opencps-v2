@@ -2935,28 +2935,28 @@ public class DossierActionsImpl implements DossierActions {
 				DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
 				int allowAssignUser = proAction.getAllowAssignUser();
-//				_log.info("allowAssignUser: "+allowAssignUser);
+				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
-//						_log.info("LamTV_PROCESS assignUsers != null");
+						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 					dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
 							dossierAction, userId, groupId, proAction.getAssignUserId(),
 							assignedUsersArray);
 					} else {
-//						_log.info("PROCESS allowAssignUser");
+						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
 								proAction.getAssignUserId());
 					}
 				} else {
-//					_log.info("PROCESS subUsers == null");
-//					_log.info("Dossier action: " + dossierAction);
+					_log.info("PROCESS subUsers == null");
+					_log.info("Dossier action: " + dossierAction);
 					dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
 							proAction.getAssignUserId());
 					
 					//Process role as step
 					if (Validator.isNotNull(curStep.getRoleAsStep())) {
-//						_log.info("Copy role as step: " + curStep.getRoleAsStep());
+						_log.info("Copy role as step: " + curStep.getRoleAsStep());
 						dossierActionUser.copyRoleAsStep(curStep, dossier);
 					}					
 				}
