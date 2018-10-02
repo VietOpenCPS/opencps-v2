@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -400,12 +401,29 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+//		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
+//			MultiMatchQuery query = new MultiMatchQuery(level);
+//
+//			query.addFields(ServiceInfoTerm.MAX_LEVEL);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
 		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
-			MultiMatchQuery query = new MultiMatchQuery(level);
+			String[] lstStatus = StringUtil.split(level);
 
-			query.addFields(ServiceInfoTerm.MAX_LEVEL);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (lstStatus != null && lstStatus.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstStatus[i]);
+					query.addField(ServiceInfoTerm.MAX_LEVEL);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(level);
+				query.addFields(ServiceInfoTerm.MAX_LEVEL);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(public_)) {
@@ -518,12 +536,30 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+//		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
+//			MultiMatchQuery query = new MultiMatchQuery(level);
+//
+//			query.addFields(ServiceInfoTerm.MAX_LEVEL);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+
 		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
-			MultiMatchQuery query = new MultiMatchQuery(level);
+			String[] lstStatus = StringUtil.split(level);
 
-			query.addFields(ServiceInfoTerm.MAX_LEVEL);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (lstStatus != null && lstStatus.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstStatus.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstStatus[i]);
+					query.addField(ServiceInfoTerm.MAX_LEVEL);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(level);
+				query.addFields(ServiceInfoTerm.MAX_LEVEL);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(public_)) {
