@@ -30,7 +30,8 @@ public class DossierOverDueUtils {
 	public static final int END_NAP_MINUTE_OF_DAY = 0;
 
 	public static Date getStepOverDue(long groupId, int overDuePoint, Date date) {
-		return HolidayUtils.getDueDate(date, overDuePoint, 0, groupId);
+		return HolidayUtils.getDueDate(date, 0, 0, groupId);
+//		return HolidayUtils.getDueDate(date, overDuePoint, 0, groupId);
 	}
 	
 	public static String getEstimateDate(int processingDay) {

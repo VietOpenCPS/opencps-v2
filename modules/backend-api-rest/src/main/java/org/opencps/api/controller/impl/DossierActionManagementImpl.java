@@ -172,7 +172,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							} else {
 								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-//									_log.info("subTimeStamp: "+subTimeStamp);
 									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
 											dueDateTimeStamp, groupId, true);
 									if (Validator.isNotNull(strOverDue)) {
