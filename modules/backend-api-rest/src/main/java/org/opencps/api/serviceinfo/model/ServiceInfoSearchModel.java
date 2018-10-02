@@ -65,7 +65,7 @@ public class ServiceInfoSearchModel {
 	@QueryParam(value = "domain")
     protected String domain;
 	@DefaultValue("0") @QueryParam(value = "level")
-    protected int level;
+    protected String level;
 	@QueryParam(value = "start")
     protected int start;
 	@QueryParam(value = "end")
@@ -157,7 +157,7 @@ public class ServiceInfoSearchModel {
      *     {@link int }
      *     
      */
-    public int getLevel() {
+    public String getLevel() {
         return level;
     }
 
@@ -169,7 +169,7 @@ public class ServiceInfoSearchModel {
      *     {@link int }
      *     
      */
-    public void setLevel(int value) {
+    public void setLevel(String value) {
         this.level = value;
     }
 

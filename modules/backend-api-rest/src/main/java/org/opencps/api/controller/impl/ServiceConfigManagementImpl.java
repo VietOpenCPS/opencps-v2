@@ -971,7 +971,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		int level = query.getLevel();
+		int level = GetterUtil.getInteger(query.getLevel());
 
 		try {
 			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByLevel(groupId, level);
