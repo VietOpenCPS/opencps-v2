@@ -45,6 +45,9 @@ dependencies {
 	compile name : "commons-javaflow"
 	compile name : "jasperreports-fonts-6.2.2"
 	compile name : "joda-time-2.4"
+	compile name : "poi-3.10.1"
+	compile name : "poi-ooxml-3.10.1"
+	compile name : "poi-ooxml-schemas-3.10.1"
 }	
 
 repositories {
