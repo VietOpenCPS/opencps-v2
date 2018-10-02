@@ -3,6 +3,8 @@ package org.opencps.api.controller.util;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -94,6 +96,7 @@ public class DossierDocumentUtils {
 				DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
 				if (fileList != null && part != null) {
 					for (DossierFile dossierFile : fileList) {
+						_log.info("PART_NAME: "+dossierFile.getDisplayName());
 						jsonMark.put(DossierPartTerm.PART_NAME, dossierFile.getDisplayName());
 						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
 						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
@@ -112,5 +115,5 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
 		return jsonData;
 	}
-
+	private static Log _log = LogFactoryUtil.getLog(DossierDocumentUtils.class);
 }
