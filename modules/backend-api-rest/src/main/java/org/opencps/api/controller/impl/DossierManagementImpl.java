@@ -79,6 +79,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
@@ -961,6 +962,18 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setContactTelNo(input.getContactTelNo());	
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+				
+				double durationCount = 0;
+				int durationUnit = 0;
+				if (serviceProcess != null ) {
+					durationCount = serviceProcess.getDurationCount();
+					durationUnit = serviceProcess.getDurationUnit();
+				}
+
+				Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+
+				dossier.setDueDate(dueDate);				
 				dossier.setOnline(online);
 				if (Validator.isNotNull(serviceName))
 					dossier.setServiceName(serviceName);
