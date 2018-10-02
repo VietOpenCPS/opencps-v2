@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class OneGateControllerImpl implements OneGateController {
 
 	@Override
 	public Response getServiceconfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, String domain) {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
@@ -97,7 +98,6 @@ public class OneGateControllerImpl implements OneGateController {
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
-
 			for (ServiceConfig serviceConfig : serviceConfigs) {
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
@@ -108,71 +108,73 @@ public class OneGateControllerImpl implements OneGateController {
 					ServiceInfo serviceInfo = null;
 					if (mapServiceInfos.containsKey(serviceConfig.getServiceInfoId())) {
 						serviceInfo = mapServiceInfos.get(serviceConfig.getServiceInfoId());
-	//					try {
-	//						serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
-	//					} catch (Exception e1) {
-	//						_log.debug(e1);
-	//						break;
-	//					}
-						elmData.put("serviceCode", serviceInfo.getServiceCode());
-						elmData.put("serviceName", serviceInfo.getServiceName());
-						elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
-						elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
-		
-//						List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
-//								.getByServiceProcessId(serviceConfig.getServiceConfigId());
-						List<ProcessOption> processOptions = mapProcessOptions.get(serviceConfig.getServiceConfigId()) != null ? mapProcessOptions.get(serviceConfig.getServiceConfigId())
-								: new ArrayList<>();
-		
-						JSONArray options = JSONFactoryUtil.createJSONArray();
-						for (ProcessOption processOption : processOptions) {
-		//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
-							long serviceProcessId = processOption.getServiceProcessId();
-							List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
-							
-							boolean hasPermission = false;
-	//						_log.info("List role: " + lstRoles);
-							if (lstRoles.size() > 0) {
-	//							_log.info("Role of users : " + user);
-								for (ServiceProcessRole spr : lstRoles) {
-									for (int i = 0; i < roleIds.length; i++) {
-										if (roleIds[i] == spr.getRoleId()) {
-											hasPermission = true;
-											break;										
+						if (Validator.isNull(domain) || serviceInfo.getDomainCode().equals(domain)) {
+		//					try {
+		//						serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
+		//					} catch (Exception e1) {
+		//						_log.debug(e1);
+		//						break;
+		//					}
+							elmData.put("serviceCode", serviceInfo.getServiceCode());
+							elmData.put("serviceName", serviceInfo.getServiceName());
+							elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
+							elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
+			
+	//						List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
+	//								.getByServiceProcessId(serviceConfig.getServiceConfigId());
+							List<ProcessOption> processOptions = mapProcessOptions.get(serviceConfig.getServiceConfigId()) != null ? mapProcessOptions.get(serviceConfig.getServiceConfigId())
+									: new ArrayList<>();
+			
+							JSONArray options = JSONFactoryUtil.createJSONArray();
+							for (ProcessOption processOption : processOptions) {
+			//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
+								long serviceProcessId = processOption.getServiceProcessId();
+								List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
+								
+								boolean hasPermission = false;
+		//						_log.info("List role: " + lstRoles);
+								if (lstRoles.size() > 0) {
+		//							_log.info("Role of users : " + user);
+									for (ServiceProcessRole spr : lstRoles) {
+										for (int i = 0; i < roleIds.length; i++) {
+											if (roleIds[i] == spr.getRoleId()) {
+												hasPermission = true;
+												break;										
+											}
+										}
+										if (hasPermission) break;
+									}
+								}
+								if (hasPermission) {
+									JSONObject elmOption = JSONFactoryUtil.createJSONObject();
+									
+									elmOption.put("processOptionId", processOption.getProcessOptionId());
+									elmOption.put("optionName", processOption.getOptionName());
+									elmOption.put("instructionNote", processOption.getInstructionNote());
+									
+									try {
+										DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
+										if (dossierTemplate != null) {
+											elmOption.put("templateNo", dossierTemplate.getTemplateNo());
+											elmOption.put("templateName", dossierTemplate.getTemplateName());						
 										}
 									}
-									if (hasPermission) break;
-								}
-							}
-							if (hasPermission) {
-								JSONObject elmOption = JSONFactoryUtil.createJSONObject();
-								
-								elmOption.put("processOptionId", processOption.getProcessOptionId());
-								elmOption.put("optionName", processOption.getOptionName());
-								elmOption.put("instructionNote", processOption.getInstructionNote());
-								
-								try {
-									DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
-									if (dossierTemplate != null) {
-										elmOption.put("templateNo", dossierTemplate.getTemplateNo());
-										elmOption.put("templateName", dossierTemplate.getTemplateName());						
+									catch (NoSuchDossierTemplateException e) {
+										_log.error(e);
 									}
+									options.put(elmOption);							
 								}
-								catch (NoSuchDossierTemplateException e) {
-									_log.error(e);
+								
+								if (options.length() > 0) {
+									elmData.put("options", options);							
 								}
-								options.put(elmOption);							
+			
 							}
 							
-							if (options.length() > 0) {
-								elmData.put("options", options);							
+							if (elmData.has("options")) {
+								total++;
+								data.put(elmData);						
 							}
-		
-						}
-						
-						if (elmData.has("options")) {
-							total++;
-							data.put(elmData);						
 						}
 					}
 				}

@@ -165,9 +165,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 
 			DossierFileActions action = new DossierFileActionsImpl();
-			DossierFile lastDossierFile = DossierFileLocalServiceUtil.findLastDossierFile(dossierId, fileTemplateNo, dossierTemplateNo);
+			DossierFile lastDossierFile = DossierFileLocalServiceUtil.findLastDossierFile(dossier.getDossierId(), fileTemplateNo, dossierTemplateNo);
 			if (lastDossierFile != null && modifiedDate != null) {
-				if (lastDossierFile.getModifiedDate() != null && lastDossierFile.getModifiedDate().getTime() > modifiedDate) {
+				if (lastDossierFile.getModifiedDate() != null && lastDossierFile.getModifiedDate().getTime() < modifiedDate) {
 					_log.info("__Start add file at:" + new Date());
 					DossierFile dossierFile =  null;
 					
