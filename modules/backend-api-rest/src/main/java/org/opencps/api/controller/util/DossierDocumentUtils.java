@@ -1,12 +1,16 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -16,9 +20,11 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 public class DossierDocumentUtils {
 
@@ -44,13 +50,84 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
 		jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
 		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
-		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
 		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
 		jsonData.put(DossierTerm.SECRET_KEY, dossier.getPassword());
 		jsonData.put(DossierTerm.RECEIVE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		jsonData.put(DossierTerm.DUE_DATE,
-				APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		//
+		ServiceProcess process = ServiceProcessLocalServiceUtil.getByG_PNO(dossier.getGroupId(), dossier.getProcessNo());
+//		_log.info("dossier.getGroupId(): "+dossier.getGroupId());
+//		_log.info("dossier.getProcessNo(): "+dossier.getProcessNo());
+//		_log.info("process: "+process);
+		if (process != null) {
+			String dueDatePattern = process.getDueDatePattern();
+//			_log.info("START DUEDATE TEST");
+			if (Validator.isNotNull(dueDatePattern)) {
+//				_log.info("START DUEDATE TEST");
+				try {
+					JSONObject jsonDueDate = JSONFactoryUtil.createJSONObject(dueDatePattern);
+//					_log.info("jsonDueDate: "+jsonDueDate);
+					if (jsonDueDate != null) {
+						JSONObject hours = jsonDueDate.getJSONObject("hour");
+//						_log.info("hours: "+hours);
+						if (hours != null && hours.has("AM") && hours.has("PM")) {
+//							_log.info("AM-PM: ");
+							Calendar receiveCalendar = Calendar.getInstance();
+							receiveCalendar.setTime(dossier.getReceiveDate());
+							
+							Calendar dueCalendar = Calendar.getInstance();
+//							_log.info("hours: "+receiveCalendar.get(Calendar.HOUR_OF_DAY));
+							if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < 12) {
+								dueCalendar.setTime(dossier.getDueDate());
+								
+								String hoursAfterNoon = hours.getString("PM");
+//								_log.info("hoursAfterNoon: "+hoursAfterNoon);
+								
+								if (Validator.isNotNull(hoursAfterNoon)) {
+									String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
+									if (splitAfter != null) {
+//										_log.info("Integer.valueOf(splitAfter[0]): "+Integer.valueOf(splitAfter[0]));
+										dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+										dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+									}
+								}
+							} else {
+								dueCalendar.setTime(dossier.getDueDate());
+								String hoursAfterNoon = hours.getString("AM");
+								if (Validator.isNotNull(hoursAfterNoon)) {
+									String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
+									if (splitAfter != null) {
+										dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+										dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+										dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+									}
+								}
+							}
+							jsonData.put(DossierTerm.DUE_DATE,
+									APIDateTimeUtils.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
+						} else {
+							jsonData.put(DossierTerm.DUE_DATE,
+									APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+						}
+					} else {
+						jsonData.put(DossierTerm.DUE_DATE,
+								APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+					}
+				} catch (JSONException e) {
+					_log.debug(e);
+					jsonData.put(DossierTerm.DUE_DATE,
+							APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+				}
+			} else {
+				jsonData.put(DossierTerm.DUE_DATE,
+						APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+		} else {
+			jsonData.put(DossierTerm.DUE_DATE,
+					APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		}
+		//
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
