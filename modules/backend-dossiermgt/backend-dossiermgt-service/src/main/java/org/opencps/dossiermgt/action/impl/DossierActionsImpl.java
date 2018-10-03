@@ -2117,8 +2117,9 @@ public class DossierActionsImpl implements DossierActions {
 		String docFileReferenceUid = StringPool.BLANK;
 		long dossierFileId  = 0;
 		String formScript = dossierPart.getFormScript();
-		boolean eForm = Validator.isNotNull(formScript) ? true : false;
-		String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId, serviceContext);
+//		boolean eForm = Validator.isNotNull(formScript) ? true : false;
+		boolean eForm = dossierPart.getEForm();
+		String formData = eForm ? AutoFillFormData.sampleDataBinding(sampleData, dossierId, serviceContext) : StringPool.BLANK;
 
 		// create Dossier File
 		if (eForm) {
