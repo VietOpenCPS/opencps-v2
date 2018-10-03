@@ -2898,13 +2898,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier updateDossier(long dossierId, JSONObject obj) throws NoSuchDossierException {
 //		_log.info("Object dossier update: " + obj.toJSONString());
 		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
-		
 		if (obj.has(DossierTerm.DOSSIER_NOTE)) {
 			if (!obj.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
 				dossier.setDossierNote(obj.getString(DossierTerm.DOSSIER_NOTE));
 			}
 		}
-		if (obj.has(DossierTerm.EXTEND_DATE)) {
+		if (obj.has(DossierTerm.EXTEND_DATE) && Validator.isNotNull(obj.get(DossierTerm.EXTEND_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.EXTEND_DATE)) > 0) {
 			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
 				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));
 			}
@@ -2916,27 +2916,32 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
 			}
 		}
-		if (obj.has(DossierTerm.DUE_DATE) && Validator.isNotNull(obj.get(DossierTerm.DUE_DATE))) {
+		if (obj.has(DossierTerm.DUE_DATE) && Validator.isNotNull(obj.get(DossierTerm.DUE_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.DUE_DATE)) > 0) {
 			if (dossier.getDueDate() == null || obj.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
 				dossier.setDueDate(new Date(obj.getLong(DossierTerm.DUE_DATE)));
 			}
 		}
-		if (obj.has(DossierTerm.FINISH_DATE) && Validator.isNotNull(obj.get(DossierTerm.FINISH_DATE))) {
+		if (obj.has(DossierTerm.FINISH_DATE) && Validator.isNotNull(obj.get(DossierTerm.FINISH_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.FINISH_DATE)) > 0) {
 			if (dossier.getFinishDate() == null || obj.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
 				dossier.setFinishDate(new Date(obj.getLong(DossierTerm.FINISH_DATE)));	
 			}
 		}
-		if (obj.has(DossierTerm.RECEIVE_DATE) && Validator.isNotNull(obj.get(DossierTerm.RECEIVE_DATE))) {
+		if (obj.has(DossierTerm.RECEIVE_DATE) && Validator.isNotNull(obj.get(DossierTerm.RECEIVE_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.RECEIVE_DATE)) > 0) {
 			if (dossier.getReceiveDate() == null || obj.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
 				dossier.setReceiveDate(new Date(obj.getLong(DossierTerm.RECEIVE_DATE)));	
 			}
 		}
-		if (obj.has(DossierTerm.SUBMIT_DATE) && Validator.isNotNull(obj.get(DossierTerm.SUBMIT_DATE))) {
+		if (obj.has(DossierTerm.SUBMIT_DATE) && Validator.isNotNull(obj.get(DossierTerm.SUBMIT_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.SUBMIT_DATE)) > 0) {
 			if (dossier.getSubmitDate() == null || obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime()) {
 				dossier.setSubmitDate(new Date(obj.getLong(DossierTerm.SUBMIT_DATE)));	
 			}
 		}
-		if (obj.has(DossierTerm.EXTEND_DATE) && Validator.isNotNull(obj.get(DossierTerm.EXTEND_DATE))) {
+		if (obj.has(DossierTerm.EXTEND_DATE) && Validator.isNotNull(obj.get(DossierTerm.EXTEND_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.EXTEND_DATE)) > 0) {
 			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
 				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));	
 			}
