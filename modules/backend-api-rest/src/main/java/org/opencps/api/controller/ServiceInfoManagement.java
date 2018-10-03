@@ -1,5 +1,9 @@
 package org.opencps.api.controller;
 
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+
 import java.net.HttpURLConnection;
 import java.util.Locale;
 
@@ -13,6 +17,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -20,7 +25,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.exception.model.ExceptionModel;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
@@ -28,10 +32,7 @@ import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultsModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoSearchModel;
 import org.opencps.api.serviceinfo.model.StatisticsLevelResultsModel;
-
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
+import org.opencps.exception.model.ExceptionModel;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -79,7 +80,7 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getStatisticByDomain(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
+			@Context ServiceContext serviceContext, @QueryParam("agency") String agency);
 
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })

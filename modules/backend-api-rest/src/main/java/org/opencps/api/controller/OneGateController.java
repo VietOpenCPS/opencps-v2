@@ -34,7 +34,7 @@ public interface OneGateController {
 	@Path("/serviceconfigs/processes")
 	public Response getServiceconfigs(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
+			@Context ServiceContext serviceContext, @QueryParam("domain") String domain);
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })

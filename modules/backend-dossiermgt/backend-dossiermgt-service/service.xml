@@ -265,6 +265,11 @@
 			<finder-column name="govAgencyCode" />
 		</finder>
 
+		<finder return-type="Collection" name="GID_LEVEL">
+			<finder-column name="groupId" />
+			<finder-column name="serviceLevel" />
+		</finder>
+
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"

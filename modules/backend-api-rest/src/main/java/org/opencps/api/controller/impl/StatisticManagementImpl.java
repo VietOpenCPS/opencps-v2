@@ -140,7 +140,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 			User user, ServiceContext serviceContext, StatisticDossierSearchModel query, String owner) {
 		BackendAuth auth = new BackendAuthImpl();
 		StatisticActions actions = new StatisticActionsImpl();
-
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -161,7 +162,12 @@ public class StatisticManagementImpl implements StatisticManagement {
 			JSONArray statistics = JSONFactoryUtil.createJSONArray();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(Field.USER_ID, String.valueOf(userId));
+			if (auth2.isAdmin(serviceContext, "admin")) {
+				
+			}
+			else {
+				params.put(Field.USER_ID, String.valueOf(userId));
+			}
 			boolean ownerBoolean = GetterUtil.getBoolean(owner);
 			if (ownerBoolean) {
 				params.put(DossierTerm.OWNER, String.valueOf(true));				
@@ -179,8 +185,13 @@ public class StatisticManagementImpl implements StatisticManagement {
 							params.put(DossierTerm.STATUS, stepConfig.getDossierStatus());
 							params.put(DossierTerm.SUBSTATUS, stepConfig.getDossierSubStatus());
 							//TODO
-							String permission = user.getUserId() + StringPool.UNDERLINE + "write";
-							params.put(DossierTerm.MAPPING_PERMISSION, permission);
+							if (auth2.isAdmin(serviceContext, "admin")) {
+								
+							}
+							else {
+								String permission = user.getUserId() + StringPool.UNDERLINE + "write";
+								params.put(DossierTerm.MAPPING_PERMISSION, permission);
+							}
 //							_log.info("START");
 							long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId,
 									params, null, serviceContext);
@@ -204,8 +215,13 @@ public class StatisticManagementImpl implements StatisticManagement {
 						params.put(DossierTerm.STATUS, step.getDossierStatus());
 						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
 						//TODO
-						String permission = user.getUserId() + StringPool.UNDERLINE + "write";
-						params.put(DossierTerm.MAPPING_PERMISSION, permission);
+						if (auth2.isAdmin(serviceContext, "admin")) {
+							
+						}
+						else {
+							String permission = user.getUserId() + StringPool.UNDERLINE + "write";
+							params.put(DossierTerm.MAPPING_PERMISSION, permission);
+						}
 //						_log.info("DossierStatus: "+step.getDossierStatus());
 						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 								null, serviceContext);

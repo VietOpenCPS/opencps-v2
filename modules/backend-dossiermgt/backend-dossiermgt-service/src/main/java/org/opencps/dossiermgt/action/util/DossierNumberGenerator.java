@@ -49,7 +49,6 @@ public class DossierNumberGenerator {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		String dossierNumber = StringPool.BLANK;
-
 //		_log.info("seriNumberPattern: "+seriNumberPattern);
 		if (dossier != null) {
 			String codePattern = "\\{(n+|N+)\\}";

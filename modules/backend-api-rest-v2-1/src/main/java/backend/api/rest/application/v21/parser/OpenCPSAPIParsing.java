@@ -1,5 +1,14 @@
 package backend.api.rest.application.v21.parser;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +23,6 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 
 import io.swagger.model.ActionConfigItem;
 import io.swagger.model.MenuConfigItem;
@@ -148,6 +148,40 @@ public class OpenCPSAPIParsing {
 						data.add(menuConfigItem);
 					}
 				}				
+			}
+			else {
+				List<Role> userRoles = user.getRoles();
+				boolean isAdmin = false;
+				for (Role r : userRoles) {
+					if ("Administrator".equalsIgnoreCase(r.getName())) {
+						isAdmin = true;
+						break;
+					}
+				}
+				if (isAdmin) {
+					List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+					List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+
+					for (MenuConfig menuConfig : lstMenus) {
+						MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+						MenuConfigStepsItem menuConfigStepsItem;
+						List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+						
+						for (StepConfig stepConfig : lstSteps) {
+							if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
+								if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+									menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+									
+									menuConfigStepsItems.add(menuConfigStepsItem);							
+								}
+							}
+						}
+						
+						menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+						
+						data.add(menuConfigItem);
+					}					
+				}
 			}
 		}
 		else {

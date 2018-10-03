@@ -1312,6 +1312,21 @@ public class DossierActionsImpl implements DossierActions {
 						if (assign == 1 && !pending)
 							enable = 1;
 					}
+					//Check if user if admin
+					User checkAU = UserLocalServiceUtil.fetchUser(userId);
+					if (checkAU != null) {
+						List<Role> userRoles = checkAU.getRoles();
+						boolean isAdmin = false;
+						for (Role r : userRoles) {
+							if ("Administrator".equalsIgnoreCase(r.getName())) {
+								isAdmin = true;
+								break;
+							}
+						}
+						if (isAdmin) {
+							enable = 1;
+						}
+					}
 					// _log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
@@ -2924,28 +2939,28 @@ public class DossierActionsImpl implements DossierActions {
 				DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
 				int allowAssignUser = proAction.getAllowAssignUser();
-//				_log.info("allowAssignUser: "+allowAssignUser);
+				_log.info("allowAssignUser: "+allowAssignUser);
 				if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 					if (Validator.isNotNull(assignUsers)) {
-//						_log.info("LamTV_PROCESS assignUsers != null");
+						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 					dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
 							dossierAction, userId, groupId, proAction.getAssignUserId(),
 							assignedUsersArray);
 					} else {
-//						_log.info("PROCESS allowAssignUser");
+						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
 								proAction.getAssignUserId());
 					}
 				} else {
-//					_log.info("PROCESS subUsers == null");
-//					_log.info("Dossier action: " + dossierAction);
+					_log.info("PROCESS subUsers == null");
+					_log.info("Dossier action: " + dossierAction);
 					dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
 							proAction.getAssignUserId());
 					
 					//Process role as step
 					if (Validator.isNotNull(curStep.getRoleAsStep())) {
-//						_log.info("Copy role as step: " + curStep.getRoleAsStep());
+						_log.info("Copy role as step: " + curStep.getRoleAsStep());
 						dossierActionUser.copyRoleAsStep(curStep, dossier);
 					}					
 				}
@@ -4855,22 +4870,7 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier srcDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		long desDossierId = CounterLocalServiceUtil.increment(Dossier.class.getName());
-
-		srcDossier.setUuid(UUID.randomUUID().toString());
-		srcDossier.setDossierId(desDossierId);
-		srcDossier.setDossierStatus(StringPool.BLANK);
-		srcDossier.setDossierStatusText(StringPool.BLANK);
-		srcDossier.setDossierSubStatus(StringPool.BLANK);
-		srcDossier.setDossierSubStatusText(StringPool.BLANK);
-
-		int counter = DossierNumberGenerator.counterDossier(srcDossier.getUserId(), groupId);
-		String referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
-
-		srcDossier.setCounter(counter);
-		srcDossier.setReferenceUid(referenceUid);
-
-		Dossier desDossier = DossierLocalServiceUtil.addDossier(srcDossier);
+		Dossier desDossier = DossierLocalServiceUtil.cloneDossier(srcDossier);
 
 		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, srcDossier.getPrimaryKey(), dossierId, 1,
 				context);

@@ -3,6 +3,8 @@ package org.opencps.api.controller.util;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -53,6 +55,8 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
 		jsonData.put(DossierTerm.SECRET, dossier.getPassword());
+		jsonData.put(DossierTerm.BRIEF_NOTE, dossier.getBriefNote());
+		jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
 		//
 		long groupId = dossier.getGroupId();
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
@@ -85,13 +89,14 @@ public class DossierDocumentUtils {
 		//Hot fix TP99
 		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
 		if (dossierMark != null) {
-			JSONObject jsonMark = JSONFactoryUtil.createJSONObject();
+			JSONObject jsonMark = null;
 			String partNo = dossierMark.getDossierPartNo();
 			if (Validator.isNotNull(partNo)) {
 				List<DossierFile> fileList = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, partNo, false);
 				DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
 				if (fileList != null && part != null) {
 					for (DossierFile dossierFile : fileList) {
+						jsonMark = JSONFactoryUtil.createJSONObject();
 						jsonMark.put(DossierPartTerm.PART_NAME, dossierFile.getDisplayName());
 						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
 						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
@@ -110,5 +115,5 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
 		return jsonData;
 	}
-
+	private static Log _log = LogFactoryUtil.getLog(DossierDocumentUtils.class);
 }
