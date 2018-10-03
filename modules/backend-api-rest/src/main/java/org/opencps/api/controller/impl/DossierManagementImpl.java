@@ -987,6 +987,10 @@ public class DossierManagementImpl implements DossierManagement {
 						input.getDossierTemplateNo(), password, viaPostal, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), serviceContext);
+
+				if (process != null) {
+					dossier.setProcessNo(process.getProcessNo());
+				}
 			}
 //			_log.info("Dossier created: " + dossier);
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
