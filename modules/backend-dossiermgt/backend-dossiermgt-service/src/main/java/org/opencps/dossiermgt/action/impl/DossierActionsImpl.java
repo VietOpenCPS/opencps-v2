@@ -2618,7 +2618,8 @@ public class DossierActionsImpl implements DossierActions {
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
 //			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
-			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI) {
+			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
+					|| proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
 				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
 				String paymentNote = StringPool.BLANK;
 				long advanceAmount = 0l;
@@ -2670,27 +2671,18 @@ public class DossierActionsImpl implements DossierActions {
 						oldPaymentFile.setPaymentNote(paymentNote);
 					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
-				}
-				else {
+				} else {
 					if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_TAM_UNG) {
 						advanceAmount = feeAmount + serviceAmount + shipAmount;
 					}
 					else if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_PHI) {
 						paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
 					}
-					PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId, dossier.getDossierId(), dossier.getReferenceUid(),
-							paymentFee, 
-							advanceAmount, 
-							feeAmount, 
-							serviceAmount, 
-							shipAmount, 
-							paymentAmount, 
-							paymentNote, 
-							epaymentProfile, 
-							bankInfo, 
-							paymentStatus, 
-							paymentMethod, 
-							context);
+					PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
+							dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
+							serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
+							paymentStatus, paymentMethod, context);
+					
 					long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
 					
 					Calendar cal = Calendar.getInstance();
@@ -2717,7 +2709,6 @@ public class DossierActionsImpl implements DossierActions {
 					//_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
 					// generator epaymentProfile
 					JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
-					
 					
 					JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
@@ -2747,6 +2738,8 @@ public class DossierActionsImpl implements DossierActions {
 							}
 
 							epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+							epaymentProfileJSON.put("bank", "true");
+							epaymentProfileJSON.put("paygate", "true");
 
 							actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 									context);
@@ -2757,6 +2750,9 @@ public class DossierActionsImpl implements DossierActions {
 							_log.error(e);
 						}
 
+					} else {
+						actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+								context);
 					}
 					
 					// end sondt
@@ -3022,7 +3018,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 			// sondt start sendvnpost
-			if(proAction.getPreCondition().toLowerCase().contentEquals("viapostal")) {
+			if(proAction.getPreCondition().toLowerCase().contentEquals("viapostal=2")) {
 				_log.info("GO GO SEND VNPOST");
 				
 				InvokeREST callRest = new InvokeREST();
