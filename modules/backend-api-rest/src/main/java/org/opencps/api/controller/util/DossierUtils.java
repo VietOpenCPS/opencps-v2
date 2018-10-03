@@ -954,7 +954,7 @@ public class DossierUtils {
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 				_log.info("LamTV_ProcessStep: "+step);
 
-				if (Validator.isNull(step)) {
+				if (Validator.isNull(step) && dossierAction == null) {
 					action = act;
 					break;
 				} else {
