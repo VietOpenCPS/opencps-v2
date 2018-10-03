@@ -97,8 +97,14 @@ public class PaymentUrlGenerator {
 				String merchant_code = epaymentConfigJSON.getString("paymentMerchantCode");
 
 				String good_code = generatorGoodCode(10);
-
-				String net_cost = String.valueOf((int) paymentFile.getPaymentAmount());
+				
+				String net_cost = "";
+				if(paymentFile.getPaymentAmount() != 0) {
+					net_cost = String.valueOf((int) paymentFile.getPaymentAmount());
+				}else {
+					net_cost = String.valueOf((int) paymentFile.getFeeAmount());
+				}
+				
 				String ship_fee = "0";
 				String tax = "0";
 

@@ -53,6 +53,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.HttpMethod;
+
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
@@ -111,6 +113,8 @@ import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
@@ -156,6 +160,8 @@ public class DossierActionsImpl implements DossierActions {
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
+	
+	private static final String VNPOST_BASE_PATH = "/postal/vnpost";
 
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -2705,7 +2711,7 @@ public class DossierActionsImpl implements DossierActions {
 						try {
 							String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 									paymentFile.getPaymentFileId(), paymentFee, dossierId);
-							_log.info("Dossier Action SONDT paymentFee ========= "+ paymentFee);
+							//_log.info("Dossier Action SONDT paymentFee ========= "+ paymentFee);
 							epaymentProfileJSON.put("keypayUrl", generatorPayURL);
 
 							// fill good_code to keypayGoodCode
@@ -3000,12 +3006,45 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				}
 			}
-			
+			// sondt start sendvnpost
 			if(proAction.getPreCondition().toLowerCase().contentEquals("viapostal")) {
 				_log.info("GO GO SEND VNPOST");
 				
+				InvokeREST callRest = new InvokeREST();
+				String baseUrl = "/o/rest/v2";
+				HashMap<String, String> properties = new HashMap<String, String>();
+				Map<String, Object> params = new HashMap<>();
 				
+				params.put("customerCode", "cthh");	//Mã khách hàng do VNPOST cung cấp
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					params.put("orderNumber", dossier.getDossierNo()); //Mã đơn hàng	    	
+			    }
+				params.put("senderProvince", "10"); //Mã bưu cục cấp tỉnh của người gửi
+				params.put("senderAddress", "51 Ngô Quyền"); //Địa chỉ người gửi
+				params.put("senderName", dossier.getGovAgencyName()); //Tên người gửi
+				params.put("senderTel", "cthh"); //Số điện thoại người gửi
+				params.put("receiverName", dossier.getApplicantName()); //Tên người nhận
+				params.put("receiverAddress", dossier.getAddress()); //Địa chỉ người nhận
+				params.put("receiverTel", dossier.getContactTelNo()); //Số điện thoại người nhận
+				params.put("receiverProvince", dossier.getPostalWardCode()); //Mã bưu cục cấp tỉnh của người nhận
+				params.put("codAmount", ""); //Số tiền nhờ thu hộ (không bắt buộc)
+				params.put("senderDistrict", ""); //Mã bưu cục cấp quận/huyện của người gửi (không bắt buộc)
+				params.put("senderEmail", ""); //Email của người gửi (không bắt buộc)
+				params.put("senderDesc", ""); //Thành phần hồ sơ (không bắt buộc)
+				params.put("receiverDistrict", ""); //Mã bưu cục cấp quận/huyện của người nhận (không bắt buộc)
+				params.put("receiverEmail", ""); //Email của người nhận (không bắt buộc)
+				
+				JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
+						VNPOST_BASE_PATH, "", "", properties, params, context);
+				
+				_log.info("Call post API SEND VNPOST result: " + resultObj.toJSONString());
+				
+				if(resultObj != null) {
+					DossierLocalServiceUtil.updateViaPostal(groupId, dossier.getDossierId(), dossier.getReferenceUid(), 3,
+							context); // 3: sended to vnpost
+				}
 			}
+			// sondt end sendvnpost
 			
 			//Generate output
 			try {
