@@ -3039,58 +3039,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalCityName(postalCityName);
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
-			ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
-			if (option != null) {
-				dossier.setSampleCount(option.getSampleCount());
-			}
-			
-			dossierPersistence.update(dossier);
-
-			// create DossierFile if it is eForm
-
-//			List<DossierPart> dossierParts = new ArrayList<DossierPart>();
-//
-//			dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
-
-//			for (DossierPart part : dossierParts) {
-//				if (Validator.isNotNull(part.getFormScript()) && part.getPartType() != 2) {
-//					String dossierFileUUID = PortalUUIDUtil.generate();
-
-					// TODO HotFix
-
-//					if (groupId != 55301) {
-//					if (originality == DossierTerm.ORIGINALITY_DVCTT || originality == DossierTerm.ORIGINALITY_MOTCUA) {
-//						dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
-//								part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
-//								null, StringPool.BLANK, StringPool.TRUE, context);
-//					}
-//				}
-//			}
-
-//			if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
-				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-				params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-				params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-				params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
-				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-
-				ServiceProcess serviceProcess = null;
-				_log.info("option: "+option);
-				if (option != null) {
-					//Process submition note
-					_log.info("option: "+option.getSubmissionNote());
-					dossier.setSubmissionNote(option.getSubmissionNote());
-					_log.info("option: "+true);
-					long serviceProcessId = option.getServiceProcessId();
-					serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-
-					String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-							dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-
-					dossier.setDossierNo(dossierRef.trim());
-					
-					dossier.setServerNo(serviceProcess.getServerNo());
-				}			
 //			dossier.setServerNo(getServerNo(groupId));
 			dossier.setOriginality(originality);
 			
