@@ -2423,16 +2423,16 @@ public class DossierActionsImpl implements DossierActions {
 								//_log.error(e);
 							}
 
-							if (Validator.isNull(dossierFile)) {
+							if (Validator.isNull(dossierFile)
+									&& dossierPart.getEForm()) {
 								dossierFile = actions.addDossierFile(groupId, dossier.getDossierId(),
 										StringPool.BLANK, dossier.getDossierTemplateNo(),
 										dossierPart.getPartNo(), fileTemplateNo,
 										dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 										StringPool.BLANK, String.valueOf(false), context);
+								docFileReferenceUid = dossierFile.getReferenceUid();
+								actions.updateDossierFileFormData(groupId, dossier.getDossierId(), docFileReferenceUid, formData, context);																													
 							}
-
-							docFileReferenceUid = dossierFile.getReferenceUid();
-							actions.updateDossierFileFormData(groupId, dossier.getDossierId(), docFileReferenceUid, formData, context);																													
 						}
 						else {
 							String deliverableTypeStr = dossierPart.getDeliverableType();
