@@ -281,6 +281,11 @@ public class DossierActionUserImpl implements DossierActionUser {
 					}
 	
 				}
+				else {
+					if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
+						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userIdAssigned, 1, true);
+					}					
+				}
 				
 				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
 				

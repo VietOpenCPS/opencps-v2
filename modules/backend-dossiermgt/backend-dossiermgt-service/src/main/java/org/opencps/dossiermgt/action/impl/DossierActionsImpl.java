@@ -2123,8 +2123,9 @@ public class DossierActionsImpl implements DossierActions {
 		String docFileReferenceUid = StringPool.BLANK;
 		long dossierFileId  = 0;
 		String formScript = dossierPart.getFormScript();
-		boolean eForm = Validator.isNotNull(formScript) ? true : false;
-		String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId, serviceContext);
+//		boolean eForm = Validator.isNotNull(formScript) ? true : false;
+		boolean eForm = dossierPart.getEForm();
+		String formData = eForm ? AutoFillFormData.sampleDataBinding(sampleData, dossierId, serviceContext) : StringPool.BLANK;
 
 		// create Dossier File
 		if (eForm) {
@@ -2428,16 +2429,16 @@ public class DossierActionsImpl implements DossierActions {
 								//_log.error(e);
 							}
 
-							if (Validator.isNull(dossierFile)) {
+							if (Validator.isNull(dossierFile)
+									&& dossierPart.getEForm()) {
 								dossierFile = actions.addDossierFile(groupId, dossier.getDossierId(),
 										StringPool.BLANK, dossier.getDossierTemplateNo(),
 										dossierPart.getPartNo(), fileTemplateNo,
 										dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 										StringPool.BLANK, String.valueOf(false), context);
+								docFileReferenceUid = dossierFile.getReferenceUid();
+								actions.updateDossierFileFormData(groupId, dossier.getDossierId(), docFileReferenceUid, formData, context);																													
 							}
-
-							docFileReferenceUid = dossierFile.getReferenceUid();
-							actions.updateDossierFileFormData(groupId, dossier.getDossierId(), docFileReferenceUid, formData, context);																													
 						}
 						else {
 							String deliverableTypeStr = dossierPart.getDeliverableType();
