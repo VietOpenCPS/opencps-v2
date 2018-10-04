@@ -279,8 +279,8 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		object.setGroupId(groupId);
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
-		object.setUserId(Validator.isNotNull(userAction) ? userAction.getUserId() : 0l);
-		object.setUserName(Validator.isNotNull(userAction) ? userAction.getFullName() : StringPool.BLANK);
+		object.setUserId(userAction != null ? userAction.getUserId() : 0l);
+		object.setUserName(userAction != null ? userAction.getFullName() : StringPool.BLANK);
 
 		// Add other fields
 
