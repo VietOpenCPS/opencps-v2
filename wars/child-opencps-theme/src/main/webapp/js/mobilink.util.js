@@ -9,7 +9,6 @@ function showWindowAlert(template, title, message, target) {
 			width: "300px",
 			modal: true,
 			title: title,
-			modal: true,
 			resizable: false,
 			visible: false,
 			close: function(e) {
@@ -42,7 +41,6 @@ function showWindowConfirm(template, title, message, target) {
 			width: "300px",
 			modal: true,
 			title: title,
-			modal: true,
 			resizable: false,
 			visible: false,
 			close: function(e) {
