@@ -2617,7 +2617,7 @@ public class DossierActionsImpl implements DossierActions {
 			// Add paymentFile
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
-//			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
+			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
 			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 					|| proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
 				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
