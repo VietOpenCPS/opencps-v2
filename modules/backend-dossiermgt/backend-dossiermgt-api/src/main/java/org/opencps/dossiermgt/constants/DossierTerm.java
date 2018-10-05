@@ -149,6 +149,9 @@ public class DossierTerm {
 	public static final String DURATION_UNIT = "durationUnit";
 	public static final String SAMPLE_COUNT = "sampleCount";
 	public static final String DELEGATE_ADDRESS = "delegateAddress";
+	public static final String DELEGATE_NAME = "delegateName";
+	public static final String DELEGATE_EMAIL = "delegateEmail";
+	public static final String DELEGATE_TELNO = "delegateTelNo";
 	
 	public static final String DOSSIER_MARKS = "dossierMarks";
 	public static final String REGISTER_BOOK_CODE = "registerBookCode";

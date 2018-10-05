@@ -189,7 +189,8 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				}
 
 			} catch (SystemException | PortalException e) {
-				_log.error(e);
+//				_log.error(e);
+				_log.debug(e);
 			}
 		}
 
@@ -207,7 +208,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
 						content, notificationType, payload, serviceContext);
 			} catch (SystemException | PortalException e) {
-				_log.error(e);
+				_log.debug(e);
 			}
 		}
 	}
