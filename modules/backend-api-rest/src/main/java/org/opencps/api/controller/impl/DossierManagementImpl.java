@@ -95,6 +95,7 @@ import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -2610,6 +2611,7 @@ public class DossierManagementImpl implements DossierManagement {
 		result.put("total", lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
 		
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
@@ -2639,6 +2641,20 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
 			List<Long> lstUsers = new ArrayList<>();
 			
+			if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+				for (DossierActionUser dau : lstDus) {
+					User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+					
+					if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+						lstUsers.add(dau.getUserId());
+						assignUserObj.put("userId", dau.getUserId());
+						assignUserObj.put("userName", u.getFullName());
+						
+						assignUserArr.put(assignUserObj);					
+					}					
+				}
+			}
 			for (DossierAction da : lstDossierActions) {
 				if (!lstUsers.contains(da.getUserId())) {
 					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();

@@ -2577,7 +2577,11 @@ public class DossierActionsImpl implements DossierActions {
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
-
+		User user = UserLocalServiceUtil.fetchUser(userId);
+		Employee employee = null;
+		if (user != null) {
+			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+		}		
 		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
@@ -2822,6 +2826,10 @@ public class DossierActionsImpl implements DossierActions {
 						ServiceProcess ltProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(foundOption.getServiceProcessId());
 						
 						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(foundOption.getDossierTemplateId());
+						String delegateName = dossier.getDelegateName();
+						String delegateAddress = dossier.getDelegateAddress();
+						String delegateTelNo = dossier.getDelegateTelNo();
+						String delegateEmail = dossier.getDelegateEmail();
 						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
 								dossier.getCounter(), dossier.getServiceCode(),
 								dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
@@ -2832,6 +2840,22 @@ public class DossierActionsImpl implements DossierActions {
 								dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
 								dossier.getPostalCityName(), dossier.getPostalTelNo(), 
 								dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
+						if (user != null) {
+							if (employee != null) {
+								delegateName = employee.getFullName();
+								delegateAddress = dossier.getGovAgencyName();
+								delegateTelNo = employee.getTelNo();
+								delegateEmail = employee.getEmail();
+								
+								if (hsltDossier != null) {
+									hsltDossier.setDelegateName(delegateName);
+									hsltDossier.setDelegateAddress(delegateAddress);
+									hsltDossier.setDelegateTelNo(delegateTelNo);
+									hsltDossier.setDelegateEmail(delegateEmail);
+									hsltDossier = DossierLocalServiceUtil.updateDossier(hsltDossier);
+								}
+							}
+						}
 
 						//
 						String dossierNote = StringPool.BLANK;
@@ -2952,14 +2976,16 @@ public class DossierActionsImpl implements DossierActions {
 				} else {
 					_log.info("PROCESS subUsers == null");
 					_log.info("Dossier action: " + dossierAction);
-					dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
-							proAction.getAssignUserId());
 					
 					//Process role as step
 					if (Validator.isNotNull(curStep.getRoleAsStep())) {
 						_log.info("Copy role as step: " + curStep.getRoleAsStep());
 						dossierActionUser.copyRoleAsStep(curStep, dossier);
-					}					
+					}	
+					else {
+						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
+								proAction.getAssignUserId());						
+					}
 				}
 
 //				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
@@ -3167,7 +3193,11 @@ public class DossierActionsImpl implements DossierActions {
 						hslt.getDossierTemplateNo(), groupId);
 				ProcessAction actionHslt = getProcessAction(groupId, hslt.getDossierId(), hslt.getReferenceUid(), actionConfig.getMappingAction(), optionHslt.getServiceProcessId());
 				
-				doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
+				String actionUserHslt = actionUser;
+				if (employee != null) {
+					actionUserHslt = actionUser;
+				}
+				doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 			}
 			else {
 				Dossier originDossier = DossierLocalServiceUtil.getByOrigin(groupId, dossierId);
