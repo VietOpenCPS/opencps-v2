@@ -57,7 +57,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	public Response getPreview(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String typeCode) {
 		BackendAuth auth = new BackendAuthImpl();
-
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
@@ -91,6 +90,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						jsonData = JSONFactoryUtil.createJSONObject(payload);
 					}
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
+					jsonData.put("userName", user.getFullName());
+					//
 					_log.info("jsonData: "+jsonData);
 					jsonData.put("url", serviceContext.getPortalURL());
 					Message message = new Message();

@@ -55,6 +55,9 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.SECRET_KEY, dossier.getPassword());
 		jsonData.put(DossierTerm.RECEIVE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonData.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
+		jsonData.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+		jsonData.put(DossierTerm.DELEGATE_TELNO, dossier.getDelegateTelNo());
 		//
 		ServiceProcess process = ServiceProcessLocalServiceUtil.getByG_PNO(dossier.getGroupId(), dossier.getProcessNo());
 //		_log.info("dossier.getGroupId(): "+dossier.getGroupId());
