@@ -2619,8 +2619,8 @@ public class DossierActionsImpl implements DossierActions {
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
 			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
-			if (proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
-					|| proAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
+			if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
+					|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI && Validator.isNotNull(payment)) {
 				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
 				String paymentNote = StringPool.BLANK;
 				long advanceAmount = 0l;
@@ -2638,7 +2638,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-//					_log.info("Payment object in do action: " + paymentObj);
+//						_log.info("Payment object in do action: " + paymentObj);
 					if (paymentObj.has("paymentFee")) {
 						paymentFee = paymentObj.getString("paymentFee");
 					}
@@ -2665,9 +2665,11 @@ public class DossierActionsImpl implements DossierActions {
 					_log.debug(e);
 					//_log.error(e);
 				}
-//				_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
+//					_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				if (oldPaymentFile != null && (feeAmount != 0 || serviceAmount != 0 || shipAmount != 0)) {
+				
+				_log.info("oldPaymentFile ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				if (oldPaymentFile != null) {
 					if (Validator.isNotNull(paymentNote))
 						oldPaymentFile.setPaymentNote(paymentNote);
 					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
@@ -2747,7 +2749,7 @@ public class DossierActionsImpl implements DossierActions {
 
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
-//							e.printStackTrace();
+//								e.printStackTrace();
 							_log.error(e);
 						}
 
@@ -2757,6 +2759,7 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					
 					// end sondt
+					
 				}
 //				try {
 //					String serveNo = serviceProcess.getServerNo();
@@ -3027,24 +3030,24 @@ public class DossierActionsImpl implements DossierActions {
 				HashMap<String, String> properties = new HashMap<String, String>();
 				Map<String, Object> params = new HashMap<>();
 				
-				params.put("customerCode", "cthh");	//Mã khách hàng do VNPOST cung cấp
+				params.put("customerCode", "cthh");	
 				if (Validator.isNotNull(dossier.getDossierNo())) {
-					params.put("orderNumber", dossier.getDossierNo()); //Mã đơn hàng	    	
+					params.put("orderNumber", dossier.getDossierNo()); 	    	
 			    }
-				params.put("senderProvince", "10"); //Mã bưu cục cấp tỉnh của người gửi
-				params.put("senderAddress", "51 Ngô Quyền"); //Địa chỉ người gửi
-				params.put("senderName", dossier.getGovAgencyName()); //Tên người gửi
-				params.put("senderTel", "cthh"); //Số điện thoại người gửi
-				params.put("receiverName", dossier.getApplicantName()); //Tên người nhận
-				params.put("receiverAddress", dossier.getAddress()); //Địa chỉ người nhận
-				params.put("receiverTel", dossier.getContactTelNo()); //Số điện thoại người nhận
-				params.put("receiverProvince", dossier.getPostalWardCode()); //Mã bưu cục cấp tỉnh của người nhận
-				params.put("codAmount", ""); //Số tiền nhờ thu hộ (không bắt buộc)
-				params.put("senderDistrict", ""); //Mã bưu cục cấp quận/huyện của người gửi (không bắt buộc)
-				params.put("senderEmail", ""); //Email của người gửi (không bắt buộc)
-				params.put("senderDesc", ""); //Thành phần hồ sơ (không bắt buộc)
-				params.put("receiverDistrict", ""); //Mã bưu cục cấp quận/huyện của người nhận (không bắt buộc)
-				params.put("receiverEmail", ""); //Email của người nhận (không bắt buộc)
+				params.put("senderProvince", "10"); 
+				params.put("senderAddress", "51 NGO QUYEN"); 
+				params.put("senderName", dossier.getGovAgencyName()); 
+				params.put("senderTel", "cthh"); 
+				params.put("receiverName", dossier.getApplicantName()); 
+				params.put("receiverAddress", dossier.getAddress()); 
+				params.put("receiverTel", dossier.getContactTelNo()); 
+				params.put("receiverProvince", dossier.getPostalWardCode()); 
+				params.put("codAmount", ""); 
+				params.put("senderDistrict", ""); 
+				params.put("senderEmail", ""); 
+				params.put("senderDesc", ""); 
+				params.put("receiverDistrict", ""); 
+				params.put("receiverEmail", ""); 
 				
 				JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
 						VNPOST_BASE_PATH, "", "", properties, params, context);
