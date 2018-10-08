@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -230,9 +231,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		try {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-			_log.info("SONDT PROCESS ACTION SYNC PAYMENT ======================== " + JSONFactoryUtil.looseSerialize(processAction));
-			_log.info("SONDT DOSSIERID SYNC PAYMENT ================"+ dossier.getDossierId());
+			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
+			
+//			_log.info("SONDT DOSSIER ACTION SYNC PAYMENT ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
+//			_log.info("SONDT PROCESS ACTION SYNC PAYMENT ======================== " + JSONFactoryUtil.looseSerialize(processAction));
+//			_log.info("SONDT DOSSIERID SYNC PAYMENT ================"+ dossier.getDossierId());
 			
 			if (processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG)) {
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
@@ -251,8 +254,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			} else if (processAction != null && (processAction
 					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				_log.info("PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-				
+//				_log.info("PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+//				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -263,7 +266,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentAmount(processAction.getPaymentFee());
 				pfiModel.setPaymentFee(processAction.getPaymentFee());
 				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-				pfiModel.setReferenceUid(StringPool.BLANK);
+				pfiModel.setReferenceUid(dossier.getReferenceUid());
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());;
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
@@ -558,6 +561,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
+		
+		_log.info("SONDT PROCESS ACTION SYNC PAYMENT 2 ======================== " + JSONFactoryUtil.looseSerialize(processAction));
+		_log.info("SONDT DOSSIERID SYNC PAYMENT 2 ================"+ dossier.getDossierId());
 		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI != processAction.getRequestPayment())) {
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());

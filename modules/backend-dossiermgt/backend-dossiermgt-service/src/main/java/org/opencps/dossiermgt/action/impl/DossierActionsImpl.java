@@ -2672,7 +2672,7 @@ public class DossierActionsImpl implements DossierActions {
 //					_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				
-				_log.info("oldPaymentFile ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				// _log.info("oldPaymentFile ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 				if (oldPaymentFile != null) {
 					if (Validator.isNotNull(paymentNote))
 						oldPaymentFile.setPaymentNote(paymentNote);
@@ -2747,7 +2747,12 @@ public class DossierActionsImpl implements DossierActions {
 							epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
 							epaymentProfileJSON.put("bank", "true");
 							epaymentProfileJSON.put("paygate", "true");
-
+							epaymentProfileJSON.put("feeAmount", feeAmount);
+							epaymentProfileJSON.put("shipAmount", shipAmount);
+							epaymentProfileJSON.put("advanceAmount", advanceAmount);
+							epaymentProfileJSON.put("paymentAmount", paymentAmount);
+							epaymentProfileJSON.put("serviceAmount", serviceAmount);
+							
 							actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 									context);
 

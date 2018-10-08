@@ -763,6 +763,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
+//		_log.info("SONDT CREATE PAYMENTFILE GROUPID ====================== " + groupId);
+		
 		long userId = serviceContext.getUserId();
 		
 		BackendAuth auth = new BackendAuthImpl();
@@ -773,7 +775,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 			Dossier dossier = getDossier(id, groupId);
-
+//			_log.info("SONDT CREATE PAYMENTFILE dossier ====================== " + JSONFactoryUtil.looseSerialize(dossier));
 			long dossierId = dossier.getPrimaryKey();
 
 			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
@@ -785,7 +787,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFileInputModel PaymentFileInput;
 
-			PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());			PaymentFile paymentFile = null;
+			PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+//			_log.info("SONDT CREATE PAYMENTFILE oldPaymentFile ====================== " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+			PaymentFile paymentFile = null;
 			
 			if (oldPaymentFile != null) {
 				paymentFile = oldPaymentFile;
