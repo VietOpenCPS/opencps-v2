@@ -496,6 +496,10 @@
 			<finder-column name="applicantIdNo" />
 		</finder>
 		
+		<finder return-type="Collection" name="VIAPOSTAL">
+			<finder-column name="viaPostal" />
+		</finder>
+		
         <finder name="U_G_GAC_SC_DTNO_DAI_O" return-type="Collection">
         	<finder-column name="userId"></finder-column>
             <finder-column name="groupId"></finder-column>

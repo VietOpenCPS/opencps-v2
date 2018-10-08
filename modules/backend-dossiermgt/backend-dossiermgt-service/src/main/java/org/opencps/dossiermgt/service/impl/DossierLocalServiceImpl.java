@@ -1610,6 +1610,33 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossier;
 
 	}
+	//sondt start
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateViaPostal(long groupId, long id, String refId, int viaPostal,
+			ServiceContext context) throws PortalException {
+
+		validateViaPostal(groupId, id, refId, viaPostal);
+		
+		Date now = new Date();
+
+		Dossier dossier = null;
+
+		if (id != 0) {
+			dossier = dossierPersistence.fetchByPrimaryKey(id);
+		} else {
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
+		}
+
+		dossier.setModifiedDate(now);
+
+		dossier.setViaPostal(viaPostal);
+
+		dossierPersistence.update(dossier);
+
+		return dossier;
+
+	}
+	//sondt end
 
 	public Dossier getByRef(long groupId, String refId) {
 		return dossierPersistence.fetchByG_REF(groupId, refId);
@@ -1651,6 +1678,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public int countByUserId(long userId, long groupId) {
 		return dossierPersistence.countByG_UID(groupId, userId);
+	}
+	
+	private void validateViaPostal(long groupId, long id, String refId, int viaPostal)
+			throws PortalException {
+		// TODO add validate for submitting
 	}
 
 	private void validateRemoveDossier(long groupId, long dossierId, String refId) throws PortalException {
@@ -3164,6 +3196,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	public List<Dossier> getByU_G_C_DS_SC_GC_O(long userId, long groupId, String serviceCode, String govAgencyCode, long dossierActionId, int originality) {
 		return dossierPersistence.findByU_G_GAC_SC_DTNO_DAI_O(userId, groupId, serviceCode, govAgencyCode, dossierActionId, originality);
+	}
+	
+	public List<Dossier> findByVIAPOSTAL(int viaPostal) {
+		return dossierPersistence.findByVIAPOSTAL(viaPostal);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
