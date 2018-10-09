@@ -2503,7 +2503,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		// LamTV: Process originality and assigned
-		if (Validator.isNotNull(originality)) {
+		if (Validator.isNotNull(originality) && !originality.equals("-1")) {
 			String[] originalArr = StringUtil.split(originality);
 
 			if (originalArr != null && originalArr.length > 0) {
