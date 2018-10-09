@@ -68,8 +68,17 @@ public class PaymentFileInputModel {
     protected String paymentNote;
     protected String epaymentProfile;
     protected String bankInfo;
+    protected Long feeAmount;
+    
+    public Long getFeeAmount() {
+		return feeAmount;
+	}
 
-    /**
+	public void setFeeAmount(Long feeAmount) {
+		this.feeAmount = feeAmount;
+	}
+
+	/**
      * Gets the value of the referenceUid property.
      * 
      * @return

@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
@@ -619,7 +620,14 @@ public class OpenCPSConverter {
 		model.setDelegateCityCode(dossier.getDelegateCityCode());
 		model.setDelegateDistrictCode(dossier.getDelegateDistrictCode());
 		model.setDelegateWardCode(dossier.getDelegateWardCode());
-
+		model.setViaPostal(String.valueOf(dossier.getViaPostal()));
+		model.setPostalAddress(dossier.getPostalAddress());
+		model.setPostalCityCode(dossier.getPostalCityCode());
+		model.setPostalDistrictCode(dossier.getPostalDistrictCode());
+		model.setPostalServiceCode(dossier.getPostalServiceCode());
+		model.setPostalTelNo(dossier.getPostalTelNo());
+		model.setPostalWardCode(dossier.getPostalWardCode());
+		
 		return model;
 	}
 	
@@ -689,7 +697,7 @@ public class OpenCPSConverter {
 	    	params.put(PaymentFileTerm.PAYMENT_FEE, model.getPaymentFee());
 	    }
 	    if (Validator.isNotNull(model.getPaymentAmount())) {
-	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, model.getPaymentAmount());
+	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, GetterUtil.getLong(model.getPaymentAmount()));
 	    }
 	    if (Validator.isNotNull(model.getPaymentNote())) {
 	    	params.put(PaymentFileTerm.PAYMENT_NOTE, model.getPaymentNote());
@@ -699,6 +707,9 @@ public class OpenCPSConverter {
 	    }
 	    if (Validator.isNotNull(model.getBankInfo())) {
 	    	params.put(PaymentFileTerm.BANK_INFO, model.getBankInfo());
+	    }
+	    if (Validator.isNotNull(model.getFeeAmount())) {
+	    	params.put(PaymentFileTerm.BANK_INFO, model.getFeeAmount());
 	    }
 	    
 	    return params;
