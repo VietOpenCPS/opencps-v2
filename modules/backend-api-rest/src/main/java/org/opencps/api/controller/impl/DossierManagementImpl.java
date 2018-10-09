@@ -214,12 +214,17 @@ public class DossierManagementImpl implements DossierManagement {
 			String agency = query.getAgency();
 			String service = query.getService();
 			String template = query.getTemplate();
+			Integer originality = GetterUtil.getInteger(query.getOriginality());
 			String owner = query.getOwner();
-			// If user is citizen then default owner true
-			if (isCitizen) {
-				owner = String.valueOf(true);
+			if (originality == -1) {
+				owner = String.valueOf(false);
+			} else {
+				// If user is citizen then default owner true
+				if (isCitizen) {
+					owner = String.valueOf(true);
+				}
 			}
-//			_log.info("owner: "+owner);
+
 			String follow = query.getFollow();
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
@@ -237,8 +242,6 @@ public class DossierManagementImpl implements DossierManagement {
 					year = baseDateCal.get(Calendar.YEAR);
 				}
 			}
-//			_log.info("month: "+month);
-//			_log.info("year: "+year);
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
 			String dossierNoSearch = StringPool.BLANK;
@@ -324,6 +327,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.SERVICE_NAME, serviceName);
 			//Check guest search
 			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
+			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {

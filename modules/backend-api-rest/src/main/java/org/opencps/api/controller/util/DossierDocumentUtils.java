@@ -84,7 +84,7 @@ public class DossierDocumentUtils {
 							if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < 12) {
 								dueCalendar.setTime(dossier.getDueDate());
 								
-								String hoursAfterNoon = hours.getString("PM");
+								String hoursAfterNoon = hours.getString("AM");
 //								_log.info("hoursAfterNoon: "+hoursAfterNoon);
 								
 								if (Validator.isNotNull(hoursAfterNoon)) {
@@ -97,7 +97,7 @@ public class DossierDocumentUtils {
 								}
 							} else {
 								dueCalendar.setTime(dossier.getDueDate());
-								String hoursAfterNoon = hours.getString("AM");
+								String hoursAfterNoon = hours.getString("PM");
 								if (Validator.isNotNull(hoursAfterNoon)) {
 									String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
 									if (splitAfter != null) {
