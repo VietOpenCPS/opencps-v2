@@ -1813,7 +1813,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, top, emailLogin, booleanQuery);
+				template, top, emailLogin, originality, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
@@ -1897,7 +1897,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, top, emailLogin, booleanQuery);
+				template, top, emailLogin, originality, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
@@ -1911,7 +1911,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	private BooleanQuery processSearchCommon(String keywords, String secetKey, String groupId, String owner,
-			long userId, String follow, String step, String template, String top, String emailLogin,
+			long userId, String follow, String step, String template, String top, String emailLogin, String originality,
 			BooleanQuery booleanQuery) throws ParseException {
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
@@ -1976,20 +1976,27 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		//DossierActionId = 0
-		boolean flagEmail = true;
-		if (Validator.isNotNull(emailLogin)) {
-			if (DossierTerm.EMAIL_DEFAULT.equals(emailLogin.toLowerCase())) {
-				flagEmail = false;
-			}
+		Integer originalInt = GetterUtil.getInteger(originality);
+		boolean flagOrigin = false;
+		if (originalInt != -1) {
+			flagOrigin = true;
 		}
-//		_log.info("flagEmail: "+flagEmail);
-//		_log.info("emailLogin: "+emailLogin);
-		if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-//			_log.info("TEST: "+true);
-			MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
-			queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
-			booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
+		if (flagOrigin) {
+			//DossierActionId = 0
+			boolean flagEmail = true;
+			if (Validator.isNotNull(emailLogin)) {
+				if (DossierTerm.EMAIL_DEFAULT.equals(emailLogin.toLowerCase())) {
+					flagEmail = false;
+				}
+			}
+//			_log.info("flagEmail: "+flagEmail);
+//			_log.info("emailLogin: "+emailLogin);
+			if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+//				_log.info("TEST: "+true);
+				MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
+				queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
+				booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
+			}
 		}
 
 //		//OriginDossierId = 0
@@ -2627,7 +2634,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 			if (Validator.isNotNull(serviceInfo)) {
 				dossierNote = serviceInfo.getProcessText();
 			}

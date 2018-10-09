@@ -101,7 +101,8 @@ import javax.xml.bind.annotation.XmlType;
     "applicantIdNo",
     "serviceName",
     "fromReleaseDate",
-    "toReleaseDate"
+    "toReleaseDate",
+    "originality"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -195,6 +196,8 @@ public class DossierSearchModel {
     protected String fromReleaseDate;
     @QueryParam(value = "toReleaseDate")
     protected String toReleaseDate;
+    @QueryParam(value = "originality")
+    protected String originality;
 
     public Integer getAssigned() {
 		return assigned;
@@ -898,6 +901,14 @@ public class DossierSearchModel {
 
 	public void setToReleaseDate(String toReleaseDate) {
 		this.toReleaseDate = toReleaseDate;
+	}
+
+	public String getOriginality() {
+		return originality;
+	}
+
+	public void setOriginality(String originality) {
+		this.originality = originality;
 	}
 
 }
