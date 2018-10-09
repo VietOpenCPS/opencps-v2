@@ -80,8 +80,8 @@ public class DossierLogIndexer extends BaseIndexer<DossierLog> {
 			document.addTextSortable(DossierLogTerm.GOVAGENCYNAME, dossier.getGovAgencyName());
 			document.addNumberSortable(DossierLogTerm.COUNTER, dossier.getCounter());
 		} catch (Exception e) {
-//			e.printStackTrace();
-			_log.error(e);
+			_log.debug(e);
+			//_log.error(e);
 		}
 		
 		return document;

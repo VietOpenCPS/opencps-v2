@@ -5700,17 +5700,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			Date endorsementDate, Date extendDate,
 			Date processDate, ServiceContext context)
 			throws PortalException {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+
+//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		Date appIdDate = null;
-
-		try {
-			appIdDate = sdf.parse(applicantIdDate);
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			_log.debug(e);
-			//_log.error(e);
-		}
+//		try {
+//			appIdDate = sdf.parse(applicantIdDate);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			_log.debug(e);
+//			//_log.error(e);
+//		}
 
 		Dossier dossier = null;
 
