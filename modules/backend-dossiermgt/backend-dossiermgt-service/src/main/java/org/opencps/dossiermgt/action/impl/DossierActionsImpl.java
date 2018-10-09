@@ -2622,7 +2622,9 @@ public class DossierActionsImpl implements DossierActions {
 			// Add paymentFile
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
-			_log.info("Payment fee: " + proAction.getPaymentFee() + ", request payment: " + proAction.getRequestPayment());
+//			_log.info("Payment fee: " + JSONFactoryUtil.looseSerialize(proAction.getPaymentFee()) + ", request payment: " + proAction.getRequestPayment());
+			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
+
 			if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 					|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI && Validator.isNotNull(payment)) {
 				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
@@ -2712,8 +2714,8 @@ public class DossierActionsImpl implements DossierActions {
 					// get paymentConfig
 					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
 							dossier.getGovAgencyCode());
-					//_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
-					//_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
+//					_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
+//					_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
 					// generator epaymentProfile
 					JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
 					
@@ -2776,6 +2778,77 @@ public class DossierActionsImpl implements DossierActions {
 //							serveNo);
 //				} catch (Exception e) {
 //				}
+			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI
+					&& Validator.isNotNull(payment)) {
+				_log.info("SONDT payment ========= "+ JSONFactoryUtil.looseSerialize(payment));
+				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
+				String paymentNote = StringPool.BLANK;
+				int paymentStatus = 0;
+				String paymentMethod = StringPool.BLANK;
+				NumberFormat fmt = NumberFormat.getNumberInstance(LocaleUtil.getDefault());
+				DecimalFormatSymbols customSymbol = new DecimalFormatSymbols();
+				customSymbol.setDecimalSeparator(',');
+				customSymbol.setGroupingSeparator('.');
+				((DecimalFormat)fmt).setDecimalFormatSymbols(customSymbol);
+				fmt.setGroupingUsed(true);
+				try {
+					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
+//						_log.info("Payment object in do action: " + paymentObj);
+					if (paymentObj.has("paymentFee")) {
+						paymentFee = paymentObj.getString("paymentFee");
+					}
+					if (paymentObj.has("paymentNote")) {
+						paymentNote = paymentObj.getString("paymentNote");
+					}
+					if (paymentObj.has("feeAmount")) {
+						feeAmount = (Long)fmt.parse(paymentObj.getString("feeAmount"));
+					}
+					if (paymentObj.has("serviceAmount")) {
+						serviceAmount = (Long)fmt.parse(paymentObj.getString("serviceAmount"));
+					}
+					if (paymentObj.has("shipAmount")) {
+						shipAmount = (Long)fmt.parse(paymentObj.getString("shipAmount"));
+					}
+					if (paymentObj.has("requestPayment")) {
+						paymentStatus = paymentObj.getInt("requestPayment");
+					}
+				}
+				catch (JSONException e) {
+					_log.debug(e);
+					//_log.error(e);
+				} catch (ParseException e) {
+					_log.debug(e);
+					//_log.error(e);
+				}
+				
+				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+				
+				// _log.info("oldPaymentFile ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				if (oldPaymentFile != null) {
+					if (Validator.isNotNull(paymentNote)) {
+						oldPaymentFile.setPaymentNote(paymentNote);
+					}
+					if (feeAmount == 0) {
+						oldPaymentFile.setFeeAmount(feeAmount);
+					}
+					if (serviceAmount == 0) {
+						oldPaymentFile.setServiceAmount(serviceAmount);
+					}
+					if (shipAmount == 0) {
+						oldPaymentFile.setServiceAmount(serviceAmount);
+					}
+					if (paymentStatus == 0) {
+						oldPaymentFile.setPaymentStatus(paymentStatus);
+					}
+					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
+					
+				}
+			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
+				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+				
+				PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
+						proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
+						oldPaymentFile.getShipAmount());
 			}
 
 			String postStepCode = proAction.getPostStepCode();
@@ -3071,7 +3144,7 @@ public class DossierActionsImpl implements DossierActions {
 				params.put("senderTel", "cthh"); 
 				params.put("receiverName", dossier.getApplicantName()); 
 				params.put("receiverAddress", dossier.getAddress()); 
-				params.put("receiverTel", dossier.getContactTelNo()); 
+				params.put("receiverTel", dossier.getContactTelNo());
 				params.put("receiverProvince", dossier.getPostalWardCode()); 
 				params.put("codAmount", ""); 
 				params.put("senderDistrict", ""); 

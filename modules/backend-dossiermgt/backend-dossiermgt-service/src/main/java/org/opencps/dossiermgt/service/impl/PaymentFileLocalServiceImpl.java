@@ -481,9 +481,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			if (Validator.isNotNull(paymentMethod) && "N\u1ED9p online".equals(paymentMethod)) {
-				paymentFile.setPaymentStatus(2);
+				paymentFile.setPaymentStatus(5);
 			} else {
-				paymentFile.setPaymentStatus(1);
+				paymentFile.setPaymentStatus(5);
 			}
 //			paymentFile.setIsNew(true);
 		}

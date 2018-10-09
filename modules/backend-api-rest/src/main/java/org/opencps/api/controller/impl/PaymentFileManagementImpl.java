@@ -1,14 +1,17 @@
 package org.opencps.api.controller.impl;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Locale;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.PaymentFileManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.PaymentFileUtils;
@@ -30,6 +33,7 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -322,48 +326,46 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	 *            params
 	 * @return Response
 	 */
-//	@Override
-//	public Response updatePaymentFileConfirm(HttpServletRequest request, HttpHeaders header, Company company,
-//			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid, Attachment file,
-//			String confirmNote, String paymentMethod, String confirmPayload) {
-//
-//		BackendAuth auth = new BackendAuthImpl();
-//
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-//
-//		long dossierId = GetterUtil.getLong(id);
-//
-//		// TODO get Dossier by referenceUid if dossierId = 0
-//		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
-//
-//		try {
-//
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
-//
-//			DataHandler dataHandler = null;
-//
-//			if (file != null) {
-//				dataHandler = file.getDataHandler();
-//			}
-//
-//			PaymentFileActions action = new PaymentFileActionsImpl();
-//
-//			PaymentFile paymentFile = action.updateFileConfirm(groupId, dossierId, referenceUid, confirmNote,
-//					paymentMethod, confirmPayload, dataHandler != null ? dataHandler.getName() : StringPool.BLANK, 0L,
-//					dataHandler != null ? dataHandler.getInputStream() : null, serviceContext);
-//
-//			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
-//
-//			return Response.status(200).entity(result).build();
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//
-//			return processException(e);
-//		}
-//	}
+	@Override
+	public Response updatePaymentFileConfirm(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid, Attachment file/*,
+			String confirmNote, String paymentMethod, String confirmPayload*/) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DataHandler dataHandler = null;
+
+			if (file != null) {
+				dataHandler = file.getDataHandler();
+			}
+
+			PaymentFileActions action = new PaymentFileActionsImpl();
+
+			PaymentFile paymentFile = action.updateFileConfirm(groupId, dossierId, referenceUid/*, confirmNote,
+					paymentMethod, confirmPayload*/,StringPool.BLANK, StringPool.BLANK,StringPool.BLANK, dataHandler != null ? dataHandler.getName() : StringPool.BLANK, 0L,
+					dataHandler != null ? dataHandler.getInputStream() : null, serviceContext);
+
+			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 
 //	@Override
 //	public Response updatePaymentFileConfirmNoAttachment(HttpServletRequest request, HttpHeaders header,
@@ -671,39 +673,39 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //		}
 //	}
 
-//	@Override
-//	public Response processingKeyPay(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-//			User user, ServiceContext serviceContext, String dossierUUid, String paymentFileUUid) {
-//		// TODO Auto-generated method stub
-//		URI uri = null;
-//		try {
-//			
-//			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-//			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, dossierUUid);
-//			
-//			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFileByReferenceUid(dossier.getDossierId(), paymentFileUUid);
-//			
-//			PaymentFileActions actions = new PaymentFileActionsImpl();
-//			
-//			// Change payment Status = 2
-//			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "N\u1ED9p online", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
-//			
-//			JSONObject result = JSONFactoryUtil.createJSONObject();
-//			result.put("dossierNo", dossier.getDossierNo());
-//			result.put("serviceName", dossier.getServiceName());
-//			result.put("govAgencyName", dossier.getGovAgencyName());
-//			result.put("paymentFee", paymentFile.getPaymentFee());
-//			result.put("paymentAmount", paymentFile.getPaymentAmount());
-//			result.put("paymentPortal", "KEYPAY");
-//			
-//			return Response.status(200).entity(result.toJSONString()).build();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return Response.noContent().build();
-//		}
-//		
-//	}
+	@Override
+	public Response processingKeyPay(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String dossierUUid, String paymentFileUUid) {
+		// TODO Auto-generated method stub
+		URI uri = null;
+		try {
+			
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, dossierUUid);
+			
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFileByReferenceUid(dossier.getDossierId(), paymentFileUUid);
+			
+			PaymentFileActions actions = new PaymentFileActionsImpl();
+			
+			// Change payment Status = 2
+			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "N\u1ED9p online", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+			
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put("dossierNo", dossier.getDossierNo());
+			result.put("serviceName", dossier.getServiceName());
+			result.put("govAgencyName", dossier.getGovAgencyName());
+			result.put("paymentFee", paymentFile.getPaymentFee());
+			result.put("paymentAmount", paymentFile.getPaymentAmount());
+			result.put("paymentPortal", "KEYPAY");
+			
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.noContent().build();
+		}
+		
+	}
 	
 	protected Dossier getDossier(String id, long groupId) throws PortalException {
 		// TODO update logic here

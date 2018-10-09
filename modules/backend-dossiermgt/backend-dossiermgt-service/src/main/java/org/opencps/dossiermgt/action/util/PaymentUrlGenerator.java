@@ -156,8 +156,9 @@ public class PaymentUrlGenerator {
 				// TODO : update returnURL keyPay
 
 				String return_url;
-				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
-
+//				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
+				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "%dossierId=" + dossier.getDossierId() + "&goodCode=" + good_code + "&transId=" + merchant_trans_id;
+				// http://119.17.200.66:2681/web/bo-van-hoa/dich-vu-cong/#/thanh-toan-thanh-cong?paymentPortal=KEYPAY&dossierId=77603&goodCode=123&transId=555
 				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
 						ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
 						desc_4, desc_5, xml_description, current_locale, country_code, return_url, internal_bank,

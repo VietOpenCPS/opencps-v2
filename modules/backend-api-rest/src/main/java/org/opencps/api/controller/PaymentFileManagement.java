@@ -8,6 +8,7 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,6 +17,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileResultModel;
 import org.opencps.exception.model.ExceptionModel;
@@ -140,25 +143,25 @@ public interface PaymentFileManagement {
 
 	//6
 	/* Confirm payment - START */
-//	@PUT
-//	@Path("/{id}/payments/{referenceUid}/confirm")
-//	@Consumes(MediaType.MULTIPART_FORM_DATA)
-//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-//	@ApiOperation(value = "upload PaymentFile")
-//	@ApiResponses(value = {
-//			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
-//			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-//			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-//			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-//	public Response updatePaymentFileConfirm(@Context HttpServletRequest request, @Context HttpHeaders header,
-//			@Context Company company, @Context Locale locale, @Context User user,
-//			@Context ServiceContext serviceContext, 
-//			@ApiParam(value = "id of payments", required = true) @PathParam("id") String id,
-//			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
-//			@ApiParam(value = "Attachment files") @Multipart("file") Attachment file,
-//			@ApiParam(value = "Metadata of PaymentFile") @Multipart("confirmNote") String confirmNote,
-//			@ApiParam(value = "Metadata of PaymentFile") @Multipart("paymentMethod") String paymentMethod,
-//			@ApiParam(value = "Metadata of PaymentFile") @Multipart("confirmPayload") String confirmPayload);
+	@PUT
+	@Path("/{id}/payments/{referenceUid}/confirmfile")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "upload PaymentFile")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response updatePaymentFileConfirm(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
+			@ApiParam(value = "id of payments", required = true) @PathParam("id") String id,
+			@ApiParam(value = "reference of paymentFile", required = true) @PathParam("referenceUid") String referenceUid,
+			@ApiParam(value = "Attachment files") @Multipart("file") Attachment file/*,
+			@ApiParam(value = "Metadata of PaymentFile") @Multipart("confirmNote") String confirmNote,
+			@ApiParam(value = "Metadata of PaymentFile") @Multipart("paymentMethod") String paymentMethod,
+			@ApiParam(value = "Metadata of PaymentFile") @Multipart("confirmPayload") String confirmPayload*/);
 	
 //	@PUT
 //	@Path("/{id}/payments/{referenceUid}/confirm/noattachment")
@@ -271,15 +274,15 @@ public interface PaymentFileManagement {
 //	public Response getPaymentFiles(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 //			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 //			@ApiParam(value = "body params of post", required = true) @BeanParam PaymentFileSearchModel search);
-	/* Search List of payment bill - END */
+	/* Search List of payment bill - END */	
 	
-//	@PUT
-//	@Path("/keypay/{dossierUUid}/{paymentFileUUid}")
-//	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-//	public Response processingKeyPay(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-//			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-//			@PathParam("dossierUUid") String dossierUUid, @PathParam("paymentFileUUid") String paymentFileUUid);
+	@PUT
+	@Path("/keypay/{dossierUUid}/{paymentFileUUid}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	public Response processingKeyPay(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("dossierUUid") String dossierUUid, @PathParam("paymentFileUUid") String paymentFileUUid);
 	/* Search List of payment bill - END */
 
 	@POST
