@@ -620,7 +620,14 @@ public class OpenCPSConverter {
 		model.setDelegateCityCode(dossier.getDelegateCityCode());
 		model.setDelegateDistrictCode(dossier.getDelegateDistrictCode());
 		model.setDelegateWardCode(dossier.getDelegateWardCode());
-
+		model.setViaPostal(String.valueOf(dossier.getViaPostal()));
+		model.setPostalAddress(dossier.getPostalAddress());
+		model.setPostalCityCode(dossier.getPostalCityCode());
+		model.setPostalDistrictCode(dossier.getPostalDistrictCode());
+		model.setPostalServiceCode(dossier.getPostalServiceCode());
+		model.setPostalTelNo(dossier.getPostalTelNo());
+		model.setPostalWardCode(dossier.getPostalWardCode());
+		
 		return model;
 	}
 	
