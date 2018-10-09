@@ -194,7 +194,8 @@ public class OpenCPSAPIParsing {
 				List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
 				
 				for (StepConfig stepConfig : lstSteps) {
-					if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
+					if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
+							&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
 						if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
 							menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
 							
