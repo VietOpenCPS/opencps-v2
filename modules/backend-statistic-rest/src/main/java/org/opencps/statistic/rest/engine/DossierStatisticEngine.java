@@ -6,15 +6,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
+import org.opencps.statistic.rest.dto.DossierData;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetDossierRequest;
 import org.opencps.statistic.rest.dto.GetDossierResponse;
+import org.opencps.statistic.rest.dto.ServiceDomainData;
+import org.opencps.statistic.rest.dto.ServiceDomainRequest;
+import org.opencps.statistic.rest.dto.ServiceDomainResponse;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
+import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
+import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -49,7 +56,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	public static final int GROUP_TYPE_SITE = 1;
 	
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
-	
+	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -61,7 +68,8 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
-
+		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+		
 		List<Group> sites = new ArrayList<Group>();
 
 		for (Group group : groups) {
@@ -76,31 +84,83 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 //			GetDossierResponse dossierResponse = new GetDossierResponse();
 			
+			ServiceDomainRequest sdPayload = new ServiceDomainRequest();
+			sdPayload.setGroupId(site.getGroupId());
+			
+			ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+			
 			GetDossierRequest payload = new GetDossierRequest();
 			
 			payload.setGroupId(site.getGroupId());
 			
 			GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 			if (dossierResponse != null) {
-				Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
-				dossierData.ifPresent(source -> {
+				List<GetDossierData> dossierData = dossierResponse.getData();
+				if (dossierData != null) {
 					
 					//LOG.info("***** " + site.getGroupId() + source.size());
 					
-					if(source.size() > 0) {
-						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+					if(dossierData.size() > 0) {
+						if (serviceDomainResponse != null) {
+							List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+							boolean existsDomain = false;
+							if (serviceDomainData != null) {
+								for (ServiceDomainData sdd : serviceDomainData) {
+									for (GetDossierData dd : dossierData) {
+										if (dd.getDomainCode().equals(sdd.getItemCode())) {
+											existsDomain = true;
+											break;
+										}
+									}
+									if (existsDomain) {
+										
+									}
+									else {
+										try {
+											engineUpdateAction.removeDossierStatisticByDomain(site.getGroupId(), sdd.getItemCode());
+										} catch (NoSuchOpencpsDossierStatisticException e) {
+											
+										}
+									}
+								}
+							}
+						}
 						
+						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-						engineFetch.fecthStatisticData(site.getGroupId(), statisticData, source);
+						engineFetch.fecthStatisticData(site.getGroupId(), statisticData, dossierData);
 						
 						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						
-						statisticEngineUpdate.updateStatisticData(statisticData);
-						
+						statisticEngineUpdate.updateStatisticData(statisticData);														
 					}
-					
-				});
+					else {
+						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+						if (serviceDomainData != null) {
+							for (ServiceDomainData sdd : serviceDomainData) {
+								try {
+									engineUpdateAction.removeDossierStatisticByDomain(site.getGroupId(), sdd.getItemCode());
+								} catch (NoSuchOpencpsDossierStatisticException e) {
+										
+								}
+							}
+						}						
+					}
+				}
+				else {
+					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+					if (serviceDomainData != null) {
+						for (ServiceDomainData sdd : serviceDomainData) {
+							try {
+								engineUpdateAction.removeDossierStatisticByDomain(site.getGroupId(), sdd.getItemCode());
+							} catch (NoSuchOpencpsDossierStatisticException e) {
+									
+							}
+						}
+					}											
+				}
 			}
 //			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
 //			
@@ -135,8 +195,10 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Activate
 	@Modified
 	protected void activate() {
+//		schedulerEntryImpl.setTrigger(
+//				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 30, TimeUnit.SECOND));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

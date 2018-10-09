@@ -17,6 +17,7 @@ package org.opencps.statistic.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBaseImpl;
 
@@ -184,6 +185,14 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				govAgencyCode, groupAgenvyCode, reporting, start, end);
 	}
 	
+	public void removeDossierStatisticByDomainCode(long groupId, String domainCode) throws NoSuchOpencpsDossierStatisticException {
+		opencpsDossierStatisticPersistence.removeByG_D(groupId, domainCode);
+	}
+	
+	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		opencpsDossierStatisticPersistence.removeByG_M_Y(groupId, month, year);
+	}
+
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);
 
 }
