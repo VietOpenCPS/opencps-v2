@@ -964,7 +964,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setAddress(input.getAddress());
 				dossier.setContactEmail(input.getContactEmail());
 				dossier.setContactName(input.getContactName());
-				dossier.setContactTelNo(input.getContactTelNo());	
+				dossier.setContactTelNo(input.getContactTelNo());
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
 				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
@@ -978,7 +978,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
 
-				dossier.setDueDate(dueDate);				
+				dossier.setDueDate(dueDate);
 				dossier.setOnline(online);
 				if (Validator.isNotNull(serviceName))
 					dossier.setServiceName(serviceName);
@@ -1118,8 +1118,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String secretCode = GetterUtil.getString(header.getHeaderString("secretCode"));
-		_log.info("secretCode: "+secretCode);
-		_log.info("secretKey: "+secretKey);
+//		_log.info("secretCode: "+secretCode);
+//		_log.info("secretKey: "+secretKey);
 		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1135,7 +1135,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 					return Response.status(200).entity(result).build();
 				} catch (Exception e) {
-					_log.error(e);
+					_log.debug(e);
 					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
 							.build();
 				}
@@ -1150,19 +1150,19 @@ public class DossierManagementImpl implements DossierManagement {
 
 					return Response.status(200).entity(result).build();
 				} catch (Exception e) {
-					_log.error(e);
+					_log.debug(e);
 					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretCode not sucess")
 							.build();
 				}
 			}
 			else {
-				_log.info("START");
+//				_log.info("START");
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
 
 				Dossier dossier = DossierUtils.getDossier(id, groupId);
-				_log.info("dossier: "+dossier);
+//				_log.info("dossier: "+dossier);
 
 //				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 //						dossier.getDossierTemplateNo(), groupId);
