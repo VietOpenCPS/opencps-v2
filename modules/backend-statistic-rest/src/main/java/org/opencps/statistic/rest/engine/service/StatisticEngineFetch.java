@@ -13,7 +13,7 @@ public class StatisticEngineFetch {
 	private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
-			List<GetDossierData> lsDossierData) {
+			List<GetDossierData> lsDossierData, int month) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
@@ -31,7 +31,7 @@ public class StatisticEngineFetch {
 				dataType1 = statisticData.get(type1);
 			}
 
-			engineFetchEntry.updateDossierStatisticData(dataType1, dossierData);
+			engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, month);
 
 			statisticData.put(type1, dataType1);
 			
@@ -49,7 +49,7 @@ public class StatisticEngineFetch {
 				dataType2 = statisticData.get(type2);
 			}
 
-			engineFetchEntry.updateDossierStatisticData(dataType2, dossierData);
+			engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, month);
 
 			statisticData.put(type2, dataType2);
 
@@ -67,7 +67,7 @@ public class StatisticEngineFetch {
 				dataType3 = statisticData.get(type3);
 			}
 
-			engineFetchEntry.updateDossierStatisticData(dataType3, dossierData);
+			engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, month);
 
 			statisticData.put(type3, dataType3);
 
@@ -86,7 +86,7 @@ public class StatisticEngineFetch {
 				dataType4 = statisticData.get(type4);
 			}
 
-			engineFetchEntry.updateDossierStatisticData(dataType4, dossierData);
+			engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, month);
 
 			statisticData.put(type4, dataType4);
 		}

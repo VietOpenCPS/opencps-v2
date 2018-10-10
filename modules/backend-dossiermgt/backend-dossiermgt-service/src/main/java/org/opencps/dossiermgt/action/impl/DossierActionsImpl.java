@@ -3703,6 +3703,7 @@ public class DossierActionsImpl implements DossierActions {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
 					bResult.put(DossierTerm.RELEASE_DATE, true);
+					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();
@@ -3718,6 +3719,7 @@ public class DossierActionsImpl implements DossierActions {
 //					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setFinishDate(now);
 					bResult.put(DossierTerm.FINISH_DATE, true);
+					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();

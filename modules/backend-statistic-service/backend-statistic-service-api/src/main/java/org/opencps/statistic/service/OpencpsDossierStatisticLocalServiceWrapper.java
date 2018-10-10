@@ -368,6 +368,22 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode,
+		int month, int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		_opencpsDossierStatisticLocalService.removeDossierStatisticByD_M_Y(groupId,
+			domainCode, month, year);
+	}
+
+	@Override
+	public void removeDossierStatisticByMonthYear(long groupId, int month,
+		int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		_opencpsDossierStatisticLocalService.removeDossierStatisticByMonthYear(groupId,
+			month, year);
+	}
+
+	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, boolean reporting, int start, int end)

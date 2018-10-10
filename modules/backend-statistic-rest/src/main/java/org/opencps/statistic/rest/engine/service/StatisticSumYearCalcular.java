@@ -14,11 +14,15 @@ import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
+import org.opencps.statistic.rest.engine.DossierStatisticEngine;
 import org.opencps.statistic.rest.facade.OpencpsCallGovAgencyRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -33,7 +37,7 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 public class StatisticSumYearCalcular {
 	
 	private static Log _log = LogFactoryUtil.getLog(StatisticSumYearCalcular.class);
-
+	
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
 
 	private DossierStatisticUpdateService<DossierStatisticData> updateGovService = new DossierStatisticUpdateServiceImpl();
@@ -211,21 +215,19 @@ public class StatisticSumYearCalcular {
 					if (!domainResponses.isEmpty()) {
 
 						for (DomainResponse domainResponse : domainResponses) {
-
 							dossierStatisticRequest.setDomain(domainResponse.getItemCode());
 
 							DossierStatisticResponse dossierStatisticResponse;
 
 							try {
 								dossierStatisticResponse = dossierStatisticFinderService
-										.finderDossierStatistic(dossierStatisticRequest);
+										.finderDossierStatistics(dossierStatisticRequest);
 
 								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
 								dossierStatisticData.ifPresent(source2 -> {
 									if (dossierStatisticData.get().size() > 0) {
-
 										DossierStatisticData latestMonthStatisticData = source2.get(0);
 
 										try {
@@ -304,7 +306,6 @@ public class StatisticSumYearCalcular {
 	private void getDetailData(long companyId, long groupId, int month, int year, String domainCode, String domainName,
 			String govAgencyCode, String govAgencyName, List<DossierStatisticData> source, DossierStatisticData latest)
 			throws SystemException, PortalException {
-
 		DossierStatisticData dossierStatisticData = new DossierStatisticData();
 
 		int totalCount = 0;
@@ -332,7 +333,6 @@ public class StatisticSumYearCalcular {
 		int onegateCount = 0;
 
 		for (DossierStatisticData data : source) {
-			
 
 			deniedCount = deniedCount + data.getDeniedCount();
 			cancelledCount = cancelledCount + data.getCancelledCount();

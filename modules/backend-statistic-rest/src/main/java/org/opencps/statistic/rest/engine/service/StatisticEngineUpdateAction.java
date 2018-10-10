@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.engine.service;
 
+import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
@@ -55,5 +56,13 @@ public class StatisticEngineUpdateAction {
 			_log.error(e);
 			return null;
 		}
+	}
+	
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
+	}
+
+	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByMonthYear(groupId, month, year);
 	}
 }

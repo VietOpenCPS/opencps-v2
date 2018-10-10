@@ -350,6 +350,19 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static void removeDossierStatisticByD_M_Y(long groupId,
+		String domainCode, int month, int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		getService()
+			.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
+	}
+
+	public static void removeDossierStatisticByMonthYear(long groupId,
+		int month, int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		getService().removeDossierStatisticByMonthYear(groupId, month, year);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, boolean reporting, int start, int end)

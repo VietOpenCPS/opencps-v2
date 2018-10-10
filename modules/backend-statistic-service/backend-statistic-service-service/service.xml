@@ -86,6 +86,17 @@
 			<finder-column name="year"/>
 		</finder>
 
+		<finder return-type="Collection" name="G_D_M_Y">
+			<finder-column name="groupId"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>			
+		</finder>
+
+		<finder return-type="Collection" name="G_M_Y">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
 	</entity>
-	s
 </service-builder>
