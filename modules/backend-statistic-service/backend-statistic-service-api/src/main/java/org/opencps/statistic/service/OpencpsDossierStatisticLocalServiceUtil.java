@@ -350,10 +350,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static void removeDossierStatisticByDomainCode(long groupId,
-		String domainCode)
+	public static void removeDossierStatisticByD_M_Y(long groupId,
+		String domainCode, int month, int year)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
-		getService().removeDossierStatisticByDomainCode(groupId, domainCode);
+		getService()
+			.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
 	}
 
 	public static void removeDossierStatisticByMonthYear(long groupId,

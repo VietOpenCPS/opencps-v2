@@ -303,8 +303,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void removeDossierStatisticByDomainCode(long groupId,
-		String domainCode) throws NoSuchOpencpsDossierStatisticException;
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode,
+		int month, int year) throws NoSuchOpencpsDossierStatisticException;
 
 	public void removeDossierStatisticByMonthYear(long groupId, int month,
 		int year) throws NoSuchOpencpsDossierStatisticException;

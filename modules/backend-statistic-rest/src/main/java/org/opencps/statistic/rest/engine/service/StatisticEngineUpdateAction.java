@@ -58,8 +58,8 @@ public class StatisticEngineUpdateAction {
 		}
 	}
 	
-	public void removeDossierStatisticByDomain(long groupId, String domainCode) throws NoSuchOpencpsDossierStatisticException {
-		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByDomainCode(groupId, domainCode);
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
 	}
 
 	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {

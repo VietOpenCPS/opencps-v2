@@ -368,11 +368,11 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
-	public void removeDossierStatisticByDomainCode(long groupId,
-		String domainCode)
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode,
+		int month, int year)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
-		_opencpsDossierStatisticLocalService.removeDossierStatisticByDomainCode(groupId,
-			domainCode);
+		_opencpsDossierStatisticLocalService.removeDossierStatisticByD_M_Y(groupId,
+			domainCode, month, year);
 	}
 
 	@Override

@@ -185,8 +185,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				govAgencyCode, groupAgenvyCode, reporting, start, end);
 	}
 	
-	public void removeDossierStatisticByDomainCode(long groupId, String domainCode) throws NoSuchOpencpsDossierStatisticException {
-		opencpsDossierStatisticPersistence.removeByG_D(groupId, domainCode);
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		opencpsDossierStatisticPersistence.removeByG_D_M_Y(groupId, domainCode, month, year);
 	}
 	
 	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
