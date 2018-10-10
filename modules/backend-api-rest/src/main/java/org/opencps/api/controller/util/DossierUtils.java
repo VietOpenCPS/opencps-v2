@@ -197,6 +197,9 @@ public class DossierUtils {
 			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			if (dAction != null) {
 				int state = dAction.getState();
+				if (model.getDossierId() == 9102) {
+					_log.info("ACTION OVERDUE: " + dAction.getActionOverdue());
+				}
 				if (state > 0) {
 					int actionOverDue = dAction.getActionOverdue();
 					if (actionOverDue > 0) {
@@ -206,11 +209,11 @@ public class DossierUtils {
 					}
 				} else {
 					Date dueDate = dAction.getDueDate();
-					_log.info("dueDate: "+dueDate);
+//					_log.info("dueDate: "+dueDate);
 					if (dueDate != null) {
 						long dueDateActionTimeStamp = dueDate.getTime();
 						long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
-						_log.info("START STEP OVERDUE");
+//						_log.info("START STEP OVERDUE");
 						String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateActionTimeStamp, groupId, true);
 						if (Validator.isNotNull(stepOverDue)) {

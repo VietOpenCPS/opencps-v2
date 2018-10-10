@@ -16,8 +16,8 @@ import com.liferay.portal.kernel.util.Validator;
 public class StatisticEngineFetchEntry {
 //	private static final Logger _log = LoggerFactory.getLogger(StatisticEngineFetchEntry.class);
 
-	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData) {
-		int month = LocalDate.now().getMonthValue();
+	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData, int month) {
+//		int month = LocalDate.now().getMonthValue();
 		int year = LocalDate.now().getYear();
 		statisticData.setMonth(month);
 		statisticData.setYear(year);

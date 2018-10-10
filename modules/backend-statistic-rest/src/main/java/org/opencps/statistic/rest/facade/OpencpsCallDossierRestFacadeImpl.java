@@ -64,8 +64,18 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 		
-		urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));
-		urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
+		if (payload.getMonth() != null) {
+			urlQueryParams.add("month", payload.getMonth());
+		}
+		else {
+			urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));
+		}
+		if (payload.getYear() != null) {
+			urlQueryParams.add("year", payload.getYear());
+		}
+		else {
+			urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
+		}
 		urlQueryParams.add("top", "statistic");
 		
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);

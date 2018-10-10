@@ -3202,7 +3202,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 	
 	public List<Dossier> getByU_G_C_DS_SC_GC_O(long userId, long groupId, String serviceCode, String govAgencyCode, long dossierActionId, int originality) {
-		return dossierPersistence.findByU_G_GAC_SC_DTNO_DAI_O(userId, groupId, serviceCode, govAgencyCode, dossierActionId, originality);
+		return dossierPersistence.findByU_G_GAC_SC_DTNO_DAI_O(userId, groupId, govAgencyCode, serviceCode, dossierActionId, originality);
 	}
 	
 	public List<Dossier> findByVIAPOSTAL(int viaPostal) {

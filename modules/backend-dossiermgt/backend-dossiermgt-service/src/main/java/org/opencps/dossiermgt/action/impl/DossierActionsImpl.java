@@ -3776,6 +3776,7 @@ public class DossierActionsImpl implements DossierActions {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
 					bResult.put(DossierTerm.RELEASE_DATE, true);
+					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();
@@ -3791,6 +3792,7 @@ public class DossierActionsImpl implements DossierActions {
 //					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setFinishDate(now);
 					bResult.put(DossierTerm.FINISH_DATE, true);
+					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();
@@ -5773,17 +5775,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			Date endorsementDate, Date extendDate,
 			Date processDate, ServiceContext context)
 			throws PortalException {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+
+//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		Date appIdDate = null;
-
-		try {
-			appIdDate = sdf.parse(applicantIdDate);
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			_log.debug(e);
-			//_log.error(e);
-		}
+//		try {
+//			appIdDate = sdf.parse(applicantIdDate);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			_log.debug(e);
+//			//_log.error(e);
+//		}
 
 		Dossier dossier = null;
 

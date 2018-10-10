@@ -15,6 +15,7 @@ public interface DossierStatisticConstants {
 	long GROUP_ID_RECEIVED_PORTAL = 55217;
 	
 	String GOV_AGENCY_ENDPOINT = "opencps.rest.enpoind.govagency";
+	String SERVICE_DOMAIN_ENDPOINT = "opencps.rest.enpoind.servicedomain";
 	
 	String DOSSIER_ENDPOINT = "opencps.rest.enpoind.dossier";
 	
