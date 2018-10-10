@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -30,10 +29,10 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -41,6 +40,7 @@ import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
+import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
@@ -49,10 +49,10 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -153,13 +153,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											true);
 									DossierFileModel dfModel = new DossierFileModel();
 									dfModel.setReferenceUid(df.getReferenceUid());
+									dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 									dfModel.setDossierPartNo(df.getDossierPartNo());
 									dfModel.setDisplayName(df.getDisplayName());
 									dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
 									dfModel.setFileTemplateNo(df.getFileTemplateNo());
 									dfModel.setFormData(df.getFormData());
 									dfModel.setFileType(fileEntry.getMimeType());
-									dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
 									
 									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 									if (dfResult == null) {
@@ -172,6 +172,16 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									_log.error(e);
 								}
 
+							}
+							
+							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
+							if (dossierMark != null) {
+								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+								markInputModel.setFileCheck(dossierMark.getFileCheck());
+								markInputModel.setFileMark(dossierMark.getFileMark());
+								markInputModel.setFileComment(dossierMark.getFileComment());
+								
+								client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
 							}
 						}
 					}
@@ -232,13 +242,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		try {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
-			
-//			_log.info("SONDT DOSSIER ACTION SYNC PAYMENT ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
-//			_log.info("SONDT PROCESS ACTION SYNC PAYMENT ======================== " + JSONFactoryUtil.looseSerialize(processAction));
-//			_log.info("SONDT DOSSIERID SYNC PAYMENT ================"+ dossier.getDossierId());
-			
-			if (processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG)) {
+			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
+			if (processAction != null && (processAction.getRequestPayment() != ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI)) {
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -250,25 +255,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentFee(processAction.getPaymentFee());
 				pfiModel.setPaymentNote(StringPool.BLANK);
 				pfiModel.setReferenceUid(StringPool.BLANK);
-				
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-			} else if (processAction != null && (processAction
-					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
-				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-//				_log.info("PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-//				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
-				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-				pfiModel.setApplicantName(dossier.getApplicantName());
-				pfiModel.setBankInfo(paymentFile.getBankInfo());
-				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(processAction.getPaymentFee());
-				pfiModel.setPaymentFee(processAction.getPaymentFee());
-				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-				pfiModel.setReferenceUid(dossier.getReferenceUid());
-				pfiModel.setFeeAmount(paymentFile.getFeeAmount());;
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			}
@@ -347,13 +333,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 												true);
 										DossierFileModel dfModel = new DossierFileModel();
 										dfModel.setReferenceUid(df.getReferenceUid());
+										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 										dfModel.setDossierPartNo(df.getDossierPartNo());
 										dfModel.setDisplayName(df.getDisplayName());
 										dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
 										dfModel.setFileTemplateNo(df.getFileTemplateNo());
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
-										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
 										
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
@@ -373,13 +359,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							else if (df != null && df.getEForm()) {
 								DossierFileModel dfModel = new DossierFileModel();
 								dfModel.setReferenceUid(df.getReferenceUid());
+								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 								dfModel.setDossierPartNo(df.getDossierPartNo());
 								dfModel.setDisplayName(df.getDisplayName());
 								dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
 								dfModel.setFileTemplateNo(df.getFileTemplateNo());
 								dfModel.setFormData(df.getFormData());
-								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
-								
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
@@ -409,6 +394,17 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								
 							}
 							
+							if (df != null) {
+								DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
+								if (dossierMark != null) {
+									DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+									markInputModel.setFileCheck(dossierMark.getFileCheck());
+									markInputModel.setFileMark(dossierMark.getFileMark());
+									markInputModel.setFileComment(dossierMark.getFileComment());
+									
+									client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
+								}		
+							}
 						}
 					}
 				}			
@@ -493,13 +489,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 												true);
 										DossierFileModel dfModel = new DossierFileModel();
 										dfModel.setReferenceUid(df.getReferenceUid());
+										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 										dfModel.setDossierPartNo(dossierPartNo);
 										dfModel.setDisplayName(df.getDisplayName());
 										dfModel.setDossierTemplateNo(dossierTemplateNo);
 										dfModel.setFileTemplateNo(fileTemplateNo);
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
-										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
 
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
@@ -519,13 +515,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							else if (df != null && df.getEForm()) {
 								DossierFileModel dfModel = new DossierFileModel();
 								dfModel.setReferenceUid(df.getReferenceUid());
+								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 								dfModel.setDossierPartNo(dossierPartNo);
 								dfModel.setDisplayName(df.getDisplayName());
 								dfModel.setDossierTemplateNo(dossierTemplateNo);
 								dfModel.setFileTemplateNo(fileTemplateNo);
 								dfModel.setFormData(df.getFormData());
-								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
-								
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
@@ -555,6 +550,15 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								
 							}
 							
+							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(df.getGroupId(), dossier.getOriginDossierId(), df.getDossierPartNo());
+							if (dossierMark != null) {
+								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+								markInputModel.setFileCheck(dossierMark.getFileCheck());
+								markInputModel.setFileMark(dossierMark.getFileMark());
+								markInputModel.setFileComment(dossierMark.getFileComment());
+								
+								client.postDossierMark(String.valueOf(dossier.getOriginDossierId()), df.getDossierPartNo(), markInputModel);
+							}							
 						}
 					}
 				}			
@@ -568,9 +572,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-		
-		_log.info("SONDT PROCESS ACTION SYNC PAYMENT 2 ======================== " + JSONFactoryUtil.looseSerialize(processAction));
-		_log.info("SONDT DOSSIERID SYNC PAYMENT 2 ================"+ dossier.getDossierId());
 		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI != processAction.getRequestPayment())) {
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
