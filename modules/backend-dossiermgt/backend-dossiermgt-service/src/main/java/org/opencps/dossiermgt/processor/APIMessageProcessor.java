@@ -159,6 +159,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									dfModel.setFileTemplateNo(df.getFileTemplateNo());
 									dfModel.setFormData(df.getFormData());
 									dfModel.setFileType(fileEntry.getMimeType());
+									dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
 									
 									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 									if (dfResult == null) {
@@ -352,6 +353,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileTemplateNo(df.getFileTemplateNo());
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
+										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
 										
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
@@ -376,6 +378,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
 								dfModel.setFileTemplateNo(df.getFileTemplateNo());
 								dfModel.setFormData(df.getFormData());
+								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
+								
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
@@ -495,6 +499,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileTemplateNo(fileTemplateNo);
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
+										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
 
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
@@ -519,6 +524,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								dfModel.setDossierTemplateNo(dossierTemplateNo);
 								dfModel.setFileTemplateNo(fileTemplateNo);
 								dfModel.setFormData(df.getFormData());
+								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate()!= null ? df.getModifiedDate().getTime() : 0l));
+								
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
