@@ -394,6 +394,7 @@ public class ProcessUpdateDBUtils {
 					String textMessage;
 					Boolean sendSMS = false;
 					Integer expireDuration = 0;
+					String interval;
 					for (NotificationTemplate notiTemplate : notiTemplateList) {
 						notificationType = notiTemplate.getNotificationType();
 						sendEmail = notiTemplate.isSendEmail();
@@ -402,10 +403,11 @@ public class ProcessUpdateDBUtils {
 						textMessage = notiTemplate.getTextMessage();
 						sendSMS = notiTemplate.isSendSMS();
 						expireDuration = notiTemplate.getExpireDuration();
+						interval = notiTemplate.getInterval();
 						if (Validator.isNotNull(notificationType)) {
 							// Check record exits DB
 							actions.updateNotificationTemplateDB(userId, groupId, notificationType, sendEmail, emailSubject, emailBody, textMessage,
-									sendSMS, expireDuration, serviceContext);
+									sendSMS, expireDuration, interval, serviceContext);
 						}
 					}
 				}
@@ -528,9 +530,10 @@ public class ProcessUpdateDBUtils {
 				String collectionName = dicts.getCollectionName();
 				String collectionNameEN = dicts.getCollectionNameEN();
 				String description = dicts.getDescription();
+				Integer status = dicts.getStatus();
 				DictcollectionInterface actionCollection = new DictCollectionActions();
 				long dictCollectionId = actionCollection.updateDictCollectionDB(userId, groupId, collectionCode,
-						collectionName, collectionNameEN, description);
+						collectionName, collectionNameEN, description, status);
 				if (dictCollectionId > 0) {
 					flagDict = processUpdateDictItem(userId, groupId, dictCollectionId, dicts, actionCollection);
 					if (!flagDict) {

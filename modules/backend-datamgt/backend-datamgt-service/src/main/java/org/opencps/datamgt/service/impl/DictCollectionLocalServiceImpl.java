@@ -592,13 +592,13 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	//LamTV_ Process output DictCollection to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public DictCollection updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
-			String collectionNameEN, String description) throws NoSuchUserException {
+			String collectionNameEN, String description, Integer status) throws NoSuchUserException {
 		Date now = new Date();
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		DictCollection dictCollection = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode, groupId);
-		_log.info("collectionCode: "+collectionCode);
-		_log.info("dictCollection: "+dictCollection);
+//		_log.info("collectionCode: "+collectionCode);
+//		_log.info("dictCollection: "+dictCollection);
 		if (dictCollection != null) {
 			dictCollection.setModifiedDate(now);
 
@@ -614,6 +614,11 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			}
 			if (Validator.isNotNull(description)) {
 				dictCollection.setDescription(description);
+			}
+			if (Validator.isNotNull(status)) {
+				dictCollection.setStatus(status);
+			} else {
+				dictCollection.setStatus(1);
 			}
 		} else {
 			long dictCollectionId = counterLocalService.increment(DictCollection.class.getName());
@@ -635,6 +640,11 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			dictCollection.setCollectionName(collectionName);
 			dictCollection.setCollectionNameEN(collectionNameEN);
 			dictCollection.setDescription(description);
+			if (Validator.isNotNull(status)) {
+				dictCollection.setStatus(status);
+			} else {
+				dictCollection.setStatus(1);
+			}
 		}
 
 		return dictCollectionPersistence.update(dictCollection);

@@ -215,7 +215,7 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 	@Override
 	public boolean deleteAllNotificationTemplate(long groupId, long userId, ServiceContext serviceContext) {
 		boolean flag = false;
-		List<Notificationtemplate> tempList = NotificationtemplateLocalServiceUtil.getNotificationtemplates(-1, -1);
+		List<Notificationtemplate> tempList = NotificationtemplateLocalServiceUtil.findByF_NotificationtemplateByGroup(groupId);
 		if (tempList != null && tempList.size() > 0) {
 			for (Notificationtemplate notiTemp : tempList) {
 				NotificationtemplateLocalServiceUtil.deleteNotificationtemplate(notiTemp);
@@ -230,10 +230,10 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 	@Override
 	public void updateNotificationTemplateDB(long userId, long groupId, String notificationType, Boolean sendEmail,
 			String emailSubject, String emailBody, String textMessage, Boolean sendSMS, Integer expireDuration,
-			ServiceContext serviceContext) throws NoSuchUserException {
+			String interval, ServiceContext serviceContext) throws NoSuchUserException {
 
 		NotificationtemplateLocalServiceUtil.updateNotificationTemplateDB(userId, groupId, notificationType, sendEmail,
-				emailSubject, emailBody, textMessage, sendSMS, expireDuration, serviceContext);
+				emailSubject, emailBody, textMessage, sendSMS, expireDuration, interval, serviceContext);
 
 	}
 

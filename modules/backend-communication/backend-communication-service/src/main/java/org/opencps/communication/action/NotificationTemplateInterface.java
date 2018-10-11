@@ -41,5 +41,5 @@ public interface NotificationTemplateInterface {
 
 	public void updateNotificationTemplateDB(long userId, long groupId, String notificationType, Boolean sendEmail,
 			String emailSubject, String emailBody, String textMessage, Boolean sendSMS, Integer expireDuration,
-			ServiceContext serviceContext) throws NoSuchUserException;
+			String interval, ServiceContext serviceContext) throws NoSuchUserException;
 }
