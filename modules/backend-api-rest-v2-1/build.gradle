@@ -20,10 +20,14 @@ dependencies {
 	compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.3.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.0.1'	
     compile group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
+    //compile group: 'log4j', name: 'log4j', version: '1.2.17'
+	//compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+	//compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
     
 	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
 	compileOnly group: 'com.liferay', name: 'com.liferay.oauth2.provider.scope.api', version: '1.0.2'
 	compileOnly group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
+	
 	
 	compileOnly project(":modules:swagger-generate")
 	
