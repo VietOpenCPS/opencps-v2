@@ -15,8 +15,8 @@ public class BusinessExceptionImpl {
 	private static Log _log = LogFactoryUtil.getLog(BusinessExceptionImpl.class);
 
 	public static Response processException(Exception e) {
-//		_log.debug(e);
-		_log.error(e);
+		_log.debug(e);
+//		_log.error(e);
 
 		ErrorMsgModel error = new ErrorMsgModel();
 

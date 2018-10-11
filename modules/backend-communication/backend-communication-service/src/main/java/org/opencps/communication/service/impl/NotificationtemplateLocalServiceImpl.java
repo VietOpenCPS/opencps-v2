@@ -411,7 +411,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 	@Indexable(type = IndexableType.REINDEX)
 	public Notificationtemplate updateNotificationTemplateDB(long userId, long groupId, String notificationType, Boolean sendEmail,
 			String emailSubject, String emailBody, String textMessage, Boolean sendSMS, Integer expireDuration,
-			ServiceContext serviceContext) throws NoSuchUserException {
+			String interval, ServiceContext serviceContext) throws NoSuchUserException {
 
 		Date now = new Date();
 
@@ -438,6 +438,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		notificationTemplate.setTextMessage(textMessage);
 		notificationTemplate.setSendSMS(sendSMS);
 		notificationTemplate.setExpireDuration(expireDuration);
+		notificationTemplate.setInterval(interval);
 
 		return notificationtemplatePersistence.update(notificationTemplate);
 

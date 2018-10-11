@@ -1058,6 +1058,7 @@
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:element>
+				<xsd:element name="status" type="xsd:int" />
 				<xsd:element ref="items" />
 				<xsd:element ref="groups" />
 			</xsd:sequence>
@@ -1335,6 +1336,13 @@
 							</xsd:element>
 							<xsd:element name="sendSMS" type="xsd:boolean" />
 							<xsd:element name="expireDuration" type="xsd:int" />
+							<xsd:element name="interval">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
