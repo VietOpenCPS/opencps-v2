@@ -93,8 +93,9 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			GetDossierRequest payload = new GetDossierRequest();
 			
 			payload.setGroupId(site.getGroupId());
-			int month = LocalDate.now().getMonthValue();
-			
+			for (int month = 1; month <= LocalDate.now().getMonthValue(); month ++) {
+				engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());					
+				
 				payload.setMonth(Integer.toString(month));
 				payload.setYear(Integer.toString(LocalDate.now().getYear()));
 				
@@ -102,15 +103,14 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				if (dossierResponse != null) {
 					List<GetDossierData> dossierData = dossierResponse.getData();
 					if (dossierData != null) {
-						
 						//LOG.info("***** " + site.getGroupId() + source.size());
 						
 						if(dossierData.size() > 0) {
 							if (serviceDomainResponse != null) {
 								List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-								boolean existsDomain = false;
 								if (serviceDomainData != null) {
 									for (ServiceDomainData sdd : serviceDomainData) {
+										boolean existsDomain = false;
 										for (GetDossierData dd : dossierData) {
 											if (dd.getDomainCode().equals(sdd.getItemCode())) {
 												existsDomain = true;
@@ -128,7 +128,29 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 											}
 										}
 									}
+									for (GetDossierData dd : dossierData) {
+										boolean existsDomain = false;
+										for (ServiceDomainData sdd : serviceDomainData) {
+											if (dd.getDomainCode().equals(sdd.getItemCode())) {
+												existsDomain = true;
+												break;
+											}											
+										}
+										if (existsDomain) {
+											
+										}
+										else {
+											try {
+												engineUpdateAction.removeDossierStatisticByD_M_Y(site.getGroupId(), dd.getDomainCode(), month, LocalDate.now().getYear());
+											} catch (NoSuchOpencpsDossierStatisticException e) {
+												
+											}
+										}
+									}
 								}
+							}
+							else {
+								engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());								
 							}
 							
 							StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -169,6 +191,10 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
 					}
 				}
+				else {
+					engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());					
+				}
+			}
 //			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
 //			
 //			dossierData.ifPresent(source -> {
