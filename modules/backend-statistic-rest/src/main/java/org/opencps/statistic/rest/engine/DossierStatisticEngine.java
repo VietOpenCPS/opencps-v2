@@ -93,8 +93,8 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			GetDossierRequest payload = new GetDossierRequest();
 			
 			payload.setGroupId(site.getGroupId());
+			int month = LocalDate.now().getMonthValue();
 			
-			for (int month = 1; month <= LocalDate.now().getMonthValue(); month++) {
 				payload.setMonth(Integer.toString(month));
 				payload.setYear(Integer.toString(LocalDate.now().getYear()));
 				
@@ -169,7 +169,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
 					}
 				}
-			}
 //			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
 //			
 //			dossierData.ifPresent(source -> {
