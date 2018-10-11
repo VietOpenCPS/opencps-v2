@@ -711,6 +711,15 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getFeeAmount())) {
 	    	params.put(PaymentFileTerm.FEE_AMOUNT, GetterUtil.getLong(model.getFeeAmount()));
 	    }
+	    if (Validator.isNotNull(model.getPaymentStatus())) {
+	    	params.put(PaymentFileTerm.PAYMENT_STATUS, GetterUtil.getInteger(model.getPaymentStatus()));
+	    }
+	    if (Validator.isNotNull(model.getInvoiceTemplateNo())) {
+	    	params.put(PaymentFileTerm.INVOICE_TEMPLATE_NO, model.getInvoiceTemplateNo());
+	    }
+	    if (Validator.isNotNull(model.getConfirmFileEntryId())) {
+	    	params.put(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID, GetterUtil.getLong(model.getConfirmFileEntryId()));
+	    }
 	    
 	    return params;
 	}	

@@ -480,11 +480,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmNote(confirmNote);
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
-			if (Validator.isNotNull(paymentMethod) && "N\u1ED9p online".equals(paymentMethod)) {
-				paymentFile.setPaymentStatus(5);
-			} else {
-				paymentFile.setPaymentStatus(5);
-			}
+			paymentFile.setPaymentStatus(5);
+//			if (Validator.isNotNull(paymentMethod) && "N\u1ED9p online".equals(paymentMethod)) {
+//				paymentFile.setPaymentStatus(5);
+//			} else {
+//				paymentFile.setPaymentStatus(5);
+//			}
 //			paymentFile.setIsNew(true);
 		}
 
@@ -552,7 +553,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setConfirmFileEntryId(fileEntryId);
 			// TODO review payment status
-			paymentFile.setPaymentStatus(1);
+			paymentFile.setPaymentStatus(3);
 //			paymentFile.setIsNew(true);
 		}
 
@@ -694,6 +695,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setFeeAmount(feeAmount);
 			paymentFile.setServiceAmount(serviceAmount);
 			paymentFile.setShipAmount(shipAmount);
+			paymentFile.setPaymentStatus(requestPayment);
 			if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG) {
 				paymentFile.setAdvanceAmount(feeAmount + serviceAmount + shipAmount);
 			}

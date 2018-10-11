@@ -156,6 +156,7 @@ public class PaymentUrlGenerator {
 				// TODO : update returnURL keyPay
 
 				String return_url;
+				_log.info("SONDT GENURL paymentReturnUrl ====================== "+ JSONFactoryUtil.looseSerialize(epaymentConfigJSON));
 //				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
 				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "%dossierId=" + dossier.getDossierId() + "&goodCode=" + good_code + "&transId=" + merchant_trans_id;
 				// http://119.17.200.66:2681/web/bo-van-hoa/dich-vu-cong/#/thanh-toan-thanh-cong?paymentPortal=KEYPAY&dossierId=77603&goodCode=123&transId=555

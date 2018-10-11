@@ -83,14 +83,12 @@ public class VnPostScheduler extends BaseSchedulerEntryMessageListener {
 	
 				String statusMessage = resDossierSearch.getString("statusMessage");
 				
-				
-				
-				/*int sttCode = Integer.parseInt(statusCode);
+				int sttCode = Integer.parseInt(statusCode);
 				if(sttCode == 4) {
 					Dossier doss = DossierLocalServiceUtil.fetchDossier(dossier.getDossierId());
 					doss.setViaPostal(4);
 					DossierLocalServiceUtil.updateDossier(doss);
-				}*/
+				}
 	
 			} catch (Exception e) {
 				_log.error(e);
