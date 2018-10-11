@@ -161,7 +161,7 @@ public class DossierActionsImpl implements DossierActions {
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 	
-	private static final String VNPOST_BASE_PATH = "/postal/vnpost";
+	
 
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -2778,77 +2778,80 @@ public class DossierActionsImpl implements DossierActions {
 //							serveNo);
 //				} catch (Exception e) {
 //				}
-			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI
-					&& Validator.isNotNull(payment)) {
-				_log.info("SONDT payment ========= "+ JSONFactoryUtil.looseSerialize(payment));
-				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
-				String paymentNote = StringPool.BLANK;
-				int paymentStatus = 0;
-				String paymentMethod = StringPool.BLANK;
-				NumberFormat fmt = NumberFormat.getNumberInstance(LocaleUtil.getDefault());
-				DecimalFormatSymbols customSymbol = new DecimalFormatSymbols();
-				customSymbol.setDecimalSeparator(',');
-				customSymbol.setGroupingSeparator('.');
-				((DecimalFormat)fmt).setDecimalFormatSymbols(customSymbol);
-				fmt.setGroupingUsed(true);
-				try {
-					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-//						_log.info("Payment object in do action: " + paymentObj);
-					if (paymentObj.has("paymentFee")) {
-						paymentFee = paymentObj.getString("paymentFee");
-					}
-					if (paymentObj.has("paymentNote")) {
-						paymentNote = paymentObj.getString("paymentNote");
-					}
-					if (paymentObj.has("feeAmount")) {
-						feeAmount = (Long)fmt.parse(paymentObj.getString("feeAmount"));
-					}
-					if (paymentObj.has("serviceAmount")) {
-						serviceAmount = (Long)fmt.parse(paymentObj.getString("serviceAmount"));
-					}
-					if (paymentObj.has("shipAmount")) {
-						shipAmount = (Long)fmt.parse(paymentObj.getString("shipAmount"));
-					}
-					if (paymentObj.has("requestPayment")) {
-						paymentStatus = paymentObj.getInt("requestPayment");
-					}
-				}
-				catch (JSONException e) {
-					_log.debug(e);
-					//_log.error(e);
-				} catch (ParseException e) {
-					_log.debug(e);
-					//_log.error(e);
-				}
+			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
+				String CINVOICEUrl = "/postal/invoice";
+				_log.info("SONDT payment REQUESTPAYMENT 5 ========= "+ JSONFactoryUtil.looseSerialize(payment));
 				
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				
-				// _log.info("oldPaymentFile ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				InvokeREST callRest = new InvokeREST();
+				String baseUrl = "/o/rest/v2";
+				HashMap<String, String> properties = new HashMap<String, String>();
+				Map<String, Object> params = new HashMap<>();
+				
+				params.put("userName", "cthh");	
+				params.put("passWord", ""); 	    	
+				params.put("soid", "10"); 
+				params.put("maHoadon", "51 NGO QUYEN"); 
+				params.put("ngayHd", ""); 
+				params.put("seri", "cthh"); 
+				params.put("maNthue", ""); 
+				params.put("kieuSo", ""); 
+				params.put("maKhackHang", "");
+				params.put("ten", ""); 
+				params.put("phone", ""); 
+				params.put("tax", ""); 
+				params.put("dchi", ""); 
+				params.put("maTk", ""); 
+				params.put("tenNh", ""); 
+				params.put("mailH", "");
+				params.put("phoneH", "");
+				params.put("tenM", "");
+				params.put("maKhL", "");
+				params.put("maNt", "");
+				params.put("tg", "");
+				params.put("hthuc", "");
+				params.put("han", "");
+				params.put("tlGgia", "");
+				params.put("ggia", "");
+				params.put("phi", "");
+				params.put("noidung", "");
+				params.put("tien", "");
+				params.put("ttoan", "");
+				params.put("maVtDetail", "");
+				params.put("tenDetail", "");
+				params.put("dvtDetail", "");
+				params.put("luongDetail", "");
+				params.put("giaDetail", "");
+				params.put("tienDetail", "");
+				params.put("tsDetail", "");
+				params.put("thueDetail", "");
+				params.put("ttoanDetail", "");
+				
+				JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
+						CINVOICEUrl, "", "", properties, params, context);
+				
+				_log.info("Call post CINVOICE result: " + resultObj.toJSONString());
+				
+				
+				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 				if (oldPaymentFile != null) {
-					if (Validator.isNotNull(paymentNote)) {
-						oldPaymentFile.setPaymentNote(paymentNote);
-					}
-					if (feeAmount == 0) {
-						oldPaymentFile.setFeeAmount(feeAmount);
-					}
-					if (serviceAmount == 0) {
-						oldPaymentFile.setServiceAmount(serviceAmount);
-					}
-					if (shipAmount == 0) {
-						oldPaymentFile.setServiceAmount(serviceAmount);
-					}
-					if (paymentStatus == 0) {
-						oldPaymentFile.setPaymentStatus(paymentStatus);
-					}
-					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
+					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
+							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
+							oldPaymentFile.getShipAmount());
 					
 				}
+				
+				
 			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				
-				PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
-						proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
-						oldPaymentFile.getShipAmount());
+				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 3 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				if (oldPaymentFile != null) {
+					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
+							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
+							oldPaymentFile.getShipAmount());
+					
+				}
 			}
 
 			String postStepCode = proAction.getPostStepCode();
@@ -3128,40 +3131,8 @@ public class DossierActionsImpl implements DossierActions {
 			// sondt start sendvnpost
 			if(proAction.getPreCondition().toLowerCase().contentEquals("viapostal=2")) {
 				_log.info("GO GO SEND VNPOST");
-				
-				InvokeREST callRest = new InvokeREST();
-				String baseUrl = "/o/rest/v2";
-				HashMap<String, String> properties = new HashMap<String, String>();
-				Map<String, Object> params = new HashMap<>();
-				
-				params.put("customerCode", "cthh");	
-				if (Validator.isNotNull(dossier.getDossierNo())) {
-					params.put("orderNumber", dossier.getDossierNo()); 	    	
-			    }
-				params.put("senderProvince", "10"); 
-				params.put("senderAddress", "51 NGO QUYEN"); 
-				params.put("senderName", dossier.getGovAgencyName()); 
-				params.put("senderTel", "cthh"); 
-				params.put("receiverName", dossier.getApplicantName()); 
-				params.put("receiverAddress", dossier.getAddress()); 
-				params.put("receiverTel", dossier.getContactTelNo());
-				params.put("receiverProvince", dossier.getPostalWardCode()); 
-				params.put("codAmount", ""); 
-				params.put("senderDistrict", ""); 
-				params.put("senderEmail", ""); 
-				params.put("senderDesc", ""); 
-				params.put("receiverDistrict", ""); 
-				params.put("receiverEmail", ""); 
-				
-				JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
-						VNPOST_BASE_PATH, "", "", properties, params, context);
-				
-				_log.info("Call post API SEND VNPOST result: " + resultObj.toJSONString());
-				
-				if(resultObj != null) {
-					DossierLocalServiceUtil.updateViaPostal(groupId, dossier.getDossierId(), dossier.getReferenceUid(), 3,
-							context); // 3: sended to vnpost
-				}
+				vnpostEvent(dossier);
+
 			}
 			// sondt end sendvnpost
 			
@@ -3449,6 +3420,16 @@ public class DossierActionsImpl implements DossierActions {
 		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
 		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);		
+	}
+	
+	private void vnpostEvent(Dossier dossier) {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+
+		message.put("msgToEngine", msgData);
+		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
+		
+		MessageBusUtil.sendMessage("vnpost/dossier/in/destination", message);		
 	}
 	
 	private JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
