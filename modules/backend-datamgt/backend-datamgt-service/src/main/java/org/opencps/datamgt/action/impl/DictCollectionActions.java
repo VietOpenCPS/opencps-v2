@@ -1208,10 +1208,10 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 	@Override
 	public long updateDictCollectionDB(long userId, long groupId, String collectionCode, String collectionName,
-			String collectionNameEN, String description) throws NoSuchUserException {
+			String collectionNameEN, String description, Integer status) throws NoSuchUserException {
 
 		DictCollection dict = DictCollectionLocalServiceUtil.updateDictCollectionDB(userId, groupId, collectionCode, collectionName,
-				collectionNameEN, description);
+				collectionNameEN, description, status);
 		if (dict != null) {
 			return dict.getDictCollectionId();
 		}
