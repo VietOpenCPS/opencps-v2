@@ -2996,6 +2996,8 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				}
 
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
+				
 //				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 //				List<PaymentFile> syncPaymentFiles = new ArrayList<PaymentFile>();
 
