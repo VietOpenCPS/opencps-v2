@@ -47,6 +47,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItem addMenuConfig(MenuConfigItem body) {
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		System.out.println("MenuConfigApiImpl.addMenuConfig()" + body);
@@ -75,6 +81,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public void deleteMenuConfig(String id) {
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
 		try {
 
 			long userId = user.getUserId();
@@ -96,6 +108,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItem getMenuConfigByCode(String id) {
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
 
 		MenuConfig ett = MenuConfigLocalServiceUtil.getByCode(id);
 
@@ -108,6 +126,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItem updateMenuConfig(String id, MenuConfigItem body) {
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -148,6 +172,12 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItemResult getMenuConfigsTodo(String q) {
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
+		_log.info("START 2.1");
 		MenuConfigItemResult body;
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
