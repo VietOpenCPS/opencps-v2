@@ -33,6 +33,7 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -42,6 +43,7 @@ import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.Payment;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
@@ -53,6 +55,7 @@ import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -257,6 +260,28 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setReferenceUid(StringPool.BLANK);
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			} else if (processAction != null && (processAction
+					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+				_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+//				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+				pfiModel.setApplicantName(dossier.getApplicantName());
+				pfiModel.setBankInfo(paymentFile.getBankInfo());
+				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
+				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+				pfiModel.setPaymentAmount(processAction.getPaymentFee());
+				pfiModel.setPaymentFee(processAction.getPaymentFee());
+				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+				pfiModel.setReferenceUid(dossier.getReferenceUid());
+				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
+				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
+				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+				
+				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+
 			}
 		}
 		catch (Exception e) {
@@ -571,9 +596,14 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		}
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getPreviousActionId());
-		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_KHONG_THAY_DOI != processAction.getRequestPayment())) {
+		_log.info("SONDT DOSSIER ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
+//		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getDossierActionId());
+		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
+		_log.info("SONDT PROCESS ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(processAction));
+		_log.info("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
+		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG == processAction.getRequestPayment())) {
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+			
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 			pfiModel.setApplicantName(dossier.getApplicantName());
 			pfiModel.setBankInfo(StringPool.BLANK);
@@ -586,6 +616,27 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setReferenceUid(StringPool.BLANK);
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+		}else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI)){
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+			_log.info("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
+			_log.info("SONDT DOSSIERSYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+			
+//			PaymentFileLocalServiceUtil.g
+//			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+//			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+//			pfiModel.setApplicantName(dossier.getApplicantName());
+//			pfiModel.setBankInfo(paymentFile.getBankInfo());
+//			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
+//			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+//			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+//			pfiModel.setPaymentAmount(processAction.getPaymentFee());
+//			pfiModel.setPaymentFee(processAction.getPaymentFee());
+//			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+//			pfiModel.setReferenceUid(dossier.getReferenceUid());
+//			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
+//			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+//			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
+			
 		}
 		
 		ExecuteOneAction actionModel = new ExecuteOneAction();

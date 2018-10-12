@@ -91,7 +91,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		VNPostServerConfigModel config = getServerConfig(groupId, "url_vnpost");
-		// _log.info("config ============= " + JSONFactoryUtil.looseSerialize(config));
+		_log.info("config ============= " + JSONFactoryUtil.looseSerialize(config));
 
 		// String tokenUrl = "https://api.mitc.vn/token";
 		// String consumer_key = "ddabyJ69AeQyzhFvlnXNROKQs7Ia";
@@ -102,6 +102,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 			try {
 				MToken token = IToken.getToken(config.getApiGetToken(), config.getCustomerKey(), config.getSecretKey());
 				// String apiUrl = "https://api.mitc.vn/apiVNPostNGSP/p1.0/order/post";
+				
+				_log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
 				MOrder order = new MOrder(input.getCustomerCode(), input.getOrderNumber(), input.getCodAmount(),
 						input.getSenderProvince(), input.getSenderDistrict(), input.getSenderAddress(),
 						input.getSenderName(), input.getSenderEmail(), input.getSenderTel(), input.getSenderDesc(),

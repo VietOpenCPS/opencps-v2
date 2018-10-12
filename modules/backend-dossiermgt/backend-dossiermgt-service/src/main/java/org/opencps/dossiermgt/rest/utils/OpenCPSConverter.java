@@ -66,6 +66,9 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.CONTACT_NAME, model.getContactName());
 	    params.put(DossierTerm.CONTACT_TEL_NO, model.getContactTelNo());
 	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
+	    params.put(DossierTerm.DELEGATE_NAME, model.getDelegateName());
+	    params.put(DossierTerm.DELEGATE_EMAIL, model.getDelegateEmail());
+	    params.put(DossierTerm.DELEGATE_ADDRESS, model.getDelegateAddress());
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
@@ -617,6 +620,7 @@ public class OpenCPSConverter {
 		model.setContactEmail(dossier.getContactEmail());
 		model.setDelegateName(dossier.getDelegateName());
 		model.setDelegateAddress(dossier.getDelegateAddress());
+		model.setDelegateEmail(dossier.getDelegateEmail());
 		model.setDelegateCityCode(dossier.getDelegateCityCode());
 		model.setDelegateDistrictCode(dossier.getDelegateDistrictCode());
 		model.setDelegateWardCode(dossier.getDelegateWardCode());
@@ -709,7 +713,16 @@ public class OpenCPSConverter {
 	    	params.put(PaymentFileTerm.BANK_INFO, model.getBankInfo());
 	    }
 	    if (Validator.isNotNull(model.getFeeAmount())) {
-	    	params.put(PaymentFileTerm.BANK_INFO, model.getFeeAmount());
+	    	params.put(PaymentFileTerm.FEE_AMOUNT, GetterUtil.getLong(model.getFeeAmount()));
+	    }
+	    if (Validator.isNotNull(model.getPaymentStatus())) {
+	    	params.put(PaymentFileTerm.PAYMENT_STATUS, GetterUtil.getInteger(model.getPaymentStatus()));
+	    }
+	    if (Validator.isNotNull(model.getInvoiceTemplateNo())) {
+	    	params.put(PaymentFileTerm.INVOICE_TEMPLATE_NO, model.getInvoiceTemplateNo());
+	    }
+	    if (Validator.isNotNull(model.getConfirmFileEntryId())) {
+	    	params.put(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID, GetterUtil.getLong(model.getConfirmFileEntryId()));
 	    }
 	    
 	    return params;

@@ -965,6 +965,9 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setContactEmail(input.getContactEmail());
 				dossier.setContactName(input.getContactName());
 				dossier.setContactTelNo(input.getContactTelNo());
+				dossier.setDelegateName(input.getDelegateName());
+				dossier.setDelegateEmail(input.getDelegateEmail());
+				dossier.setDelegateAddress(input.getDelegateAddress());
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
 				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
@@ -992,6 +995,9 @@ public class DossierManagementImpl implements DossierManagement {
 						input.getDossierTemplateNo(), password, viaPostal, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), serviceContext);
+				dossier.setDelegateName(input.getDelegateName());
+				dossier.setDelegateEmail(input.getDelegateEmail());
+				dossier.setDelegateAddress(input.getDelegateAddress());
 
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());

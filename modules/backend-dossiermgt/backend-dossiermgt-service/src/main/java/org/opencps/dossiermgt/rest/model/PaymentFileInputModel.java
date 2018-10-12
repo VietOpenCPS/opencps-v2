@@ -69,8 +69,37 @@ public class PaymentFileInputModel {
     protected String epaymentProfile;
     protected String bankInfo;
     protected Long feeAmount;
+    protected Integer paymentStatus;
+    protected String invoiceTemplateNo;
+    protected Long confirmFileEntryId;
     
-    public Long getFeeAmount() {
+    
+    
+    public String getInvoiceTemplateNo() {
+		return invoiceTemplateNo;
+	}
+
+	public void setInvoiceTemplateNo(String invoiceTemplateNo) {
+		this.invoiceTemplateNo = invoiceTemplateNo;
+	}
+
+	public Long getConfirmFileEntryId() {
+		return confirmFileEntryId;
+	}
+
+	public void setConfirmFileEntryId(Long confirmFileEntryId) {
+		this.confirmFileEntryId = confirmFileEntryId;
+	}
+
+	public Integer getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(Integer paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public Long getFeeAmount() {
 		return feeAmount;
 	}
 
