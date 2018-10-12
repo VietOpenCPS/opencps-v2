@@ -317,6 +317,8 @@ public class DossierUtils {
 			model.setLastActionName(doc.get(DossierTerm.LAST_ACTION_NAME));
 			model.setLastActionUser(doc.get(DossierTerm.LAST_ACTION_USER) != null ? doc.get(DossierTerm.LAST_ACTION_USER).toUpperCase() : StringPool.BLANK);
 			model.setLastActionNote(doc.get(DossierTerm.LAST_ACTION_NOTE));
+			model.setCurrentActionUser(doc.get(DossierTerm.CURRENT_ACTION_USER));
+			
 			model.setLastActionUserId(GetterUtil.getLong(doc.get(DossierTerm.USER_DOSSIER_ACTION_ID)));
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));

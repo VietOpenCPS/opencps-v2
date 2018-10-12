@@ -35,6 +35,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -56,6 +57,8 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 @Component(
@@ -263,8 +266,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 				DossierAction dossierAction = DossierActionLocalServiceUtil
 						.fetchDossierAction(dossierObjectActionId);
-
+				
 				if (dossierAction != null) {
+					List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossierObjectActionId);
 					// if (Validator.isNotNull(dossierAction.getCreateDate())) {
 					document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
 							.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
@@ -281,7 +285,20 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					// if (Validator.isNotNull(dossierAction.getActionNote())) {
 					document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());
 					// }
-
+					List<Long> lstUsers = new ArrayList<>();
+					StringBuilder currentActionUser = new StringBuilder();
+					
+					for (DossierActionUser dau : lstDus) {
+						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
+						
+						if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+							lstUsers.add(dau.getUserId());
+							currentActionUser.append(employee.getFullName());
+						}					
+					}
+					
+					document.addTextSortable(DossierTerm.CURRENT_ACTION_USER, currentActionUser.toString());
+					
 					// if (Validator.isNotNull(dossierAction.getStepCode())) {
 					document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
 					// }
