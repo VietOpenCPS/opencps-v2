@@ -186,4 +186,6 @@ public class DossierTerm {
 	public static final String TO_RELEASE_DATE = "toReleaseDate";
 	public static final String RELEASE_DATE_LUCENE = "releaseDateLucene";
 	public static final String SECRET_KEY = "secretKey";
+	
+	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 }
