@@ -7,6 +7,7 @@ dependencies {
 	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
 	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.0.1"
 	compileOnly group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
 	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
