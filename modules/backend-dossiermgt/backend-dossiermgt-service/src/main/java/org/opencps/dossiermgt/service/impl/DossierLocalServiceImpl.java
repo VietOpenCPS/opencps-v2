@@ -2835,6 +2835,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDelegateIdNo(applicantIdNo);
 			dossier.setDelegateTelNo(contactTelNo);
 			dossier.setDelegateAddress(address);
+			dossier.setDelegateEmail(contactEmail);
 			if (Validator.isNotNull(cityCode)) {
 				dossier.setDelegateCityCode(cityCode);
 				dossier.setDelegateCityName(getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION, cityCode));
@@ -2855,6 +2856,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDelegateIdNo(delegateIdNo);
 			dossier.setDelegateTelNo(delegateTelNo);
 			dossier.setDelegateAddress(delegateAddress);
+			dossier.setDelegateEmail(delegateEmail);
 
 			if (Validator.isNotNull(delegateCityCode)) {
 				dossier.setDelegateCityCode(delegateCityCode);
