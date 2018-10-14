@@ -1,0 +1,26 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="DossierActionUserModel">
+		<xsd:sequence>
+			<xsd:element name="dossierActionId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="userId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="moderator" type="xsd:int" minOccurs="0" />
+			<xsd:element name="assigned" type="xsd:int" minOccurs="0" />
+			<xsd:element name="visited" type="xsd:boolean" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>	
+	<xsd:element name="DossierActionUserResultModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dossierActionId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="userId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="stepCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="moderator" type="xsd:int" minOccurs="0" />
+				<xsd:element name="assigned" type="xsd:int" minOccurs="0" />
+				<xsd:element name="visited" type="xsd:boolean" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>	
+	</xsd:element>
+</xsd:schema>

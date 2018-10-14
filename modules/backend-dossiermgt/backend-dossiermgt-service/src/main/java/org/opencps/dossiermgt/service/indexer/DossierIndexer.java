@@ -268,7 +268,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						.fetchDossierAction(dossierObjectActionId);
 				
 				if (dossierAction != null) {
-					List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossierObjectActionId);
 					// if (Validator.isNotNull(dossierAction.getCreateDate())) {
 					document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
 							.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
@@ -285,19 +284,29 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					// if (Validator.isNotNull(dossierAction.getActionNote())) {
 					document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());
 					// }
-					List<Long> lstUsers = new ArrayList<>();
-					StringBuilder currentActionUser = new StringBuilder();
 					
-					for (DossierActionUser dau : lstDus) {
-						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
+					String currentActionUserStr = StringPool.BLANK;
+					try {
+						List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossierObjectActionId);
+						List<Long> lstUsers = new ArrayList<>();
+						StringBuilder currentActionUser = new StringBuilder();
 						
-						if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-							lstUsers.add(dau.getUserId());
-							currentActionUser.append(employee.getFullName());
-						}					
+						if (!lstDus.isEmpty()) {
+							for (DossierActionUser dau : lstDus) {
+								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
+								
+								if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+									lstUsers.add(dau.getUserId());
+									currentActionUser.append(employee.getFullName());
+								}					
+							}
+							currentActionUserStr = currentActionUser.toString();
+						}
 					}
-					
-					document.addTextSortable(DossierTerm.CURRENT_ACTION_USER, currentActionUser.toString());
+					catch (Exception e) {
+						_log.debug(e);
+					}
+					document.addTextSortable(DossierTerm.CURRENT_ACTION_USER, currentActionUserStr);
 					
 					// if (Validator.isNotNull(dossierAction.getStepCode())) {
 					document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());

@@ -6,8 +6,10 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -302,7 +304,30 @@ public class DossierUtils {
 							model.setPermission(permission);
 							break;
 						} else {
-							model.setPermission(StringPool.BLANK);
+							boolean isAdmin = false;
+							List<Role> roles =
+									RoleLocalServiceUtil.getUserRoles(userId);
+							try {
+								for (Role role : roles) {
+									//LamTV_Fix sonarqube
+									if ("Administrator".equals(role.getName())) {
+
+										isAdmin = true;
+										break;
+
+									}
+								}
+
+							}
+							catch (Exception e) {
+								_log.error(e);
+							}			
+							if (isAdmin) {
+								model.setPermission("read");
+							}
+							else {
+								model.setPermission(StringPool.BLANK);
+							}
 						}
 					}
 				} else {
