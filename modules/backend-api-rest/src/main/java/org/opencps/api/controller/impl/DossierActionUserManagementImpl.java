@@ -2,6 +2,8 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -71,6 +73,10 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					result.setStepCode(dau.getStepCode());
 					result.setUserId(dau.getUserId());
 					result.setVisited(dau.getVisited());
+					
+					Indexer<Dossier> indexer = IndexerRegistryUtil
+							.nullSafeGetIndexer(Dossier.class);
+					indexer.reindex(dossier);
 					
 					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}
