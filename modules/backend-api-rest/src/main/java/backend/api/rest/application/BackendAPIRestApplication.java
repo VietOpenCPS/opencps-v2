@@ -45,6 +45,7 @@ import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesLogManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesManagementImpl;
 import org.opencps.api.controller.impl.DossierActionManagementImpl;
+import org.opencps.api.controller.impl.DossierActionUserManagementImpl;
 import org.opencps.api.controller.impl.DossierDocumentManagementImpl;
 import org.opencps.api.controller.impl.DossierFileManagementImpl;
 import org.opencps.api.controller.impl.DossierLogManagementImpl;
@@ -183,6 +184,8 @@ public class BackendAPIRestApplication extends Application {
 		
 		singletons.add(new SystemManagementImpl());
 		singletons.add(new VotingManagementImpl());
+		
+		singletons.add(new DossierActionUserManagementImpl());
 		
 		singletons.add(this);
 		
