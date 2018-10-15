@@ -23,32 +23,32 @@ public class DocumentTypeTempListener extends BaseModelListener<DocumentType> {
 
 	@Override
 	public void onBeforeCreate(DocumentType model) throws ModelListenerException {
-		try {
-			model.setTypeCode(StringEscapeUtils.escapeHtml4(model.getTypeCode()));
-			model.setTemplateClass(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getTemplateClass()))));
-			model.setDocumentName(StringEscapeUtils.escapeHtml4(model.getDocumentName()));
-			model.setCodePattern(StringEscapeUtils.escapeHtml4(model.getCodePattern()));
-			model.setDocumentScript(StringEscapeUtils.escapeHtml4(model.getDocumentScript()));
-			model.setDocSync(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDocSync()))));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setTypeCode(StringEscapeUtils.escapeHtml4(model.getTypeCode()));
+//			model.setTemplateClass(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getTemplateClass()))));
+//			model.setDocumentName(StringEscapeUtils.escapeHtml4(model.getDocumentName()));
+//			model.setCodePattern(StringEscapeUtils.escapeHtml4(model.getCodePattern()));
+//			model.setDocumentScript(StringEscapeUtils.escapeHtml4(model.getDocumentScript()));
+//			model.setDocSync(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDocSync()))));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(DocumentType model) throws ModelListenerException {
-		try {
-			model.setTypeCode(StringEscapeUtils.escapeHtml4(model.getTypeCode()));
-			model.setTemplateClass(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getTemplateClass()))));
-			model.setDocumentName(StringEscapeUtils.escapeHtml4(model.getDocumentName()));
-			model.setCodePattern(StringEscapeUtils.escapeHtml4(model.getCodePattern()));
-			model.setDocumentScript(StringEscapeUtils.escapeHtml4(model.getDocumentScript()));
-			model.setDocSync(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDocSync()))));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setTypeCode(StringEscapeUtils.escapeHtml4(model.getTypeCode()));
+//			model.setTemplateClass(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getTemplateClass()))));
+//			model.setDocumentName(StringEscapeUtils.escapeHtml4(model.getDocumentName()));
+//			model.setCodePattern(StringEscapeUtils.escapeHtml4(model.getCodePattern()));
+//			model.setDocumentScript(StringEscapeUtils.escapeHtml4(model.getDocumentScript()));
+//			model.setDocSync(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDocSync()))));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 

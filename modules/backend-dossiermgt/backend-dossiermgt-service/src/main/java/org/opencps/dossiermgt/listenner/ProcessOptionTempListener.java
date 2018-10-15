@@ -23,40 +23,40 @@ public class ProcessOptionTempListener extends BaseModelListener<ProcessOption> 
 
 	@Override
 	public void onBeforeCreate(ProcessOption model) throws ModelListenerException {
-		try {
-
-			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
-			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
-			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
-			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
-			model.setDossierTemplateId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
-			model.setServiceProcessId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//
+//			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
+//			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
+//			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
+//			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
+//			model.setDossierTemplateId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
+//			model.setServiceProcessId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
+//			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(ProcessOption model) throws ModelListenerException {
-		try {
-
-			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
-			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
-			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
-			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
-			model.setDossierTemplateId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
-			model.setServiceProcessId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//
+//			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
+//			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
+//			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
+//			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
+//			model.setDossierTemplateId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
+//			model.setServiceProcessId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
+//			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 

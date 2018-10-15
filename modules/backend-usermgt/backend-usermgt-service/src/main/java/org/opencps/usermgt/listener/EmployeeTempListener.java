@@ -25,32 +25,32 @@ public class EmployeeTempListener extends BaseModelListener<Employee> {
 
 	@Override
 	public void onBeforeCreate(Employee model) throws ModelListenerException {
-		try {
-			model.setFullName(StringEscapeUtils.escapeHtml4(model.getFullName()));
-			model.setEmployeeNo(StringEscapeUtils.escapeHtml4(model.getEmployeeNo()));
-			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
-			model.setMobile(StringEscapeUtils.escapeHtml4(model.getMobile()));
-			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setFullName(StringEscapeUtils.escapeHtml4(model.getFullName()));
+//			model.setEmployeeNo(StringEscapeUtils.escapeHtml4(model.getEmployeeNo()));
+//			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
+//			model.setMobile(StringEscapeUtils.escapeHtml4(model.getMobile()));
+//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
+//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(Employee model) throws ModelListenerException {
-		try {
-			model.setFullName(StringEscapeUtils.escapeHtml4(model.getFullName()));
-			model.setEmployeeNo(StringEscapeUtils.escapeHtml4(model.getEmployeeNo()));
-			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
-			model.setMobile(StringEscapeUtils.escapeHtml4(model.getMobile()));
-			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setFullName(StringEscapeUtils.escapeHtml4(model.getFullName()));
+//			model.setEmployeeNo(StringEscapeUtils.escapeHtml4(model.getEmployeeNo()));
+//			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
+//			model.setMobile(StringEscapeUtils.escapeHtml4(model.getMobile()));
+//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
+//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 

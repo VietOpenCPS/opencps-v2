@@ -23,30 +23,30 @@ public class ServerConfigTempListener extends BaseModelListener<ServerConfig> {
 
 	@Override
 	public void onBeforeCreate(ServerConfig model) throws ModelListenerException {
-		try {
-			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
-			model.setServerName(StringEscapeUtils.escapeHtml4(model.getServerName()));
-			model.setProtocol(StringEscapeUtils.escapeHtml4(model.getProtocol()));
-			//model.setConfigs(StringEscapeUtils.escapeHtml4(model.getConfigs()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
+//			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
+//			model.setServerName(StringEscapeUtils.escapeHtml4(model.getServerName()));
+//			model.setProtocol(StringEscapeUtils.escapeHtml4(model.getProtocol()));
+//			//model.setConfigs(StringEscapeUtils.escapeHtml4(model.getConfigs()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(ServerConfig model) throws ModelListenerException {
-		try {
-			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
-			model.setServerName(StringEscapeUtils.escapeHtml4(model.getServerName()));
-			model.setProtocol(StringEscapeUtils.escapeHtml4(model.getProtocol()));
-			//model.setConfigs(StringEscapeUtils.escapeHtml4(model.getConfigs()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
+//			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
+//			model.setServerName(StringEscapeUtils.escapeHtml4(model.getServerName()));
+//			model.setProtocol(StringEscapeUtils.escapeHtml4(model.getProtocol()));
+//			//model.setConfigs(StringEscapeUtils.escapeHtml4(model.getConfigs()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 

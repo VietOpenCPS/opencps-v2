@@ -158,54 +158,54 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 
 	@Override
 	public void onBeforeCreate(Applicant model) throws ModelListenerException {
-		try {
-
-			model.setApplicantName(StringEscapeUtils.escapeHtml4(model.getApplicantName()));
-			model.setApplicantIdType(StringEscapeUtils.escapeHtml4(model.getApplicantIdType()));
-			model.setApplicantIdNo(StringEscapeUtils.escapeHtml4(model.getApplicantIdNo()));
-			model.setAddress(StringEscapeUtils.escapeHtml4(model.getAddress()));
-			model.setCityCode(StringEscapeUtils.escapeHtml4(model.getCityCode()));
-			model.setCityName(StringEscapeUtils.escapeHtml4(model.getCityName()));
-			model.setDistrictCode(StringEscapeUtils.escapeHtml4(model.getDistrictCode()));
-			model.setDistrictName(StringEscapeUtils.escapeHtml4(model.getDistrictName()));
-			model.setWardCode(StringEscapeUtils.escapeHtml4(model.getWardCode()));
-			model.setWardName(StringEscapeUtils.escapeHtml4(model.getWardName()));
-			model.setContactName(StringEscapeUtils.escapeHtml4(model.getContactName()));
-			model.setContactTelNo(StringEscapeUtils.escapeHtml4(model.getContactTelNo()));
-			model.setContactEmail(StringEscapeUtils.escapeHtml4(model.getContactEmail()));
-			model.setProfile(StringEscapeUtils.escapeHtml4(model.getProfile()));
-			model.setActivationCode(StringEscapeUtils.escapeHtml4(model.getActivationCode()));
-//			model.setTmpPass(StringEscapeUtils.escapeHtml4(model.getTmpPass()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//
+//			model.setApplicantName(StringEscapeUtils.escapeHtml4(model.getApplicantName()));
+//			model.setApplicantIdType(StringEscapeUtils.escapeHtml4(model.getApplicantIdType()));
+//			model.setApplicantIdNo(StringEscapeUtils.escapeHtml4(model.getApplicantIdNo()));
+//			model.setAddress(StringEscapeUtils.escapeHtml4(model.getAddress()));
+//			model.setCityCode(StringEscapeUtils.escapeHtml4(model.getCityCode()));
+//			model.setCityName(StringEscapeUtils.escapeHtml4(model.getCityName()));
+//			model.setDistrictCode(StringEscapeUtils.escapeHtml4(model.getDistrictCode()));
+//			model.setDistrictName(StringEscapeUtils.escapeHtml4(model.getDistrictName()));
+//			model.setWardCode(StringEscapeUtils.escapeHtml4(model.getWardCode()));
+//			model.setWardName(StringEscapeUtils.escapeHtml4(model.getWardName()));
+//			model.setContactName(StringEscapeUtils.escapeHtml4(model.getContactName()));
+//			model.setContactTelNo(StringEscapeUtils.escapeHtml4(model.getContactTelNo()));
+//			model.setContactEmail(StringEscapeUtils.escapeHtml4(model.getContactEmail()));
+//			model.setProfile(StringEscapeUtils.escapeHtml4(model.getProfile()));
+//			model.setActivationCode(StringEscapeUtils.escapeHtml4(model.getActivationCode()));
+////			model.setTmpPass(StringEscapeUtils.escapeHtml4(model.getTmpPass()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(Applicant model) throws ModelListenerException {
-		try {
-
-			model.setApplicantName(StringEscapeUtils.escapeHtml4(model.getApplicantName()));
-			model.setApplicantIdType(StringEscapeUtils.escapeHtml4(model.getApplicantIdType()));
-			model.setApplicantIdNo(StringEscapeUtils.escapeHtml4(model.getApplicantIdNo()));
-			model.setAddress(StringEscapeUtils.escapeHtml4(model.getAddress()));
-			model.setCityCode(StringEscapeUtils.escapeHtml4(model.getCityCode()));
-			model.setCityName(StringEscapeUtils.escapeHtml4(model.getCityName()));
-			model.setDistrictCode(StringEscapeUtils.escapeHtml4(model.getDistrictCode()));
-			model.setDistrictName(StringEscapeUtils.escapeHtml4(model.getDistrictName()));
-			model.setWardCode(StringEscapeUtils.escapeHtml4(model.getWardCode()));
-			model.setWardName(StringEscapeUtils.escapeHtml4(model.getWardName()));
-			model.setContactName(StringEscapeUtils.escapeHtml4(model.getContactName()));
-			model.setContactTelNo(StringEscapeUtils.escapeHtml4(model.getContactTelNo()));
-			model.setContactEmail(StringEscapeUtils.escapeHtml4(model.getContactEmail()));
-			model.setProfile(StringEscapeUtils.escapeHtml4(model.getProfile()));
-			model.setActivationCode(StringEscapeUtils.escapeHtml4(model.getActivationCode()));
-//			model.setTmpPass(StringEscapeUtils.escapeHtml4(model.getTmpPass()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//
+//			model.setApplicantName(StringEscapeUtils.escapeHtml4(model.getApplicantName()));
+//			model.setApplicantIdType(StringEscapeUtils.escapeHtml4(model.getApplicantIdType()));
+//			model.setApplicantIdNo(StringEscapeUtils.escapeHtml4(model.getApplicantIdNo()));
+//			model.setAddress(StringEscapeUtils.escapeHtml4(model.getAddress()));
+//			model.setCityCode(StringEscapeUtils.escapeHtml4(model.getCityCode()));
+//			model.setCityName(StringEscapeUtils.escapeHtml4(model.getCityName()));
+//			model.setDistrictCode(StringEscapeUtils.escapeHtml4(model.getDistrictCode()));
+//			model.setDistrictName(StringEscapeUtils.escapeHtml4(model.getDistrictName()));
+//			model.setWardCode(StringEscapeUtils.escapeHtml4(model.getWardCode()));
+//			model.setWardName(StringEscapeUtils.escapeHtml4(model.getWardName()));
+//			model.setContactName(StringEscapeUtils.escapeHtml4(model.getContactName()));
+//			model.setContactTelNo(StringEscapeUtils.escapeHtml4(model.getContactTelNo()));
+//			model.setContactEmail(StringEscapeUtils.escapeHtml4(model.getContactEmail()));
+//			model.setProfile(StringEscapeUtils.escapeHtml4(model.getProfile()));
+//			model.setActivationCode(StringEscapeUtils.escapeHtml4(model.getActivationCode()));
+////			model.setTmpPass(StringEscapeUtils.escapeHtml4(model.getTmpPass()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	
