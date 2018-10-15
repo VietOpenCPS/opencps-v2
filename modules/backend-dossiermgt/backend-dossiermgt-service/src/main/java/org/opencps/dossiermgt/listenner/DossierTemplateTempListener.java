@@ -23,26 +23,26 @@ public class DossierTemplateTempListener extends BaseModelListener<DossierTempla
 
 	@Override
 	public void onBeforeCreate(DossierTemplate model) throws ModelListenerException {
-		try {
-			model.setTemplateName(StringEscapeUtils.escapeHtml4(model.getTemplateName()));
-			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
-			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setTemplateName(StringEscapeUtils.escapeHtml4(model.getTemplateName()));
+//			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
+//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(DossierTemplate model) throws ModelListenerException {
-		try {
-			model.setTemplateName(StringEscapeUtils.escapeHtml4(model.getTemplateName()));
-			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
-			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setTemplateName(StringEscapeUtils.escapeHtml4(model.getTemplateName()));
+//			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
+//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 
