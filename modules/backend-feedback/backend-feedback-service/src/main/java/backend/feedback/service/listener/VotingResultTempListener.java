@@ -25,30 +25,30 @@ public class VotingResultTempListener extends BaseModelListener<VotingResult> {
 
 	@Override
 	public void onBeforeCreate(VotingResult model) throws ModelListenerException {
-		try {
-			model.setVotingId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getVotingId()))));
-			model.setFullname(StringEscapeUtils.escapeHtml4(model.getFullname()));
-			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-			model.setComment(StringEscapeUtils.escapeHtml4(model.getComment()));
-			model.setSelected(StringEscapeUtils.escapeHtml4(model.getSelected()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setVotingId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getVotingId()))));
+//			model.setFullname(StringEscapeUtils.escapeHtml4(model.getFullname()));
+//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
+//			model.setComment(StringEscapeUtils.escapeHtml4(model.getComment()));
+//			model.setSelected(StringEscapeUtils.escapeHtml4(model.getSelected()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(VotingResult model) throws ModelListenerException {
-		try {
-			model.setVotingId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getVotingId()))));
-			model.setFullname(StringEscapeUtils.escapeHtml4(model.getFullname()));
-			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-			model.setComment(StringEscapeUtils.escapeHtml4(model.getComment()));
-			model.setSelected(StringEscapeUtils.escapeHtml4(model.getSelected()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setVotingId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getVotingId()))));
+//			model.setFullname(StringEscapeUtils.escapeHtml4(model.getFullname()));
+//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
+//			model.setComment(StringEscapeUtils.escapeHtml4(model.getComment()));
+//			model.setSelected(StringEscapeUtils.escapeHtml4(model.getSelected()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 

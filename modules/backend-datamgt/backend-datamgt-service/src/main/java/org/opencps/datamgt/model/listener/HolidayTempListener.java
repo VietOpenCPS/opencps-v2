@@ -23,22 +23,22 @@ public class HolidayTempListener extends BaseModelListener<Holiday> {
 
 	@Override
 	public void onBeforeCreate(Holiday model) throws ModelListenerException {
-		try {
-			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(Holiday model) throws ModelListenerException {
-		try {
-			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 
