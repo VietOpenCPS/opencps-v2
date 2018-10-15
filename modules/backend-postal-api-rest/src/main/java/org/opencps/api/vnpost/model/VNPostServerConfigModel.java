@@ -25,17 +25,103 @@ public class VNPostServerConfigModel {
 	private String secretKey;
 	
 	private boolean active;
+	
+	private String customerCode;
+	
+	private Integer senderProvince;
+	
+	private Integer senderDistrict;
+	
+	private String senderAddress;
+	
+	private String senderEmail;
+	
+	private String senderTel;
 
 	public VNPostServerConfigModel(String apiPostOrder, String apiGetOrderTracking, String apiGetToken,
-			String apiCancelOrder, String customerKey, String secretKey, Boolean active) {
+			String apiCancelOrder, String customerKey, String secretKey, boolean active, String customerCode,
+			Integer senderProvince, Integer senderDistrict, String senderAddress, String senderEmail, String senderTel) {
+		super();
 		this.apiPostOrder = apiPostOrder;
 		this.apiGetOrderTracking = apiGetOrderTracking;
-		this.apiCancelOrder = apiCancelOrder;
 		this.apiGetToken = apiGetToken;
+		this.apiCancelOrder = apiCancelOrder;
 		this.customerKey = customerKey;
 		this.secretKey = secretKey;
 		this.active = active;
+		this.customerCode = customerCode;
+		this.senderProvince = senderProvince;
+		this.senderDistrict = senderDistrict;
+		this.senderAddress = senderAddress;
+		this.senderEmail = senderEmail;
+		this.senderTel = senderTel;
 	}
+	
+
+	public String getCustomerCode() {
+		return customerCode;
+	}
+
+
+	public void setCustomerCode(String customerCode) {
+		this.customerCode = customerCode;
+	}
+
+
+	public Integer getSenderProvince() {
+		return senderProvince;
+	}
+
+
+	public void setSenderProvince(Integer senderProvince) {
+		this.senderProvince = senderProvince;
+	}
+
+
+	public Integer getSenderDistrict() {
+		return senderDistrict;
+	}
+
+
+	public void setSenderDistrict(Integer senderDistrict) {
+		this.senderDistrict = senderDistrict;
+	}
+
+
+	public String getSenderAddress() {
+		return senderAddress;
+	}
+
+
+	public void setSenderAddress(String senderAddress) {
+		this.senderAddress = senderAddress;
+	}
+
+
+	public String getSenderEmail() {
+		return senderEmail;
+	}
+
+
+	public void setSenderEmail(String senderEmail) {
+		this.senderEmail = senderEmail;
+	}
+
+
+	public String getSenderTel() {
+		return senderTel;
+	}
+
+
+	public void setSenderTel(String senderTel) {
+		this.senderTel = senderTel;
+	}
+
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 
 	public String getApiPostOrder() {
 		return apiPostOrder;

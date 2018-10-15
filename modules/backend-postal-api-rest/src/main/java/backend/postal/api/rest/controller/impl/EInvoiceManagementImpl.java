@@ -91,7 +91,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-		InvoiceServerConfigModel config = getServerConfig(groupId, "endpointurl");
+		InvoiceServerConfigModel config = getServerConfig(groupId, "EINVOICE");
 		
 		if(config == null) {
 			return null;
