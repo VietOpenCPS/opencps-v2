@@ -100,24 +100,24 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 
 	@Override
 	public void onBeforeCreate(DictItem model) throws ModelListenerException {
-		try {
-			// Other fields
-			model.setDictCollectionId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDictCollectionId()))));
-			model.setItemCode(StringEscapeUtils.escapeHtml4(model.getItemCode()));
-			model.setItemName(StringEscapeUtils.escapeHtml4(model.getItemName()));
-			model.setItemNameEN(StringEscapeUtils.escapeHtml4(model.getItemNameEN()));
-			model.setItemDescription(StringEscapeUtils.escapeHtml4(model.getItemDescription()));
-			model.setParentItemId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getParentItemId()))));
-			model.setSibling(StringEscapeUtils.escapeHtml4(model.getSibling()));
-			model.setTreeIndex(StringEscapeUtils.escapeHtml4(model.getTreeIndex()));
-			model.setLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getLevel()))));
-			model.setMetaData(StringEscapeUtils.escapeHtml4(model.getMetaData()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			// Other fields
+//			model.setDictCollectionId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDictCollectionId()))));
+//			model.setItemCode(StringEscapeUtils.escapeHtml4(model.getItemCode()));
+//			model.setItemName(StringEscapeUtils.escapeHtml4(model.getItemName()));
+//			model.setItemNameEN(StringEscapeUtils.escapeHtml4(model.getItemNameEN()));
+//			model.setItemDescription(StringEscapeUtils.escapeHtml4(model.getItemDescription()));
+//			model.setParentItemId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getParentItemId()))));
+//			model.setSibling(StringEscapeUtils.escapeHtml4(model.getSibling()));
+//			model.setTreeIndex(StringEscapeUtils.escapeHtml4(model.getTreeIndex()));
+//			model.setLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getLevel()))));
+//			model.setMetaData(StringEscapeUtils.escapeHtml4(model.getMetaData()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
@@ -137,24 +137,24 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 
 	@Override
 	public void onBeforeUpdate(DictItem model) throws ModelListenerException {
-		try {
-			// Other fields
-			model.setDictCollectionId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDictCollectionId()))));
-			model.setItemCode(StringEscapeUtils.escapeHtml4(model.getItemCode()));
-			model.setItemName(StringEscapeUtils.escapeHtml4(model.getItemName()));
-			model.setItemNameEN(StringEscapeUtils.escapeHtml4(model.getItemNameEN()));
-			model.setItemDescription(StringEscapeUtils.escapeHtml4(model.getItemDescription()));
-			model.setParentItemId(
-					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getParentItemId()))));
-			model.setSibling(StringEscapeUtils.escapeHtml4(model.getSibling()));
-			model.setTreeIndex(StringEscapeUtils.escapeHtml4(model.getTreeIndex()));
-			model.setLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getLevel()))));
-			model.setMetaData(StringEscapeUtils.escapeHtml4(model.getMetaData()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			// Other fields
+//			model.setDictCollectionId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDictCollectionId()))));
+//			model.setItemCode(StringEscapeUtils.escapeHtml4(model.getItemCode()));
+//			model.setItemName(StringEscapeUtils.escapeHtml4(model.getItemName()));
+//			model.setItemNameEN(StringEscapeUtils.escapeHtml4(model.getItemNameEN()));
+//			model.setItemDescription(StringEscapeUtils.escapeHtml4(model.getItemDescription()));
+//			model.setParentItemId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getParentItemId()))));
+//			model.setSibling(StringEscapeUtils.escapeHtml4(model.getSibling()));
+//			model.setTreeIndex(StringEscapeUtils.escapeHtml4(model.getTreeIndex()));
+//			model.setLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getLevel()))));
+//			model.setMetaData(StringEscapeUtils.escapeHtml4(model.getMetaData()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 //	private static DictItem modelBefore;

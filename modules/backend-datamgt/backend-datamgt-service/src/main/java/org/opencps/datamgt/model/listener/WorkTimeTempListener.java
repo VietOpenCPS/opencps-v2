@@ -23,24 +23,24 @@ public class WorkTimeTempListener extends BaseModelListener<WorkTime> {
 
 	@Override
 	public void onBeforeCreate(WorkTime model) throws ModelListenerException {
-		try {
-			model.setDay(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDay()))));
-			model.setHours(StringEscapeUtils.escapeHtml4(model.getHours()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setDay(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDay()))));
+//			model.setHours(StringEscapeUtils.escapeHtml4(model.getHours()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(WorkTime model) throws ModelListenerException {
-		try {
-			model.setDay(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDay()))));
-			model.setHours(StringEscapeUtils.escapeHtml4(model.getHours()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setDay(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDay()))));
+//			model.setHours(StringEscapeUtils.escapeHtml4(model.getHours()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 

@@ -27,26 +27,26 @@ public class JobPosTempListener extends BaseModelListener<JobPos> {
 
 	@Override
 	public void onBeforeCreate(JobPos model) throws ModelListenerException {
-		try {
-			model.setJobPosCode(StringEscapeUtils.escapeHtml4(model.getJobPosCode()));
-			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
-			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setJobPosCode(StringEscapeUtils.escapeHtml4(model.getJobPosCode()));
+//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
+//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 	@Override
 	public void onBeforeUpdate(JobPos model) throws ModelListenerException {
-		try {
-			model.setJobPosCode(StringEscapeUtils.escapeHtml4(model.getJobPosCode()));
-			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
-			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		try {
+//			model.setJobPosCode(StringEscapeUtils.escapeHtml4(model.getJobPosCode()));
+//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
+//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
 	}
 
 
