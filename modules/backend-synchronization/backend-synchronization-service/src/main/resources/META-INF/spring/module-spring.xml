@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="org.opencps.synchronization.service.impl.DictCollectionTempLocalServiceImpl" id="org.opencps.synchronization.service.DictCollectionTempLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.DictCollectionTempPersistenceImpl" id="org.opencps.synchronization.service.persistence.DictCollectionTempPersistence" parent="basePersistence" />
+	<bean class="org.opencps.synchronization.service.impl.DictGroupTempLocalServiceImpl" id="org.opencps.synchronization.service.DictGroupTempLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.DictGroupTempPersistenceImpl" id="org.opencps.synchronization.service.persistence.DictGroupTempPersistence" parent="basePersistence" />
+	<bean class="org.opencps.synchronization.service.impl.DictItemGroupTempLocalServiceImpl" id="org.opencps.synchronization.service.DictItemGroupTempLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.DictItemGroupTempPersistenceImpl" id="org.opencps.synchronization.service.persistence.DictItemGroupTempPersistence" parent="basePersistence" />
+	<bean class="org.opencps.synchronization.service.impl.DictItemTempLocalServiceImpl" id="org.opencps.synchronization.service.DictItemTempLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.DictItemTempPersistenceImpl" id="org.opencps.synchronization.service.persistence.DictItemTempPersistence" parent="basePersistence" />
+	<bean class="org.opencps.synchronization.service.impl.PushCollectionLocalServiceImpl" id="org.opencps.synchronization.service.PushCollectionLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.PushCollectionPersistenceImpl" id="org.opencps.synchronization.service.persistence.PushCollectionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.synchronization.service.impl.PushDictGroupLocalServiceImpl" id="org.opencps.synchronization.service.PushDictGroupLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.PushDictGroupPersistenceImpl" id="org.opencps.synchronization.service.persistence.PushDictGroupPersistence" parent="basePersistence" />
+	<bean class="org.opencps.synchronization.service.impl.PushDictItemLocalServiceImpl" id="org.opencps.synchronization.service.PushDictItemLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.PushDictItemPersistenceImpl" id="org.opencps.synchronization.service.persistence.PushDictItemPersistence" parent="basePersistence" />
+	<bean class="org.opencps.synchronization.service.impl.SyncQueueLocalServiceImpl" id="org.opencps.synchronization.service.SyncQueueLocalService" />
+	<bean class="org.opencps.synchronization.service.persistence.impl.SyncQueuePersistenceImpl" id="org.opencps.synchronization.service.persistence.SyncQueuePersistence" parent="basePersistence" />
+</beans>

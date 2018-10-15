@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="backend.feedback.service.impl.CommentLocalServiceImpl" id="backend.feedback.service.CommentLocalService" />
+	<bean class="backend.feedback.service.persistence.impl.CommentPersistenceImpl" id="backend.feedback.service.persistence.CommentPersistence" parent="basePersistence" />
+	<bean class="backend.feedback.service.impl.EvaluationLocalServiceImpl" id="backend.feedback.service.EvaluationLocalService" />
+	<bean class="backend.feedback.service.persistence.impl.EvaluationPersistenceImpl" id="backend.feedback.service.persistence.EvaluationPersistence" parent="basePersistence" />
+	<bean class="backend.feedback.service.impl.VotingLocalServiceImpl" id="backend.feedback.service.VotingLocalService" />
+	<bean class="backend.feedback.service.persistence.impl.VotingPersistenceImpl" id="backend.feedback.service.persistence.VotingPersistence" parent="basePersistence" />
+	<bean class="backend.feedback.service.impl.VotingResultLocalServiceImpl" id="backend.feedback.service.VotingResultLocalService" />
+	<bean class="backend.feedback.service.persistence.impl.VotingResultPersistenceImpl" id="backend.feedback.service.persistence.VotingResultPersistence" parent="basePersistence" />
+</beans>

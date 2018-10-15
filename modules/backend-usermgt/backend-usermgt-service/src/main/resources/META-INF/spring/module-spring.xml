@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="org.opencps.usermgt.service.impl.ApplicantLocalServiceImpl" id="org.opencps.usermgt.service.ApplicantLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.ApplicantPersistenceImpl" id="org.opencps.usermgt.service.persistence.ApplicantPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.EmployeeLocalServiceImpl" id="org.opencps.usermgt.service.EmployeeLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.EmployeePersistenceImpl" id="org.opencps.usermgt.service.persistence.EmployeePersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.EmployeeJobPosLocalServiceImpl" id="org.opencps.usermgt.service.EmployeeJobPosLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.EmployeeJobPosPersistenceImpl" id="org.opencps.usermgt.service.persistence.EmployeeJobPosPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.HmacAuthenLocalServiceImpl" id="org.opencps.usermgt.service.HmacAuthenLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.HmacAuthenPersistenceImpl" id="org.opencps.usermgt.service.persistence.HmacAuthenPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.JobPosLocalServiceImpl" id="org.opencps.usermgt.service.JobPosLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.JobPosPersistenceImpl" id="org.opencps.usermgt.service.persistence.JobPosPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.JobPosWorkLocalServiceImpl" id="org.opencps.usermgt.service.JobPosWorkLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.JobPosWorkPersistenceImpl" id="org.opencps.usermgt.service.persistence.JobPosWorkPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.OfficeSiteLocalServiceImpl" id="org.opencps.usermgt.service.OfficeSiteLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.OfficeSitePersistenceImpl" id="org.opencps.usermgt.service.persistence.OfficeSitePersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.PreferencesLocalServiceImpl" id="org.opencps.usermgt.service.PreferencesLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.PreferencesPersistenceImpl" id="org.opencps.usermgt.service.persistence.PreferencesPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.ResourceRoleLocalServiceImpl" id="org.opencps.usermgt.service.ResourceRoleLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.ResourceRolePersistenceImpl" id="org.opencps.usermgt.service.persistence.ResourceRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.ResourceUserLocalServiceImpl" id="org.opencps.usermgt.service.ResourceUserLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.ResourceUserPersistenceImpl" id="org.opencps.usermgt.service.persistence.ResourceUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.VisibilityLocalServiceImpl" id="org.opencps.usermgt.service.VisibilityLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.VisibilityPersistenceImpl" id="org.opencps.usermgt.service.persistence.VisibilityPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl" id="org.opencps.usermgt.service.WorkingUnitLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.WorkingUnitPersistenceImpl" id="org.opencps.usermgt.service.persistence.WorkingUnitPersistence" parent="basePersistence" />
+</beans>

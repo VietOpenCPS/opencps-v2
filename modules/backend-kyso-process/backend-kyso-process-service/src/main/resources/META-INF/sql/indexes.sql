@@ -1,0 +1,1 @@
+create index IX_F26988F9 on temp_kyso (uuid_[$COLUMN_LENGTH:75$]);

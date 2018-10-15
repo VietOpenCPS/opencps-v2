@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="org.opencps.datamgt.service.impl.CommentLocalServiceImpl" id="org.opencps.datamgt.service.CommentLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.CommentPersistenceImpl" id="org.opencps.datamgt.service.persistence.CommentPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictCollectionLocalServiceImpl" id="org.opencps.datamgt.service.DictCollectionLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictCollectionPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictCollectionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictGroupLocalServiceImpl" id="org.opencps.datamgt.service.DictGroupLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictGroupPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictGroupPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictItemLocalServiceImpl" id="org.opencps.datamgt.service.DictItemLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictItemPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictItemPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictItemGroupLocalServiceImpl" id="org.opencps.datamgt.service.DictItemGroupLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictItemGroupPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictItemGroupPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.FileAttachLocalServiceImpl" id="org.opencps.datamgt.service.FileAttachLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.FileAttachPersistenceImpl" id="org.opencps.datamgt.service.persistence.FileAttachPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.HolidayLocalServiceImpl" id="org.opencps.datamgt.service.HolidayLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.HolidayPersistenceImpl" id="org.opencps.datamgt.service.persistence.HolidayPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.VotingLocalServiceImpl" id="org.opencps.datamgt.service.VotingLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.VotingPersistenceImpl" id="org.opencps.datamgt.service.persistence.VotingPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.VotingResultLocalServiceImpl" id="org.opencps.datamgt.service.VotingResultLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.VotingResultPersistenceImpl" id="org.opencps.datamgt.service.persistence.VotingResultPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.WorkTimeLocalServiceImpl" id="org.opencps.datamgt.service.WorkTimeLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.WorkTimePersistenceImpl" id="org.opencps.datamgt.service.persistence.WorkTimePersistence" parent="basePersistence" />
+</beans>

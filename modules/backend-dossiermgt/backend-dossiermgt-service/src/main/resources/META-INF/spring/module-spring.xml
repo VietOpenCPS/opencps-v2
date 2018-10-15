@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="org.opencps.dossiermgt.service.impl.ActionConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.ActionConfigLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ActionConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ActionConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DeliverableLocalServiceImpl" id="org.opencps.dossiermgt.service.DeliverableLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverablePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverablePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverableFinderImpl" id="org.opencps.dossiermgt.service.persistence.DeliverableFinder" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DeliverableLogLocalServiceImpl" id="org.opencps.dossiermgt.service.DeliverableLogLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverableLogPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DeliverableTypeLocalServiceImpl" id="org.opencps.dossiermgt.service.DeliverableTypeLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverableTypePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverableTypePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DocumentTypeLocalServiceImpl" id="org.opencps.dossiermgt.service.DocumentTypeLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DocumentTypePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DocumentTypePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierActionLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierActionLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierActionPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierActionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierActionSyncLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierActionSyncLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierActionSyncPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierActionSyncPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierActionUserLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierActionUserLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierActionUserPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierActionUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierDocumentLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierDocumentLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierDocumentPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierDocumentPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierFileLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierFileLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierFilePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierFilePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierLogLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierLogLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierLogPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierLogPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierMarkLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierMarkLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierMarkPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierMarkPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierPartLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierPartLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierPartPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierPartPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierRequestUDLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierRequestUDLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierRequestUDPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierRequestUDPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierStatisticLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierStatisticLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierStatisticPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierStatisticPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierSyncLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierSyncLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierSyncPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierSyncPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierSyncFinderImpl" id="org.opencps.dossiermgt.service.persistence.DossierSyncFinder" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierTemplateLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierTemplateLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierTemplatePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DossierUserLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierUserLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierUserPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.MenuConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.MenuConfigLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.MenuRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.MenuRoleLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.PaymentConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentConfigLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.PaymentFileLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentFileLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentFilePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentFilePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ProcessActionLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessActionLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessActionPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessActionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ProcessOptionLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessOptionLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessOptionPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessOptionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ProcessPluginLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessPluginLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessPluginPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessPluginPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ProcessSequenceLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessSequenceLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessSequencePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessSequencePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ProcessStepLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessStepLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessStepPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessStepPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ProcessStepRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessStepRoleLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessStepRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessStepRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.RegistrationLocalServiceImpl" id="org.opencps.dossiermgt.service.RegistrationLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.RegistrationFormLocalServiceImpl" id="org.opencps.dossiermgt.service.RegistrationFormLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationFormPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationFormPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.RegistrationLogLocalServiceImpl" id="org.opencps.dossiermgt.service.RegistrationLogLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationLogPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationLogPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.RegistrationTemplatesLocalServiceImpl" id="org.opencps.dossiermgt.service.RegistrationTemplatesLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationTemplatesPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationTemplatesPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ServiceConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceConfigLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ServiceFileTemplateLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceFileTemplateLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceFileTemplatePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ServiceInfoLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceInfoLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceInfoPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceInfoPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ServiceProcessLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceProcessLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceProcessPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceProcessPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ServiceProcessRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceProcessRoleLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceProcessRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceProcessRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.StepConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.StepConfigLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.StepConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.StepConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.StepConfigFinderImpl" id="org.opencps.dossiermgt.service.persistence.StepConfigFinder" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.UserInfoLogLocalServiceImpl" id="org.opencps.dossiermgt.service.UserInfoLogLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.UserInfoLogPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.UserInfoLogPersistence" parent="basePersistence" />
+</beans>
