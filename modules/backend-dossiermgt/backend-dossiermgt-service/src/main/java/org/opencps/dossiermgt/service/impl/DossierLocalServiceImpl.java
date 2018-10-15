@@ -284,6 +284,30 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setDurationUnit(durationUnit);
 //				}
 				}
+				
+				dossier.setViaPostal(viaPostal);
+
+				if (viaPostal == 1) {
+					dossier.setPostalAddress(StringPool.BLANK);
+					dossier.setPostalCityCode(StringPool.BLANK);
+					dossier.setPostalTelNo(StringPool.BLANK);
+
+				} else if (viaPostal == 2) {
+					if (Validator.isNotNull(postalAddress))
+						dossier.setPostalAddress(postalAddress);
+					if (Validator.isNotNull(postalCityCode))
+						dossier.setPostalCityCode(postalCityCode);
+					if (Validator.isNotNull(postalTelNo))
+						dossier.setPostalTelNo(postalTelNo);
+					if (Validator.isNotNull(postalCityName))
+						dossier.setPostalCityName(postalCityName);
+
+				} else {
+					dossier.setPostalAddress(StringPool.BLANK);
+					dossier.setPostalCityCode(StringPool.BLANK);
+					dossier.setPostalTelNo(StringPool.BLANK);
+				}
+				
 				dossierPersistence.update(dossier);
 		} else {
 
@@ -2809,14 +2833,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setSampleCount(sampleCount);
 
 		dossier.setViaPostal(viaPostal);
-		System.out.println("VIA POSTAL: " + viaPostal);
 		if (viaPostal == 1) {
 			dossier.setPostalAddress(StringPool.BLANK);
 			dossier.setPostalCityCode(StringPool.BLANK);
 			dossier.setPostalTelNo(StringPool.BLANK);
 
 		} else if (viaPostal == 2) {
-			System.out.println("POSTAL: " + postalAddress + "," + postalCityCode);
 			if (Validator.isNotNull(postalAddress))
 				dossier.setPostalAddress(postalAddress);
 			if (Validator.isNotNull(postalCityCode))
