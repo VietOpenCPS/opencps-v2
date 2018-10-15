@@ -214,4 +214,5 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	public List<ServerConfig> getByProtocol(long groupId, String protocol) {
 		return serverConfigPersistence.findByG_P(groupId, protocol);
 	}
+	
 }
