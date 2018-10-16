@@ -134,12 +134,24 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, 0l, input.getProcessNo(),
-					input.getProcessName(), input.getDescription(), input.getDurationCount(), input.getDurationUnit(),
-					input.getCounter(), GetterUtil.getBoolean(input.getGenerateDossierNo()),
-					input.getDossierNoPattern(), GetterUtil.getBoolean(input.getGenerateDueDate()),
-					input.getDueDatePattern(), GetterUtil.getBoolean(input.getGeneratePassword()),
-					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), input.getPaymentFee(),
+			String processNo = StringEscapeUtils.escapeHtml4(input.getProcessNo());
+			String processName = StringEscapeUtils.escapeHtml4(input.getProcessName());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String generateDossierNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDossierNo()));
+			String dossierNoPattern = StringEscapeUtils.escapeHtml4(input.getDossierNoPattern());
+			String generateDueDate = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDueDate()));
+			String dueDatePattern = StringEscapeUtils.escapeHtml4(input.getDueDatePattern());
+			String generatePassword = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGeneratePassword()));
+			String directNotification = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String serverNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String paymentFee = StringEscapeUtils.escapeHtml4(input.getPaymentFee());
+			
+			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, 0l, processNo,
+					processName, description, input.getDurationCount(), input.getDurationUnit(),
+					input.getCounter(), GetterUtil.getBoolean(generateDossierNo),
+					dossierNoPattern, GetterUtil.getBoolean(generateDueDate),
+					dueDatePattern, GetterUtil.getBoolean(generatePassword),
+					GetterUtil.getBoolean(directNotification), serverNo, paymentFee,
 					serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
@@ -196,12 +208,24 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, id, input.getProcessNo(),
-					input.getProcessName(), input.getDescription(), input.getDurationCount(), input.getDurationUnit(),
-					input.getCounter(), GetterUtil.getBoolean(input.getGenerateDossierNo()),
-					input.getDossierNoPattern(), GetterUtil.getBoolean(input.getGenerateDueDate()),
-					input.getDueDatePattern(), GetterUtil.getBoolean(input.getGeneratePassword()),
-					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), input.getPaymentFee(),
+			String processNo = StringEscapeUtils.escapeHtml4(input.getProcessNo());
+			String processName = StringEscapeUtils.escapeHtml4(input.getProcessName());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String generateDossierNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDossierNo()));
+			String dossierNoPattern = StringEscapeUtils.escapeHtml4(input.getDossierNoPattern());
+			String generateDueDate = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDueDate()));
+			String dueDatePattern = StringEscapeUtils.escapeHtml4(input.getDueDatePattern());
+			String generatePassword = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGeneratePassword()));
+			String directNotification = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String serverNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String paymentFee = StringEscapeUtils.escapeHtml4(input.getPaymentFee());
+			
+			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, id, processNo,
+					processName, description, input.getDurationCount(), input.getDurationUnit(),
+					input.getCounter(), GetterUtil.getBoolean(generateDossierNo),
+					dossierNoPattern, GetterUtil.getBoolean(generateDueDate),
+					dueDatePattern, GetterUtil.getBoolean(generatePassword),
+					GetterUtil.getBoolean(directNotification), serverNo, paymentFee,
 					serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);

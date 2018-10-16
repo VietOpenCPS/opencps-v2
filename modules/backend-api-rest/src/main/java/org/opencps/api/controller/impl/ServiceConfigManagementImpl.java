@@ -156,11 +156,19 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String serviceInstruction = StringEscapeUtils.escapeHtml4(input.getServiceInstruction());
+			String serviceUrl = StringEscapeUtils.escapeHtml4(input.getServiceUrl());
+			String forCitizen = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForCitizen()));
+			String forBusiness = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForBusiness()));
+			String postService = StringEscapeUtils.escapeHtml4(String.valueOf(input.getPostalService()));
+			String registration = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRegistration()));
+			
 			ServiceConfig serviceConfig = actions.updateServiceConfig(0l, userId, groupId,
-					(long) input.getServiceInfoId(), input.getGovAgencyCode(), input.getServiceInstruction(),
-					(int) input.getServiceLevel(), input.getServiceUrl(), GetterUtil.getBoolean(input.getForCitizen()),
-					GetterUtil.getBoolean(input.getForBusiness()), GetterUtil.getBoolean(input.getPostalService()),
-					GetterUtil.getBoolean(input.getRegistration()), serviceContext);
+					(long) input.getServiceInfoId(), govAgencyCode, serviceInstruction,
+					(int) input.getServiceLevel(), serviceUrl, GetterUtil.getBoolean(forCitizen),
+					GetterUtil.getBoolean(forBusiness), GetterUtil.getBoolean(postService),
+					GetterUtil.getBoolean(registration), serviceContext);
 
 			returnModel = ServiceConfigUtils.mapptingToServiceConfig(serviceConfig);
 
@@ -214,11 +222,19 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String serviceInstruction = StringEscapeUtils.escapeHtml4(input.getServiceInstruction());
+			String serviceUrl = StringEscapeUtils.escapeHtml4(input.getServiceUrl());
+			String forCitizen = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForCitizen()));
+			String forBusiness = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForBusiness()));
+			String postService = StringEscapeUtils.escapeHtml4(String.valueOf(input.getPostalService()));
+			String registration = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRegistration()));
+			
 			ServiceConfig serviceConfig = actions.updateServiceConfig(id, userId, groupId,
-					(long) input.getServiceInfoId(), input.getGovAgencyCode(), input.getServiceInstruction(),
-					(int) input.getServiceLevel(), input.getServiceUrl(), GetterUtil.getBoolean(input.getForCitizen()),
-					GetterUtil.getBoolean(input.getForBusiness()), GetterUtil.getBoolean(input.getPostalService()),
-					GetterUtil.getBoolean(input.getRegistration()), serviceContext);
+					(long) input.getServiceInfoId(), govAgencyCode, serviceInstruction,
+					(int) input.getServiceLevel(), serviceUrl, GetterUtil.getBoolean(forCitizen),
+					GetterUtil.getBoolean(forBusiness), GetterUtil.getBoolean(postService),
+					GetterUtil.getBoolean(registration), serviceContext);
 
 			returnModel = ServiceConfigUtils.mapptingToServiceConfig(serviceConfig);
 

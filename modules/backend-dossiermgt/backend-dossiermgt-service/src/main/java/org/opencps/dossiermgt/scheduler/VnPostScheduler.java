@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = VnPostScheduler.class)
+//@Component(immediate = true, service = VnPostScheduler.class)
 public class VnPostScheduler extends BaseSchedulerEntryMessageListener {
 	private static final String VNPOST_GETORDERTRACKING = "/postal/getOrderTracking";
 	@Override

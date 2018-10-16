@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
@@ -74,6 +75,26 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 			_log.info("START");
+//			model.setApplicantName(StringEscapeUtils.escapeHtml4(model.getApplicantName()));
+//			model.setApplicantIdType(StringEscapeUtils.escapeHtml4(model.getApplicantIdType()));
+//			model.setApplicantIdNo(StringEscapeUtils.escapeHtml4(model.getApplicantIdNo()));
+//			model.setAddress(StringEscapeUtils.escapeHtml4(model.getAddress()));
+//			model.setCityCode(StringEscapeUtils.escapeHtml4(model.getCityCode()));
+//			model.setCityName(StringEscapeUtils.escapeHtml4(model.getCityName()));
+//			model.setDistrictCode(StringEscapeUtils.escapeHtml4(model.getDistrictCode()));
+//			model.setDistrictName(StringEscapeUtils.escapeHtml4(model.getDistrictName()));
+//			model.setWardCode(StringEscapeUtils.escapeHtml4(model.getWardCode()));
+//			model.setWardName(StringEscapeUtils.escapeHtml4(model.getWardName()));
+//			model.setContactName(StringEscapeUtils.escapeHtml4(model.getContactName()));
+//			model.setContactTelNo(StringEscapeUtils.escapeHtml4(model.getContactTelNo()));
+//			model.setContactEmail(StringEscapeUtils.escapeHtml4(model.getContactEmail()));
+//			model.setProfile(StringEscapeUtils.escapeHtml4(model.getProfile()));
+//			model.setActivationCode(StringEscapeUtils.escapeHtml4(model.getActivationCode()));
+////			model.setTmpPass(StringEscapeUtils.escapeHtml4(model.getTmpPass()));
+			String applicantName = StringEscapeUtils.escapeHtml4(input.getApplicantName());
+			String applicantIdType = StringEscapeUtils.escapeHtml4(input.getApplicantIdType());
+			String applicantIdNo = StringEscapeUtils.escapeHtml4(input.getApplicantIdNo());
+			
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 				
