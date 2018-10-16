@@ -682,6 +682,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, dossierUUid);
+			_log.info("SONDT PROCESS KEYPAY  ======== " + JSONFactoryUtil.looseSerialize(dossier));
 			
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFileByReferenceUid(dossier.getDossierId(), paymentFileUUid);
 			
@@ -695,7 +696,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			result.put("serviceName", dossier.getServiceName());
 			result.put("govAgencyName", dossier.getGovAgencyName());
 			result.put("paymentFee", paymentFile.getPaymentFee());
-			result.put("paymentAmount", paymentFile.getPaymentAmount());
+			result.put("paymentAmount", paymentFile.getFeeAmount());
 			result.put("paymentPortal", "KEYPAY");
 			
 			return Response.status(200).entity(result.toJSONString()).build();
