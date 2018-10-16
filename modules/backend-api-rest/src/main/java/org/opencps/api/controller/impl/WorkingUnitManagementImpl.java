@@ -27,6 +27,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.WorkingUnitManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
@@ -124,9 +125,18 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			String name = StringEscapeUtils.escapeHtml4(input.getName());
+			String enName = StringEscapeUtils.escapeHtml4(input.getEnName());
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
+			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
+			String faxNo = StringEscapeUtils.escapeHtml4(input.getFaxNo()); 
+			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
+			String website = StringEscapeUtils.escapeHtml4(input.getWebsite());
+			
 			WorkingUnit workingUnit = actions.create(user.getUserId(), company.getCompanyId(), groupId,
-					input.getAddress(), input.getEmail(), input.getEnName(), input.getFaxNo(), input.getGovAgencyCode(),
-					input.getName(), input.getTelNo(), input.getWebsite(), input.getParentWorkingUnitId(),
+					address, email, enName, faxNo, govAgencyCode,
+					name, telNo, website, input.getParentWorkingUnitId(),
 					input.getSibling(), input.getCeremonyDate(), serviceContext);
 
 			workingUnitModel = WorkingUnitUtils.mapperWorkingUnitModel(workingUnit);
@@ -148,9 +158,18 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			String name = StringEscapeUtils.escapeHtml4(input.getName());
+			String enName = StringEscapeUtils.escapeHtml4(input.getEnName());
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
+			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
+			String faxNo = StringEscapeUtils.escapeHtml4(input.getFaxNo()); 
+			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
+			String website = StringEscapeUtils.escapeHtml4(input.getWebsite());
+			
 			WorkingUnit workingUnit = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
-					input.getAddress(), input.getEmail(), input.getEnName(), input.getFaxNo(), input.getGovAgencyCode(),
-					input.getName(), input.getTelNo(), input.getWebsite(), input.getParentWorkingUnitId(),
+					address, email, enName, faxNo, govAgencyCode,
+					name, telNo, website, input.getParentWorkingUnitId(),
 					input.getSibling(), input.getCeremonyDate(), serviceContext);
 
 			workingUnitModel = WorkingUnitUtils.mapperWorkingUnitModel(workingUnit);

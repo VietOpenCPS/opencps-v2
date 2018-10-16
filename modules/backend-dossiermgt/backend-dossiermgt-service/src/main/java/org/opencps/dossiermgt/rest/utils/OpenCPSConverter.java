@@ -79,6 +79,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getViaPostal())) {
 	    	params.put(DossierTerm.VIA_POSTAL, model.getViaPostal());
 	    }
+	    if (Validator.isNotNull(model.getPostalAddress())) {
+	    	params.put(DossierTerm.POSTAL_ADDRESS, model.getPostalAddress());	
+	    }
 	    if (Validator.isNotNull(model.getPostalServiceCode())) {
 	    	params.put(DossierTerm.POSTAL_SERVICE_CODE, model.getPostalServiceCode());	    	
 	    }

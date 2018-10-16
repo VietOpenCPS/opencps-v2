@@ -294,11 +294,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						if (!lstDus.isEmpty()) {
 							for (DossierActionUser dau : lstDus) {
 								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
-								
-								if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-									lstUsers.add(dau.getUserId());
-									currentActionUser.append(employee.getFullName());
-								}					
+								if (employee != null) {
+									if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+										lstUsers.add(dau.getUserId());
+										currentActionUser.append(employee.getFullName());
+									}		
+								}
 							}
 							currentActionUserStr = currentActionUser.toString();
 						}

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.JobposManagement;
 import org.opencps.api.controller.util.JobposUtils;
 import org.opencps.api.error.model.ErrorMsg;
@@ -113,7 +114,10 @@ public class JobposManagementImpl implements JobposManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			JobPos jobPos = actions.create(user.getUserId(), groupId, input.getTitle(), input.getDescription(),
+			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			
+			JobPos jobPos = actions.create(user.getUserId(), groupId, title, description,
 					input.getLeader(), serviceContext);
 
 			jobposModel = JobposUtils.mapperJobposModel(jobPos);
@@ -135,7 +139,10 @@ public class JobposManagementImpl implements JobposManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			JobPos jobPos = actions.update(user.getUserId(), groupId, id, input.getTitle(), input.getDescription(),
+			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+
+			JobPos jobPos = actions.update(user.getUserId(), groupId, id, title, description,
 					input.getLeader(), serviceContext);
 
 			jobposModel = JobposUtils.mapperJobposModel(jobPos);

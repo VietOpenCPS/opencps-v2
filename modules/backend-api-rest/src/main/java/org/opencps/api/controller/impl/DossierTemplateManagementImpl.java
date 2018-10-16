@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.DossierTemplateManagement;
 import org.opencps.api.controller.util.DossierTemplateUtils;
 import org.opencps.api.dossiertemplate.model.DossierPartContentInputUpdateModel;
@@ -104,13 +105,16 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			String templateName = StringEscapeUtils.escapeHtml4(input.getTemplateName());
+			String templateNo = StringEscapeUtils.escapeHtml4(input.getTemplateNo());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
 //			}
 
-			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, 0l, input.getTemplateName(),
-					input.getTemplateNo(), input.getDescription(), serviceContext);
+			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, 0l, templateName,
+					templateNo, description, serviceContext);
 
 			DossierTemplateInputModel result = DossierTemplateUtils.mappingForTemplatePOST(dossierTemplate);
 
@@ -169,13 +173,17 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
+			String templateName = StringEscapeUtils.escapeHtml4(input.getTemplateName());
+			String templateNo = StringEscapeUtils.escapeHtml4(input.getTemplateNo());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
 
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
 //			}
 
-			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, id, input.getTemplateName(),
-					input.getTemplateNo(), input.getDescription(), serviceContext);
+			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, id, templateName,
+					templateNo, description, serviceContext);
 
 			DossierTemplateDetailModel result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
 
@@ -311,6 +319,14 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
+			String partNo = StringEscapeUtils.escapeHtml4(query.getPartNo());
+			String partName = StringEscapeUtils.escapeHtml4(query.getPartName());
+			String partTip = StringEscapeUtils.escapeHtml4(query.getPartTip());
+			String multiple = StringEscapeUtils.escapeHtml4(String.valueOf(query.getMultiple()));
+			String required = StringEscapeUtils.escapeHtml4(String.valueOf(query.getRequired()));
+			String fileTemplateNo = StringEscapeUtils.escapeHtml4(query.getFileTemplateNo());
+			String eSign = StringEscapeUtils.escapeHtml4(String.valueOf(query.getEsign()));
+			
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
 //			}
@@ -327,10 +343,10 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 */
 			
 			DossierPart dossierPart = actions.updateDossierPart(groupId, 0l,
-					dossierTemplate.getTemplateNo(), query.getPartNo(), query.getPartName(), query.getPartTip(),
-					query.getPartType(), GetterUtil.getBoolean(query.getMultiple()), StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
-					GetterUtil.getBoolean(query.getEsign()), query.getTypeCode(), query.getDeliverableAction(),
+					dossierTemplate.getTemplateNo(), partNo, partName, partTip,
+					query.getPartType(), GetterUtil.getBoolean(multiple), StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, GetterUtil.getBoolean(required), fileTemplateNo,
+					GetterUtil.getBoolean(eSign), query.getTypeCode(), query.getDeliverableAction(),
 					serviceContext);
 
 			if (dossierPart != null) {
@@ -363,6 +379,13 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
 //			}
+			String newPartNo = StringEscapeUtils.escapeHtml4(query.getPartNo());
+			String partName = StringEscapeUtils.escapeHtml4(query.getPartName());
+			String partTip = StringEscapeUtils.escapeHtml4(query.getPartTip());
+			String multiple = StringEscapeUtils.escapeHtml4(String.valueOf(query.getMultiple()));
+			String required = StringEscapeUtils.escapeHtml4(String.valueOf(query.getRequired()));
+			String fileTemplateNo = StringEscapeUtils.escapeHtml4(query.getFileTemplateNo());
+			String eSign = StringEscapeUtils.escapeHtml4(String.valueOf(query.getEsign()));
 
 			DossierPartInputModel result;
 
@@ -378,10 +401,10 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 					GetterUtil.getBoolean(query.getEsign()), serviceContext);
 */			
 			DossierPart dossierPart = actions.updateDossierPart(groupId, partUpdate.getPrimaryKey(),
-					dossierTemplate.getTemplateNo(), query.getPartNo(), query.getPartName(), query.getPartTip(),
-					query.getPartType(), GetterUtil.getBoolean(query.getMultiple()), StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
-					GetterUtil.getBoolean(query.getEsign()), query.getTypeCode(), query.getDeliverableAction(),
+					dossierTemplate.getTemplateNo(), newPartNo, partName, partTip,
+					query.getPartType(), GetterUtil.getBoolean(multiple), StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, GetterUtil.getBoolean(required), fileTemplateNo,
+					GetterUtil.getBoolean(eSign), query.getTypeCode(), query.getDeliverableAction(),
 					serviceContext);
 
 			if (dossierPart != null) {
