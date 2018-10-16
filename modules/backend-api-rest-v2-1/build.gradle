@@ -83,6 +83,7 @@ dependencies {
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
 
 	compileOnly project(":modules:backend-auth")
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 }
 repositories {
     flatDir {

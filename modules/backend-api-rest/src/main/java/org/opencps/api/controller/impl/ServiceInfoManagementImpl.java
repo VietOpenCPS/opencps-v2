@@ -32,6 +32,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.ServiceInfoUtils;
@@ -127,11 +128,26 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				throw new UnauthorizationException();
 			}
 
+			String serviceCode = StringEscapeUtils.escapeHtml4(input.getServiceCode());
+			String serviceName = StringEscapeUtils.escapeHtml4(input.getServiceName());
+			String processText = StringEscapeUtils.escapeHtml4(input.getProcessText());
+			String methodText = StringEscapeUtils.escapeHtml4(input.getMethodText());
+			String dossierText = StringEscapeUtils.escapeHtml4(input.getDossierText());
+			String conditionText = StringEscapeUtils.escapeHtml4(input.getConditionText());
+			String durationText = StringEscapeUtils.escapeHtml4(input.getDurationText());
+			String applicantText = StringEscapeUtils.escapeHtml4(input.getApplicantText());
+			String resultText = StringEscapeUtils.escapeHtml4(input.getResultText());
+			String regularText = StringEscapeUtils.escapeHtml4(input.getRegularText());
+			String feeText = StringEscapeUtils.escapeHtml4(input.getFeeText());
+			String administrationCode = StringEscapeUtils.escapeHtml4(input.getAdministrationCode());
+			String domainCode = StringEscapeUtils.escapeHtml4(input.getDomainCode());
+			String active = StringEscapeUtils.escapeHtml4(input.getActive());
+			
 			ServiceInfo serviceInfo = actions.updateServiceInfo(userId, groupId, input.getServiceInfoId(),
-					input.getServiceCode(), input.getServiceName(), input.getProcessText(), input.getMethodText(),
-					input.getDossierText(), input.getConditionText(), input.getDurationText(), input.getApplicantText(),
-					input.getResultText(), input.getRegularText(), input.getFeeText(), input.getAdministrationCode(),
-					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getActive()),
+					serviceCode, serviceName, processText, methodText,
+					dossierText, conditionText, durationText, applicantText,
+					resultText, regularText, feeText, administrationCode,
+					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
 					serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
@@ -197,11 +213,26 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				throw new UnauthorizationException();
 			}
 
+			String serviceCode = StringEscapeUtils.escapeHtml4(input.getServiceCode());
+			String serviceName = StringEscapeUtils.escapeHtml4(input.getServiceName());
+			String processText = StringEscapeUtils.escapeHtml4(input.getProcessText());
+			String methodText = StringEscapeUtils.escapeHtml4(input.getMethodText());
+			String dossierText = StringEscapeUtils.escapeHtml4(input.getDossierText());
+			String conditionText = StringEscapeUtils.escapeHtml4(input.getConditionText());
+			String durationText = StringEscapeUtils.escapeHtml4(input.getDurationText());
+			String applicantText = StringEscapeUtils.escapeHtml4(input.getApplicantText());
+			String resultText = StringEscapeUtils.escapeHtml4(input.getResultText());
+			String regularText = StringEscapeUtils.escapeHtml4(input.getRegularText());
+			String feeText = StringEscapeUtils.escapeHtml4(input.getFeeText());
+			String administrationCode = StringEscapeUtils.escapeHtml4(input.getAdministrationCode());
+			String domainCode = StringEscapeUtils.escapeHtml4(input.getDomainCode());
+			String active = StringEscapeUtils.escapeHtml4(input.getActive());
+			
 			ServiceInfo serviceInfo = actions.updateServiceInfo(user.getUserId(), groupId, GetterUtil.getLong(id),
-					input.getServiceCode(), input.getServiceName(), input.getProcessText(), input.getMethodText(),
-					input.getDossierText(), input.getConditionText(), input.getDurationText(), input.getApplicantText(),
-					input.getResultText(), input.getRegularText(), input.getFeeText(), input.getAdministrationCode(),
-					input.getDomainCode(), input.getMaxLevel(), GetterUtil.getBoolean(input.getActive()),
+					serviceCode, serviceName, processText, methodText,
+					dossierText, conditionText, durationText, applicantText,
+					resultText, regularText, feeText, administrationCode,
+					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
 					serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);

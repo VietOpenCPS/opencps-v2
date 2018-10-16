@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ServiceProcessManagement;
 import org.opencps.api.controller.util.ProcessSequenceUtils;
 import org.opencps.api.controller.util.ServiceProcessUtils;
@@ -133,12 +134,24 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, 0l, input.getProcessNo(),
-					input.getProcessName(), input.getDescription(), input.getDurationCount(), input.getDurationUnit(),
-					input.getCounter(), GetterUtil.getBoolean(input.getGenerateDossierNo()),
-					input.getDossierNoPattern(), GetterUtil.getBoolean(input.getGenerateDueDate()),
-					input.getDueDatePattern(), GetterUtil.getBoolean(input.getGeneratePassword()),
-					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), input.getPaymentFee(),
+			String processNo = StringEscapeUtils.escapeHtml4(input.getProcessNo());
+			String processName = StringEscapeUtils.escapeHtml4(input.getProcessName());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String generateDossierNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDossierNo()));
+			String dossierNoPattern = StringEscapeUtils.escapeHtml4(input.getDossierNoPattern());
+			String generateDueDate = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDueDate()));
+			String dueDatePattern = StringEscapeUtils.escapeHtml4(input.getDueDatePattern());
+			String generatePassword = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGeneratePassword()));
+			String directNotification = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String serverNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String paymentFee = StringEscapeUtils.escapeHtml4(input.getPaymentFee());
+			
+			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, 0l, processNo,
+					processName, description, input.getDurationCount(), input.getDurationUnit(),
+					input.getCounter(), GetterUtil.getBoolean(generateDossierNo),
+					dossierNoPattern, GetterUtil.getBoolean(generateDueDate),
+					dueDatePattern, GetterUtil.getBoolean(generatePassword),
+					GetterUtil.getBoolean(directNotification), serverNo, paymentFee,
 					serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
@@ -195,12 +208,24 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, id, input.getProcessNo(),
-					input.getProcessName(), input.getDescription(), input.getDurationCount(), input.getDurationUnit(),
-					input.getCounter(), GetterUtil.getBoolean(input.getGenerateDossierNo()),
-					input.getDossierNoPattern(), GetterUtil.getBoolean(input.getGenerateDueDate()),
-					input.getDueDatePattern(), GetterUtil.getBoolean(input.getGeneratePassword()),
-					GetterUtil.getBoolean(input.getDirectNotification()), input.getServerNo(), input.getPaymentFee(),
+			String processNo = StringEscapeUtils.escapeHtml4(input.getProcessNo());
+			String processName = StringEscapeUtils.escapeHtml4(input.getProcessName());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String generateDossierNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDossierNo()));
+			String dossierNoPattern = StringEscapeUtils.escapeHtml4(input.getDossierNoPattern());
+			String generateDueDate = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGenerateDueDate()));
+			String dueDatePattern = StringEscapeUtils.escapeHtml4(input.getDueDatePattern());
+			String generatePassword = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGeneratePassword()));
+			String directNotification = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String serverNo = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDirectNotification()));
+			String paymentFee = StringEscapeUtils.escapeHtml4(input.getPaymentFee());
+			
+			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, id, processNo,
+					processName, description, input.getDurationCount(), input.getDurationUnit(),
+					input.getCounter(), GetterUtil.getBoolean(generateDossierNo),
+					dossierNoPattern, GetterUtil.getBoolean(generateDueDate),
+					dueDatePattern, GetterUtil.getBoolean(generatePassword),
+					GetterUtil.getBoolean(directNotification), serverNo, paymentFee,
 					serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
@@ -441,11 +466,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("DuplicateStepNoException");
 			}
 
-			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, input.getStepCode(),
-					input.getStepName(), id, input.getSequenceNo(), input.getDossierStatus(),
-					input.getDossierSubStatus(), GetterUtil.getInteger(input.getDurationCount()),
-					input.getCustomProcessUrl(), input.getStepInstruction(), input.getBriefNote(),
-					GetterUtil.getBoolean(input.getEditable()), input.getLockState(), serviceContext);
+			String stepCode = StringEscapeUtils.escapeHtml4(input.getStepCode());
+			String stepName = StringEscapeUtils.escapeHtml4(input.getStepName());
+			String sequenceNo = StringEscapeUtils.escapeHtml4(input.getSequenceNo());
+			String dossierStatus = StringEscapeUtils.escapeHtml4(input.getDossierStatus());
+			String dossierSubStatus = StringEscapeUtils.escapeHtml4(input.getDossierSubStatus());
+			String durationCount = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDurationCount()));
+			String customProcessUrl = StringEscapeUtils.escapeHtml4(input.getCustomProcessUrl());
+			String stepInstruction = StringEscapeUtils.escapeHtml4(input.getStepInstruction());
+			String briefNote = StringEscapeUtils.escapeHtml4(input.getBriefNote());
+			String editable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getEditable()));
+			String lockState = StringEscapeUtils.escapeHtml4(input.getLockState());
+			
+			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, stepCode,
+					stepName, id, sequenceNo, dossierStatus,
+					dossierSubStatus, GetterUtil.getInteger(durationCount),
+					customProcessUrl, stepInstruction, briefNote,
+					GetterUtil.getBoolean(editable), lockState, serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -480,11 +517,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("InvalidStepCode");
 			}
 			
-			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id,
-					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
-					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()),
-					input.getLockState(), serviceContext);
+			String stepCode = StringEscapeUtils.escapeHtml4(input.getStepCode());
+			String stepName = StringEscapeUtils.escapeHtml4(input.getStepName());
+			String sequenceNo = StringEscapeUtils.escapeHtml4(input.getSequenceNo());
+			String dossierStatus = StringEscapeUtils.escapeHtml4(input.getDossierStatus());
+			String dossierSubStatus = StringEscapeUtils.escapeHtml4(input.getDossierSubStatus());
+			String durationCount = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDurationCount()));
+			String customProcessUrl = StringEscapeUtils.escapeHtml4(input.getCustomProcessUrl());
+			String stepInstruction = StringEscapeUtils.escapeHtml4(input.getStepInstruction());
+			String briefNote = StringEscapeUtils.escapeHtml4(input.getBriefNote());
+			String editable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getEditable()));
+			String lockState = StringEscapeUtils.escapeHtml4(input.getLockState());
+			
+			ProcessStep step = actions.updateProcessStep(groupId, code, stepCode, stepName, id,
+					sequenceNo, dossierStatus, dossierSubStatus,
+					GetterUtil.getInteger(durationCount), customProcessUrl,
+					stepInstruction, briefNote, GetterUtil.getBoolean(editable),
+					lockState, serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -751,6 +800,24 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ProcessActionReturnModel results;
 
+			String preStepCode = StringEscapeUtils.escapeHtml4(input.getPreStepCode());
+			String postStepCode = StringEscapeUtils.escapeHtml4(input.getPostStepCode());
+			String autoEvent = StringEscapeUtils.escapeHtml4(input.getAutoEvent());
+			String preCondition = StringEscapeUtils.escapeHtml4(input.getPreCondition());
+			String actionCode = StringEscapeUtils.escapeHtml4(input.getActionCode());
+			String actionName = StringEscapeUtils.escapeHtml4(input.getActionName());
+			String allowAssignUser = StringEscapeUtils.escapeHtml4(String.valueOf(input.getAllowAssignUser()));
+			String assignUserId = StringEscapeUtils.escapeHtml4(String.valueOf(input.getAssignUserId()));
+			String requestPayment = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRequestPayment()));
+			String paymentFee = StringEscapeUtils.escapeHtml4(input.getPaymentFee());
+			String createDossierFiles = StringEscapeUtils.escapeHtml4(input.getCreateDossierFiles());
+			String returnDossierFiles = StringEscapeUtils.escapeHtml4(input.getReturnDossierFiles());
+			String makeBriefNote = StringEscapeUtils.escapeHtml4(input.getMakeBriefNote());
+			String syncActionCode = StringEscapeUtils.escapeHtml4(input.getSyncActionCode());
+			String rollbackable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRollbackable()));
+			String configNote = StringEscapeUtils.escapeHtml4(input.getConfigNote());
+			String dossierTemplateNo = StringEscapeUtils.escapeHtml4(input.getDossierTemplateNo());
+			
 /*			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
 					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
@@ -759,14 +826,14 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
 					serviceContext);
 */
-			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
-					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getInteger(input.getAllowAssignUser()),
-					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getInteger(input.getRequestPayment()),
-					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
-					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
-					input.getDossierTemplateNo(), serviceContext);
+			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, preStepCode,
+					postStepCode, autoEvent, preCondition, actionCode,
+					actionName, GetterUtil.getInteger(allowAssignUser),
+					GetterUtil.getLong(assignUserId), GetterUtil.getInteger(requestPayment),
+					paymentFee, createDossierFiles, returnDossierFiles,
+					makeBriefNote, syncActionCode, GetterUtil.getBoolean(rollbackable),
+					input.isCreateDossierNo(), input.iseSignature(), configNote,
+					dossierTemplateNo, serviceContext);
 			
 			if (Validator.isNotNull(input.getCreateDossiers())) {
 				processAction.setCreateDossiers(input.getCreateDossiers());

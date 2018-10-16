@@ -31,16 +31,22 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -125,12 +131,43 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 								_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
 
 								flag = true;
-
-								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
-										dossier.getReferenceUid(), processAction.getActionCode(),
-										processAction.getProcessActionId(), userActionName, StringPool.BLANK,
-										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
+								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), processAction.getActionCode());
+//								_log.info("Action config: " + actConfig);
+								String serviceCode = dossier.getServiceCode();
+								String govAgencyCode = dossier.getGovAgencyCode();
+								String dossierTempNo = dossier.getDossierTemplateNo();
+								ProcessOption option = null;
+								
+								if (actConfig != null) {
+									ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(dossier.getGroupId(), 
+											serviceCode, govAgencyCode);
+									if (config != null) {
+										option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(dossier.getGroupId(), 
+												dossierTempNo,
+												config.getServiceConfigId());
+									}
+									
+									dossierActions.doAction(
+										dossier.getGroupId(), 
+										systemUser.getUserId(), 
+										dossier, 
+										option, 
+										processAction,
+										processAction.getActionCode(), 
+										userActionName, 
+										StringPool.BLANK, 
+										StringPool.BLANK, 
+										StringPool.BLANK, 
+										StringPool.BLANK,
+										actConfig.getSyncType(),
 										serviceContext);
+								
+//								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+//										dossier.getReferenceUid(), processAction.getActionCode(),
+//										processAction.getProcessActionId(), userActionName, StringPool.BLANK,
+//										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
+//										serviceContext);
+								}
 							}
 						}
 						
@@ -160,11 +197,41 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 								flag = true;
 
-								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
-										dossier.getReferenceUid(), processAction.getActionCode(),
-										processAction.getProcessActionId(), userActionName, processAction.getActionName(),
-										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
-										serviceContext);
+								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), processAction.getActionCode());
+//								_log.info("Action config: " + actConfig);
+								String serviceCode = dossier.getServiceCode();
+								String govAgencyCode = dossier.getGovAgencyCode();
+								String dossierTempNo = dossier.getDossierTemplateNo();
+								ProcessOption option = null;
+								
+								if (actConfig != null) {
+									ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(dossier.getGroupId(), 
+											serviceCode, govAgencyCode);
+									if (config != null) {
+										option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(dossier.getGroupId(), 
+												dossierTempNo,
+												config.getServiceConfigId());
+									}
+									dossierActions.doAction(
+											dossier.getGroupId(), 
+											systemUser.getUserId(), 
+											dossier, 
+											option, 
+											processAction,
+											processAction.getActionCode(), 
+											userActionName, 
+											StringPool.BLANK, 
+											StringPool.BLANK, 
+											StringPool.BLANK, 
+											StringPool.BLANK,
+											actConfig.getSyncType(),
+											serviceContext);
+								}
+//								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
+//										dossier.getReferenceUid(), processAction.getActionCode(),
+//										processAction.getProcessActionId(), userActionName, processAction.getActionName(),
+//										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
+//										serviceContext);
 							}
 						}
 						

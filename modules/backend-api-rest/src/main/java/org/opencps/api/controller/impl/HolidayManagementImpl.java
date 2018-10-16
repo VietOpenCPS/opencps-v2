@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.HolidayManagement;
 import org.opencps.api.controller.util.HolidayUtils;
 import org.opencps.api.controller.exception.ErrorMsg;
@@ -114,8 +115,9 @@ public class HolidayManagementImpl implements HolidayManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			Holiday holiday = actions.create(user.getUserId(), groupId, input.getHolidayDate(), input.getDescription(),
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			
+			Holiday holiday = actions.create(user.getUserId(), groupId, input.getHolidayDate(), description,
 					serviceContext);
 
 			holidayModel = HolidayUtils.mapperHolidayModel(holiday);
@@ -136,7 +138,8 @@ public class HolidayManagementImpl implements HolidayManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			Holiday holiday = actions.update(user.getUserId(), groupId, day, input.getHolidayDate(), input.getDescription(),
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			Holiday holiday = actions.update(user.getUserId(), groupId, day, input.getHolidayDate(), description,
 					serviceContext);
 
 			holidayModel = HolidayUtils.mapperHolidayModel(holiday);

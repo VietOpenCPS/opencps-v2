@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
@@ -74,6 +75,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 			_log.info("START");
+			String applicantName = StringEscapeUtils.escapeHtml4(input.getApplicantName());
+			String applicantIdType = StringEscapeUtils.escapeHtml4(input.getApplicantIdType());
+			String applicantIdNo = StringEscapeUtils.escapeHtml4(input.getApplicantIdNo());
+			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
+			String cityCode = StringEscapeUtils.escapeHtml4(input.getCityCode());
+			String districtCode = StringEscapeUtils.escapeHtml4(input.getDistrictCode());
+			String wardCode = StringEscapeUtils.escapeHtml4(input.getWardCode());
+			String contactName = StringEscapeUtils.escapeHtml4(input.getContactName());
+			String contactTelNo = StringEscapeUtils.escapeHtml4(input.getContactTelNo());
+			String contactEmail = StringEscapeUtils.escapeHtml4(input.getContactEmail());
+			
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 				
@@ -87,10 +99,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				
 			}
 			_log.info("START");
-			Applicant applicant = actions.register(serviceContext, groupId, input.getApplicantName(), input.getApplicantIdType(),
-					input.getApplicantIdNo(), input.getApplicantIdDate(), input.getContactEmail(), input.getAddress(),
-					input.getCityCode(), cityName, input.getDistrictCode(), districtName,
-					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
+			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
+					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
+					cityCode, cityName, districtCode, districtName,
+					wardCode, wardName, contactName, contactTelNo,
 					input.getPassword());
 			_log.info("applicant: "+applicant);
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
@@ -253,10 +265,19 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				}
 			}
 
+			String applicantName = StringEscapeUtils.escapeHtml4(input.getApplicantName());
+			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
+			String cityCode = StringEscapeUtils.escapeHtml4(input.getCityCode());
+			String districtCode = StringEscapeUtils.escapeHtml4(input.getDistrictCode());
+			String wardCode = StringEscapeUtils.escapeHtml4(input.getWardCode());
+			String contactName = StringEscapeUtils.escapeHtml4(input.getContactName());
+			String contactTelNo = StringEscapeUtils.escapeHtml4(input.getContactTelNo());
+			String contactEmail = StringEscapeUtils.escapeHtml4(input.getContactEmail());
+			
 			if (isAllowed) {
-				applicant = actions.updateApplicant(serviceContext,groupId, id, input.getApplicantName(), input.getAddress(), input.getCityCode(),
-						input.getCityName(), input.getDistrictCode(), input.getDistrictName(), input.getWardCode(),
-						input.getWardName(), input.getContactName(), input.getContactTelNo(), input.getContactEmail());
+				applicant = actions.updateApplicant(serviceContext,groupId, id, applicantName, address, cityCode,
+						input.getCityName(), districtCode, input.getDistrictName(), wardCode,
+						input.getWardName(), contactName, contactTelNo, contactEmail);
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 

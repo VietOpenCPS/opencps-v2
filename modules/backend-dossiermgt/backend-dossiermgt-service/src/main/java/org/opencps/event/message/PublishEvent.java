@@ -30,7 +30,7 @@ public class PublishEvent implements MessageListener {
 	
 	private void _doReceiveRequest(Message message) {		
 		_log.info("Publish dossier event");
-		JSONObject dossierObj = (JSONObject) message.get("dossier");;
+		JSONObject dossierObj = (JSONObject) message.get("dossier");
 		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
 		List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.PUBLISH_PROTOCOL);
 		for (ServerConfig sc : lstServers) {

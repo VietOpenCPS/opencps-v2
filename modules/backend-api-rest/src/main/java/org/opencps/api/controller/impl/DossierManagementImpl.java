@@ -903,7 +903,7 @@ public class DossierManagementImpl implements DossierManagement {
 			ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, input.getServiceCode(),
 					input.getGovAgencyCode());
 			if (config != null && Validator.isNotNull(viaPostal)) {
-				viaPostal = config.getPostService()? 1 : 0;
+				viaPostal = config.getPostService() ? (viaPostal == 0 ? 1 : viaPostal) : 0;
 			}
 			
 			if (option != null) {
@@ -968,6 +968,11 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateName(input.getDelegateName());
 				dossier.setDelegateEmail(input.getDelegateEmail());
 				dossier.setDelegateAddress(input.getDelegateAddress());
+				dossier.setPostalAddress(input.getPostalAddress());
+				dossier.setPostalCityCode(input.getPostalCityCode());
+				dossier.setPostalTelNo(input.getPostalTelNo());
+				dossier.setViaPostal(input.getViaPostal());
+				
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
 				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
@@ -992,8 +997,8 @@ public class DossierManagementImpl implements DossierManagement {
 						input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
 						cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
 						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
-						input.getDossierTemplateNo(), password, viaPostal, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-						StringPool.BLANK, online, process.getDirectNotification(), input.getApplicantNote(),
+						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(), input.getPostalCityCode(), StringPool.BLANK,
+						input.getPostalTelNo(), online, process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), serviceContext);
 				dossier.setDelegateName(input.getDelegateName());
 				dossier.setDelegateEmail(input.getDelegateEmail());
