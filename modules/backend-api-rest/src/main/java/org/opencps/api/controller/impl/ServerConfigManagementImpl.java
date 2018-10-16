@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ServerConfigManagement;
 import org.opencps.api.controller.util.ServerConfigUtils;
 import org.opencps.api.serverconfig.model.ServerConfigDetailModel;
@@ -87,8 +88,14 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0l, input.getGovAgencyCode(),
-					input.getServerNo(), input.getServerName(), input.getProtocol(), StringPool.BLANK, new Date(),
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String serverNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String serverName = StringEscapeUtils.escapeHtml4(input.getServerName());
+			String protocol = StringEscapeUtils.escapeHtml4(input.getProtocol());
+			String configs = StringEscapeUtils.escapeHtml4(input.getConfigs());
+						
+			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0l, govAgencyCode,
+					serverNo, serverName, protocol, StringPool.BLANK, new Date(),
 					serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
@@ -151,8 +158,14 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, input.getGovAgencyCode(),
-					input.getServerNo(), input.getServerName(), input.getProtocol(), input.getConfigs(), new Date(),
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String serverNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String serverName = StringEscapeUtils.escapeHtml4(input.getServerName());
+			String protocol = StringEscapeUtils.escapeHtml4(input.getProtocol());
+			String configs = StringEscapeUtils.escapeHtml4(input.getConfigs());
+			
+			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, govAgencyCode,
+					serverNo, serverName, protocol, configs, new Date(),
 					serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
@@ -234,11 +247,13 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
+			String value = StringEscapeUtils.escapeHtml4(input.getValue());
+
 			ServerConfig oldConfig = ServerConfigLocalServiceUtil.getServerConfig(id);
 
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id,
 					oldConfig.getGovAgencyCode(), oldConfig.getServerNo(), oldConfig.getServerName(),
-					oldConfig.getProtocol(), input.getValue(), new Date(), serviceContext);
+					oldConfig.getProtocol(), value, new Date(), serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
@@ -266,12 +281,13 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			if (!auth.hasResource(serviceContext, ServerConfig.class.getName(), ActionKeys.ADD_ENTRY)) {
 				throw new UnauthorizationException();
 			}
-
+			
+			String value = StringEscapeUtils.escapeHtml4(input.getValue());
 			ServerConfig oldConfig = ServerConfigLocalServiceUtil.getServerConfig(id);
 
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id,
 					oldConfig.getGovAgencyCode(), oldConfig.getServerNo(), oldConfig.getServerName(),
-					oldConfig.getProtocol(), input.getValue(), new Date(), serviceContext);
+					oldConfig.getProtocol(), value, new Date(), serviceContext);
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 

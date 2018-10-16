@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.DataManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DataManagementUtils;
@@ -148,20 +149,24 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+			String collectionCode = StringEscapeUtils.escapeHtml4(input.getCollectionCode());
+			String collectionName = StringEscapeUtils.escapeHtml4(input.getCollectionName());
+			String collectionNameEN = StringEscapeUtils.escapeHtml4(input.getCollectionNameEN());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			
 			DictCollection dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId,
-					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
-					input.getDescription(), serviceContext);
+					collectionCode, collectionName, collectionNameEN,
+					description, serviceContext);
 
 			DictCollectionTemp oldCollectionTemp = dictItemDataTempUtil.getDictCollectionTempDetail(input.getCollectionCode(), groupId);
 			
 			if (oldCollectionTemp == null) {
-			dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId,
-					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
-						input.getDescription(), DataMGTTempConstants.DATA_STATUS_ACTIVE, DataMGTTempConstants.DATA_MUST_SYNCHRONIZED, serviceContext);				
+				dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId,
+					collectionCode, collectionName, collectionNameEN,
+						description, DataMGTTempConstants.DATA_STATUS_ACTIVE, DataMGTTempConstants.DATA_MUST_SYNCHRONIZED, serviceContext);				
 			}
 			else {
-				dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, input.getCollectionCode(), input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(), input.getDescription(), DataMGTTempConstants.DATA_STATUS_ACTIVE, DataMGTTempConstants.DATA_MUST_SYNCHRONIZED, serviceContext);
+				dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, collectionCode, collectionCode, collectionName, collectionNameEN, description, DataMGTTempConstants.DATA_STATUS_ACTIVE, DataMGTTempConstants.DATA_MUST_SYNCHRONIZED, serviceContext);
 			}
 			
 			// return json object after update
@@ -184,26 +189,32 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			String collectionCode = StringEscapeUtils.escapeHtml4(input.getCollectionCode());
+			String collectionName = StringEscapeUtils.escapeHtml4(input.getCollectionName());
+			String collectionNameEN = StringEscapeUtils.escapeHtml4(input.getCollectionNameEN());
+			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
 
+			String oldCode = StringEscapeUtils.escapeHtml4(code);
+			
 			_log.info("Update dict collection: " + code);
 			
-			DictCollection dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, code,
-					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
-					input.getDescription(), serviceContext);
+			DictCollection dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, oldCode,
+					collectionCode, collectionName, collectionNameEN,
+					description, serviceContext);
 
-			DictCollectionTemp temp = dictItemDataTempUtil.getDictCollectionTempDetail(code, groupId);
+			DictCollectionTemp temp = dictItemDataTempUtil.getDictCollectionTempDetail(oldCode, groupId);
 			if (temp != null) {
-			dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, code,
-					input.getCollectionCode(), input.getCollectionName(), input.getCollectionNameEN(),
-					input.getDescription(), 
+			dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, oldCode,
+					collectionCode, collectionName, collectionNameEN,
+					description, 
 					DataMGTTempConstants.DATA_STATUS_ACTIVE,
 					DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
 						serviceContext);				
 			}
 			else {
-				dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId, code,
-						input.getCollectionName(), input.getCollectionNameEN(),
-						input.getDescription(), 
+				dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId, oldCode,
+						collectionName, collectionNameEN,
+						description, 
 						DataMGTTempConstants.DATA_STATUS_ACTIVE,
 						DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
 						serviceContext);								
