@@ -329,7 +329,7 @@ public class DossierMgtUtils {
 		PaymentFileActions actions = new PaymentFileActionsImpl();
 		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
 		if (paymentFile != null) {
-			if (paymentFile.getPaymentStatus() != 2) {
+			if (paymentFile.getPaymentStatus() != 5) {
 				result = result && false;
 			}
 		}
