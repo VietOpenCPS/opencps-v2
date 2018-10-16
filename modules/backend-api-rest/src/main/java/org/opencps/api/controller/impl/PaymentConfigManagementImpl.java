@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.PaymentConfigManagement;
 import org.opencps.api.controller.util.PaymentConfigUtils;
 import org.opencps.api.paymentconfig.model.PaymentConfigInputModel;
@@ -102,10 +103,18 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 				throw new UnauthorizationException();
 			}
 
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String govAgencyName = StringEscapeUtils.escapeHtml4(input.getGovAgencyName());
+			String govAgencyTaxNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyTaxNo());
+			String invoiceTemplateNo = StringEscapeUtils.escapeHtml4(input.getInvoiceTemplateNo());
+			String invoiceIssueNo = StringEscapeUtils.escapeHtml4(input.getInvoiceIssueNo());
+			String invoiceLastNo = StringEscapeUtils.escapeHtml4(input.getInvoiceLastNo());
+			String bankInfo = StringEscapeUtils.escapeHtml4(input.getBankInfo());
+			
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.updatePaymentConfig(groupId, 0,
-					input.getGovAgencyCode(), input.getGovAgencyName(), input.getGovAgencyTaxNo(),
-					input.getInvoiceTemplateNo(), input.getInvoiceIssueNo(), input.getInvoiceLastNo(), StringPool.BLANK,
-					input.getBankInfo(), StringPool.BLANK, serviceContext);
+					govAgencyCode, govAgencyName, govAgencyTaxNo,
+					invoiceTemplateNo, invoiceIssueNo, invoiceLastNo, StringPool.BLANK,
+					bankInfo, StringPool.BLANK, serviceContext);
 
 			PaymentConfigInputModel result = PaymentConfigUtils.mappingToModel(paymentConfig);
 
@@ -156,10 +165,18 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 				throw new UnauthorizationException();
 			}
 
+			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
+			String govAgencyName = StringEscapeUtils.escapeHtml4(input.getGovAgencyName());
+			String govAgencyTaxNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyTaxNo());
+			String invoiceTemplateNo = StringEscapeUtils.escapeHtml4(input.getInvoiceTemplateNo());
+			String invoiceIssueNo = StringEscapeUtils.escapeHtml4(input.getInvoiceIssueNo());
+			String invoiceLastNo = StringEscapeUtils.escapeHtml4(input.getInvoiceLastNo());
+			String bankInfo = StringEscapeUtils.escapeHtml4(input.getBankInfo());
+			
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.updatePaymentConfig(groupId, id,
-					input.getGovAgencyCode(), input.getGovAgencyName(), input.getGovAgencyTaxNo(),
-					input.getInvoiceTemplateNo(), input.getInvoiceIssueNo(), input.getInvoiceLastNo(), StringPool.BLANK,
-					input.getBankInfo(), StringPool.BLANK, serviceContext);
+					govAgencyCode, govAgencyName, govAgencyTaxNo,
+					invoiceTemplateNo, invoiceIssueNo, invoiceLastNo, StringPool.BLANK,
+					bankInfo, StringPool.BLANK, serviceContext);
 
 			PaymentConfigInputModel result = PaymentConfigUtils.mappingToModel(paymentConfig);
 
@@ -319,7 +336,9 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.updateEConfig(id, input.getValue(), serviceContext);
+			String epaymentConfig = StringEscapeUtils.escapeHtml4(input.getValue());
+			
+			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.updateEConfig(id, epaymentConfig, serviceContext);
 
 			PaymentConfigSingleInputModel result = new PaymentConfigSingleInputModel();
 			

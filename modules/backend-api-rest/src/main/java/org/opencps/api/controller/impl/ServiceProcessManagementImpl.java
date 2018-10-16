@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ServiceProcessManagement;
 import org.opencps.api.controller.util.ProcessSequenceUtils;
 import org.opencps.api.controller.util.ServiceProcessUtils;
@@ -751,6 +752,24 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ProcessActionReturnModel results;
 
+			String preStepCode = StringEscapeUtils.escapeHtml4(input.getPreStepCode());
+			String postStepCode = StringEscapeUtils.escapeHtml4(input.getPostStepCode());
+			String autoEvent = StringEscapeUtils.escapeHtml4(input.getAutoEvent());
+			String preCondition = StringEscapeUtils.escapeHtml4(input.getPreCondition());
+			String actionCode = StringEscapeUtils.escapeHtml4(input.getActionCode());
+			String actionName = StringEscapeUtils.escapeHtml4(input.getActionName());
+			String allowAssignUser = StringEscapeUtils.escapeHtml4(String.valueOf(input.getAllowAssignUser()));
+			String assignUserId = StringEscapeUtils.escapeHtml4(String.valueOf(input.getAssignUserId()));
+			String requestPayment = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRequestPayment()));
+			String paymentFee = StringEscapeUtils.escapeHtml4(input.getPaymentFee());
+			String createDossierFiles = StringEscapeUtils.escapeHtml4(input.getCreateDossierFiles());
+			String returnDossierFiles = StringEscapeUtils.escapeHtml4(input.getReturnDossierFiles());
+			String makeBriefNote = StringEscapeUtils.escapeHtml4(input.getMakeBriefNote());
+			String syncActionCode = StringEscapeUtils.escapeHtml4(input.getSyncActionCode());
+			String rollbackable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRollbackable()));
+			String configNote = StringEscapeUtils.escapeHtml4(input.getConfigNote());
+			String dossierTemplateNo = StringEscapeUtils.escapeHtml4(input.getDossierTemplateNo());
+			
 /*			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
 					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
@@ -759,14 +778,14 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
 					serviceContext);
 */
-			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
-					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getInteger(input.getAllowAssignUser()),
-					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getInteger(input.getRequestPayment()),
-					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
-					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
-					input.getDossierTemplateNo(), serviceContext);
+			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, preStepCode,
+					postStepCode, autoEvent, preCondition, actionCode,
+					actionName, GetterUtil.getInteger(allowAssignUser),
+					GetterUtil.getLong(assignUserId), GetterUtil.getInteger(requestPayment),
+					paymentFee, createDossierFiles, returnDossierFiles,
+					makeBriefNote, syncActionCode, GetterUtil.getBoolean(rollbackable),
+					input.isCreateDossierNo(), input.iseSignature(), configNote,
+					dossierTemplateNo, serviceContext);
 			
 			if (Validator.isNotNull(input.getCreateDossiers())) {
 				processAction.setCreateDossiers(input.getCreateDossiers());
