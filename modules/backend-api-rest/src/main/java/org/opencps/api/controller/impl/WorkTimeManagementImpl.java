@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.WorkTimeManagement;
 import org.opencps.api.controller.util.WorkTimeUtils;
 import org.opencps.api.controller.exception.ErrorMsg;
@@ -111,8 +112,9 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			WorkTime workTime = actions.create(user.getUserId(), groupId, input.getDay(), input.getHours(),
+			String hours = StringEscapeUtils.escapeHtml4(String.valueOf(input.getHours()));
+			
+			WorkTime workTime = actions.create(user.getUserId(), groupId, input.getDay(), hours,
 					serviceContext);
 
 			workTimeModel = WorkTimeUtils.mapperWorkTimeModel(workTime);
@@ -133,8 +135,9 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-			WorkTime workTime = actions.update(user.getUserId(), groupId, n, input.getHours(), serviceContext);
+			String hours = StringEscapeUtils.escapeHtml4(String.valueOf(input.getHours()));
+			
+			WorkTime workTime = actions.update(user.getUserId(), groupId, n, hours, serviceContext);
 
 			workTimeModel = WorkTimeUtils.mapperWorkTimeModel(workTime);
 
