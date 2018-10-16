@@ -19,16 +19,16 @@ import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.rest.application.model.ActionConfigItem;
+import org.opencps.rest.application.model.MenuConfigItem;
+import org.opencps.rest.application.model.MenuConfigItemResult;
+import org.opencps.rest.application.model.MenuConfigStepsItem;
+import org.opencps.rest.application.model.StepConfigItem;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
-import io.swagger.model.ActionConfigItem;
-import io.swagger.model.MenuConfigItem;
-import io.swagger.model.MenuConfigItemResult;
-import io.swagger.model.MenuConfigStepsItem;
-import io.swagger.model.StepConfigItem;
 
 public class OpenCPSAPIParsing {
 	protected Log _log = LogFactoryUtil.getLog(OpenCPSAPIParsing.class);

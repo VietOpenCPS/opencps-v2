@@ -422,6 +422,7 @@
 		<column name="sampleCount" type="long" />
 		<column name="durationUnit" type="int" />
 		<column name="durationCount" type="double" />
+		<column name="dossierName" type ="String" />
 		<!-- Order -->
 		
 		<!-- Finder methods -->

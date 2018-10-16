@@ -69,6 +69,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DELEGATE_NAME, model.getDelegateName());
 	    params.put(DossierTerm.DELEGATE_EMAIL, model.getDelegateEmail());
 	    params.put(DossierTerm.DELEGATE_ADDRESS, model.getDelegateAddress());
+	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
@@ -145,6 +146,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DOSSIER_STATUS_TEXT, model.getDossierStatusText());
 	    params.put(DossierTerm.DOSSIER_SUB_STATUS, model.getDossierSubStatus());
 	    params.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, model.getDossierSubStatusText());
+	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
@@ -585,6 +587,9 @@ public class OpenCPSConverter {
 		}
 		if (jsonObj.has(DossierTerm.DOSSIER_SUB_STATUS_TEXT)) {
 			model.setDossierSubStatusText(jsonObj.getString(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_NAME)) {
+			model.setDossierName(jsonObj.getString(DossierTerm.DOSSIER_NAME));
 		}
 
 		return model;

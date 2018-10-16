@@ -148,6 +148,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("sampleCount", getSampleCount());
 		attributes.put("durationUnit", getDurationUnit());
 		attributes.put("durationCount", getDurationCount());
+		attributes.put("dossierName", getDossierName());
 
 		return attributes;
 	}
@@ -691,6 +692,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		if (durationCount != null) {
 			setDurationCount(durationCount);
 		}
+
+		String dossierName = (String)attributes.get("dossierName");
+
+		if (dossierName != null) {
+			setDossierName(dossierName);
+		}
 	}
 
 	@Override
@@ -1021,6 +1028,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public long getDossierId() {
 		return _dossier.getDossierId();
+	}
+
+	/**
+	* Returns the dossier name of this dossier.
+	*
+	* @return the dossier name of this dossier
+	*/
+	@Override
+	public String getDossierName() {
+		return _dossier.getDossierName();
 	}
 
 	/**
@@ -2011,6 +2028,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setDossierId(long dossierId) {
 		_dossier.setDossierId(dossierId);
+	}
+
+	/**
+	* Sets the dossier name of this dossier.
+	*
+	* @param dossierName the dossier name of this dossier
+	*/
+	@Override
+	public void setDossierName(String dossierName) {
+		_dossier.setDossierName(dossierName);
 	}
 
 	/**

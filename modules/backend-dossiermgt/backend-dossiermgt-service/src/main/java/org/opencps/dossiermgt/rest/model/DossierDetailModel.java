@@ -163,7 +163,8 @@ import javax.xml.bind.annotation.XmlType;
     "notification",
     "online",
     "originality",
-    "dossierActionId"
+    "dossierActionId",
+    "dossierName"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -233,6 +234,7 @@ public class DossierDetailModel {
     protected String online;
     protected Integer originality;
     protected Integer dossierActionId;
+    protected String dossierName;
 
     /**
      * Gets the value of the dossierId property.
@@ -1793,5 +1795,13 @@ public class DossierDetailModel {
     public void setDossierActionId(Integer value) {
         this.dossierActionId = value;
     }
+
+	public String getDossierName() {
+		return dossierName;
+	}
+
+	public void setDossierName(String dossierName) {
+		this.dossierName = dossierName;
+	}
 
 }

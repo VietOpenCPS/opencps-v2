@@ -73,6 +73,7 @@ public class DossierUtils {
 			DossierDataModel model = new DossierDataModel();
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+			model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
 			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 			if (Validator.isNotNull(doc.get(DossierTerm.CREATE_DATE))) {
 				Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
@@ -719,6 +720,7 @@ public class DossierUtils {
 		}
 		
 		model.setDossierId(GetterUtil.getInteger(input.getDossierId()));
+		model.setDossierName(input.getDossierName());
 		model.setUserId(GetterUtil.getInteger(input.getUserId()));
 		model.setCreateDate(
 				APIDateTimeUtils.convertDateToString(input.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));

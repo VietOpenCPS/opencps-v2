@@ -1,15 +1,5 @@
 package backend.api.rest.application.v21.impl;
 
-import javax.naming.AuthenticationException;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-
-import org.opencps.dossiermgt.action.ActionConfigActions;
-import org.opencps.dossiermgt.action.impl.ActionConfigActionsImpl;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -19,10 +9,20 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+
+import org.opencps.dossiermgt.action.ActionConfigActions;
+import org.opencps.dossiermgt.action.impl.ActionConfigActionsImpl;
+import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.rest.application.api.ActionConfigApi;
+import org.opencps.rest.application.model.ActionConfigItem;
+import org.opencps.rest.application.model.ActionConfigItemResult;
+
 import backend.api.rest.application.v21.parser.OpenCPSAPIParsing;
-import io.swagger.api.ActionConfigApi;
-import io.swagger.model.ActionConfigItem;
-import io.swagger.model.ActionConfigItemResult;
 
 public class ActionConfigApiImpl implements ActionConfigApi {
 	private static Log _log = LogFactoryUtil.getLog(ActionConfigApiImpl.class);

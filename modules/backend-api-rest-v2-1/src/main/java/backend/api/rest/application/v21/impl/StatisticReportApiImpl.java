@@ -1,16 +1,5 @@
 package backend.api.rest.application.v21.impl;
 
-import java.io.File;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -29,7 +18,18 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import io.swagger.api.StatisticReportApi;
+import java.io.File;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.rest.application.api.StatisticReportApi;
 
 public class StatisticReportApiImpl implements StatisticReportApi {
 
@@ -50,7 +50,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 	private static Log _log = LogFactoryUtil.getLog(StatisticReportApiImpl.class);
 
 	@Override
-	public Object statisticReportPrint(String code, String body) {
+	public Object statisticReportPrint(User user, Company company, Locale locale, HttpHeaders httpHeaders,
+			ServiceContext serviceContext, String code, String body) {
 		File file = null;
 
 //		BackendAuth auth = new BackendAuthImpl();

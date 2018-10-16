@@ -40,7 +40,7 @@ public class MBMessageEntry {
 		this.setToAddress(initArrayInternetAddress(toEmail, toName));
 
 //		this.setFrom(initInternetAddress("no-reply@fds.vn", fromName));
-		this.setFrom(initInternetAddress("no-reply@phutho.gov.vn", fromName));
+		this.setFrom(initInternetAddress("no-reply@fds.vn", fromName));
 
 	}
 

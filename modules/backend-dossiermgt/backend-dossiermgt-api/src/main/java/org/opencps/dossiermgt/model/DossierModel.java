@@ -1429,6 +1429,21 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setDurationCount(double durationCount);
 
+	/**
+	 * Returns the dossier name of this dossier.
+	 *
+	 * @return the dossier name of this dossier
+	 */
+	@AutoEscape
+	public String getDossierName();
+
+	/**
+	 * Sets the dossier name of this dossier.
+	 *
+	 * @param dossierName the dossier name of this dossier
+	 */
+	public void setDossierName(String dossierName);
+
 	@Override
 	public boolean isNew();
 

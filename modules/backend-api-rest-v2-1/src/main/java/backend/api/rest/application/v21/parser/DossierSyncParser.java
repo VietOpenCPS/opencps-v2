@@ -1,16 +1,14 @@
 package backend.api.rest.application.v21.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.opencps.dossiermgt.model.DossierSync;
-
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import io.swagger.model.DossierSyncModel;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.rest.application.model.DossierSyncModel;
 
 public class DossierSyncParser {
 

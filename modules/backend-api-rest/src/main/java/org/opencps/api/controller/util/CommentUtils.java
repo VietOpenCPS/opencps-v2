@@ -146,6 +146,7 @@ public class CommentUtils {
 				Validator.isNotNull(document.get(CommentTerm.OPINION))
 					? Boolean.parseBoolean(document.get(CommentTerm.OPINION))
 					: false);
+		commentModel.setCreatedByCurrentUser(createdByCurrentUser);
 
 		return commentModel;
 	}

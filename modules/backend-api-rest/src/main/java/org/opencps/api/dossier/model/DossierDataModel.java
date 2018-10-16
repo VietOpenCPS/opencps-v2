@@ -180,7 +180,8 @@ import javax.xml.bind.annotation.XmlType;
     "domainName",
     "extendDate",
     "lastActionUserId",
-    "currentActionUser"
+    "currentActionUser",
+    "dossierName"
 })
 public class DossierDataModel {
 
@@ -267,6 +268,7 @@ public class DossierDataModel {
 	protected String extendDate;
 	protected Long lastActionUserId;
 	protected String currentActionUser;
+	protected String dossierName;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1941,4 +1943,13 @@ public class DossierDataModel {
 	public void setCurrentActionUser(String currentActionUser) {
 		this.currentActionUser = currentActionUser;
 	}
+
+	public String getDossierName() {
+		return dossierName;
+	}
+
+	public void setDossierName(String dossierName) {
+		this.dossierName = dossierName;
+	}
+
 }

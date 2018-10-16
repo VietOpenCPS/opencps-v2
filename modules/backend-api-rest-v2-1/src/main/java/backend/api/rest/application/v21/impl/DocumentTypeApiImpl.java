@@ -1,5 +1,16 @@
 package backend.api.rest.application.v21.impl;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,24 +23,12 @@ import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
-
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
+import org.opencps.rest.application.api.DocumentTypesApi;
+import org.opencps.rest.application.model.DocumentTypeInputModel;
+import org.opencps.rest.application.model.DocumentTypeModel;
+import org.opencps.rest.application.model.DocumentTypeResultModel;
 
 import backend.api.rest.application.v21.parser.DocumentTypeParser;
-import io.swagger.api.DocumentTypesApi;
-import io.swagger.model.DocumentTypeInputModel;
-import io.swagger.model.DocumentTypeModel;
-import io.swagger.model.DocumentTypeResultModel;
-
 
 public class DocumentTypeApiImpl implements DocumentTypesApi{
 
