@@ -31,6 +31,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.EmployeeManagement;
 import org.opencps.api.controller.util.EmployeeUtils;
@@ -150,9 +151,16 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
 			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
 
-			Employee employee = actions.create(user.getUserId(), company.getCompanyId(), groupId, input.getEmployeeNo(),
-					input.getFullName(), input.getEmail(), input.getGender(), birthDate, input.getTelNo(),
-					input.getMobile(), input.getTitle(), input.getWorkingStatus(), recruitDate, leaveDate,
+			String fullName = StringEscapeUtils.escapeHtml4(input.getFullName());
+			String employeeNo = StringEscapeUtils.escapeHtml4(input.getEmployeeNo());
+			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
+			String mobile = StringEscapeUtils.escapeHtml4(input.getMobile());
+			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
+			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
+			
+			Employee employee = actions.create(user.getUserId(), company.getCompanyId(), groupId, employeeNo,
+					fullName, email, input.getGender(), birthDate, telNo,
+					mobile, title, input.getWorkingStatus(), recruitDate, leaveDate,
 					serviceContext);
 
 			employeeModel = EmployeeUtils.mapperEmployeeModel(employee);
@@ -178,9 +186,16 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
 			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
 
+			String fullName = StringEscapeUtils.escapeHtml4(input.getFullName());
+			String employeeNo = StringEscapeUtils.escapeHtml4(input.getEmployeeNo());
+			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
+			String mobile = StringEscapeUtils.escapeHtml4(input.getMobile());
+			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
+			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
+
 			Employee employee = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
-					input.getEmployeeNo(), input.getFullName(), input.getEmail(), input.getGender(), birthDate,
-					input.getTelNo(), input.getMobile(), input.getTitle(), input.getWorkingStatus(), recruitDate,
+					employeeNo, fullName, email, input.getGender(), birthDate,
+					telNo, mobile, title, input.getWorkingStatus(), recruitDate,
 					leaveDate, serviceContext);
 
 			employeeModel = EmployeeUtils.mapperEmployeeModel(employee);
