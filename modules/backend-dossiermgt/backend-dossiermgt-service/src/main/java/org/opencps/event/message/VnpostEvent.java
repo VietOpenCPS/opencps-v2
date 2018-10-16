@@ -13,6 +13,7 @@ import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -41,10 +42,10 @@ public class VnpostEvent implements MessageListener {
 	
 	private void _doReceiveRequest(Message message) {		
 		_log.info("GO GO VNPOST event");
-		JSONObject dossierObj = (JSONObject) message.get("dossier");;
+		JSONObject dossierObj = (JSONObject) message.get("dossier");
 		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
 		InvokeREST callRest = new InvokeREST();
-		String baseUrl = "/o/rest/v2";
+		String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
 		
