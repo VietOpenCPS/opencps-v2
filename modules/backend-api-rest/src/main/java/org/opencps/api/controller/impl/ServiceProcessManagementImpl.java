@@ -442,11 +442,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("DuplicateStepNoException");
 			}
 
-			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, input.getStepCode(),
-					input.getStepName(), id, input.getSequenceNo(), input.getDossierStatus(),
-					input.getDossierSubStatus(), GetterUtil.getInteger(input.getDurationCount()),
-					input.getCustomProcessUrl(), input.getStepInstruction(), input.getBriefNote(),
-					GetterUtil.getBoolean(input.getEditable()), input.getLockState(), serviceContext);
+			String stepCode = StringEscapeUtils.escapeHtml4(input.getStepCode());
+			String stepName = StringEscapeUtils.escapeHtml4(input.getStepName());
+			String sequenceNo = StringEscapeUtils.escapeHtml4(input.getSequenceNo());
+			String dossierStatus = StringEscapeUtils.escapeHtml4(input.getDossierStatus());
+			String dossierSubStatus = StringEscapeUtils.escapeHtml4(input.getDossierSubStatus());
+			String durationCount = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDurationCount()));
+			String customProcessUrl = StringEscapeUtils.escapeHtml4(input.getCustomProcessUrl());
+			String stepInstruction = StringEscapeUtils.escapeHtml4(input.getStepInstruction());
+			String briefNote = StringEscapeUtils.escapeHtml4(input.getBriefNote());
+			String editable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getEditable()));
+			String lockState = StringEscapeUtils.escapeHtml4(input.getLockState());
+			
+			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, stepCode,
+					stepName, id, sequenceNo, dossierStatus,
+					dossierSubStatus, GetterUtil.getInteger(durationCount),
+					customProcessUrl, stepInstruction, briefNote,
+					GetterUtil.getBoolean(editable), lockState, serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -481,11 +493,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new DuplicateStepNoException("InvalidStepCode");
 			}
 			
-			ProcessStep step = actions.updateProcessStep(groupId, code, input.getStepCode(), input.getStepName(), id,
-					input.getSequenceNo(), input.getDossierStatus(), input.getDossierSubStatus(),
-					GetterUtil.getInteger(input.getDurationCount()), input.getCustomProcessUrl(),
-					input.getStepInstruction(), input.getBriefNote(), GetterUtil.getBoolean(input.getEditable()),
-					input.getLockState(), serviceContext);
+			String stepCode = StringEscapeUtils.escapeHtml4(input.getStepCode());
+			String stepName = StringEscapeUtils.escapeHtml4(input.getStepName());
+			String sequenceNo = StringEscapeUtils.escapeHtml4(input.getSequenceNo());
+			String dossierStatus = StringEscapeUtils.escapeHtml4(input.getDossierStatus());
+			String dossierSubStatus = StringEscapeUtils.escapeHtml4(input.getDossierSubStatus());
+			String durationCount = StringEscapeUtils.escapeHtml4(String.valueOf(input.getDurationCount()));
+			String customProcessUrl = StringEscapeUtils.escapeHtml4(input.getCustomProcessUrl());
+			String stepInstruction = StringEscapeUtils.escapeHtml4(input.getStepInstruction());
+			String briefNote = StringEscapeUtils.escapeHtml4(input.getBriefNote());
+			String editable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getEditable()));
+			String lockState = StringEscapeUtils.escapeHtml4(input.getLockState());
+			
+			ProcessStep step = actions.updateProcessStep(groupId, code, stepCode, stepName, id,
+					sequenceNo, dossierStatus, dossierSubStatus,
+					GetterUtil.getInteger(durationCount), customProcessUrl,
+					stepInstruction, briefNote, GetterUtil.getBoolean(editable),
+					lockState, serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 

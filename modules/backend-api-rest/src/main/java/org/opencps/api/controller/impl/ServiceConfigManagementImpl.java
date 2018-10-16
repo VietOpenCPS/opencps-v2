@@ -34,6 +34,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ServiceConfigManagement;
 import org.opencps.api.controller.util.ServiceConfigUtils;
 import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
@@ -329,8 +330,21 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
+//			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
+//			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
+//			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
+//			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
+//			model.setDossierTemplateId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
+//			model.setServiceProcessId(
+//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
+//			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
+			String autoSelect = StringEscapeUtils.escapeHtml4(input.getAutoSelect());
+			String instructionNote = StringEscapeUtils.escapeHtml4(input.getInstructionNote());
+			String submissionNote = StringEscapeUtils.escapeHtml4(input.getSubmissionNote());
+			
 			ProcessOption serviceConfig = actions.updateOption(groupId, input.getOptionName(), 0l, id,
-					input.getSeqOrder(), input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(),
+					input.getSeqOrder(), autoSelect, instructionNote, submissionNote,
 					input.getDossierTemplateId(), input.getServiceProcessId(), serviceContext);
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(serviceConfig);
@@ -362,8 +376,12 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
+			String autoSelect = StringEscapeUtils.escapeHtml4(input.getAutoSelect());
+			String instructionNote = StringEscapeUtils.escapeHtml4(input.getInstructionNote());
+			String submissionNote = StringEscapeUtils.escapeHtml4(input.getSubmissionNote());
+			
 			ProcessOption processOption = actions.updateOption(groupId, input.getOptionName(), optionId, id,
-					input.getSeqOrder(), input.getAutoSelect(), input.getInstructionNote(), input.getSubmissionNote(),
+					input.getSeqOrder(), autoSelect, instructionNote, submissionNote,
 					input.getDossierTemplateId(), input.getServiceProcessId(), serviceContext);
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(processOption);
