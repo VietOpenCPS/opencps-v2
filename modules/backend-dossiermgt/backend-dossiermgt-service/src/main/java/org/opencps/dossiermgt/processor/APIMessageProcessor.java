@@ -285,6 +285,27 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 
 			}
+			if (processAction.getPreCondition().contains("payok")) {
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+				_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+//				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+				pfiModel.setApplicantName(dossier.getApplicantName());
+				pfiModel.setBankInfo(paymentFile.getBankInfo());
+				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
+				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+				pfiModel.setPaymentAmount(processAction.getPaymentFee());
+				pfiModel.setPaymentFee(processAction.getPaymentFee());
+				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+				pfiModel.setReferenceUid(dossier.getReferenceUid());
+				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
+				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
+				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+				
+				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			}
 		}
 		catch (Exception e) {
 			_log.debug(e);
@@ -640,7 +661,27 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 //			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			
 		}
-		
+		if (processAction.getPreCondition().contains("payok")) {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+			_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+//			_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+			pfiModel.setApplicantName(dossier.getApplicantName());
+			pfiModel.setBankInfo(paymentFile.getBankInfo());
+			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
+			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+			pfiModel.setPaymentAmount(processAction.getPaymentFee());
+			pfiModel.setPaymentFee(processAction.getPaymentFee());
+			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+			pfiModel.setReferenceUid(dossier.getReferenceUid());
+			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
+			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
+			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+			
+			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);			
+		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
