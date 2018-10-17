@@ -970,6 +970,15 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateAddress(input.getDelegateAddress());
 				dossier.setPostalAddress(input.getPostalAddress());
 				dossier.setPostalCityCode(input.getPostalCityCode());
+				dossier.setPostalCityName(input.getPostalCityName());
+				dossier.setPostalTelNo(input.getPostalTelNo());
+				dossier.setPostalServiceCode(input.getPostalServiceCode());
+				dossier.setPostalServiceName(input.getPostalServiceName());
+				dossier.setPostalDistrictCode(input.getPostalDistrictCode());
+				dossier.setPostalDistrictName(input.getPostalDistrictName());
+				dossier.setPostalWardCode(input.getPostalWardCode());
+				dossier.setPostalWardName(input.getPostalWardName());
+				
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setViaPostal(input.getViaPostal());
 				
@@ -1008,6 +1017,14 @@ public class DossierManagementImpl implements DossierManagement {
 				} else {
 					dossier.setDossierName(serviceName);
 				}
+				dossier.setPostalCityName(input.getPostalCityName());
+				dossier.setPostalTelNo(input.getPostalTelNo());
+				dossier.setPostalServiceCode(input.getPostalServiceCode());
+				dossier.setPostalServiceName(input.getPostalServiceName());
+				dossier.setPostalDistrictCode(input.getPostalDistrictCode());
+				dossier.setPostalDistrictName(input.getPostalDistrictName());
+				dossier.setPostalWardCode(input.getPostalWardCode());
+				dossier.setPostalWardName(input.getPostalWardName());
 
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());

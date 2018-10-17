@@ -1,24 +1,6 @@
 
 package backend.postal.api.rest.controller.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.opencps.api.controller.util.VotingUtils;
-import org.opencps.api.voting.model.VotingInputModel;
-import org.opencps.api.voting.model.VotingModel;
-import org.opencps.api.voting.model.VotingResultInputModel;
-import org.opencps.api.voting.model.VotingResultModel;
-import org.opencps.api.voting.model.VotingResultResults;
-import org.opencps.api.voting.model.VotingResults;
-import org.opencps.api.voting.model.VotingSearchModel;
-
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -30,6 +12,24 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+
+import org.opencps.api.controller.util.VotingUtils;
+import org.opencps.api.voting.model.VotingInputModel;
+import org.opencps.api.voting.model.VotingModel;
+import org.opencps.api.voting.model.VotingResultInputModel;
+import org.opencps.api.voting.model.VotingResultModel;
+import org.opencps.api.voting.model.VotingResultResults;
+import org.opencps.api.voting.model.VotingResults;
+import org.opencps.api.voting.model.VotingSearchModel;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.feedback.action.VotingActions;
@@ -103,12 +103,12 @@ public class VotingManagementImpl implements VotingManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String className = StringEscapeUtils.escapeHtml4(input.getClassName());
-			String classPK = StringEscapeUtils.escapeHtml4(input.getClassPK());
-			String subject = StringEscapeUtils.escapeHtml4(input.getSubject());
-			String choices = StringEscapeUtils.escapeHtml4(input.getChoices());
-			String templateNo = StringEscapeUtils.escapeHtml4(input.getTemplateNo());
-			String commentable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getCommentable()));
+			String className = HtmlUtil.escape(input.getClassName());
+			String classPK = HtmlUtil.escape(input.getClassPK());
+			String subject = HtmlUtil.escape(input.getSubject());
+			String choices = HtmlUtil.escape(input.getChoices());
+			String templateNo = HtmlUtil.escape(input.getTemplateNo());
+			String commentable = HtmlUtil.escape(String.valueOf(input.getCommentable()));
 			
 			Voting voting = actions.addVote(user.getUserId(), company.getCompanyId(), groupId, className,
 					classPK, subject, templateNo, choices,
@@ -134,12 +134,12 @@ public class VotingManagementImpl implements VotingManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String className = StringEscapeUtils.escapeHtml4(input.getClassName());
-			String classPK = StringEscapeUtils.escapeHtml4(input.getClassPK());
-			String subject = StringEscapeUtils.escapeHtml4(input.getSubject());
-			String choices = StringEscapeUtils.escapeHtml4(input.getChoices());
-			String templateNo = StringEscapeUtils.escapeHtml4(input.getTemplateNo());
-			String commentable = StringEscapeUtils.escapeHtml4(String.valueOf(input.getCommentable()));
+			String className = HtmlUtil.escape(input.getClassName());
+			String classPK = HtmlUtil.escape(input.getClassPK());
+			String subject = HtmlUtil.escape(input.getSubject());
+			String choices = HtmlUtil.escape(input.getChoices());
+			String templateNo = HtmlUtil.escape(input.getTemplateNo());
+			String commentable = HtmlUtil.escape(String.valueOf(input.getCommentable()));
 
 			Voting voting = actions.updateVoting(user.getUserId(), company.getCompanyId(), groupId, votingId,
 					className, classPK, subject, templateNo,
@@ -216,9 +216,9 @@ public class VotingManagementImpl implements VotingManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String comment = StringEscapeUtils.escapeHtml4(input.getComment());
-			String selected = StringEscapeUtils.escapeHtml4(input.getSelected());
-			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
+			String comment = HtmlUtil.escape(input.getComment());
+			String selected = HtmlUtil.escape(input.getSelected());
+			String email = HtmlUtil.escape(input.getEmail());
 
 			VotingResult votingResult = actions.addVotingResult(user.getUserId(), company.getCompanyId(), groupId,
 					votingId, email, comment, selected, serviceContext);

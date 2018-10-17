@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -34,7 +35,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ServiceConfigManagement;
 import org.opencps.api.controller.util.ServiceConfigUtils;
 import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
@@ -156,13 +156,13 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String serviceInstruction = StringEscapeUtils.escapeHtml4(input.getServiceInstruction());
-			String serviceUrl = StringEscapeUtils.escapeHtml4(input.getServiceUrl());
-			String forCitizen = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForCitizen()));
-			String forBusiness = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForBusiness()));
-			String postService = StringEscapeUtils.escapeHtml4(String.valueOf(input.getPostalService()));
-			String registration = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRegistration()));
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String serviceInstruction = HtmlUtil.escape(input.getServiceInstruction());
+			String serviceUrl = HtmlUtil.escape(input.getServiceUrl());
+			String forCitizen = HtmlUtil.escape(String.valueOf(input.getForCitizen()));
+			String forBusiness = HtmlUtil.escape(String.valueOf(input.getForBusiness()));
+			String postService = HtmlUtil.escape(String.valueOf(input.getPostalService()));
+			String registration = HtmlUtil.escape(String.valueOf(input.getRegistration()));
 			
 			ServiceConfig serviceConfig = actions.updateServiceConfig(0l, userId, groupId,
 					(long) input.getServiceInfoId(), govAgencyCode, serviceInstruction,
@@ -222,13 +222,13 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String serviceInstruction = StringEscapeUtils.escapeHtml4(input.getServiceInstruction());
-			String serviceUrl = StringEscapeUtils.escapeHtml4(input.getServiceUrl());
-			String forCitizen = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForCitizen()));
-			String forBusiness = StringEscapeUtils.escapeHtml4(String.valueOf(input.getForBusiness()));
-			String postService = StringEscapeUtils.escapeHtml4(String.valueOf(input.getPostalService()));
-			String registration = StringEscapeUtils.escapeHtml4(String.valueOf(input.getRegistration()));
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String serviceInstruction = HtmlUtil.escape(input.getServiceInstruction());
+			String serviceUrl = HtmlUtil.escape(input.getServiceUrl());
+			String forCitizen = HtmlUtil.escape(String.valueOf(input.getForCitizen()));
+			String forBusiness = HtmlUtil.escape(String.valueOf(input.getForBusiness()));
+			String postService = HtmlUtil.escape(String.valueOf(input.getPostalService()));
+			String registration = HtmlUtil.escape(String.valueOf(input.getRegistration()));
 			
 			ServiceConfig serviceConfig = actions.updateServiceConfig(id, userId, groupId,
 					(long) input.getServiceInfoId(), govAgencyCode, serviceInstruction,
@@ -346,18 +346,18 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-//			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
-//			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
-//			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
-//			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
+//			model.setOptionOrder(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getOptionOrder()))));
+//			model.setAutoSelect(HtmlUtil.escape(model.getAutoSelect()));
+//			model.setInstructionNote(HtmlUtil.escape(model.getInstructionNote()));
+//			model.setSubmissionNote(HtmlUtil.escape(model.getSubmissionNote()));
 //			model.setDossierTemplateId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDossierTemplateId()))));
 //			model.setServiceProcessId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-//			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
-			String autoSelect = StringEscapeUtils.escapeHtml4(input.getAutoSelect());
-			String instructionNote = StringEscapeUtils.escapeHtml4(input.getInstructionNote());
-			String submissionNote = StringEscapeUtils.escapeHtml4(input.getSubmissionNote());
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceProcessId()))));
+//			model.setOptionName(HtmlUtil.escape(model.getOptionName()));
+			String autoSelect = HtmlUtil.escape(input.getAutoSelect());
+			String instructionNote = HtmlUtil.escape(input.getInstructionNote());
+			String submissionNote = HtmlUtil.escape(input.getSubmissionNote());
 			
 			ProcessOption serviceConfig = actions.updateOption(groupId, input.getOptionName(), 0l, id,
 					input.getSeqOrder(), autoSelect, instructionNote, submissionNote,
@@ -392,9 +392,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String autoSelect = StringEscapeUtils.escapeHtml4(input.getAutoSelect());
-			String instructionNote = StringEscapeUtils.escapeHtml4(input.getInstructionNote());
-			String submissionNote = StringEscapeUtils.escapeHtml4(input.getSubmissionNote());
+			String autoSelect = HtmlUtil.escape(input.getAutoSelect());
+			String instructionNote = HtmlUtil.escape(input.getInstructionNote());
+			String submissionNote = HtmlUtil.escape(input.getSubmissionNote());
 			
 			ProcessOption processOption = actions.updateOption(groupId, input.getOptionName(), optionId, id,
 					input.getSeqOrder(), autoSelect, instructionNote, submissionNote,

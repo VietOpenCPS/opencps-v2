@@ -24,20 +24,20 @@ public class ProcessStepTempListener extends BaseModelListener<ProcessStep> {
 	@Override
 	public void onBeforeCreate(ProcessStep model) throws ModelListenerException {
 //		try {
-//			model.setStepCode(StringEscapeUtils.escapeHtml4(model.getStepCode()));
+//			model.setStepCode(HtmlUtil.escape(model.getStepCode()));
 //			model.setServiceProcessId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-//			model.setStepName(StringEscapeUtils.escapeHtml4(model.getStepName()));
-//			model.setSequenceNo(StringEscapeUtils.escapeHtml4(model.getSequenceNo()));
-//			model.setDossierStatus(StringEscapeUtils.escapeHtml4(model.getDossierStatus()));
-//			model.setDossierSubStatus(StringEscapeUtils.escapeHtml4(model.getDossierSubStatus()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceProcessId()))));
+//			model.setStepName(HtmlUtil.escape(model.getStepName()));
+//			model.setSequenceNo(HtmlUtil.escape(model.getSequenceNo()));
+//			model.setDossierStatus(HtmlUtil.escape(model.getDossierStatus()));
+//			model.setDossierSubStatus(HtmlUtil.escape(model.getDossierSubStatus()));
 //			model.setDurationCount(
-//					Double.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDurationCount()))));
-//			model.setCustomProcessUrl(StringEscapeUtils.escapeHtml4(model.getCustomProcessUrl()));
-//			model.setStepInstruction(StringEscapeUtils.escapeHtml4(model.getStepInstruction()));
-//			model.setBriefNote(StringEscapeUtils.escapeHtml4(model.getBriefNote()));
-//			model.setEditable(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getEditable()))));
-//			model.setLockState(StringEscapeUtils.escapeHtml4(model.getLockState()));
+//					Double.valueOf(HtmlUtil.escape(String.valueOf(model.getDurationCount()))));
+//			model.setCustomProcessUrl(HtmlUtil.escape(model.getCustomProcessUrl()));
+//			model.setStepInstruction(HtmlUtil.escape(model.getStepInstruction()));
+//			model.setBriefNote(HtmlUtil.escape(model.getBriefNote()));
+//			model.setEditable(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getEditable()))));
+//			model.setLockState(HtmlUtil.escape(model.getLockState()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -47,20 +47,20 @@ public class ProcessStepTempListener extends BaseModelListener<ProcessStep> {
 	@Override
 	public void onBeforeUpdate(ProcessStep model) throws ModelListenerException {
 //		try {
-//			model.setStepCode(StringEscapeUtils.escapeHtml4(model.getStepCode()));
+//			model.setStepCode(HtmlUtil.escape(model.getStepCode()));
 //			model.setServiceProcessId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-//			model.setStepName(StringEscapeUtils.escapeHtml4(model.getStepName()));
-//			model.setSequenceNo(StringEscapeUtils.escapeHtml4(model.getSequenceNo()));
-//			model.setDossierStatus(StringEscapeUtils.escapeHtml4(model.getDossierStatus()));
-//			model.setDossierSubStatus(StringEscapeUtils.escapeHtml4(model.getDossierSubStatus()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceProcessId()))));
+//			model.setStepName(HtmlUtil.escape(model.getStepName()));
+//			model.setSequenceNo(HtmlUtil.escape(model.getSequenceNo()));
+//			model.setDossierStatus(HtmlUtil.escape(model.getDossierStatus()));
+//			model.setDossierSubStatus(HtmlUtil.escape(model.getDossierSubStatus()));
 //			model.setDurationCount(
-//					Double.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDurationCount()))));
-//			model.setCustomProcessUrl(StringEscapeUtils.escapeHtml4(model.getCustomProcessUrl()));
-//			model.setStepInstruction(StringEscapeUtils.escapeHtml4(model.getStepInstruction()));
-//			model.setBriefNote(StringEscapeUtils.escapeHtml4(model.getBriefNote()));
-//			model.setEditable(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getEditable()))));
-//			model.setLockState(StringEscapeUtils.escapeHtml4(model.getLockState()));
+//					Double.valueOf(HtmlUtil.escape(String.valueOf(model.getDurationCount()))));
+//			model.setCustomProcessUrl(HtmlUtil.escape(model.getCustomProcessUrl()));
+//			model.setStepInstruction(HtmlUtil.escape(model.getStepInstruction()));
+//			model.setBriefNote(HtmlUtil.escape(model.getBriefNote()));
+//			model.setEditable(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getEditable()))));
+//			model.setLockState(HtmlUtil.escape(model.getLockState()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

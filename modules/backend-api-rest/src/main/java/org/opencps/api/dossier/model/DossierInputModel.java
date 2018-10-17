@@ -95,7 +95,14 @@ import javax.xml.bind.annotation.XmlType;
 	"delegateWardCode",
 	"sampleCount",
 	"serviceName",
-	"dossierName"
+	"dossierName",
+	"postalCityName",
+	"postalServiceCode",
+	"postalServiceName",
+	"postalDistrictCode",
+	"postalDistrictName",
+	"postalWardCode",
+	"postalWardName"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -189,6 +196,20 @@ public class DossierInputModel {
 	private String serviceName;
 	@FormParam(value = "dossierName")
 	private String dossierName;
+	@FormParam(value = "postalCityName")
+	private String postalCityName;
+	@FormParam(value = "postalServiceCode")
+	private String postalServiceCode;
+	@FormParam(value = "postalServiceName")
+	private String postalServiceName;
+	@FormParam(value = "postalDistrictCode")
+	private String postalDistrictCode;
+	@FormParam(value = "postalDistrictName")
+	private String postalDistrictName;
+	@FormParam(value = "postalWardCode")
+	private String postalWardCode;
+	@FormParam(value = "postalWardName")
+	private String postalWardName;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -902,4 +923,59 @@ public class DossierInputModel {
 		this.dossierName = dossierName;
 	}
 
+	public String getPostalCityName() {
+		return postalCityName;
+	}
+	
+	public void setPostalCityName(String value) {
+		this.postalCityName = value;
+	}
+
+	public String getPostalServiceCode() {
+		return postalServiceCode;
+	}
+	
+	public void setPostalServiceCode(String value) {
+		this.postalServiceCode = value;
+	}
+
+	public String getPostalServiceName() {
+		return postalServiceName;
+	}
+	
+	public void setPostalServiceName(String value) {
+		this.postalServiceName = value;
+	}
+
+	public String getPostalDistrictCode() {
+		return postalDistrictCode;
+	}
+	
+	public void setPostalDistrictCode(String value) {
+		this.postalDistrictCode = value;
+	}
+
+	public String getPostalDistrictName() {
+		return postalDistrictName;
+	}
+	
+	public void setPostalDistrictName(String value) {
+		this.postalDistrictName = value;
+	}
+
+	public String getPostalWardCode() {
+		return postalWardCode;
+	}
+	
+	public void setPostalWardCode(String value) {
+		this.postalWardCode = value;
+	}
+
+	public String getPostalWardName() {
+		return postalWardName;
+	}
+	
+	public void setPostalWardName(String value) {
+		this.postalWardName = value;
+	}
 }

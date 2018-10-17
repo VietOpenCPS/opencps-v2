@@ -1,5 +1,16 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -8,10 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.WorkTimeManagement;
-import org.opencps.api.controller.util.WorkTimeUtils;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.WorkTimeUtils;
 import org.opencps.api.worktime.model.DataSearchModel;
 import org.opencps.api.worktime.model.WorkTimeInputModel;
 import org.opencps.api.worktime.model.WorkTimeModel;
@@ -21,16 +31,6 @@ import org.opencps.datamgt.action.impl.WorkTimeActions;
 import org.opencps.datamgt.model.WorkTime;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class WorkTimeManagementImpl implements WorkTimeManagement {
 
@@ -112,7 +112,7 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String hours = StringEscapeUtils.escapeHtml4(String.valueOf(input.getHours()));
+			String hours = HtmlUtil.escape(String.valueOf(input.getHours()));
 			
 			WorkTime workTime = actions.create(user.getUserId(), groupId, input.getDay(), hours,
 					serviceContext);
@@ -135,7 +135,7 @@ public class WorkTimeManagementImpl implements WorkTimeManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String hours = StringEscapeUtils.escapeHtml4(String.valueOf(input.getHours()));
+			String hours = HtmlUtil.escape(String.valueOf(input.getHours()));
 			
 			WorkTime workTime = actions.update(user.getUserId(), groupId, n, hours, serviceContext);
 

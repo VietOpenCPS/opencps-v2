@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.ByteArrayInputStream;
@@ -32,7 +33,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.ServiceInfoUtils;
@@ -128,20 +128,20 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				throw new UnauthorizationException();
 			}
 
-			String serviceCode = StringEscapeUtils.escapeHtml4(input.getServiceCode());
-			String serviceName = StringEscapeUtils.escapeHtml4(input.getServiceName());
-			String processText = StringEscapeUtils.escapeHtml4(input.getProcessText());
-			String methodText = StringEscapeUtils.escapeHtml4(input.getMethodText());
-			String dossierText = StringEscapeUtils.escapeHtml4(input.getDossierText());
-			String conditionText = StringEscapeUtils.escapeHtml4(input.getConditionText());
-			String durationText = StringEscapeUtils.escapeHtml4(input.getDurationText());
-			String applicantText = StringEscapeUtils.escapeHtml4(input.getApplicantText());
-			String resultText = StringEscapeUtils.escapeHtml4(input.getResultText());
-			String regularText = StringEscapeUtils.escapeHtml4(input.getRegularText());
-			String feeText = StringEscapeUtils.escapeHtml4(input.getFeeText());
-			String administrationCode = StringEscapeUtils.escapeHtml4(input.getAdministrationCode());
-			String domainCode = StringEscapeUtils.escapeHtml4(input.getDomainCode());
-			String active = StringEscapeUtils.escapeHtml4(input.getActive());
+			String serviceCode = HtmlUtil.escape(input.getServiceCode());
+			String serviceName = HtmlUtil.escape(input.getServiceName());
+			String processText = HtmlUtil.escape(input.getProcessText());
+			String methodText = HtmlUtil.escape(input.getMethodText());
+			String dossierText = HtmlUtil.escape(input.getDossierText());
+			String conditionText = HtmlUtil.escape(input.getConditionText());
+			String durationText = HtmlUtil.escape(input.getDurationText());
+			String applicantText = HtmlUtil.escape(input.getApplicantText());
+			String resultText = HtmlUtil.escape(input.getResultText());
+			String regularText = HtmlUtil.escape(input.getRegularText());
+			String feeText = HtmlUtil.escape(input.getFeeText());
+			String administrationCode = HtmlUtil.escape(input.getAdministrationCode());
+			String domainCode = HtmlUtil.escape(input.getDomainCode());
+			String active = HtmlUtil.escape(input.getActive());
 			
 			ServiceInfo serviceInfo = actions.updateServiceInfo(userId, groupId, input.getServiceInfoId(),
 					serviceCode, serviceName, processText, methodText,
@@ -213,20 +213,20 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				throw new UnauthorizationException();
 			}
 
-			String serviceCode = StringEscapeUtils.escapeHtml4(input.getServiceCode());
-			String serviceName = StringEscapeUtils.escapeHtml4(input.getServiceName());
-			String processText = StringEscapeUtils.escapeHtml4(input.getProcessText());
-			String methodText = StringEscapeUtils.escapeHtml4(input.getMethodText());
-			String dossierText = StringEscapeUtils.escapeHtml4(input.getDossierText());
-			String conditionText = StringEscapeUtils.escapeHtml4(input.getConditionText());
-			String durationText = StringEscapeUtils.escapeHtml4(input.getDurationText());
-			String applicantText = StringEscapeUtils.escapeHtml4(input.getApplicantText());
-			String resultText = StringEscapeUtils.escapeHtml4(input.getResultText());
-			String regularText = StringEscapeUtils.escapeHtml4(input.getRegularText());
-			String feeText = StringEscapeUtils.escapeHtml4(input.getFeeText());
-			String administrationCode = StringEscapeUtils.escapeHtml4(input.getAdministrationCode());
-			String domainCode = StringEscapeUtils.escapeHtml4(input.getDomainCode());
-			String active = StringEscapeUtils.escapeHtml4(input.getActive());
+			String serviceCode = HtmlUtil.escape(input.getServiceCode());
+			String serviceName = HtmlUtil.escape(input.getServiceName());
+			String processText = HtmlUtil.escape(input.getProcessText());
+			String methodText = HtmlUtil.escape(input.getMethodText());
+			String dossierText = HtmlUtil.escape(input.getDossierText());
+			String conditionText = HtmlUtil.escape(input.getConditionText());
+			String durationText = HtmlUtil.escape(input.getDurationText());
+			String applicantText = HtmlUtil.escape(input.getApplicantText());
+			String resultText = HtmlUtil.escape(input.getResultText());
+			String regularText = HtmlUtil.escape(input.getRegularText());
+			String feeText = HtmlUtil.escape(input.getFeeText());
+			String administrationCode = HtmlUtil.escape(input.getAdministrationCode());
+			String domainCode = HtmlUtil.escape(input.getDomainCode());
+			String active = HtmlUtil.escape(input.getActive());
 			
 			ServiceInfo serviceInfo = actions.updateServiceInfo(user.getUserId(), groupId, GetterUtil.getLong(id),
 					serviceCode, serviceName, processText, methodText,

@@ -24,11 +24,11 @@ public class ServerConfigTempListener extends BaseModelListener<ServerConfig> {
 	@Override
 	public void onBeforeCreate(ServerConfig model) throws ModelListenerException {
 //		try {
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
-//			model.setServerName(StringEscapeUtils.escapeHtml4(model.getServerName()));
-//			model.setProtocol(StringEscapeUtils.escapeHtml4(model.getProtocol()));
-//			//model.setConfigs(StringEscapeUtils.escapeHtml4(model.getConfigs()));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setServerNo(HtmlUtil.escape(model.getServerNo()));
+//			model.setServerName(HtmlUtil.escape(model.getServerName()));
+//			model.setProtocol(HtmlUtil.escape(model.getProtocol()));
+//			//model.setConfigs(HtmlUtil.escape(model.getConfigs()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -38,11 +38,11 @@ public class ServerConfigTempListener extends BaseModelListener<ServerConfig> {
 	@Override
 	public void onBeforeUpdate(ServerConfig model) throws ModelListenerException {
 //		try {
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
-//			model.setServerName(StringEscapeUtils.escapeHtml4(model.getServerName()));
-//			model.setProtocol(StringEscapeUtils.escapeHtml4(model.getProtocol()));
-//			//model.setConfigs(StringEscapeUtils.escapeHtml4(model.getConfigs()));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setServerNo(HtmlUtil.escape(model.getServerNo()));
+//			model.setServerName(HtmlUtil.escape(model.getServerName()));
+//			model.setProtocol(HtmlUtil.escape(model.getProtocol()));
+//			//model.setConfigs(HtmlUtil.escape(model.getConfigs()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -29,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.DataManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DataManagementUtils;
@@ -149,10 +149,10 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String collectionCode = StringEscapeUtils.escapeHtml4(input.getCollectionCode());
-			String collectionName = StringEscapeUtils.escapeHtml4(input.getCollectionName());
-			String collectionNameEN = StringEscapeUtils.escapeHtml4(input.getCollectionNameEN());
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String collectionCode = HtmlUtil.escape(input.getCollectionCode());
+			String collectionName = HtmlUtil.escape(input.getCollectionName());
+			String collectionNameEN = HtmlUtil.escape(input.getCollectionNameEN());
+			String description = HtmlUtil.escape(input.getDescription());
 			
 			DictCollection dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId,
 					collectionCode, collectionName, collectionNameEN,
@@ -189,12 +189,12 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String collectionCode = StringEscapeUtils.escapeHtml4(input.getCollectionCode());
-			String collectionName = StringEscapeUtils.escapeHtml4(input.getCollectionName());
-			String collectionNameEN = StringEscapeUtils.escapeHtml4(input.getCollectionNameEN());
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String collectionCode = HtmlUtil.escape(input.getCollectionCode());
+			String collectionName = HtmlUtil.escape(input.getCollectionName());
+			String collectionNameEN = HtmlUtil.escape(input.getCollectionNameEN());
+			String description = HtmlUtil.escape(input.getDescription());
 
-			String oldCode = StringEscapeUtils.escapeHtml4(code);
+			String oldCode = HtmlUtil.escape(code);
 			
 			_log.info("Update dict collection: " + code);
 			
@@ -752,13 +752,13 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String itemCode = StringEscapeUtils.escapeHtml4(input.getItemCode());
-			String itemName = StringEscapeUtils.escapeHtml4(input.getItemName());
-			String itemNameEN = StringEscapeUtils.escapeHtml4(input.getItemNameEN());
-			String itemDescription = StringEscapeUtils.escapeHtml4(input.getItemDescription());
-			String parentItemCode = StringEscapeUtils.escapeHtml4(input.getParentItemCode());
+			String itemCode = HtmlUtil.escape(input.getItemCode());
+			String itemName = HtmlUtil.escape(input.getItemName());
+			String itemNameEN = HtmlUtil.escape(input.getItemNameEN());
+			String itemDescription = HtmlUtil.escape(input.getItemDescription());
+			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
-			String metaData = StringEscapeUtils.escapeHtml4(input.getMetaData());
+			String metaData = HtmlUtil.escape(input.getMetaData());
 			
 			DictItem dictItem = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code,
 					parentItemCode, itemCode, itemName, itemNameEN,
@@ -873,13 +873,13 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String newItemCode = StringEscapeUtils.escapeHtml4(input.getItemCode());
-			String itemName = StringEscapeUtils.escapeHtml4(input.getItemName());
-			String itemNameEN = StringEscapeUtils.escapeHtml4(input.getItemNameEN());
-			String itemDescription = StringEscapeUtils.escapeHtml4(input.getItemDescription());
-			String parentItemCode = StringEscapeUtils.escapeHtml4(input.getParentItemCode());
+			String newItemCode = HtmlUtil.escape(input.getItemCode());
+			String itemName = HtmlUtil.escape(input.getItemName());
+			String itemNameEN = HtmlUtil.escape(input.getItemNameEN());
+			String itemDescription = HtmlUtil.escape(input.getItemDescription());
+			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
-			String metaData = StringEscapeUtils.escapeHtml4(input.getMetaData());
+			String metaData = HtmlUtil.escape(input.getMetaData());
 
 			DictItem ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, newItemCode, itemName, itemNameEN,
@@ -1123,7 +1123,7 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String metaData = StringEscapeUtils.escapeHtml4(input.getMetaData());
+			String metaData = HtmlUtil.escape(input.getMetaData());
 			
 			DictItem ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, metaData);
@@ -1219,13 +1219,13 @@ public class DataManagementImpl implements DataManagement {
 				_log.error(e);
 			}
 
-			String newItemCode = StringEscapeUtils.escapeHtml4(input.getItemCode());
-			String itemName = StringEscapeUtils.escapeHtml4(input.getItemName());
-			String itemNameEN = StringEscapeUtils.escapeHtml4(input.getItemNameEN());
-			String itemDescription = StringEscapeUtils.escapeHtml4(input.getItemDescription());
-			String parentItemCode = StringEscapeUtils.escapeHtml4(input.getParentItemCode());
+			String newItemCode = HtmlUtil.escape(input.getItemCode());
+			String itemName = HtmlUtil.escape(input.getItemName());
+			String itemNameEN = HtmlUtil.escape(input.getItemNameEN());
+			String itemDescription = HtmlUtil.escape(input.getItemDescription());
+			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
-			String metaData = StringEscapeUtils.escapeHtml4(input.getMetaData());
+			String metaData = HtmlUtil.escape(input.getMetaData());
 			
 			DictItem ett = null;
 
@@ -1331,10 +1331,10 @@ public class DataManagementImpl implements DataManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String collectionCode = StringEscapeUtils.escapeHtml4(input.getCollectionCode());
-			String collectionName = StringEscapeUtils.escapeHtml4(input.getCollectionName());
-			String collectionNameEN = StringEscapeUtils.escapeHtml4(input.getCollectionNameEN());
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String collectionCode = HtmlUtil.escape(input.getCollectionCode());
+			String collectionName = HtmlUtil.escape(input.getCollectionName());
+			String collectionNameEN = HtmlUtil.escape(input.getCollectionNameEN());
+			String description = HtmlUtil.escape(input.getDescription());
 
 			DictCollection oldDictCollection = null;
 

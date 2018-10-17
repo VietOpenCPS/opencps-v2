@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -20,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.PaymentConfigManagement;
 import org.opencps.api.controller.util.PaymentConfigUtils;
 import org.opencps.api.paymentconfig.model.PaymentConfigInputModel;
@@ -103,13 +103,13 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String govAgencyName = StringEscapeUtils.escapeHtml4(input.getGovAgencyName());
-			String govAgencyTaxNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyTaxNo());
-			String invoiceTemplateNo = StringEscapeUtils.escapeHtml4(input.getInvoiceTemplateNo());
-			String invoiceIssueNo = StringEscapeUtils.escapeHtml4(input.getInvoiceIssueNo());
-			String invoiceLastNo = StringEscapeUtils.escapeHtml4(input.getInvoiceLastNo());
-			String bankInfo = StringEscapeUtils.escapeHtml4(input.getBankInfo());
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String govAgencyName = HtmlUtil.escape(input.getGovAgencyName());
+			String govAgencyTaxNo = HtmlUtil.escape(input.getGovAgencyTaxNo());
+			String invoiceTemplateNo = HtmlUtil.escape(input.getInvoiceTemplateNo());
+			String invoiceIssueNo = HtmlUtil.escape(input.getInvoiceIssueNo());
+			String invoiceLastNo = HtmlUtil.escape(input.getInvoiceLastNo());
+			String bankInfo = HtmlUtil.escape(input.getBankInfo());
 			
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.updatePaymentConfig(groupId, 0,
 					govAgencyCode, govAgencyName, govAgencyTaxNo,
@@ -165,13 +165,13 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String govAgencyName = StringEscapeUtils.escapeHtml4(input.getGovAgencyName());
-			String govAgencyTaxNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyTaxNo());
-			String invoiceTemplateNo = StringEscapeUtils.escapeHtml4(input.getInvoiceTemplateNo());
-			String invoiceIssueNo = StringEscapeUtils.escapeHtml4(input.getInvoiceIssueNo());
-			String invoiceLastNo = StringEscapeUtils.escapeHtml4(input.getInvoiceLastNo());
-			String bankInfo = StringEscapeUtils.escapeHtml4(input.getBankInfo());
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String govAgencyName = HtmlUtil.escape(input.getGovAgencyName());
+			String govAgencyTaxNo = HtmlUtil.escape(input.getGovAgencyTaxNo());
+			String invoiceTemplateNo = HtmlUtil.escape(input.getInvoiceTemplateNo());
+			String invoiceIssueNo = HtmlUtil.escape(input.getInvoiceIssueNo());
+			String invoiceLastNo = HtmlUtil.escape(input.getInvoiceLastNo());
+			String bankInfo = HtmlUtil.escape(input.getBankInfo());
 			
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.updatePaymentConfig(groupId, id,
 					govAgencyCode, govAgencyName, govAgencyTaxNo,
@@ -336,7 +336,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String epaymentConfig = StringEscapeUtils.escapeHtml4(input.getValue());
+			String epaymentConfig = HtmlUtil.escape(input.getValue());
 			
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.updateEConfig(id, epaymentConfig, serviceContext);
 

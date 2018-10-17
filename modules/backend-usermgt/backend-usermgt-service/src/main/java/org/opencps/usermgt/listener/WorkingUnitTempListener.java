@@ -26,14 +26,14 @@ public class WorkingUnitTempListener extends BaseModelListener<WorkingUnit> {
 	@Override
 	public void onBeforeCreate(WorkingUnit model) throws ModelListenerException {
 //		try {
-//			model.setName(StringEscapeUtils.escapeHtml4(model.getName()));
-//			model.setEnName(StringEscapeUtils.escapeHtml4(model.getEnName()));
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setAddress(StringEscapeUtils.escapeHtml4(model.getAddress()));
-//			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
-//			model.setFaxNo(StringEscapeUtils.escapeHtml4(model.getFaxNo()));
-//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-//			model.setWebsite(StringEscapeUtils.escapeHtml4(model.getWebsite()));
+//			model.setName(HtmlUtil.escape(model.getName()));
+//			model.setEnName(HtmlUtil.escape(model.getEnName()));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setAddress(HtmlUtil.escape(model.getAddress()));
+//			model.setTelNo(HtmlUtil.escape(model.getTelNo()));
+//			model.setFaxNo(HtmlUtil.escape(model.getFaxNo()));
+//			model.setEmail(HtmlUtil.escape(model.getEmail()));
+//			model.setWebsite(HtmlUtil.escape(model.getWebsite()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -43,14 +43,14 @@ public class WorkingUnitTempListener extends BaseModelListener<WorkingUnit> {
 	@Override
 	public void onBeforeUpdate(WorkingUnit model) throws ModelListenerException {
 //		try {
-//			model.setName(StringEscapeUtils.escapeHtml4(model.getName()));
-//			model.setEnName(StringEscapeUtils.escapeHtml4(model.getEnName()));
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setAddress(StringEscapeUtils.escapeHtml4(model.getAddress()));
-//			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
-//			model.setFaxNo(StringEscapeUtils.escapeHtml4(model.getFaxNo()));
-//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-//			model.setWebsite(StringEscapeUtils.escapeHtml4(model.getWebsite()));
+//			model.setName(HtmlUtil.escape(model.getName()));
+//			model.setEnName(HtmlUtil.escape(model.getEnName()));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setAddress(HtmlUtil.escape(model.getAddress()));
+//			model.setTelNo(HtmlUtil.escape(model.getTelNo()));
+//			model.setFaxNo(HtmlUtil.escape(model.getFaxNo()));
+//			model.setEmail(HtmlUtil.escape(model.getEmail()));
+//			model.setWebsite(HtmlUtil.escape(model.getWebsite()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
