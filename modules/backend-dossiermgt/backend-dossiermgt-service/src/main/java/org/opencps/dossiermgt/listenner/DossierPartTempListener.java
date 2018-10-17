@@ -24,15 +24,15 @@ public class DossierPartTempListener extends BaseModelListener<DossierPart> {
 	@Override
 	public void onBeforeCreate(DossierPart model) throws ModelListenerException {
 //		try {
-//			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
-//			model.setPartNo(StringEscapeUtils.escapeHtml4(model.getPartNo()));
-//			model.setPartName(StringEscapeUtils.escapeHtml4(model.getPartName()));
-//			model.setPartTip(StringEscapeUtils.escapeHtml4(model.getPartTip()));
-//			model.setPartType(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getPartType()))));
-//			model.setMultiple(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getMultiple()))));
-//			model.setRequired(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRequired()))));
-//			model.setFileTemplateNo(StringEscapeUtils.escapeHtml4(model.getFileTemplateNo()));
-//			model.setESign(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getESign()))));
+//			model.setTemplateNo(HtmlUtil.escape(model.getTemplateNo()));
+//			model.setPartNo(HtmlUtil.escape(model.getPartNo()));
+//			model.setPartName(HtmlUtil.escape(model.getPartName()));
+//			model.setPartTip(HtmlUtil.escape(model.getPartTip()));
+//			model.setPartType(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getPartType()))));
+//			model.setMultiple(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getMultiple()))));
+//			model.setRequired(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getRequired()))));
+//			model.setFileTemplateNo(HtmlUtil.escape(model.getFileTemplateNo()));
+//			model.setESign(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getESign()))));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -42,15 +42,15 @@ public class DossierPartTempListener extends BaseModelListener<DossierPart> {
 	@Override
 	public void onBeforeUpdate(DossierPart model) throws ModelListenerException {
 //		try {
-//			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
-//			model.setPartNo(StringEscapeUtils.escapeHtml4(model.getPartNo()));
-//			model.setPartName(StringEscapeUtils.escapeHtml4(model.getPartName()));
-//			model.setPartTip(StringEscapeUtils.escapeHtml4(model.getPartTip()));
-//			model.setPartType(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getPartType()))));
-//			model.setMultiple(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getMultiple()))));
-//			model.setRequired(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRequired()))));
-//			model.setFileTemplateNo(StringEscapeUtils.escapeHtml4(model.getFileTemplateNo()));
-//			model.setESign(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getESign()))));
+//			model.setTemplateNo(HtmlUtil.escape(model.getTemplateNo()));
+//			model.setPartNo(HtmlUtil.escape(model.getPartNo()));
+//			model.setPartName(HtmlUtil.escape(model.getPartName()));
+//			model.setPartTip(HtmlUtil.escape(model.getPartTip()));
+//			model.setPartType(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getPartType()))));
+//			model.setMultiple(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getMultiple()))));
+//			model.setRequired(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getRequired()))));
+//			model.setFileTemplateNo(HtmlUtil.escape(model.getFileTemplateNo()));
+//			model.setESign(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getESign()))));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

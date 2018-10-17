@@ -28,9 +28,9 @@ public class JobPosTempListener extends BaseModelListener<JobPos> {
 	@Override
 	public void onBeforeCreate(JobPos model) throws ModelListenerException {
 //		try {
-//			model.setJobPosCode(StringEscapeUtils.escapeHtml4(model.getJobPosCode()));
-//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setJobPosCode(HtmlUtil.escape(model.getJobPosCode()));
+//			model.setTitle(HtmlUtil.escape(model.getTitle()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -40,9 +40,9 @@ public class JobPosTempListener extends BaseModelListener<JobPos> {
 	@Override
 	public void onBeforeUpdate(JobPos model) throws ModelListenerException {
 //		try {
-//			model.setJobPosCode(StringEscapeUtils.escapeHtml4(model.getJobPosCode()));
-//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setJobPosCode(HtmlUtil.escape(model.getJobPosCode()));
+//			model.setTitle(HtmlUtil.escape(model.getTitle()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

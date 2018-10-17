@@ -25,16 +25,16 @@ public class ServiceConfigTempListener extends BaseModelListener<ServiceConfig> 
 	public void onBeforeCreate(ServiceConfig model) throws ModelListenerException {
 //		try {
 //
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setGovAgencyName(StringEscapeUtils.escapeHtml4(model.getGovAgencyName()));
-//			model.setServiceInstruction(StringEscapeUtils.escapeHtml4(model.getServiceInstruction()));
-//			model.setServiceLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceLevel()))));
-//			model.setServiceUrl(StringEscapeUtils.escapeHtml4(model.getServiceUrl()));
-//			model.setForBusiness(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getForBusiness()))));
-//			model.setForCitizen(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getForCitizen()))));
-//			model.setPostService(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getPostService()))));
-//			model.setRegistration(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRegistration()))));
-//			model.setServiceInfoId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceInfoId()))));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setGovAgencyName(HtmlUtil.escape(model.getGovAgencyName()));
+//			model.setServiceInstruction(HtmlUtil.escape(model.getServiceInstruction()));
+//			model.setServiceLevel(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceLevel()))));
+//			model.setServiceUrl(HtmlUtil.escape(model.getServiceUrl()));
+//			model.setForBusiness(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getForBusiness()))));
+//			model.setForCitizen(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getForCitizen()))));
+//			model.setPostService(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getPostService()))));
+//			model.setRegistration(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getRegistration()))));
+//			model.setServiceInfoId(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceInfoId()))));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -45,16 +45,16 @@ public class ServiceConfigTempListener extends BaseModelListener<ServiceConfig> 
 	public void onBeforeUpdate(ServiceConfig model) throws ModelListenerException {
 //		try {
 //
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setGovAgencyName(StringEscapeUtils.escapeHtml4(model.getGovAgencyName()));
-//			model.setServiceInstruction(StringEscapeUtils.escapeHtml4(model.getServiceInstruction()));
-//			model.setServiceLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceLevel()))));
-//			model.setServiceUrl(StringEscapeUtils.escapeHtml4(model.getServiceUrl()));
-//			model.setForBusiness(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getForBusiness()))));
-//			model.setForCitizen(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getForCitizen()))));
-//			model.setPostService(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getPostService()))));
-//			model.setRegistration(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRegistration()))));
-//			model.setServiceInfoId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceInfoId()))));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setGovAgencyName(HtmlUtil.escape(model.getGovAgencyName()));
+//			model.setServiceInstruction(HtmlUtil.escape(model.getServiceInstruction()));
+//			model.setServiceLevel(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceLevel()))));
+//			model.setServiceUrl(HtmlUtil.escape(model.getServiceUrl()));
+//			model.setForBusiness(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getForBusiness()))));
+//			model.setForCitizen(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getForCitizen()))));
+//			model.setPostService(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getPostService()))));
+//			model.setRegistration(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getRegistration()))));
+//			model.setServiceInfoId(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceInfoId()))));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

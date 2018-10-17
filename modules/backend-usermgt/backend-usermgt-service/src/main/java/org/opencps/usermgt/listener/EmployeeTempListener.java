@@ -26,12 +26,12 @@ public class EmployeeTempListener extends BaseModelListener<Employee> {
 	@Override
 	public void onBeforeCreate(Employee model) throws ModelListenerException {
 //		try {
-//			model.setFullName(StringEscapeUtils.escapeHtml4(model.getFullName()));
-//			model.setEmployeeNo(StringEscapeUtils.escapeHtml4(model.getEmployeeNo()));
-//			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
-//			model.setMobile(StringEscapeUtils.escapeHtml4(model.getMobile()));
-//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
+//			model.setFullName(HtmlUtil.escape(model.getFullName()));
+//			model.setEmployeeNo(HtmlUtil.escape(model.getEmployeeNo()));
+//			model.setTelNo(HtmlUtil.escape(model.getTelNo()));
+//			model.setMobile(HtmlUtil.escape(model.getMobile()));
+//			model.setEmail(HtmlUtil.escape(model.getEmail()));
+//			model.setTitle(HtmlUtil.escape(model.getTitle()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -41,12 +41,12 @@ public class EmployeeTempListener extends BaseModelListener<Employee> {
 	@Override
 	public void onBeforeUpdate(Employee model) throws ModelListenerException {
 //		try {
-//			model.setFullName(StringEscapeUtils.escapeHtml4(model.getFullName()));
-//			model.setEmployeeNo(StringEscapeUtils.escapeHtml4(model.getEmployeeNo()));
-//			model.setTelNo(StringEscapeUtils.escapeHtml4(model.getTelNo()));
-//			model.setMobile(StringEscapeUtils.escapeHtml4(model.getMobile()));
-//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-//			model.setTitle(StringEscapeUtils.escapeHtml4(model.getTitle()));
+//			model.setFullName(HtmlUtil.escape(model.getFullName()));
+//			model.setEmployeeNo(HtmlUtil.escape(model.getEmployeeNo()));
+//			model.setTelNo(HtmlUtil.escape(model.getTelNo()));
+//			model.setMobile(HtmlUtil.escape(model.getMobile()));
+//			model.setEmail(HtmlUtil.escape(model.getEmail()));
+//			model.setTitle(HtmlUtil.escape(model.getTitle()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

@@ -25,26 +25,26 @@ public class ServiceProcessTempListener extends BaseModelListener<ServiceProcess
 	public void onBeforeCreate(ServiceProcess model) throws ModelListenerException {
 //		try {
 //			// Add other fields
-//			model.setProcessNo(StringEscapeUtils.escapeHtml4(model.getProcessNo()));
-//			model.setProcessName(StringEscapeUtils.escapeHtml4(model.getProcessName()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setProcessNo(HtmlUtil.escape(model.getProcessNo()));
+//			model.setProcessName(HtmlUtil.escape(model.getProcessName()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //			model.setDurationCount(
-//					Double.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDurationCount()))));
+//					Double.valueOf(HtmlUtil.escape(String.valueOf(model.getDurationCount()))));
 //			model.setDurationUnit(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDurationUnit()))));
-//			model.setCounter(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getCounter()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDurationUnit()))));
+//			model.setCounter(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getCounter()))));
 //			model.setGenerateDossierNo(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getGenerateDossierNo()))));
-//			model.setDossierNoPattern(StringEscapeUtils.escapeHtml4(model.getDossierNoPattern()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getGenerateDossierNo()))));
+//			model.setDossierNoPattern(HtmlUtil.escape(model.getDossierNoPattern()));
 //			model.setGenerateDueDate(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getGenerateDueDate()))));
-//			model.setDueDatePattern(StringEscapeUtils.escapeHtml4(model.getDueDatePattern()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getGenerateDueDate()))));
+//			model.setDueDatePattern(HtmlUtil.escape(model.getDueDatePattern()));
 //			model.setGeneratePassword(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getGeneratePassword()))));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getGeneratePassword()))));
 //			model.setDirectNotification(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDirectNotification()))));
-//			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
-//			model.setPaymentFee(StringEscapeUtils.escapeHtml4(model.getPaymentFee()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getDirectNotification()))));
+//			model.setServerNo(HtmlUtil.escape(model.getServerNo()));
+//			model.setPaymentFee(HtmlUtil.escape(model.getPaymentFee()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -55,26 +55,26 @@ public class ServiceProcessTempListener extends BaseModelListener<ServiceProcess
 	public void onBeforeUpdate(ServiceProcess model) throws ModelListenerException {
 //		try {
 //			// Add other fields
-//			model.setProcessNo(StringEscapeUtils.escapeHtml4(model.getProcessNo()));
-//			model.setProcessName(StringEscapeUtils.escapeHtml4(model.getProcessName()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setProcessNo(HtmlUtil.escape(model.getProcessNo()));
+//			model.setProcessName(HtmlUtil.escape(model.getProcessName()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //			model.setDurationCount(
-//					Double.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDurationCount()))));
+//					Double.valueOf(HtmlUtil.escape(String.valueOf(model.getDurationCount()))));
 //			model.setDurationUnit(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDurationUnit()))));
-//			model.setCounter(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getCounter()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDurationUnit()))));
+//			model.setCounter(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getCounter()))));
 //			model.setGenerateDossierNo(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getGenerateDossierNo()))));
-//			model.setDossierNoPattern(StringEscapeUtils.escapeHtml4(model.getDossierNoPattern()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getGenerateDossierNo()))));
+//			model.setDossierNoPattern(HtmlUtil.escape(model.getDossierNoPattern()));
 //			model.setGenerateDueDate(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getGenerateDueDate()))));
-//			model.setDueDatePattern(StringEscapeUtils.escapeHtml4(model.getDueDatePattern()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getGenerateDueDate()))));
+//			model.setDueDatePattern(HtmlUtil.escape(model.getDueDatePattern()));
 //			model.setGeneratePassword(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getGeneratePassword()))));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getGeneratePassword()))));
 //			model.setDirectNotification(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDirectNotification()))));
-//			model.setServerNo(StringEscapeUtils.escapeHtml4(model.getServerNo()));
-//			model.setPaymentFee(StringEscapeUtils.escapeHtml4(model.getPaymentFee()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getDirectNotification()))));
+//			model.setServerNo(HtmlUtil.escape(model.getServerNo()));
+//			model.setPaymentFee(HtmlUtil.escape(model.getPaymentFee()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

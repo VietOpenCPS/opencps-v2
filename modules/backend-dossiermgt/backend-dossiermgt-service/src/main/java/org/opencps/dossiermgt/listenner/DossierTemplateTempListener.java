@@ -24,9 +24,9 @@ public class DossierTemplateTempListener extends BaseModelListener<DossierTempla
 	@Override
 	public void onBeforeCreate(DossierTemplate model) throws ModelListenerException {
 //		try {
-//			model.setTemplateName(StringEscapeUtils.escapeHtml4(model.getTemplateName()));
-//			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setTemplateName(HtmlUtil.escape(model.getTemplateName()));
+//			model.setTemplateNo(HtmlUtil.escape(model.getTemplateNo()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -36,9 +36,9 @@ public class DossierTemplateTempListener extends BaseModelListener<DossierTempla
 	@Override
 	public void onBeforeUpdate(DossierTemplate model) throws ModelListenerException {
 //		try {
-//			model.setTemplateName(StringEscapeUtils.escapeHtml4(model.getTemplateName()));
-//			model.setTemplateNo(StringEscapeUtils.escapeHtml4(model.getTemplateNo()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setTemplateName(HtmlUtil.escape(model.getTemplateName()));
+//			model.setTemplateNo(HtmlUtil.escape(model.getTemplateNo()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

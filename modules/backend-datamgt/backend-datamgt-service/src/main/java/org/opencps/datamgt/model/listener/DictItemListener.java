@@ -103,17 +103,17 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 //		try {
 //			// Other fields
 //			model.setDictCollectionId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDictCollectionId()))));
-//			model.setItemCode(StringEscapeUtils.escapeHtml4(model.getItemCode()));
-//			model.setItemName(StringEscapeUtils.escapeHtml4(model.getItemName()));
-//			model.setItemNameEN(StringEscapeUtils.escapeHtml4(model.getItemNameEN()));
-//			model.setItemDescription(StringEscapeUtils.escapeHtml4(model.getItemDescription()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDictCollectionId()))));
+//			model.setItemCode(HtmlUtil.escape(model.getItemCode()));
+//			model.setItemName(HtmlUtil.escape(model.getItemName()));
+//			model.setItemNameEN(HtmlUtil.escape(model.getItemNameEN()));
+//			model.setItemDescription(HtmlUtil.escape(model.getItemDescription()));
 //			model.setParentItemId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getParentItemId()))));
-//			model.setSibling(StringEscapeUtils.escapeHtml4(model.getSibling()));
-//			model.setTreeIndex(StringEscapeUtils.escapeHtml4(model.getTreeIndex()));
-//			model.setLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getLevel()))));
-//			model.setMetaData(StringEscapeUtils.escapeHtml4(model.getMetaData()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getParentItemId()))));
+//			model.setSibling(HtmlUtil.escape(model.getSibling()));
+//			model.setTreeIndex(HtmlUtil.escape(model.getTreeIndex()));
+//			model.setLevel(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getLevel()))));
+//			model.setMetaData(HtmlUtil.escape(model.getMetaData()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -140,17 +140,17 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 //		try {
 //			// Other fields
 //			model.setDictCollectionId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDictCollectionId()))));
-//			model.setItemCode(StringEscapeUtils.escapeHtml4(model.getItemCode()));
-//			model.setItemName(StringEscapeUtils.escapeHtml4(model.getItemName()));
-//			model.setItemNameEN(StringEscapeUtils.escapeHtml4(model.getItemNameEN()));
-//			model.setItemDescription(StringEscapeUtils.escapeHtml4(model.getItemDescription()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDictCollectionId()))));
+//			model.setItemCode(HtmlUtil.escape(model.getItemCode()));
+//			model.setItemName(HtmlUtil.escape(model.getItemName()));
+//			model.setItemNameEN(HtmlUtil.escape(model.getItemNameEN()));
+//			model.setItemDescription(HtmlUtil.escape(model.getItemDescription()));
 //			model.setParentItemId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getParentItemId()))));
-//			model.setSibling(StringEscapeUtils.escapeHtml4(model.getSibling()));
-//			model.setTreeIndex(StringEscapeUtils.escapeHtml4(model.getTreeIndex()));
-//			model.setLevel(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getLevel()))));
-//			model.setMetaData(StringEscapeUtils.escapeHtml4(model.getMetaData()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getParentItemId()))));
+//			model.setSibling(HtmlUtil.escape(model.getSibling()));
+//			model.setTreeIndex(HtmlUtil.escape(model.getTreeIndex()));
+//			model.setLevel(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getLevel()))));
+//			model.setMetaData(HtmlUtil.escape(model.getMetaData()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

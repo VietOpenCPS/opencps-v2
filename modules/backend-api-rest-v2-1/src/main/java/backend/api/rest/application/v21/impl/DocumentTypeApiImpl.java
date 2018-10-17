@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -122,18 +122,18 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 //			}
 
 			_log.info("groupId_"+groupId);
-//			model.setTypeCode(StringEscapeUtils.escapeHtml4(model.getTypeCode()));
-//			model.setTemplateClass(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getTemplateClass()))));
-//			model.setDocumentName(StringEscapeUtils.escapeHtml4(model.getDocumentName()));
-//			model.setCodePattern(StringEscapeUtils.escapeHtml4(model.getCodePattern()));
-//			model.setDocumentScript(StringEscapeUtils.escapeHtml4(model.getDocumentScript()));
-//			model.setDocSync(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDocSync()))));
+//			model.setTypeCode(HtmlUtil.escape(model.getTypeCode()));
+//			model.setTemplateClass(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getTemplateClass()))));
+//			model.setDocumentName(HtmlUtil.escape(model.getDocumentName()));
+//			model.setCodePattern(HtmlUtil.escape(model.getCodePattern()));
+//			model.setDocumentScript(HtmlUtil.escape(model.getDocumentScript()));
+//			model.setDocSync(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDocSync()))));
 			
-			String typeCode = StringEscapeUtils.escapeHtml4(input.getTypeCode());
+			String typeCode = HtmlUtil.escape(input.getTypeCode());
 			int templateClass = input.getTemplateClass();
-			String documentName = StringEscapeUtils.escapeHtml4(input.getDocumentName());
-			String codePattern = StringEscapeUtils.escapeHtml4(input.getCodePattern());
-			String documentScript = StringEscapeUtils.escapeHtml4(input.getDocumentScript());
+			String documentName = HtmlUtil.escape(input.getDocumentName());
+			String codePattern = HtmlUtil.escape(input.getCodePattern());
+			String documentScript = HtmlUtil.escape(input.getDocumentScript());
 			int docSync = input.getDocSync();
 			_log.info("groupId_"+groupId);
 
@@ -246,11 +246,11 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 //			}
 
 			_log.info("groupId_"+groupId);
-			String typeCode = StringEscapeUtils.escapeHtml4(input.getTypeCode());
+			String typeCode = HtmlUtil.escape(input.getTypeCode());
 			int templateClass = input.getTemplateClass();
-			String documentName = StringEscapeUtils.escapeHtml4(input.getDocumentName());
-			String codePattern = StringEscapeUtils.escapeHtml4(input.getCodePattern());
-			String documentScript = StringEscapeUtils.escapeHtml4(input.getDocumentScript());
+			String documentName = HtmlUtil.escape(input.getDocumentName());
+			String codePattern = HtmlUtil.escape(input.getCodePattern());
+			String documentScript = HtmlUtil.escape(input.getDocumentScript());
 			int docSync = input.getDocSync();
 			_log.info("groupId_"+groupId);
 

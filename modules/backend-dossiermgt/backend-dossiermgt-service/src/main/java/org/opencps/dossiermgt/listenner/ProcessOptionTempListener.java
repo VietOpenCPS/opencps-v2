@@ -25,15 +25,15 @@ public class ProcessOptionTempListener extends BaseModelListener<ProcessOption> 
 	public void onBeforeCreate(ProcessOption model) throws ModelListenerException {
 //		try {
 //
-//			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
-//			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
-//			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
-//			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
+//			model.setOptionOrder(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getOptionOrder()))));
+//			model.setAutoSelect(HtmlUtil.escape(model.getAutoSelect()));
+//			model.setInstructionNote(HtmlUtil.escape(model.getInstructionNote()));
+//			model.setSubmissionNote(HtmlUtil.escape(model.getSubmissionNote()));
 //			model.setDossierTemplateId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDossierTemplateId()))));
 //			model.setServiceProcessId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-//			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceProcessId()))));
+//			model.setOptionName(HtmlUtil.escape(model.getOptionName()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -44,15 +44,15 @@ public class ProcessOptionTempListener extends BaseModelListener<ProcessOption> 
 	public void onBeforeUpdate(ProcessOption model) throws ModelListenerException {
 //		try {
 //
-//			model.setOptionOrder(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getOptionOrder()))));
-//			model.setAutoSelect(StringEscapeUtils.escapeHtml4(model.getAutoSelect()));
-//			model.setInstructionNote(StringEscapeUtils.escapeHtml4(model.getInstructionNote()));
-//			model.setSubmissionNote(StringEscapeUtils.escapeHtml4(model.getSubmissionNote()));
+//			model.setOptionOrder(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getOptionOrder()))));
+//			model.setAutoSelect(HtmlUtil.escape(model.getAutoSelect()));
+//			model.setInstructionNote(HtmlUtil.escape(model.getInstructionNote()));
+//			model.setSubmissionNote(HtmlUtil.escape(model.getSubmissionNote()));
 //			model.setDossierTemplateId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getDossierTemplateId()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getDossierTemplateId()))));
 //			model.setServiceProcessId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-//			model.setOptionName(StringEscapeUtils.escapeHtml4(model.getOptionName()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceProcessId()))));
+//			model.setOptionName(HtmlUtil.escape(model.getOptionName()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

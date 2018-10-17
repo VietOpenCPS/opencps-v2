@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
@@ -75,16 +76,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 			_log.info("START");
-			String applicantName = StringEscapeUtils.escapeHtml4(input.getApplicantName());
-			String applicantIdType = StringEscapeUtils.escapeHtml4(input.getApplicantIdType());
-			String applicantIdNo = StringEscapeUtils.escapeHtml4(input.getApplicantIdNo());
-			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
-			String cityCode = StringEscapeUtils.escapeHtml4(input.getCityCode());
-			String districtCode = StringEscapeUtils.escapeHtml4(input.getDistrictCode());
-			String wardCode = StringEscapeUtils.escapeHtml4(input.getWardCode());
-			String contactName = StringEscapeUtils.escapeHtml4(input.getContactName());
-			String contactTelNo = StringEscapeUtils.escapeHtml4(input.getContactTelNo());
-			String contactEmail = StringEscapeUtils.escapeHtml4(input.getContactEmail());
+			String applicantName = HtmlUtil.escape(input.getApplicantName());
+			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
+			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
+			String address = HtmlUtil.escape(input.getAddress());
+			String cityCode = HtmlUtil.escape(input.getCityCode());
+			String districtCode = HtmlUtil.escape(input.getDistrictCode());
+			String wardCode = HtmlUtil.escape(input.getWardCode());
+			String contactName = HtmlUtil.escape(input.getContactName());
+			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
+			String contactEmail = HtmlUtil.escape(input.getContactEmail());
 			
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -264,15 +265,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					}
 				}
 			}
+			
 
-			String applicantName = StringEscapeUtils.escapeHtml4(input.getApplicantName());
-			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
-			String cityCode = StringEscapeUtils.escapeHtml4(input.getCityCode());
-			String districtCode = StringEscapeUtils.escapeHtml4(input.getDistrictCode());
-			String wardCode = StringEscapeUtils.escapeHtml4(input.getWardCode());
-			String contactName = StringEscapeUtils.escapeHtml4(input.getContactName());
-			String contactTelNo = StringEscapeUtils.escapeHtml4(input.getContactTelNo());
-			String contactEmail = StringEscapeUtils.escapeHtml4(input.getContactEmail());
+			String applicantName = HtmlUtil.escape(input.getApplicantName());
+			String address = HtmlUtil.escape(input.getAddress());
+			String cityCode = HtmlUtil.escape(input.getCityCode());
+			String districtCode = HtmlUtil.escape(input.getDistrictCode());
+			String wardCode = HtmlUtil.escape(input.getWardCode());
+			String contactName = HtmlUtil.escape(input.getContactName());
+			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
+			String contactEmail = HtmlUtil.escape(input.getContactEmail());
 			
 			if (isAllowed) {
 				applicant = actions.updateApplicant(serviceContext,groupId, id, applicantName, address, cityCode,
