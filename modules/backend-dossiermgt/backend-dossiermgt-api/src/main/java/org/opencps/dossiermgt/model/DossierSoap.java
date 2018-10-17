@@ -123,6 +123,7 @@ public class DossierSoap implements Serializable {
 		soapModel.setDurationUnit(model.getDurationUnit());
 		soapModel.setDurationCount(model.getDurationCount());
 		soapModel.setDossierName(model.getDossierName());
+		soapModel.setOriginDossierNo(model.getOriginDossierNo());
 
 		return soapModel;
 	}
@@ -911,6 +912,14 @@ public class DossierSoap implements Serializable {
 		_dossierName = dossierName;
 	}
 
+	public String getOriginDossierNo() {
+		return _originDossierNo;
+	}
+
+	public void setOriginDossierNo(String originDossierNo) {
+		_originDossierNo = originDossierNo;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1001,4 +1010,5 @@ public class DossierSoap implements Serializable {
 	private int _durationUnit;
 	private double _durationCount;
 	private String _dossierName;
+	private String _originDossierNo;
 }

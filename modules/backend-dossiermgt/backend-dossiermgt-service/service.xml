@@ -423,6 +423,8 @@
 		<column name="durationUnit" type="int" />
 		<column name="durationCount" type="double" />
 		<column name="dossierName" type ="String" />
+		<column name="originDossierNo" type="String" />
+		
 		<!-- Order -->
 		
 		<!-- Finder methods -->
