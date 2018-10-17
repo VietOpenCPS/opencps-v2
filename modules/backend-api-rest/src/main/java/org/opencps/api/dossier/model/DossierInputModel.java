@@ -210,6 +210,8 @@ public class DossierInputModel {
 	private String postalWardCode;
 	@FormParam(value = "postalWardName")
 	private String postalWardName;
+	@FormParam(value = "originDossierNo")
+	private String originDossierNo;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -977,5 +979,13 @@ public class DossierInputModel {
 	
 	public void setPostalWardName(String value) {
 		this.postalWardName = value;
+	}
+
+	public String getOriginDossierNo() {
+		return originDossierNo;
+	}
+	
+	public void setOriginDossierNo(String value) {
+		this.originDossierNo = value;
 	}
 }

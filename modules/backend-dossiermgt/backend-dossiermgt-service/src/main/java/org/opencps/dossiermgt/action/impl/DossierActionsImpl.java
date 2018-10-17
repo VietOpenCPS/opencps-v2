@@ -2887,6 +2887,9 @@ public class DossierActionsImpl implements DossierActions {
 
 			String postStepCode = proAction.getPostStepCode();
 
+			if (Validator.isNull(postStepCode)) {
+				postStepCode = previousAction.getFromStepCode();
+			}
 			ProcessStep curStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 //			_log.info("Current step: " + curStep);
 			
@@ -2986,6 +2989,7 @@ public class DossierActionsImpl implements DossierActions {
 							hsltDossier.setServerNo(ltProcess.getServerNo());
 							//Update DossierName
 							hsltDossier.setDossierName(dossier.getDossierName());
+							hsltDossier.setOriginDossierNo(dossier.getDossierNo());
 							DossierLocalServiceUtil.updateDossier(hsltDossier);
 							
 							JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);

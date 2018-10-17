@@ -981,6 +981,7 @@ public class DossierManagementImpl implements DossierManagement {
 				
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setViaPostal(input.getViaPostal());
+				dossier.setOriginDossierNo(input.getOriginDossierNo());
 				
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
@@ -1021,6 +1022,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalDistrictName(input.getPostalDistrictName());
 				dossier.setPostalWardCode(input.getPostalWardCode());
 				dossier.setPostalWardName(input.getPostalWardName());
+				dossier.setOriginDossierNo(input.getOriginDossierNo());
 				
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());

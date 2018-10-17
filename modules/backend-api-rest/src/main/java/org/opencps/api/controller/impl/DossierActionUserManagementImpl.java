@@ -22,9 +22,12 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
+import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -59,6 +62,17 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 			if (dossier != null) {
 				long dossierActionId = dossier.getDossierActionId();
 				
+				DossierUserPK duPK = new DossierUserPK();
+				duPK.setUserId(input.getUserId());
+				duPK.setDossierId(dossier.getDossierId());
+				DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPK);
+				if (du == null) {
+					du = DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), input.getUserId(), 1, true);
+				}
+				else {
+					du.setModerator(1);
+					du = DossierUserLocalServiceUtil.updateDossierUser(du);
+				}
 				DossierActionUserPK dauPK = new DossierActionUserPK();
 				dauPK.setDossierActionId(dossierActionId);
 				dauPK.setUserId(input.getUserId());

@@ -70,6 +70,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DELEGATE_EMAIL, model.getDelegateEmail());
 	    params.put(DossierTerm.DELEGATE_ADDRESS, model.getDelegateAddress());
 	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
+	    params.put(DossierTerm.ORIGIN_DOSSIER_NO, model.getOriginDossierNo());
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
@@ -651,6 +652,7 @@ public class OpenCPSConverter {
 		model.setPostalServiceCode(dossier.getPostalServiceCode());
 		model.setPostalTelNo(dossier.getPostalTelNo());
 		model.setPostalWardCode(dossier.getPostalWardCode());
+		model.setOriginDossierNo(dossier.getOriginDossierNo());
 		
 		return model;
 	}
