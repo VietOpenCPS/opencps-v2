@@ -2803,9 +2803,9 @@ public class DossierActionsImpl implements DossierActions {
 				Map<String, Object> params = new HashMap<>();
 				
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+//				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 				
-				if(Validator.isNotNull(oldPaymentFile.getEinvoice())){
+				if(oldPaymentFile != null && Validator.isNotNull(oldPaymentFile.getEinvoice())){
 					
 					InvokeREST callRest = new InvokeREST();
 					String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
