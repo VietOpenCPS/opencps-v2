@@ -266,8 +266,18 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			} else if (processAction != null && (processAction
 					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+				_log.info("SONDT SYNC INFORM PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+				String paymentFee = StringPool.BLANK; String paymentNote = StringPool.BLANK;
+				
+				JSONObject paymentObj = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
+				_log.info("SONDT SYNC INFORM Payment object: " + paymentObj);
+				if (paymentObj.has("paymentFee")) {
+					paymentFee = paymentObj.getString("paymentFee");
+				}
+				if (paymentObj.has("paymentNote")) {
+					paymentNote = paymentObj.getString("paymentNote");
+				}
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -275,9 +285,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
 				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(processAction.getPaymentFee());
-				pfiModel.setPaymentFee(processAction.getPaymentFee());
-				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+				pfiModel.setPaymentAmount(GetterUtil.getString(paymentFile.getFeeAmount()));
+				pfiModel.setPaymentFee(paymentFee);
+				pfiModel.setPaymentNote(paymentNote);
 				pfiModel.setReferenceUid(dossier.getReferenceUid());
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
