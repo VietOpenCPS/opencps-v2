@@ -86,14 +86,26 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getPostalServiceCode())) {
 	    	params.put(DossierTerm.POSTAL_SERVICE_CODE, model.getPostalServiceCode());	    	
 	    }
+	    if (Validator.isNotNull(model.getPostalServiceName())) {
+	    	params.put(DossierTerm.POSTAL_SERVICE_NAME, model.getPostalServiceName());	    	
+	    }
 	    if (Validator.isNotNull(model.getPostalCityCode())) {
 	    	params.put(DossierTerm.POSTAL_CITY_CODE, model.getPostalCityCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalCityName())) {
+	    	params.put(DossierTerm.POSTAL_CITY_NAME, model.getPostalCityName());	    		    	
 	    }
 	    if (Validator.isNotNull(model.getPostalDistrictCode())) {
 	    	params.put(DossierTerm.POSTAL_DISTRICT_CODE, model.getPostalDistrictCode());	    		    	
 	    }
+	    if (Validator.isNotNull(model.getPostalDistrictName())) {
+	    	params.put(DossierTerm.POSTAL_DISTRICT_NAME, model.getPostalDistrictName());	    		    	
+	    }
 	    if (Validator.isNotNull(model.getPostalWardCode())) {
 	    	params.put(DossierTerm.POSTAL_WARD_CODE, model.getPostalWardCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalWardName())) {
+	    	params.put(DossierTerm.POSTAL_WARD_NAME, model.getPostalWardName());	    		    	
 	    }
 	    if (Validator.isNotNull(model.getPostalTelNo())) {
 	    	params.put(DossierTerm.POSTAL_TEL_NO, model.getPostalTelNo());	    		    		    	
