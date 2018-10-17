@@ -2811,6 +2811,12 @@ public class DossierActionsImpl implements DossierActions {
 					String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 					HashMap<String, String> properties = new HashMap<String, String>();
 					
+					StringBuilder address = new StringBuilder();
+					address.append(dossier.getAddress());
+					address.append(dossier.getWardName());
+					address.append(dossier.getDistrictName());
+					address.append(dossier.getCityName());
+					
 					params.put("userName", "HA");	
 					params.put("passWord", "1"); 	    	
 					params.put("soid", "10"); 
@@ -2820,15 +2826,15 @@ public class DossierActionsImpl implements DossierActions {
 					params.put("maNthue", "01"); 
 					params.put("kieuSo", "G"); 
 					params.put("maKhackHang", "123133");
-					params.put("ten", "Công ty TNHH ANH NAM"); 
+					params.put("ten", dossier.getApplicantName()); 
 					params.put("phone", "0123654456"); 
 					params.put("tax", "2600303088"); 
-					params.put("dchi", "Nam Từ Liêm, Hà Nội"); 
+					params.put("dchi", address); 
 					params.put("maTk", "123830122233123"); 
 					params.put("tenNh", "BIDV"); 
 					params.put("mailH", "thaisonc89@yopmail.com");
 					params.put("phoneH", "0987628930");
-					params.put("tenM", "Trần Mai Trang");
+					params.put("tenM", dossier.getDelegateName());
 					params.put("maKhL", "K");
 					params.put("maNt", "VND");
 					params.put("tg", "1");
