@@ -2817,23 +2817,27 @@ public class DossierActionsImpl implements DossierActions {
 					address.append(dossier.getDistrictName());
 					address.append(dossier.getCityName());
 					
+					SimpleDateFormat sdf = new SimpleDateFormat("DD/MM/YYYY");
+					String dateformatted = sdf.format(dossier.getSubmitDate());
+					_log.info("SONDT CINVOICE DATEFORMATED ============= " + dateformatted);
+					
 					params.put("userName", "HA");	
 					params.put("passWord", "1"); 	    	
 					params.put("soid", "10"); 
 					params.put("maHoadon", "01GTKT0/001"); 
-					params.put("ngayHd", "01/08/2018"); 
+					params.put("ngayHd", dateformatted); //"01/08/2018"
 					params.put("seri", "12314"); 
 					params.put("maNthue", "01"); 
 					params.put("kieuSo", "G"); 
-					params.put("maKhackHang", "123133");
+					params.put("maKhackHang", dossier.getUserId());
 					params.put("ten", dossier.getApplicantName()); 
-					params.put("phone", "0123654456"); 
-					params.put("tax", "2600303088"); 
+					params.put("phone", dossier.getContactTelNo()); 
+					params.put("tax", dossier.getApplicantIdNo()); 
 					params.put("dchi", address); 
-					params.put("maTk", "123830122233123"); 
-					params.put("tenNh", "BIDV"); 
-					params.put("mailH", "thaisonc89@yopmail.com");
-					params.put("phoneH", "0987628930");
+					params.put("maTk", ""); 
+					params.put("tenNh", ""); 
+					params.put("mailH", dossier.getContactEmail());
+					params.put("phoneH", dossier.getContactTelNo());
 					params.put("tenM", dossier.getDelegateName());
 					params.put("maKhL", "K");
 					params.put("maNt", "VND");
@@ -2842,19 +2846,19 @@ public class DossierActionsImpl implements DossierActions {
 					params.put("han", "");
 					params.put("tlGgia", "0");
 					params.put("ggia", "0");
-					params.put("phi", "0");
+					params.put("phi", oldPaymentFile.getFeeAmount());
 					params.put("noidung", "tên thủ tục");
 					params.put("tien", "220000");
 					params.put("ttoan", "225000");
 					params.put("maVtDetail", "AP123");
-					params.put("tenDetail", "Cấp giấy phép mang vũ khí thể thao vào, ra khỏi lãnh thổ Việt Nam để luyện tập, thi đấu thể thao");
-					params.put("dvtDetail", "to");
-					params.put("luongDetail", "10");
-					params.put("giaDetail", "20000");
-					params.put("tienDetail", "200000");
-					params.put("tsDetail", "10");
-					params.put("thueDetail", "20000");
-					params.put("ttoanDetail", "220000");
+					params.put("tenDetail", dossier.getServiceName());
+					params.put("dvtDetail", "bộ");
+					params.put("luongDetail", "1");
+					params.put("giaDetail", GetterUtil.getString(oldPaymentFile.getFeeAmount()));
+					params.put("tienDetail", GetterUtil.getString(oldPaymentFile.getFeeAmount()));
+					params.put("tsDetail", "0");
+					params.put("thueDetail", "0");
+					params.put("ttoanDetail", GetterUtil.getString(oldPaymentFile.getFeeAmount()));
 					
 					resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
 							CINVOICEUrl, "", "", properties, params, context);

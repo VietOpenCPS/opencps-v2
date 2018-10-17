@@ -766,7 +766,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
-//		_log.info("SONDT CREATE PAYMENTFILE GROUPID ====================== " + groupId);
+		_log.info("SONDT CREATE PAYMENTFILE GROUPID ====================== " + JSONFactoryUtil.looseSerialize(input));
 		
 		long userId = serviceContext.getUserId();
 		
@@ -799,8 +799,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 			else {
 				paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
-						input.getPaymentFee(), 0l, 0l, 0l, 0l,
-						0l, input.getPaymentNote(), input.getEpaymentProfile(), input.getBankInfo(),
+						input.getPaymentFee(), input.getAdvanceAmount(), input.getFeeAmount(), input.getServiceAmount(), input.getShipAmount(),
+						input.getPaymentAmount(), input.getPaymentNote(), input.getEpaymentProfile(), input.getBankInfo(),
 						0, input.getPaymentMethod(), serviceContext);				
 			}
 			

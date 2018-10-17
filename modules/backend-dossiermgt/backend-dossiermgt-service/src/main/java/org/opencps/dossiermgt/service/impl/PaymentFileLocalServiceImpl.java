@@ -689,7 +689,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public PaymentFile updateApplicantFeeAmount(long paymentFileId, int requestPayment, Long feeAmount, Long serviceAmount, Long shipAmount) {
+	public PaymentFile updateApplicantFeeAmount(long paymentFileId, int requestPayment, Long feeAmount,
+			Long serviceAmount, Long shipAmount) {
 		try {
 			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(paymentFileId);
 			paymentFile.setFeeAmount(feeAmount);
@@ -705,6 +706,20 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
 				paymentFile.setPaymentAmount(feeAmount + serviceAmount + shipAmount - paymentFile.getAdvanceAmount());
 			}
+			
+			return paymentFilePersistence.update(paymentFile);
+		} catch (NoSuchPaymentFileException e) {
+			_log.error(e);
+		}
+		
+		return null;
+	}
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile updatePaymentFileCustom(PaymentFile oldpaymentFile) {
+		try {
+			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(oldpaymentFile.getPaymentFileId());
+			
+			paymentFile.setEinvoice(oldpaymentFile.getEinvoice());
 			
 			return paymentFilePersistence.update(paymentFile);
 		} catch (NoSuchPaymentFileException e) {

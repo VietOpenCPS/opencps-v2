@@ -709,7 +709,7 @@ public class OpenCPSConverter {
 	    	params.put(PaymentFileTerm.PAYMENT_FEE, model.getPaymentFee());
 	    }
 	    if (Validator.isNotNull(model.getPaymentAmount())) {
-	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, GetterUtil.getLong(model.getPaymentAmount()));
+	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, GetterUtil.getLong(model.getFeeAmount()));
 	    }
 	    if (Validator.isNotNull(model.getPaymentNote())) {
 	    	params.put(PaymentFileTerm.PAYMENT_NOTE, model.getPaymentNote());
