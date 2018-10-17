@@ -29,8 +29,19 @@ public class InvokeREST {
 		JSONObject response = JSONFactoryUtil.createJSONObject();
 
 		try {
-			
-			URL url = new URL(pathBase + endPoint);
+			String urlPath;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				urlPath = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
+					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				urlPath = pathBase + endPoint;
+			}
+			else {
+				urlPath = pathBase + "/" + endPoint;
+			}
+			URL url = new URL(urlPath);
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -90,7 +101,19 @@ public class InvokeREST {
 
 		try {
 
-			URL url = new URL(pathBase + endPoint);
+			String urlPath = pathBase;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				urlPath = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
+					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				urlPath = pathBase + endPoint;
+			}
+			else {
+				urlPath = pathBase + "/" + endPoint;
+			}
+			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
 
@@ -184,8 +207,20 @@ public class InvokeREST {
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-			String requestURL = pathBase + endPoint;
+			String requestURL;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				requestURL = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
+					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				requestURL = pathBase + endPoint;
+			}
+			else {
+				requestURL = pathBase + "/" + endPoint;
+			}
 
+			
 			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
@@ -235,8 +270,19 @@ public class InvokeREST {
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-			String requestURL = pathBase + endPoint;
-
+			String requestURL;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				requestURL = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
+					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				requestURL = pathBase + endPoint;
+			}
+			else {
+				requestURL = pathBase + "/" + endPoint;
+			}
+			
 			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
