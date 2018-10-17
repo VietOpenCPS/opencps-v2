@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -620,25 +621,26 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 		}else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI)){
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+			
 			_log.info("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
 			_log.info("SONDT DOSSIERSYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
 			
-//			PaymentFileLocalServiceUtil.g
-//			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-//			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-//			pfiModel.setApplicantName(dossier.getApplicantName());
-//			pfiModel.setBankInfo(paymentFile.getBankInfo());
-//			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-//			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-//			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-//			pfiModel.setPaymentAmount(processAction.getPaymentFee());
-//			pfiModel.setPaymentFee(processAction.getPaymentFee());
-//			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-//			pfiModel.setReferenceUid(dossier.getReferenceUid());
-//			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
-//			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-//			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
+			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+			pfiModel.setApplicantName(dossier.getApplicantName());
+			pfiModel.setBankInfo(paymentFile.getBankInfo());
+			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
+			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+			pfiModel.setPaymentAmount(GetterUtil.getString(processAction.getPaymentFee()));
+			pfiModel.setPaymentFee(processAction.getPaymentFee());
+			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+			pfiModel.setReferenceUid(dossier.getReferenceUid());
+			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
+			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			
+			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 		}
 		
 		ExecuteOneAction actionModel = new ExecuteOneAction();
