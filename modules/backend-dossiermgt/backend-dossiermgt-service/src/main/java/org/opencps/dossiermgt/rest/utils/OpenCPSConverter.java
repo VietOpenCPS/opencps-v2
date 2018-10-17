@@ -721,7 +721,7 @@ public class OpenCPSConverter {
 	    	params.put(PaymentFileTerm.PAYMENT_FEE, model.getPaymentFee());
 	    }
 	    if (Validator.isNotNull(model.getPaymentAmount())) {
-	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, GetterUtil.getLong(model.getFeeAmount()));
+	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, GetterUtil.getLong(model.getPaymentAmount()));
 	    }
 	    if (Validator.isNotNull(model.getPaymentNote())) {
 	    	params.put(PaymentFileTerm.PAYMENT_NOTE, model.getPaymentNote());
@@ -744,7 +744,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getConfirmFileEntryId())) {
 	    	params.put(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID, GetterUtil.getLong(model.getConfirmFileEntryId()));
 	    }
-	    
+	    if (Validator.isNotNull(model.getPaymentStatus())) {
+	    	params.put(PaymentFileTerm.PAYMENT_STATUS, model.getPaymentStatus());
+	    }
 	    return params;
 	}	
 	
