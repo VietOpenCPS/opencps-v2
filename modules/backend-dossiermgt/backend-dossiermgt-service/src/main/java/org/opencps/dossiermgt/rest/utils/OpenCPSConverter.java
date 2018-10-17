@@ -639,6 +639,7 @@ public class OpenCPSConverter {
 		model.setPostalServiceCode(dossier.getPostalServiceCode());
 		model.setPostalTelNo(dossier.getPostalTelNo());
 		model.setPostalWardCode(dossier.getPostalWardCode());
+		model.setDossierName(dossier.getDossierName());
 		
 		return model;
 	}
