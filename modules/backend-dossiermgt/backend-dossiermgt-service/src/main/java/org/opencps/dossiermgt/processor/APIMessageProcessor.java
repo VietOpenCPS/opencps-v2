@@ -282,7 +282,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-				
+				_log.info("SONDT pfiModel SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 
 			}

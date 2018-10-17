@@ -3152,11 +3152,9 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 			// sondt start sendvnpost
-			String[] preConditions = StringUtil.split(proAction.getPreCondition());
-
-			boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier);
+		
 			
-			if (checkPreCondition) {
+			if (proAction.getPreCondition().toLowerCase().contentEquals("sendviapostal=1")) {
 				
 				_log.info("GO GO SEND VNPOST");
 				
