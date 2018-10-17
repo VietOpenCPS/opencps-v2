@@ -1013,7 +1013,11 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateName(input.getDelegateName());
 				dossier.setDelegateEmail(input.getDelegateEmail());
 				dossier.setDelegateAddress(input.getDelegateAddress());
-				dossier.setDossierName(serviceName);
+				if (Validator.isNotNull(input.getDossierName())) {
+					dossier.setDossierName(input.getDossierName());
+				} else {
+					dossier.setDossierName(serviceName);
+				}
 				dossier.setPostalCityName(input.getPostalCityName());
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setPostalServiceCode(input.getPostalServiceCode());
@@ -1023,7 +1027,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalWardCode(input.getPostalWardCode());
 				dossier.setPostalWardName(input.getPostalWardName());
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
-				
+
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());
 				}

@@ -653,6 +653,7 @@ public class OpenCPSConverter {
 		model.setPostalTelNo(dossier.getPostalTelNo());
 		model.setPostalWardCode(dossier.getPostalWardCode());
 		model.setOriginDossierNo(dossier.getOriginDossierNo());
+		model.setDossierName(dossier.getDossierName());
 		
 		return model;
 	}
