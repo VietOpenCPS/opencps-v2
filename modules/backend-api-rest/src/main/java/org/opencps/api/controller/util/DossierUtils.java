@@ -200,9 +200,9 @@ public class DossierUtils {
 			DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			if (dAction != null) {
 				int state = dAction.getState();
-				if (model.getDossierId() == 9102) {
-					_log.info("ACTION OVERDUE: " + dAction.getActionOverdue());
-				}
+//				if (model.getDossierId() == 9102) {
+//					_log.info("ACTION OVERDUE: " + dAction.getActionOverdue());
+//				}
 				if (state > 0) {
 					int actionOverDue = dAction.getActionOverdue();
 					if (actionOverDue > 0) {
@@ -470,7 +470,7 @@ public class DossierUtils {
 			double dueCountReal = dueCount - countDayHoliday + countWork;
 			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
 			overDue = (double) Math.ceil(subDueCount * 4) / 4;
-			_log.info("overDue: "+overDue);
+//			_log.info("overDue: "+overDue);
 			//TODO: Process a.0 = a
 			boolean flagCeil = false;
 			String strOverDueConvert = String.valueOf(overDue);
@@ -504,8 +504,8 @@ public class DossierUtils {
 			}
 		}
 
-		_log.info("overDue: "+overDue);
-		_log.info("strOverDue: "+strOverDue);
+//		_log.info("overDue: "+overDue);
+//		_log.info("strOverDue: "+strOverDue);
 		return (int)overDue + strOverDue;
 	}
 
@@ -823,15 +823,15 @@ public class DossierUtils {
 							dictCollection.getDictCollectionId(), input.getGroupId());
 				}
 				if (dictItem != null) {
-					_log.info("53");
+//					_log.info("53");
 					String metaData = dictItem.getMetaData();
 					String specialStatus = StringPool.BLANK;
 					if (Validator.isNotNull(metaData)) {
-						_log.info("metaData: " +metaData);
+//						_log.info("metaData: " +metaData);
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
 							specialStatus = metaJson.getString("specialStatus");
-							_log.info("specialStatus: " +specialStatus);
+//							_log.info("specialStatus: " +specialStatus);
 							
 						} catch (Exception e) {
 							// TODO: handle exception
@@ -1091,9 +1091,9 @@ public class DossierUtils {
 				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
+//			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
-			_log.info("FINISH_DATE: "+ doc.get(DossierTerm.FINISH_DATE));
+//			_log.info("FINISH_DATE: "+ doc.get(DossierTerm.FINISH_DATE));
 			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
