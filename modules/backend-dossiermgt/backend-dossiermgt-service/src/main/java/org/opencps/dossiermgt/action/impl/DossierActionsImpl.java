@@ -3166,7 +3166,7 @@ public class DossierActionsImpl implements DossierActions {
 			// sondt start sendvnpost
 		
 			_log.info("SONDT PREPARE SENDVNPOST ========== " + JSONFactoryUtil.looseSerialize(proAction.getPreCondition()));
-			if (proAction.getPreCondition().toLowerCase().contentEquals("sendviapostal=1")) {
+			if (proAction.getPreCondition().toLowerCase().contains("sendviapostal=1")) {
 				
 				_log.info("GO GO SEND VNPOST");
 				
