@@ -26,11 +26,11 @@ public class VotingResultTempListener extends BaseModelListener<VotingResult> {
 	@Override
 	public void onBeforeCreate(VotingResult model) throws ModelListenerException {
 //		try {
-//			model.setVotingId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getVotingId()))));
-//			model.setFullname(StringEscapeUtils.escapeHtml4(model.getFullname()));
-//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-//			model.setComment(StringEscapeUtils.escapeHtml4(model.getComment()));
-//			model.setSelected(StringEscapeUtils.escapeHtml4(model.getSelected()));
+//			model.setVotingId(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getVotingId()))));
+//			model.setFullname(HtmlUtil.escape(model.getFullname()));
+//			model.setEmail(HtmlUtil.escape(model.getEmail()));
+//			model.setComment(HtmlUtil.escape(model.getComment()));
+//			model.setSelected(HtmlUtil.escape(model.getSelected()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -40,11 +40,11 @@ public class VotingResultTempListener extends BaseModelListener<VotingResult> {
 	@Override
 	public void onBeforeUpdate(VotingResult model) throws ModelListenerException {
 //		try {
-//			model.setVotingId(Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getVotingId()))));
-//			model.setFullname(StringEscapeUtils.escapeHtml4(model.getFullname()));
-//			model.setEmail(StringEscapeUtils.escapeHtml4(model.getEmail()));
-//			model.setComment(StringEscapeUtils.escapeHtml4(model.getComment()));
-//			model.setSelected(StringEscapeUtils.escapeHtml4(model.getSelected()));
+//			model.setVotingId(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getVotingId()))));
+//			model.setFullname(HtmlUtil.escape(model.getFullname()));
+//			model.setEmail(HtmlUtil.escape(model.getEmail()));
+//			model.setComment(HtmlUtil.escape(model.getComment()));
+//			model.setSelected(HtmlUtil.escape(model.getSelected()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

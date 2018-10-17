@@ -105,9 +105,9 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			String templateName = StringEscapeUtils.escapeHtml4(input.getTemplateName());
-			String templateNo = StringEscapeUtils.escapeHtml4(input.getTemplateNo());
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String templateName = HtmlUtil.escape(input.getTemplateName());
+			String templateNo = HtmlUtil.escape(input.getTemplateNo());
+			String description = HtmlUtil.escape(input.getDescription());
 			
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
@@ -174,9 +174,9 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 			
-			String templateName = StringEscapeUtils.escapeHtml4(input.getTemplateName());
-			String templateNo = StringEscapeUtils.escapeHtml4(input.getTemplateNo());
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String templateName = HtmlUtil.escape(input.getTemplateName());
+			String templateNo = HtmlUtil.escape(input.getTemplateNo());
+			String description = HtmlUtil.escape(input.getDescription());
 
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
@@ -319,13 +319,13 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-			String partNo = StringEscapeUtils.escapeHtml4(query.getPartNo());
-			String partName = StringEscapeUtils.escapeHtml4(query.getPartName());
-			String partTip = StringEscapeUtils.escapeHtml4(query.getPartTip());
-			String multiple = StringEscapeUtils.escapeHtml4(String.valueOf(query.getMultiple()));
-			String required = StringEscapeUtils.escapeHtml4(String.valueOf(query.getRequired()));
-			String fileTemplateNo = StringEscapeUtils.escapeHtml4(query.getFileTemplateNo());
-			String eSign = StringEscapeUtils.escapeHtml4(String.valueOf(query.getEsign()));
+			String partNo = HtmlUtil.escape(query.getPartNo());
+			String partName = HtmlUtil.escape(query.getPartName());
+			String partTip = HtmlUtil.escape(query.getPartTip());
+			String multiple = HtmlUtil.escape(String.valueOf(query.getMultiple()));
+			String required = HtmlUtil.escape(String.valueOf(query.getRequired()));
+			String fileTemplateNo = HtmlUtil.escape(query.getFileTemplateNo());
+			String eSign = HtmlUtil.escape(String.valueOf(query.getEsign()));
 			
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
@@ -379,13 +379,13 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
 //			}
-			String newPartNo = StringEscapeUtils.escapeHtml4(query.getPartNo());
-			String partName = StringEscapeUtils.escapeHtml4(query.getPartName());
-			String partTip = StringEscapeUtils.escapeHtml4(query.getPartTip());
-			String multiple = StringEscapeUtils.escapeHtml4(String.valueOf(query.getMultiple()));
-			String required = StringEscapeUtils.escapeHtml4(String.valueOf(query.getRequired()));
-			String fileTemplateNo = StringEscapeUtils.escapeHtml4(query.getFileTemplateNo());
-			String eSign = StringEscapeUtils.escapeHtml4(String.valueOf(query.getEsign()));
+			String newPartNo = HtmlUtil.escape(query.getPartNo());
+			String partName = HtmlUtil.escape(query.getPartName());
+			String partTip = HtmlUtil.escape(query.getPartTip());
+			String multiple = HtmlUtil.escape(String.valueOf(query.getMultiple()));
+			String required = HtmlUtil.escape(String.valueOf(query.getRequired()));
+			String fileTemplateNo = HtmlUtil.escape(query.getFileTemplateNo());
+			String eSign = HtmlUtil.escape(String.valueOf(query.getEsign()));
 
 			DossierPartInputModel result;
 

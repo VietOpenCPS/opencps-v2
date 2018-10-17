@@ -25,31 +25,31 @@ public class ProcessActionTempListener extends BaseModelListener<ProcessAction> 
 	public void onBeforeCreate(ProcessAction model) throws ModelListenerException {
 //		try {
 //			model.setServiceProcessId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-//			model.setPreStepCode(StringEscapeUtils.escapeHtml4(model.getPreStepCode()));
-//			model.setPostStepCode(StringEscapeUtils.escapeHtml4(model.getPostStepCode()));
-//			model.setAutoEvent(StringEscapeUtils.escapeHtml4(model.getAutoEvent()));
-//			model.setPreCondition(StringEscapeUtils.escapeHtml4(model.getPreCondition()));
-//			model.setActionCode(StringEscapeUtils.escapeHtml4(model.getActionCode()));
-//			model.setActionName(StringEscapeUtils.escapeHtml4(model.getActionName()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceProcessId()))));
+//			model.setPreStepCode(HtmlUtil.escape(model.getPreStepCode()));
+//			model.setPostStepCode(HtmlUtil.escape(model.getPostStepCode()));
+//			model.setAutoEvent(HtmlUtil.escape(model.getAutoEvent()));
+//			model.setPreCondition(HtmlUtil.escape(model.getPreCondition()));
+//			model.setActionCode(HtmlUtil.escape(model.getActionCode()));
+//			model.setActionName(HtmlUtil.escape(model.getActionName()));
 //			model.setAllowAssignUser(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getAllowAssignUser()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getAllowAssignUser()))));
 //			model.setAssignUserId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getAssignUserId()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getAssignUserId()))));
 //			model.setRequestPayment(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRequestPayment()))));
-//			model.setPaymentFee(StringEscapeUtils.escapeHtml4(model.getPaymentFee()));
-//			model.setCreateDossierFiles(StringEscapeUtils.escapeHtml4(model.getCreateDossierFiles()));
-//			model.setReturnDossierFiles(StringEscapeUtils.escapeHtml4(model.getReturnDossierFiles()));
-//			model.setMakeBriefNote(StringEscapeUtils.escapeHtml4(model.getMakeBriefNote()));
-//			model.setSyncActionCode(StringEscapeUtils.escapeHtml4(model.getSyncActionCode()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getRequestPayment()))));
+//			model.setPaymentFee(HtmlUtil.escape(model.getPaymentFee()));
+//			model.setCreateDossierFiles(HtmlUtil.escape(model.getCreateDossierFiles()));
+//			model.setReturnDossierFiles(HtmlUtil.escape(model.getReturnDossierFiles()));
+//			model.setMakeBriefNote(HtmlUtil.escape(model.getMakeBriefNote()));
+//			model.setSyncActionCode(HtmlUtil.escape(model.getSyncActionCode()));
 //			model.setRollbackable(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRollbackable()))));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getRollbackable()))));
 //			model.setCreateDossierNo(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getCreateDossierNo()))));
-//			model.setESignature(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getESignature()))));
-//			model.setConfigNote(StringEscapeUtils.escapeHtml4(model.getConfigNote()));
-//			model.setDossierTemplateNo(StringEscapeUtils.escapeHtml4(model.getDossierTemplateNo()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getCreateDossierNo()))));
+//			model.setESignature(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getESignature()))));
+//			model.setConfigNote(HtmlUtil.escape(model.getConfigNote()));
+//			model.setDossierTemplateNo(HtmlUtil.escape(model.getDossierTemplateNo()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -60,31 +60,31 @@ public class ProcessActionTempListener extends BaseModelListener<ProcessAction> 
 	public void onBeforeUpdate(ProcessAction model) throws ModelListenerException {
 //		try {
 //			model.setServiceProcessId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getServiceProcessId()))));
-//			model.setPreStepCode(StringEscapeUtils.escapeHtml4(model.getPreStepCode()));
-//			model.setPostStepCode(StringEscapeUtils.escapeHtml4(model.getPostStepCode()));
-//			model.setAutoEvent(StringEscapeUtils.escapeHtml4(model.getAutoEvent()));
-//			model.setPreCondition(StringEscapeUtils.escapeHtml4(model.getPreCondition()));
-//			model.setActionCode(StringEscapeUtils.escapeHtml4(model.getActionCode()));
-//			model.setActionName(StringEscapeUtils.escapeHtml4(model.getActionName()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getServiceProcessId()))));
+//			model.setPreStepCode(HtmlUtil.escape(model.getPreStepCode()));
+//			model.setPostStepCode(HtmlUtil.escape(model.getPostStepCode()));
+//			model.setAutoEvent(HtmlUtil.escape(model.getAutoEvent()));
+//			model.setPreCondition(HtmlUtil.escape(model.getPreCondition()));
+//			model.setActionCode(HtmlUtil.escape(model.getActionCode()));
+//			model.setActionName(HtmlUtil.escape(model.getActionName()));
 //			model.setAllowAssignUser(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getAllowAssignUser()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getAllowAssignUser()))));
 //			model.setAssignUserId(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getAssignUserId()))));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getAssignUserId()))));
 //			model.setRequestPayment(
-//					Integer.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRequestPayment()))));
-//			model.setPaymentFee(StringEscapeUtils.escapeHtml4(model.getPaymentFee()));
-//			model.setCreateDossierFiles(StringEscapeUtils.escapeHtml4(model.getCreateDossierFiles()));
-//			model.setReturnDossierFiles(StringEscapeUtils.escapeHtml4(model.getReturnDossierFiles()));
-//			model.setMakeBriefNote(StringEscapeUtils.escapeHtml4(model.getMakeBriefNote()));
-//			model.setSyncActionCode(StringEscapeUtils.escapeHtml4(model.getSyncActionCode()));
+//					Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getRequestPayment()))));
+//			model.setPaymentFee(HtmlUtil.escape(model.getPaymentFee()));
+//			model.setCreateDossierFiles(HtmlUtil.escape(model.getCreateDossierFiles()));
+//			model.setReturnDossierFiles(HtmlUtil.escape(model.getReturnDossierFiles()));
+//			model.setMakeBriefNote(HtmlUtil.escape(model.getMakeBriefNote()));
+//			model.setSyncActionCode(HtmlUtil.escape(model.getSyncActionCode()));
 //			model.setRollbackable(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getRollbackable()))));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getRollbackable()))));
 //			model.setCreateDossierNo(
-//					Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getCreateDossierNo()))));
-//			model.setESignature(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getESignature()))));
-//			model.setConfigNote(StringEscapeUtils.escapeHtml4(model.getConfigNote()));
-//			model.setDossierTemplateNo(StringEscapeUtils.escapeHtml4(model.getDossierTemplateNo()));
+//					Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getCreateDossierNo()))));
+//			model.setESignature(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getESignature()))));
+//			model.setConfigNote(HtmlUtil.escape(model.getConfigNote()));
+//			model.setDossierTemplateNo(HtmlUtil.escape(model.getDossierTemplateNo()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

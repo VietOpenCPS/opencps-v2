@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -27,7 +28,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.WorkingUnitManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
@@ -125,14 +125,14 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String name = StringEscapeUtils.escapeHtml4(input.getName());
-			String enName = StringEscapeUtils.escapeHtml4(input.getEnName());
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
-			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
-			String faxNo = StringEscapeUtils.escapeHtml4(input.getFaxNo()); 
-			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
-			String website = StringEscapeUtils.escapeHtml4(input.getWebsite());
+			String name = HtmlUtil.escape(input.getName());
+			String enName = HtmlUtil.escape(input.getEnName());
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String address = HtmlUtil.escape(input.getAddress());
+			String telNo = HtmlUtil.escape(input.getTelNo());
+			String faxNo = HtmlUtil.escape(input.getFaxNo()); 
+			String email = HtmlUtil.escape(input.getEmail());
+			String website = HtmlUtil.escape(input.getWebsite());
 			
 			WorkingUnit workingUnit = actions.create(user.getUserId(), company.getCompanyId(), groupId,
 					address, email, enName, faxNo, govAgencyCode,
@@ -158,14 +158,14 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String name = StringEscapeUtils.escapeHtml4(input.getName());
-			String enName = StringEscapeUtils.escapeHtml4(input.getEnName());
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String address = StringEscapeUtils.escapeHtml4(input.getAddress());
-			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
-			String faxNo = StringEscapeUtils.escapeHtml4(input.getFaxNo()); 
-			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
-			String website = StringEscapeUtils.escapeHtml4(input.getWebsite());
+			String name = HtmlUtil.escape(input.getName());
+			String enName = HtmlUtil.escape(input.getEnName());
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String address = HtmlUtil.escape(input.getAddress());
+			String telNo = HtmlUtil.escape(input.getTelNo());
+			String faxNo = HtmlUtil.escape(input.getFaxNo()); 
+			String email = HtmlUtil.escape(input.getEmail());
+			String website = HtmlUtil.escape(input.getWebsite());
 			
 			WorkingUnit workingUnit = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
 					address, email, enName, faxNo, govAgencyCode,

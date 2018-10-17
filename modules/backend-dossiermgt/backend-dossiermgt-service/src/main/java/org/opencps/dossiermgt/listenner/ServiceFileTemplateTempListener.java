@@ -23,7 +23,7 @@ public class ServiceFileTemplateTempListener extends BaseModelListener<ServiceFi
 	@Override
 	public void onBeforeCreate(ServiceFileTemplate model) throws ModelListenerException {
 //		try {
-//			model.setFileTemplateNo(StringEscapeUtils.escapeHtml4(model.getFileTemplateNo()));
+//			model.setFileTemplateNo(HtmlUtil.escape(model.getFileTemplateNo()));
 ////
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -33,7 +33,7 @@ public class ServiceFileTemplateTempListener extends BaseModelListener<ServiceFi
 	@Override
 	public void onBeforeUpdate(ServiceFileTemplate model) throws ModelListenerException {
 //		try {
-//			model.setFileTemplateNo(StringEscapeUtils.escapeHtml4(model.getFileTemplateNo()));
+//			model.setFileTemplateNo(HtmlUtil.escape(model.getFileTemplateNo()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

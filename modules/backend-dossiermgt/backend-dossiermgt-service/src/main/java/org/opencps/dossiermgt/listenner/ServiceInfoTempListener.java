@@ -29,19 +29,19 @@ public class ServiceInfoTempListener extends BaseModelListener<ServiceInfo> {
 	@Override
 	public void onBeforeCreate(ServiceInfo model) throws ModelListenerException {
 //		try {
-//			model.setServiceCode(StringEscapeUtils.escapeHtml4(model.getServiceCode()));
-//			model.setServiceName(StringEscapeUtils.escapeHtml4(model.getServiceName()));
-//			model.setProcessText(StringEscapeUtils.escapeHtml4(model.getProcessText()));
-//			model.setMethodText(StringEscapeUtils.escapeHtml4(model.getMethodText()));
-//			model.setDossierText(StringEscapeUtils.escapeHtml4(model.getDossierText()));
-//			model.setConditionText(StringEscapeUtils.escapeHtml4(model.getConditionText()));
-//			model.setDurationText(StringEscapeUtils.escapeHtml4(model.getDurationText()));
-//			model.setApplicantText(StringEscapeUtils.escapeHtml4(model.getApplicantText()));
-//			model.setResultText(StringEscapeUtils.escapeHtml4(model.getResultText()));
-//			model.setRegularText(StringEscapeUtils.escapeHtml4(model.getRegularText()));
-//			model.setFeeText(StringEscapeUtils.escapeHtml4(model.getFeeText()));
-//			model.setAdministrationCode(StringEscapeUtils.escapeHtml4(model.getAdministrationCode()));
-//			model.setDomainCode(StringEscapeUtils.escapeHtml4(model.getDomainCode()));
+//			model.setServiceCode(HtmlUtil.escape(model.getServiceCode()));
+//			model.setServiceName(HtmlUtil.escape(model.getServiceName()));
+//			model.setProcessText(HtmlUtil.escape(model.getProcessText()));
+//			model.setMethodText(HtmlUtil.escape(model.getMethodText()));
+//			model.setDossierText(HtmlUtil.escape(model.getDossierText()));
+//			model.setConditionText(HtmlUtil.escape(model.getConditionText()));
+//			model.setDurationText(HtmlUtil.escape(model.getDurationText()));
+//			model.setApplicantText(HtmlUtil.escape(model.getApplicantText()));
+//			model.setResultText(HtmlUtil.escape(model.getResultText()));
+//			model.setRegularText(HtmlUtil.escape(model.getRegularText()));
+//			model.setFeeText(HtmlUtil.escape(model.getFeeText()));
+//			model.setAdministrationCode(HtmlUtil.escape(model.getAdministrationCode()));
+//			model.setDomainCode(HtmlUtil.escape(model.getDomainCode()));
 //
 //			DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE,
 //					model.getAdministrationCode(), model.getGroupId());
@@ -50,16 +50,16 @@ public class ServiceInfoTempListener extends BaseModelListener<ServiceInfo> {
 //					model.getGroupId());
 //
 //			if (Validator.isNotNull(adm)) {
-//				model.setAdministrationName(StringEscapeUtils.escapeHtml4(adm.getItemName()));
-//				model.setAdministrationIndex(StringEscapeUtils.escapeHtml4(adm.getTreeIndex()));
+//				model.setAdministrationName(HtmlUtil.escape(adm.getItemName()));
+//				model.setAdministrationIndex(HtmlUtil.escape(adm.getTreeIndex()));
 //			}
 //
 //			if (Validator.isNotNull(dom)) {
-//				model.setDomainName(StringEscapeUtils.escapeHtml4(dom.getItemName()));
-//				model.setDomainIndex(StringEscapeUtils.escapeHtml4(dom.getTreeIndex()));
+//				model.setDomainName(HtmlUtil.escape(dom.getItemName()));
+//				model.setDomainIndex(HtmlUtil.escape(dom.getTreeIndex()));
 //			}
 //
-//			model.setPublic_(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getPublic_()))));
+//			model.setPublic_(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getPublic_()))));
 //		} catch (Exception e) {
 //			_log.error(e);
 //		}
@@ -68,19 +68,19 @@ public class ServiceInfoTempListener extends BaseModelListener<ServiceInfo> {
 	@Override
 	public void onBeforeUpdate(ServiceInfo model) throws ModelListenerException {
 //		try {
-//			model.setServiceCode(StringEscapeUtils.escapeHtml4(model.getServiceCode()));
-//			model.setServiceName(StringEscapeUtils.escapeHtml4(model.getServiceName()));
-//			model.setProcessText(StringEscapeUtils.escapeHtml4(model.getProcessText()));
-//			model.setMethodText(StringEscapeUtils.escapeHtml4(model.getMethodText()));
-//			model.setDossierText(StringEscapeUtils.escapeHtml4(model.getDossierText()));
-//			model.setConditionText(StringEscapeUtils.escapeHtml4(model.getConditionText()));
-//			model.setDurationText(StringEscapeUtils.escapeHtml4(model.getDurationText()));
-//			model.setApplicantText(StringEscapeUtils.escapeHtml4(model.getApplicantText()));
-//			model.setResultText(StringEscapeUtils.escapeHtml4(model.getResultText()));
-//			model.setRegularText(StringEscapeUtils.escapeHtml4(model.getRegularText()));
-//			model.setFeeText(StringEscapeUtils.escapeHtml4(model.getFeeText()));
-//			model.setAdministrationCode(StringEscapeUtils.escapeHtml4(model.getAdministrationCode()));
-//			model.setDomainCode(StringEscapeUtils.escapeHtml4(model.getDomainCode()));
+//			model.setServiceCode(HtmlUtil.escape(model.getServiceCode()));
+//			model.setServiceName(HtmlUtil.escape(model.getServiceName()));
+//			model.setProcessText(HtmlUtil.escape(model.getProcessText()));
+//			model.setMethodText(HtmlUtil.escape(model.getMethodText()));
+//			model.setDossierText(HtmlUtil.escape(model.getDossierText()));
+//			model.setConditionText(HtmlUtil.escape(model.getConditionText()));
+//			model.setDurationText(HtmlUtil.escape(model.getDurationText()));
+//			model.setApplicantText(HtmlUtil.escape(model.getApplicantText()));
+//			model.setResultText(HtmlUtil.escape(model.getResultText()));
+//			model.setRegularText(HtmlUtil.escape(model.getRegularText()));
+//			model.setFeeText(HtmlUtil.escape(model.getFeeText()));
+//			model.setAdministrationCode(HtmlUtil.escape(model.getAdministrationCode()));
+//			model.setDomainCode(HtmlUtil.escape(model.getDomainCode()));
 //
 //			DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE,
 //					model.getAdministrationCode(), model.getGroupId());
@@ -89,15 +89,15 @@ public class ServiceInfoTempListener extends BaseModelListener<ServiceInfo> {
 //					model.getGroupId());
 //
 //			if (Validator.isNotNull(adm)) {
-//				model.setAdministrationName(StringEscapeUtils.escapeHtml4(adm.getItemName()));
-//				model.setAdministrationIndex(StringEscapeUtils.escapeHtml4(adm.getTreeIndex()));
+//				model.setAdministrationName(HtmlUtil.escape(adm.getItemName()));
+//				model.setAdministrationIndex(HtmlUtil.escape(adm.getTreeIndex()));
 //			}
 //
 //			if (Validator.isNotNull(dom)) {
-//				model.setDomainName(StringEscapeUtils.escapeHtml4(dom.getItemName()));
-//				model.setDomainIndex(StringEscapeUtils.escapeHtml4(dom.getTreeIndex()));
+//				model.setDomainName(HtmlUtil.escape(dom.getItemName()));
+//				model.setDomainIndex(HtmlUtil.escape(dom.getTreeIndex()));
 //			}
-//			model.setPublic_(Boolean.valueOf(StringEscapeUtils.escapeHtml4(String.valueOf(model.getPublic_()))));
+//			model.setPublic_(Boolean.valueOf(HtmlUtil.escape(String.valueOf(model.getPublic_()))));
 //		} catch (Exception e) {
 //			_log.error(e);
 //		}

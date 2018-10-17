@@ -1,5 +1,16 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -8,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.JobposManagement;
 import org.opencps.api.controller.util.JobposUtils;
 import org.opencps.api.error.model.ErrorMsg;
@@ -22,16 +32,6 @@ import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -114,8 +114,8 @@ public class JobposManagementImpl implements JobposManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String title = HtmlUtil.escape(input.getTitle());
+			String description = HtmlUtil.escape(input.getDescription());
 			
 			JobPos jobPos = actions.create(user.getUserId(), groupId, title, description,
 					input.getLeader(), serviceContext);
@@ -139,8 +139,8 @@ public class JobposManagementImpl implements JobposManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String title = HtmlUtil.escape(input.getTitle());
+			String description = HtmlUtil.escape(input.getDescription());
 
 			JobPos jobPos = actions.update(user.getUserId(), groupId, id, title, description,
 					input.getLeader(), serviceContext);

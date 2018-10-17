@@ -25,10 +25,10 @@ public class DictCollectionTempListener extends BaseModelListener<DictCollection
 	public void onBeforeCreate(DictCollection model) throws ModelListenerException {
 //		try {
 //			// Other fields
-//			model.setCollectionCode(StringEscapeUtils.escapeHtml4(model.getCollectionCode()));
-//			model.setCollectionName(StringEscapeUtils.escapeHtml4(model.getCollectionName()));
-//			model.setCollectionNameEN(StringEscapeUtils.escapeHtml4(model.getCollectionNameEN()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setCollectionCode(HtmlUtil.escape(model.getCollectionCode()));
+//			model.setCollectionName(HtmlUtil.escape(model.getCollectionName()));
+//			model.setCollectionNameEN(HtmlUtil.escape(model.getCollectionNameEN()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -39,10 +39,10 @@ public class DictCollectionTempListener extends BaseModelListener<DictCollection
 	public void onBeforeUpdate(DictCollection model) throws ModelListenerException {
 //		try {
 //			// Other fields
-//			model.setCollectionCode(StringEscapeUtils.escapeHtml4(model.getCollectionCode()));
-//			model.setCollectionName(StringEscapeUtils.escapeHtml4(model.getCollectionName()));
-//			model.setCollectionNameEN(StringEscapeUtils.escapeHtml4(model.getCollectionNameEN()));
-//			model.setDescription(StringEscapeUtils.escapeHtml4(model.getDescription()));
+//			model.setCollectionCode(HtmlUtil.escape(model.getCollectionCode()));
+//			model.setCollectionName(HtmlUtil.escape(model.getCollectionName()));
+//			model.setCollectionNameEN(HtmlUtil.escape(model.getCollectionNameEN()));
+//			model.setDescription(HtmlUtil.escape(model.getDescription()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
