@@ -1444,6 +1444,21 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setDossierName(String dossierName);
 
+	/**
+	 * Returns the origin dossier no of this dossier.
+	 *
+	 * @return the origin dossier no of this dossier
+	 */
+	@AutoEscape
+	public String getOriginDossierNo();
+
+	/**
+	 * Sets the origin dossier no of this dossier.
+	 *
+	 * @param originDossierNo the origin dossier no of this dossier
+	 */
+	public void setOriginDossierNo(String originDossierNo);
+
 	@Override
 	public boolean isNew();
 
