@@ -15,7 +15,7 @@
 	<#assign address = themeDisplay.getThemeSetting('m_address')/>
 </#if>
 <#if phone == ''>
-	<#assign phone = '0986 997 029'/>
+	<#assign phone = '02102.222.555'/>
 <#else>
 	<#assign phone = themeDisplay.getThemeSetting('m_phone')/>
 </#if>
@@ -25,7 +25,7 @@
 	<#assign email = themeDisplay.getThemeSetting('m_email')/>
 </#if>
 <#if hotline == ''>
-	<#assign hotline = '098.699.7029'/>
+	<#assign hotline = '02102.222.555'/>
 <#else>
 	<#assign hotline = themeDisplay.getThemeSetting('m_hotline')/>
 </#if>

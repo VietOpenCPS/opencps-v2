@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,12 +46,13 @@ import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.model.Preferences;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
@@ -739,6 +741,119 @@ public class UserActions implements UserInterface {
 		}
 
 		return filePath;
+
+	}
+
+	@Override
+	public String getUserById(long userId) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		User user = UserLocalServiceUtil.fetchUser(userId);
+
+		if (Validator.isNotNull(user)) {
+			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+
+			result.put("className", User.class.getName());
+			result.put("classPK", user.getUserId());
+			result.put("userId", user.getUserId());
+			result.put("userName", user.getFullName());
+			result.put("mappingUserId", user.getUserId());
+			result.put("screenName", user.getScreenName());
+
+			result.put("employeeGender", 0);
+			result.put("employeeWorkingStatus", 0);
+			result.put("employeeMainJobPostId", 0);
+			result.put("employeePhotoFileEntryId", 0);
+			result.put("employeeFileCerId", 0);
+			result.put("employeeFileSignId", 0);
+			result.put("applicantLock", 0);
+			
+			String avatar = StringPool.BLANK;
+
+			long portraitId = user.getPortraitId();
+			String tokenId = WebServerServletTokenUtil.getToken(user.getPortraitId());
+			try {
+				avatar = "/image/user_" + ((user != null) && user.isFemale() ? "female" : "male") + "_portrait?img_id="
+						+ portraitId + "&t=" + tokenId;
+			} catch (PortalException e) {
+				_log.error(e);
+			}
+
+			result.put("avatar", avatar);
+
+			if (Validator.isNotNull(employee)) {
+
+				result.put("className", Employee.class.getName());
+				result.put("classPK", employee.getEmployeeId());
+
+				result.put("employeeFullName", employee.getFullName());
+				result.put("employeeNo", employee.getEmployeeNo());
+				result.put("employeeGender", employee.getGender());
+				if (Validator.isNotNull(employee.getBirthdate())) {
+					result.put("employeeBirthDate", employee.getBirthdate().getTime());
+				}
+				result.put("employeeTelNo", employee.getTelNo());
+				result.put("employeeMobile", employee.getMobile());
+				result.put("employeeEmail", employee.getEmail());
+				result.put("employeeWorkingStatus", employee.getWorkingStatus());
+				result.put("employeePhotoFileEntryId", employee.getPhotoFileEntryId());
+				result.put("employeeFileCerId", employee.getFileCertId());
+				result.put("employeeFileSignId", employee.getFileSignId());
+
+				result.put("userId", employee.getMappingUserId());
+				result.put("userName", employee.getFullName());
+				result.put("mappingUserId", employee.getMappingUserId());
+
+				result.put("employeeMainJobPostId", employee.getMainJobPostId());
+				result.put("employeeMainJobPostName", StringPool.BLANK);
+
+				EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil
+						.fetchEmployeeJobPos(employee.getMainJobPostId());
+
+				if (Validator.isNotNull(employeeJobPos)) {
+					Role role = RoleLocalServiceUtil.fetchRole(employeeJobPos.getJobPostId());
+					result.put("employeeMainJobPostName", role.getTitleCurrentValue());
+				}
+
+			} else {
+
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+
+				if (Validator.isNotNull(applicant)) {
+
+					result.put("className", Applicant.class.getName());
+					result.put("classPK", applicant.getApplicantId());
+
+					result.put("applicantName", applicant.getApplicantName());
+					result.put("applicantType", applicant.getApplicantIdType());
+					result.put("applicantNo", applicant.getApplicantIdNo());
+					result.put("applicantAddress", applicant.getAddress());
+					result.put("applicantCityCode", applicant.getCityCode());
+					result.put("applicantCityName", applicant.getCityName());
+					result.put("applicantDistrictCode", applicant.getDistrictCode());
+					result.put("applicantDistrictName", applicant.getDistrictName());
+					result.put("applicantWardCode", applicant.getWardCode());
+					result.put("applicantWardName", applicant.getWardName());
+					result.put("applicantContactName", applicant.getContactName());
+					result.put("applicantContactTelNo", applicant.getContactTelNo());
+					result.put("applicantContactEmail", applicant.getContactEmail());
+					result.put("applicantActivationCode", applicant.getActivationCode());
+					result.put("applicantLock", applicant.getLock_());
+					result.put("applicantTmpPass", applicant.getTmpPass());
+
+					result.put("userId", applicant.getMappingUserId());
+					result.put("userName", applicant.getApplicantName());
+					result.put("mappingUserId", applicant.getMappingUserId());
+
+				}
+
+			}
+
+			return result.toJSONString();
+		} else {
+			return null;
+		}
 
 	}
 

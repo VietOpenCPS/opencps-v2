@@ -7,5 +7,12 @@
 	</compatibility>
 	<theme id="child-opencps-vue" name="child-opencps-vue">
 		<template-extension>ftl</template-extension>
+		<settings>
+			<setting configurable="true" key="m_sitename" type="text" value=""></setting>
+			<setting configurable="true" key="m_address" type="text" value=""></setting>
+			<setting configurable="true" key="m_phone" type="text" value=""></setting>
+			<setting configurable="true" key="m_email" type="text" value=""></setting>
+			<setting configurable="true" key="m_hotline" type="text" value=""></setting>
+		</settings>
 	</theme>
 </look-and-feel>

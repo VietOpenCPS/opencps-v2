@@ -1,0 +1,132 @@
+.navigation-drawer--fixed {
+    position: absolute;
+}
+body .status__counter {
+    position: absolute;
+    right: 7px;
+    width: 40px;
+    background: #f6f6f6;
+    text-align: center;
+    height: 22px;
+    font-size: 12px;
+    line-height: 22px;
+}
+body .navigation-drawer .list__group__header__prepend-icon .icon {
+    color: #00204A;
+}
+.navigation-drawer .list__group__header--active, .navigation-drawer .list__tile--active {
+    background: #e1e2e1;
+}
+.list__group__items > div:hover, 
+body .theme--light .list .list__group__header:hover, 
+body .theme--light .list .list__tile--link:hover {
+    background-color: #f6f6f6;
+}
+.btn_wrap_actions {
+    text-align: right;
+}
+.row-header {
+    background-color: #e1e2e1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.background-triangle-big, .background-triangle-small {
+    background-color: #00204A;
+    display: inline-block;
+    text-align: left;
+    color: #fff;
+    position: relative;
+    margin-right: 20px;
+    text-transform: uppercase;
+	padding: 9px 15px;
+    width: auto;
+    cursor: pointer;
+}
+body .no__hidden_class.row-header .background-triangle-big {
+    height: 37px;
+}
+.background-triangle-big:before {
+    content: "";
+    position: absolute;
+    transform: rotate(45deg);
+    right: -4px;
+    top: 2px;
+    border-top: 26px solid #00204A;
+    border-left: 26px solid transparent;
+    border-bottom: 25px solid transparent;
+}
+.row-header .background-triangle-big {
+    white-space: nowrap;
+}
+body .menu_header_list {
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+table.datatable p {
+    margin-bottom: 0;
+}
+table.table tbody td:first-child {
+	border-left: 1px solid #d3d3d3
+}
+table.table thead th:first-child .checkbox i, 
+table.table tbody td:first-child .checkbox i {
+	font-size: 15px;
+}
+table.table tbody tr:last-child {
+	border-bottom: 1px solid #d3d3d3
+}
+body .tiny-pagination {
+    display: flex;
+    list-style: none;
+    margin: .2rem 0;
+    padding: .2rem 0;
+}
+body .tiny-pagination li:first-child {
+    border-left: 1px solid #ccc;
+}
+body .tiny-pagination li {
+    margin: 0;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+body .tiny-pagination li .pagination__navigation {
+    border: 0;
+}
+body .vue-tiny-pagination {
+	display: -webkit-box;
+	display: flex;
+}
+body .vue-tiny-pagination > div {
+	max-width: 120px !important;
+}
+.menu__content {
+    -webkit-box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+    box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+}
+.menu__content .list {
+    padding: 0;
+}
+.menu__content .list > div {
+    border-bottom: 1px dashed #ddd;
+    display: block;
+    padding: 0;
+    font-size: 13px;
+    height: auto;
+    color: rgba(0,0,0,.87);
+    position: relative;
+}
+.menu__content .list > div:last-child {
+    border-bottom: 0;
+}
+.menu__content .list > div .list__tile {
+    height: 42px;
+    font-size: 13px;
+    padding: 0 15px!important;
+    cursor: pointer;
+}
+.navigation-drawer__border {
+    background-color: #ddd;
+}

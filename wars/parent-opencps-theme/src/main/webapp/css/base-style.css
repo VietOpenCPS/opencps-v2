@@ -255,6 +255,29 @@ body ul {
 }
 #footer .right {
 	text-align: right;
+	display: -webkit-box;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+	-webkit-justify-content: flex-end;
+    justify-content: flex-end;
+}
+#footer .right .hotline {
+	text-align: left;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 60px;
+    padding: 5px 25px 5px 10px;
+	margin-bottom: 5px;
+}
+#footer .right .hotline p {
+	color: white;
+    margin: 0;
+}
+#footer .right .hotline span {
+	display: block;
+    text-align: left;
+    font-size: 26px;
+    font-weight: bold;
 }
 #footer .right p {
 	margin-top: 5px;
@@ -285,7 +308,7 @@ body ul {
 	line-height: 45px;
 	white-space: nowrap;
     position: relative;
-    padding: 0 25px;
+    padding: 0 15px;
 	position: relative;
 }
 #navigation ul li a:focus {
@@ -442,4 +465,79 @@ body .alert-danger.liferayalert, .portlet-msg-error.liferayalert {
   body .col-sm-10 {width: 83.333333333%;float: left;}
   body .col-sm-11 {width: 91.666666667%;float: left;}
   body .col-sm-12 {width: 100%;float: left;}
+}
+.mWrapper > section#main-content {
+    margin: 10px 0 0 0;
+}
+#navigation ul li a {
+  background-repeat: no-repeat;
+  background-position: 25px center;
+  background-size: 13px;
+}
+#navigation ul li a[href*="trang-chu"] {
+  background-image: url('../images/icon-menu-1.png');
+  padding-left: 20px;
+  background-position-x: inherit;
+      margin-right: 10px;
+}
+#navigation ul li a[href*="thu-tuc-hanh-chinh"] {
+  background-image: url('../images/icon-menu-2.png');
+  padding-left: 20px;
+  background-size: 10px;
+  background-position-x: inherit;
+      margin-right: 10px;
+}
+#navigation ul li a[href*="tra-cuu-ho-so"] {
+  background-image: url('../images/icon-menu-3.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="gia-can-bo"] {
+  background-image: url('../images/icon-menu-4.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="thong-ke"] {
+  background-image: url('../images/icon-menu-5.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="huong-dan"] {
+  background-image: url('../images/icon-menu-6.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="ket-qua"] {
+  background-image: url('../images/icon-menu-7.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="kios"] {
+  background-image: url('../images/icon-menu-8.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="khao-sat1"] {
+  background-image: url('../images/icon-menu-11.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="hoi-dap"] {
+  background-image: url('../images/icon-menu-10.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
+}
+#navigation ul li a[href*="danh-sach-can-bo"] {
+  background-image: url('../images/icon-menu-9.png');
+  padding-left: 20px;
+    background-position-x: inherit;
+        margin-right: 10px;
 }

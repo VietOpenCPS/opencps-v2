@@ -26,6 +26,7 @@
 	border: 0;
 	padding: 0 15px;
 	display: inline-block;
+    color: #212121;
 }
 .row-1 .left .search button {
 	background-color: #f1f4f8;

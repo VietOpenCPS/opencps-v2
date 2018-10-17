@@ -1,0 +1,4 @@
+Bundle-Name: clean-resources
+Bundle-SymbolicName: clean.resources
+Bundle-Version: 1.0.0
+-sources: true

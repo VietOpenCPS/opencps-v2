@@ -11,18 +11,40 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<base href="/">
 	
+	<link href="${themeDisplay.getPathThemeRoot()}/images/favicon.ico" rel="Shortcut Icon">
+	
 	<@liferay_util["include"] page=top_head_include />
 	
-	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=212214" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=212214" rel="stylesheet">
+	<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
-	<script type="text/javascript" src="http://code.cloudcms.com/alpaca/1.5.24/bootstrap/alpaca.min.js"></script>
-	<script type="text/javascript" src="${themeDisplay.getPathThemeRoot()}/js/jquery_comment.js"></script>
+	<link href="${themeDisplay.getPathThemeRoot()}/css/main.css?t=123" rel="stylesheet" type="text/css">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/style-home.css?t=212214" rel="stylesheet">
 	
+	<script>
+        window.__define = window.define;
+        window.__require = window.require;
+        window.define = undefined;
+        window.require = undefined;
+    </script>
+    
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/handlebars.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/alpaca.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/moment-with-locales.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery-comments.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.textcomplete.js"></script>
+	
+	<script>
+        window.define = window.__define;
+        window.require = window.__require;
+        window.__define = undefined;
+        window.__require = undefined;
+    </script>
 </head>
 
 <body class="${css_class} mBody">
@@ -30,13 +52,13 @@
 	<@liferay_util["include"] page=body_top_include />
 	
 	<#if permissionChecker.isOmniadmin()>
-	  	<@liferay.control_menu />
+	
 	<#else>
 	  	<style>
-		    html .has-control-menu #wrapper {
+		    html .has-control-menu .mWrapper {
 		        margin-top: 0 !important;
 		    }
-		    html body.open #wrapper {
+		    html body.open .mWrapper {
 		      padding-left: 0 !important;
 		    }
 	  	</style>
@@ -101,16 +123,13 @@
 					<p class="align-middle">
 						<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
 						Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a>
+						trên nền <a href="https://github.com/VietOpenCPS/opencps-v2" target="_blank"> OpenCPS </a>
 					</p>
 				</div>
 			</div>
 		</footer>
 	</div>
-	
-	<@liferay_util["include"] page=body_bottom_include />
-
-	<@liferay_util["include"] page=bottom_include />
-
+		
 </body>
 
 <script type="text/javascript">

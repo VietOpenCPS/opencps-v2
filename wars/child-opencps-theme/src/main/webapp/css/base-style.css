@@ -255,6 +255,29 @@ body ul {
 }
 #footer .right {
 	text-align: right;
+	display: -webkit-box;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+	-webkit-justify-content: flex-end;
+    justify-content: flex-end;
+}
+#footer .right .hotline {
+	text-align: left;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 60px;
+    padding: 5px 25px 5px 10px;
+	margin-bottom: 5px;
+}
+#footer .right .hotline p {
+	color: white;
+    margin: 0;
+}
+#footer .right .hotline span {
+	display: block;
+    text-align: left;
+    font-size: 26px;
+    font-weight: bold;
 }
 #footer .right p {
 	margin-top: 5px;
@@ -265,6 +288,7 @@ body ul {
 #footer .right p img {
 	margin-right: 5px;
 }
+
 
 
 

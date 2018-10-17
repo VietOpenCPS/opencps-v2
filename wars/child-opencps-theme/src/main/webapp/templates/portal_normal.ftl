@@ -114,24 +114,31 @@
 	</section>
 
 	<footer id="footer">
-		<div class="container">
-			<div class="left">
-				<div class="site-name"><span>HỆ THỐNG MỘT CỬA ĐIỆN TỬ LIÊN THÔNG TỈNH PHÚ THỌ</span> </div>
-				<div class="contact">
-					<p><i class="fa fa-map-marker"></i> Đường Trần Phú, phường Tân Dân, thành phố Việt Trì, tỉnh Phú Thọ</p>
-					<p><i class="fa fa-phone"></i> 0986 997 029</p>
-					<p><i class="fa fa-envelope"></i> vpub@phutho.gov.vn</p>
+			<div class="container">
+				<div class="left">
+					<div class="site-name"><!--Cổng dịch vụ công trực tuyến--> <span>${site_name_cus}</span> </div>
+					<div class="contact">
+						<p><i class="fa fa-map-marker"></i> ${address}</p>
+						<p><i class="fa fa-phone"></i> ${phone}</p>
+						<p><i class="fa fa-envelope"></i> ${email}</p>
+					</div>
+				</div>
+				<div class="right">
+					<div class="hotline align-middle">
+						<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
+						<div>
+							<p>Đường dây nóng</p>
+							<span>${hotline}</span>
+						</div>
+					</div>
+					<p class="align-middle">
+						<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
+						Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a>
+						trên nền <a href="https://github.com/VietOpenCPS/opencps-v2" target="_blank"> OpenCPS </a>
+					</p>
 				</div>
 			</div>
-			<div class="right">
-				<img src="${themeDisplay.getPathThemeRoot()}/images/hotline.png">
-				<p class="align-middle">
-					<img src="${themeDisplay.getPathThemeRoot()}/images/logo-viettel.png">
-					Phát triển bởi Tập đoàn Công nghiệp - Viễn thông Quân đội <a href="http://viettel.com.vn/vi" target="_blank"> Viettel </a> trên nền <a href="https://github.com/VietOpenCPS/opencps-v2" target="_blank">OpenCPS</a>
-				</p>
-			</div>
-		</div>
-	</footer>
+		</footer>
 </div>
 
 <@liferay_util["include"] page=body_bottom_include />

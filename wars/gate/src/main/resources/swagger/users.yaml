@@ -1,0 +1,262 @@
+swagger: '2.0'
+info:
+  description: OpenCPS là phần mềm lõi dịch vụ công trực tuyến nguồn mở đầu tiên và duy nhất tại Việt Nam tính đến thời điểm này.
+  version: 2.0.1
+  title: OpenCPS API
+  # put the contact info for your development or API team
+  contact:
+    email: opencps@lists.opencps.vn
+
+  license:
+    name: GNU Affero General Public License v3+.
+    url: http://www.gnu.org/licenses
+tags:
+- name: Users
+  description: Định nghĩa Users
+# schemes:
+# - http
+paths:
+  /users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Lấy thông tin chi tiết của user
+      operationId: getUserById
+      description: Lấy thông tin chi tiết của user
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: id của user
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy thông tin chi tiết user thành công
+          schema:
+            $ref: '#/definitions/Users_UserItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /users/{id}/photo:
+    get:
+      tags:
+      - Users
+      summary: Lấy ảnh đại diện của user
+      operationId: getUsePhotorById
+      description: Lấy ảnh đại diện của user
+      parameters:
+      - name: id
+        in: path
+        description: id của user
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy ảnh đại diện user thành công
+          schema:
+            type: string
+            format: binary
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /users/{id}/preferences:
+    get:
+      tags:
+      - Users
+      summary: Lấy thông tin cấu hình của user
+      operationId: getUsePreferencesById
+      description: Lấy thông tin cấu hình của user
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: id của user
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy thông tin cấu hình user thành công
+          schema:
+            type: string
+        400:
+          description: Tham số truyền vào không hợp lệ
+    put:
+      tags:
+      - Users
+      summary: Cập nhật thông tin cấu hình của user
+      operationId: putUsePreferencesById
+      description: Cập nhật thông tin cấu hình của user
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: id của user
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          type: string
+      responses:
+        200:
+          description: Cập nhật thông tin cấu hình user thành công
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /users/{id}/preferences/{key}:
+    get:
+      tags:
+      - Users
+      summary: Lấy thông tin thành phần cấu hình của user
+      operationId: getUseKeyPreferencesById
+      description: Lấy thông tin thành phần cấu hình của user
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: id của user
+        required: true
+        type: string
+      - name: key
+        in: path
+        description: key của preferences
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy thông tin thành phần cấu hình user thành công
+          schema:
+            type: string
+        400:
+          description: Tham số truyền vào không hợp lệ
+definitions:
+  Users_UserItem:
+    type: object
+    properties:
+      className:
+        type: string
+        example: ""
+      classPK:
+        type: integer
+        format: int64
+      userId:
+        type: integer
+        format: int64
+      userName:
+        type: string
+        example: ""
+      avatar:
+        type: string
+        example: ""
+      mappingUserId:
+        type: integer
+        format: int64  
+      screenName:
+        type: string
+        example: ""
+      employeeFullName:
+        type: string
+        example: ""
+      employeeNo:
+        type: string
+        example: ""
+      employeeGender:
+        type: integer
+        format: int32
+      employeeBirthDate:
+        type: string
+        example: ""
+      employeeTelNo:
+        type: string
+        example: ""
+      employeeMobile:
+        type: string
+        example: ""
+      employeeEmail:
+        type: string
+        example: ""
+      employeeWorkingStatus:
+        type: integer
+        format: int32
+      employeeMainJobPostId:
+        type: integer
+        format: int64
+      employeeMainJobPostName:
+        type: integer
+        format: int64
+      employeePhotoFileEntryId:
+        type: integer
+        format: int64
+      employeeFileCerId:
+        type: integer
+        format: int64
+      employeeFileSignId:
+        type: integer
+        format: int64
+      applicantName:
+        type: string
+        example: ""
+      applicantType:
+        type: string
+        example: ""
+      applicantNo:
+        type: string
+        example: ""
+      applicantAddress:
+        type: string
+        example: ""
+      applicantCityCode:
+        type: string
+        example: ""
+      applicantCityName:
+        type: string
+        example: ""
+      applicantDistrictCode:
+        type: string
+        example: ""
+      applicantDistrictName:
+        type: string
+        example: ""
+      applicantWardCode:
+        type: string
+        example: ""
+      applicantWardName:
+        type: string
+        example: ""
+      applicantContactName:
+        type: string
+        example: ""
+      applicantContactTelNo:
+        type: string
+        example: ""
+      applicantContactEmail:
+        type: string
+        example: ""
+      applicantActivationCode:
+        type: string
+        example: ""
+      applicantLock:
+        type: integer
+        format: int32
+      applicantTmpPass:
+        type: string
+        example: ""
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /binhthgc/opencps/1.0.0
+schemes:
+ - https
+ - http
