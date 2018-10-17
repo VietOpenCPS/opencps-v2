@@ -2623,11 +2623,11 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		Map<String, Boolean> flagChanged = null;
-		
+		_log.info("SONDT PAYLOAD DOSSIERACTION PAYLOAD ======= " + payload);
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = JSONFactoryUtil.createJSONObject(payload);
 			_log.info("SONDT PAYLOAD DOSSIERACTION ======= " + pl);
-			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+//			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
 				
