@@ -235,6 +235,7 @@
 		<field name="durationUnit" type="int" />
 		<field name="durationCount" type="double" />
 		<field name="dossierName" type="String" />
+		<field name="originDossierNo" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />

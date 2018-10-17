@@ -149,6 +149,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("durationUnit", getDurationUnit());
 		attributes.put("durationCount", getDurationCount());
 		attributes.put("dossierName", getDossierName());
+		attributes.put("originDossierNo", getOriginDossierNo());
 
 		return attributes;
 	}
@@ -697,6 +698,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (dossierName != null) {
 			setDossierName(dossierName);
+		}
+
+		String originDossierNo = (String)attributes.get("originDossierNo");
+
+		if (originDossierNo != null) {
+			setOriginDossierNo(originDossierNo);
 		}
 	}
 
@@ -1303,6 +1310,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public long getOriginDossierId() {
 		return _dossier.getOriginDossierId();
+	}
+
+	/**
+	* Returns the origin dossier no of this dossier.
+	*
+	* @return the origin dossier no of this dossier
+	*/
+	@Override
+	public String getOriginDossierNo() {
+		return _dossier.getOriginDossierNo();
 	}
 
 	/**
@@ -2319,6 +2336,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setOriginDossierId(long originDossierId) {
 		_dossier.setOriginDossierId(originDossierId);
+	}
+
+	/**
+	* Sets the origin dossier no of this dossier.
+	*
+	* @param originDossierNo the origin dossier no of this dossier
+	*/
+	@Override
+	public void setOriginDossierNo(String originDossierNo) {
+		_dossier.setOriginDossierNo(originDossierNo);
 	}
 
 	/**
