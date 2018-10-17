@@ -1280,7 +1280,7 @@ public class DossierManagementImpl implements DossierManagement {
 //				dossier.setServiceName(input.getServiceName());
 //			}
 			if (Validator.isNotNull(input.getDossierName())) {
-				dossier.setServiceName(input.getDossierName());
+				dossier.setDossierName(input.getDossierName());
 			}
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			
@@ -1508,43 +1508,61 @@ public class DossierManagementImpl implements DossierManagement {
 						if (dossierResult != null) {
 							String notificationType = actConfig.getNotificationType();
 							//
-							long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-							
-							NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-							//Process add notification queue
-							Date now = new Date();
-
-							Calendar cal = Calendar.getInstance();
-							cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-							
-							queue.setCreateDate(now);
-							queue.setModifiedDate(now);
-							queue.setGroupId(groupId);
-							queue.setCompanyId(company.getCompanyId());
-							
-							queue.setNotificationType(notificationType);
-							queue.setClassName(Dossier.class.getName());
-							queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
-							queue.setToUsername(dossier.getUserName());
-							queue.setToUserId(dossier.getUserId());
-							queue.setToEmail(dossier.getContactEmail());
-							queue.setToTelNo(dossier.getContactTelNo());
-							
-							JSONObject payload = JSONFactoryUtil.createJSONObject();
-							try {
-//								_log.info("START PAYLOAD: ");
-								payload.put(
-									"Dossier", JSONFactoryUtil.createJSONObject(
-										JSONFactoryUtil.looseSerialize(dossier)));
+							if (Validator.isNotNull(notificationType)) {
+								long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+								
+								NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+								//Process add notification queue
+								Date now = new Date();
+	
+								Calendar cal = Calendar.getInstance();
+								cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+								
+								queue.setCreateDate(now);
+								queue.setModifiedDate(now);
+								queue.setGroupId(groupId);
+								queue.setCompanyId(company.getCompanyId());
+								
+								queue.setNotificationType(notificationType);
+								queue.setClassName(Dossier.class.getName());
+								queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
+								queue.setToUsername(dossier.getUserName());
+								queue.setToUserId(dossier.getUserId());
+								//queue.setToEmail(dossier.getContactEmail());
+								//queue.setToTelNo(dossier.getContactTelNo());
+								if (notificationType.contains("APLC")) {
+									if (dossier.getOriginality() == 3) {
+										queue.setToEmail(dossier.getDelegateEmail());
+										queue.setToTelNo(dossier.getDelegateTelNo());
+									} else {
+										queue.setToEmail(dossier.getContactEmail());
+										queue.setToTelNo(dossier.getContactTelNo());
+									}
+								} else if (notificationType.contains("EPLC")) {
+									Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId,
+											dossier.getUserId());
+									if (employee != null) {
+										queue.setToEmail(employee.getEmail());
+										queue.setToTelNo(employee.getTelNo());
+									}
+								}
+								
+								JSONObject payload = JSONFactoryUtil.createJSONObject();
+								try {
+	//								_log.info("START PAYLOAD: ");
+									payload.put(
+										"Dossier", JSONFactoryUtil.createJSONObject(
+											JSONFactoryUtil.looseSerialize(dossier)));
+								}
+								catch (JSONException parse) {
+									_log.error(parse);
+								}
+	//							_log.info("payloadTest: "+payload.toJSONString());
+								queue.setPayload(payload.toJSONString());
+								queue.setExpireDate(cal.getTime());
+	
+								NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 							}
-							catch (JSONException parse) {
-								_log.error(parse);
-							}
-//							_log.info("payloadTest: "+payload.toJSONString());
-							queue.setPayload(payload.toJSONString());
-							queue.setExpireDate(cal.getTime());
-
-							NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 						}
 					} else {
 						ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode, dossierTempNo,

@@ -3299,10 +3299,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				
 		desDossier.setDurationCount(srcDossier.getDurationCount());
 		desDossier.setDurationUnit(srcDossier.getDurationUnit());
-		desDossier.setDossierStatus(srcDossier.getDossierStatus());
-		desDossier.setDossierStatusText(srcDossier.getDossierStatusText());
-		desDossier.setDossierSubStatus(srcDossier.getDossierSubStatus());
-		desDossier.setDossierSubStatusText(srcDossier.getDossierSubStatusText());
+		//desDossier.setDossierStatus(srcDossier.getDossierStatus());
+		//desDossier.setDossierStatusText(srcDossier.getDossierStatusText());
+		//desDossier.setDossierSubStatus(srcDossier.getDossierSubStatus());
+		//desDossier.setDossierSubStatusText(srcDossier.getDossierSubStatusText());
+		desDossier.setDossierName(srcDossier.getDossierName());
 		
 		dossierPersistence.update(desDossier);
 		

@@ -88,69 +88,69 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 		try {
 			
 			_log.info("Applicant Log trigger!");
-			
-			NotificationQueue queue = null;
-			
-			long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-			
-			queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-			
-			Date now = new Date();
-			
-			Calendar cal = Calendar.getInstance();
-			
-			cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-			
-			queue.setCreateDate(now);
-			queue.setModifiedDate(now);
-			queue.setGroupId(model.getGroupId());
-			queue.setCompanyId(model.getCompanyId());
-			
-			queue.setNotificationType(NotificationType.APPLICANT_01);
-			queue.setClassName(Applicant.class.getName());
-			queue.setClassPK(String.valueOf(model.getPrimaryKey()));
-			queue.setToUsername(model.getApplicantName());
-			queue.setToUserId(model.getUserId());
-			queue.setToEmail(model.getContactEmail());
-			queue.setToTelNo(model.getContactTelNo());
-			
-			JSONObject object = JSONFactoryUtil.createJSONObject();
-			
-//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
-			String guestBaseUrl = "http://119.17.200.7/web/cong-dich-vu-cong";
-			
-			object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, model.getActivationCode());
-			object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/confirm-account?active_user_id="+ model.getApplicantId());
-			object.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
-			//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
-			object.put("toName", model.getApplicantName());
-			object.put("toAddress", model.getContactEmail());
-//			
-//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
-//			_log.info("payloadTest1: "+payload1);
-			JSONObject payload = JSONFactoryUtil.createJSONObject();
-			try {
-				_log.info("START PAYLOAD: ");
-				payload.put(
-					"Applicant", JSONFactoryUtil.createJSONObject(
-						JSONFactoryUtil.looseSerialize(model)));
+			if (model.getMappingUserId() > 0) {
+				NotificationQueue queue = null;
+				
+				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+				
+				queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+				
+				Date now = new Date();
+				
+				Calendar cal = Calendar.getInstance();
+				
+				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+				
+				queue.setCreateDate(now);
+				queue.setModifiedDate(now);
+				queue.setGroupId(model.getGroupId());
+				queue.setCompanyId(model.getCompanyId());
+				
+				queue.setNotificationType(NotificationType.APPLICANT_01);
+				queue.setClassName(Applicant.class.getName());
+				queue.setClassPK(String.valueOf(model.getPrimaryKey()));
+				queue.setToUsername(model.getApplicantName());
+				queue.setToUserId(model.getUserId());
+				queue.setToEmail(model.getContactEmail());
+				queue.setToTelNo(model.getContactTelNo());
+				
+				JSONObject object = JSONFactoryUtil.createJSONObject();
+				
+	//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
+				String guestBaseUrl = "http://119.17.200.7/web/cong-dich-vu-cong";
+				
+				object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, model.getActivationCode());
+				object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/confirm-account?active_user_id="+ model.getApplicantId());
+				object.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
+				//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
+				object.put("toName", model.getApplicantName());
+				object.put("toAddress", model.getContactEmail());
+	//			
+	//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
+	//			_log.info("payloadTest1: "+payload1);
+				JSONObject payload = JSONFactoryUtil.createJSONObject();
+				try {
+					_log.info("START PAYLOAD: ");
+					payload.put(
+						"Applicant", JSONFactoryUtil.createJSONObject(
+							JSONFactoryUtil.looseSerialize(model)));
+				}
+				catch (JSONException parse) {
+					_log.error(parse);
+				}
+				_log.info("payloadTest: "+payload.toJSONString());
+				queue.setPayload(payload.toJSONString());
+				
+				queue.setExpireDate(cal.getTime());
+				
+				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+				
+				//binhth add user applicant to siteGroup
+				
+				long userId = model.getMappingUserId();
+				
+				GroupLocalServiceUtil.addUserGroup(userId, model.getGroupId());
 			}
-			catch (JSONException parse) {
-				_log.error(parse);
-			}
-			_log.info("payloadTest: "+payload.toJSONString());
-			queue.setPayload(payload.toJSONString());
-			
-			queue.setExpireDate(cal.getTime());
-			
-			NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
-			
-			//binhth add user applicant to siteGroup
-			
-			long userId = model.getMappingUserId();
-			
-			GroupLocalServiceUtil.addUserGroup(userId, model.getGroupId());
-
 		} catch (Exception e) {
 			_log.error(e);
 		}
