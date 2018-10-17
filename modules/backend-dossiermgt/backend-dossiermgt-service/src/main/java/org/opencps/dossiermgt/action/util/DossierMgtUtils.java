@@ -8,13 +8,17 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -22,7 +26,11 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -219,11 +227,18 @@ public class DossierMgtUtils {
 					result = result && checkViaPostal(splitViaPostals[1], dossier);
 				}																							
 			}
+			if (preCondition.contains("roledone=")) {
+				String[] splitRoles = preCondition.split("=");
+				System.out.println(splitRoles[0] + "," + splitRoles[1]);
+				if (splitRoles.length == 2) {
+					result = result && checkRoleDone(splitRoles[1], dossier);
+				}																			
+			}			
 		}
 
 		return result;
 	}
-	
+		
 	private static boolean checkServiceCode(String serviceCode, Dossier dossier) {
 		if (serviceCode.equalsIgnoreCase(dossier.getServiceCode())) {
 			return true;
@@ -261,6 +276,34 @@ public class DossierMgtUtils {
 		}
 	}
 
+	private static boolean checkRoleDone(String roleCode, Dossier dossier) {
+		JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(dossier.getGroupId(), roleCode);
+		if (jobPos != null) {
+			List<DossierActionUser> dActionUsers = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
+			
+			boolean flag = false;
+			for (DossierActionUser dau : dActionUsers) {
+				User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+
+				List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(u.getUserId());
+				for (Role r : lstRoles) {
+					if (r.getRoleId() == jobPos.getMappingRoleId()) {
+						flag = true;
+						break;
+					}
+				}
+				if (flag) {
+					return true;
+				}
+			}
+			
+			return flag;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	private static boolean checkStepNotDone(String stepCode, Dossier dossier) {
 		return !checkStepDone(stepCode, dossier);
 	}

@@ -1529,7 +1529,20 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					else {
 						if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
-							lstUser.addAll(processRoleListUser(processStepRoleList, serviceProcessId));
+							List<ProcessStepRole> lstStepRoles = new ArrayList<>();
+							for (ProcessStepRole psr : processStepRoleList) {
+								if (Validator.isNotNull(psr.getCondition())) {
+									String[] conditions = StringUtil.split(psr.getCondition());
+									
+									if (DossierMgtUtils.checkPreCondition(conditions, dossier)) {
+										lstStepRoles.add(psr);
+									}
+								}
+								else {
+									lstStepRoles.add(psr);
+								}
+							}
+							lstUser.addAll(processRoleListUser(lstStepRoles, serviceProcessId));
 						}						
 					}
 					if (lstUser != null && !lstUser.isEmpty()) {
