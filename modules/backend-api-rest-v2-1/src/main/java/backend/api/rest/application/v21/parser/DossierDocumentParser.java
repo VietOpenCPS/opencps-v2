@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.DossierDocument;
-
-import io.swagger.model.DossierDocumentModel;
-
+import org.opencps.rest.application.model.DossierDocumentModel;
 
 public class DossierDocumentParser {
 	private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);

@@ -988,8 +988,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 				dossier.setDueDate(dueDate);
 				dossier.setOnline(online);
-				if (Validator.isNotNull(serviceName))
-					dossier.setServiceName(serviceName);
+				if (Validator.isNotNull(input.getDossierName()))
+					dossier.setDossierName(input.getDossierName());
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
@@ -1003,6 +1003,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateName(input.getDelegateName());
 				dossier.setDelegateEmail(input.getDelegateEmail());
 				dossier.setDelegateAddress(input.getDelegateAddress());
+				dossier.setDossierName(serviceName);
 
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());
@@ -1275,8 +1276,11 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(input.getBriefNote())) {
 				dossier.setBriefNote(input.getBriefNote());
 			}
-			if (Validator.isNotNull(input.getServiceName())) {
-				dossier.setServiceName(input.getServiceName());
+//			if (Validator.isNotNull(input.getServiceName())) {
+//				dossier.setServiceName(input.getServiceName());
+//			}
+			if (Validator.isNotNull(input.getDossierName())) {
+				dossier.setServiceName(input.getDossierName());
 			}
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			
@@ -1642,21 +1646,24 @@ public class DossierManagementImpl implements DossierManagement {
 	protected String getServiceName(String serviceCode, String templateNo, long groupId) throws PortalException {
 
 		try {
+//			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+//			if (service != null) {
+//				List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId,
+//						service.getServiceInfoId());
+//				if (configList != null && configList.size() > 0) {
+//					for (ServiceConfig config : configList) {
+//						ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
+//								templateNo, config.getServiceConfigId());
+//						if (option != null) {
+//							return option.getOptionName();
+//						}
+//					}
+//				}
+//			}
 			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
 			if (service != null) {
-				List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId,
-						service.getServiceInfoId());
-				if (configList != null && configList.size() > 0) {
-					for (ServiceConfig config : configList) {
-						ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
-								templateNo, config.getServiceConfigId());
-						if (option != null) {
-							return option.getOptionName();
-						}
-					}
-				}
+				return service.getServiceName();
 			}
-
 		} catch (Exception e) {
 			_log.debug(e);
 			throw new NotFoundException("NotFoundExceptionWithServiceCode");

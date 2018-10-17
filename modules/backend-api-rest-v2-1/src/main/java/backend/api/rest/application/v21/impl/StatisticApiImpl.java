@@ -1,5 +1,16 @@
 package backend.api.rest.application.v21.impl;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,21 +26,10 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
-
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
+import org.opencps.rest.application.api.DossierStatisticApi;
+import org.opencps.rest.application.model.DossierStatisticResultModel;
 
 import backend.api.rest.application.v21.elasticwrap.ElasticQueryWrapUtil;
-import io.swagger.api.DossierStatisticApi;
-import io.swagger.model.DossierStatisticResultModel;
 
 public class StatisticApiImpl implements DossierStatisticApi{
 
