@@ -220,6 +220,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.VIA_POSTAL, object.getViaPostal());
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
 			document.addNumberSortable(DossierTerm.ORIGINALLITY, object.getOriginality());
+			document.addTextSortable(DossierTerm.DOSSIER_NAME, object.getDossierName());
 			//Index month, year using search statistic
 			int yearDossier = 0;
 			int monthDossier = 0;

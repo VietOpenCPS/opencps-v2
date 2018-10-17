@@ -234,6 +234,7 @@
 		<field name="sampleCount" type="long" />
 		<field name="durationUnit" type="int" />
 		<field name="durationCount" type="double" />
+		<field name="dossierName" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />

@@ -2974,6 +2974,8 @@ public class DossierActionsImpl implements DossierActions {
 							//Set HSLT dossierId to origin dossier
 							hsltDossier.setOriginDossierId(dossierId);
 							hsltDossier.setServerNo(ltProcess.getServerNo());
+							//Update DossierName
+							hsltDossier.setDossierName(dossier.getDossierName());
 							DossierLocalServiceUtil.updateDossier(hsltDossier);
 							
 							JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);

@@ -113,7 +113,8 @@ import javax.xml.bind.annotation.XmlType;
     "postalDistrictCode",
     "postalWardCode",
     "postalTelNo",
-    "originality"
+    "originality",
+    "dossierName"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -158,6 +159,7 @@ public class DossierInputModel {
     protected String postalWardCode;
     protected String postalTelNo;
     protected Integer originality;
+    protected String dossierName;
 
     /**
      * Gets the value of the referenceUid property.
@@ -1118,5 +1120,13 @@ public class DossierInputModel {
     public void setOriginality(Integer value) {
         this.originality = value;
     }
+
+	public String getDossierName() {
+		return dossierName;
+	}
+
+	public void setDossierName(String dossierName) {
+		this.dossierName = dossierName;
+	}
 
 }

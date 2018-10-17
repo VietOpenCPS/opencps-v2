@@ -1,0 +1,1398 @@
+swagger: '2.0'
+info:
+  description: OpenCPS là phần mềm lõi dịch vụ công trực tuyến nguồn mở đầu tiên và duy nhất tại Việt Nam tính đến thời điểm này.
+  version: 2.0.1
+  title: OpenCPS API
+  # put the contact info for your development or API team
+  contact:
+    email: opencps@lists.opencps.vn
+
+  license:
+    name: GNU Affero General Public License v3+.
+    url: http://www.gnu.org/licenses
+
+# tags are used for organizing operations
+tags:
+- name: ActionConfig
+  description: Định nghĩa các thao tác xử lý hồ sơ chuẩn trong hệ thống, dùng làm cơ sở để tạo ra cá dữ liệu DossierAction, DossierSync và DossierDocument
+- name: MenuConfig
+  description: Định nghĩa các bước xử lý chuẩn dùng để hiển thị trên menu xử lý của chương trình
+- name: StepConfig
+  description: Định nghĩa các bước xử lý chuẩn dùng để hiển thị trên menu xử lý của chương trình
+- name: DocumentTypes
+  description: API process DocumentTypes
+- name: DossierDocuments
+  description: API process DossierDocuments
+- name: DossierSync
+  description: API process DossierSync
+- name: DossierStatistic
+  description: API process DossierStatistic
+
+paths:
+  /actionconfigs:
+    post:
+      tags:
+      - ActionConfig
+      summary: Thêm định nghĩa thao tác xử lý hồ sơ
+      operationId: addActionConfig
+      description: Thêm định nghĩa thao tác xử lý hồ sơ
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của ActionConfig 
+        schema:
+          $ref: '#/definitions/ActionConfigItem'
+      responses:
+        200:
+          description: ActionConfig thêm mới thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: ActionConfig đã tồn tại trong hệ thống
+  /actionconfigs/{id}:
+    get:
+      tags:
+      - ActionConfig
+      summary: Lấy danh sách các định nghĩa thao tác theo id Hoặc actionCode
+      operationId: getActionConfigByCode
+      description: Lấy danh sách các định nghĩa thao tác theo actionCode
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id hoặc actionCode của ActionConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy thao tác thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+    put:
+      tags:
+      - ActionConfig
+      summary: Cập nhật định nghĩa thao tác xử lý hồ sơ
+      operationId: updateActionConfig
+      description: Cập nhật định nghĩa thao tác xử lý hồ sơ
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của ActionConfig
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của ActionConfig 
+        schema:
+          $ref: '#/definitions/ActionConfigItem'
+      responses:
+        200:
+          description: ActionConfig cập nhật thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: ActionConfig đã tồn tại trong hệ thống
+    delete:
+      tags:
+      - ActionConfig
+      summary: Xoá định nghĩa thao tác xử lý hồ sơ
+      operationId: deleteActionConfig
+      description: Xoá định nghĩa thao tác xử lý hồ sơ
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của ActionConfig
+        required: true
+        type: string
+      responses:
+        400:
+          description: Tham số truyền vào không hợp lệ
+        404:
+          description: ActionConfig không tồn tại trong hệ thống
+  /actionconfigs/_search:
+    get:
+      tags:
+      - ActionConfig
+      summary: Lấy danh sách các định nghĩa thao tác
+      operationId: getActionConfigsElasticsearch
+      description: Lấy danh sách các định nghĩa thao tác
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/ActionConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /menuconfigs:
+    post:
+      tags:
+      - MenuConfig
+      summary: Thêm định nghĩa menu configs
+      operationId: addMenuConfig
+      description: Thêm định nghĩa menu configs
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của MenuConfig 
+        schema:
+          $ref: '#/definitions/MenuConfigItem'
+      responses:
+        200:
+          description: MenuConfig thêm mới thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: ActionConfig đã tồn tại trong hệ thống
+  /menuconfigs/{id}:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa cấu hình menu theo id hoặc group
+      operationId: getMenuConfigByCode
+      description: Lấy danh sách các định nghĩa cấu hình menu
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id hoặc group của MenuConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy menu thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+    put:
+      tags:
+      - MenuConfig
+      summary: Cập nhật định nghĩa menu
+      operationId: updateMenuConfig
+      description: Cập nhật định nghĩa menu
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của MenuConfig
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của MenuConfig 
+        schema:
+          $ref: '#/definitions/MenuConfigItem'
+      responses:
+        200:
+          description: MenuConfig cập nhật thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: MenuConfig đã tồn tại trong hệ thống
+    delete:
+      tags:
+      - MenuConfig
+      summary: Xoá định nghĩa menu
+      operationId: deleteMenuConfig
+      description: Xoá định nghĩa menu
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của MenuConfig
+        required: true
+        type: string
+      responses:
+        400:
+          description: Tham số truyền vào không hợp lệ
+        404:
+          description: MenuConfig không tồn tại trong hệ thống
+  /menuconfigs/todo:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa thao tác todo
+      operationId: getMenuConfigsTodo
+      description: Lấy danh sách các định nghĩa thao tác todo
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /menuconfigs/count:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa thao tác todo counter
+      operationId: getMenuConfigsCount
+      description: Lấy danh sách các định nghĩa thao tác todo counter
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/MenuConfigCountItemResults'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /menuconfigs/_search:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy danh sách các định nghĩa thao tác
+      operationId: getMenuConfigsElasticsearch
+      description: Lấy danh sách các định nghĩa thao tác
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/MenuConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /stepconfigs:
+    post:
+      tags:
+      - StepConfig
+      summary: Thêm định nghĩa step configs
+      operationId: addStepConfig
+      description: Thêm định nghĩa step configs
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của StepConfig 
+        schema:
+          $ref: '#/definitions/StepConfigItem'
+      responses:
+        200:
+          description: StepConfig thêm mới thành công
+          schema:
+            $ref: '#/definitions/StepConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: StepConfig đã tồn tại trong hệ thống
+  /stepconfigs/status/{mainStatus}/{subStatus}:
+    get:
+      tags:
+      - StepConfig
+      summary: Thêm định nghĩa step configs
+      operationId: getStepConfigByMainStatusAndSubStatus
+      description: Lấy định nghĩa step configs
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: mainStatus
+        in: path
+        description: mainStatus
+        required: true
+        type: string
+      - name: subStatus
+        in: path
+        description: subStatus
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/StepConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+  /stepconfigs/{id}:
+    get:
+      tags:
+      - StepConfig
+      summary: Lấy danh sách các định nghĩa cấu hình step theo id hoặc group
+      operationId: getStepConfigByCode
+      description: Lấy danh sách các định nghĩa cấu hình step
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id hoặc group của StepConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy step thành công
+          schema:
+            $ref: '#/definitions/StepConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+    put:
+      tags:
+      - StepConfig
+      summary: Cập nhật định nghĩa step
+      operationId: updateStepConfig
+      description: Cập nhật định nghĩa step
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của StepConfig
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào của StepConfig 
+        schema:
+          $ref: '#/definitions/StepConfigItem'
+      responses:
+        200:
+          description: StepConfig cập nhật thành công
+          schema:
+            $ref: '#/definitions/StepConfigItem'
+        400:
+          description: Tham số truyền vào không hợp lệ
+        409:
+          description: StepConfig đã tồn tại trong hệ thống
+    delete:
+      tags:
+      - StepConfig
+      summary: Xoá định nghĩa step
+      operationId: deleteStepConfig
+      description: Xoá định nghĩa step
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của StepConfig
+        required: true
+        type: string
+      responses:
+        400:
+          description: Tham số truyền vào không hợp lệ
+        404:
+          description: StepConfig không tồn tại trong hệ thống
+  /stepconfigs/_search:
+    get:
+      tags:
+      - StepConfig
+      summary: Lấy danh sách các định nghĩa step
+      operationId: getStepConfigsElasticsearch
+      description: Lấy danh sách các định nghĩa step
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: q
+        in: query
+        description: elasticsearch query language
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lấy danh sách thành công
+          schema:
+            $ref: '#/definitions/StepConfigItemResult'
+        400:
+          description: Tham số truyền vào không hợp lệ
+# List API of DocumentType
+  /documenttypes:
+    get:
+      tags:
+      - DocumentTypes
+      summary: Get all list DocumentTypes
+      operationId: getAllDocumentTypes
+      description: Get all list DocumentTypes
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+        - $ref: '#/parameters/keyword'
+        - $ref: '#/parameters/start'
+        - $ref: '#/parameters/end'
+      responses:
+        200:
+          description: get list DocumentTypes is success
+          schema:
+            $ref: '#/definitions/DocumentTypeResultModel'
+        400:
+          description: Params tranfer is not valid
+    post:
+      tags:
+      - DocumentTypes
+      summary: Create DocumentType
+      operationId: createDocumentType
+      description: Insert record DocumentType in database
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: input
+        in: body
+        description: input form parameters
+        schema:
+          $ref: '#/definitions/DocumentTypeInputModel'
+      responses:
+        200:
+          description: Create record DocumentType is success
+          schema:
+            $ref: '#/definitions/DocumentTypeModel'
+        400:
+          description: Create DocumentType is false
+  /documenttypes/{id}:
+    get:
+      tags:
+      - DocumentTypes
+      summary: Get DocumentType by id or code
+      operationId: getDocById
+      description: Get DocumentType by id or code
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - applicantion/json
+      - applicantion/xml
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Get info DocumentType
+          schema:
+            $ref: '#/definitions/DocumentTypeModel'
+        400:
+          description: Get DocumentType is not valid
+    put:
+      tags:
+      - DocumentTypes
+      summary: Update DocumentType by id
+      operationId: updateDocById
+      description: Update DocumentType by id
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - applicantion/json
+      - applicantion/xml
+      - application/x-www-form-urlencoded
+      parameters:
+        - $ref: '#/parameters/id'
+        - in: body
+          name: input
+          description: Param input update 
+          schema:
+            $ref: '#/definitions/DocumentTypeInputModel'
+      responses:
+        200:
+          description: Info DocumentType was updated
+          schema:
+            $ref: '#/definitions/DocumentTypeModel'
+        400:
+          description: DocumentType is not update
+    delete:
+      tags:
+      - DocumentTypes
+      summary: Delete DocumentType by id
+      operationId: removeDocById
+      description: Delete DocumentType by id
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - applicantion/json
+      - applicantion/xml
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Info DocumentType was delete
+          schema:
+            $ref: '#/definitions/DocumentTypeModel'
+        400:
+          description: DocumentType is not delete
+# List API DossierDocument
+  /dossiers/{id}/documents:
+    get:
+      tags:
+      - DossierDocuments
+      summary: Get list documents of dossierId
+      operationId: getDocumentList
+      description: Get list documents of dossierId
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/start'
+        - $ref: '#/parameters/end'
+      responses:
+        200:
+          description: List info Document by dossierId
+          schema:
+            $ref: '#/definitions/DossierDocumentResultModel'
+        400:
+          description: DossierDocument has not data
+    post:
+      tags:
+      - DossierDocuments
+      summary: create dossier documents of dossierId
+      operationId: createDossierDoc
+      description: create dossier documents of dossierId
+      consumes:
+      - application/json
+      - application/xml
+      - multipart/form-data
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: file
+          in: formData 
+          type: file
+          description: The file to upload
+        - name: referenceUid
+          in: formData 
+          type: string
+          description: reference uid of document
+        - name: documentType
+          in: formData 
+          type: string
+          description: type of document
+        - name: documentName
+          in: formData 
+          type: string
+          description: Name of document
+        - name: documentCode
+          in: formData 
+          type: string
+          description: Code of document
+      responses:
+        200:
+          description: List info Document by dossierId
+          schema:
+            $ref: '#/definitions/DossierDocumentModel'
+        400:
+          description: DossierDocument has not data
+  /dossiers/{id}/documents/{referenceUid}:
+    get:
+      tags:
+      - DossierDocuments
+      summary: Download file document by referenceUid
+      operationId: downloadDocByReferenceUid
+      description: Download file document by referenceUid
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - applicantion/json
+      - applicantion/xml
+      parameters:
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/referenceUid'
+      responses:
+        200:
+          description: Download file is success
+        400:
+          description: Download file is false
+#List API DossierSync
+  /dossiers/{id}/syncs:
+    get:
+      tags:
+      - DossierSync
+      summary: Read info exchange on dossier
+      operationId: getSyncByDossierId
+      description: Read info exchange on dossier
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - applicantion/json
+      - applicantion/xml
+      parameters:
+        - $ref: '#/parameters/info'
+        - $ref: '#/parameters/id'
+        - $ref: '#/parameters/start'
+        - $ref: '#/parameters/end'
+      responses:
+        200:
+          description: Get list dossierSync is success
+          schema:
+            $ref: '#/definitions/DossierSyncResultModel'
+        400:
+          description: Get list dossierSync is not success
+  /dossiersyncs:
+    get:
+      tags:
+      - DossierSync
+      summary: Get list all dossierSync
+      operationId: getDossierSyncList
+      description: Get list all dossierSync
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - applicantion/json
+      - applicantion/xml
+      parameters:
+        - $ref: '#/parameters/action'
+        - $ref: '#/parameters/top'
+        - $ref: '#/parameters/start'
+        - $ref: '#/parameters/end'
+      responses:
+        200:
+          description: Get list dossierSync is success
+          schema:
+            $ref: '#/definitions/DossierSyncResultModel'
+        400:
+          description: Get list dossierSync is not success
+# List API DossierStatistic
+  /statistics/dossiers/todoTest:
+    get:
+      tags:
+      - DossierStatistic
+      summary: Get list all DossierStatistic
+      operationId: getDossierTodoTest
+      description: Get list all DossierStatistic
+      consumes:
+      - applicantion/json
+      - applicantion/xml
+      produces:
+      - applicantion/json
+      - applicantion/xml
+      responses:
+        200:
+          description: Get list dossierSync is success
+          schema:
+            $ref: '#/definitions/DossierStatisticResultModel'
+        400:
+          description: Get list dossierSync is not success
+# List API statistics report
+  /statistics/report/{code}:
+    put:
+      tags:
+      - StatisticReport
+      summary: Get report file
+      operationId: statisticReportPrint
+      description: Get report file
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: code
+        in: path
+        description: code documenttype
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Bộ dữ liệu tham số đầu vào
+        schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          schema:
+            type: object
+        400:
+          description: Get report file is not success
+# Define model
+definitions:
+  ActionConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/ActionConfigItem'
+  ActionConfigItem:
+    type: object
+    required:
+    - actionCode
+    properties:
+      actionConfigId:
+        type: integer
+        format: int64
+      actionCode:
+        type: string
+        example: "1100"
+      actionName:
+        type: string
+        example: "Nhận hồ sơ tại một cửa"
+      extraForm:
+        type: boolean
+        example: true
+      formScript:
+        type: string
+        example: '{"schema": {"title": "Example ?","type": "object","properties": {"name": {"type": "string","title": "Name"}}}}'
+      sampleData:
+        type: string
+        example: '{"name": "example"}'
+      insideProcess:
+        type: boolean
+        example: true
+      syncType:
+        type: integer
+        example: 0
+      pending:
+        type: boolean
+        example: true
+      rollbackable:
+        type: boolean
+        example: true
+      notificationType:
+        type: string
+        example: "Mã tạo thông báo email/SMS request: gửi cán bộ một cửa inform: gửi người làm thủ tục"
+      documentType:
+        type: string
+        example: "0001"
+      userNote:
+        type: integer
+        example: 0
+      mappingAction:
+        type: string
+        example: "1200"        
+  StepConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/StepConfigItem'
+  StepConfigItem:
+    type: object
+    required:
+    - stepCode
+    properties:
+      stepConfigId:
+        type: integer
+        format: int64
+      createDate:
+        type: string
+        example: "2018-06-11T08:04:12.129Z"
+      stepCode:
+        type: string
+        example: "001"
+      stepName:
+        type: string
+        example: 'step name 001'
+      stepType:
+        type: integer
+        example: 0
+      dossierStatus:
+        type: string
+        example: 'dossierStatus 001'
+      dossierSubStatus:
+        type: string
+        example: 'dossierSubStatus 001'
+      menuGroup:
+        type: string
+        example: 'menuGroup 001'
+      menuStepName:
+        type: string
+        example: 'menuStepName 001'
+      buttonConfig:
+        type: string
+        example: "0001"
+  MenuConfigItemResult:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigItem'
+  MenuConfigItem:
+    type: object
+    properties:
+      menuConfigId:
+        type: integer
+        format: int64
+      createDate:
+        type: string
+        example: "2018-06-11T08:04:12.129Z"
+      menuGroup:
+        type: string
+        example: "001"
+      menuName:
+        type: string
+        example: 'step name 001'
+      order:
+        type: integer
+        example: 0
+      menuType:
+        type: integer
+        example: 0
+      queryParams:
+        type: string
+        example: 'queryParams'
+      tableConfig:
+        type: string
+        example: 'tableConfig'
+      buttonConfig:
+        type: string
+        example: 'buttonConfig'
+      steps:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigStepsItem'
+  MenuConfigStepsItem:
+    type: object
+    properties:
+      stepCode:
+        type: string
+        example: ""
+      stepName:
+        type: string
+        example: "001"
+      menuStepName:
+        type: string
+        example: 'step name 001'
+      dossierStatus:
+        type: string
+      dossierSubStatus:
+        type: string
+      buttonConfig:
+        type: string
+        example: 'step name 001'
+  MenuConfigCountItemResults:
+    type: object
+    required:
+    - total
+    - data
+    properties:
+      total:
+        type: integer
+        format: int64
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MenuConfigCountItem'
+  MenuConfigCountItem:
+    type: object
+    properties:
+      menuGroup:
+        type: string
+        example: ""
+      menuName:
+        type: string
+        example: "001"
+      counter:
+        type: integer
+        format: int64
+# Model entity DocumentType
+  DocumentTypeResultModel:
+    type: object
+    required:
+    - total
+    properties:
+      total:
+        type: integer
+        format: int32
+        example: 0
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/DocumentTypeModel"
+  DocumentTypeModel:
+    type: object
+    required:
+    - documentTypeId
+    properties:
+      documentTypeId:
+        type: integer
+        format: int64
+        example: 0
+      groupId:
+        type: integer
+        format: int64
+        example: 0
+      userId:
+        type: integer
+        format: int64
+        example: 0
+      createDate:
+        type: string
+        format: date-time
+#        pattern: '\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}'
+        example: "2016-04-16T16:06:05Z"
+      modifiedDate:
+        type: string
+        format: date-time
+#        pattern: '\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}'
+        example: "2016-04-16T16:06:05Z"
+      typeCode:
+        type: string
+        example: "1100"
+      templateClass:
+        type: integer
+        format: int32
+        example: 0
+      documentName:
+        type: string
+        example: "Thông tin tài khoản"
+      documentScript:
+        type: string
+        example: "<jasper></jasper>"
+      codePattern:
+        type: string
+        example: "Ma hoa tai lieu"
+      docSync:
+        type: integer
+        format: int32
+        example: 0
+  DocumentTypeSearchModel:
+    type: object
+    properties:
+      keyword:
+        type: string
+        example: "key search"
+      start:
+        type: integer
+        format: int32
+        example: 0
+      end:
+        type: integer
+        format: int32
+        example: 15
+      sort:
+        type: string
+        example: "field sort"
+      order:
+        type: string
+        example: "field order"
+  DocumentTypeInputModel:
+    type: object
+    required:
+    - typeCode
+    properties:
+      typeCode:
+        type: string
+        example: "1110"
+      templateClass:
+        type: integer
+        format: int32
+        example: 0
+      documentName:
+        type: string
+        example: "Name of document"
+      codePattern:
+        type: string
+        example: "Partten of code"
+      documentScript:
+        type: string
+        example: "Script of document"
+      docSync:
+        type: integer
+        format: int32
+        example: 0
+# Document Model
+  DossierDocumentResultModel:
+    type: object
+    required:
+    - total
+    properties:
+      total:
+        type: integer
+        format: int32
+        example: 0
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/DossierDocumentModel'
+  DossierDocumentModel:
+    type: object
+    required:
+    - dossierDocumentId
+    properties:
+      dossierDocumentId:
+        type: integer
+        format: int64
+        example: 0
+      referenceUid:
+        type: string
+        example: referenceUid
+      createDate:
+        type: string
+        format: date-time
+        example: "2016-04-16T16:06:05Z"
+      modifiedDate:
+        type: string
+        format: date-time
+        example: "2016-04-16T16:06:05Z"
+      dossierId:
+        type: integer
+        format: int64
+        example: 0
+      dossierActionId:
+        type: integer
+        format: int64
+        example: 0
+      documentType:
+        type: string
+        example: type of document
+      documentName:
+        type: string
+        example: Name of document
+      documentCode:
+        type: string
+        example: code of document
+      docSync:
+        type: integer
+        format: int32
+        example: 0
+      fileSize:
+        type: integer
+        format: int64
+        example: 10
+      fileType:
+        type: string
+        example: type of file
+      documentFileId:
+        type: integer
+        format: int64
+        example: 0
+# DossierSync Model
+  DossierSyncResultModel:
+    type: object
+    required:
+    - total
+    properties:
+      total:
+        type: integer
+        format: int32
+        example: 0
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/DossierSyncModel'
+  DossierSyncModel:
+    type: object
+    required:
+    - dossierSyncId
+    properties:
+      dossierSyncId:
+        type: integer
+        format: int64
+        example: 0
+      userId:
+        type: integer
+        format: int64
+        example: 0
+      createDate:
+        type: string
+        format: date-time
+        example: "2016-04-16T16:06:05Z"
+      modifiedDate:
+        type: string
+        format: date-time
+        example: "2016-04-16T16:06:05Z"
+      dossierRefUid:
+        type: string
+        example: referenceUid of dossier
+      syncRefUid:
+        type: string
+        example: referenceUid of dossierSync
+      actionCode:
+        type: string
+        example: code of dossierSync
+      actionName:
+        type: string
+        example: Name of dossierSync
+      actionUser:
+        type: string
+        example: action of user process
+      actionNote:
+        type: string
+        example: note of process action
+      syncType:
+        type: integer
+        format: int32
+        example: 0
+      payload:
+        type: string
+        example: payload info
+# DossierStatistic Model
+  DossierStatisticResultModel:
+    type: object
+    required:
+    - total
+    properties:
+      total:
+        type: integer
+        format: int32
+        example: 0
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/DossierStatisticModel'
+  DossierStatisticModel:
+    type: object
+    required:
+    - stepCode
+    properties:
+      stepCode:
+        type: string
+        example: stepCode of stepConfig
+      stepName:
+        type: string
+        example: referenceUid of dossierSync
+      dossierStatus:
+        type: string
+        example: code of dossierSync
+      dossierSubStatus:
+        type: string
+        example: Name of dossierSync
+      totalCount:
+        type: integer
+        format: int64
+        example: action of user process
+# Parameter declare
+parameters:
+  id:
+    name: id
+    in: path
+    type: string
+    required: true
+    description: id or code of DocumentType
+  referenceUid:
+    name: referenceUid
+    in: path
+    type: string
+    required: true
+    description: referenceUid of Document
+  typeCode:
+    name: typeCode
+    in: path
+    type: string
+    required: true
+    description: typeCode of Document
+  info:
+    name: info
+    in: query
+    type: integer
+    format: int32
+    required: true
+    description: info type in syncs
+  action:
+    name: action
+    in: query
+    type: string
+    description: filter follow code of action
+  top:
+    name: top
+    in: query
+    type: string
+    description: filter list user process
+  keyword:
+    name: keyword
+    in: query
+    type: string
+    description: key search
+  start:
+    name: start
+    in: query
+    type: integer
+    format: int32
+    description: Record start
+  end:
+    name: end
+    in: query
+    type: integer
+    format: int32
+    description: Record end
+  sort:
+    name: sort
+    in: query
+    type: string
+    description: field sort
+  order:
+    name: order
+    in: query
+    type: string
+    description: field order
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /binhthgc/opencps/1.0.0
+schemes:
+ - https
+ - http

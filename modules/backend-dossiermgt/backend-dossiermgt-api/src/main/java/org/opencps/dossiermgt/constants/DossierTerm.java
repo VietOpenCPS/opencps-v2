@@ -188,4 +188,5 @@ public class DossierTerm {
 	public static final String SECRET_KEY = "secretKey";
 	
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
+	public static final String DOSSIER_NAME = "dossierName";
 }

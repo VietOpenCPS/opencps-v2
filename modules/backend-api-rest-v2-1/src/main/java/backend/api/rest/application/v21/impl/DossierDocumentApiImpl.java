@@ -31,11 +31,11 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.rest.application.api.DossierDocumentsApi;
+import org.opencps.rest.application.model.DossierDocumentModel;
+import org.opencps.rest.application.model.DossierDocumentResultModel;
 
 import backend.api.rest.application.v21.parser.DossierDocumentParser;
-import io.swagger.api.DossierDocumentsApi;
-import io.swagger.model.DossierDocumentModel;
-import io.swagger.model.DossierDocumentResultModel;
 
 public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
