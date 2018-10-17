@@ -39,10 +39,15 @@
 				<xsd:element name="postalServiceCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalAddress" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalCityName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalServiceName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalDistrictName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalWardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalWardName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalTelNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
+				<xsd:element name="dossierName" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -107,6 +112,7 @@
 				<xsd:element name="dossierStatusText" type="xsd:string" minOccurs="0"/>
 				<xsd:element name="dossierSubStatus" type="xsd:string" minOccurs="0"/>
 				<xsd:element name="dossierSubStatusText" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="dossierName" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -179,6 +185,7 @@
 				<xsd:element name="online" type="xsd:string" minOccurs="0" />
 				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
 				<xsd:element name="dossierActionId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="dossierName" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>	
@@ -256,6 +263,10 @@
 				<xsd:element name="paymentNote" type="xsd:string" minOccurs="0" />
 				<xsd:element name="epaymentProfile" type="xsd:string" minOccurs="0" />
 				<xsd:element name="bankInfo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="feeAmount" type="xsd:long" minOccurs="0" />
+				<xsd:element name="invoiceTemplateNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="paymentStatus" type="xsd:int" minOccurs="0" />
+				<xsd:element name="confirmFileEntryId" type="xsd:long" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>		
