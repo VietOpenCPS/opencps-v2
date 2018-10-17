@@ -421,6 +421,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 												true);
 										dfModel.setFileType(fileEntry.getMimeType());
+										dfModel.setDisplayName(fileEntry.getFileName());
 										
 										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
@@ -577,6 +578,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 												true);
 										dfModel.setFileType(fileEntry.getMimeType());
+										dfModel.setDisplayName(fileEntry.getFileName());
 										
 										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
