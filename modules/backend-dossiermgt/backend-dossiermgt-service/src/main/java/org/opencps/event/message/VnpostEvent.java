@@ -29,7 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public class VnpostEvent implements MessageListener {
 	
-	private static final String VNPOST_BASE_PATH = "/postal/vnpost";
+	private static final String VNPOST_BASE_PATH = "postal/vnpost";
 	
 	@Override
 	public void receive(Message message) throws MessageListenerException {

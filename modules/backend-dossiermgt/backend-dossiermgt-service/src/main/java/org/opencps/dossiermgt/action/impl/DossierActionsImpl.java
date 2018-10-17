@@ -115,6 +115,7 @@ import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
@@ -2625,6 +2626,8 @@ public class DossierActionsImpl implements DossierActions {
 		
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = JSONFactoryUtil.createJSONObject(payload);
+			_log.info("SONDT PAYLOAD DOSSIERACTION ======= " + pl);
+			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
 				
@@ -2793,62 +2796,67 @@ public class DossierActionsImpl implements DossierActions {
 //				}
 			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
 				String CINVOICEUrl = "/postal/invoice";
+				
 				_log.info("SONDT payment REQUESTPAYMENT 5 ========= "+ JSONFactoryUtil.looseSerialize(payment));
 				
-				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				
-				InvokeREST callRest = new InvokeREST();
-				String baseUrl = "/o/rest/v2";
-				HashMap<String, String> properties = new HashMap<String, String>();
+				JSONObject resultObj = null;
 				Map<String, Object> params = new HashMap<>();
 				
-				params.put("userName", "cthh");	
-				params.put("passWord", ""); 	    	
-				params.put("soid", "10"); 
-				params.put("maHoadon", "51 NGO QUYEN"); 
-				params.put("ngayHd", ""); 
-				params.put("seri", "cthh"); 
-				params.put("maNthue", ""); 
-				params.put("kieuSo", ""); 
-				params.put("maKhackHang", "");
-				params.put("ten", ""); 
-				params.put("phone", ""); 
-				params.put("tax", ""); 
-				params.put("dchi", ""); 
-				params.put("maTk", ""); 
-				params.put("tenNh", ""); 
-				params.put("mailH", "");
-				params.put("phoneH", "");
-				params.put("tenM", "");
-				params.put("maKhL", "");
-				params.put("maNt", "");
-				params.put("tg", "");
-				params.put("hthuc", "");
-				params.put("han", "");
-				params.put("tlGgia", "");
-				params.put("ggia", "");
-				params.put("phi", "");
-				params.put("noidung", "");
-				params.put("tien", "");
-				params.put("ttoan", "");
-				params.put("maVtDetail", "");
-				params.put("tenDetail", "");
-				params.put("dvtDetail", "");
-				params.put("luongDetail", "");
-				params.put("giaDetail", "");
-				params.put("tienDetail", "");
-				params.put("tsDetail", "");
-				params.put("thueDetail", "");
-				params.put("ttoanDetail", "");
-				
-				JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
-						CINVOICEUrl, "", "", properties, params, context);
-				
-				_log.info("Call post CINVOICE result: " + resultObj.toJSONString());
-				
-				
+				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
-				if (oldPaymentFile != null) {
+				
+				if(Validator.isNotNull(oldPaymentFile.getEinvoice())){
+					
+					InvokeREST callRest = new InvokeREST();
+					String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
+					HashMap<String, String> properties = new HashMap<String, String>();
+					
+					params.put("userName", "HA");	
+					params.put("passWord", "1"); 	    	
+					params.put("soid", "10"); 
+					params.put("maHoadon", "01GTKT0/001"); 
+					params.put("ngayHd", "01/08/2018"); 
+					params.put("seri", "12314"); 
+					params.put("maNthue", "01"); 
+					params.put("kieuSo", "G"); 
+					params.put("maKhackHang", "123133");
+					params.put("ten", "Công ty TNHH ANH NAM"); 
+					params.put("phone", "0123654456"); 
+					params.put("tax", "2600303088"); 
+					params.put("dchi", "Nam Từ Liêm, Hà Nội"); 
+					params.put("maTk", "123830122233123"); 
+					params.put("tenNh", "BIDV"); 
+					params.put("mailH", "thaisonc89@yopmail.com");
+					params.put("phoneH", "0987628930");
+					params.put("tenM", "Trần Mai Trang");
+					params.put("maKhL", "K");
+					params.put("maNt", "VND");
+					params.put("tg", "1");
+					params.put("hthuc", "C");
+					params.put("han", "");
+					params.put("tlGgia", "0");
+					params.put("ggia", "0");
+					params.put("phi", "0");
+					params.put("noidung", "tên thủ tục");
+					params.put("tien", "220000");
+					params.put("ttoan", "225000");
+					params.put("maVtDetail", "AP123");
+					params.put("tenDetail", "Cấp giấy phép mang vũ khí thể thao vào, ra khỏi lãnh thổ Việt Nam để luyện tập, thi đấu thể thao");
+					params.put("dvtDetail", "to");
+					params.put("luongDetail", "10");
+					params.put("giaDetail", "20000");
+					params.put("tienDetail", "200000");
+					params.put("tsDetail", "10");
+					params.put("thueDetail", "20000");
+					params.put("ttoanDetail", "220000");
+					
+					resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
+							CINVOICEUrl, "", "", properties, params, context);
+					
+				}
+				_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
+				
+				if (Validator.isNotNull(oldPaymentFile) && Validator.isNotNull(resultObj)) {
 					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
 							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
 							oldPaymentFile.getShipAmount());
@@ -3144,10 +3152,15 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 			// sondt start sendvnpost
-			if(proAction.getPreCondition().toLowerCase().contentEquals("viapostal=2")) {
-				_log.info("GO GO SEND VNPOST");
-				vnpostEvent(dossier);
+			String[] preConditions = StringUtil.split(proAction.getPreCondition());
 
+			boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier);
+			
+			if (checkPreCondition) {
+				
+				_log.info("GO GO SEND VNPOST");
+				
+				vnpostEvent(dossier);
 			}
 			// sondt end sendvnpost
 			
