@@ -282,7 +282,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-				
+				_log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 
 			}
@@ -297,7 +297,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
 				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(processAction.getPaymentFee());
+				pfiModel.setPaymentAmount(GetterUtil.getString(paymentFile.getFeeAmount()));
 				pfiModel.setPaymentFee(processAction.getPaymentFee());
 				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
 				pfiModel.setReferenceUid(dossier.getReferenceUid());
