@@ -2623,11 +2623,11 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		Map<String, Boolean> flagChanged = null;
-		
+//		_log.info("SONDT PAYLOAD DOSSIERACTION PAYLOAD ======= " + payload);
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = JSONFactoryUtil.createJSONObject(payload);
-			_log.info("SONDT PAYLOAD DOSSIERACTION ======= " + pl);
-			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+//			_log.info("SONDT PAYLOAD DOSSIERACTION ======= " + pl);
+//			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
 				
@@ -3811,8 +3811,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 		
-		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus)
-				&& DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {
+		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus)) {
 			bResult.put(DossierTerm.DOSSIER_NO, true);
 			bResult.put(DossierTerm.RECEIVE_DATE, true);
 			bResult.put(DossierTerm.PROCESS_DATE, true);
