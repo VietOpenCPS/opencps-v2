@@ -1,16 +1,14 @@
 package backend.api.rest.application.v21.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.opencps.dossiermgt.model.DocumentType;
-
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import io.swagger.model.DocumentTypeModel;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.rest.application.model.DocumentTypeModel;
 
 public class DocumentTypeParser {
 

@@ -1,14 +1,14 @@
 Bundle-Name: backend-api-rest-v2-1
 Bundle-SymbolicName: backend.api.rest.v21
 Bundle-Version: 1.0.0
-Liferay-Configuration-Path: /configuration
+
 Include-Resource:configuration=src/main/resources/configuration
 
 Export-Package: \
-	org.toilelibre.libe.curl,\
-	io.swagger.api,\
-	io.swagger.model,\
-	javax.validation.constraints,\
-	org.json.simple,\
-	org.json.simple.parser,\
-	io.swagger.annotations,\
+	com.fasterxml.jackson.annotation,\
+    com.fasterxml.jackson.annotation.*,\
+    io.swagger.annotations,\
+    io.swagger.annotations.*,\
+    com.fasterxml.jackson.dataformat.xml.annotation,\
+    org.json.simple.parser,\
+    org.json.simple

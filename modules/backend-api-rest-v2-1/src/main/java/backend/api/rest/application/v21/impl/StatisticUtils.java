@@ -1,15 +1,14 @@
 package backend.api.rest.application.v21.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import io.swagger.model.DossierStatisticModel;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.opencps.rest.application.model.DossierStatisticModel;
 
 public class StatisticUtils {
 

@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(179);
+		StringBundler sb = new StringBundler(183);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -244,6 +244,10 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(durationUnit);
 		sb.append(", durationCount=");
 		sb.append(durationCount);
+		sb.append(", dossierName=");
+		sb.append(dossierName);
+		sb.append(", originDossierNo=");
+		sb.append(originDossierNo);
 		sb.append("}");
 
 		return sb.toString();
@@ -780,6 +784,20 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		dossierImpl.setDurationUnit(durationUnit);
 		dossierImpl.setDurationCount(durationCount);
 
+		if (dossierName == null) {
+			dossierImpl.setDossierName("");
+		}
+		else {
+			dossierImpl.setDossierName(dossierName);
+		}
+
+		if (originDossierNo == null) {
+			dossierImpl.setOriginDossierNo("");
+		}
+		else {
+			dossierImpl.setOriginDossierNo(originDossierNo);
+		}
+
 		dossierImpl.resetOriginalValues();
 
 		return dossierImpl;
@@ -893,6 +911,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		durationUnit = objectInput.readInt();
 
 		durationCount = objectInput.readDouble();
+		dossierName = objectInput.readUTF();
+		originDossierNo = objectInput.readUTF();
 	}
 
 	@Override
@@ -1360,6 +1380,20 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		objectOutput.writeInt(durationUnit);
 
 		objectOutput.writeDouble(durationCount);
+
+		if (dossierName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(dossierName);
+		}
+
+		if (originDossierNo == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(originDossierNo);
+		}
 	}
 
 	public String uuid;
@@ -1451,4 +1485,6 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public long sampleCount;
 	public int durationUnit;
 	public double durationCount;
+	public String dossierName;
+	public String originDossierNo;
 }

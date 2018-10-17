@@ -191,7 +191,9 @@ create table opencps_dossier (
 	originDossierId LONG,
 	sampleCount LONG,
 	durationUnit INTEGER,
-	durationCount DOUBLE
+	durationCount DOUBLE,
+	dossierName VARCHAR(75) null,
+	originDossierNo VARCHAR(75) null
 );
 
 create table opencps_dossieraction (

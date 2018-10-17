@@ -2803,9 +2803,9 @@ public class DossierActionsImpl implements DossierActions {
 				Map<String, Object> params = new HashMap<>();
 				
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+//				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 				
-				if(Validator.isNotNull(oldPaymentFile.getEinvoice())){
+				if(oldPaymentFile != null && Validator.isNotNull(oldPaymentFile.getEinvoice())){
 					
 					InvokeREST callRest = new InvokeREST();
 					String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
@@ -2974,6 +2974,8 @@ public class DossierActionsImpl implements DossierActions {
 							//Set HSLT dossierId to origin dossier
 							hsltDossier.setOriginDossierId(dossierId);
 							hsltDossier.setServerNo(ltProcess.getServerNo());
+							//Update DossierName
+							hsltDossier.setDossierName(dossier.getDossierName());
 							DossierLocalServiceUtil.updateDossier(hsltDossier);
 							
 							JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);

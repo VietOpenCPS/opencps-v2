@@ -1,5 +1,14 @@
 package backend.api.rest.application.v21.impl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,20 +21,11 @@ import org.opencps.dossiermgt.action.StepConfigActions;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
+import org.opencps.rest.application.api.StepConfigApi;
+import org.opencps.rest.application.model.StepConfigItem;
+import org.opencps.rest.application.model.StepConfigItemResult;
 
 import backend.api.rest.application.v21.parser.OpenCPSAPIParsing;
-import io.swagger.api.StepConfigApi;
-import io.swagger.model.StepConfigItem;
-import io.swagger.model.StepConfigItemResult;
 
 public class StepConfigApiImpl implements StepConfigApi {
 
