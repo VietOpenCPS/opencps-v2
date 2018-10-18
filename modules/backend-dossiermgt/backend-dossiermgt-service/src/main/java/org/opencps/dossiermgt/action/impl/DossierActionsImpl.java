@@ -3870,22 +3870,23 @@ public class DossierActionsImpl implements DossierActions {
 //		}
 
 		Double durationCount = processStep.getDurationCount();
-//		_log.info("durationCountStep: "+durationCount);
+		_log.info("durationCountStep: "+durationCount);
 		int durationUnit = serviceProcess.getDurationUnit();
 		
-//		_log.info("Calculate do action duration count: " + durationCount);
+		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0
 				&& !areEqualDouble(durationCount, 0.00d, 3)) {
 			_log.info("========STEP DUE DATE CACULATE DUE DATE");
 			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
-//			_log.info("dueDateAction: "+dueDate);
+			_log.info("dueDateAction: "+dueDate);
 		}		
 	
 		_log.info("========STEP DUE DATE:" + dueDate);
 		DossierLocalServiceUtil.updateDossier(dossier);
 		
-//		_log.info("Due date in do action: " + dueDate);
+		_log.info("dossierAction: " + dossierAction);
 		if (dossierAction != null) {
+			_log.info("========STEP DUE DATE ACTION:" + dueDate);
 			if (dueDate != null) {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
