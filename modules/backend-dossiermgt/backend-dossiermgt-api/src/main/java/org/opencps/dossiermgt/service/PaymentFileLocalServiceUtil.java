@@ -496,6 +496,11 @@ public class PaymentFileLocalServiceUtil {
 		return getService().updatePaymentFile(paymentFile);
 	}
 
+	public static org.opencps.dossiermgt.model.PaymentFile updatePaymentFileCustom(
+		org.opencps.dossiermgt.model.PaymentFile oldpaymentFile) {
+		return getService().updatePaymentFileCustom(oldpaymentFile);
+	}
+
 	public static PaymentFileLocalService getService() {
 		return _serviceTracker.getService();
 	}

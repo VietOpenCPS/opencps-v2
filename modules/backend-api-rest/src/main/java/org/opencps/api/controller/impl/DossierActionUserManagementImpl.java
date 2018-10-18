@@ -5,7 +5,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
 
@@ -21,10 +23,15 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
+import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -56,15 +63,45 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+			}
+			String stepCode = input.getStepCode();
+		
 			if (dossier != null) {
 				long dossierActionId = dossier.getDossierActionId();
+				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				if (Validator.isNull(stepCode) && da != null) {
+					stepCode = da.getStepCode();
+				}
+				long userId = 0;
 				
+				DossierUserPK duPK = new DossierUserPK();
+				if (Validator.isNotNull(input.getUserId())) {
+					duPK.setUserId(input.getUserId());
+					userId = input.getUserId();
+				}
+				else if (Validator.isNotNull(input.getEmailAddress())) {
+					User u = UserLocalServiceUtil.fetchUserByEmailAddress(dossier.getCompanyId(), input.getEmailAddress());
+					if (u != null) {
+						userId = u.getUserId();
+					}
+				}
+				duPK.setDossierId(dossier.getDossierId());
+				DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPK);
+				if (du == null) {
+					du = DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), userId, 1, true);
+				}
+				else {
+					du.setModerator(1);
+					du = DossierUserLocalServiceUtil.updateDossierUser(du);
+				}
 				DossierActionUserPK dauPK = new DossierActionUserPK();
 				dauPK.setDossierActionId(dossierActionId);
-				dauPK.setUserId(input.getUserId());
+				dauPK.setUserId(userId);
 				DossierActionUser oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPK);
 				if (oldDau == null) {
-					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(input.getUserId(), groupId, dossierActionId, dossier.getDossierId(), input.getStepCode(), input.getModerator(), input.getAssigned(), input.isVisited());
+					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId, dossierActionId, dossier.getDossierId(), input.getStepCode(), input.getModerator(), input.getAssigned(), input.isVisited());
 					DossierActionUserResultModel result = new DossierActionUserResultModel();
 					result.setDossierActionId(dossierActionId);
 					result.setAssigned(dau.getAssigned());

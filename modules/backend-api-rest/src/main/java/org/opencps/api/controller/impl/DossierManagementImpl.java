@@ -981,6 +981,9 @@ public class DossierManagementImpl implements DossierManagement {
 				
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setViaPostal(input.getViaPostal());
+				dossier.setOriginDossierNo(input.getOriginDossierNo());
+				
+				updateDelegateApplicant(dossier, input);
 				
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
@@ -1025,7 +1028,10 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalDistrictName(input.getPostalDistrictName());
 				dossier.setPostalWardCode(input.getPostalWardCode());
 				dossier.setPostalWardName(input.getPostalWardName());
+				dossier.setOriginDossierNo(input.getOriginDossierNo());
 
+				updateDelegateApplicant(dossier, input);
+				
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());
 				}
@@ -1145,6 +1151,42 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
+	private void updateDelegateApplicant(Dossier dossier, DossierInputModel input) {
+		if (Validator.isNotNull(input.getDelegateName())) {
+			dossier.setDelegateName(input.getDelegateName());
+		}
+		if (Validator.isNotNull(input.getDelegateIdNo())) {
+			dossier.setDelegateIdNo(input.getDelegateIdNo());
+		}
+		if (Validator.isNotNull(input.getDelegateTelNo())) {
+			dossier.setDelegateTelNo(input.getDelegateTelNo());
+		}
+		if (Validator.isNotNull(input.getDelegateEmail())) {
+			dossier.setDelegateEmail(input.getDelegateEmail());
+		}
+		if (Validator.isNotNull(input.getDelegateAddress())) {
+			dossier.setDelegateAddress(input.getDelegateAddress());
+		}
+		if (Validator.isNotNull(input.getDelegateCityCode())) {
+			dossier.setDelegateCityCode(input.getDelegateCityCode());
+		}
+		if (Validator.isNotNull(input.getDelegateCityName())) {
+			dossier.setDelegateCityName(input.getDelegateCityName());
+		}
+		if (Validator.isNotNull(input.getDelegateDistrictCode())) {
+			dossier.setDelegateDistrictCode(input.getDelegateDistrictCode());
+		}
+		if (Validator.isNotNull(input.getDelegateDistrictName())) {
+			dossier.setDelegateDistrictName(input.getDelegateDistrictName());
+		}
+		if (Validator.isNotNull(input.getDelegateWardCode())) {
+			dossier.setDelegateWardCode(input.getDelegateWardCode());
+		}		
+		if (Validator.isNotNull(input.getDelegateWardName())) {
+			dossier.setDelegateWardCode(input.getDelegateWardName());
+		}		
+	}
+	
 	@Override
 	public Response getDetailDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String secretKey) {
@@ -1566,6 +1608,9 @@ public class DossierManagementImpl implements DossierManagement {
 										queue.setToEmail(employee.getEmail());
 										queue.setToTelNo(employee.getTelNo());
 									}
+								} else {
+									queue.setToEmail(dossier.getContactEmail());
+									queue.setToTelNo(dossier.getContactTelNo());
 								}
 								
 								JSONObject payload = JSONFactoryUtil.createJSONObject();

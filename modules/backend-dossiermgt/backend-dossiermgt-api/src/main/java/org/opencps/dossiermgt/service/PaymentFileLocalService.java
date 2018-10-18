@@ -410,4 +410,7 @@ public interface PaymentFileLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updatePaymentFile(PaymentFile paymentFile);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile updatePaymentFileCustom(PaymentFile oldpaymentFile);
 }
