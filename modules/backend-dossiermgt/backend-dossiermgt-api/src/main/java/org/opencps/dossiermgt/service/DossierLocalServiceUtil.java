@@ -281,6 +281,11 @@ public class DossierLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier getByDossierNo(
+		long groupId, String dossierNo) {
+		return getService().getByDossierNo(groupId, dossierNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier getByIdAndGovService(
 		long groupId, String serviceCode, String govAgencyCode, long dossierId) {
 		return getService()
