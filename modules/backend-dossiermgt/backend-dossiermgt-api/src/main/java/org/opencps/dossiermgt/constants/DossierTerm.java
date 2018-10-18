@@ -192,4 +192,5 @@ public class DossierTerm {
 	
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 	public static final String DOSSIER_NAME = "dossierName";
+	public static final String ORIGIN_DOSSIER_NO = "originDossierNo";
 }

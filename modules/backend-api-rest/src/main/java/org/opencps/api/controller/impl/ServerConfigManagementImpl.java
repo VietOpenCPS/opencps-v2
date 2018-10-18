@@ -89,7 +89,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			}
 
 			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
-			String serverNo = HtmlUtil.escape(input.getGovAgencyCode());
+			String serverNo = HtmlUtil.escape(input.getServerNo());
 			String serverName = HtmlUtil.escape(input.getServerName());
 			String protocol = HtmlUtil.escape(input.getProtocol());
 			String configs = HtmlUtil.escape(input.getConfigs());
@@ -159,7 +159,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			}
 
 			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
-			String serverNo = HtmlUtil.escape(input.getGovAgencyCode());
+			String serverNo = HtmlUtil.escape(input.getServerNo());
 			String serverName = HtmlUtil.escape(input.getServerName());
 			String protocol = HtmlUtil.escape(input.getProtocol());
 			String configs = HtmlUtil.escape(input.getConfigs());

@@ -2887,6 +2887,24 @@ public class DossierActionsImpl implements DossierActions {
 
 			String postStepCode = proAction.getPostStepCode();
 
+			if (Validator.isNull(postStepCode)) {
+				postStepCode = previousAction.getFromStepCode();
+				ProcessStep backCurStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+				String curStatus = backCurStep.getDossierStatus();
+				String curSubStatus = backCurStep.getDossierSubStatus();
+				
+				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
+
+				//update dossierStatus
+				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
+						jsonDataStatusText != null ? jsonDataStatusText.getString(curStatus) : StringPool.BLANK, curSubStatus,
+						jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, backCurStep.getLockState(), dossier.getDossierNote(), context);
+								
+				dossier.setDossierActionId(previousAction.getPreviousActionId());
+				DossierLocalServiceUtil.updateDossier(dossier);
+				
+				return previousAction;
+			}
 			ProcessStep curStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 //			_log.info("Current step: " + curStep);
 			
@@ -2986,6 +3004,7 @@ public class DossierActionsImpl implements DossierActions {
 							hsltDossier.setServerNo(ltProcess.getServerNo());
 							//Update DossierName
 							hsltDossier.setDossierName(dossier.getDossierName());
+							hsltDossier.setOriginDossierNo(dossier.getDossierNo());
 							DossierLocalServiceUtil.updateDossier(hsltDossier);
 							
 							JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);
@@ -3755,7 +3774,8 @@ public class DossierActionsImpl implements DossierActions {
 				Double durationCount = serviceProcess.getDurationCount();
 				int durationUnit = serviceProcess.getDurationUnit();
 				Date dueDate = null;
-				if (Validator.isNotNull(durationCount) && durationCount > 0) {
+				if (Validator.isNotNull(durationCount) && durationCount > 0
+						&& !areEqualDouble(durationCount, 0.00d, 3)) {
 					dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
 				}
 				
@@ -3795,13 +3815,21 @@ public class DossierActionsImpl implements DossierActions {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
 					bResult.put(DossierTerm.RELEASE_DATE, true);
-					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();
 //				}				
 			}
 		}
+		_log.info("========STEP DUE CUR STATUS: " + curStatus);
+		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+			_log.info("========STEP DUE CUR STATUS UPDATING STATE");
+			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
+		}
+		
 		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
@@ -3842,15 +3870,18 @@ public class DossierActionsImpl implements DossierActions {
 //		}
 
 		Double durationCount = processStep.getDurationCount();
-		_log.info("durationCountStep: "+durationCount);
+//		_log.info("durationCountStep: "+durationCount);
 		int durationUnit = serviceProcess.getDurationUnit();
 		
-		_log.info("Calculate do action duration count: " + durationCount);
-		if (Validator.isNotNull(durationCount) && durationCount > 0) {
+//		_log.info("Calculate do action duration count: " + durationCount);
+		if (Validator.isNotNull(durationCount) && durationCount > 0
+				&& !areEqualDouble(durationCount, 0.00d, 3)) {
+			_log.info("========STEP DUE DATE CACULATE DUE DATE");
 			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
-			_log.info("dueDateAction: "+dueDate);
+//			_log.info("dueDateAction: "+dueDate);
 		}		
 	
+		_log.info("========STEP DUE DATE:" + dueDate);
 		DossierLocalServiceUtil.updateDossier(dossier);
 		
 //		_log.info("Due date in do action: " + dueDate);
@@ -3876,16 +3907,20 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				} else {
 				}
-				_log.info("dueDateTEST111: "+dueDate);
+//				_log.info("dueDateTEST111: "+dueDate);
 				dossierAction.setActionOverdue(overdue);
 				dossierAction.setDueDate(dueDate);
-				
+				_log.info("========STEP DUE DATE SET DUE DATE: " + dossierAction.getStepCode());
 				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
-				_log.info("dActTest: "+dActTest);
+//				_log.info("dActTest: "+dActTest);
 			}
 		}
 	
 		return bResult;
+	}
+	
+	public static boolean areEqualDouble(double a, double b, int precision) {
+		return Math.abs(a - b) <= Math.pow(10, -precision);
 	}
 	
 	private static int calculatorOverDue(int durationUnit, long subTimeStamp) {

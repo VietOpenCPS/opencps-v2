@@ -48,6 +48,7 @@
 				<xsd:element name="postalTelNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
 				<xsd:element name="dossierName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="originDossierNo" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -186,6 +187,7 @@
 				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
 				<xsd:element name="dossierActionId" type="xsd:int" minOccurs="0" />
 				<xsd:element name="dossierName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="originDossierNo" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>	
