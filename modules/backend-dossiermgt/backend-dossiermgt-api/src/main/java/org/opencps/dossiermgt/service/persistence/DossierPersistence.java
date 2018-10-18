@@ -2465,6 +2465,56 @@ public interface DossierPersistence extends BasePersistence<Dossier> {
 		int originality);
 
 	/**
+	* Returns the dossier where groupId = &#63; and dossierNo = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_DN(long groupId, String dossierNo)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the dossier where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_DN(long groupId, String dossierNo);
+
+	/**
+	* Returns the dossier where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_DN(long groupId, String dossierNo,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier where groupId = &#63; and dossierNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the dossier that was removed
+	*/
+	public Dossier removeByG_DN(long groupId, String dossierNo)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the number of matching dossiers
+	*/
+	public int countByG_DN(long groupId, String dossierNo);
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

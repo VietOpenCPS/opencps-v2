@@ -3328,5 +3328,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		
 		return dossierPersistence.update(desDossier);
 	}
+	
+	public Dossier getByDossierNo(long groupId, String dossierNo) {
+		return dossierPersistence.fetchByG_DN(groupId, dossierNo);
+	}
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 }
