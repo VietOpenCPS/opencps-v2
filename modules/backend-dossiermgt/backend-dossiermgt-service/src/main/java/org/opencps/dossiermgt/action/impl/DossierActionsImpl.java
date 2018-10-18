@@ -3820,12 +3820,12 @@ public class DossierActionsImpl implements DossierActions {
 //				}				
 			}
 		}
-		_log.info("========STEP DUE CUR STATUS: " + curStatus);
+//		_log.info("========STEP DUE CUR STATUS: " + curStatus);
 		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
-			_log.info("========STEP DUE CUR STATUS UPDATING STATE DONE");
+//			_log.info("========STEP DUE CUR STATUS UPDATING STATE DONE");
 			dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
 			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
 		}
@@ -3858,7 +3858,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		//Calculate step due date
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-		_log.info("dossierAction: "+dossierAction);
+//		_log.info("dossierAction: "+dossierAction);
 		Date rootDate = now;
 		Date dueDate = null;
 
@@ -3871,23 +3871,23 @@ public class DossierActionsImpl implements DossierActions {
 //		}
 
 		Double durationCount = processStep.getDurationCount();
-		_log.info("durationCountStep: "+durationCount);
+//		_log.info("durationCountStep: "+durationCount);
 		int durationUnit = serviceProcess.getDurationUnit();
 		
-		_log.info("Calculate do action duration count: " + durationCount);
+//		_log.info("Calculate do action duration count: " + durationCount);
 		if (Validator.isNotNull(durationCount) && durationCount > 0
 				&& !areEqualDouble(durationCount, 0.00d, 3)) {
-			_log.info("========STEP DUE DATE CACULATE DUE DATE");
+//			_log.info("========STEP DUE DATE CACULATE DUE DATE");
 			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
-			_log.info("dueDateAction: "+dueDate);
+//			_log.info("dueDateAction: "+dueDate);
 		}		
 	
-		_log.info("========STEP DUE DATE:" + dueDate);
+//		_log.info("========STEP DUE DATE:" + dueDate);
 		DossierLocalServiceUtil.updateDossier(dossier);
 		
-		_log.info("dossierAction: " + dossierAction);
+//		_log.info("dossierAction: " + dossierAction);
 		if (dossierAction != null) {
-			_log.info("========STEP DUE DATE ACTION:" + dueDate);
+//			_log.info("========STEP DUE DATE ACTION:" + dueDate);
 			if (dueDate != null) {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
@@ -3912,7 +3912,7 @@ public class DossierActionsImpl implements DossierActions {
 //				_log.info("dueDateTEST111: "+dueDate);
 				dossierAction.setActionOverdue(overdue);
 				dossierAction.setDueDate(dueDate);
-				_log.info("========STEP DUE DATE SET DUE DATE: " + dossierAction.getStepCode());
+//				_log.info("========STEP DUE DATE SET DUE DATE: " + dossierAction.getStepCode());
 				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
 //				_log.info("dActTest: "+dActTest);
 			}
