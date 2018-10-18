@@ -38,6 +38,9 @@ public class PropValues {
 	public static final String FILE_SYSTEM_ONLINEEDITING_TEMPLATE_NAME =
 		PropsUtil.get(PropKeys.FILE_SYSTEM_ONLINEEDITING_TEMPLATE_NAME);
 
+	public static final String MAIL_ADMIN_SERVER =
+			PropsUtil.get(PropKeys.MAIL_ADMIN_SERVER);
+
 	public static final String PORTAL_DOMAIN =
 		PropsUtil.get(PropKeys.PORTAL_DOMAIN);
 

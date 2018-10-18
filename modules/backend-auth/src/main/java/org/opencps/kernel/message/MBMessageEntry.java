@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.mail.internet.InternetAddress;
 
+import org.opencps.kernel.prop.PropValues;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -40,7 +42,7 @@ public class MBMessageEntry {
 		this.setToAddress(initArrayInternetAddress(toEmail, toName));
 
 //		this.setFrom(initInternetAddress("no-reply@fds.vn", fromName));
-		this.setFrom(initInternetAddress("no-reply@fds.vn", fromName));
+		this.setFrom(initInternetAddress(PropValues.MAIL_ADMIN_SERVER, fromName));
 
 	}
 
