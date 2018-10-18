@@ -71,6 +71,13 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DELEGATE_ADDRESS, model.getDelegateAddress());
 	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
 	    params.put(DossierTerm.ORIGIN_DOSSIER_NO, model.getOriginDossierNo());
+	    params.put(DossierTerm.DELEGATE_TELNO, model.getDelegateTelNo());
+	    params.put(DossierTerm.DELEGATE_CITYCODE, model.getCityCode());
+	    params.put(DossierTerm.DELEGATE_CITYNAME, model.getCityName());
+	    params.put(DossierTerm.DELEGATE_DISTRICTCODE, model.getDistrictCode());
+	    params.put(DossierTerm.DELEGATE_DISTRICTNAME, model.getDistrictName());
+	    params.put(DossierTerm.DELEGATE_WARDCODE, model.getWardCode());
+	    params.put(DossierTerm.DELEGATE_WARDNAME, model.getWardName());
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
