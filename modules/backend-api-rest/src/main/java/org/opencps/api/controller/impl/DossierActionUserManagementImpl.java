@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -62,6 +63,9 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+			}
 			String stepCode = input.getStepCode();
 		
 			if (dossier != null) {
@@ -70,12 +74,23 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 				if (Validator.isNull(stepCode) && da != null) {
 					stepCode = da.getStepCode();
 				}
+				long userId = 0;
+				
 				DossierUserPK duPK = new DossierUserPK();
-				duPK.setUserId(input.getUserId());
+				if (Validator.isNotNull(input.getUserId())) {
+					duPK.setUserId(input.getUserId());
+					userId = input.getUserId();
+				}
+				else if (Validator.isNotNull(input.getEmailAddress())) {
+					User u = UserLocalServiceUtil.fetchUserByEmailAddress(dossier.getCompanyId(), input.getEmailAddress());
+					if (u != null) {
+						userId = u.getUserId();
+					}
+				}
 				duPK.setDossierId(dossier.getDossierId());
 				DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPK);
 				if (du == null) {
-					du = DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), input.getUserId(), 1, true);
+					du = DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), userId, 1, true);
 				}
 				else {
 					du.setModerator(1);
@@ -83,10 +98,10 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 				}
 				DossierActionUserPK dauPK = new DossierActionUserPK();
 				dauPK.setDossierActionId(dossierActionId);
-				dauPK.setUserId(input.getUserId());
+				dauPK.setUserId(userId);
 				DossierActionUser oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPK);
 				if (oldDau == null) {
-					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(input.getUserId(), groupId, dossierActionId, dossier.getDossierId(), input.getStepCode(), input.getModerator(), input.getAssigned(), input.isVisited());
+					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId, dossierActionId, dossier.getDossierId(), input.getStepCode(), input.getModerator(), input.getAssigned(), input.isVisited());
 					DossierActionUserResultModel result = new DossierActionUserResultModel();
 					result.setDossierActionId(dossierActionId);
 					result.setAssigned(dau.getAssigned());

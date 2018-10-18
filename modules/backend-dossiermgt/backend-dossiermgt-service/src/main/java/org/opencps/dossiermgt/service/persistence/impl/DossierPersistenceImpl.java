@@ -9989,6 +9989,264 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 		"dossier.dossierActionId = ? AND ";
 	private static final String _FINDER_COLUMN_U_G_GAC_SC_DTNO_DAI_O_ORIGINALITY_2 =
 		"dossier.originality = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_DN = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByG_DN",
+			new String[] { Long.class.getName(), String.class.getName() },
+			DossierModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierModelImpl.DOSSIERNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_DN = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DN",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the dossier where groupId = &#63; and dossierNo = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByG_DN(long groupId, String dossierNo)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByG_DN(groupId, dossierNo);
+
+		if (dossier == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierNo=");
+			msg.append(dossierNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDossierException(msg.toString());
+		}
+
+		return dossier;
+	}
+
+	/**
+	 * Returns the dossier where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByG_DN(long groupId, String dossierNo) {
+		return fetchByG_DN(groupId, dossierNo, true);
+	}
+
+	/**
+	 * Returns the dossier where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByG_DN(long groupId, String dossierNo,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, dossierNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_DN,
+					finderArgs, this);
+		}
+
+		if (result instanceof Dossier) {
+			Dossier dossier = (Dossier)result;
+
+			if ((groupId != dossier.getGroupId()) ||
+					!Objects.equals(dossierNo, dossier.getDossierNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_DN_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_DOSSIERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				List<Dossier> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DossierPersistenceImpl.fetchByG_DN(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Dossier dossier = list.get(0);
+
+					result = dossier;
+
+					cacheResult(dossier);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DN, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Dossier)result;
+		}
+	}
+
+	/**
+	 * Removes the dossier where groupId = &#63; and dossierNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the dossier that was removed
+	 */
+	@Override
+	public Dossier removeByG_DN(long groupId, String dossierNo)
+		throws NoSuchDossierException {
+		Dossier dossier = findByG_DN(groupId, dossierNo);
+
+		return remove(dossier);
+	}
+
+	/**
+	 * Returns the number of dossiers where groupId = &#63; and dossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByG_DN(long groupId, String dossierNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_DN;
+
+		Object[] finderArgs = new Object[] { groupId, dossierNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_DN_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_DOSSIERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_DN_GROUPID_2 = "dossier.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_DN_DOSSIERNO_1 = "dossier.dossierNo IS NULL";
+	private static final String _FINDER_COLUMN_G_DN_DOSSIERNO_2 = "dossier.dossierNo = ?";
+	private static final String _FINDER_COLUMN_G_DN_DOSSIERNO_3 = "(dossier.dossierNo IS NULL OR dossier.dossierNo = '')";
 
 	public DossierPersistenceImpl() {
 		setModelClass(Dossier.class);
@@ -10036,6 +10294,10 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 				dossier.getGroupId(), dossier.getGovAgencyCode(),
 				dossier.getServiceCode(), dossier.getDossierId()
 			}, dossier);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN,
+			new Object[] { dossier.getGroupId(), dossier.getDossierNo() },
+			dossier);
 
 		dossier.resetOriginalValues();
 	}
@@ -10136,6 +10398,15 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_GOV_DID, args,
 			dossierModelImpl, false);
+
+		args = new Object[] {
+				dossierModelImpl.getGroupId(), dossierModelImpl.getDossierNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_DN, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN, args,
+			dossierModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(DossierModelImpl dossierModelImpl,
@@ -10204,6 +10475,27 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_GOV_DID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_GOV_DID, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dossierModelImpl.getGroupId(),
+					dossierModelImpl.getDossierNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DN, args);
+		}
+
+		if ((dossierModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_DN.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dossierModelImpl.getOriginalGroupId(),
+					dossierModelImpl.getOriginalDossierNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DN, args);
 		}
 	}
 

@@ -3085,6 +3085,67 @@ public class DossierUtil {
 	}
 
 	/**
+	* Returns the dossier where groupId = &#63; and dossierNo = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByG_DN(long groupId, String dossierNo)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().findByG_DN(groupId, dossierNo);
+	}
+
+	/**
+	* Returns the dossier where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByG_DN(long groupId, String dossierNo) {
+		return getPersistence().fetchByG_DN(groupId, dossierNo);
+	}
+
+	/**
+	* Returns the dossier where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByG_DN(long groupId, String dossierNo,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByG_DN(groupId, dossierNo, retrieveFromCache);
+	}
+
+	/**
+	* Removes the dossier where groupId = &#63; and dossierNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the dossier that was removed
+	*/
+	public static Dossier removeByG_DN(long groupId, String dossierNo)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().removeByG_DN(groupId, dossierNo);
+	}
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the number of matching dossiers
+	*/
+	public static int countByG_DN(long groupId, String dossierNo) {
+		return getPersistence().countByG_DN(groupId, dossierNo);
+	}
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

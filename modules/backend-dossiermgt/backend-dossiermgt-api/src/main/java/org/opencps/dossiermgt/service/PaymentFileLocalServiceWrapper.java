@@ -527,6 +527,12 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.PaymentFile updatePaymentFileCustom(
+		org.opencps.dossiermgt.model.PaymentFile oldpaymentFile) {
+		return _paymentFileLocalService.updatePaymentFileCustom(oldpaymentFile);
+	}
+
+	@Override
 	public PaymentFileLocalService getWrappedService() {
 		return _paymentFileLocalService;
 	}

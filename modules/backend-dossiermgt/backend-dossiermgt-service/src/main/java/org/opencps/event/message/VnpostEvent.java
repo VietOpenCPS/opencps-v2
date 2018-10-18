@@ -41,7 +41,7 @@ public class VnpostEvent implements MessageListener {
 	}
 	
 	private void _doReceiveRequest(Message message) {		
-		_log.info("GO GO VNPOST event");
+//		_log.info("GO GO VNPOST event");
 		JSONObject dossierObj = (JSONObject) message.get("dossier");
 		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
 		InvokeREST callRest = new InvokeREST();
