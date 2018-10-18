@@ -91,8 +91,11 @@ import javax.xml.bind.annotation.XmlType;
     "delegateEmail",
 	"delegateAddress",
 	"delegateCityCode",
+	"delegateCityName",	
 	"delegateDistrictCode",
+	"delegateDistrictName",
 	"delegateWardCode",
+	"delegateWardName",
 	"sampleCount",
 	"serviceName",
 	"dossierName",
@@ -184,10 +187,16 @@ public class DossierInputModel {
 	private String delegateAddress;
 	@FormParam(value = "delegateCityCode")
 	private String delegateCityCode;
+	@FormParam(value = "delegateCityName")
+	private String delegateCityName;
 	@FormParam(value = "delegateDistrictCode")
 	private String delegateDistrictCode;
+	@FormParam(value = "delegateDistrictName")
+	private String delegateDistrictName;
 	@FormParam(value = "delegateWardCode")
 	private String delegateWardCode;
+	@FormParam(value = "delegateWardName")
+	private String delegateWardName;
 	@FormParam(value = "sampleCount")
 	private Long sampleCount;
 	@FormParam(value = "briefNote")
@@ -877,6 +886,14 @@ public class DossierInputModel {
 		this.delegateCityCode = delegateCityCode;
 	}
 
+	public String getDelegateCityName() {
+		return delegateCityName;
+	}
+
+	public void setDelegateCityName(String delegateCityName) {
+		this.delegateCityName = delegateCityName;
+	}
+	
 	public String getDelegateDistrictCode() {
 		return delegateDistrictCode;
 	}
@@ -885,6 +902,14 @@ public class DossierInputModel {
 		this.delegateDistrictCode = delegateDistrictCode;
 	}
 
+	public String getDelegateDistrictName() {
+		return delegateDistrictName;
+	}
+
+	public void setDelegateDistrictName(String delegateDistrictName) {
+		this.delegateDistrictName = delegateDistrictName;
+	}
+	
 	public String getDelegateWardCode() {
 		return delegateWardCode;
 	}
@@ -893,6 +918,14 @@ public class DossierInputModel {
 		this.delegateWardCode = delegateWardCode;
 	}
 
+	public String getDelegateWardName() {
+		return delegateWardName;
+	}
+
+	public void setDelegateWardName(String delegateWardName) {
+		this.delegateWardName = delegateWardName;
+	}
+	
 	public Long getSampleCount() {
 		return sampleCount;
 	}

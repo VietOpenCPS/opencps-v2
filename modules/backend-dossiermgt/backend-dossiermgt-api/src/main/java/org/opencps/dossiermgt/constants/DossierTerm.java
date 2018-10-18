@@ -155,6 +155,12 @@ public class DossierTerm {
 	public static final String DELEGATE_NAME = "delegateName";
 	public static final String DELEGATE_EMAIL = "delegateEmail";
 	public static final String DELEGATE_TELNO = "delegateTelNo";
+	public static final String DELEGATE_CITYCODE = "delegateCityCode";
+	public static final String DELEGATE_CITYNAME = "delegateCityName";
+	public static final String DELEGATE_DISTRICTCODE = "delegateDistrictCode";
+	public static final String DELEGATE_DISTRICTNAME = "delegateDistrictName";
+	public static final String DELEGATE_WARDCODE = "delegateWardCode";
+	public static final String DELEGATE_WARDNAME = "delegateWardName";
 	
 	public static final String DOSSIER_MARKS = "dossierMarks";
 	public static final String REGISTER_BOOK_CODE = "registerBookCode";
