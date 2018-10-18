@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
 
@@ -21,8 +22,10 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
@@ -59,9 +62,14 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
+			String stepCode = input.getStepCode();
+		
 			if (dossier != null) {
 				long dossierActionId = dossier.getDossierActionId();
-				
+				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				if (Validator.isNull(stepCode) && da != null) {
+					stepCode = da.getStepCode();
+				}
 				DossierUserPK duPK = new DossierUserPK();
 				duPK.setUserId(input.getUserId());
 				duPK.setDossierId(dossier.getDossierId());
