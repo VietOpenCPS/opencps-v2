@@ -1566,6 +1566,9 @@ public class DossierManagementImpl implements DossierManagement {
 										queue.setToEmail(employee.getEmail());
 										queue.setToTelNo(employee.getTelNo());
 									}
+								} else {
+									queue.setToEmail(dossier.getContactEmail());
+									queue.setToTelNo(dossier.getContactTelNo());
 								}
 								
 								JSONObject payload = JSONFactoryUtil.createJSONObject();
