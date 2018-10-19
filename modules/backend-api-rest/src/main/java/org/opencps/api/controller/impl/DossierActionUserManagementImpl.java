@@ -44,6 +44,9 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 		BackendAuth auth = new BackendAuthImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -111,13 +114,13 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					result.setUserId(dau.getUserId());
 					result.setVisited(dau.getVisited());
 					
-					Indexer<Dossier> indexer = IndexerRegistryUtil
-							.nullSafeGetIndexer(Dossier.class);
 					indexer.reindex(dossier);
 					
 					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}
 				else {
+					indexer.reindex(dossier);
+					
 					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("Dossier action user already exists!").build();									
 				}
 			}
