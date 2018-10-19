@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossieractionuser.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -52,13 +53,21 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DossierActionUserModel {
 
+	@FormParam(value="dossierActionId")
     protected Long dossierActionId;
+	@FormParam(value="userId")
     protected Long userId;
+	@FormParam(value="dossierId")
     protected Long dossierId;
+	@FormParam(value="stepCode")
     protected String stepCode;
+	@FormParam(value="moderator")
     protected Integer moderator;
+	@FormParam(value="assigned")
     protected Integer assigned;
+	@FormParam(value="visited")
     protected Boolean visited;
+	@FormParam(value="emailAddress")
     protected String emailAddress;
 
     /**
