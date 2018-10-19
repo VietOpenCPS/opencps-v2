@@ -101,7 +101,7 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 				dauPK.setUserId(userId);
 				DossierActionUser oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPK);
 				if (oldDau == null) {
-					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId, dossierActionId, dossier.getDossierId(), input.getStepCode(), input.getModerator(), input.getAssigned(), input.isVisited());
+					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId, dossierActionId, dossier.getDossierId(), stepCode, input.getModerator(), input.getAssigned(), input.isVisited());
 					DossierActionUserResultModel result = new DossierActionUserResultModel();
 					result.setDossierActionId(dossierActionId);
 					result.setAssigned(dau.getAssigned());
