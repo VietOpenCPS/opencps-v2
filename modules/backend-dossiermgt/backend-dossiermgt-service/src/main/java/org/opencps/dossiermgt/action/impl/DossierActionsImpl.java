@@ -2660,9 +2660,6 @@ public class DossierActionsImpl implements DossierActions {
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
 //						_log.info("Payment object in do action: " + paymentObj);
-					if (paymentObj.has("paymentFee")) {
-						paymentFee = paymentObj.getString("paymentFee");
-					}
 					if (paymentObj.has("paymentNote")) {
 						paymentNote = paymentObj.getString("paymentNote");
 					}
@@ -2677,6 +2674,11 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					if (paymentObj.has("requestPayment")) {
 						paymentStatus = paymentObj.getInt("requestPayment");
+					}
+					
+					JSONObject paymentObj2 = JSONFactoryUtil.createJSONObject(proAction.getPaymentFee());
+					if (paymentObj2.has("paymentFee")) {
+						paymentFee = paymentObj2.getString("paymentFee");
 					}
 				}
 				catch (JSONException e) {
@@ -2696,12 +2698,12 @@ public class DossierActionsImpl implements DossierActions {
 					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
 				} else {
-					if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_TAM_UNG) {
-						advanceAmount = feeAmount + serviceAmount + shipAmount;
-					}
-					else if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_PHI) {
-						paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
-					}
+//					if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_TAM_UNG) {
+//						advanceAmount = feeAmount + serviceAmount + shipAmount;
+//					}
+//					else if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_PHI) {
+//						paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
+//					}
 					PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
 							dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
 							serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
@@ -2767,9 +2769,10 @@ public class DossierActionsImpl implements DossierActions {
 							epaymentProfileJSON.put("feeAmount", feeAmount);
 							epaymentProfileJSON.put("shipAmount", shipAmount);
 							epaymentProfileJSON.put("advanceAmount", advanceAmount);
-							epaymentProfileJSON.put("paymentAmount", paymentAmount);
+							epaymentProfileJSON.put("paymentAmount", feeAmount);
 							epaymentProfileJSON.put("serviceAmount", serviceAmount);
-							
+							epaymentProfileJSON.put("paymentNote", paymentNote);
+							epaymentProfileJSON.put("paymentFee", paymentFee);
 							actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 									context);
 
@@ -2845,11 +2848,11 @@ public class DossierActionsImpl implements DossierActions {
 					params.put("han", "");
 					params.put("tlGgia", "0");
 					params.put("ggia", "0");
-					params.put("phi", oldPaymentFile.getFeeAmount());
+					params.put("phi", "0");
 					params.put("noidung", "tên thủ tục");
-					params.put("tien", "220000");
-					params.put("ttoan", "225000");
-					params.put("maVtDetail", "AP123");
+					params.put("tien", oldPaymentFile.getFeeAmount());
+					params.put("ttoan", oldPaymentFile.getFeeAmount());
+					params.put("maVtDetail", dossier.getDossierNo());
 					params.put("tenDetail", dossier.getServiceName());
 					params.put("dvtDetail", "bộ");
 					params.put("luongDetail", "1");
@@ -3183,7 +3186,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			// sondt start sendvnpost
 		
-			_log.info("SONDT PREPARE SENDVNPOST ========== " + JSONFactoryUtil.looseSerialize(proAction.getPreCondition()));
+			_log.info("SONDT PREPARE SENDVNPOST ========== " + proAction.getPreCondition());
 			if (proAction.getPreCondition().toLowerCase().contains("sendviapostal=1")) {
 				
 				_log.info("GO GO SEND VNPOST");
