@@ -1,5 +1,15 @@
 package org.opencps.dossiermgt.rest.utils;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -11,6 +21,7 @@ import java.util.Map;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
@@ -22,15 +33,6 @@ import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 public class OpenCPSRestClient {
 	private Log _log = LogFactoryUtil.getLog(OpenCPSRestClient.class);
@@ -335,5 +337,25 @@ public class OpenCPSRestClient {
 		}
 		
 		return result;
-	}	
+	}
+
+	public DossierDetailModel removeDossier(Dossier model) {
+		DossierDetailModel result = null;
+		InvokeREST callRest = new InvokeREST();
+		//HashMap<String, String> properties = new HashMap<String, String>();
+		//Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
+		String referenceUid = model.getReferenceUid();
+		if (Validator.isNotNull(referenceUid)) {
+			HashMap<String, String> properties = new HashMap<String, String>();
+			ServiceContext context = new ServiceContext();
+			String endPoint = DOSSIERS_BASE_PATH + "/" + referenceUid;
+
+			JSONObject resultObj = callRest.callDeleteAPI(groupId, HttpMethod.DELETE, "application/json", baseUrl,
+					endPoint, username, password, properties, context);
+			
+			result = OpenCPSConverter.convertDossierDetail(resultObj);
+		}
+
+		return result;
+	}
 }

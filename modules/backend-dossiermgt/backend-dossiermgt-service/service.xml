@@ -1270,6 +1270,10 @@
 			<finder-column name="dossierId" />
 			<finder-column name="stepCode" />
 		</finder>
+		<finder return-type="Collection" name="DID_CODE">
+			<finder-column name="dossierId" />
+			<finder-column name="actionCode" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
