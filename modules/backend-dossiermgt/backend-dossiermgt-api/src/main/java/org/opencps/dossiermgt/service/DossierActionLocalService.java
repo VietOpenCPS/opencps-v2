@@ -209,6 +209,10 @@ public interface DossierActionLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierAction getByDID_CODE_First(long dossierId, String actionCode,
+		OrderByComparator<DossierAction> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDossierAndStepCode(long dossierId,
 		String stepCode);
 

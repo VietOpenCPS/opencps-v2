@@ -21,11 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.dossiermgt.service.comparator.DossierActionComparator;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
@@ -328,6 +331,35 @@ public class AutoFillFormData {
 //						e.printStackTrace();
 						_log.error(e);
 					}
+				} else if (value.startsWith(StringPool.DOLLAR) && value.contains(StringPool.AT)) {
+					//_log.info("START ACTIONCONFIG: "+value);
+					String newString = value.substring(1);
+					String[] stringSplit = newString.split(StringPool.AT);
+					String variable = stringSplit[0];
+					String paper = stringSplit[1];
+					//_log.info("START variable: "+variable);
+					//_log.info("START paper: "+paper);
+					try {
+						DossierAction dossierAction = DossierActionLocalServiceUtil.getByDID_CODE_First(dossierId,
+								paper, new DossierActionComparator(false, "createDate", Date.class));
+						//_log.info("START dossierAction: "+dossierAction);
+
+						if (Validator.isNotNull(dossierAction) && Validator.isNotNull(dossierAction.getPayload())
+								&& dossierAction.getPayload().trim().length() != 0) {
+							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierAction.getPayload());
+							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
+							// _log.info("JSON other map: " +
+							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
+							String myActConfig = jsonOtherMap.get(variable).toString();
+							//
+							jsonMap.put(entry.getKey(), myActConfig);
+						} else {
+							jsonMap.put(entry.getKey(), StringPool.BLANK);
+						}
+					} catch (SystemException e) {
+//						e.printStackTrace();
+						_log.error(e);
+					}
 				}
 			}
 
@@ -345,6 +377,7 @@ public class AutoFillFormData {
 //			e.printStackTrace();
 		}
 
+		_log.info("START result: "+result);
 		return result.toJSONString();
 	}
 
