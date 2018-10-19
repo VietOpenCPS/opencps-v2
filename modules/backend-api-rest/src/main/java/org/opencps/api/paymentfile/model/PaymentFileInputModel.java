@@ -48,6 +48,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="invoiceNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="invoicePayload" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="einvoice" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="confirmFileEntryId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -78,7 +79,8 @@ import javax.xml.bind.annotation.XmlType;
     "invoiceIssueNo",
     "invoiceNo",
     "invoicePayload",
-    "einvoice"
+    "einvoice",
+    "confirmFileEntryId"
 })
 @XmlRootElement(name = "PaymentFileInputModel")
 public class PaymentFileInputModel {
@@ -166,8 +168,22 @@ public class PaymentFileInputModel {
 	@DefaultValue(StringPool.BLANK)
 	@FormParam(value = "einvoice")
     protected String einvoice;
+	
+	@DefaultValue("0")
+	@FormParam(value = "confirmFileEntryId")
+    protected Long confirmFileEntryId;
 
-    /**
+	
+    public Long getConfirmFileEntryId() {
+		return confirmFileEntryId;
+	}
+
+	public void setConfirmFileEntryId(Long confirmFileEntryId) {
+		this.confirmFileEntryId = confirmFileEntryId;
+	}
+
+
+	/**
      * Gets the value of the referenceUid property.
      * 
      * @return
