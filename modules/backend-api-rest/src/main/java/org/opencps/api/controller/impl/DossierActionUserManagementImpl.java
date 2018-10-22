@@ -44,6 +44,9 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 		BackendAuth auth = new BackendAuthImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -90,18 +93,18 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 				duPK.setDossierId(dossier.getDossierId());
 				DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPK);
 				if (du == null) {
-					du = DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), userId, 1, true);
+					DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), userId, 1, true);
 				}
 				else {
 					du.setModerator(1);
-					du = DossierUserLocalServiceUtil.updateDossierUser(du);
+					DossierUserLocalServiceUtil.updateDossierUser(du);
 				}
 				DossierActionUserPK dauPK = new DossierActionUserPK();
 				dauPK.setDossierActionId(dossierActionId);
 				dauPK.setUserId(userId);
 				DossierActionUser oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPK);
 				if (oldDau == null) {
-					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId, dossierActionId, dossier.getDossierId(), input.getStepCode(), input.getModerator(), input.getAssigned(), input.isVisited());
+					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId, dossierActionId, dossier.getDossierId(), stepCode, input.getModerator(), input.getAssigned(), input.isVisited());
 					DossierActionUserResultModel result = new DossierActionUserResultModel();
 					result.setDossierActionId(dossierActionId);
 					result.setAssigned(dau.getAssigned());
@@ -111,13 +114,13 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					result.setUserId(dau.getUserId());
 					result.setVisited(dau.getVisited());
 					
-					Indexer<Dossier> indexer = IndexerRegistryUtil
-							.nullSafeGetIndexer(Dossier.class);
 					indexer.reindex(dossier);
 					
 					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}
 				else {
+					indexer.reindex(dossier);
+					
 					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("Dossier action user already exists!").build();									
 				}
 			}

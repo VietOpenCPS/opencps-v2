@@ -228,6 +228,13 @@ public class DossierActionLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.DossierAction getByDID_CODE_First(
+		long dossierId, String actionCode,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.DossierAction> orderByComparator) {
+		return getService()
+				   .getByDID_CODE_First(dossierId, actionCode, orderByComparator);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> getByDossierAndStepCode(
 		long dossierId, String stepCode) {
 		return getService().getByDossierAndStepCode(dossierId, stepCode);

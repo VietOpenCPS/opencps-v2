@@ -2015,17 +2015,18 @@ public class DossierActionsImpl implements DossierActions {
 							boolean extraForm = actConfig.getExtraForm();
 							if (extraForm) {
 								String formConfig = actConfig.getFormConfig();
-//								_log.info("formConfig: " + formConfig);
+								//_log.info("formConfig: " + formConfig);
 								String sampleData = Validator.isNotNull(actConfig.getSampleData()) ? actConfig.getSampleData() : "{}";
-
+								//_log.info("sampleData: "+sampleData);
 								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
 										serviceContext);
 								JSONObject formDataJson = JSONFactoryUtil.createJSONObject(formData);
+								
 								JSONObject formConfigObj = JSONFactoryUtil.createJSONObject(formConfig);
 								
 								JSONArray formConfigArr = formConfigObj.getJSONArray("fields");
 								
-//								_log.info("formConfigArr: " + formConfigArr);
+								//_log.info("formConfigArr: " + formConfigArr);
 								if (formConfigArr != null && formConfigArr.length() > 0) {
 									int length = formConfigArr.length();
 									for (int i = 0; i < length; i++) {

@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -45,6 +46,7 @@ import java.util.List;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -494,6 +496,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public List<DossierAction> getByDossierAndStepCode(long dossierId, String stepCode) {
 		return dossierActionPersistence.findByDID_SC(dossierId, stepCode);
 	}
-	
+
+	public DossierAction getByDID_CODE_First(long dossierId, String actionCode, OrderByComparator<DossierAction> orderByComparator) {
+		return dossierActionPersistence.fetchByDID_CODE_First(dossierId, actionCode, orderByComparator);
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }

@@ -107,12 +107,14 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 								"attachment; filename=\"" + docType.getDocumentName()+ ".xls\"");
 //						responseBuilder.header("Content-Type", "application/vnd.ms-excel");			
 						responseBuilder.header("Content-Type", "application/octet-stream");	
+						responseBuilder.header("Content-Transfer-Encoding", "binary");	
 					}
 					else if ("word".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",
 								"attachment; filename=\"" + docType.getDocumentName()+ ".doc\"");
 //						responseBuilder.header("Content-Type", "application/msword");	
 						responseBuilder.header("Content-Type", "application/octet-stream");
+						responseBuilder.header("Content-Transfer-Encoding", "binary");
 					}
 					else {
 						responseBuilder.header("Content-Disposition",

@@ -241,6 +241,14 @@ public class DossierActionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierAction getByDID_CODE_First(
+		long dossierId, String actionCode,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.DossierAction> orderByComparator) {
+		return _dossierActionLocalService.getByDID_CODE_First(dossierId,
+			actionCode, orderByComparator);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierAction> getByDossierAndStepCode(
 		long dossierId, String stepCode) {
 		return _dossierActionLocalService.getByDossierAndStepCode(dossierId,
