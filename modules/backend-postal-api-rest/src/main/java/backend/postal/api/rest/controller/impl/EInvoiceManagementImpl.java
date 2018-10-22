@@ -131,8 +131,8 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		hoadon.setGgia(input.getGgia());
 		hoadon.setPhi(input.getPhi());
 		hoadon.setNoidung(input.getNoidung());
-		hoadon.setTien(input.getTien());
-		hoadon.setTtoan(input.getTtoan());
+		hoadon.setTien(formatStringtoBigDecimal(input.getTien()));
+		hoadon.setTtoan(formatStringtoBigDecimal(input.getTtoan()));
 
 		hoadonGtgtCt.setMaVt(input.getMaVtDetail());
 		hoadonGtgtCt.setTen(input.getTenDetail());
@@ -142,7 +142,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		hoadonGtgtCt.setTien(formatStringtoBigDecimal(input.getTienDetail()));
 		hoadonGtgtCt.setTs(input.getTsDetail());
 		hoadonGtgtCt.setThue(input.getThueDetail());
-		hoadonGtgtCt.setTtoan(input.getTtoanDetail());
+		hoadonGtgtCt.setTtoan(formatStringtoBigDecimal(input.getTtoanDetail()));
 		
 		List<HoadonGtgtCtT> lstHoadonGtgtCt = new ArrayList<HoadonGtgtCtT>();
 		lstHoadonGtgtCt.add(hoadonGtgtCt);

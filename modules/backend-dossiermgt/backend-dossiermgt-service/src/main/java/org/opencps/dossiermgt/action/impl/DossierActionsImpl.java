@@ -2797,7 +2797,7 @@ public class DossierActionsImpl implements DossierActions {
 //				} catch (Exception e) {
 //				}
 			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
-				String CINVOICEUrl = "/postal/invoice";
+				String CINVOICEUrl = "postal/invoice";
 				
 				_log.info("SONDT payment REQUESTPAYMENT 5 ========= "+ JSONFactoryUtil.looseSerialize(payment));
 				
@@ -2805,10 +2805,10 @@ public class DossierActionsImpl implements DossierActions {
 				Map<String, Object> params = new HashMap<>();
 				
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-//				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 				
-				if(oldPaymentFile != null && Validator.isNotNull(oldPaymentFile.getEinvoice())){
-					
+				
+				if(oldPaymentFile != null && proAction.getPreCondition().toLowerCase().contains("sendinvoice=1")){
+					_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 					InvokeREST callRest = new InvokeREST();
 					String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 					HashMap<String, String> properties = new HashMap<String, String>();
@@ -2819,8 +2819,8 @@ public class DossierActionsImpl implements DossierActions {
 					address.append(dossier.getDistrictName());
 					address.append(dossier.getCityName());
 					
-					SimpleDateFormat sdf = new SimpleDateFormat("DD/MM/YYYY");
-					String dateformatted = sdf.format(dossier.getSubmitDate());
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+					String dateformatted = sdf.format(new Date());
 					_log.info("SONDT CINVOICE DATEFORMATED ============= " + dateformatted);
 					
 					params.put("userName", "HA");	
@@ -2831,16 +2831,20 @@ public class DossierActionsImpl implements DossierActions {
 					params.put("seri", "12314"); 
 					params.put("maNthue", "01"); 
 					params.put("kieuSo", "G"); 
-					params.put("maKhackHang", dossier.getUserId());
+					params.put("maKhackHang", GetterUtil.getString(dossier.getUserId()));
 					params.put("ten", dossier.getApplicantName()); 
-					params.put("phone", dossier.getContactTelNo()); 
-					params.put("tax", dossier.getApplicantIdNo()); 
+					params.put("phone", dossier.getContactTelNo());
+					if(dossier.getApplicantIdType().contentEquals("business")) {
+						params.put("tax", dossier.getApplicantIdNo()); 
+					} else {
+						params.put("tax", "");
+					}
 					params.put("dchi", address); 
 					params.put("maTk", ""); 
 					params.put("tenNh", ""); 
-					params.put("mailH", dossier.getContactEmail());
-					params.put("phoneH", dossier.getContactTelNo());
-					params.put("tenM", dossier.getDelegateName());
+					params.put("mailH", GetterUtil.getString(dossier.getContactEmail()));
+					params.put("phoneH", GetterUtil.getString(dossier.getContactTelNo()));
+					params.put("tenM", GetterUtil.getString(dossier.getDelegateName()));
 					params.put("maKhL", "K");
 					params.put("maNt", "VND");
 					params.put("tg", "1");
@@ -2849,18 +2853,18 @@ public class DossierActionsImpl implements DossierActions {
 					params.put("tlGgia", "0");
 					params.put("ggia", "0");
 					params.put("phi", "0");
-					params.put("noidung", "tên thủ tục");
-					params.put("tien", oldPaymentFile.getFeeAmount());
-					params.put("ttoan", oldPaymentFile.getFeeAmount());
+					params.put("noidung", "");
+					params.put("tien", Long.toString(oldPaymentFile.getFeeAmount()));
+					params.put("ttoan", Long.toString(oldPaymentFile.getFeeAmount()));
 					params.put("maVtDetail", dossier.getDossierNo());
-					params.put("tenDetail", dossier.getServiceName());
+					params.put("tenDetail", GetterUtil.getString(dossier.getServiceName()));
 					params.put("dvtDetail", "bộ");
 					params.put("luongDetail", "1");
-					params.put("giaDetail", GetterUtil.getString(oldPaymentFile.getFeeAmount()));
-					params.put("tienDetail", GetterUtil.getString(oldPaymentFile.getFeeAmount()));
+					params.put("giaDetail", Long.toString(oldPaymentFile.getFeeAmount()));
+					params.put("tienDetail", Long.toString(oldPaymentFile.getFeeAmount()));
 					params.put("tsDetail", "0");
 					params.put("thueDetail", "0");
-					params.put("ttoanDetail", GetterUtil.getString(oldPaymentFile.getFeeAmount()));
+					params.put("ttoanDetail", Long.toString(oldPaymentFile.getFeeAmount()));
 					
 					resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
 							CINVOICEUrl, "", "", properties, params, context);
@@ -2868,11 +2872,18 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
 				
-				if (Validator.isNotNull(oldPaymentFile) && Validator.isNotNull(resultObj)) {
-					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
-							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
-							oldPaymentFile.getShipAmount());
+				if (Validator.isNotNull(oldPaymentFile) ) {
+//					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
+//							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
+//							oldPaymentFile.getShipAmount());
+					if(Validator.isNotNull(resultObj)) {
+						oldPaymentFile.setEinvoice(resultObj.toString());
+						oldPaymentFile.setInvoicePayload(params.toString());
+					}
 					
+					oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
+					
+					PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 				}
 				
 				
