@@ -2,7 +2,15 @@ Bundle-Name: backend-statistic-rest
 Bundle-SymbolicName: backend.statistic.rest
 Bundle-Version: 1.0.0
 Liferay-Configuration-Path: /configuration
+
+-includeresource: \
+	@jackson-databind-2.8.9.jar,\
+	@jackson-core-2.8.9.jar,\
+	@jackson-annotations-2.8.9.jar,\
+	@validation-api-1.1.0.Final.jar
+Import-Package: *;resolution:=optional
+
 Export-Package: \
 	opencps.statistic.common.webservice.exception,\
 	opencps.statistic.common.webservice.facade,\
-	opencps.statistic.common.webservice.*,\
+	opencps.statistic.common.webservice.*
