@@ -149,6 +149,7 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.ErrorMsgModel;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
@@ -1520,6 +1521,7 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		DossierAction dossierResult = null;
+		ErrorMsgModel errorModel = new ErrorMsgModel();
 		
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1556,7 +1558,7 @@ public class DossierManagementImpl implements DossierManagement {
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 											actionCode, input.getActionUser(), input.getActionNote(),
 											input.getPayload(), input.getAssignUsers(), input.getPayment(),
-											actConfig.getSyncType(), serviceContext);
+											actConfig.getSyncType(), serviceContext, errorModel);
 								} else {
 									//TODO: Error
 								}
@@ -1565,7 +1567,7 @@ public class DossierManagementImpl implements DossierManagement {
 							dossierResult = actions.doAction(groupId, userId, dossier, option, null, actionCode,
 									input.getActionUser(), input.getActionNote(), input.getPayload(),
 									input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
-									serviceContext);
+									serviceContext, errorModel);
 						}
 						//Process send email or sms
 						if (dossierResult != null) {
@@ -1640,7 +1642,7 @@ public class DossierManagementImpl implements DossierManagement {
 							if (proAction != null) {
 								dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 										actionCode, input.getActionUser(), input.getActionNote(), input.getPayload(),
-										input.getAssignUsers(), input.getPayment(), 0, serviceContext);
+										input.getAssignUsers(), input.getPayment(), 0, serviceContext, errorModel);
 							} else {
 								// TODO: Error
 							}
