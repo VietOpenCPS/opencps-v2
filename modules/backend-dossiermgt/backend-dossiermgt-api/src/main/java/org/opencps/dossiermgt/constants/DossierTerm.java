@@ -47,6 +47,7 @@ public class DossierTerm {
 	public static final String RELEASE_DATE_TIMESTAMP = "releaseDateTimestamp";
 	public static final String FINISH_DATE = "finishDate";
 	public static final String FINISH_DATE_TIMESTAMP = "finishDateTimestamp";
+	public static final String FINISH_DATE_LUCENE = "finishDateLucene";
 	public static final String CANCELLING_DATE = "cancellingDate";
 	public static final String CANCELLING_DATE_TIMESTAMP = "cancellingDateTimestamp";
 	public static final String CORRECTING_DATE = "correctingDate";
@@ -199,4 +200,9 @@ public class DossierTerm {
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 	public static final String DOSSIER_NAME = "dossierName";
 	public static final String ORIGIN_DOSSIER_NO = "originDossierNo";
+	//
+	public static final String FROM_FINISH_DATE = "fromFinishDate";
+	public static final String TO_FINISH_DATE = "toFinishDate";
+	public static final String FROM_RECEIVE_NOTDONE_DATE = "fromReceiveNotDoneDate";
+	public static final String TO_RECEIVE_NOTDONE_DATE = "toReceiveNotDoneDate";
 }
