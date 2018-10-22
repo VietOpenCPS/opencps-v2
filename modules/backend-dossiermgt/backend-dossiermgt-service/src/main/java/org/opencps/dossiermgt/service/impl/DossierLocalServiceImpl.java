@@ -2695,30 +2695,35 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Process Statistic
 		//TODO
-		String fromFinishDateFilter = fromFinishDate + ConstantsTerm.HOUR_START;
-		String toFinishDateFilter = toFinishDate + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(fromFinishDate) || Validator.isNotNull(toFinishDate)) {
+			String fromFinishDateFilter = fromFinishDate + ConstantsTerm.HOUR_START;
+			String toFinishDateFilter = toFinishDate + ConstantsTerm.HOUR_END;
 
-		if (Validator.isNotNull(fromFinishDate)) {
-			if (Validator.isNotNull(toFinishDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, true, true);
+			if (Validator.isNotNull(fromFinishDate)) {
+				if (Validator.isNotNull(toFinishDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
+							fromFinishDateFilter, toFinishDateFilter, true, true);
 
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				} else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
+							fromFinishDateFilter, toFinishDateFilter, true, false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
 			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, true, false);
+				if (Validator.isNotNull(toFinishDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
+							fromFinishDateFilter, toFinishDateFilter, false, true);
 
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
 			}
-		} else {
-			if (Validator.isNotNull(toFinishDate)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.FINISH_DATE_LUCENE,
-						fromFinishDateFilter, toFinishDateFilter, false, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
+			//
+			MultiMatchQuery query = new MultiMatchQuery(DossierTerm.DOSSIER_STATUS_DONE);
+			query.addField(DossierTerm.DOSSIER_STATUS);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-
 
 		if (Validator.isNotNull(fromReceiveNotDoneDate) || Validator.isNotNull(toReceiveNotDoneDate)) {
 			//Check Release is null
