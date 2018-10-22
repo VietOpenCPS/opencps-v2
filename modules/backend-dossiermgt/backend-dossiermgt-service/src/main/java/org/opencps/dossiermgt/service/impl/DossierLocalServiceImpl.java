@@ -2360,7 +2360,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					long nowTime = date.getTime();
 					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_COMING,
 							String.valueOf(0), String.valueOf(nowTime), false, true);
-					subQuery.add(termRangeQuery, BooleanClauseOccur.SHOULD);
+					subQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 				}
 				//
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);

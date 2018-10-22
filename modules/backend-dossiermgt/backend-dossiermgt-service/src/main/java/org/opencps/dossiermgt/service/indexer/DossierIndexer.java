@@ -202,9 +202,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long durationComing = 0;
 			if (durationCount > 0) {
 				if ((int)durationUnit == 0) {
-					durationComing = (long) (durationComing * VALUE_CONVERT_DATE_TIMESTAMP / 5);
+					durationComing = (long) (durationCount * VALUE_CONVERT_DATE_TIMESTAMP / 5);
 				} else {
-					durationComing = (long) (durationComing * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
+					durationComing = (long) (durationCount * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
 				}
 				long dueDateComing = dueDateTime - durationComing;
 				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);
