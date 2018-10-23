@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "data")
 public class DossierStatisticResponse {
 	private int total;
+	private String agency;
 	@XmlElement(name = "data")
 	private List<DossierStatisticData> dossierStatisticData;
 
@@ -28,6 +29,14 @@ public class DossierStatisticResponse {
 
 	public void setDossierStatisticData(List<DossierStatisticData> dossierStatisticData) {
 		this.dossierStatisticData = dossierStatisticData;
+	}
+
+	public String getAgency() {
+		return agency;
+	}
+
+	public void setAgency(String agency) {
+		this.agency = agency;
 	}
 
 }

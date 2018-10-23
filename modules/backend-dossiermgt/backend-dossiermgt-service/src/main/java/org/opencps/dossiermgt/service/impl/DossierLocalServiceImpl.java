@@ -2085,11 +2085,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 //			_log.info("flagEmail: "+flagEmail);
 //			_log.info("emailLogin: "+emailLogin);
-			if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-//				_log.info("TEST: "+true);
-				MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
-				queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
-				booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
+			if (Integer.valueOf(groupId) != 52737) {
+				if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+	//				_log.info("TEST: "+true);
+					MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
+					queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
+					booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
+				}
 			}
 		}
 
