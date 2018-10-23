@@ -181,7 +181,8 @@ import javax.xml.bind.annotation.XmlType;
     "extendDate",
     "lastActionUserId",
     "currentActionUser",
-    "dossierName"
+    "dossierName",
+    "dueDateComing"
 })
 public class DossierDataModel {
 
@@ -269,6 +270,7 @@ public class DossierDataModel {
 	protected Long lastActionUserId;
 	protected String currentActionUser;
 	protected String dossierName;
+	protected String dueDateComing;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1952,4 +1954,11 @@ public class DossierDataModel {
 		this.dossierName = dossierName;
 	}
 
+	public String getDueDateComing() {
+		return dueDateComing;
+	}
+
+	public void setDueDateComing(String value) {
+		this.dueDateComing = value;
+	}
 }

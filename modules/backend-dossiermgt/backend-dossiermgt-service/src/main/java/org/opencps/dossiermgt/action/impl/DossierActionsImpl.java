@@ -146,6 +146,7 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
+import backend.auth.api.exception.ErrorMsgModel;
 import backend.auth.api.exception.NotFoundException;
 
 public class DossierActionsImpl implements DossierActions {
@@ -2592,7 +2593,7 @@ public class DossierActionsImpl implements DossierActions {
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
-			ServiceContext context) throws PortalException {
+			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
 //		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
@@ -2912,7 +2913,7 @@ public class DossierActionsImpl implements DossierActions {
 //			_log.info("Current step: " + curStep);
 			
 			int actionOverdue = getActionDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
-			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
+//			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			
 //			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
@@ -3348,7 +3349,7 @@ public class DossierActionsImpl implements DossierActions {
 				if (employee != null) {
 					actionUserHslt = actionUser;
 				}
-				doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
+				doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context, errorModel);
 			}
 			else {
 				Dossier originDossier = DossierLocalServiceUtil.getByOrigin(groupId, dossierId);
@@ -3357,7 +3358,7 @@ public class DossierActionsImpl implements DossierActions {
 							originDossier.getDossierTemplateNo(), groupId);
 					ProcessAction actionOrigin = getProcessAction(groupId, originDossier.getDossierId(), originDossier.getReferenceUid(), actionConfig.getMappingAction(), optionOrigin.getServiceProcessId());
 					
-					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
+					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context, errorModel);
 				}
 			}
 		}
@@ -3365,7 +3366,7 @@ public class DossierActionsImpl implements DossierActions {
 		Indexer<Dossier> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 		indexer.reindex(dossier);
-		_log.info("dossierActionFINISH: "+dossierAction);
+//		_log.info("dossierActionFINISH: "+dossierAction);
 		return dossierAction;		
 	}
 	
@@ -3373,7 +3374,7 @@ public class DossierActionsImpl implements DossierActions {
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
-			ServiceContext context) throws PortalException {
+			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
 //		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
@@ -3454,7 +3455,7 @@ public class DossierActionsImpl implements DossierActions {
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
-			ServiceContext context) throws PortalException {
+			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
 //		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
@@ -3463,10 +3464,10 @@ public class DossierActionsImpl implements DossierActions {
 		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 		
 		if (actionConfig != null && !actionConfig.getInsideProcess()) {
-			dossierAction = doActionOutsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);			
+			dossierAction = doActionOutsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context, errorModel);			
 		}
 		else {
-			dossierAction = doActionInsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);
+			dossierAction = doActionInsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context, errorModel);
 		}
 				
 		return dossierAction;
