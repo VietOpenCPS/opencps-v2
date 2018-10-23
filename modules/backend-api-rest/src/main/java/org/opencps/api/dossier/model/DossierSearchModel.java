@@ -102,7 +102,11 @@ import javax.xml.bind.annotation.XmlType;
     "serviceName",
     "fromReleaseDate",
     "toReleaseDate",
-    "originality"
+    "originality",
+    "fromFinishDate",
+    "toFinishDate",
+    "fromReceiveNotDoneDate",
+    "toReceiveNotDoneDate"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -198,6 +202,14 @@ public class DossierSearchModel {
     protected String toReleaseDate;
     @QueryParam(value = "originality")
     protected String originality;
+    @QueryParam(value = "fromFinishDate")
+    protected String fromFinishDate;
+    @QueryParam(value = "toFinishDate")
+    protected String toFinishDate;
+    @QueryParam(value = "fromReceiveNotDoneDate")
+    protected String fromReceiveNotDoneDate;
+    @QueryParam(value = "toReceiveNotDoneDate")
+    protected String toReceiveNotDoneDate;
 
     public Integer getAssigned() {
 		return assigned;
@@ -909,6 +921,38 @@ public class DossierSearchModel {
 
 	public void setOriginality(String originality) {
 		this.originality = originality;
+	}
+
+	public String getFromReceiveNotDoneDate() {
+		return fromReceiveNotDoneDate;
+	}
+
+	public void setFromReceiveNotDoneDate(String fromReceiveNotDoneDate) {
+		this.fromReceiveNotDoneDate = fromReceiveNotDoneDate;
+	}
+
+	public String getToReceiveNotDoneDate() {
+		return toReceiveNotDoneDate;
+	}
+
+	public void setToReceiveNotDoneDate(String toReceiveNotDoneDate) {
+		this.toReceiveNotDoneDate = toReceiveNotDoneDate;
+	}
+
+	public String getFromFinishDate() {
+		return fromFinishDate;
+	}
+
+	public void setFromFinishDate(String fromFinishDate) {
+		this.fromFinishDate = fromFinishDate;
+	}
+
+	public String getToFinishDate() {
+		return toFinishDate;
+	}
+
+	public void setToFinishDate(String toFinishDate) {
+		this.toFinishDate = toFinishDate;
 	}
 
 }

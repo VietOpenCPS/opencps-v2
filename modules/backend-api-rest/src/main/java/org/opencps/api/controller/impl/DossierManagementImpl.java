@@ -265,6 +265,20 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
+			//Process Statistic
+			String fromReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReleaseDate());
+			String toReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReleaseDate());
+
+			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
+			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
+			//_log.info("fromFinishDate: "+fromFinishDate);
+			//_log.info("toFinishDate: "+toFinishDate);
+
+			String fromReceiveNotDoneDate = APIDateTimeUtils
+					.convertNormalDateToLuceneDate(query.getFromReceiveNotDoneDate());
+			String toReceiveNotDoneDate = APIDateTimeUtils
+					.convertNormalDateToLuceneDate(query.getToReceiveNotDoneDate());
+
 			//LamTV:Get info case abnormal
 			Long statusRegNo = null;
 			if (Validator.isNotNull(query.getStatusReg())) {
@@ -328,6 +342,13 @@ public class DossierManagementImpl implements DossierManagement {
 			//Check guest search
 			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
 			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
+			//
+			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
+			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
+			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
+			params.put(DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
+			params.put(DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -363,7 +384,6 @@ public class DossierManagementImpl implements DossierManagement {
 				default:
 					break;
 				}
-
 			}
 
 			DossierResultsModel results = new DossierResultsModel();
