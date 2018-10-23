@@ -1,7 +1,9 @@
 package backend.postal.api.rest.controller.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -17,8 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.soap.*;
 
 import org.opencps.api.controller.util.InvoiceTerm;
@@ -31,6 +35,7 @@ import org.opencps.api.invoice.model.InvoiceInputModel;
 import org.opencps.api.invoice.model.InvoiceServerConfigModel;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.w3c.dom.NodeList;
 
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -160,6 +165,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		fsNHGTGT.setBKtraDch("");
 
 		String results = "khong the ket noi den server HDDT !!!!!";
+		String abc = "";
 
 		try {
 			//String soapEndpointUrl = "http://hoadon.cmcsoft.com/Service/iv_v/siv_v_ph_hoadon.asmx";
@@ -187,7 +193,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 			message.saveChanges();
 			message.writeTo(System.out);
-
+			
 			try {
 				// Create SOAP Connection
 				SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
@@ -215,43 +221,37 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 				// Print the SOAP Response
 				_log.info("Response SOAP Message:");
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				soapResponse.writeTo(stream);
+				
+				NodeList nodes = soapResponse.getSOAPBody().getElementsByTagName("Fs_NH_GTGTResult");
+				
+		        // check if the node exists and get the value
+		        
+		        Node node = (Node) nodes.item(0);
+		        
+		        abc = node != null ? node.getTextContent() : "";
+		        
 				soapResponse.writeTo(System.out);
-				_log.info("");
+				_log.info("abc ============ " + abc );
 				results = new String(stream.toByteArray(), "utf-8");
-
+				
 				soapConnection.close();
+				
 			} catch (Exception e) {
-//				System.err.println(
-//						"\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
-//				e.printStackTrace();
 				_log.error(e);
 			}
 
 		} catch (IOException e) {
-//			e.printStackTrace();
 			_log.error(e);
 		} catch (JAXBException e) {
-//			e.printStackTrace();
 			_log.error(e);
 		} catch (Exception e) {
-//			e.printStackTrace();
 			_log.error(e);
 		}
 
-		return Response.status(200).entity(results).build();
+		return Response.status(200).entity(abc).build();
 
 	}
 
-	private String formatDate(String string, String formatType) {
-		SimpleDateFormat sdf = new SimpleDateFormat(formatType);
-		if (Validator.isNull(string)) {
-			Date now = new Date();
-			string = now.toString();
-		}
-		return sdf.format(string);
-	}
-	
 	private BigDecimal formatStringtoBigDecimal(String str) {
 		if(str != null) {
 			BigDecimal b = new BigDecimal(str);
