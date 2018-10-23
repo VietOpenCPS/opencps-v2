@@ -136,6 +136,7 @@ public class DossierUtils {
 //				model.setDueDate(APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 //			} else {
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			model.setDueDateComing(doc.get(DossierTerm.DUE_DATE_COMING));
 //			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
 			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
 //			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));

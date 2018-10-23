@@ -141,6 +141,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.RELEASE_DATE_LUCENE, StringPool.BLANK);
 			}
+			if (Validator.isNotNull(object.getFinishDate())) {
+				document.addDateSortable(DossierTerm.FINISH_DATE_LUCENE, object.getFinishDate());
+			} else {
+				document.addTextSortable(DossierTerm.FINISH_DATE_LUCENE, StringPool.BLANK);
+			}
 
 			if (Validator.isNotNull(object.getCancellingDate())) {
 				document.addTextSortable(DossierTerm.CANCELLING_DATE, APIDateTimeUtils
@@ -202,9 +207,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long durationComing = 0;
 			if (durationCount > 0) {
 				if ((int)durationUnit == 0) {
-					durationComing = (long) (durationComing * VALUE_CONVERT_DATE_TIMESTAMP / 5);
+					durationComing = (long) (durationCount * VALUE_CONVERT_DATE_TIMESTAMP / 5);
 				} else {
-					durationComing = (long) (durationComing * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
+					durationComing = (long) (durationCount * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
 				}
 				long dueDateComing = dueDateTime - durationComing;
 				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);

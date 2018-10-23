@@ -8,6 +8,8 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 
+import backend.auth.api.exception.ErrorMsgModel;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -111,7 +113,7 @@ public interface DossierActions {
 
 	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option,
 			ProcessAction proAction, String actionCode, String actionUser, String actionNote, String payload,
-			String assignUsers, String payment, int syncType, ServiceContext serviceContext) throws PortalException;
+			String assignUsers, String payment, int syncType, ServiceContext serviceContext, ErrorMsgModel errorModel) throws PortalException;
 
 	public JSONArray getNextActionList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);

@@ -149,6 +149,7 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.ErrorMsgModel;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
@@ -265,6 +266,20 @@ public class DossierManagementImpl implements DossierManagement {
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
+			//Process Statistic
+			String fromReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReleaseDate());
+			String toReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReleaseDate());
+
+			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
+			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
+			//_log.info("fromFinishDate: "+fromFinishDate);
+			//_log.info("toFinishDate: "+toFinishDate);
+
+			String fromReceiveNotDoneDate = APIDateTimeUtils
+					.convertNormalDateToLuceneDate(query.getFromReceiveNotDoneDate());
+			String toReceiveNotDoneDate = APIDateTimeUtils
+					.convertNormalDateToLuceneDate(query.getToReceiveNotDoneDate());
+
 			//LamTV:Get info case abnormal
 			Long statusRegNo = null;
 			if (Validator.isNotNull(query.getStatusReg())) {
@@ -328,6 +343,13 @@ public class DossierManagementImpl implements DossierManagement {
 			//Check guest search
 			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
 			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
+			//
+			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
+			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
+			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
+			params.put(DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
+			params.put(DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -363,7 +385,6 @@ public class DossierManagementImpl implements DossierManagement {
 				default:
 					break;
 				}
-
 			}
 
 			DossierResultsModel results = new DossierResultsModel();
@@ -1520,6 +1541,7 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		DossierAction dossierResult = null;
+		ErrorMsgModel errorModel = new ErrorMsgModel();
 		
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1556,7 +1578,7 @@ public class DossierManagementImpl implements DossierManagement {
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 											actionCode, input.getActionUser(), input.getActionNote(),
 											input.getPayload(), input.getAssignUsers(), input.getPayment(),
-											actConfig.getSyncType(), serviceContext);
+											actConfig.getSyncType(), serviceContext, errorModel);
 								} else {
 									//TODO: Error
 								}
@@ -1565,7 +1587,7 @@ public class DossierManagementImpl implements DossierManagement {
 							dossierResult = actions.doAction(groupId, userId, dossier, option, null, actionCode,
 									input.getActionUser(), input.getActionNote(), input.getPayload(),
 									input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
-									serviceContext);
+									serviceContext, errorModel);
 						}
 						//Process send email or sms
 						if (dossierResult != null) {
@@ -1640,7 +1662,7 @@ public class DossierManagementImpl implements DossierManagement {
 							if (proAction != null) {
 								dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 										actionCode, input.getActionUser(), input.getActionNote(), input.getPayload(),
-										input.getAssignUsers(), input.getPayment(), 0, serviceContext);
+										input.getAssignUsers(), input.getPayment(), 0, serviceContext, errorModel);
 							} else {
 								// TODO: Error
 							}

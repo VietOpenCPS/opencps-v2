@@ -53,6 +53,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+import backend.auth.api.exception.ErrorMsgModel;
+
 @Component(immediate = true, service = TimerScheduler.class)
 public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
@@ -89,6 +91,8 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
 			params.put(DossierActionTerm.AUTO, "timmer");
 
+			ErrorMsgModel errorModel = new ErrorMsgModel();
+			
 			if (Validator.isNotNull(dossier.getDossierStatus())) {
 
 				long dossierActionId = dossier.getDossierActionId();
@@ -160,7 +164,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 										StringPool.BLANK, 
 										StringPool.BLANK,
 										actConfig.getSyncType(),
-										serviceContext);
+										serviceContext, errorModel);
 								
 //								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
 //										dossier.getReferenceUid(), processAction.getActionCode(),
@@ -225,7 +229,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 											StringPool.BLANK, 
 											StringPool.BLANK,
 											actConfig.getSyncType(),
-											serviceContext);
+											serviceContext, errorModel);
 								}
 //								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
 //										dossier.getReferenceUid(), processAction.getActionCode(),
