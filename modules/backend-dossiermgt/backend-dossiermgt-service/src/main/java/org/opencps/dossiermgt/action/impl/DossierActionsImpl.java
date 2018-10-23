@@ -2826,13 +2826,13 @@ public class DossierActionsImpl implements DossierActions {
 					
 					params.put("userName", "HA");	
 					params.put("passWord", "1"); 	    	
-					params.put("soid", "10"); 
+					params.put("soid", "0"); 
 					params.put("maHoadon", "01GTKT0/001"); 
 					params.put("ngayHd", dateformatted); //"01/08/2018"
 					params.put("seri", "12314"); 
 					params.put("maNthue", "01"); 
 					params.put("kieuSo", "G"); 
-					params.put("maKhackHang", GetterUtil.getString(dossier.getUserId()));
+					params.put("maKhackHang", Long.toString(dossier.getUserId()));
 					params.put("ten", dossier.getApplicantName()); 
 					params.put("phone", dossier.getContactTelNo());
 					if(dossier.getApplicantIdType().contentEquals("business")) {
@@ -2854,12 +2854,12 @@ public class DossierActionsImpl implements DossierActions {
 					params.put("tlGgia", "0");
 					params.put("ggia", "0");
 					params.put("phi", "0");
-					params.put("noidung", "");
+					params.put("noidung", dossier.getDossierNo());
 					params.put("tien", Long.toString(oldPaymentFile.getFeeAmount()));
 					params.put("ttoan", Long.toString(oldPaymentFile.getFeeAmount()));
 					params.put("maVtDetail", dossier.getDossierNo());
 					params.put("tenDetail", GetterUtil.getString(dossier.getServiceName()));
-					params.put("dvtDetail", "bộ");
+					params.put("dvtDetail", "bo");
 					params.put("luongDetail", "1");
 					params.put("giaDetail", Long.toString(oldPaymentFile.getFeeAmount()));
 					params.put("tienDetail", Long.toString(oldPaymentFile.getFeeAmount()));

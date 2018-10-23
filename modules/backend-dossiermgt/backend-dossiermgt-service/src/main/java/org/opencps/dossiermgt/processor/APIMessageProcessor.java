@@ -252,6 +252,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
 			//_log.info("SONDT SYNC PAYMENT FILE processAction =========== " + JSONFactoryUtil.looseSerialize(processAction));
 			if (processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG)) {
+				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -265,8 +267,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setReferenceUid(StringPool.BLANK);
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+				_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 			} else if (processAction != null && (processAction
 					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
+				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 				//_log.info("SONDT SYNC INFORM PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
@@ -299,6 +305,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 
 			} else if (processAction != null && (processAction
 					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
+				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 				
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
@@ -306,6 +314,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+				
+				_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 			}
 			if (processAction.getPreCondition().contains("payok")) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
@@ -650,6 +661,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//_log.info("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
 		_log.info("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST : " + APIDateTimeUtils.convertDateToString(new Date()));
 		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG == processAction.getRequestPayment())) {
+			_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1: "
+					+ APIDateTimeUtils.convertDateToString(new Date()));
+			
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
@@ -665,8 +679,10 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			
-			_log.info("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1: " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1 : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI)){
+			_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: "
+					+ APIDateTimeUtils.convertDateToString(new Date()));
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 			
 			//_log.info("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
@@ -692,7 +708,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			
-			_log.info("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		if (processAction.getPreCondition().contains("payok")) {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
