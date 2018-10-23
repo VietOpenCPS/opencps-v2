@@ -8,6 +8,8 @@
 
 package org.opencps.api.einvoice.model;
 
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -142,9 +144,9 @@ public class HoadonT {
     @XmlElement(required = true)
     protected String noidung;
     @XmlElement(required = true)
-    protected String tien;
+    protected BigDecimal tien;
     @XmlElement(required = true)
-    protected String ttoan;
+    protected BigDecimal ttoan;
     @XmlElement(name = "lst_hoadon_ct", required = true)
     protected LstHoadonCtT lstHoadonCt;
 
@@ -732,7 +734,7 @@ public class HoadonT {
      *     {@link String }
      *     
      */
-    public String getTien() {
+    public BigDecimal getTien() {
         return tien;
     }
 
@@ -744,7 +746,7 @@ public class HoadonT {
      *     {@link String }
      *     
      */
-    public void setTien(String value) {
+    public void setTien(BigDecimal value) {
         this.tien = value;
     }
 
@@ -756,7 +758,7 @@ public class HoadonT {
      *     {@link String }
      *     
      */
-    public String getTtoan() {
+    public BigDecimal getTtoan() {
         return ttoan;
     }
 
@@ -768,7 +770,7 @@ public class HoadonT {
      *     {@link String }
      *     
      */
-    public void setTtoan(String value) {
+    public void setTtoan(BigDecimal value) {
         this.ttoan = value;
     }
 
