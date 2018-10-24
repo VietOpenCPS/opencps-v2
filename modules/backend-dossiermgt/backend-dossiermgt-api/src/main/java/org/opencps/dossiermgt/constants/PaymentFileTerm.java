@@ -45,6 +45,7 @@ public class PaymentFileTerm {
 	public static final String SERVICE_AMOUNT = "serviceAmount";
 	public static final String SHIP_AMOUNT = "shipAmount";
 	public static final String EDITABLE = "editable";
+	public static final String EINVOICE = "einvoice";
 
 	public static final int PAYMENT_STATUS_TAM_UNG = 1;
 	public static final int PAYMENT_STATUS_QUYET_TOAN_PHI = 2;
