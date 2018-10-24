@@ -213,6 +213,9 @@ public class DossierManagementImpl implements DossierManagement {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String agency = query.getAgency();
+			if ("all".equals(agency)) {
+				agency = StringPool.BLANK;
+			}
 			String service = query.getService();
 			String template = query.getTemplate();
 			Integer originality = GetterUtil.getInteger(query.getOriginality());
@@ -272,8 +275,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
 			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
-			//_log.info("fromFinishDate: "+fromFinishDate);
-			//_log.info("toFinishDate: "+toFinishDate);
+			_log.info("fromFinishDate: "+fromFinishDate);
+			_log.info("toFinishDate: "+toFinishDate);
 
 			String fromReceiveNotDoneDate = APIDateTimeUtils
 					.convertNormalDateToLuceneDate(query.getFromReceiveNotDoneDate());

@@ -2,6 +2,8 @@ package org.opencps.statistic.rest.application;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -54,7 +56,8 @@ public class OpencpsStatisticRestApplication extends Application {
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
 	}
-
+	
+	private static Log _log = LogFactoryUtil.getLog(OpencpsStatisticRestApplication.class);
 
 	@GET
 	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
@@ -65,6 +68,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			@QueryParam("start") int start, @QueryParam("end") int end) {
 
 		//LOG.info("GET DossierStatisticResponse");
+		_log.info("START DossierStatisticResponse: "+govAgencyCode);
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 
@@ -77,7 +81,11 @@ public class OpencpsStatisticRestApplication extends Application {
 		validInput(month, year, start, end);
 
 		dossierStatisticRequest.setDomain(domain);
-		dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+		if ("all".equals(govAgencyCode)) {
+			dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
+		} else {
+			dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+		}
 		dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
 		dossierStatisticRequest.setReporting(reporting);
 		dossierStatisticRequest.setGroupId(groupId);
@@ -89,7 +97,14 @@ public class OpencpsStatisticRestApplication extends Application {
 		OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
 		try {
-			return dossierStatisticFinderService.finderDossierStatistic(dossierStatisticRequest);
+			DossierStatisticResponse statisticResponse = dossierStatisticFinderService
+					.finderDossierStatistic(dossierStatisticRequest);
+			if (statisticResponse != null) {
+				statisticResponse.setAgency(govAgencyCode);
+			}
+
+			return statisticResponse;
+
 		} catch (Exception e) {
 			
 			LOG.error("error", e);
