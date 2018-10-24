@@ -214,10 +214,10 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			String strIdArr = input.getStrIdArr();
-//			_log.info("array Id: "+strIdArr);
+			_log.info("array Id: "+strIdArr);
 
 			String[] idSplit = strIdArr.split(StringPool.SEMICOLON);
-//			_log.info("idSplit Id: "+idSplit);
+			_log.info("idSplit Id: "+idSplit);
 
 			JSONObject hashComputed = JSONFactoryUtil.createJSONObject();
 			JSONObject results = null;
