@@ -423,7 +423,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileTemplateNo(df.getFileTemplateNo());
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
-										
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
 											return false;

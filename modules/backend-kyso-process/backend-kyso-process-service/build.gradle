@@ -24,7 +24,7 @@ dependencies {
 	compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
 	compile group: 'io.swagger', name: 'swagger-jaxrs', version: '1.5.10'
 
-	
+	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
 
 	compileOnly project(":modules:backend-kyso-process:backend-kyso-process-api")
 	
