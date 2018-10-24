@@ -111,10 +111,10 @@ public class PaymentFileModel {
     protected String applicantIdNo;
     protected Integer isNew;
     protected String paymentFee;
-    protected String advanceAmount;
-    protected String feeAmount;
-    protected String serviceAmount;
-    protected String shipAmount;
+    protected Long advanceAmount;
+    protected Long feeAmount;
+    protected Long serviceAmount;
+    protected Long shipAmount;
     protected Long paymentAmount;
     protected String paymentNote;
     protected String bankInfo;
@@ -359,7 +359,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public String getAdvanceAmount() {
+    public Long getAdvanceAmount() {
         return advanceAmount;
     }
 
@@ -371,7 +371,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public void setAdvanceAmount(String value) {
+    public void setAdvanceAmount(Long value) {
         this.advanceAmount = value;
     }
 
@@ -383,7 +383,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public String getFeeAmount() {
+    public Long getFeeAmount() {
         return feeAmount;
     }
 
@@ -395,7 +395,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public void setFeeAmount(String value) {
+    public void setFeeAmount(Long value) {
         this.feeAmount = value;
     }
 
@@ -407,7 +407,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public String getServiceAmount() {
+    public Long getServiceAmount() {
         return serviceAmount;
     }
 
@@ -419,7 +419,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public void setServiceAmount(String value) {
+    public void setServiceAmount(Long value) {
         this.serviceAmount = value;
     }
 
@@ -431,7 +431,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public String getShipAmount() {
+    public Long getShipAmount() {
         return shipAmount;
     }
 
@@ -443,7 +443,7 @@ public class PaymentFileModel {
      *     {@link String }
      *     
      */
-    public void setShipAmount(String value) {
+    public void setShipAmount(Long value) {
         this.shipAmount = value;
     }
 
