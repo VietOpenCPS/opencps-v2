@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
@@ -101,24 +102,30 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 					file = new File(previewResponse);
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
+					String rootFileName = docType.getDocumentName();
+					try {
+						rootFileName = URLEncoder.encode(docType.getDocumentName(), "UTF-8");
+					}
+					catch (Exception e) {
+						
+					}
 					if ("excel".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + docType.getDocumentName()+ ".xls\"");
-//						responseBuilder.header("Content-Type", "application/vnd.ms-excel");			
-						responseBuilder.header("Content-Type", "application/octet-stream");	
-						responseBuilder.header("Content-Transfer-Encoding", "binary");	
+								"attachment; filename=\"" + rootFileName + ".xls\"");
+//						responseBuilder.header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");			
+						responseBuilder.header("Content-Type", "application/vnd.ms-excel");	
+//						responseBuilder.header("Content-Transfer-Encoding", "binary");	
 					}
 					else if ("word".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + docType.getDocumentName()+ ".doc\"");
-//						responseBuilder.header("Content-Type", "application/msword");	
-						responseBuilder.header("Content-Type", "application/octet-stream");
-						responseBuilder.header("Content-Transfer-Encoding", "binary");
+								"attachment; filename=\"" + rootFileName + ".doc\"");
+						responseBuilder.header("Content-Type", "application/msword");	
+//						responseBuilder.header("Content-Type", "application/octet-stream");
+//						responseBuilder.header("Content-Transfer-Encoding", "binary");
 					}
 					else {
 						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + docType.getDocumentName()+ ".pdf\"");
+								"attachment; filename=\"" + rootFileName + ".pdf\"");
 						responseBuilder.header("Content-Type", "application/pdf");						
 					}
 					return responseBuilder.build();
