@@ -241,9 +241,10 @@ public class SignatureManagementImpl implements SignatureManagement{
 						_log.info("fileEntryId: "+fileEntryId);
 
 						try {
+							_log.info("START CALL HASHCOMPUTE: ");
 							JSONObject newHashComputedResult = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
 									input.getPostStepCode(), serviceContext);
-//							_log.info("Obj: " + newHashComputedResult.toJSONString());
+							_log.info("Obj: " + newHashComputedResult);
 							String newHashComputedStr = newHashComputedResult.getString("message");
 							
 							JSONObject newHashComputed = JSONFactoryUtil.createJSONObject(newHashComputedStr);
