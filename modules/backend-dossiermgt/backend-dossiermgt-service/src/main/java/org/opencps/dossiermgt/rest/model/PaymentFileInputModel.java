@@ -80,8 +80,17 @@ public class PaymentFileInputModel {
     protected String invoiceTemplateNo;
     protected Integer paymentStatus;
     protected Long confirmFileEntryId;
+    protected String einvoice;
+    
+    public String getEinvoice() {
+		return einvoice;
+	}
 
-    /**
+	public void setEinvoice(String einvoice) {
+		this.einvoice = einvoice;
+	}
+
+	/**
      * Gets the value of the referenceUid property.
      * 
      * @return

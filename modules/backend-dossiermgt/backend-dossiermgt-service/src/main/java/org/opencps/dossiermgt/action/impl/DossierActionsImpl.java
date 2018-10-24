@@ -2716,6 +2716,9 @@ public class DossierActionsImpl implements DossierActions {
 					if (paymentObj.has("requestPayment")) {
 						paymentStatus = paymentObj.getInt("requestPayment");
 					}
+					if (paymentObj.has("advanceAmount")) {
+						advanceAmount = (Long)fmt.parse(paymentObj.getString("advanceAmount"));
+					}
 					
 					JSONObject paymentObj2 = JSONFactoryUtil.createJSONObject(proAction.getPaymentFee());
 					if (paymentObj2.has("paymentFee")) {
@@ -2739,12 +2742,9 @@ public class DossierActionsImpl implements DossierActions {
 					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
 				} else {
-//					if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_TAM_UNG) {
-//						advanceAmount = feeAmount + serviceAmount + shipAmount;
-//					}
-//					else if (proAction.getRequestPayment() == PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_PHI) {
-//						paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
-//					}
+					
+					paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
+					
 					PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
 							dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
 							serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
@@ -2810,7 +2810,7 @@ public class DossierActionsImpl implements DossierActions {
 							epaymentProfileJSON.put("feeAmount", feeAmount);
 							epaymentProfileJSON.put("shipAmount", shipAmount);
 							epaymentProfileJSON.put("advanceAmount", advanceAmount);
-							epaymentProfileJSON.put("paymentAmount", feeAmount);
+							epaymentProfileJSON.put("paymentAmount", paymentAmount);
 							epaymentProfileJSON.put("serviceAmount", serviceAmount);
 							epaymentProfileJSON.put("paymentNote", paymentNote);
 							epaymentProfileJSON.put("paymentFee", paymentFee);

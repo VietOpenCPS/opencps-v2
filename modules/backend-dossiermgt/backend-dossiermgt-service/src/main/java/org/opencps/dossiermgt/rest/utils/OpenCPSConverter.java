@@ -757,6 +757,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getPaymentStatus())) {
 	    	params.put(PaymentFileTerm.PAYMENT_STATUS, model.getPaymentStatus());
 	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.EINVOICE, model.getEinvoice());
+	    }
 	    return params;
 	}	
 	
