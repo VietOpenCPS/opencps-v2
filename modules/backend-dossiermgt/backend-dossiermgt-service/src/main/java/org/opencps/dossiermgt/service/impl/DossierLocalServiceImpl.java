@@ -2077,21 +2077,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (flagOrigin) {
 			//DossierActionId = 0
-			boolean flagEmail = true;
-			if (Validator.isNotNull(emailLogin)) {
-				if (DossierTerm.EMAIL_DEFAULT.equals(emailLogin.toLowerCase())) {
-					flagEmail = false;
-				}
-			}
+//			boolean flagEmail = true;
+//			if (Validator.isNotNull(emailLogin)) {
+//				if (DossierTerm.EMAIL_DEFAULT.equals(emailLogin.toLowerCase())) {
+//					flagEmail = false;
+//				}
+//			}
 //			_log.info("flagEmail: "+flagEmail);
 //			_log.info("emailLogin: "+emailLogin);
-			if (Integer.valueOf(groupId) != 52737) {
-				if (flagEmail && !DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-	//				_log.info("TEST: "+true);
-					MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
-					queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
-					booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
-				}
+			if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+//				_log.info("TEST: "+true);
+				MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
+				queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
+				booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
 			}
 		}
 

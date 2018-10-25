@@ -149,7 +149,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierStatusText",
     "dossierSubStatus",
     "dossierSubStatusText",
-    "dossierName"
+    "dossierName",
+    "dossierActionId"
 })
 @XmlRootElement(name = "DossierPublishModel")
 public class DossierPublishModel {
@@ -212,6 +213,7 @@ public class DossierPublishModel {
     protected String dossierSubStatus;
     protected String dossierSubStatusText;
     protected String dossierName;
+    protected Long dossierActionId;
 
     /**
      * Gets the value of the referenceUid property.
@@ -1604,5 +1606,13 @@ public class DossierPublishModel {
     public void setDossierName(String value) {
         this.dossierName = value;
     }
+
+	public Long getDossierActionId() {
+		return dossierActionId;
+	}
+
+	public void setDossierActionId(Long dossierActionId) {
+		this.dossierActionId = dossierActionId;
+	}
 
 }
