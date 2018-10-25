@@ -14,6 +14,8 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.document.library.kernel.exception.FileNameException;
+import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -131,7 +133,13 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
 		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
 		long fileEntryId = 0;
-
+		try {
+			DLValidatorUtil.validateFileName(sourceFileName);
+		}
+		catch (FileNameException e) {
+			sourceFileName = displayName;
+			_log.debug(e);
+		}
 		if (inputStream != null) {
 			try {
 				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
@@ -141,7 +149,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 					fileEntryId = fileEntry.getFileEntryId();
 				}
 			} catch (Exception e) {
-//				e.printStackTrace();
 //				throw new SystemException(e);
 				_log.debug(e);
 				//_log.error(e);
