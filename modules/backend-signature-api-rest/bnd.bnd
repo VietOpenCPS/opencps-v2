@@ -1,4 +1,0 @@
-Bundle-Name: backend-signature-api-rest
-Bundle-SymbolicName: backend.signature.api.rest
-Bundle-Version: 1.0.0
-Liferay-Configuration-Path: /configuration
