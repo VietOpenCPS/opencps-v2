@@ -276,6 +276,9 @@ public class DossierManagementImpl implements DossierManagement {
 			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
 			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
 
+			//_log.info("fromFinishDate: "+fromFinishDate);
+			//_log.info("toFinishDate: "+toFinishDate);
+
 			String fromReceiveNotDoneDate = APIDateTimeUtils
 					.convertNormalDateToLuceneDate(query.getFromReceiveNotDoneDate());
 			String toReceiveNotDoneDate = APIDateTimeUtils

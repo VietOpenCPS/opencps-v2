@@ -72,7 +72,7 @@ public class PaymentFileInputModel {
     protected String applicantName;
     protected String applicantIdNo;
     protected String paymentFee;
-    protected String paymentAmount;
+    protected Long paymentAmount;
     protected String paymentNote;
     protected String epaymentProfile;
     protected String bankInfo;
@@ -81,8 +81,36 @@ public class PaymentFileInputModel {
     protected Integer paymentStatus;
     protected Long confirmFileEntryId;
     protected String einvoice;
+    protected Long advanceAmount;
+    protected Long serviceAmount;
+    protected Long shipAmount;
     
-    public String getEinvoice() {
+    
+    public Long getAdvanceAmount() {
+		return advanceAmount;
+	}
+
+	public void setAdvanceAmount(Long advanceAmount) {
+		this.advanceAmount = advanceAmount;
+	}
+
+	public Long getServiceAmount() {
+		return serviceAmount;
+	}
+
+	public void setServiceAmount(Long serviceAmount) {
+		this.serviceAmount = serviceAmount;
+	}
+
+	public Long getShipAmount() {
+		return shipAmount;
+	}
+
+	public void setShipAmount(Long shipAmount) {
+		this.shipAmount = shipAmount;
+	}
+
+	public String getEinvoice() {
 		return einvoice;
 	}
 
@@ -242,7 +270,7 @@ public class PaymentFileInputModel {
      *     {@link String }
      *     
      */
-    public String getPaymentAmount() {
+    public Long getPaymentAmount() {
         return paymentAmount;
     }
 
@@ -254,7 +282,7 @@ public class PaymentFileInputModel {
      *     {@link String }
      *     
      */
-    public void setPaymentAmount(String value) {
+    public void setPaymentAmount(Long value) {
         this.paymentAmount = value;
     }
 

@@ -79,7 +79,7 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo,
 			int paymentStatus, String paymentMethod,
 			ServiceContext serviceContext) throws PortalException {
-		_log.info("boom boom");
+		//_log.info("boom boom");
 		if (Validator.isNull(referenceUid)) {
 			referenceUid = PortalUUIDUtil.generate();
 		}

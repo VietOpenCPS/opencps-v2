@@ -800,9 +800,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 			else {
 				paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
-						input.getPaymentFee(), 0l, input.getFeeAmount(), input.getServiceAmount(), input.getShipAmount(),
-						input.getPaymentAmount(), input.getPaymentNote(), input.getEpaymentProfile(), input.getBankInfo(),
-						0, input.getPaymentMethod(), serviceContext);				
+						input.getPaymentFee(), input.getAdvanceAmount(), input.getFeeAmount(), input.getServiceAmount(),
+						input.getShipAmount(), input.getPaymentAmount(), input.getPaymentNote(),
+						input.getEpaymentProfile(), input.getBankInfo(), 0, input.getPaymentMethod(), serviceContext);				
 			}
 			
 			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
