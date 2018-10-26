@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -31,7 +32,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.EmployeeManagement;
 import org.opencps.api.controller.util.EmployeeUtils;
@@ -151,12 +151,12 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
 			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
 
-			String fullName = StringEscapeUtils.escapeHtml4(input.getFullName());
-			String employeeNo = StringEscapeUtils.escapeHtml4(input.getEmployeeNo());
-			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
-			String mobile = StringEscapeUtils.escapeHtml4(input.getMobile());
-			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
-			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
+			String fullName = HtmlUtil.escape(input.getFullName());
+			String employeeNo = HtmlUtil.escape(input.getEmployeeNo());
+			String telNo = HtmlUtil.escape(input.getTelNo());
+			String mobile = HtmlUtil.escape(input.getMobile());
+			String email = HtmlUtil.escape(input.getEmail());
+			String title = HtmlUtil.escape(input.getTitle());
 			
 			Employee employee = actions.create(user.getUserId(), company.getCompanyId(), groupId, employeeNo,
 					fullName, email, input.getGender(), birthDate, telNo,
@@ -186,12 +186,12 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
 			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
 
-			String fullName = StringEscapeUtils.escapeHtml4(input.getFullName());
-			String employeeNo = StringEscapeUtils.escapeHtml4(input.getEmployeeNo());
-			String telNo = StringEscapeUtils.escapeHtml4(input.getTelNo());
-			String mobile = StringEscapeUtils.escapeHtml4(input.getMobile());
-			String email = StringEscapeUtils.escapeHtml4(input.getEmail());
-			String title = StringEscapeUtils.escapeHtml4(input.getTitle());
+			String fullName = HtmlUtil.escape(input.getFullName());
+			String employeeNo = HtmlUtil.escape(input.getEmployeeNo());
+			String telNo = HtmlUtil.escape(input.getTelNo());
+			String mobile = HtmlUtil.escape(input.getMobile());
+			String email = HtmlUtil.escape(input.getEmail());
+			String title = HtmlUtil.escape(input.getTitle());
 
 			Employee employee = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
 					employeeNo, fullName, email, input.getGender(), birthDate,

@@ -85,6 +85,7 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.ONLINE, dossier.getOnline());
 		obj.put(DossierTerm.SECRET, dossier.getPassword());
 		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+		obj.put(DossierTerm.DOSSIER_ACTION_ID, dossier.getDossierActionId());
 		
 		return obj;
 	}

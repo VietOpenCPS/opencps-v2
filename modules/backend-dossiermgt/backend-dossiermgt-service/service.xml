@@ -511,6 +511,11 @@
             <finder-column name="dossierActionId"></finder-column>
             <finder-column name="originality"></finder-column>
         </finder>
+        
+        <finder return-type="Dossier" name="G_DN">
+			<finder-column name="groupId" />
+			<finder-column name="dossierNo" />
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -1264,6 +1269,10 @@
      	<finder return-type="Collection" name="DID_SC">
 			<finder-column name="dossierId" />
 			<finder-column name="stepCode" />
+		</finder>
+		<finder return-type="Collection" name="DID_CODE">
+			<finder-column name="dossierId" />
+			<finder-column name="actionCode" />
 		</finder>
 	</entity>
 

@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ServerConfigManagement;
 import org.opencps.api.controller.util.ServerConfigUtils;
 import org.opencps.api.serverconfig.model.ServerConfigDetailModel;
@@ -88,11 +88,11 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String serverNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String serverName = StringEscapeUtils.escapeHtml4(input.getServerName());
-			String protocol = StringEscapeUtils.escapeHtml4(input.getProtocol());
-			String configs = StringEscapeUtils.escapeHtml4(input.getConfigs());
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String serverNo = HtmlUtil.escape(input.getServerNo());
+			String serverName = HtmlUtil.escape(input.getServerName());
+			String protocol = HtmlUtil.escape(input.getProtocol());
+			String configs = HtmlUtil.escape(input.getConfigs());
 						
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0l, govAgencyCode,
 					serverNo, serverName, protocol, StringPool.BLANK, new Date(),
@@ -158,11 +158,11 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String govAgencyCode = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String serverNo = StringEscapeUtils.escapeHtml4(input.getGovAgencyCode());
-			String serverName = StringEscapeUtils.escapeHtml4(input.getServerName());
-			String protocol = StringEscapeUtils.escapeHtml4(input.getProtocol());
-			String configs = StringEscapeUtils.escapeHtml4(input.getConfigs());
+			String govAgencyCode = HtmlUtil.escape(input.getGovAgencyCode());
+			String serverNo = HtmlUtil.escape(input.getServerNo());
+			String serverName = HtmlUtil.escape(input.getServerName());
+			String protocol = HtmlUtil.escape(input.getProtocol());
+			String configs = HtmlUtil.escape(input.getConfigs());
 			
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, govAgencyCode,
 					serverNo, serverName, protocol, configs, new Date(),
@@ -247,7 +247,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 
-			String value = StringEscapeUtils.escapeHtml4(input.getValue());
+			String value = HtmlUtil.escape(input.getValue());
 
 			ServerConfig oldConfig = ServerConfigLocalServiceUtil.getServerConfig(id);
 
@@ -282,7 +282,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				throw new UnauthorizationException();
 			}
 			
-			String value = StringEscapeUtils.escapeHtml4(input.getValue());
+			String value = HtmlUtil.escape(input.getValue());
 			ServerConfig oldConfig = ServerConfigLocalServiceUtil.getServerConfig(id);
 
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id,

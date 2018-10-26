@@ -13,6 +13,11 @@ dependencies {
 	compileOnly group: 'com.liferay', name: 'com.liferay.oauth2.provider.scope.api', version: '1.0.2'
 	compileOnly group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
 	
+	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.9'
+	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.9'
+	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.9'
+	compileOnly group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+	
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-api")
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-service")
 	compileOnly project(":modules:backend-statistic-common")

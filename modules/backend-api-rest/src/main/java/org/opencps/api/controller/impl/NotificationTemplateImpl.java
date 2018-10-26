@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
@@ -18,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.NotificationTemplateManagement;
 import org.opencps.api.controller.util.NotificationTemplateUtils;
 import org.opencps.api.error.model.ErrorMsg;
@@ -114,17 +114,17 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String sendEmail = StringEscapeUtils.escapeHtml4(String.valueOf(input.getSendEmail()));
-			String notificationType = StringEscapeUtils.escapeHtml4(type);
-			String emailSubject = StringEscapeUtils.escapeHtml4(input.getEmailSubject());
-			String emailBody = StringEscapeUtils.escapeHtml4(input.getEmailBody());
-			String textMessage = StringEscapeUtils.escapeHtml4(input.getTextMessage());
-			String sendSMS = StringEscapeUtils.escapeHtml4(String.valueOf(input.getSendSMS()));
-			String expireDuration = StringEscapeUtils.escapeHtml4(String.valueOf(input.getExpireDuration()));
-			String userUrlPattern = StringEscapeUtils.escapeHtml4(input.getUserUrlPattern());
-			String guestUrlPattern = StringEscapeUtils.escapeHtml4(input.getGuestUrlPattern());
-			String interval = StringEscapeUtils.escapeHtml4(input.getInterval());
-			String grouping = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGrouping()));
+			String sendEmail = HtmlUtil.escape(String.valueOf(input.getSendEmail()));
+			String notificationType = HtmlUtil.escape(type);
+			String emailSubject = HtmlUtil.escape(input.getEmailSubject());
+			String emailBody = HtmlUtil.escape(input.getEmailBody());
+			String textMessage = HtmlUtil.escape(input.getTextMessage());
+			String sendSMS = HtmlUtil.escape(String.valueOf(input.getSendSMS()));
+			String expireDuration = HtmlUtil.escape(String.valueOf(input.getExpireDuration()));
+			String userUrlPattern = HtmlUtil.escape(input.getUserUrlPattern());
+			String guestUrlPattern = HtmlUtil.escape(input.getGuestUrlPattern());
+			String interval = HtmlUtil.escape(input.getInterval());
+			String grouping = HtmlUtil.escape(String.valueOf(input.getGrouping()));
 			
 			Notificationtemplate notificationtemplate = actions.update(user.getUserId(), groupId, notificationType,
 					emailBody, emailSubject, sendEmail, textMessage,
@@ -182,17 +182,17 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			String sendEmail = StringEscapeUtils.escapeHtml4(String.valueOf(input.getSendEmail()));
-			String notificationType = StringEscapeUtils.escapeHtml4(input.getNotificationType());
-			String emailSubject = StringEscapeUtils.escapeHtml4(input.getEmailSubject());
-			String emailBody = StringEscapeUtils.escapeHtml4(input.getEmailBody());
-			String textMessage = StringEscapeUtils.escapeHtml4(input.getTextMessage());
-			String expireDuration = StringEscapeUtils.escapeHtml4(String.valueOf(input.getExpireDuration()));
-			String userUrlPattern = StringEscapeUtils.escapeHtml4(input.getUserUrlPattern());
-			String guestUrlPattern = StringEscapeUtils.escapeHtml4(input.getGuestUrlPattern());
-			String interval = StringEscapeUtils.escapeHtml4(input.getInterval());
-			String grouping = StringEscapeUtils.escapeHtml4(String.valueOf(input.getGrouping()));
-			String textSMS = StringEscapeUtils.escapeHtml4(input.getTextSMS());
+			String sendEmail = HtmlUtil.escape(String.valueOf(input.getSendEmail()));
+			String notificationType = HtmlUtil.escape(input.getNotificationType());
+			String emailSubject = HtmlUtil.escape(input.getEmailSubject());
+			String emailBody = HtmlUtil.escape(input.getEmailBody());
+			String textMessage = HtmlUtil.escape(input.getTextMessage());
+			String expireDuration = HtmlUtil.escape(String.valueOf(input.getExpireDuration()));
+			String userUrlPattern = HtmlUtil.escape(input.getUserUrlPattern());
+			String guestUrlPattern = HtmlUtil.escape(input.getGuestUrlPattern());
+			String interval = HtmlUtil.escape(input.getInterval());
+			String grouping = HtmlUtil.escape(String.valueOf(input.getGrouping()));
+			String textSMS = HtmlUtil.escape(input.getTextSMS());
 			
 			Notificationtemplate notificationtemplate = actions.create(user.getUserId(), groupId, notificationType,
 					emailBody, emailSubject, sendEmail, textMessage,

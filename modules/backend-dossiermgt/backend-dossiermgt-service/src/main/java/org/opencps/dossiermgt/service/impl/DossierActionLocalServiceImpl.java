@@ -48,6 +48,7 @@ import java.util.List;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -563,6 +564,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		dossierActionPersistence.update(object);
 
 		return object;
+		
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);

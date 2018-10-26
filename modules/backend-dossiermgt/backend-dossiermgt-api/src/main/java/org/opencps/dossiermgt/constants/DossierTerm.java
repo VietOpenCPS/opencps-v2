@@ -47,6 +47,7 @@ public class DossierTerm {
 	public static final String RELEASE_DATE_TIMESTAMP = "releaseDateTimestamp";
 	public static final String FINISH_DATE = "finishDate";
 	public static final String FINISH_DATE_TIMESTAMP = "finishDateTimestamp";
+	public static final String FINISH_DATE_LUCENE = "finishDateLucene";
 	public static final String CANCELLING_DATE = "cancellingDate";
 	public static final String CANCELLING_DATE_TIMESTAMP = "cancellingDateTimestamp";
 	public static final String CORRECTING_DATE = "correctingDate";
@@ -124,8 +125,11 @@ public class DossierTerm {
 	public static final int ORIGINALITY_MOTCUA = 3;
 		
 	public static final String POSTAL_SERVICE_CODE = "postalServiceCode";
+	public static final String POSTAL_SERVICE_NAME = "postalServiceName";
 	public static final String POSTAL_DISTRICT_CODE = "postalDistrictCode";
+	public static final String POSTAL_DISTRICT_NAME = "postalDistrictName";
 	public static final String POSTAL_WARD_CODE = "postalWardCode";
+	public static final String POSTAL_WARD_NAME = "postalWardName";
 	
 	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
 	public static final String DOSSIER_STATUS_NEW = "new";
@@ -152,6 +156,12 @@ public class DossierTerm {
 	public static final String DELEGATE_NAME = "delegateName";
 	public static final String DELEGATE_EMAIL = "delegateEmail";
 	public static final String DELEGATE_TELNO = "delegateTelNo";
+	public static final String DELEGATE_CITYCODE = "delegateCityCode";
+	public static final String DELEGATE_CITYNAME = "delegateCityName";
+	public static final String DELEGATE_DISTRICTCODE = "delegateDistrictCode";
+	public static final String DELEGATE_DISTRICTNAME = "delegateDistrictName";
+	public static final String DELEGATE_WARDCODE = "delegateWardCode";
+	public static final String DELEGATE_WARDNAME = "delegateWardName";
 	
 	public static final String DOSSIER_MARKS = "dossierMarks";
 	public static final String REGISTER_BOOK_CODE = "registerBookCode";
@@ -189,4 +199,10 @@ public class DossierTerm {
 	
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 	public static final String DOSSIER_NAME = "dossierName";
+	public static final String ORIGIN_DOSSIER_NO = "originDossierNo";
+	//
+	public static final String FROM_FINISH_DATE = "fromFinishDate";
+	public static final String TO_FINISH_DATE = "toFinishDate";
+	public static final String FROM_RECEIVE_NOTDONE_DATE = "fromReceiveNotDoneDate";
+	public static final String TO_RECEIVE_NOTDONE_DATE = "toReceiveNotDoneDate";
 }

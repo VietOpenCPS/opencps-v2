@@ -1,5 +1,16 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -8,10 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.HolidayManagement;
-import org.opencps.api.controller.util.HolidayUtils;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.HolidayUtils;
 import org.opencps.api.holiday.model.DataSearchModel;
 import org.opencps.api.holiday.model.HolidayInputModel;
 import org.opencps.api.holiday.model.HolidayModel;
@@ -21,16 +31,6 @@ import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.model.Holiday;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class HolidayManagementImpl implements HolidayManagement {
 
@@ -115,7 +115,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String description = HtmlUtil.escape(input.getDescription());
 			
 			Holiday holiday = actions.create(user.getUserId(), groupId, input.getHolidayDate(), description,
 					serviceContext);
@@ -138,7 +138,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			String description = StringEscapeUtils.escapeHtml4(input.getDescription());
+			String description = HtmlUtil.escape(input.getDescription());
 			Holiday holiday = actions.update(user.getUserId(), groupId, day, input.getHolidayDate(), description,
 					serviceContext);
 

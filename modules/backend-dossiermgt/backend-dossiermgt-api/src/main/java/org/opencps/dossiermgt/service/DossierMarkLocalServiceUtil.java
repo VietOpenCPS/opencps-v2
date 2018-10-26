@@ -66,7 +66,7 @@ public class DossierMarkLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.DossierMark adminProcessData(
-		JSONObject objectData) {
+		com.liferay.portal.kernel.json.JSONObject objectData) {
 		return getService().adminProcessData(objectData);
 	}
 

@@ -2022,6 +2022,185 @@ public class DossierActionUtil {
 	}
 
 	/**
+	* Returns all the dossier actions where dossierId = &#63; and actionCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @return the matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_CODE(long dossierId,
+		String actionCode) {
+		return getPersistence().findByDID_CODE(dossierId, actionCode);
+	}
+
+	/**
+	* Returns a range of all the dossier actions where dossierId = &#63; and actionCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @return the range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_CODE(long dossierId,
+		String actionCode, int start, int end) {
+		return getPersistence().findByDID_CODE(dossierId, actionCode, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and actionCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_CODE(long dossierId,
+		String actionCode, int start, int end,
+		OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence()
+				   .findByDID_CODE(dossierId, actionCode, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and actionCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_CODE(long dossierId,
+		String actionCode, int start, int end,
+		OrderByComparator<DossierAction> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_CODE(dossierId, actionCode, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and actionCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public static DossierAction findByDID_CODE_First(long dossierId,
+		String actionCode, OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence()
+				   .findByDID_CODE_First(dossierId, actionCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and actionCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public static DossierAction fetchByDID_CODE_First(long dossierId,
+		String actionCode, OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_CODE_First(dossierId, actionCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and actionCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public static DossierAction findByDID_CODE_Last(long dossierId,
+		String actionCode, OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence()
+				   .findByDID_CODE_Last(dossierId, actionCode, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and actionCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public static DossierAction fetchByDID_CODE_Last(long dossierId,
+		String actionCode, OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_CODE_Last(dossierId, actionCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the dossier actions before and after the current dossier action in the ordered set where dossierId = &#63; and actionCode = &#63;.
+	*
+	* @param dossierActionId the primary key of the current dossier action
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier action
+	* @throws NoSuchDossierActionException if a dossier action with the primary key could not be found
+	*/
+	public static DossierAction[] findByDID_CODE_PrevAndNext(
+		long dossierActionId, long dossierId, String actionCode,
+		OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence()
+				   .findByDID_CODE_PrevAndNext(dossierActionId, dossierId,
+			actionCode, orderByComparator);
+	}
+
+	/**
+	* Removes all the dossier actions where dossierId = &#63; and actionCode = &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	*/
+	public static void removeByDID_CODE(long dossierId, String actionCode) {
+		getPersistence().removeByDID_CODE(dossierId, actionCode);
+	}
+
+	/**
+	* Returns the number of dossier actions where dossierId = &#63; and actionCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param actionCode the action code
+	* @return the number of matching dossier actions
+	*/
+	public static int countByDID_CODE(long dossierId, String actionCode) {
+		return getPersistence().countByDID_CODE(dossierId, actionCode);
+	}
+
+	/**
 	* Caches the dossier action in the entity cache if it is enabled.
 	*
 	* @param dossierAction the dossier action

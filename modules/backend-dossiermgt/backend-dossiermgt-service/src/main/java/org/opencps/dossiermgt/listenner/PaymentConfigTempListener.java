@@ -25,15 +25,15 @@ public class PaymentConfigTempListener extends BaseModelListener<PaymentConfig> 
 	public void onBeforeCreate(PaymentConfig model) throws ModelListenerException {
 //		try {
 //
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setGovAgencyName(StringEscapeUtils.escapeHtml4(model.getGovAgencyName()));
-//			model.setGovAgencyTaxNo(StringEscapeUtils.escapeHtml4(model.getGovAgencyTaxNo()));
-//			model.setInvoiceTemplateNo(StringEscapeUtils.escapeHtml4(model.getInvoiceTemplateNo()));
-//			model.setInvoiceIssueNo(StringEscapeUtils.escapeHtml4(model.getInvoiceIssueNo()));
-//			model.setInvoiceLastNo(StringEscapeUtils.escapeHtml4(model.getInvoiceLastNo()));
-//			model.setInvoiceForm(StringEscapeUtils.escapeHtml4(model.getInvoiceForm()));
-//			model.setBankInfo(StringEscapeUtils.escapeHtml4(model.getBankInfo()));
-//			model.setEpaymentConfig(StringEscapeUtils.escapeHtml4(model.getEpaymentConfig()));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setGovAgencyName(HtmlUtil.escape(model.getGovAgencyName()));
+//			model.setGovAgencyTaxNo(HtmlUtil.escape(model.getGovAgencyTaxNo()));
+//			model.setInvoiceTemplateNo(HtmlUtil.escape(model.getInvoiceTemplateNo()));
+//			model.setInvoiceIssueNo(HtmlUtil.escape(model.getInvoiceIssueNo()));
+//			model.setInvoiceLastNo(HtmlUtil.escape(model.getInvoiceLastNo()));
+//			model.setInvoiceForm(HtmlUtil.escape(model.getInvoiceForm()));
+//			model.setBankInfo(HtmlUtil.escape(model.getBankInfo()));
+//			model.setEpaymentConfig(HtmlUtil.escape(model.getEpaymentConfig()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);
@@ -44,15 +44,15 @@ public class PaymentConfigTempListener extends BaseModelListener<PaymentConfig> 
 	public void onBeforeUpdate(PaymentConfig model) throws ModelListenerException {
 //		try {
 //
-//			model.setGovAgencyCode(StringEscapeUtils.escapeHtml4(model.getGovAgencyCode()));
-//			model.setGovAgencyName(StringEscapeUtils.escapeHtml4(model.getGovAgencyName()));
-//			model.setGovAgencyTaxNo(StringEscapeUtils.escapeHtml4(model.getGovAgencyTaxNo()));
-//			model.setInvoiceTemplateNo(StringEscapeUtils.escapeHtml4(model.getInvoiceTemplateNo()));
-//			model.setInvoiceIssueNo(StringEscapeUtils.escapeHtml4(model.getInvoiceIssueNo()));
-//			model.setInvoiceLastNo(StringEscapeUtils.escapeHtml4(model.getInvoiceLastNo()));
-//			model.setInvoiceForm(StringEscapeUtils.escapeHtml4(model.getInvoiceForm()));
-//			model.setBankInfo(StringEscapeUtils.escapeHtml4(model.getBankInfo()));
-//			model.setEpaymentConfig(StringEscapeUtils.escapeHtml4(model.getEpaymentConfig()));
+//			model.setGovAgencyCode(HtmlUtil.escape(model.getGovAgencyCode()));
+//			model.setGovAgencyName(HtmlUtil.escape(model.getGovAgencyName()));
+//			model.setGovAgencyTaxNo(HtmlUtil.escape(model.getGovAgencyTaxNo()));
+//			model.setInvoiceTemplateNo(HtmlUtil.escape(model.getInvoiceTemplateNo()));
+//			model.setInvoiceIssueNo(HtmlUtil.escape(model.getInvoiceIssueNo()));
+//			model.setInvoiceLastNo(HtmlUtil.escape(model.getInvoiceLastNo()));
+//			model.setInvoiceForm(HtmlUtil.escape(model.getInvoiceForm()));
+//			model.setBankInfo(HtmlUtil.escape(model.getBankInfo()));
+//			model.setEpaymentConfig(HtmlUtil.escape(model.getEpaymentConfig()));
 //
 //		} catch (Exception e) {
 //			_log.error(e);

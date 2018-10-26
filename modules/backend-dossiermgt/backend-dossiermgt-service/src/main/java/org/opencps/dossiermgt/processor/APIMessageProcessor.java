@@ -16,8 +16,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
@@ -246,10 +248,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		try {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			_log.info("SONDT SYNC PAYMENT FILE dossierAction =========== " + JSONFactoryUtil.looseSerialize(dossierAction));
+			//_log.info("SONDT SYNC PAYMENT FILE dossierAction =========== " + JSONFactoryUtil.looseSerialize(dossierAction));
 			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
 			_log.info("SONDT SYNC PAYMENT FILE processAction =========== " + JSONFactoryUtil.looseSerialize(processAction));
 			if (processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG)) {
+				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -257,17 +261,31 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setEpaymentProfile(StringPool.BLANK);
 				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(processAction.getPaymentFee());
+				pfiModel.setPaymentAmount(GetterUtil.getLong(processAction.getPaymentFee()));
 				pfiModel.setPaymentFee(processAction.getPaymentFee());
 				pfiModel.setPaymentNote(StringPool.BLANK);
 				pfiModel.setReferenceUid(StringPool.BLANK);
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+				_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 			} else if (processAction != null && (processAction
 					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
+				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+				//_log.info("SONDT SYNC INFORM PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+				String paymentFee = StringPool.BLANK; String paymentNote = StringPool.BLANK;
+				
+				JSONObject paymentObj = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
+				_log.info("SONDT SYNC INFORM Payment object: " + paymentObj);
+				if (paymentObj.has("paymentFee")) {
+					paymentFee = paymentObj.getString("paymentFee");
+				}
+				if (paymentObj.has("paymentNote")) {
+					paymentNote = paymentObj.getString("paymentNote");
+				}
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
 				pfiModel.setApplicantName(dossier.getApplicantName());
@@ -275,20 +293,38 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
 				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(processAction.getPaymentFee());
-				pfiModel.setPaymentFee(processAction.getPaymentFee());
-				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+				pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
+				pfiModel.setPaymentFee(paymentFee);
+				pfiModel.setPaymentNote(paymentNote);
 				pfiModel.setReferenceUid(dossier.getReferenceUid());
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-				
+				pfiModel.setAdvanceAmount(paymentFile.getAdvanceAmount());
+				pfiModel.setServiceAmount(paymentFile.getServiceAmount());
+				pfiModel.setShipAmount(paymentFile.getShipAmount());
+				//_log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 
+			} else if (processAction != null && (processAction
+					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI)) {
+				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+				
+				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+				
+				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+				pfiModel.setEinvoice(paymentFile.getEinvoice());
+				
+				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+				
+				_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 			}
 			if (processAction.getPreCondition().contains("payok")) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+				//_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
 				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
@@ -297,13 +333,14 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
 				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(processAction.getPaymentFee());
+				pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
 				pfiModel.setPaymentFee(processAction.getPaymentFee());
 				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
 				pfiModel.setReferenceUid(dossier.getReferenceUid());
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+				pfiModel.setEinvoice(paymentFile.getEinvoice());
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			}
@@ -389,7 +426,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileTemplateNo(df.getFileTemplateNo());
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
-										
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
 											return false;
@@ -622,12 +658,16 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		}
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-		_log.info("SONDT DOSSIER ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
+		//_log.info("SONDT DOSSIER ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
 //		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getDossierActionId());
 		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
-		_log.info("SONDT PROCESS ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(processAction));
-		_log.info("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
+		//_log.info("SONDT PROCESS ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(processAction));
+		//_log.info("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
+		_log.info("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST : " + APIDateTimeUtils.convertDateToString(new Date()));
 		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG == processAction.getRequestPayment())) {
+			_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1: "
+					+ APIDateTimeUtils.convertDateToString(new Date()));
+			
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
@@ -636,17 +676,23 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setEpaymentProfile(StringPool.BLANK);
 			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-			pfiModel.setPaymentAmount(processAction.getPaymentFee());
+			pfiModel.setPaymentAmount(GetterUtil.getLong(processAction.getPaymentFee()));
 			pfiModel.setPaymentFee(processAction.getPaymentFee());
 			pfiModel.setPaymentNote(StringPool.BLANK);
 			pfiModel.setReferenceUid(StringPool.BLANK);
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			
+			_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1 : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI)){
+			_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: "
+					+ APIDateTimeUtils.convertDateToString(new Date()));
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 			
-			_log.info("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
-			_log.info("SONDT DOSSIERSYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+			//_log.info("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
+			//_log.info("SONDT DOSSIERSYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+			
+			//_log.info("SONDT PAYMENTFILE SYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 			
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
@@ -655,19 +701,22 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
 			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-			pfiModel.setPaymentAmount(GetterUtil.getString(processAction.getPaymentFee()));
-			pfiModel.setPaymentFee(processAction.getPaymentFee());
+			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
+			pfiModel.setPaymentFee(paymentFile.getPaymentFee());
 			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
 			pfiModel.setReferenceUid(dossier.getReferenceUid());
 			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			
+			_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		if (processAction.getPreCondition().contains("payok")) {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-			_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+			//_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //			_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
 			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
@@ -676,7 +725,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
 			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-			pfiModel.setPaymentAmount(processAction.getPaymentFee());
+			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
 			pfiModel.setPaymentFee(processAction.getPaymentFee());
 			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
 			pfiModel.setReferenceUid(dossier.getReferenceUid());

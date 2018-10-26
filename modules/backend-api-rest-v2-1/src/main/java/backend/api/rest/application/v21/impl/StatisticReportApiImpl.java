@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
@@ -101,22 +102,30 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 					file = new File(previewResponse);
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
+					String rootFileName = docType.getDocumentName();
+					try {
+						rootFileName = URLEncoder.encode(docType.getDocumentName(), "UTF-8");
+					}
+					catch (Exception e) {
+						
+					}
 					if ("excel".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + docType.getDocumentName()+ ".xls\"");
-//						responseBuilder.header("Content-Type", "application/vnd.ms-excel");			
-						responseBuilder.header("Content-Type", "application/octet-stream");	
+								"attachment; filename=\"" + rootFileName + ".xls\"");
+//						responseBuilder.header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");			
+						responseBuilder.header("Content-Type", "application/vnd.ms-excel");	
+//						responseBuilder.header("Content-Transfer-Encoding", "binary");	
 					}
 					else if ("word".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + docType.getDocumentName()+ ".doc\"");
-//						responseBuilder.header("Content-Type", "application/msword");	
-						responseBuilder.header("Content-Type", "application/octet-stream");
+								"attachment; filename=\"" + rootFileName + ".doc\"");
+						responseBuilder.header("Content-Type", "application/msword");	
+//						responseBuilder.header("Content-Type", "application/octet-stream");
+//						responseBuilder.header("Content-Transfer-Encoding", "binary");
 					}
 					else {
 						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + docType.getDocumentName()+ ".pdf\"");
+								"attachment; filename=\"" + rootFileName + ".pdf\"");
 						responseBuilder.header("Content-Type", "application/pdf");						
 					}
 					return responseBuilder.build();
@@ -287,104 +296,110 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			result.put("year", resultBody.getInt("year"));
 			result.put("month", resultBody.getInt("month"));
 			result.put("govAgencyName", siteName);
-			
+			//Process statistic all agency
+			int flagAgency = resultBody.getInt("flagAgency");
+			result.put("flagAgency", flagAgency);
 			JSONArray statistics = resultBody.getJSONArray("data");
 			JSONArray statisticsData = JSONFactoryUtil.createJSONArray();
-			
 			
 			if (statistics.length() > 0) {
 				result.put("nodata", 1);
 			}
-			
+
 			JSONObject currentObject = null;
-			for (int i = 0; i < statistics.length(); i++) {
-				currentObject = statistics.getJSONObject(i);
-				if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
-//					result.put("total_3", currentObject.getInt("totalCount"));
-//					result.put("total_4", currentObject.getInt("deniedCount"));
-//					result.put("total_5", currentObject.getInt("cancelledCount"));
-//					result.put("total_6", currentObject.getInt("processCount"));
-//					result.put("total_7", currentObject.getInt("remainingCount"));
-//					result.put("total_8", currentObject.getInt("receivedCount"));
-//					result.put("total_9", currentObject.getInt("onegateCount"));
-//					result.put("total_10", currentObject.getInt("onlineCount"));
-//					result.put("total_11", currentObject.getInt("releaseCount"));
-//					result.put("total_12", currentObject.getInt("betimesCount"));
-//					result.put("total_13", currentObject.getInt("ontimeCount"));
-//					result.put("total_14", currentObject.getInt("overtimeCount"));
-//					result.put("total_15", currentObject.getInt("overtimeInside"));
-//					result.put("total_16", currentObject.getInt("overtimeOutside"));
-//					result.put("total_17", currentObject.getInt("ontimePercentage"));
-//					result.put("total_18", currentObject.getInt("doneCount"));
-//					result.put("total_19", currentObject.getInt("releasingCount"));
-//					result.put("total_20", currentObject.getInt("unresolvedCount"));
-//					result.put("total_21", currentObject.getInt("processingCount"));
-//					result.put("total_22", currentObject.getInt("undueCount"));
-//					result.put("total_23", currentObject.getInt("overdueCount"));
-//					result.put("total_24", currentObject.getInt("waitingCount"));
-					result.put("total_3", currentObject.getInt("totalCount"));
-					result.put("total_4", currentObject.getInt("deniedCount"));
-					result.put("total_5", currentObject.getInt("cancelledCount"));
-					result.put("total_6", currentObject.getInt("processCount"));
-					result.put("total_7", currentObject.getInt("remainingCount"));
-					result.put("total_8", currentObject.getInt("receivedCount"));
-					result.put("total_9", currentObject.getInt("onegateCount"));
-					result.put("total_10", currentObject.getInt("onlineCount"));
-					result.put("total_11", currentObject.getInt("releaseCount"));
-					result.put("total_12", currentObject.getInt("betimesCount"));
-					result.put("total_13", currentObject.getInt("ontimeCount"));
-					result.put("total_14", currentObject.getInt("overtimeCount"));
-					result.put("total_15", currentObject.getInt("overtimeInside"));
-					result.put("total_16", currentObject.getInt("overtimeOutside"));
-					result.put("total_17", currentObject.getInt("doneCount"));
-					result.put("total_18", currentObject.getInt("releasingCount"));
-					result.put("total_19", currentObject.getInt("unresolvedCount"));
-					result.put("total_20", currentObject.getInt("processingCount"));
-					result.put("total_21", currentObject.getInt("undueCount"));
-					result.put("total_22", currentObject.getInt("overdueCount"));
-					result.put("total_23", currentObject.getInt("outsideCount"));
-					result.put("total_24", currentObject.getInt("waitingCount"));
-					result.put("total_25", currentObject.getInt("ontimePercentage"));
-	
-				} else if (Validator.isNotNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
-					statisticsData.put(currentObject);
+			if (flagAgency > 0) {
+				for (int i = 0; i < statistics.length(); i++) {
+					currentObject = statistics.getJSONObject(i);
+					if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNull(currentObject.getString("govAgencyName"))) {
+						result.put("total_3", currentObject.getInt("totalCount"));
+						result.put("total_4", currentObject.getInt("deniedCount"));
+						result.put("total_5", currentObject.getInt("cancelledCount"));
+						result.put("total_6", currentObject.getInt("processCount"));
+						result.put("total_7", currentObject.getInt("remainingCount"));
+						result.put("total_8", currentObject.getInt("receivedCount"));
+						result.put("total_9", currentObject.getInt("onegateCount"));
+						result.put("total_10", currentObject.getInt("onlineCount"));
+						result.put("total_11", currentObject.getInt("releaseCount"));
+						result.put("total_12", currentObject.getInt("betimesCount"));
+						result.put("total_13", currentObject.getInt("ontimeCount"));
+						result.put("total_14", currentObject.getInt("overtimeCount"));
+						result.put("total_15", currentObject.getInt("overtimeInside"));
+						result.put("total_16", currentObject.getInt("overtimeOutside"));
+						result.put("total_17", currentObject.getInt("doneCount"));
+						result.put("total_18", currentObject.getInt("releasingCount"));
+						result.put("total_19", currentObject.getInt("unresolvedCount"));
+						result.put("total_20", currentObject.getInt("processingCount"));
+						result.put("total_21", currentObject.getInt("undueCount"));
+						result.put("total_22", currentObject.getInt("overdueCount"));
+						result.put("total_23", currentObject.getInt("outsideCount"));
+						result.put("total_24", currentObject.getInt("waitingCount"));
+						result.put("total_25", currentObject.getInt("ontimePercentage"));
+		
+					} else if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
+						statisticsData.put(currentObject);
+					}
+				}
+			} else {
+				for (int i = 0; i < statistics.length(); i++) {
+					currentObject = statistics.getJSONObject(i);
+					if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
+//						result.put("total_3", currentObject.getInt("totalCount"));
+//						result.put("total_4", currentObject.getInt("deniedCount"));
+//						result.put("total_5", currentObject.getInt("cancelledCount"));
+//						result.put("total_6", currentObject.getInt("processCount"));
+//						result.put("total_7", currentObject.getInt("remainingCount"));
+//						result.put("total_8", currentObject.getInt("receivedCount"));
+//						result.put("total_9", currentObject.getInt("onegateCount"));
+//						result.put("total_10", currentObject.getInt("onlineCount"));
+//						result.put("total_11", currentObject.getInt("releaseCount"));
+//						result.put("total_12", currentObject.getInt("betimesCount"));
+//						result.put("total_13", currentObject.getInt("ontimeCount"));
+//						result.put("total_14", currentObject.getInt("overtimeCount"));
+//						result.put("total_15", currentObject.getInt("overtimeInside"));
+//						result.put("total_16", currentObject.getInt("overtimeOutside"));
+//						result.put("total_17", currentObject.getInt("ontimePercentage"));
+//						result.put("total_18", currentObject.getInt("doneCount"));
+//						result.put("total_19", currentObject.getInt("releasingCount"));
+//						result.put("total_20", currentObject.getInt("unresolvedCount"));
+//						result.put("total_21", currentObject.getInt("processingCount"));
+//						result.put("total_22", currentObject.getInt("undueCount"));
+//						result.put("total_23", currentObject.getInt("overdueCount"));
+//						result.put("total_24", currentObject.getInt("waitingCount"));
+						result.put("total_3", currentObject.getInt("totalCount"));
+						result.put("total_4", currentObject.getInt("deniedCount"));
+						result.put("total_5", currentObject.getInt("cancelledCount"));
+						result.put("total_6", currentObject.getInt("processCount"));
+						result.put("total_7", currentObject.getInt("remainingCount"));
+						result.put("total_8", currentObject.getInt("receivedCount"));
+						result.put("total_9", currentObject.getInt("onegateCount"));
+						result.put("total_10", currentObject.getInt("onlineCount"));
+						result.put("total_11", currentObject.getInt("releaseCount"));
+						result.put("total_12", currentObject.getInt("betimesCount"));
+						result.put("total_13", currentObject.getInt("ontimeCount"));
+						result.put("total_14", currentObject.getInt("overtimeCount"));
+						result.put("total_15", currentObject.getInt("overtimeInside"));
+						result.put("total_16", currentObject.getInt("overtimeOutside"));
+						result.put("total_17", currentObject.getInt("doneCount"));
+						result.put("total_18", currentObject.getInt("releasingCount"));
+						result.put("total_19", currentObject.getInt("unresolvedCount"));
+						result.put("total_20", currentObject.getInt("processingCount"));
+						result.put("total_21", currentObject.getInt("undueCount"));
+						result.put("total_22", currentObject.getInt("overdueCount"));
+						result.put("total_23", currentObject.getInt("outsideCount"));
+						result.put("total_24", currentObject.getInt("waitingCount"));
+						result.put("total_25", currentObject.getInt("ontimePercentage"));
+		
+					} else if (Validator.isNotNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
+						statisticsData.put(currentObject);
+					}
 				}
 			}
-			
 
 			result.put("statistics", statisticsData);
-			
-//			if (Validator.isNotNull(statisticsTotal) && statisticsTotal.length() > 0) {
-//				
-//				JSONObject currentTotal = statisticsTotal.getJSONObject(0);
-//				result.put("total_3", currentTotal.getInt("totalCount"));
-//				result.put("total_4", currentTotal.getInt("deniedCount"));
-//				result.put("total_5", currentTotal.getInt("cancelledCount"));
-//				result.put("total_6", currentTotal.getInt("processCount"));
-//				result.put("total_7", currentTotal.getInt("remainingCount"));
-//				result.put("total_8", currentTotal.getInt("receivedCount"));
-//				result.put("total_9", currentTotal.getInt("onegateCount"));
-//				result.put("total_10", currentTotal.getInt("onlineCount"));
-//				result.put("total_11", currentTotal.getInt("releaseCount"));
-//				result.put("total_12", currentTotal.getInt("betimesCount"));
-//				result.put("total_13", currentTotal.getInt("ontimeCount"));
-//				result.put("total_14", currentTotal.getInt("overtimeCount"));
-//				result.put("total_15", currentTotal.getInt("overtimeInside"));
-//				result.put("total_16", currentTotal.getInt("overtimeOutside"));
-//				result.put("total_17", currentTotal.getInt("ontimePercentage"));
-//				result.put("total_18", currentTotal.getInt("doneCount"));
-//				result.put("total_19", currentTotal.getInt("releasingCount"));
-//				result.put("total_20", currentTotal.getInt("unresolvedCount"));
-//				result.put("total_21", currentTotal.getInt("processingCount"));
-//				result.put("total_22", currentTotal.getInt("undueCount"));
-//				result.put("total_23", currentTotal.getInt("overdueCount"));
-//				result.put("total_24", currentTotal.getInt("waitingCount"));
-//
-//			}
-			
+			_log.info("result: "+result);
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			_log.error(e);
 		}
 		return result;

@@ -168,7 +168,7 @@ public class InvokeREST {
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
-			_log.debug(e);
+			_log.error(e);
 			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 		} catch (IOException e) {
@@ -319,6 +319,95 @@ public class InvokeREST {
 
 		return response;
 	}
-	
+
+	//Process delete dossier
+	public JSONObject callDeleteAPI(long groupId, String httpMethod, String accept, String pathBase, String endPoint,
+			String username, String password, HashMap<String, String> properties, ServiceContext serviceContext) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+
+		HttpURLConnection conn = null;
+
+		BufferedReader br = null;
+
+		try {
+
+			String urlPath = pathBase;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				urlPath = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
+					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				urlPath = pathBase + endPoint;
+			}
+			else {
+				urlPath = pathBase + "/" + endPoint;
+			}
+			URL url = new URL(urlPath);
+
+			conn = (HttpURLConnection) url.openConnection();
+
+			String authString = username + ":" + password;
+
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
+			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+			conn.setRequestMethod(httpMethod);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty("groupId", String.valueOf(groupId));
+
+			if (!properties.isEmpty()) {
+				for (Map.Entry m : properties.entrySet()) {
+					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
+				}
+			}
+
+			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+
+			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
+			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+			_log.debug(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
+		} catch (IOException e) {
+			_log.debug(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
+
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					_log.debug(e);
+					//_log.error(e);
+				}
+			}
+
+		}
+
+		return response;
+	}
 	private Log _log = LogFactoryUtil.getLog(InvokeREST.class.getName());
 }

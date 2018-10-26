@@ -190,7 +190,9 @@
 		<field name="sampleCount" type="long" />
 		<field name="durationUnit" type="int" />
 		<field name="durationCount" type="double" />
-		<field name="dossierName" type="String" />
+		<field name="dossierName" type="String">
+			<hint name="max-length">1000</hint>
+		</field>
 		<field name="originDossierNo" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">

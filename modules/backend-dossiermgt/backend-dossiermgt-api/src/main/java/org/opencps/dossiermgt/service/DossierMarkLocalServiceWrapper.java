@@ -58,7 +58,7 @@ public class DossierMarkLocalServiceWrapper implements DossierMarkLocalService,
 
 	@Override
 	public org.opencps.dossiermgt.model.DossierMark adminProcessData(
-		JSONObject objectData) {
+		com.liferay.portal.kernel.json.JSONObject objectData) {
 		return _dossierMarkLocalService.adminProcessData(objectData);
 	}
 

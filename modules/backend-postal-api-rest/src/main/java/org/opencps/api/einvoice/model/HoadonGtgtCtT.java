@@ -76,7 +76,7 @@ public class HoadonGtgtCtT {
     @XmlElement(required = true)
     protected String thue;
     @XmlElement(required = true)
-    protected String ttoan;
+    protected BigDecimal ttoan;
 	public String getMaVt() {
 		return maVt;
 	}
@@ -125,10 +125,10 @@ public class HoadonGtgtCtT {
 	public void setThue(String thue) {
 		this.thue = thue;
 	}
-	public String getTtoan() {
+	public BigDecimal getTtoan() {
 		return ttoan;
 	}
-	public void setTtoan(String ttoan) {
+	public void setTtoan(BigDecimal ttoan) {
 		this.ttoan = ttoan;
 	}
     

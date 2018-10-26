@@ -91,7 +91,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		_log.info("2");
 		// Get List ProcessStepRole
 		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
-		_log.info("Process step role: " + listProcessStepRole + ", step: " + stepCode);
+//		_log.info("Process step role: " + listProcessStepRole + ", step: " + stepCode);
 		ProcessStepRole processStepRole = null;
 		if (listProcessStepRole.size() != 0) {
 			for (int i = 0; i < listProcessStepRole.size(); i++) {
@@ -108,7 +108,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 //				if (i == 0) {
 					for (User user : users) {
-						_log.info("user in assign process step role: "+user.getUserId());
+//						_log.info("user in assign process step role: "+user.getUserId());
 						updateDossierUser(dossier, processStepRole, user);
 						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId());
 					}
@@ -254,7 +254,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				long userIdAssigned = subUser.getLong("userId");
 				
 				pk.setDossierActionId(dossierAction.getDossierActionId());
-				_log.info("userIdAssign: "+subUser.getLong("userId"));
+//				_log.info("userIdAssign: "+subUser.getLong("userId"));
 				
 				pk.setUserId(subUser.getLong("userId"));
 	
@@ -311,7 +311,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		model.setVisited(visited);
 		model.setDossierId(dossierId);
 		model.setStepCode(stepCode);
-		_log.info("Allow assign user: " + allowAssignUser);
+//		_log.info("Allow assign user: " + allowAssignUser);
 		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
 		
 		org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
@@ -326,7 +326,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setAssigned(assigned);
 			}
 			// Add User
-			_log.info("Add assigned user by step role: " + model);
+//			_log.info("Add assigned user by step role: " + model);
 			if (dau == null) {
 				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
 			}

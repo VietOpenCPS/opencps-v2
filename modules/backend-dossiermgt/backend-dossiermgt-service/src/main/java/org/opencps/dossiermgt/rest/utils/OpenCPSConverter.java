@@ -70,6 +70,14 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DELEGATE_EMAIL, model.getDelegateEmail());
 	    params.put(DossierTerm.DELEGATE_ADDRESS, model.getDelegateAddress());
 	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
+	    params.put(DossierTerm.ORIGIN_DOSSIER_NO, model.getOriginDossierNo());
+	    params.put(DossierTerm.DELEGATE_TELNO, model.getDelegateTelNo());
+	    params.put(DossierTerm.DELEGATE_CITYCODE, model.getCityCode());
+	    params.put(DossierTerm.DELEGATE_CITYNAME, model.getCityName());
+	    params.put(DossierTerm.DELEGATE_DISTRICTCODE, model.getDistrictCode());
+	    params.put(DossierTerm.DELEGATE_DISTRICTNAME, model.getDistrictName());
+	    params.put(DossierTerm.DELEGATE_WARDCODE, model.getWardCode());
+	    params.put(DossierTerm.DELEGATE_WARDNAME, model.getWardName());
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
@@ -86,14 +94,26 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getPostalServiceCode())) {
 	    	params.put(DossierTerm.POSTAL_SERVICE_CODE, model.getPostalServiceCode());	    	
 	    }
+	    if (Validator.isNotNull(model.getPostalServiceName())) {
+	    	params.put(DossierTerm.POSTAL_SERVICE_NAME, model.getPostalServiceName());	    	
+	    }
 	    if (Validator.isNotNull(model.getPostalCityCode())) {
 	    	params.put(DossierTerm.POSTAL_CITY_CODE, model.getPostalCityCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalCityName())) {
+	    	params.put(DossierTerm.POSTAL_CITY_NAME, model.getPostalCityName());	    		    	
 	    }
 	    if (Validator.isNotNull(model.getPostalDistrictCode())) {
 	    	params.put(DossierTerm.POSTAL_DISTRICT_CODE, model.getPostalDistrictCode());	    		    	
 	    }
+	    if (Validator.isNotNull(model.getPostalDistrictName())) {
+	    	params.put(DossierTerm.POSTAL_DISTRICT_NAME, model.getPostalDistrictName());	    		    	
+	    }
 	    if (Validator.isNotNull(model.getPostalWardCode())) {
 	    	params.put(DossierTerm.POSTAL_WARD_CODE, model.getPostalWardCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalWardName())) {
+	    	params.put(DossierTerm.POSTAL_WARD_NAME, model.getPostalWardName());	    		    	
 	    }
 	    if (Validator.isNotNull(model.getPostalTelNo())) {
 	    	params.put(DossierTerm.POSTAL_TEL_NO, model.getPostalTelNo());	    		    		    	
@@ -150,6 +170,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DOSSIER_SUB_STATUS, model.getDossierSubStatus());
 	    params.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, model.getDossierSubStatusText());
 	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
+	    params.put(DossierTerm.DOSSIER_ACTION_ID, model.getDossierActionId() != null ? model.getDossierActionId(): 0);
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
@@ -483,6 +504,12 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_SUB_STATUS_TEXT)) {
 			model.setDossierSubStatusText(jsonObj.getString(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
 		}
+		if (jsonObj.has(DossierTerm.DOSSIER_NAME)) {
+			model.setDossierName(jsonObj.getString(DossierTerm.DOSSIER_NAME));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_ACTION_ID)) {
+			model.setDossierActionId(jsonObj.getLong(DossierTerm.DOSSIER_ACTION_ID));
+		}
 
 		return model;
 	}	
@@ -594,6 +621,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_NAME)) {
 			model.setDossierName(jsonObj.getString(DossierTerm.DOSSIER_NAME));
 		}
+		if (jsonObj.has(DossierTerm.DOSSIER_ACTION_ID)) {
+			model.setDossierActionId(jsonObj.getInt(DossierTerm.DOSSIER_ACTION_ID));
+		}
 
 		return model;
 	}	
@@ -639,6 +669,8 @@ public class OpenCPSConverter {
 		model.setPostalServiceCode(dossier.getPostalServiceCode());
 		model.setPostalTelNo(dossier.getPostalTelNo());
 		model.setPostalWardCode(dossier.getPostalWardCode());
+		model.setOriginDossierNo(dossier.getOriginDossierNo());
+		model.setDossierName(dossier.getDossierName());
 		
 		return model;
 	}
@@ -669,7 +701,7 @@ public class OpenCPSConverter {
 	
 	public static HashMap<String, String> convertDossierFileHttpParams(DossierFileModel model) {
 		HashMap<String, String> params = new HashMap<>();
-		params.put(DossierFileTerm.REFERENCE_UID, StringPool.BLANK);
+		params.put(DossierFileTerm.REFERENCE_UID, model.getReferenceUid());
 		params.put(DossierFileTerm.MODIFIED_DATE, model.getModifiedDate());
 		params.put(DossierFileTerm.DOSSIER_PART_NO, model.getDossierPartNo());
 		params.put(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
@@ -709,7 +741,7 @@ public class OpenCPSConverter {
 	    	params.put(PaymentFileTerm.PAYMENT_FEE, model.getPaymentFee());
 	    }
 	    if (Validator.isNotNull(model.getPaymentAmount())) {
-	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, GetterUtil.getLong(model.getPaymentAmount()));
+	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, model.getPaymentAmount());
 	    }
 	    if (Validator.isNotNull(model.getPaymentNote())) {
 	    	params.put(PaymentFileTerm.PAYMENT_NOTE, model.getPaymentNote());
@@ -731,6 +763,21 @@ public class OpenCPSConverter {
 	    }
 	    if (Validator.isNotNull(model.getConfirmFileEntryId())) {
 	    	params.put(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID, GetterUtil.getLong(model.getConfirmFileEntryId()));
+	    }
+	    if (Validator.isNotNull(model.getPaymentStatus())) {
+	    	params.put(PaymentFileTerm.PAYMENT_STATUS, model.getPaymentStatus());
+	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.EINVOICE, model.getEinvoice());
+	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.ADVANCE_AMOUNT, GetterUtil.getLong(model.getAdvanceAmount()));
+	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.SERVICE_AMOUNT, GetterUtil.getLong(model.getServiceAmount()));
+	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.SHIP_AMOUNT, GetterUtil.getLong(model.getShipAmount()));
 	    }
 	    
 	    return params;
@@ -760,7 +807,7 @@ public class OpenCPSConverter {
 			result.setPaymentFee(jsonObj.getString(PaymentFileTerm.PAYMENT_FEE));
 		}
 		if (jsonObj.has(PaymentFileTerm.PAYMENT_AMOUNT)) {
-			result.setPaymentAmount(jsonObj.getString(PaymentFileTerm.PAYMENT_AMOUNT));
+			result.setPaymentAmount(jsonObj.getLong(PaymentFileTerm.PAYMENT_AMOUNT));
 		}
 		if (jsonObj.has(PaymentFileTerm.PAYMENT_NOTE)) {
 			result.setPaymentNote(jsonObj.getString(PaymentFileTerm.PAYMENT_NOTE));

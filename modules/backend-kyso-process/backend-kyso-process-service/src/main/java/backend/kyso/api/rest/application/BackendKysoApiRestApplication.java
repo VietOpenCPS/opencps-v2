@@ -2,6 +2,7 @@ package backend.kyso.api.rest.application;
 
 import java.net.HttpURLConnection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -21,6 +22,7 @@ import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.kyso.action.DigitalSignatureActions;
 import org.opencps.kyso.action.impl.DigitalSignatureActionsImpl;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -33,17 +35,23 @@ import io.swagger.annotations.ApiOperation;
 /**
  * @author GIAHUY
  */
-@Component(immediate = true, service = Application.class)
+@Component(
+property = { 
+	    JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/rest/v2/signature", 
+	    JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.restv2signature"
+},
+service = Application.class)
 public class BackendKysoApiRestApplication extends Application {
 
 	private static final Log _log = LogFactoryUtil.getLog(BackendKysoApiRestApplication.class.getName());
 
 	public Set<Object> getSingletons() {
-//		Set<Object> singletons = new HashSet<Object>();
-//		// add REST endpoints (resources)
+		Set<Object> singletons = new HashSet<Object>();
+		// add REST endpoints (resources)
 //		singletons.add(new DigitalSignatureManagementImpl());
-//		return singletons;
-		return Collections.<Object>singleton(this);
+		singletons.add(this);
+		return singletons;
+//		return Collections.<Object>singleton(this);
 	}
 
 	@POST

@@ -718,14 +718,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	public PaymentFile updatePaymentFileCustom(PaymentFile oldpaymentFile) {
 		try {
 			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(oldpaymentFile.getPaymentFileId());
-
+			
 			paymentFile.setEinvoice(oldpaymentFile.getEinvoice());
-
+			
 			return paymentFilePersistence.update(paymentFile);
 		} catch (NoSuchPaymentFileException e) {
 			_log.error(e);
 		}
-
+		
 		return null;
 	}
 
@@ -799,5 +799,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFilePersistence.update(object);
 
 		return object;
+
 	}
 }

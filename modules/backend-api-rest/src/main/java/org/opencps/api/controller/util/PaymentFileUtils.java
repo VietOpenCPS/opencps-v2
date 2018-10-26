@@ -186,10 +186,10 @@ public class PaymentFileUtils {
 				? dossier.getApplicantIdNo() : StringPool.BLANK);
 
 		model.setPaymentFee(paymentFile.getPaymentFee());
-//		model.setAdvanceAmount(paymentFile.getAdvanceAmount());
-//		model.setFeeAmount(paymentFile.getFeeAmount());
-//		model.setServiceAmount(paymentFile.getServiceAmount());
-//		model.setShipAmount(paymentFile.getShipAmount());
+		model.setAdvanceAmount(paymentFile.getAdvanceAmount());
+		model.setFeeAmount(paymentFile.getFeeAmount());
+		model.setServiceAmount(paymentFile.getServiceAmount());
+		model.setShipAmount(paymentFile.getShipAmount());
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
 		model.setPaymentNote(paymentFile.getPaymentNote());
 		model.setBankInfo(paymentFile.getBankInfo());
