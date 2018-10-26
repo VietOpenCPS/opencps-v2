@@ -435,7 +435,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 		String actionCode = input.getActionCode();
 		String actionUser = input.getActionUser();
 		String actionNote = input.getActionNote();
-		long assignUserId = Long.valueOf(input.getAssignUserId());
+		String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
+		long assignUserId = Long.valueOf(strAssignUserId);
 		String subUsers = input.getSubUsers();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		boolean signOk = true;
