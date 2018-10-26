@@ -214,10 +214,10 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			String strIdArr = input.getStrIdArr();
-//			_log.info("array Id: "+strIdArr);
+			_log.info("array Id: "+strIdArr);
 
 			String[] idSplit = strIdArr.split(StringPool.SEMICOLON);
-//			_log.info("idSplit Id: "+idSplit);
+			_log.info("idSplit Id: "+idSplit);
 
 			JSONObject hashComputed = JSONFactoryUtil.createJSONObject();
 			JSONObject results = null;
@@ -241,9 +241,10 @@ public class SignatureManagementImpl implements SignatureManagement{
 						_log.info("fileEntryId: "+fileEntryId);
 
 						try {
+							_log.info("START CALL HASHCOMPUTE: ");
 							JSONObject newHashComputedResult = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
 									input.getPostStepCode(), serviceContext);
-//							_log.info("Obj: " + newHashComputedResult.toJSONString());
+							_log.info("Obj: " + newHashComputedResult);
 							String newHashComputedStr = newHashComputedResult.getString("message");
 							
 							JSONObject newHashComputed = JSONFactoryUtil.createJSONObject(newHashComputedStr);

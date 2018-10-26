@@ -275,6 +275,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
 			String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
+
 			//_log.info("fromFinishDate: "+fromFinishDate);
 			//_log.info("toFinishDate: "+toFinishDate);
 
@@ -3205,6 +3206,8 @@ public class DossierManagementImpl implements DossierManagement {
 			dossier.setDossierStatusText(input.getDossierStatusText());
 			dossier.setDossierSubStatus(input.getDossierSubStatus());
 			dossier.setDossierSubStatusText(input.getDossierSubStatusText());
+			dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
+			//Update dossier
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();

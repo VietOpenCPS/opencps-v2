@@ -124,10 +124,48 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 
+			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
+			DossierFileActions action = new DossierFileActionsImpl();
+
 			_log.info("dossier:"+dossier);
 			_log.info("dossier:"+dossier.getOriginDossierId());
 			if (Validator.isNull(referenceUid)) {
 				referenceUid = UUID.randomUUID().toString();
+			}
+			else {
+				DossierFile oldFile = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossier.getDossierId(), referenceUid);
+				if (oldFile == null) {
+					_log.info("__Start add file at:" + new Date());
+					DossierFile dossierFile =  null;
+					
+					if (dataHandler != null && dataHandler.getInputStream() != null) {
+						dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+								dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
+								dataHandler.getInputStream(), fileType, isSync, serviceContext);
+					} else {
+						dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+								dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
+								serviceContext);
+					}
+					
+					_log.info("__End add file at:" + new Date());
+					
+					if(Validator.isNotNull(formData)) {
+						dossierFile.setFormData(formData);
+					}
+					
+					_log.info("__Start update dossier file at:" + new Date());
+		
+					DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+		
+					_log.info("__End update dossier file at:" + new Date());
+		
+					DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+					
+					_log.info("__End bind to dossierFile" + new Date());
+		
+					return Response.status(200).entity(result).build();					
+				}
 			}
 
 			if (dossier.getOriginDossierId() != 0) {
@@ -162,9 +200,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				}
 			}
 			
-			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
-
-			DossierFileActions action = new DossierFileActionsImpl();
 			DossierFile lastDossierFile = DossierFileLocalServiceUtil.findLastDossierFile(dossier.getDossierId(), fileTemplateNo, dossierTemplateNo);
 			if (lastDossierFile != null && modifiedDate != null) {
 				if (lastDossierFile.getModifiedDate() != null && lastDossierFile.getModifiedDate().getTime() < modifiedDate) {

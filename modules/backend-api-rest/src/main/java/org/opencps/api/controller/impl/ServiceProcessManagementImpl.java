@@ -140,7 +140,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String generateDossierNo = HtmlUtil.escape(String.valueOf(input.getGenerateDossierNo()));
 			String dossierNoPattern = HtmlUtil.escape(input.getDossierNoPattern());
 			String generateDueDate = HtmlUtil.escape(String.valueOf(input.getGenerateDueDate()));
-			String dueDatePattern = HtmlUtil.escape(input.getDueDatePattern());
+//			String dueDatePattern = HtmlUtil.escape(input.getDueDatePattern());
+			String dueDatePattern = input.getDueDatePattern();
 			String generatePassword = HtmlUtil.escape(String.valueOf(input.getGeneratePassword()));
 			String directNotification = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
 			String serverNo = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
@@ -214,7 +215,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String generateDossierNo = HtmlUtil.escape(String.valueOf(input.getGenerateDossierNo()));
 			String dossierNoPattern = HtmlUtil.escape(input.getDossierNoPattern());
 			String generateDueDate = HtmlUtil.escape(String.valueOf(input.getGenerateDueDate()));
-			String dueDatePattern = HtmlUtil.escape(input.getDueDatePattern());
+//			String dueDatePattern = HtmlUtil.escape(input.getDueDatePattern());
+			String dueDatePattern = input.getDueDatePattern();
 			String generatePassword = HtmlUtil.escape(String.valueOf(input.getGeneratePassword()));
 			String directNotification = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
 			String serverNo = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));

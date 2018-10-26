@@ -268,7 +268,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			// DossierAction fields
 			long dossierObjectActionId = object.getDossierActionId();
-			if (dossierObjectActionId != 0) {
+			int originality = object.getOriginality();
+			if (dossierObjectActionId != 0 && originality > 0) {
 
 				DossierAction dossierAction = DossierActionLocalServiceUtil
 						.fetchDossierAction(dossierObjectActionId);

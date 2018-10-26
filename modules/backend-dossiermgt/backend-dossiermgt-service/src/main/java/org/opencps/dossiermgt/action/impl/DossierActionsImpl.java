@@ -738,6 +738,9 @@ public class DossierActionsImpl implements DossierActions {
 																dossierPart.getPartNo(), fileTemplateNo,
 																dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 																StringPool.BLANK, String.valueOf(false), serviceContext);
+														dossierFile.setFormScript(dossierPart.getFormScript());
+														dossierFile.setEForm(dossierPart.getEForm());
+														dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 														_log.info("dossierFile create:" + dossierFile.getDossierPartNo()
 																+ "Timer create :" + new Date());
 													}
@@ -858,6 +861,9 @@ public class DossierActionsImpl implements DossierActions {
 																					dossierPart.getPartNo(), fileTemplateNo,
 																					dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 																					StringPool.BLANK, String.valueOf(false), serviceContext);
+																			dossierFile.setFormScript(dossierPart.getFormScript());
+																			dossierFile.setEForm(dossierPart.getEForm());
+																			dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);																			
 //																			_log.info("dossierFile create:" + dossierFile.getDossierPartNo()
 //																					+ "Timer create :" + new Date());
 																		}
@@ -903,6 +909,9 @@ public class DossierActionsImpl implements DossierActions {
 																							dossierPart.getPartNo(), fileTemplateNo,
 																							dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 																							StringPool.BLANK, String.valueOf(false), serviceContext);
+																					dossierFile.setFormScript(dossierPart.getFormScript());
+																					dossierFile.setEForm(dossierPart.getEForm());
+																					dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);												
 //																					_log.info("dossierFile create:" + dossierFile.getDossierPartNo()
 //																							+ "Timer create :" + new Date());
 																				}
@@ -966,6 +975,9 @@ public class DossierActionsImpl implements DossierActions {
 															dossierPart.getPartNo(), fileTemplateNo,
 															dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 															StringPool.BLANK, String.valueOf(false), serviceContext);
+													dossierFile.setFormScript(dossierPart.getFormScript());
+													dossierFile.setEForm(dossierPart.getEForm());
+													dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);													
 													// SimpleDate
 //													_log.info("dossierFile create:" + dossierFile.getDossierPartNo()
 //															+ "Timer create :" + new Date());
@@ -1102,6 +1114,9 @@ public class DossierActionsImpl implements DossierActions {
 																					dossierPart.getPartNo(), fileTemplateNo,
 																					dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 																					StringPool.BLANK, String.valueOf(false), serviceContext);
+																			dossierFile.setFormScript(dossierPart.getFormScript());
+																			dossierFile.setEForm(dossierPart.getEForm());
+																			dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);																			
 //																			_log.info("dossierFile create:" + dossierFile.getDossierPartNo()
 //																					+ "Timer create :" + new Date());
 																		}
@@ -1166,6 +1181,9 @@ public class DossierActionsImpl implements DossierActions {
 																												dossierPart.getPartNo(), fileTemplateNo,
 																												dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 																												StringPool.BLANK, String.valueOf(false), serviceContext);
+																									dossierFile.setFormScript(dossierPart.getFormScript());
+																									dossierFile.setEForm(dossierPart.getEForm());
+																									dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);																									
 //																									_log.info("dossierFile create:" + dossierFile.getDossierPartNo()
 //																												+ "Timer create :" + new Date());
 																										
@@ -1928,6 +1946,9 @@ public class DossierActionsImpl implements DossierActions {
 																						StringPool.BLANK,
 																						String.valueOf(false),
 																						serviceContext);
+																				dossierFile.setFormScript(dossierPart.getFormScript());
+																				dossierFile.setEForm(dossierPart.getEForm());
+																				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
 																				docFileReferenceUid = dossierFile
 																						.getReferenceUid();
@@ -2069,6 +2090,9 @@ public class DossierActionsImpl implements DossierActions {
 				dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
 						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 						StringPool.BLANK, String.valueOf(false), serviceContext);
+				dossierFile.setFormScript(dossierPart.getFormScript());
+				dossierFile.setEForm(dossierPart.getEForm());
+				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);				
 			}
 
 			docFileReferenceUid = dossierFile.getReferenceUid();
@@ -2109,6 +2133,9 @@ public class DossierActionsImpl implements DossierActions {
 				dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
 						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
 						null, StringPool.BLANK, String.valueOf(false), serviceContext);
+				dossierFile.setFormScript(dossierPart.getFormScript());
+				dossierFile.setEForm(dossierPart.getEForm());
+				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);				
 //				_log.info("dossierFile create:" + dossierFile.getDossierPartNo() + "Timer create :" + new Date());
 			}
 
@@ -2156,6 +2183,9 @@ public class DossierActionsImpl implements DossierActions {
 							dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
 							null, StringPool.BLANK, String.valueOf(false), serviceContext);
 //					_log.info("dossierFile create:" + dossierFile.getDossierPartNo() + "Timer create :" + new Date());
+					dossierFile.setFormScript(formScript);
+					dossierFile.setEForm(eForm);
+					dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 				}
 
 				docFileReferenceUid = dossierFile.getReferenceUid();
@@ -2451,6 +2481,9 @@ public class DossierActionsImpl implements DossierActions {
 										dossierPart.getPartNo(), fileTemplateNo,
 										dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 										StringPool.BLANK, String.valueOf(false), context);
+								dossierFile.setFormScript(dossierPart.getFormScript());
+								dossierFile.setEForm(dossierPart.getEForm());
+								dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);								
 								docFileReferenceUid = dossierFile.getReferenceUid();
 								actions.updateDossierFileFormData(groupId, dossier.getDossierId(), docFileReferenceUid, formData, context);																													
 							}
@@ -2491,6 +2524,9 @@ public class DossierActionsImpl implements DossierActions {
 																	dossierPart.getPartNo(), fileTemplateNo,
 																	dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 																	StringPool.BLANK, String.valueOf(false), context);
+												dossierFile.setFormScript(dossierPart.getFormScript());
+												dossierFile.setEForm(dossierPart.getEForm());
+												dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);												
 											}
 		
 //											docFileReferenceUid = dossierFile.getReferenceUid();
@@ -2571,6 +2607,9 @@ public class DossierActionsImpl implements DossierActions {
 																	dossierPart.getPartNo(), fileTemplateNo,
 																	dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 																	StringPool.BLANK, String.valueOf(false), context);
+															dossierFile.setFormScript(dossierPart.getFormScript());
+															dossierFile.setEForm(dossierPart.getEForm());
+															dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);															
 														}
 	
 														docFileReferenceUid = dossierFile.getReferenceUid();			
@@ -4657,6 +4696,9 @@ public class DossierActionsImpl implements DossierActions {
 				dossierFile = actions.addDossierFile(groupId, dossierId, PortalUUIDUtil.generate(), dossierTemplateNo,
 						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L, null,
 						StringPool.BLANK, String.valueOf(false), context);
+				dossierFile.setEForm(dossierPart.getEForm());
+				dossierFile.setFormScript(dossierPart.getFormScript());
+				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			}
 
 			DossierFileActions actions = new DossierFileActionsImpl();

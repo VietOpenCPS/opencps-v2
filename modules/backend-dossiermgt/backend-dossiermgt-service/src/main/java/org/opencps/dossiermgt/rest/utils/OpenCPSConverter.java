@@ -170,6 +170,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DOSSIER_SUB_STATUS, model.getDossierSubStatus());
 	    params.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, model.getDossierSubStatusText());
 	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
+	    params.put(DossierTerm.DOSSIER_ACTION_ID, model.getDossierActionId() != null ? model.getDossierActionId(): 0);
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
@@ -503,6 +504,12 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_SUB_STATUS_TEXT)) {
 			model.setDossierSubStatusText(jsonObj.getString(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
 		}
+		if (jsonObj.has(DossierTerm.DOSSIER_NAME)) {
+			model.setDossierName(jsonObj.getString(DossierTerm.DOSSIER_NAME));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_ACTION_ID)) {
+			model.setDossierActionId(jsonObj.getLong(DossierTerm.DOSSIER_ACTION_ID));
+		}
 
 		return model;
 	}	
@@ -614,6 +621,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_NAME)) {
 			model.setDossierName(jsonObj.getString(DossierTerm.DOSSIER_NAME));
 		}
+		if (jsonObj.has(DossierTerm.DOSSIER_ACTION_ID)) {
+			model.setDossierActionId(jsonObj.getInt(DossierTerm.DOSSIER_ACTION_ID));
+		}
 
 		return model;
 	}	
@@ -691,7 +701,7 @@ public class OpenCPSConverter {
 	
 	public static HashMap<String, String> convertDossierFileHttpParams(DossierFileModel model) {
 		HashMap<String, String> params = new HashMap<>();
-		params.put(DossierFileTerm.REFERENCE_UID, StringPool.BLANK);
+		params.put(DossierFileTerm.REFERENCE_UID, model.getReferenceUid());
 		params.put(DossierFileTerm.MODIFIED_DATE, model.getModifiedDate());
 		params.put(DossierFileTerm.DOSSIER_PART_NO, model.getDossierPartNo());
 		params.put(DossierFileTerm.DISPLAY_NAME, model.getDisplayName());
