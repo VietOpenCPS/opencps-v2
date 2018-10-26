@@ -63,6 +63,16 @@ public class MenuConfigLocalServiceUtil {
 		return getService().addMenuConfig(menuConfig);
 	}
 
+	public static org.opencps.dossiermgt.model.MenuConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.MenuConfig adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new menu config with the primary key. Does not add the menu config to the database.
 	*

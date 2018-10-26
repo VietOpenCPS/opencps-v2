@@ -45,6 +45,17 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dossierLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier adminProcessDelete(Long id) {
+		return _dossierLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier assignToProcess(
 		long dossierId, String dossierNote, String submissionNote,
 		String briefNote, String dossierNo, long folderId,
@@ -287,6 +298,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier getByDossierNo(long groupId,
+		String dossierNo) {
+		return _dossierLocalService.getByDossierNo(groupId, dossierNo);
 	}
 
 	@Override

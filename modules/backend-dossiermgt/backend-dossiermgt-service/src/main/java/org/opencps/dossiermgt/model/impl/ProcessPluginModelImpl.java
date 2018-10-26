@@ -106,7 +106,7 @@ public class ProcessPluginModelImpl extends BaseModelImpl<ProcessPlugin>
 		TABLE_COLUMNS_MAP.put("autoRun", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_process_plugin (uuid_ VARCHAR(75) null,processPluginId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,stepCode VARCHAR(75) null,serviceProcessId LONG,pluginName VARCHAR(75) null,pluginType INTEGER,sequenceNo VARCHAR(75) null,pluginForm STRING null,sampleData STRING null,autoRun BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_process_plugin (uuid_ VARCHAR(75) null,processPluginId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,stepCode VARCHAR(75) null,serviceProcessId LONG,pluginName VARCHAR(75) null,pluginType INTEGER,sequenceNo VARCHAR(75) null,pluginForm VARCHAR(75) null,sampleData VARCHAR(75) null,autoRun BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_process_plugin";
 	public static final String ORDER_BY_JPQL = " ORDER BY processPlugin.processPluginId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_process_plugin.processPluginId ASC";

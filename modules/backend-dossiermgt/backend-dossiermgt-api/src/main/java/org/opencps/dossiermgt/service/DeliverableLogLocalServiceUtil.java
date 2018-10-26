@@ -54,6 +54,16 @@ public class DeliverableLogLocalServiceUtil {
 		return getService().addDeliverableLog(deliverableLog);
 	}
 
+	public static org.opencps.dossiermgt.model.DeliverableLog adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DeliverableLog adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new deliverable log with the primary key. Does not add the deliverable log to the database.
 	*

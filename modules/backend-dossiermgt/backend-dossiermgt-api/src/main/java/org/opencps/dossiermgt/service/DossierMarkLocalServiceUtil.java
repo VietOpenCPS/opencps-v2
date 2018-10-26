@@ -65,6 +65,16 @@ public class DossierMarkLocalServiceUtil {
 			fileCheck, fileComment, serviceContext);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierMark adminProcessData(
+		JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierMark adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new dossier mark with the primary key. Does not add the dossier mark to the database.
 	*

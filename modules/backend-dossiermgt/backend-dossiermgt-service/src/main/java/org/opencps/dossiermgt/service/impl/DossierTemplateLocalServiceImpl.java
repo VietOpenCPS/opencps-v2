@@ -14,8 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -75,8 +77,8 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil} to access
-	 * the dossier template local service.
+	 * org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil} to access the
+	 * dossier template local service.
 	 */
 
 	public DossierTemplate getByTemplateNo(long groupId, String templateNo) throws PortalException {
@@ -90,7 +92,6 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		DossierTemplate dossierTemplate = null;
 
 		Date now = new Date();
-
 
 		User userAction = userLocalService.getUser(context.getUserId());
 		validateUpdate(groupId, dossierTemplateId, templateName, templateNo, description);
@@ -121,9 +122,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 			if (Validator.isNotNull(templateName))
 				dossierTemplate.setTemplateName(templateName);
-			
-			List<DossierPart> parts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplate.getTemplateNo()); 
-			
+
+			List<DossierPart> parts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplate.getTemplateNo());
+
 			for (DossierPart part : parts) {
 				part.setTemplateNo(templateNo);
 				dossierPartPersistence.update(part);
@@ -131,8 +132,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 			if (Validator.isNotNull(templateNo))
 				dossierTemplate.setTemplateNo(templateNo);
-			
-			
+
 			if (Validator.isNotNull(description))
 				dossierTemplate.setDescription(description);
 
@@ -285,16 +285,16 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		}
 
 		DossierTemplate dossierTemplate = null;
-		
+
 		if (dossierTemplateId != 0) {
 			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NAME(groupId, templateName);
-			
+
 			if (Validator.isNotNull(dossierTemplate) && dossierTemplate.getPrimaryKey() != dossierTemplateId) {
 				throw new DuplicateTemplateNameException("DuplicateTemplateNameException");
 			}
-			
+
 			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
-			
+
 			if (Validator.isNotNull(dossierTemplate) && dossierTemplate.getPrimaryKey() != dossierTemplateId) {
 				throw new DuplicateTemplateNoException("DuplicateTemplateNoException");
 			}
@@ -313,11 +313,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 			}
 		}
 
-
-
 	}
 
-	//LamTV_ Process output DossierTemplate to DB
+	// LamTV_ Process output DossierTemplate to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierTemplate updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
 			String description, ServiceContext serviceContext) throws PortalException {
@@ -369,6 +367,56 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 		// TODO add more logic in here
 
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DossierTemplate adminProcessDelete(Long id) {
+
+		DossierTemplate object = dossierTemplatePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dossierTemplatePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierTemplate adminProcessData(JSONObject objectData) {
+
+		DossierTemplate object = null;
+
+		if (objectData.getLong("dossierTemplateId") > 0) {
+
+			object = dossierTemplatePersistence.fetchByPrimaryKey(objectData.getLong("dossierTemplateId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DossierTemplate.class.getName());
+
+			object = dossierTemplatePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setTemplateName(objectData.getString("templateName"));
+		object.setDescription(objectData.getString("description"));
+		object.setTemplateNo(objectData.getString("templateNo"));
+
+		dossierTemplatePersistence.update(object);
+
+		return object;
 	}
 
 	public static final String CLASS_NAME = DossierTemplate.class.getName();

@@ -67,6 +67,16 @@ public class DeliverableTypeLocalServiceUtil {
 			mappingData, serviceContext);
 	}
 
+	public static org.opencps.dossiermgt.model.DeliverableType adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DeliverableType adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new deliverable type with the primary key. Does not add the deliverable type to the database.
 	*

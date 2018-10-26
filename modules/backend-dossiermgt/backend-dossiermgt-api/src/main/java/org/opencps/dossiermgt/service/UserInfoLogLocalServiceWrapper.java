@@ -53,6 +53,17 @@ public class UserInfoLogLocalServiceWrapper implements UserInfoLogLocalService,
 		return _userInfoLogLocalService.addUserInfoLog(userInfoLog);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.UserInfoLog adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _userInfoLogLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.UserInfoLog adminProcessDelete(Long id) {
+		return _userInfoLogLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new user info log with the primary key. Does not add the user info log to the database.
 	*

@@ -46,6 +46,17 @@ public class RegistrationLocalServiceWrapper implements RegistrationLocalService
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Registration adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _registrationLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Registration adminProcessDelete(Long id) {
+		return _registrationLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucense(long userId,
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,

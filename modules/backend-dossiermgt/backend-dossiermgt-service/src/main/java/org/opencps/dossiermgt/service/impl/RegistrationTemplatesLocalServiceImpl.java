@@ -14,7 +14,15 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -22,11 +30,7 @@ import java.util.List;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.base.RegistrationTemplatesLocalServiceBaseImpl;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the registration templates local service.
@@ -49,25 +53,27 @@ import com.liferay.portal.kernel.util.Validator;
  */
 @ProviderType
 public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplatesLocalServiceBaseImpl {
-	
-	public List<RegistrationTemplates> getRegistrationTemplatesbyGroupId(long groupId){
-		
+
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGroupId(long groupId) {
+
 		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGROUPID(groupId);
-		
+
 		return lstRegistrationTemplates;
 	}
-	
-	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(long groupId, String formNo){
-		
-		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(groupId, formNo);
-		
+
+	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(long groupId, String formNo) {
+
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByFNO(groupId,
+				formNo);
+
 		return lstRegistrationTemplates;
 	}
-	
-	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(long groupId, String govAgencyCode){
-		
-		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(groupId, govAgencyCode);
-		
+
+	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(long groupId, String govAgencyCode) {
+
+		List<RegistrationTemplates> lstRegistrationTemplates = registrationTemplatesPersistence.findByGOVCODE(groupId,
+				govAgencyCode);
+
 		return lstRegistrationTemplates;
 	}
 
@@ -162,8 +168,9 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 
 		return registrationTemplates;
 	}
-	
-	public RegistrationTemplates getRegistrationTemplatebyId(long groupId, String registrationTemplateId) throws PortalException {
+
+	public RegistrationTemplates getRegistrationTemplatebyId(long groupId, String registrationTemplateId)
+			throws PortalException {
 		// TODO remove RegistrationTemplates
 
 		RegistrationTemplates registrationTemplates = null;
@@ -178,8 +185,9 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 		return registrationTemplates;
 
 	}
-	
-	public RegistrationTemplates removeRegistrationTemplate(long groupId, String registrationTemplateId) throws PortalException {
+
+	public RegistrationTemplates removeRegistrationTemplate(long groupId, String registrationTemplateId)
+			throws PortalException {
 		// TODO remove RegistrationTemplates
 
 		validateRemoveRegistrationTemplate(groupId, registrationTemplateId);
@@ -192,14 +200,15 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 		}
 		return registrationTemplatesPersistence.remove(registrationTemplate);
 	}
-	
+
 	public RegistrationTemplates updateFormScript(long groupId, long registrationTemplateId, String formScript,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// TODO Update FormScript of RegistrationTemplates
 
 		Date now = new Date();
 
-		RegistrationTemplates registrationTemplates = registrationTemplatesPersistence.findByPrimaryKey(registrationTemplateId);
+		RegistrationTemplates registrationTemplates = registrationTemplatesPersistence
+				.findByPrimaryKey(registrationTemplateId);
 
 		registrationTemplates.setFormScript(formScript);
 		registrationTemplates.setModifiedDate(now);
@@ -213,7 +222,8 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 
 		Date now = new Date();
 
-		RegistrationTemplates registrationTemplates = registrationTemplatesPersistence.findByPrimaryKey(registrationTemplatesId);
+		RegistrationTemplates registrationTemplates = registrationTemplatesPersistence
+				.findByPrimaryKey(registrationTemplatesId);
 
 		registrationTemplates.setFormReport(formReport);
 		registrationTemplates.setModifiedDate(now);
@@ -227,7 +237,8 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 
 		Date now = new Date();
 
-		RegistrationTemplates registrationTemplates = registrationTemplatesPersistence.findByPrimaryKey(registrationTemplatesId);
+		RegistrationTemplates registrationTemplates = registrationTemplatesPersistence
+				.findByPrimaryKey(registrationTemplatesId);
 
 		registrationTemplates.setSampleData(sampleData);
 		registrationTemplates.setModifiedDate(now);
@@ -237,15 +248,69 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 
 	private void validateRemoveRegistrationTemplate(long groupId, String registrationTemplateId) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public RegistrationTemplates getRegTempbyFormNoGovCode(long groupId, String formNo, String govAgencyCode) {
 		return registrationTemplatesPersistence.fetchByGOVCODE_FORMNO(groupId, formNo, govAgencyCode);
 	}
-	
+
 	public RegistrationTemplates getRegTempbyRegId(long groupId, long registrationTemplatesId) {
 		return registrationTemplatesPersistence.fetchByG_REGID(groupId, registrationTemplatesId);
 	}
-	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public RegistrationTemplates adminProcessDelete(Long id) {
+
+		RegistrationTemplates object = registrationTemplatesPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			registrationTemplatesPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationTemplates adminProcessData(JSONObject objectData) {
+
+		RegistrationTemplates object = null;
+
+		if (objectData.getLong("registrationTemplatesId") > 0) {
+
+			object = registrationTemplatesPersistence.fetchByPrimaryKey(objectData.getLong("registrationTemplatesId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(RegistrationTemplates.class.getName());
+
+			object = registrationTemplatesPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+		object.setGovAgencyName(objectData.getString("govAgencyName"));
+		object.setFormNo(objectData.getString("formNo"));
+		object.setFormName(objectData.getString("formName"));
+		object.setMultiple(objectData.getBoolean("multiple"));
+		object.setFormScript(objectData.getString("formScript"));
+		object.setFormReport(objectData.getString("formReport"));
+		object.setSampleData(objectData.getString("sampleData"));
+
+		registrationTemplatesPersistence.update(object);
+
+		return object;
+	}
+
 }

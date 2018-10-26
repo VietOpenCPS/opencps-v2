@@ -113,7 +113,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			String collectionNameEN, String description, ServiceContext serviceContext)
 			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException,
 			NoSuchUserException {
-
+		
+		
 		DictCollection dictColl = dictCollectionPersistence.fetchByF_dictCollectionCode(collectionCode, groupId);
 
 		if (Validator.isNotNull(dictColl)) {

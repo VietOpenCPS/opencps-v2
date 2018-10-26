@@ -59,6 +59,17 @@ public class ActionConfigLocalServiceWrapper implements ActionConfigLocalService
 			notificationType, documentType, mappingAction);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.ActionConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _actionConfigLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ActionConfig adminProcessDelete(Long id) {
+		return _actionConfigLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new action config with the primary key. Does not add the action config to the database.
 	*

@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -100,12 +101,12 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(userId);
-		
+
 		referenceUid = UUID.randomUUID().toString();
 
 		long registrationFormId = counterLocalService.increment(RegistrationForm.class.getName());
 
-		_log.info("registrationFormId: "+registrationFormId);
+		_log.info("registrationFormId: " + registrationFormId);
 		RegistrationForm object = registrationFormPersistence.create(registrationFormId);
 
 		/// Add audit fields
@@ -129,7 +130,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return registrationFormPersistence.update(object);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationForm updateRegistrationForm(long groupId, long registrationId, String referenceUid,
 			String formNo, String formName, String formData, String formScript, String formReport, long fileEntryId,
@@ -157,15 +158,15 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return registrationFormPersistence.update(object);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
-	public boolean deleteRegistrationForm(String referenceUid)
-			throws PortalException {
+	public boolean deleteRegistrationForm(String referenceUid) throws PortalException {
 
 		boolean flag = false;
 
-//		RegistrationForm object = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId,
-//				referenceUid);
+		// RegistrationForm object =
+		// registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId,
+		// referenceUid);
 		List<RegistrationForm> regFormList = registrationFormPersistence.findByF_REFID(referenceUid);
 		if (regFormList != null && regFormList.size() > 0) {
 			for (RegistrationForm regForm : regFormList) {
@@ -177,7 +178,6 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				registrationFormPersistence.update(regForm);
 			}
 		}
-		
 
 		return flag;
 	}
@@ -195,70 +195,68 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return lstRegistrationForm;
 	}
-	
-	public RegistrationForm findFormbyRegidRefid(long groupId, long registrationId, String referenceUid){
+
+	public RegistrationForm findFormbyRegidRefid(long groupId, long registrationId, String referenceUid) {
 		return registrationFormPersistence.fetchByG_REGID_REFID(groupId, registrationId, referenceUid);
 	}
-	
-	//binhth
+
+	// binhth
 	public List<RegistrationForm> findByG_REGID_ISNEW(long registrationId, boolean isNew) {
 		return registrationFormPersistence.findByG_REGID_ISNEW(registrationId, isNew);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
-    public RegistrationForm registrationFormSync(
-        long groupId, String uuidRegistration, String referenceUid,
-        String formNo, String formName, String formData, String formScript,
-        String formReport, Boolean removed, ServiceContext serviceContext)
-			throws PortalException, SystemException {
+	public RegistrationForm registrationFormSync(long groupId, String uuidRegistration, String referenceUid,
+			String formNo, String formName, String formData, String formScript, String formReport, Boolean removed,
+			ServiceContext serviceContext) throws PortalException, SystemException {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 		User userAction = userLocalService.getUser(userId);
 
-		
 		Registration registration = registrationPersistence.fetchByUUID_G(uuidRegistration, groupId);
-		RegistrationForm registrationForm = registrationFormPersistence.fetchByG_REGID_REFID(groupId, registration.getRegistrationId(), referenceUid);
-		
+		RegistrationForm registrationForm = registrationFormPersistence.fetchByG_REGID_REFID(groupId,
+				registration.getRegistrationId(), referenceUid);
+
 		if (Validator.isNotNull(registrationForm)) {
 			registrationForm.setModifiedDate(now);
-			
+
 			registrationForm.setFormNo(formNo);
 			registrationForm.setFormName(formName);
 			registrationForm.setFormData(formData);
 			registrationForm.setFormScript(formScript);
 			registrationForm.setFormReport(formReport);
-			
-			if(removed != null) {
-			    registrationForm.setRemoved(removed.booleanValue());
+
+			if (removed != null) {
+				registrationForm.setRemoved(removed.booleanValue());
 			}
-			
-			if(Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
-                Message message = new Message();
-    
-                JSONObject msgData = JSONFactoryUtil.createJSONObject();
-                msgData.put("className", RegistrationForm.class.getName());
-                msgData.put("classPK", registrationForm.getPrimaryKey());
-                msgData.put("jrxmlTemplate", formReport);
-                msgData.put("formData", formData);
-                msgData.put("userId", serviceContext.getUserId());
-    
-                message.put("msgToEngine", msgData);
-                MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
-            }
-			
+
+			if (Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
+				Message message = new Message();
+
+				JSONObject msgData = JSONFactoryUtil.createJSONObject();
+				msgData.put("className", RegistrationForm.class.getName());
+				msgData.put("classPK", registrationForm.getPrimaryKey());
+				msgData.put("jrxmlTemplate", formReport);
+				msgData.put("formData", formData);
+				msgData.put("userId", serviceContext.getUserId());
+
+				message.put("msgToEngine", msgData);
+				MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+			}
+
 			registrationForm = registrationFormPersistence.update(registrationForm);
 		} else {
-			
+
 			long registrationFormId = counterLocalService.increment(RegistrationForm.class.getName());
-			
+
 			registrationForm = registrationFormPersistence.create(registrationFormId);
-			
+
 			registrationForm.setGroupId(groupId);
 			registrationForm.setCreateDate(now);
 			registrationForm.setModifiedDate(now);
 			registrationForm.setUserId(userAction.getUserId());
-			
+
 			registrationForm.setRegistrationId(registration.getRegistrationId());
 			registrationForm.setReferenceUid(referenceUid);
 			registrationForm.setFormNo(formNo);
@@ -266,38 +264,38 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			registrationForm.setFormData(formData);
 			registrationForm.setFormScript(formScript);
 			registrationForm.setFormReport(formReport);
-			
-			if(removed != null) {
-                registrationForm.setRemoved(removed.booleanValue());
-            }
-			
-			if(Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
-                Message message = new Message();
-    
-                JSONObject msgData = JSONFactoryUtil.createJSONObject();
-                msgData.put("className", RegistrationForm.class.getName());
-                msgData.put("classPK", registrationForm.getPrimaryKey());
-                msgData.put("jrxmlTemplate", formReport);
-                msgData.put("formData", formData);
-                msgData.put("userId", serviceContext.getUserId());
-    
-                message.put("msgToEngine", msgData);
-                MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
-            }
-			
+
+			if (removed != null) {
+				registrationForm.setRemoved(removed.booleanValue());
+			}
+
+			if (Validator.isNotNull(formData) && Validator.isNotNull(formReport)) {
+				Message message = new Message();
+
+				JSONObject msgData = JSONFactoryUtil.createJSONObject();
+				msgData.put("className", RegistrationForm.class.getName());
+				msgData.put("classPK", registrationForm.getPrimaryKey());
+				msgData.put("jrxmlTemplate", formReport);
+				msgData.put("formData", formData);
+				msgData.put("userId", serviceContext.getUserId());
+
+				message.put("msgToEngine", msgData);
+				MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+			}
+
 			registrationForm = registrationFormPersistence.update(registrationForm);
-			
+
 		}
 
 		return registrationForm;
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationForm updateFormData(long groupId, long registrationId, String referenceUid, String formData,
-			ServiceContext serviceContext) 
-		throws PortalException, SystemException {
+			ServiceContext serviceContext) throws PortalException, SystemException {
 
-		RegistrationForm registrationForm = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId, referenceUid);
+		RegistrationForm registrationForm = registrationFormPersistence.findByG_REGID_REFID(groupId, registrationId,
+				referenceUid);
 
 		String jrxmlTemplate = registrationForm.getFormReport();
 
@@ -318,7 +316,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return registrationFormPersistence.update(registrationForm);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationForm updateIsNew(long groupId, long registrationId, String referenceUid, boolean isNew,
 			ServiceContext serviceContext) throws PortalException, SystemException {
@@ -343,9 +341,9 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		String pattern = String.valueOf(params.get("pattern"));
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
-		//Query elastic
+		// Query elastic
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
-			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+			LuceneQuery(pattern, paramValues, paramTypes, searchContext);
 		} else {
 			this.setOccurs(null);
 			this.setParams(null);
@@ -377,7 +375,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		// Add params query
 		int count = 0;
-		
+
 		if (_subQueries != null && _subQueries.size() > 0) {
 			for (BooleanQuery boolQuery : _subQueries) {
 				if (count == 0) {
@@ -413,7 +411,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		}
 		String referenceUid = GetterUtil.getString(params.get(RegistrationFormTerm.REFERENCE_UID));
 		String registrationId = String.valueOf(params.get(RegistrationFormTerm.REGISTRATION_ID));
-//		_log.info("registrationId: "+registrationId);
+		// _log.info("registrationId: "+registrationId);
 
 		if (Validator.isNotNull(referenceUid)) {
 			MultiMatchQuery query = new MultiMatchQuery(referenceUid);
@@ -430,16 +428,16 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		String formNo = GetterUtil.getString(params.get(RegistrationFormTerm.FORM_NO));
-//		_log.info("formNo: "+formNo);
+		// _log.info("formNo: "+formNo);
 		if (Validator.isNotNull(formNo)) {
-            MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
+			MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
 
-            query.addFields(RegistrationFormTerm.FORM_NO);
+			query.addFields(RegistrationFormTerm.FORM_NO);
 
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -451,7 +449,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		_log.info("groupId:"+groupId);
+		_log.info("groupId:" + groupId);
 
 		Indexer<RegistrationForm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(RegistrationForm.class);
 
@@ -459,9 +457,9 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		String pattern = String.valueOf(params.get("pattern"));
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
-		//Query elastic
+		// Query elastic
 		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
-			LuceneQuery( pattern, paramValues, paramTypes, searchContext);
+			LuceneQuery(pattern, paramValues, paramTypes, searchContext);
 		} else {
 			this.setOccurs(null);
 			this.setParams(null);
@@ -490,7 +488,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		// Add params query
 		int count = 0;
-		_log.info("_subQueries"+_subQueries);
+		_log.info("_subQueries" + _subQueries);
 		if (_subQueries != null && _subQueries.size() > 0) {
 			for (BooleanQuery boolQuery : _subQueries) {
 				if (count == 0) {
@@ -542,15 +540,15 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		String formNo = GetterUtil.getString(params.get(RegistrationFormTerm.FORM_NO));
-        if (Validator.isNotNull(formNo)) {
-            MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
+		if (Validator.isNotNull(formNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(formNo.toLowerCase());
 
-            query.addFields(RegistrationFormTerm.FORM_NO);
+			query.addFields(RegistrationFormTerm.FORM_NO);
 
-            booleanQuery.add(query, BooleanClauseOccur.MUST);
-        }
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -559,7 +557,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 	public static final String CLASS_NAME = RegistrationForm.class.getName();
 
-	//18
+	// 18
 	public List<RegistrationForm> getFormDataByFormNo(long groupId, long registrationId, String formNo) {
 
 		return registrationFormPersistence.findByG_REGID_FORMNO(groupId, registrationId, formNo);
@@ -586,19 +584,16 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				eliminateParenthesis += -1;
 			}
 
-			if (eliminateParenthesis == 1
-					&& c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+			if (eliminateParenthesis == 1 && c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
 				startIndex = i;
 			}
 
-			if (eliminateParenthesis == 0
-					&& c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+			if (eliminateParenthesis == 0 && c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
 				endIndex = i;
 
 			}
 
-			if (!splitIndexs.contains(startIndex + StringPool.DASH + endIndex)
-					&& startIndex < endIndex) {
+			if (!splitIndexs.contains(startIndex + StringPool.DASH + endIndex) && startIndex < endIndex) {
 
 				splitIndexs.add(startIndex + StringPool.DASH + endIndex);
 			}
@@ -613,8 +608,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 	 * @return
 	 * @throws ParseException
 	 */
-	public static List<String> getSubQueries(String pattern,
-			List<String> subQueries) throws ParseException {
+	public static List<String> getSubQueries(String pattern, List<String> subQueries) throws ParseException {
 
 		pattern = validPattern(pattern);
 
@@ -630,12 +624,9 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			} else {
 				for (String splitIndex : splitIndexs) {
 
-					int[] splitIndexsTemp = StringUtil.split(splitIndex,
-							StringPool.DASH, 0);
-					String subQuery = pattern.substring(splitIndexsTemp[0],
-							splitIndexsTemp[1] + 1);
-					if (subQuery.contains("[and]") || subQuery.contains("[or]")
-							|| subQuery.contains("[not]")) {
+					int[] splitIndexsTemp = StringUtil.split(splitIndex, StringPool.DASH, 0);
+					String subQuery = pattern.substring(splitIndexsTemp[0], splitIndexsTemp[1] + 1);
+					if (subQuery.contains("[and]") || subQuery.contains("[or]") || subQuery.contains("[not]")) {
 						getSubQueries(subQuery, subQueries);
 					} else {
 						subQuery = subQuery.replaceAll("\\(", StringPool.BLANK);
@@ -652,8 +643,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return subQueries;
 	}
-	
-	
+
 	/**
 	 * @param pattern
 	 * @return
@@ -673,13 +663,11 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				eliminateParenthesis += -1;
 			}
 
-			if (eliminateParenthesis == 1
-					&& c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+			if (eliminateParenthesis == 1 && c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
 				startParenthesisIndex = i;
 			}
 
-			if (eliminateParenthesis == 0
-					&& c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+			if (eliminateParenthesis == 0 && c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
 				endParenthesisIndex = i;
 			}
 
@@ -689,10 +677,8 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 			return StringPool.BLANK;
 		}
 
-		if (endParenthesisIndex == pattern.length() - 1
-				&& startParenthesisIndex == 0) {
-			pattern = pattern.substring(startParenthesisIndex + 1,
-					endParenthesisIndex);
+		if (endParenthesisIndex == pattern.length() - 1 && startParenthesisIndex == 0) {
+			pattern = pattern.substring(startParenthesisIndex + 1, endParenthesisIndex);
 
 			pattern = validPattern(pattern);
 
@@ -702,8 +688,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 	}
 
 	/////////////
-	public void LuceneQuery(String pattern, String paramValues, String paramTypes,
-			SearchContext searchContext) {
+	public void LuceneQuery(String pattern, String paramValues, String paramTypes, SearchContext searchContext) {
 
 		BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
 		List<String> subPatterns = new ArrayList<String>();
@@ -713,16 +698,14 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		List<Object> params = new ArrayList<Object>();
 		List<Class<?>> clazzs = new ArrayList<Class<?>>();
 
-		String[] arrParamValue = Validator.isNotNull(paramValues) ? StringUtil
-				.split(paramValues, StringPool.POUND) : null;
-		String[] arrParamTypes = Validator.isNotNull(paramTypes) ? StringUtil
-				.split(paramTypes) : null;
+		String[] arrParamValue = Validator.isNotNull(paramValues) ? StringUtil.split(paramValues, StringPool.POUND)
+				: null;
+		String[] arrParamTypes = Validator.isNotNull(paramTypes) ? StringUtil.split(paramTypes) : null;
 
-		if (arrParamValue != null && arrParamTypes != null
-				&& arrParamTypes.length > 0 && arrParamValue.length > 0
+		if (arrParamValue != null && arrParamTypes != null && arrParamTypes.length > 0 && arrParamValue.length > 0
 				&& arrParamValue.length == arrParamTypes.length) {
 			try {
-//				pattern = LuceneQueryUtil.validPattern(pattern);
+				// pattern = LuceneQueryUtil.validPattern(pattern);
 
 				if (Validator.isNull(pattern)) {
 					throw new Exception();
@@ -731,10 +714,10 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				for (int i = 0; i < arrParamValue.length; i++) {
 					String paramType = arrParamTypes[i].toLowerCase();
 					String strValueArr = StringPool.BLANK;
-//					_log.info("arrParamValue[i]: "+arrParamValue[i]);
+					// _log.info("arrParamValue[i]: "+arrParamValue[i]);
 					if (Validator.isNotNull(arrParamValue[i])) {
 						strValueArr = SpecialCharacterUtils.splitSpecial(arrParamValue[i].toString().toLowerCase());
-//						_log.info("strValueArr: "+strValueArr);
+						// _log.info("strValueArr: "+strValueArr);
 					} else {
 						strValueArr = arrParamValue[i];
 					}
@@ -770,8 +753,8 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 						clazz = boolean.class;
 						break;
 					case "date":
-//						param = DateTimeUtil
-//								.convertStringToDate(strValueArr);
+						// param = DateTimeUtil
+						// .convertStringToDate(strValueArr);
 						clazz = Date.class;
 						break;
 					case "string":
@@ -794,7 +777,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 						break;
 					}
 
-					_log.info("param: "+param);
+					_log.info("param: " + param);
 					params.add(param);
 					clazzs.add(clazz);
 				}
@@ -802,11 +785,9 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				getSubQueries(pattern, subPatterns);
 
 				if (subPatterns != null && !subPatterns.isEmpty()) {
-					subQueries = createBooleanQueries(
-							subPatterns, params, paramNames, searchContext);
+					subQueries = createBooleanQueries(subPatterns, params, paramNames, searchContext);
 
-					occurs = getBooleanClauseOccurs(pattern,
-							subPatterns);
+					occurs = getBooleanClauseOccurs(pattern, subPatterns);
 
 					if (subQueries.size() - 1 != occurs.size()) {
 						throw new Exception();
@@ -828,7 +809,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				try {
 					throw new Exception();
 				} catch (Exception e1) {
-//					e1.printStackTrace();
+					// e1.printStackTrace();
 					_log.error(e1);
 				}
 			} finally {
@@ -843,10 +824,11 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				this.setParamTypes(clazzs);
 			}
 		} else {
-			//TODO
+			// TODO
 		}
 
 	}
+
 	private SearchContext _searchContext;
 	private String _pattern;
 	private BooleanQuery _query;
@@ -928,9 +910,8 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 	public void setOccurs(List<BooleanClauseOccur> occurs) {
 		this._occurs = occurs;
 	}
-	
-	public static List<BooleanClauseOccur> getBooleanClauseOccurs(
-			String pattern, List<String> subQueries) {
+
+	public static List<BooleanClauseOccur> getBooleanClauseOccurs(String pattern, List<String> subQueries) {
 		List<BooleanClauseOccur> booleanClauseOccurs = new ArrayList<BooleanClauseOccur>();
 		pattern = pattern.replaceAll(Pattern.quote("("), StringPool.BLANK);
 
@@ -964,31 +945,22 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		return booleanClauseOccurs;
 	}
-	
-	
-	public static List<BooleanQuery> createBooleanQueries(
-			List<String> subQueries, List<Object> params,
-			List<String> paramNames, SearchContext searchContext)
-			throws ParseException {
+
+	public static List<BooleanQuery> createBooleanQueries(List<String> subQueries, List<Object> params,
+			List<String> paramNames, SearchContext searchContext) throws ParseException {
 		List<BooleanQuery> booleanQueries = new ArrayList<BooleanQuery>();
 		if (subQueries != null) {
 			for (String subQuery : subQueries) {
 				String[] terms = StringUtil.split(subQuery);
 				if (terms != null && terms.length > 0) {
-					BooleanQuery query = BooleanQueryFactoryUtil
-							.create(searchContext);
+					BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
 					for (int t = 0; t < terms.length; t++) {
-						int paramPossition = subQueries.indexOf(subQuery)
-								* terms.length + t;
+						int paramPossition = subQueries.indexOf(subQuery) * terms.length + t;
 						// String term = terms[t].trim().toLowerCase();
 						String term = terms[t].trim();
 						String key = StringPool.BLANK;
 						if (term.contains((StringPool.EQUAL.toLowerCase()))) {
-							key = term
-									.substring(
-											0,
-											term.indexOf(StringPool.EQUAL
-													.toLowerCase())).trim();
+							key = term.substring(0, term.indexOf(StringPool.EQUAL.toLowerCase())).trim();
 							// addExactTerm(query, key,
 							// params.get(paramPossition));
 
@@ -997,35 +969,23 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 							Object tempValue = params.get(paramPossition);
 
 							if (tempValue instanceof Long) {
-								termQuery = TermQueryFactoryUtil.create(
-										searchContext, key, (long) tempValue);
+								termQuery = TermQueryFactoryUtil.create(searchContext, key, (long) tempValue);
 							} else {
-								termQuery = TermQueryFactoryUtil.create(
-										searchContext, key,
-										String.valueOf(tempValue));
+								termQuery = TermQueryFactoryUtil.create(searchContext, key, String.valueOf(tempValue));
 							}
 
 							if (termQuery != null) {
 								query.add(termQuery, BooleanClauseOccur.MUST);
 							}
 						} else if (term.contains(StringPool.LIKE.toLowerCase())) {
-							key = term
-									.substring(
-											0,
-											term.indexOf(StringPool.LIKE
-													.toLowerCase())).trim();
+							key = term.substring(0, term.indexOf(StringPool.LIKE.toLowerCase())).trim();
 
-							query.addTerm(key, params.get(paramPossition)
-									.toString(), true);
+							query.addTerm(key, params.get(paramPossition).toString(), true);
 
-						} else if (term.contains(StringPool.BETWEEN
-								.toLowerCase())) {
-							key = term.substring(
-									0,
-									term.indexOf(StringPool.BETWEEN
-											.toLowerCase())).trim();
-//							query = addRangeTerm(query, key,
-//									params.get(paramPossition));
+						} else if (term.contains(StringPool.BETWEEN.toLowerCase())) {
+							key = term.substring(0, term.indexOf(StringPool.BETWEEN.toLowerCase())).trim();
+							// query = addRangeTerm(query, key,
+							// params.get(paramPossition));
 						}
 
 						if (Validator.isNotNull(key)) {
@@ -1041,9 +1001,64 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		return booleanQueries;
 	}
 
-	//Get Registration using output logic DB
+	// Get Registration using output logic DB
 	public RegistrationForm getByRegIdAndFormNo(long registrationId, String formNo) {
 		return registrationFormPersistence.fetchByREGID_FORMNO(registrationId, formNo);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public RegistrationForm adminProcessDelete(Long id) {
+
+		RegistrationForm object = registrationFormPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			registrationFormPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationForm adminProcessData(JSONObject objectData) {
+
+		RegistrationForm object = null;
+
+		if (objectData.getLong("registrationFormId") > 0) {
+
+			object = registrationFormPersistence.fetchByPrimaryKey(objectData.getLong("registrationFormId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(RegistrationForm.class.getName());
+
+			object = registrationFormPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setRegistrationId(objectData.getLong("registrationId"));
+		object.setReferenceUid(objectData.getString("referenceUid"));
+		object.setFormNo(objectData.getString("formNo"));
+		object.setFormName(objectData.getString("formName"));
+		object.setFormData(objectData.getString("formData"));
+		object.setFormScript(objectData.getString("formScript"));
+		object.setFormReport(objectData.getString("formReport"));
+		object.setIsNew(objectData.getBoolean("isNew"));
+		object.setRemoved(objectData.getBoolean("removed"));
+
+		registrationFormPersistence.update(object);
+
+		return object;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(RegistrationFormLocalServiceImpl.class);

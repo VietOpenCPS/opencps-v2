@@ -82,7 +82,7 @@ public class UserInfoLogModelImpl extends BaseModelImpl<UserInfoLog>
 		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_userinfolog (uuid_ VARCHAR(75) null,userLogId LONG not null primary key,userId LONG,createDate DATE null,payload STRING null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_userinfolog (uuid_ VARCHAR(75) null,userLogId LONG not null primary key,userId LONG,createDate DATE null,payload VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_userinfolog";
 	public static final String ORDER_BY_JPQL = " ORDER BY userInfoLog.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_userinfolog.createDate DESC";

@@ -14,8 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -24,9 +26,11 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
@@ -76,14 +80,12 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 
 		return fileTemplate;
 	}
-	
-	public ServiceFileTemplate addServiceFileTemplate(long serviceInfoId, String fileTemplateNo, String templateName, long fileEntryId,
-			ServiceContext serviceContext) throws PortalException, IOException {
 
+	public ServiceFileTemplate addServiceFileTemplate(long serviceInfoId, String fileTemplateNo, String templateName,
+			long fileEntryId, ServiceContext serviceContext) throws PortalException, IOException {
 
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
-
 
 		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
 
@@ -114,17 +116,16 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 			// sourceFileName, mimeType,
 			// sourceFileName, sourceFileName, sourceFileName,
 			// inputStream, size, serviceContext);
-			
+
 			try {
-				FileEntry fileEntry = dlAppLocalService.addFileEntry(userId, groupId, folderId, sourceFileName, mimeType,
-						sourceFileName, sourceFileName, sourceFileName, inputStream, size, serviceContext);
+				FileEntry fileEntry = dlAppLocalService.addFileEntry(userId, groupId, folderId, sourceFileName,
+						mimeType, sourceFileName, sourceFileName, sourceFileName, inputStream, size, serviceContext);
 
 				fileEntryId = fileEntry.getFileEntryId();
 			} catch (Exception e) {
 				_log.error(e);
 			}
-			
-			
+
 		}
 
 		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
@@ -169,8 +170,8 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public ServiceFileTemplate updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
-			String fileName, long fileEntryId) {
+	public ServiceFileTemplate updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo,
+			String fileTemplateName, String fileName, long fileEntryId) {
 		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
 
 		ServiceFileTemplate object = serviceFileTemplatePersistence.create(fileTemplatePK);

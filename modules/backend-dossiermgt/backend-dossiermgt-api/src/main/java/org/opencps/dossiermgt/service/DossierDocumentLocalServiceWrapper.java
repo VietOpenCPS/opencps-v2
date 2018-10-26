@@ -83,6 +83,18 @@ public class DossierDocumentLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierDocument adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dossierDocumentLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierDocument adminProcessDelete(
+		Long id) {
+		return _dossierDocumentLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countDossierDocumentList(Long dossierId) {
 		return _dossierDocumentLocalService.countDossierDocumentList(dossierId);
 	}

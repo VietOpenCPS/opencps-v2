@@ -46,6 +46,17 @@ public class ProcessStepLocalServiceWrapper implements ProcessStepLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ProcessStep adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _processStepLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ProcessStep adminProcessDelete(Long id) {
+		return _processStepLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

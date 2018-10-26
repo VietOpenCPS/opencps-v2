@@ -98,7 +98,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		TABLE_COLUMNS_MAP.put("fileComment", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossiermark (uuid_ VARCHAR(75) null,dossierMarkId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierPartNo VARCHAR(75) null,fileCheck INTEGER,fileMark INTEGER,fileComment VARCHAR(500) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossiermark (uuid_ VARCHAR(75) null,dossierMarkId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierPartNo VARCHAR(75) null,fileCheck INTEGER,fileMark INTEGER,fileComment VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossiermark";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierMark.dossierMarkId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiermark.dossierMarkId ASC";

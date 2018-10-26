@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -76,6 +77,12 @@ public interface RegistrationTemplatesLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationTemplates addRegistrationTemplates(
 		RegistrationTemplates registrationTemplates);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationTemplates adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public RegistrationTemplates adminProcessDelete(Long id);
 
 	/**
 	* Creates a new registration templates with the primary key. Does not add the registration templates to the database.

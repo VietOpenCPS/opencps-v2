@@ -59,6 +59,18 @@ public class DeliverableTypeLocalServiceWrapper
 			formScript, formReport, mappingData, serviceContext);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DeliverableType adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _deliverableTypeLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DeliverableType adminProcessDelete(
+		Long id) {
+		return _deliverableTypeLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new deliverable type with the primary key. Does not add the deliverable type to the database.
 	*

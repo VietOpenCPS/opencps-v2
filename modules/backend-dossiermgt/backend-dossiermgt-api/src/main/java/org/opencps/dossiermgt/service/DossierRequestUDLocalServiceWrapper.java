@@ -46,6 +46,18 @@ public class DossierRequestUDLocalServiceWrapper
 		return _dossierRequestUDLocalService.addDossierRequestUD(dossierRequestUD);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DossierRequestUD adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dossierRequestUDLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierRequestUD adminProcessDelete(
+		Long id) {
+		return _dossierRequestUDLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new dossier request ud with the primary key. Does not add the dossier request ud to the database.
 	*

@@ -82,12 +82,12 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 			{ "actionNote", Types.VARCHAR },
 			{ "syncType", Types.INTEGER },
 			{ "infoType", Types.INTEGER },
-			{ "payload", Types.CLOB },
+			{ "payload", Types.VARCHAR },
 			{ "serverNo", Types.VARCHAR },
 			{ "state_", Types.INTEGER },
 			{ "retry", Types.INTEGER },
-			{ "messageText", Types.CLOB },
-			{ "acknowlegement", Types.CLOB }
+			{ "messageText", Types.VARCHAR },
+			{ "acknowlegement", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -108,15 +108,15 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 		TABLE_COLUMNS_MAP.put("actionNote", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("syncType", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("infoType", Types.INTEGER);
-		TABLE_COLUMNS_MAP.put("payload", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("serverNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("state_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("retry", Types.INTEGER);
-		TABLE_COLUMNS_MAP.put("messageText", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("acknowlegement", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("messageText", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("acknowlegement", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossiersync (uuid_ VARCHAR(75) null,DossierSyncId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierRefUid VARCHAR(75) null,syncRefUid VARCHAR(75) null,dossierActionId LONG,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,actionUser VARCHAR(75) null,actionNote VARCHAR(500) null,syncType INTEGER,infoType INTEGER,payload TEXT null,serverNo VARCHAR(75) null,state_ INTEGER,retry INTEGER,messageText TEXT null,acknowlegement TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossiersync (uuid_ VARCHAR(75) null,DossierSyncId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierRefUid VARCHAR(75) null,syncRefUid VARCHAR(75) null,dossierActionId LONG,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,actionUser VARCHAR(75) null,actionNote VARCHAR(75) null,syncType INTEGER,infoType INTEGER,payload VARCHAR(75) null,serverNo VARCHAR(75) null,state_ INTEGER,retry INTEGER,messageText VARCHAR(75) null,acknowlegement VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossiersync";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierSync.modifiedDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiersync.modifiedDate DESC";

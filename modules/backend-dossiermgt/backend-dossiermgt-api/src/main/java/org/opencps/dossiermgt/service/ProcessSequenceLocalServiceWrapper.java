@@ -55,6 +55,18 @@ public class ProcessSequenceLocalServiceWrapper
 		return _processSequenceLocalService.addProcessSequence(processSequence);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.ProcessSequence adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _processSequenceLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ProcessSequence adminProcessDelete(
+		Long id) {
+		return _processSequenceLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new process sequence with the primary key. Does not add the process sequence to the database.
 	*

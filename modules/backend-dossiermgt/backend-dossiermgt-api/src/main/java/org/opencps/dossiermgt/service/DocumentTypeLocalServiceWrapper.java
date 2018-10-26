@@ -45,6 +45,17 @@ public class DocumentTypeLocalServiceWrapper implements DocumentTypeLocalService
 		return _documentTypeLocalService.addDocumentType(documentType);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DocumentType adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _documentTypeLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DocumentType adminProcessDelete(Long id) {
+		return _documentTypeLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new document type with the primary key. Does not add the document type to the database.
 	*

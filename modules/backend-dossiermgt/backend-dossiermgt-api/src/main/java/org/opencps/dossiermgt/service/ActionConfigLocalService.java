@@ -82,6 +82,12 @@ public interface ActionConfigLocalService extends BaseLocalService,
 		Boolean rollbackable, String notificationType, String documentType,
 		String mappingAction) throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public ActionConfig adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public ActionConfig adminProcessDelete(Long id);
+
 	/**
 	* Creates a new action config with the primary key. Does not add the action config to the database.
 	*

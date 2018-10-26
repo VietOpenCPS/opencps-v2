@@ -47,6 +47,18 @@ public class ServiceProcessLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ServiceProcess adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _serviceProcessLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ServiceProcess adminProcessDelete(
+		Long id) {
+		return _serviceProcessLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public void cloneServiceProcess(long serviceProcessId, long groupId,
 		String processNo,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)

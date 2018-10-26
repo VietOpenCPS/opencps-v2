@@ -47,6 +47,18 @@ public class ProcessOptionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ProcessOption adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _processOptionLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ProcessOption adminProcessDelete(
+		Long id) {
+		return _processOptionLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

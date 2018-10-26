@@ -14,9 +14,11 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -36,6 +38,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -73,20 +76,16 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.DossierActionLocalServiceUtil} to access
-	 * the dossier action local service.
+	 * org.opencps.dossiermgt.service.DossierActionLocalServiceUtil} to access the
+	 * dossier action local service.
 	 */
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
-			long previousActionId, 
-			String fromStepCode, String fromStepName, String fromSequenceNo,
-			String actionCode, String actionUser, String actionName, String actionNote,
-			int actionOverdue, String syncActionCode, boolean pending, boolean rollbackable, String stepCode,
-			String stepName, 
-			String sequenceNo,
-			Date dueDate, long nextActionId, String payload, String stepInstruction,
-			int state, int eventStatus,
+			long previousActionId, String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode,
+			String actionUser, String actionName, String actionNote, int actionOverdue, String syncActionCode,
+			boolean pending, boolean rollbackable, String stepCode, String stepName, String sequenceNo, Date dueDate,
+			long nextActionId, String payload, String stepInstruction, int state, int eventStatus,
 			ServiceContext context) throws PortalException {
 
 		validateUpdateAction(groupId, dossierActionId, dossierId, serviceProcessId, previousActionId, actionCode,
@@ -157,11 +156,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			try {
 				indexer.reindex(dossier);
 			} catch (SearchException e) {
-//				e.printStackTrace();
+				// e.printStackTrace();
 				_log.error(e);
 			}
-			
-			
+
 		} else {
 
 		}
@@ -170,15 +168,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId,
-			long serviceProcessId, long previousActionId, 
-			String fromStepCode, String fromStepName, String fromSequenceNo,	
-			String actionCode, String actionUser, String actionName, String actionNote, int actionOverdue,
-			String stepCode, String stepName, 
-			String sequenceNo,
-			Date dueDate, long nextActionId, String payload, String stepInstruction,
-			int state, int eventStatus,
-			ServiceContext context) throws PortalException {
+	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
+			long previousActionId, String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode,
+			String actionUser, String actionName, String actionNote, int actionOverdue, String stepCode,
+			String stepName, String sequenceNo, Date dueDate, long nextActionId, String payload, String stepInstruction,
+			int state, int eventStatus, ServiceContext context) throws PortalException {
 
 		DossierAction object = null;
 		long userId = 0l;
@@ -241,11 +235,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			try {
 				indexer.reindex(dossier);
 			} catch (SearchException e) {
-//				e.printStackTrace();
+				// e.printStackTrace();
 				_log.error(e);
 			}
-			
-			
+
 		} else {
 
 		}
@@ -300,7 +293,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		return dossierActionPersistence.update(action);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateRollbackable(long actionId, boolean rollbackable) {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
@@ -413,7 +406,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-//		String secetKey = GetterUtil.getString(params.get("secetKey"));
+		// String secetKey = GetterUtil.getString(params.get("secetKey"));
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -470,30 +463,107 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 	public static final String CLASS_NAME = DossierAction.class.getName();
 
-	//TODO:
+	// TODO:
 	public List<DossierAction> getDossiersPending(long groupId, String pending) {
 		return dossierActionPersistence.findByG_PENDING(groupId, Boolean.parseBoolean(pending));
 	}
-	
+
 	public List<DossierAction> findDossierActionByDID_FSN(long dossierId, String fromSequenceNo) {
 		return dossierActionPersistence.findByDID_FSN(dossierId, fromSequenceNo);
 	}
-	
+
 	public List<DossierAction> findDossierActionByG_DID_SN(long groupId, long dossierId, String sequenceNo) {
-		return dossierActionPersistence.findByG_DID_SN(groupId, dossierId, sequenceNo, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-	}	
+		return dossierActionPersistence.findByG_DID_SN(groupId, dossierId, sequenceNo, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+	}
 
 	public List<DossierAction> findDossierActionByG_DID_FSN(long groupId, long dossierId, String fromSequenceNo) {
-		return dossierActionPersistence.findByG_DID_FSN(groupId, dossierId, fromSequenceNo, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		return dossierActionPersistence.findByG_DID_FSN(groupId, dossierId, fromSequenceNo, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 	}
 
 	public List<DossierAction> findDossierActionByDID_STEP(long dossierId, String fromStepCode) {
 		return dossierActionPersistence.findByDID_STEP(dossierId, fromStepCode);
 	}
-	
+
 	public List<DossierAction> getByDossierAndStepCode(long dossierId, String stepCode) {
 		return dossierActionPersistence.findByDID_SC(dossierId, stepCode);
 	}
-	
+
+	public DossierAction getByDID_CODE_First(long dossierId, String actionCode,
+			OrderByComparator<DossierAction> orderByComparator) {
+		return dossierActionPersistence.fetchByDID_CODE_First(dossierId, actionCode, orderByComparator);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DossierAction adminProcessDelete(Long id) {
+
+		DossierAction object = dossierActionPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dossierActionPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction adminProcessData(JSONObject objectData) {
+
+		DossierAction object = null;
+
+		if (objectData.getLong("dossierActionId") > 0) {
+
+			object = dossierActionPersistence.fetchByPrimaryKey(objectData.getLong("dossierActionId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DossierAction.class.getName());
+
+			object = dossierActionPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setDossierId(objectData.getLong("dossierId"));
+		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
+		object.setPreviousActionId(objectData.getLong("previousActionId"));
+		object.setFromStepCode(objectData.getString("fromStepCode"));
+		object.setFromStepName(objectData.getString("fromStepName"));
+		object.setFromSequenceNo(objectData.getString("fromSequenceNo"));
+		object.setActionCode(objectData.getString("actionCode"));
+		object.setActionUser(objectData.getString("actionUser"));
+		object.setActionName(objectData.getString("actionName"));
+		object.setActionNote(objectData.getString("actionNote"));
+		object.setActionOverdue(objectData.getInt("actionOverdue"));
+		object.setSyncActionCode(objectData.getString("syncActionCode"));
+		object.setPending(objectData.getBoolean("pending"));
+		object.setRollbackable(objectData.getBoolean("rollbackable"));
+		object.setStepCode(objectData.getString("stepCode"));
+		object.setStepName(objectData.getString("stepName"));
+		object.setSequenceNo(objectData.getString("sequenceNo"));
+		object.setDueDate(new Date(objectData.getLong("dueDate")));
+		object.setNextActionId(objectData.getLong("nextActionId"));
+		object.setPayload(objectData.getString("payload"));
+		object.setStepInstruction(objectData.getString("stepInstruction"));
+		object.setState(objectData.getInt("state"));
+		object.setEventStatus(objectData.getInt("eventStatus"));
+
+		dossierActionPersistence.update(object);
+
+		return object;
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }

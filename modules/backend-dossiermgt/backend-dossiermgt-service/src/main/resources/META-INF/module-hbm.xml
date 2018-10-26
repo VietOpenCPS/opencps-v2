@@ -55,8 +55,8 @@
 		<property name="actionCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="actionName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="extraForm" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
-		<property name="formConfig" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="sampleData" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="sampleData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="insideProcess" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="userNote" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="syncType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
@@ -87,9 +87,9 @@
 		<property name="applicantIdNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="applicantName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="subject" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="expireDate" type="org.hibernate.type.TimestampType" />
 		<property name="issueDate" type="org.hibernate.type.TimestampType" />
 		<property name="revalidate" type="org.hibernate.type.TimestampType" />
@@ -112,7 +112,7 @@
 		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="deliverableAction" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="actionDate" type="org.hibernate.type.TimestampType" />
-		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableTypeImpl" table="opencps_deliverabletype">
 		<id name="deliverableTypeId" type="long">
@@ -127,11 +127,11 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="typeCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="typeName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="codePattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="mappingData" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="mappingData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="govAgencies" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
@@ -148,7 +148,7 @@
 		<property name="templateClass" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="documentName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="codePattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="documentScript" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="documentScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierImpl" table="opencps_dossier">
@@ -348,7 +348,7 @@
 		<property name="dossierPartType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="fileTemplateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="displayName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="original" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eForm" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
@@ -356,9 +356,9 @@
 		<property name="removed" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="signCheck" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="signInfo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formSchema" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formSchema" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="deliverableCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierLogImpl" table="opencps_dossierlog">
@@ -376,7 +376,7 @@
 		<property name="author" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="notificationType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierMarkImpl" table="opencps_dossiermark">
 		<id name="dossierMarkId" type="long">
@@ -411,9 +411,9 @@
 		<property name="partTip" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="partType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="multiple" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
-		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="sampleData" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="sampleData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="required" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="fileTemplateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eSign" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
@@ -497,12 +497,12 @@
 		<property name="actionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="syncType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="infoType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property column="state_" name="state" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="retry" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-		<property name="messageText" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="acknowlegement" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="messageText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="acknowlegement" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierTemplateImpl" table="opencps_dossiertemplate">
 		<id name="dossierTemplateId" type="long">
@@ -543,8 +543,8 @@
 		<property column="order_" name="order" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="menuType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="queryParams" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="buttonConfig" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="buttonConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuRoleImpl" table="opencps_menurole">
 		<composite-id class="org.opencps.dossiermgt.service.persistence.MenuRolePK" name="primaryKey">
@@ -572,7 +572,7 @@
 		<property name="invoiceLastNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="invoiceForm" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="bankInfo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="epaymentConfig" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="epaymentConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.PaymentFileImpl" table="opencps_paymentfile">
 		<id name="paymentFileId" type="long">
@@ -599,7 +599,7 @@
 		<property name="paymentStatus" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="paymentMethod" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="confirmDatetime" type="org.hibernate.type.TimestampType" />
-		<property name="confirmPayload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="confirmPayload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="confirmFileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="confirmNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="approveDatetime" type="org.hibernate.type.TimestampType" />
@@ -608,8 +608,8 @@
 		<property name="invoiceTemplateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="invoiceIssueNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="invoiceNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="invoicePayload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="einvoice" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="invoicePayload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="einvoice" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ProcessActionImpl" table="opencps_processaction">
 		<id name="processActionId" type="long">
@@ -788,9 +788,9 @@
 		<property name="referenceUid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="isNew" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="removed" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
@@ -808,7 +808,7 @@
 		<property name="registrationId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="author" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.RegistrationTemplatesImpl" table="opencps_registrationtemplate">
 		<id name="registrationTemplateId" type="long">
@@ -825,9 +825,9 @@
 		<property name="formNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="multiple" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
-		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
-		<property name="sampleData" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="sampleData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceConfigImpl" table="opencps_serviceconfig">
 		<id name="serviceConfigId" type="long">

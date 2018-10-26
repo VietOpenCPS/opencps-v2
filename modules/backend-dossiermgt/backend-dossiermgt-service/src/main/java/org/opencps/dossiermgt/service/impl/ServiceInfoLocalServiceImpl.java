@@ -14,8 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -49,7 +51,6 @@ import java.util.List;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
@@ -89,6 +90,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	 * service info local service.
 	 */
 	private Log _log = LogFactoryUtil.getLog(ServiceInfoLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceInfo removeServiceInfo(long serviceInfoId) throws PortalException {
 		ServiceInfo serviceInfo = serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
@@ -118,7 +120,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo addServiceInfo(long userId, long groupId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext) throws PortalException {
+			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext)
+			throws PortalException {
 
 		User user = userLocalService.getUser(userId);
 
@@ -155,7 +158,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
 				groupId);
-		
+
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
 
 		if (Validator.isNotNull(adm)) {
@@ -191,7 +194,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo updateServiceInfo(long groupId, long serviceInfoId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext) throws PortalException {
+			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext)
+			throws PortalException {
 
 		Date now = new Date();
 
@@ -243,10 +247,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		if (Validator.isNotNull(maxLevel))
 			serviceInfo.setMaxLevel(maxLevel);
 
-		
 		serviceInfo.setPublic_(activeStatus);
-		
-		
+
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
 				groupId);
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
@@ -261,7 +263,6 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			serviceInfo.setDomainIndex(dom.getTreeIndex());
 		}
 
-		
 		serviceInfoPersistence.update(serviceInfo);
 
 		return serviceInfo;
@@ -298,7 +299,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	private void valdiateRemove(long serviceInfoId) throws PortalException {
 		// TODO implement
 	}
-	
+
 	public List<ServiceInfo> fetchByDomain(long groupId, String domainCode) {
 		return serviceInfoPersistence.findByGI_DC(domainCode, groupId);
 	}
@@ -328,31 +329,31 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-//		if (Validator.isNotNull(keywords)) {
-//
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//
-//			for (String string : keyword) {
-//
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//
-//				query.addFields(ServiceInfoTerm.SERVICE_NAME);
-//
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
-//		}
+		// if (Validator.isNotNull(keywords)) {
+		//
+		// String[] keyword = keywords.split(StringPool.SPACE);
+		//
+		// for (String string : keyword) {
+		//
+		// MultiMatchQuery query = new MultiMatchQuery(string);
+		//
+		// query.addFields(ServiceInfoTerm.SERVICE_NAME);
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		//
+		// }
+		// }
 		// LamTV: Process search LIKE
-//		if (Validator.isNotNull(keywords)) {
-//			String[] keywordArr = keywords.split(StringPool.SPACE);
-//				BooleanQuery query = new BooleanQueryImpl();
-//				for (String key : keywordArr) {
-//					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
-//							key.toLowerCase() + StringPool.STAR);
-//					query.add(wildQuery, BooleanClauseOccur.MUST);
-//				}
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
+		// if (Validator.isNotNull(keywords)) {
+		// String[] keywordArr = keywords.split(StringPool.SPACE);
+		// BooleanQuery query = new BooleanQueryImpl();
+		// for (String key : keywordArr) {
+		// WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
+		// key.toLowerCase() + StringPool.STAR);
+		// query.add(wildQuery, BooleanClauseOccur.MUST);
+		// }
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		// }
 		//
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
@@ -401,13 +402,13 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
-//			MultiMatchQuery query = new MultiMatchQuery(level);
-//
-//			query.addFields(ServiceInfoTerm.MAX_LEVEL);
-//
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
+		// if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
+		// MultiMatchQuery query = new MultiMatchQuery(level);
+		//
+		// query.addFields(ServiceInfoTerm.MAX_LEVEL);
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		// }
 		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
 			String[] lstStatus = StringUtil.split(level);
 
@@ -461,32 +462,32 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-//		if (Validator.isNotNull(keywords)) {
-//
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//
-//			for (String string : keyword) {
-//
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//
-//				query.addFields(ServiceInfoTerm.SERVICE_NAME);
-//
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
-//		}
+		// if (Validator.isNotNull(keywords)) {
+		//
+		// String[] keyword = keywords.split(StringPool.SPACE);
+		//
+		// for (String string : keyword) {
+		//
+		// MultiMatchQuery query = new MultiMatchQuery(string);
+		//
+		// query.addFields(ServiceInfoTerm.SERVICE_NAME);
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		//
+		// }
+		// }
 
 		// LamTV: Process search LIKE
-//		if (Validator.isNotNull(keywords)) {
-//			String[] keywordArr = keywords.split(StringPool.SPACE);
-//				BooleanQuery query = new BooleanQueryImpl();
-//				for (String key : keywordArr) {
-//					WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
-//							key.toLowerCase() + StringPool.STAR);
-//					query.add(wildQuery, BooleanClauseOccur.MUST);
-//				}
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
+		// if (Validator.isNotNull(keywords)) {
+		// String[] keywordArr = keywords.split(StringPool.SPACE);
+		// BooleanQuery query = new BooleanQueryImpl();
+		// for (String key : keywordArr) {
+		// WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
+		// key.toLowerCase() + StringPool.STAR);
+		// query.add(wildQuery, BooleanClauseOccur.MUST);
+		// }
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		// }
 		//
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
@@ -536,13 +537,13 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
-//			MultiMatchQuery query = new MultiMatchQuery(level);
-//
-//			query.addFields(ServiceInfoTerm.MAX_LEVEL);
-//
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
+		// if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
+		// MultiMatchQuery query = new MultiMatchQuery(level);
+		//
+		// query.addFields(ServiceInfoTerm.MAX_LEVEL);
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		// }
 
 		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
 			String[] lstStatus = StringUtil.split(level);
@@ -575,16 +576,16 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
-	//LamTV_ Process output ServiceInfo
+	// LamTV_ Process output ServiceInfo
 	@Indexable(type = IndexableType.REINDEX)
-	public ServiceInfo updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
-			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
-			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
-			String domainCode, String domainName, Integer maxLevel) throws PortalException {
+	public ServiceInfo updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName,
+			String processText, String methodText, String dossierText, String conditionText, String durationText,
+			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
+			String administrationName, String domainCode, String domainName, Integer maxLevel) throws PortalException {
 
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
-//		valdiate(serviceCode, serviceName, administrationCode, domainCode, groupId);
+		// valdiate(serviceCode, serviceName, administrationCode, domainCode, groupId);
 		ServiceInfo serviceInfo = serviceInfoPersistence.fetchBySC_GI(serviceCode, groupId);
 		if (serviceInfo != null) {
 			serviceInfo.setModifiedDate(now);
@@ -635,7 +636,6 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			serviceInfo.setMaxLevel(maxLevel);
 		}
 
-
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
 				groupId);
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
@@ -650,9 +650,110 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		return serviceInfoPersistence.update(serviceInfo);
 
 	}
-	
+
 	public List<ServiceInfo> findByGroup(long groupId) {
 		return serviceInfoPersistence.findByGroupId(groupId);
 	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ServiceInfo adminProcessDelete(Long id) {
+
+		ServiceInfo object = serviceInfoPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			serviceInfoPersistence.remove(object);
+
+			List<ServiceFileTemplate> fileTemplates = serviceFileTemplateLocalService.getByServiceInfoId(id);
+
+			for (ServiceFileTemplate fileTemplate : fileTemplates) {
+				if (fileTemplate.getFileEntryId() != 0) {
+					try {
+						serviceFileTemplateLocalService.removeServiceFileTemplate(id, fileTemplate.getFileTemplateNo());
+					} catch (PortalException e) {
+						_log.error(e);
+					}
+				}
+			}
+
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ServiceInfo adminProcessData(JSONObject objectData) {
+
+		ServiceInfo object = null;
+
+		if (objectData.getLong("serviceInfoId") > 0) {
+
+			object = serviceInfoPersistence.fetchByPrimaryKey(objectData.getLong("serviceInfoId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			try {
+				valdiate(objectData.getString("serviceCode"), objectData.getString("serviceName"),
+						objectData.getString("administrationCode"), objectData.getString("domainCode"),
+						objectData.getLong("groupId"));
+			} catch (PortalException e) {
+				_log.error(e);
+				return null;
+			}
+
+			long id = CounterLocalServiceUtil.increment(ServiceInfo.class.getName());
+
+			object = serviceInfoPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setServiceCode(objectData.getString("serviceCode"));
+		object.setServiceName(objectData.getString("serviceName"));
+		object.setProcessText(objectData.getString("processText"));
+		object.setMethodText(objectData.getString("methodText"));
+		object.setDossierText(objectData.getString("dossierText"));
+		object.setConditionText(objectData.getString("conditionText"));
+		object.setDurationText(objectData.getString("durationText"));
+		object.setApplicantText(objectData.getString("applicantText"));
+		object.setResultText(objectData.getString("resultText"));
+		object.setRegularText(objectData.getString("regularText"));
+		object.setFeeText(objectData.getString("feeText"));
+		object.setMaxLevel(objectData.getInt("maxLevel"));
+		object.setPublic_(objectData.getBoolean("public_"));
+
+		object.setAdministrationCode(objectData.getString("administrationCode"));
+		object.setDomainCode(objectData.getString("domainCode"));
+
+		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE,
+				objectData.getString("administrationCode"), objectData.getLong("groupId"));
+		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN,
+				objectData.getString("domainCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(adm)) {
+			object.setAdministrationName(adm.getItemName());
+			object.setAdministrationIndex(adm.getTreeIndex());
+		}
+
+		if (Validator.isNotNull(dom)) {
+			object.setDomainName(dom.getItemName());
+			object.setDomainIndex(dom.getTreeIndex());
+		}
+
+		serviceInfoPersistence.update(object);
+
+		return object;
+	}
+
 	public static final String CLASS_NAME = ServiceInfo.class.getName();
 }

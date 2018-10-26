@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -89,6 +90,12 @@ public interface DeliverableLocalService extends BaseLocalService,
 		String applicationIdNo, String applicationName, String subject,
 		String issueDate, String expireDate, String revalidate,
 		String deliverableState, ServiceContext serviceContext);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Deliverable adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public Deliverable adminProcessDelete(Long id);
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

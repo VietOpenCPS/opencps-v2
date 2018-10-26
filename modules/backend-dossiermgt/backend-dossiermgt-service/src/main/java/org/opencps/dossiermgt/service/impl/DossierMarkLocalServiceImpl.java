@@ -14,7 +14,15 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -23,11 +31,7 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierMarkLocalServiceBaseImpl;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the dossier mark local service.
@@ -112,5 +116,57 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 
 	public List<DossierMark> getDossierMarksByFileMark(long groupId, long dossierId, int fileMark) {
 		return dossierMarkPersistence.findByG_DID_MARK(groupId, dossierId, fileMark);
+	}
+
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DossierMark adminProcessDelete(Long id) {
+
+		DossierMark object = dossierMarkPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dossierMarkPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierMark adminProcessData(JSONObject objectData) {
+
+		DossierMark object = null;
+
+		if (objectData.getLong("dossierMarkId") > 0) {
+
+			object = dossierMarkPersistence.fetchByPrimaryKey(objectData.getLong("dossierMarkId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DossierMark.class.getName());
+
+			object = dossierMarkPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setDossierId(objectData.getLong("dossierId"));
+		object.setDossierPartNo(objectData.getString("dossierPartNo"));
+		object.setFileCheck(objectData.getInt("fileCheck"));
+		object.setFileMark(objectData.getInt("fileMark"));
+		object.setFileComment(objectData.getString("fileComment"));
+
+		dossierMarkPersistence.update(object);
+
+		return object;
 	}
 }

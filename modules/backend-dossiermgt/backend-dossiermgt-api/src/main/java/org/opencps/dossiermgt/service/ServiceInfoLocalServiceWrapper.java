@@ -63,6 +63,17 @@ public class ServiceInfoLocalServiceWrapper implements ServiceInfoLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ServiceInfo adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _serviceInfoLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ServiceInfo adminProcessDelete(Long id) {
+		return _serviceInfoLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

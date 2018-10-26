@@ -84,7 +84,7 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 			{ "invoiceLastNo", Types.VARCHAR },
 			{ "invoiceForm", Types.VARCHAR },
 			{ "bankInfo", Types.VARCHAR },
-			{ "epaymentConfig", Types.CLOB }
+			{ "epaymentConfig", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -105,10 +105,10 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 		TABLE_COLUMNS_MAP.put("invoiceLastNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("invoiceForm", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("bankInfo", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("epaymentConfig", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("epaymentConfig", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_paymentconfig (uuid_ VARCHAR(75) null,paymentConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo VARCHAR(75) null,invoiceIssueNo VARCHAR(75) null,invoiceLastNo VARCHAR(75) null,invoiceForm VARCHAR(75) null,bankInfo STRING null,epaymentConfig TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_paymentconfig (uuid_ VARCHAR(75) null,paymentConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo VARCHAR(75) null,invoiceIssueNo VARCHAR(75) null,invoiceLastNo VARCHAR(75) null,invoiceForm VARCHAR(75) null,bankInfo VARCHAR(75) null,epaymentConfig VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_paymentconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY paymentConfig.paymentConfigId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_paymentconfig.paymentConfigId ASC";

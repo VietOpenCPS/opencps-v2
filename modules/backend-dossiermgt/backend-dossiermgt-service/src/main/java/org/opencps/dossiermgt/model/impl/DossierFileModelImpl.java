@@ -84,7 +84,7 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 			{ "dossierPartType", Types.INTEGER },
 			{ "fileTemplateNo", Types.VARCHAR },
 			{ "displayName", Types.VARCHAR },
-			{ "formData", Types.CLOB },
+			{ "formData", Types.VARCHAR },
 			{ "fileEntryId", Types.BIGINT },
 			{ "original", Types.BOOLEAN },
 			{ "eForm", Types.BOOLEAN },
@@ -92,9 +92,9 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 			{ "removed", Types.BOOLEAN },
 			{ "signCheck", Types.INTEGER },
 			{ "signInfo", Types.VARCHAR },
-			{ "formScript", Types.CLOB },
-			{ "formReport", Types.CLOB },
-			{ "formSchema", Types.CLOB },
+			{ "formScript", Types.VARCHAR },
+			{ "formReport", Types.VARCHAR },
+			{ "formSchema", Types.VARCHAR },
 			{ "deliverableCode", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
@@ -115,7 +115,7 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 		TABLE_COLUMNS_MAP.put("dossierPartType", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("fileTemplateNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("displayName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("formData", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("original", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("eForm", Types.BOOLEAN);
@@ -123,13 +123,13 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 		TABLE_COLUMNS_MAP.put("removed", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("signCheck", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("signInfo", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("formScript", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formReport", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formSchema", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formSchema", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("deliverableCode", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierfile (uuid_ VARCHAR(75) null,dossierFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierPartNo VARCHAR(75) null,dossierPartType INTEGER,fileTemplateNo VARCHAR(75) null,displayName VARCHAR(500) null,formData TEXT null,fileEntryId LONG,original BOOLEAN,eForm BOOLEAN,isNew BOOLEAN,removed BOOLEAN,signCheck INTEGER,signInfo STRING null,formScript TEXT null,formReport TEXT null,formSchema TEXT null,deliverableCode VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierfile (uuid_ VARCHAR(75) null,dossierFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierPartNo VARCHAR(75) null,dossierPartType INTEGER,fileTemplateNo VARCHAR(75) null,displayName VARCHAR(75) null,formData VARCHAR(75) null,fileEntryId LONG,original BOOLEAN,eForm BOOLEAN,isNew BOOLEAN,removed BOOLEAN,signCheck INTEGER,signInfo VARCHAR(75) null,formScript VARCHAR(75) null,formReport VARCHAR(75) null,formSchema VARCHAR(75) null,deliverableCode VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierfile";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierFile.dossierPartNo ASC, dossierFile.modifiedDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierfile.dossierPartNo ASC, opencps_dossierfile.modifiedDate DESC";

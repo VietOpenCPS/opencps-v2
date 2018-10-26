@@ -88,6 +88,16 @@ public class DossierDocumentLocalServiceUtil {
 		return getService().addDossierDocument(dossierDocument);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierDocument adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierDocument adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countDossierDocumentList(Long dossierId) {
 		return getService().countDossierDocumentList(dossierId);
 	}

@@ -80,9 +80,9 @@ public class RegistrationFormModelImpl extends BaseModelImpl<RegistrationForm>
 			{ "referenceUid", Types.VARCHAR },
 			{ "formNo", Types.VARCHAR },
 			{ "formName", Types.VARCHAR },
-			{ "formData", Types.CLOB },
-			{ "formScript", Types.CLOB },
-			{ "formReport", Types.CLOB },
+			{ "formData", Types.VARCHAR },
+			{ "formScript", Types.VARCHAR },
+			{ "formReport", Types.VARCHAR },
 			{ "fileEntryId", Types.BIGINT },
 			{ "isNew", Types.BOOLEAN },
 			{ "removed", Types.BOOLEAN }
@@ -101,15 +101,15 @@ public class RegistrationFormModelImpl extends BaseModelImpl<RegistrationForm>
 		TABLE_COLUMNS_MAP.put("referenceUid", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("formNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("formName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("formData", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formScript", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formReport", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formData", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("isNew", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("removed", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_registrationform (uuid_ VARCHAR(75) null,registrationFormId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,referenceUid VARCHAR(75) null,formNo VARCHAR(75) null,formName VARCHAR(255) null,formData TEXT null,formScript TEXT null,formReport TEXT null,fileEntryId LONG,isNew BOOLEAN,removed BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_registrationform (uuid_ VARCHAR(75) null,registrationFormId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,referenceUid VARCHAR(75) null,formNo VARCHAR(75) null,formName VARCHAR(75) null,formData VARCHAR(75) null,formScript VARCHAR(75) null,formReport VARCHAR(75) null,fileEntryId LONG,isNew BOOLEAN,removed BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_registrationform";
 	public static final String ORDER_BY_JPQL = " ORDER BY registrationForm.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_registrationform.createDate ASC";

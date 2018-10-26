@@ -54,6 +54,16 @@ public class ProcessActionLocalServiceUtil {
 		return getService().addProcessAction(processAction);
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessAction adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ProcessAction adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new process action with the primary key. Does not add the process action to the database.
 	*

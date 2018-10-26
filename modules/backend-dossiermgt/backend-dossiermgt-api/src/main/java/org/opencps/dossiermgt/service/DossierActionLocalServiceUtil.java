@@ -54,6 +54,16 @@ public class DossierActionLocalServiceUtil {
 		return getService().addDossierAction(dossierAction);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierAction adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierAction adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
@@ -226,6 +236,13 @@ public class DossierActionLocalServiceUtil {
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static org.opencps.dossiermgt.model.DossierAction getByDID_CODE_First(
+		long dossierId, String actionCode,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.DossierAction> orderByComparator) {
+		return getService()
+				   .getByDID_CODE_First(dossierId, actionCode, orderByComparator);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> getByDossierAndStepCode(

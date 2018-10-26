@@ -61,6 +61,16 @@ public class RegistrationLogLocalServiceUtil {
 		return getService().addRegistrationLog(registrationLog);
 	}
 
+	public static org.opencps.dossiermgt.model.RegistrationLog adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.RegistrationLog adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLucense(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,

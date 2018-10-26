@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -87,6 +88,12 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceInfo addServiceInfo(ServiceInfo serviceInfo);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ServiceInfo adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public ServiceInfo adminProcessDelete(Long id);
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

@@ -77,9 +77,9 @@ public class RegistrationTemplatesModelImpl extends BaseModelImpl<RegistrationTe
 			{ "formNo", Types.VARCHAR },
 			{ "formName", Types.VARCHAR },
 			{ "multiple", Types.BOOLEAN },
-			{ "formScript", Types.CLOB },
-			{ "formReport", Types.CLOB },
-			{ "sampleData", Types.CLOB }
+			{ "formScript", Types.VARCHAR },
+			{ "formReport", Types.VARCHAR },
+			{ "sampleData", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -96,12 +96,12 @@ public class RegistrationTemplatesModelImpl extends BaseModelImpl<RegistrationTe
 		TABLE_COLUMNS_MAP.put("formNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("formName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("multiple", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("formScript", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formReport", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("sampleData", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("sampleData", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_registrationtemplate (uuid_ VARCHAR(75) null,registrationTemplateId LONG not null primary key,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,formNo VARCHAR(75) null,formName VARCHAR(255) null,multiple BOOLEAN,formScript TEXT null,formReport TEXT null,sampleData TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_registrationtemplate (uuid_ VARCHAR(75) null,registrationTemplateId LONG not null primary key,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,formNo VARCHAR(75) null,formName VARCHAR(75) null,multiple BOOLEAN,formScript VARCHAR(75) null,formReport VARCHAR(75) null,sampleData VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_registrationtemplate";
 	public static final String ORDER_BY_JPQL = " ORDER BY registrationTemplates.registrationTemplateId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_registrationtemplate.registrationTemplateId ASC";

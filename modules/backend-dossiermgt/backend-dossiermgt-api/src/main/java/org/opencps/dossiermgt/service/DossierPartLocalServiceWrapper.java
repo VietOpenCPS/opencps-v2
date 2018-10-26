@@ -46,6 +46,17 @@ public class DossierPartLocalServiceWrapper implements DossierPartLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierPart adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dossierPartLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierPart adminProcessDelete(Long id) {
+		return _dossierPartLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

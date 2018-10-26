@@ -14,8 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -78,7 +80,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 	 * org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil} to access the
 	 * process step local service.
 	 */
-	
+
 	public List<ProcessStep> getByStatusAnsSubStatus(String dossierStatus, String dossierSubStatus, long groupId) {
 		return processStepPersistence.findByDST_DSST(dossierStatus, dossierSubStatus, groupId);
 	}
@@ -376,7 +378,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		return processStepPersistence.findByS_P_ID(serviceProcessId);
 	}
 
-	//LamTV_ Process output ProcessStep to DB
+	// LamTV_ Process output ProcessStep to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessStep updateProcessStepDB(long userId, long groupId, long serviceProcessId, String stepCode,
 			String stepName, String sequenceNo, String groupName, String dossierStatus, String dossierSubStatus,
@@ -416,6 +418,76 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 	public List<ProcessStep> findByG_SP_SNO(long groupId, long serviceProcessId, String sequenceNo) {
 		return processStepPersistence.findByG_SP_SNO(groupId, serviceProcessId, sequenceNo);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ProcessStep adminProcessDelete(Long id) {
+
+		ProcessStep object = processStepPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+
+			List<ProcessStepRole> processStepRoles = processStepRolePersistence.findByP_S_ID(id);
+
+			for (ProcessStepRole stepRole : processStepRoles) {
+				processStepRolePersistence.remove(stepRole);
+			}
+
+			processStepPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ProcessStep adminProcessData(JSONObject objectData) {
+
+		ProcessStep object = null;
+
+		if (objectData.getLong("processStepId") > 0) {
+
+			object = processStepPersistence.fetchByPrimaryKey(objectData.getLong("processStepId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ProcessStep.class.getName());
+
+			object = processStepPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setStepCode(objectData.getString("stepCode"));
+		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
+		object.setStepName(objectData.getString("stepName"));
+		object.setSequenceNo(objectData.getString("sequenceNo"));
+		object.setDossierStatus(objectData.getString("dossierStatus"));
+		object.setDossierSubStatus(objectData.getString("dossierSubStatus"));
+		object.setDurationCount(objectData.getLong("durationCount"));
+		object.setCustomProcessUrl(objectData.getString("customProcessUrl"));
+		object.setStepInstruction(objectData.getString("stepInstruction"));
+		object.setBriefNote(objectData.getString("briefNote"));
+		object.setEditable(objectData.getBoolean("editable"));
+		object.setRestrictDossier(objectData.getString("restrictDossier"));
+		object.setLockState(objectData.getString("lockState"));
+		object.setGroupName(objectData.getString("groupName"));
+		object.setRoleAsStep(objectData.getString("roleAsStep"));
+		object.setCheckInput(objectData.getInt("checkInput"));
+
+		processStepPersistence.update(object);
+
+		return object;
 	}
 
 }

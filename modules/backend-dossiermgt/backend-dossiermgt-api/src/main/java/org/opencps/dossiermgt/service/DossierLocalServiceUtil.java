@@ -54,6 +54,16 @@ public class DossierLocalServiceUtil {
 		return getService().addDossier(dossier);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier assignToProcess(
 		long dossierId, String dossierNote, String submissionNote,
 		String briefNote, String dossierNo, long folderId,
@@ -279,6 +289,11 @@ public class DossierLocalServiceUtil {
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier getByDossierNo(
+		long groupId, String dossierNo) {
+		return getService().getByDossierNo(groupId, dossierNo);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier getByIdAndGovService(

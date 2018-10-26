@@ -14,7 +14,24 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -24,20 +41,7 @@ import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationLog;
 import org.opencps.dossiermgt.service.base.RegistrationLogLocalServiceBaseImpl;
 
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.util.Validator;
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the registration log local service.
@@ -63,19 +67,19 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil} to access
-	 * the registration log local service.
+	 * org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil} to access the
+	 * registration log local service.
 	 */
-	
+
 	public static final String CLASS_NAME = Registration.class.getName();
-	
+
 	public RegistrationLog addLog(String author, long groupId, long userId, long registrationId, String content,
 			String payload) {
-		
+
 		long registrationLogId = counterLocalService.increment(RegistrationLog.class.getName());
-		
+
 		RegistrationLog registrationLog = registrationLogPersistence.create(registrationLogId);
-		
+
 		registrationLog.setRegistrationLogId(registrationLogId);
 		registrationLog.setRegistrationId(registrationId);
 		registrationLog.setGroupId(groupId);
@@ -84,16 +88,16 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 		registrationLog.setModifiedDate(new Date());
 		registrationLog.setAuthor(author);
 		registrationLog.setContent(content);
-		//registrationLog.setPayload(payload);
-		
+		// registrationLog.setPayload(payload);
+
 		return registrationLogPersistence.update(registrationLog);
 	}
-	
-	public List<RegistrationLog> getRegistrationLogbyRegId(long groupId, long registrationId){
-		
+
+	public List<RegistrationLog> getRegistrationLogbyRegId(long groupId, long registrationId) {
+
 		return registrationLogPersistence.findByG_REGID(groupId, registrationId);
 	}
-	
+
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
@@ -126,12 +130,11 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
-	
+
 	public long countLucense(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
@@ -164,6 +167,56 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public RegistrationLog adminProcessDelete(Long id) {
+
+		RegistrationLog object = registrationLogPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			registrationLogPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public RegistrationLog adminProcessData(JSONObject objectData) {
+
+		RegistrationLog object = null;
+
+		if (objectData.getLong("registrationLogId") > 0) {
+
+			object = registrationLogPersistence.fetchByPrimaryKey(objectData.getLong("registrationLogId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(RegistrationLog.class.getName());
+
+			object = registrationLogPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setRegistrationId(objectData.getLong("registrationId"));
+		object.setAuthor(objectData.getString("author"));
+		object.setContent(objectData.getString("content"));
+		object.setPayload(objectData.getString("payload"));
+
+		registrationLogPersistence.update(object);
+
+		return object;
 	}
 
 }

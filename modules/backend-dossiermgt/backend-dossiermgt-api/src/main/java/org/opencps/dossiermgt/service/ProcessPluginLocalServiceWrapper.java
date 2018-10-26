@@ -46,6 +46,18 @@ public class ProcessPluginLocalServiceWrapper
 		return _processPluginLocalService.addProcessPlugin(processPlugin);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.ProcessPlugin adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _processPluginLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ProcessPlugin adminProcessDelete(
+		Long id) {
+		return _processPluginLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new process plugin with the primary key. Does not add the process plugin to the database.
 	*

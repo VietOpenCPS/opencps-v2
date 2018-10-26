@@ -100,7 +100,7 @@ public class DossierDocumentModelImpl extends BaseModelImpl<DossierDocument>
 		TABLE_COLUMNS_MAP.put("docSync", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierdocument (uuid_ VARCHAR(75) null,DossierDocumentId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,dossierActionId LONG,documentType VARCHAR(75) null,documentName VARCHAR(255) null,documentCode VARCHAR(75) null,documentFileId LONG,docSync INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierdocument (uuid_ VARCHAR(75) null,DossierDocumentId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,dossierActionId LONG,documentType VARCHAR(75) null,documentName VARCHAR(75) null,documentCode VARCHAR(75) null,documentFileId LONG,docSync INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierdocument";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierDocument.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierdocument.createDate DESC";

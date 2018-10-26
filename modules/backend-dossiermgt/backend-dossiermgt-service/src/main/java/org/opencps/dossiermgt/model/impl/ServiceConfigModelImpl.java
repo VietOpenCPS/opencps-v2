@@ -110,7 +110,7 @@ public class ServiceConfigModelImpl extends BaseModelImpl<ServiceConfig>
 		TABLE_COLUMNS_MAP.put("registration", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceconfig (uuid_ VARCHAR(75) null,serviceConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceInfoId LONG,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,serviceInstruction STRING null,serviceLevel INTEGER,serviceUrl VARCHAR(255) null,forCitizen BOOLEAN,forBusiness BOOLEAN,postService BOOLEAN,registration BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceconfig (uuid_ VARCHAR(75) null,serviceConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceInfoId LONG,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,serviceInstruction VARCHAR(75) null,serviceLevel INTEGER,serviceUrl VARCHAR(75) null,forCitizen BOOLEAN,forBusiness BOOLEAN,postService BOOLEAN,registration BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceConfig.serviceConfigId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceconfig.serviceConfigId ASC";

@@ -74,7 +74,7 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_services_filetemplates (uuid_ VARCHAR(75) null,serviceInfoId LONG not null,fileTemplateNo VARCHAR(75) not null,templateName VARCHAR(255) null,fileEntryId LONG,primary key (serviceInfoId, fileTemplateNo))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_services_filetemplates (uuid_ VARCHAR(75) null,serviceInfoId LONG not null,fileTemplateNo VARCHAR(75) not null,templateName VARCHAR(75) null,fileEntryId LONG,primary key (serviceInfoId, fileTemplateNo))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_services_filetemplates";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceFileTemplate.id.serviceInfoId ASC, serviceFileTemplate.id.fileTemplateNo ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_services_filetemplates.serviceInfoId ASC, opencps_services_filetemplates.fileTemplateNo ASC";

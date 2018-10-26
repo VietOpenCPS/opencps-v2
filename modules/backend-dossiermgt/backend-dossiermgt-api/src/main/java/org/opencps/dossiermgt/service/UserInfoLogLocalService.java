@@ -74,6 +74,10 @@ public interface UserInfoLogLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public UserInfoLog addUserInfoLog(UserInfoLog userInfoLog);
 
+	public UserInfoLog adminProcessData(JSONObject objectData);
+
+	public UserInfoLog adminProcessDelete(Long id);
+
 	/**
 	* Creates a new user info log with the primary key. Does not add the user info log to the database.
 	*

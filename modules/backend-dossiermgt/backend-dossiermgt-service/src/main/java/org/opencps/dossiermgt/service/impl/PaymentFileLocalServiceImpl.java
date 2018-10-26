@@ -14,9 +14,11 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -192,12 +194,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		if (Validator.isNotNull(status)) {
 			String[] sliptStatus = status.split(StringPool.COMMA);
 			if (sliptStatus != null && sliptStatus.length > 0) {
-			BooleanQuery subQuery = new BooleanQueryImpl();
+				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (String strStatus : sliptStatus) {
 					if (Validator.isNotNull(strStatus)) {
-	
+
 						MultiMatchQuery query = new MultiMatchQuery(strStatus);
-	
+
 						query.addFields(PaymentFileTerm.PAYMENT_STATUS);
 						subQuery.add(query, BooleanClauseOccur.SHOULD);
 					}
@@ -311,24 +313,24 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		if (Validator.isNotNull(status)) {
 			String[] sliptStatus = status.split(StringPool.COMMA);
 			if (sliptStatus != null && sliptStatus.length > 0) {
-			BooleanQuery subQuery = new BooleanQueryImpl();
+				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (String strStatus : sliptStatus) {
 					if (Validator.isNotNull(strStatus)) {
-	
+
 						MultiMatchQuery query = new MultiMatchQuery(strStatus);
-	
+
 						query.addFields(PaymentFileTerm.PAYMENT_STATUS);
 						subQuery.add(query, BooleanClauseOccur.SHOULD);
 					}
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			} else {
-			MultiMatchQuery query = new MultiMatchQuery(status);
+				MultiMatchQuery query = new MultiMatchQuery(status);
 
-			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+				query.addFields(PaymentFileTerm.PAYMENT_STATUS);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(isNew) && Boolean.parseBoolean(isNew)) {
@@ -355,9 +357,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile createPaymentFiles(long userId, long groupId, long dossierId, String referenceUid,
 			String paymentFee, long advanceAmount, long feeAmount, long serviceAmount, long shipAmount,
-			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo,
-			int paymentStatus, String paymentMethod,
-			ServiceContext serviceContext) throws PortalException {
+			long paymentAmount, String paymentNote, String epaymentProfile, String bankInfo, int paymentStatus,
+			String paymentMethod, ServiceContext serviceContext) throws PortalException {
 
 		// validate(groupId, serviceConfigId, serviceInfoId, govAgencyCode,
 		// serviceLevel, serviceUrl, objName);
@@ -406,13 +407,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		try {
 			PaymentFile paymentFile = paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
-			
+
 			return paymentFile;
 		} catch (NoSuchPaymentFileException e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 			_log.error(e);
 		}
-		
+
 		return null;
 
 	}
@@ -422,7 +423,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	}
 
 	public List<PaymentFile> getSyncPaymentFile(long groupId, boolean isNew) {
-//		return paymentFilePersistence.findByISN_GID(groupId, isNew);
+		// return paymentFilePersistence.findByISN_GID(groupId, isNew);
 		return null;
 	}
 
@@ -456,6 +457,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	}
 
 	Log _log = LogFactoryUtil.getLog(PaymentFileLocalServiceImpl.class.getName());
+
 	/**
 	 * update payment File Confirm
 	 * 
@@ -468,9 +470,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			throws PortalException, SystemException {
 
 		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
-		
-		_log.info("paymentMethod: "+paymentMethod);
-		_log.info("confirmPayload: "+confirmPayload);
+
+		_log.info("paymentMethod: " + paymentMethod);
+		_log.info("confirmPayload: " + confirmPayload);
 
 		if (paymentFile != null) {
 
@@ -481,16 +483,16 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setPaymentStatus(5);
-//			if (Validator.isNotNull(paymentMethod) && "N\u1ED9p online".equals(paymentMethod)) {
-//				paymentFile.setPaymentStatus(5);
-//			} else {
-//				paymentFile.setPaymentStatus(5);
-//			}
-//			paymentFile.setIsNew(true);
+			// if (Validator.isNotNull(paymentMethod) && "N\u1ED9p
+			// online".equals(paymentMethod)) {
+			// paymentFile.setPaymentStatus(5);
+			// } else {
+			// paymentFile.setPaymentStatus(5);
+			// }
+			// paymentFile.setIsNew(true);
 		}
 
 		// update dossier
-		
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -499,11 +501,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossier.setSubmitting(true);
 
 			dossierLocalService.updateDossier(dossier);
-			//dossierPersistence.update(dossier);
-			
-			//indexer.reindex(dossier);
+			// dossierPersistence.update(dossier);
+
+			// indexer.reindex(dossier);
 		} catch (SearchException e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -554,11 +556,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setConfirmFileEntryId(fileEntryId);
 			// TODO review payment status
 			paymentFile.setPaymentStatus(3);
-//			paymentFile.setIsNew(true);
+			// paymentFile.setIsNew(true);
 		}
 
-		
-		//Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+		// Indexer<Dossier> indexer =
+		// IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -567,13 +569,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossier.setSubmitting(true);
 
 			dossierLocalService.updateDossier(dossier);
-			
-			//indexer.reindex(dossier);
+
+			// indexer.reindex(dossier);
 		} catch (SearchException e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 			_log.error(e);
 		}
-
 
 		return paymentFilePersistence.update(paymentFile);
 	}
@@ -614,8 +615,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
 			paymentFile.setPaymentStatus(2);
-			
-//			paymentFile.setIsNew(true);
+
+			// paymentFile.setIsNew(true);
 
 		}
 
@@ -632,7 +633,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		if (paymentFile != null) {
 
-//			long fileEntryId = 0;
+			// long fileEntryId = 0;
 			if (inputStream != null) {
 				long userId = serviceContext.getUserId();
 				try {
@@ -640,7 +641,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 							sourceFileName, null, fileSize, serviceContext);
 
 					if (fileEntry != null) {
-//						fileEntryId = fileEntry.getFileEntryId();
+						// fileEntryId = fileEntry.getFileEntryId();
 					}
 				} catch (Exception e) {
 					// e.printStackTrace();
@@ -662,8 +663,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
-//			paymentFile.setInvoiceFileEntryId(fileEntryId);
-//			paymentFile.setIsNew(true);
+			// paymentFile.setInvoiceFileEntryId(fileEntryId);
+			// paymentFile.setIsNew(true);
 
 		}
 
@@ -683,13 +684,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			return paymentFilePersistence.findByDossierId(groupId, dossierId);
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			return null;
 		}
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public PaymentFile updateApplicantFeeAmount(long paymentFileId, int requestPayment, Long feeAmount, Long serviceAmount, Long shipAmount) {
+	public PaymentFile updateApplicantFeeAmount(long paymentFileId, int requestPayment, Long feeAmount,
+			Long serviceAmount, Long shipAmount) {
 		try {
 			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(paymentFileId);
 			paymentFile.setFeeAmount(feeAmount);
@@ -698,19 +700,104 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentStatus(requestPayment);
 			if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG) {
 				paymentFile.setAdvanceAmount(feeAmount + serviceAmount + shipAmount);
-			}
-			else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
-				
-			}
-			else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
+			} else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
+
+			} else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
 				paymentFile.setPaymentAmount(feeAmount + serviceAmount + shipAmount - paymentFile.getAdvanceAmount());
 			}
-			
+
 			return paymentFilePersistence.update(paymentFile);
 		} catch (NoSuchPaymentFileException e) {
 			_log.error(e);
 		}
-		
+
 		return null;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile updatePaymentFileCustom(PaymentFile oldpaymentFile) {
+		try {
+			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(oldpaymentFile.getPaymentFileId());
+
+			paymentFile.setEinvoice(oldpaymentFile.getEinvoice());
+
+			return paymentFilePersistence.update(paymentFile);
+		} catch (NoSuchPaymentFileException e) {
+			_log.error(e);
+		}
+
+		return null;
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public PaymentFile adminProcessDelete(Long id) {
+
+		PaymentFile object = paymentFilePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			paymentFilePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile adminProcessData(JSONObject objectData) {
+
+		PaymentFile object = null;
+
+		if (objectData.getLong("paymentFileId") > 0) {
+
+			object = paymentFilePersistence.fetchByPrimaryKey(objectData.getLong("paymentFileId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(PaymentFile.class.getName());
+
+			object = paymentFilePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setDossierId(objectData.getLong("dossierId"));
+		object.setReferenceUid(objectData.getString("referenceUid"));
+		object.setPaymentFee(objectData.getString("paymentFee"));
+		object.setAdvanceAmount(objectData.getLong("advanceAmount"));
+		object.setFeeAmount(objectData.getLong("feeAmount"));
+		object.setServiceAmount(objectData.getLong("serviceAmount"));
+		object.setShipAmount(objectData.getLong("shipAmount"));
+		object.setPaymentAmount(objectData.getLong("paymentAmount"));
+		object.setPaymentNote(objectData.getString("paymentNote"));
+		object.setEpaymentProfile(objectData.getString("epaymentProfile"));
+		object.setBankInfo(objectData.getString("bankInfo"));
+		object.setPaymentStatus(objectData.getInt("paymentStatus"));
+		object.setPaymentMethod(objectData.getString("paymentMethod"));
+		object.setConfirmDatetime(new Date(objectData.getLong("confirmDatetime")));
+		object.setConfirmPayload(objectData.getString("confirmPayload"));
+		// object.setConfirmFileEntryId(objectData.getString("userName")confirmFileEntryId);
+		object.setConfirmNote(objectData.getString("confirmNote"));
+		object.setApproveDatetime(new Date(objectData.getLong("approveDatetime")));
+		object.setAccountUserName(objectData.getString("accountUserName"));
+		object.setGovAgencyTaxNo(objectData.getString("govAgencyTaxNo"));
+		object.setInvoiceTemplateNo(objectData.getString("invoiceTemplateNo"));
+		object.setInvoiceIssueNo(objectData.getString("invoiceIssueNo"));
+		object.setInvoiceNo(objectData.getString("invoiceNo"));
+		object.setInvoicePayload(objectData.getString("invoicePayload"));
+		object.setEinvoice(objectData.getString("einvoice"));
+
+		paymentFilePersistence.update(object);
+
+		return object;
 	}
 }

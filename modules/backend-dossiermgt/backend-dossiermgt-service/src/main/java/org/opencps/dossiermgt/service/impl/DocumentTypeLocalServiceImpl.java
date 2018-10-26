@@ -14,37 +14,44 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-
-import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.service.base.DocumentTypeLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
+
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.service.base.DocumentTypeLocalServiceBaseImpl;
+
 /**
  * The implementation of the document type local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.DocumentTypeLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.dossiermgt.service.DocumentTypeLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author huymq
  * @see DocumentTypeLocalServiceBaseImpl
  * @see org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil
  */
-public class DocumentTypeLocalServiceImpl
-	extends DocumentTypeLocalServiceBaseImpl {
+public class DocumentTypeLocalServiceImpl extends DocumentTypeLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil} to access the document type local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil} to access the
+	 * document type local service.
 	 */
 
 	public DocumentType insertDocType(long userId, long groupId, String typeCode, int templateClass,
@@ -59,7 +66,7 @@ public class DocumentTypeLocalServiceImpl
 
 		DocumentType docType = documentTypePersistence.create(docTypeId);
 
-		//Audit field
+		// Audit field
 		docType.setGroupId(groupId);
 		docType.setUserId(auditUser.getUserId());
 		docType.setCreateDate(now);
@@ -90,7 +97,7 @@ public class DocumentTypeLocalServiceImpl
 
 		DocumentType docType = documentTypePersistence.fetchByPrimaryKey(docId);
 		if (docType != null) {
-			//Audit field
+			// Audit field
 			docType.setUserId(auditUser.getUserId());
 			docType.setModifiedDate(now);
 
@@ -104,7 +111,7 @@ public class DocumentTypeLocalServiceImpl
 			long docTypeId = counterLocalService.increment(DocumentType.class.getName());
 			docType = documentTypePersistence.create(docTypeId);
 
-			//Audit field
+			// Audit field
 			docType.setGroupId(groupId);
 			docType.setUserId(auditUser.getUserId());
 			docType.setCreateDate(now);
@@ -131,7 +138,7 @@ public class DocumentTypeLocalServiceImpl
 
 		DocumentType docType = documentTypePersistence.fetchByF_CODE(groupId, typeCode);
 		if (docType != null) {
-			//Audit field
+			// Audit field
 			docType.setUserId(auditUser.getUserId());
 			docType.setModifiedDate(now);
 
@@ -157,7 +164,7 @@ public class DocumentTypeLocalServiceImpl
 			long docTypeId = counterLocalService.increment(DocumentType.class.getName());
 			docType = documentTypePersistence.create(docTypeId);
 
-			//Audit field
+			// Audit field
 			docType.setGroupId(groupId);
 			docType.setUserId(auditUser.getUserId());
 			docType.setCreateDate(now);
@@ -172,5 +179,56 @@ public class DocumentTypeLocalServiceImpl
 		}
 
 		return documentTypePersistence.update(docType);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DocumentType adminProcessDelete(Long id) {
+
+		DocumentType object = documentTypePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			documentTypePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DocumentType adminProcessData(JSONObject objectData) {
+
+		DocumentType object = null;
+
+		if (objectData.getLong("DocumentTypeId") > 0) {
+
+			object = documentTypePersistence.fetchByPrimaryKey(objectData.getLong("DocumentTypeId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DocumentType.class.getName());
+
+			object = documentTypePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setTypeCode(objectData.getString("typeCode"));
+		object.setTemplateClass(objectData.getInt("templateClass"));
+		object.setDocumentName(objectData.getString("documentName"));
+		object.setCodePattern(objectData.getString("codePattern"));
+		object.setDocumentScript(objectData.getString("documentScript"));
+		object.setDocSync(objectData.getInt("docSync"));
+
+		documentTypePersistence.update(object);
+
+		return object;
 	}
 }

@@ -56,6 +56,17 @@ public class MenuConfigLocalServiceWrapper implements MenuConfigLocalService,
 		return _menuConfigLocalService.addMenuConfig(menuConfig);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.MenuConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _menuConfigLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.MenuConfig adminProcessDelete(Long id) {
+		return _menuConfigLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new menu config with the primary key. Does not add the menu config to the database.
 	*

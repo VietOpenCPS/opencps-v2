@@ -59,6 +59,16 @@ public class UserInfoLogLocalServiceUtil {
 		return getService().addUserInfoLog(userInfoLog);
 	}
 
+	public static org.opencps.dossiermgt.model.UserInfoLog adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.UserInfoLog adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new user info log with the primary key. Does not add the user info log to the database.
 	*

@@ -54,6 +54,16 @@ public class ServiceProcessLocalServiceUtil {
 		return getService().addServiceProcess(serviceProcess);
 	}
 
+	public static org.opencps.dossiermgt.model.ServiceProcess adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ServiceProcess adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static void cloneServiceProcess(long serviceProcessId, long groupId,
 		String processNo,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)

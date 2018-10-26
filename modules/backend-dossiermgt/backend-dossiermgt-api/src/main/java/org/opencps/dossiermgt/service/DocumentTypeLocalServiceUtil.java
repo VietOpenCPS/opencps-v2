@@ -54,6 +54,16 @@ public class DocumentTypeLocalServiceUtil {
 		return getService().addDocumentType(documentType);
 	}
 
+	public static org.opencps.dossiermgt.model.DocumentType adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DocumentType adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new document type with the primary key. Does not add the document type to the database.
 	*

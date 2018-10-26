@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -80,6 +81,12 @@ public interface PaymentFileLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile addPaymentFile(PaymentFile paymentFile);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public PaymentFile adminProcessDelete(Long id);
 
 	/**
 	* Count number payment File using countLucene
@@ -410,4 +417,7 @@ public interface PaymentFileLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updatePaymentFile(PaymentFile paymentFile);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile updatePaymentFileCustom(PaymentFile oldpaymentFile);
 }

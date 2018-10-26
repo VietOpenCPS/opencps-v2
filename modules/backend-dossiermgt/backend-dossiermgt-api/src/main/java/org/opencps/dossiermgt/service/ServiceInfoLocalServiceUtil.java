@@ -70,6 +70,16 @@ public class ServiceInfoLocalServiceUtil {
 		return getService().addServiceInfo(serviceInfo);
 	}
 
+	public static org.opencps.dossiermgt.model.ServiceInfo adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ServiceInfo adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

@@ -104,7 +104,7 @@ public class DossierActionSyncModelImpl extends BaseModelImpl<DossierActionSync>
 		TABLE_COLUMNS_MAP.put("actionNote", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionsync (uuid_ VARCHAR(75) null,dossierActionSyncId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierActionId LONG,createDossier BOOLEAN,referenceUid VARCHAR(75) null,actionCode VARCHAR(75) null,actionUser VARCHAR(75) null,actionNote VARCHAR(500) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionsync (uuid_ VARCHAR(75) null,dossierActionSyncId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierActionId LONG,createDossier BOOLEAN,referenceUid VARCHAR(75) null,actionCode VARCHAR(75) null,actionUser VARCHAR(75) null,actionNote VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossieractionsync";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionSync.dossierActionSyncId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieractionsync.dossierActionSyncId ASC";

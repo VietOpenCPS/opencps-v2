@@ -84,9 +84,9 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			{ "applicantIdNo", Types.VARCHAR },
 			{ "applicantName", Types.VARCHAR },
 			{ "subject", Types.VARCHAR },
-			{ "formData", Types.CLOB },
-			{ "formScript", Types.CLOB },
-			{ "formReport", Types.CLOB },
+			{ "formData", Types.VARCHAR },
+			{ "formScript", Types.VARCHAR },
+			{ "formReport", Types.VARCHAR },
 			{ "expireDate", Types.TIMESTAMP },
 			{ "issueDate", Types.TIMESTAMP },
 			{ "revalidate", Types.TIMESTAMP },
@@ -111,16 +111,16 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		TABLE_COLUMNS_MAP.put("applicantIdNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("applicantName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("subject", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("formData", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formScript", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formReport", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formData", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("expireDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("issueDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("revalidate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("deliverableState", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(255) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData TEXT null,formScript TEXT null,formReport TEXT null,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(75) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData VARCHAR(75) null,formScript VARCHAR(75) null,formReport VARCHAR(75) null,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverable";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverable.deliverableId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverable.deliverableId ASC";

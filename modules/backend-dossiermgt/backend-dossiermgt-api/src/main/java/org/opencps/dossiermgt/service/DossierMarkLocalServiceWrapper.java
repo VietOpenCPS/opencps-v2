@@ -56,6 +56,17 @@ public class DossierMarkLocalServiceWrapper implements DossierMarkLocalService,
 			dossierPartNo, fileMark, fileCheck, fileComment, serviceContext);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DossierMark adminProcessData(
+		JSONObject objectData) {
+		return _dossierMarkLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierMark adminProcessDelete(Long id) {
+		return _dossierMarkLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new dossier mark with the primary key. Does not add the dossier mark to the database.
 	*

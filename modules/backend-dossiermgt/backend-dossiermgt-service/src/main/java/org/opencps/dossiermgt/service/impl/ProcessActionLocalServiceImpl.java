@@ -14,8 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -75,12 +77,12 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil} to access
-	 * the process action local service.
+	 * org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil} to access the
+	 * process action local service.
 	 */
-	
+
 	Log _log = LogFactoryUtil.getLog(ProcessActionLocalServiceImpl.class);
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
@@ -90,8 +92,8 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			String dossierTemplateNo, ServiceContext context) throws PortalException {
 
 		Date now = new Date();
-		
-		_log.info("##########ConfigNote"+configNote);
+
+		_log.info("##########ConfigNote" + configNote);
 
 		User userAction = userLocalService.getUser(context.getUserId());
 
@@ -257,7 +259,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 		return object;
 	}
-	
+
 	@Deprecated
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessAction updateProcessAction(long groupId, long processActionId, long serviceProcessId,
@@ -539,10 +541,10 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			throw new RequiredPaymentFeeException("RequiredPaymentFeeException");
 		}
 
-/*		if (allowAssignUser && Validator.isNull(assignUserId)) {
-			throw new RequiredAssignUserIdException("RequiredAssignUserIdException");
-		}
-*/
+		/*
+		 * if (allowAssignUser && Validator.isNull(assignUserId)) { throw new
+		 * RequiredAssignUserIdException("RequiredAssignUserIdException"); }
+		 */
 		// TODO add more validate for actionCode, actionName, createDossierFiles
 		// returnDossierFiles, makeBriefNote in here
 
@@ -551,11 +553,11 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	public List<ProcessAction> getByActionCode(long groupId, String actionCode) throws PortalException {
 		return processActionPersistence.findByGI_AC(groupId, actionCode);
 	}
-	
-	public List<ProcessAction> getByActionCode(long groupId, String actionCode, long serviceProcessId) throws PortalException {
+
+	public List<ProcessAction> getByActionCode(long groupId, String actionCode, long serviceProcessId)
+			throws PortalException {
 		return processActionPersistence.findByGI_AC_SP(groupId, actionCode, serviceProcessId);
 	}
-
 
 	public ProcessAction fetchBySPI_PRESC_AEV(long serviceProcessId, String preStepCode, String autoEvent) {
 		return processActionPersistence.fetchBySPI_PRESC_AEV(serviceProcessId, preStepCode, autoEvent);
@@ -575,24 +577,24 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	}
 
 	public List<ProcessAction> getByGroupAndAutoEvent(long groupId, String autoEvent, int start, int end) {
-		
+
 		if (groupId == 0)
 			return processActionPersistence.findByPSC_AEV(autoEvent, start, end);
-		else 
-			return processActionPersistence.findByPSC_AEV_GI(groupId,autoEvent, start, end);
+		else
+			return processActionPersistence.findByPSC_AEV_GI(groupId, autoEvent, start, end);
 
 	}
-	
+
 	public ProcessAction getByNameActionNo(long serviceProcessId, String actionCode, String actionName) {
 		return processActionPersistence.fetchBySPID_AC_AN(serviceProcessId, actionCode, actionName);
 	}
 
-	//LamTV_process
+	// LamTV_process
 	public ProcessAction getByServiceProcess(long serviceProcessId, String actionCode) {
 		return processActionPersistence.fetchBySPID_AC(serviceProcessId, actionCode);
 	}
 
-	//LamTV_Process output ProcessAction to DB
+	// LamTV_Process output ProcessAction to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessAction updateProcessActionDB(long userId, long groupId, long serviceProcessId, String actionCode,
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
@@ -623,7 +625,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		object.setActionName(actionName);
 		object.setAllowAssignUser(allowAssignUser);
 		object.setAssignUserId(assignUserId);
-//		object.setAssignUserName(assignUserName);
+		// object.setAssignUserName(assignUserName);
 		object.setRequestPayment(requestPayment);
 		object.setPaymentFee(paymentFee);
 		object.setCreateDossierFiles(createDossierFiles);
@@ -638,6 +640,76 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 	public List<ProcessAction> getByServiceStepCode(long groupId, long serviceProcessId, String preStepCode) {
 		return processActionPersistence.findByF_GID_SID_PRE(groupId, serviceProcessId, preStepCode);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ProcessAction adminProcessDelete(Long id) {
+
+		ProcessAction object = processActionPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			processActionPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ProcessAction adminProcessData(JSONObject objectData) {
+
+		ProcessAction object = null;
+
+		if (objectData.getLong("processActionId") > 0) {
+
+			object = processActionPersistence.fetchByPrimaryKey(objectData.getLong("processActionId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ProcessAction.class.getName());
+
+			object = processActionPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
+		object.setPreStepCode(objectData.getString("preStepCode"));
+		object.setPostStepCode(objectData.getString("postStepCode"));
+		object.setAutoEvent(objectData.getString("autoEvent"));
+		object.setPreCondition(objectData.getString("preCondition"));
+		object.setActionCode(objectData.getString("actionCode"));
+		object.setActionName(objectData.getString("actionName"));
+		object.setAllowAssignUser(objectData.getInt("allowAssignUser"));
+		object.setAssignUserId(objectData.getLong("assignUserId"));
+		object.setRequestPayment(objectData.getInt("requestPayment"));
+		object.setPaymentFee(objectData.getString("paymentFee"));
+		object.setCreateDossierFiles(objectData.getString("createDossierFiles"));
+		object.setReturnDossierFiles(objectData.getString("returnDossierFiles"));
+		object.setMakeBriefNote(objectData.getString("makeBriefNote"));
+		object.setSyncActionCode(objectData.getString("syncActionCode"));
+		object.setRollbackable(objectData.getBoolean("rollbackable"));
+		object.setCreateDossierNo(objectData.getBoolean("createDossierNo"));
+		object.setESignature(objectData.getBoolean("eSignature"));
+		object.setConfigNote(objectData.getString("configNote"));
+		object.setDossierTemplateNo(objectData.getString("dossierTemplateNo"));
+		object.setSignatureType(objectData.getString("signatureType"));
+		object.setCreateDossiers(objectData.getString("createDossiers"));
+		object.setCheckInput(objectData.getInt("checkInput"));
+
+		processActionPersistence.update(object);
+
+		return object;
 	}
 
 }

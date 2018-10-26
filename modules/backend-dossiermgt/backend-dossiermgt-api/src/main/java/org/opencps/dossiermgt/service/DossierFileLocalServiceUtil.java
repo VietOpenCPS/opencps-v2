@@ -87,6 +87,16 @@ public class DossierFileLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierFile adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* POST /dossiers/{id}/files/copyfile
 	*

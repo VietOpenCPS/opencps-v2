@@ -68,6 +68,16 @@ public class ActionConfigLocalServiceUtil {
 			mappingAction);
 	}
 
+	public static org.opencps.dossiermgt.model.ActionConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ActionConfig adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new action config with the primary key. Does not add the action config to the database.
 	*

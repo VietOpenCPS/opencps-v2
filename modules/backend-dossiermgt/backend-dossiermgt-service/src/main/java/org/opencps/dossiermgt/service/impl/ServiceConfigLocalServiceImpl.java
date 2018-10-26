@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
@@ -89,10 +90,11 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil} to access
-	 * the service config local service.
+	 * org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil} to access the
+	 * service config local service.
 	 */
 	private Log _log = LogFactoryUtil.getLog(ServiceConfigLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceConfig removeServiceConfigById(long serviceConfigId) throws PortalException {
 
@@ -112,9 +114,9 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	}
 
 	public List<ServiceConfig> getByGroupId(long groupId) throws PortalException, SystemException {
-		
+
 		return serviceConfigPersistence.findByG_(groupId);
-		
+
 	}
 
 	public ServiceConfig getBySICodeAndGAC(long groupId, String serviceInfoCode, String govAgencyCode)
@@ -471,7 +473,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
-	//LamTV_ Process output ServiceConfig to DB
+	// LamTV_ Process output ServiceConfig to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceConfig updateServiceConfigDB(long userId, long groupId, long serviceInfoId, String govAgencyCode,
 			String govAgencyName, String serviceInstruction, Integer serviceLevel, String serviceUrl,
@@ -506,7 +508,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfigPersistence.update(serviceConfig);
 	}
 
-	//LamTV_Process get list ServiceConfig by ServiceInfo
+	// LamTV_Process get list ServiceConfig by ServiceInfo
 	public List<ServiceConfig> getByServiceInfo(long groupId, long serviceInfoId) {
 		return serviceConfigPersistence.findByF_GID_SID(groupId, serviceInfoId);
 	}
@@ -522,25 +524,84 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	public long countByGovAgency(String keyword, String govAgencyCode, long groupId) {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(ServiceConfigImpl.class);
 		if (Validator.isNotNull(keyword)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.like(ServiceConfigTerm.GOVAGENCY_NAME, keyword));			
+			dynamicQuery.add(RestrictionsFactoryUtil.like(ServiceConfigTerm.GOVAGENCY_NAME, keyword));
 		}
 		dynamicQuery.add(RestrictionsFactoryUtil.eq(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode));
 		dynamicQuery.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
-		
+
 		return serviceConfigPersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
-	public List<ServiceConfig> searchByGovAgency(String keyword, String govAgencyCode, long groupId, int start, int end) {
+	public List<ServiceConfig> searchByGovAgency(String keyword, String govAgencyCode, long groupId, int start,
+			int end) {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(ServiceConfigImpl.class);
 		if (Validator.isNotNull(keyword)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.like(ServiceConfigTerm.GOVAGENCY_NAME, keyword));			
+			dynamicQuery.add(RestrictionsFactoryUtil.like(ServiceConfigTerm.GOVAGENCY_NAME, keyword));
 		}
 		dynamicQuery.add(RestrictionsFactoryUtil.eq(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode));
 		dynamicQuery.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
-		
+
 		return serviceConfigPersistence.findWithDynamicQuery(dynamicQuery, start, end);
 	}
-	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ServiceConfig adminProcessDelete(Long id) {
+
+		ServiceConfig object = serviceConfigPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			serviceConfigPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ServiceConfig adminProcessData(JSONObject objectData) {
+
+		ServiceConfig object = null;
+
+		if (objectData.getLong("serviceConfigId") > 0) {
+
+			object = serviceConfigPersistence.fetchByPrimaryKey(objectData.getLong("serviceConfigId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ServiceConfig.class.getName());
+
+			object = serviceConfigPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+		object.setGovAgencyName(objectData.getString("govAgencyName"));
+		object.setServiceInstruction(objectData.getString("serviceInstruction"));
+		object.setServiceLevel(objectData.getInt("serviceLevel"));
+		object.setServiceUrl(objectData.getString("serviceUrl"));
+		object.setForBusiness(objectData.getBoolean("forBusiness"));
+		object.setForCitizen(objectData.getBoolean("forCitizen"));
+		object.setPostService(objectData.getBoolean("postalService"));
+		object.setRegistration(objectData.getBoolean("registration"));
+		object.setServiceInfoId(objectData.getLong("serviceInfoId"));
+		object.setServiceLevel(objectData.getInt("serviceLevel"));
+
+		serviceConfigPersistence.update(object);
+
+		return object;
+	}
+
 	public static final String CLASS_NAME = ServiceConfig.class.getName();
 
 }

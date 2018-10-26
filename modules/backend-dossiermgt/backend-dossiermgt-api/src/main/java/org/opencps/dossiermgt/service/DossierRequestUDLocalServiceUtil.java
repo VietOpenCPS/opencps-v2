@@ -54,6 +54,16 @@ public class DossierRequestUDLocalServiceUtil {
 		return getService().addDossierRequestUD(dossierRequestUD);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierRequestUD adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierRequestUD adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new dossier request ud with the primary key. Does not add the dossier request ud to the database.
 	*

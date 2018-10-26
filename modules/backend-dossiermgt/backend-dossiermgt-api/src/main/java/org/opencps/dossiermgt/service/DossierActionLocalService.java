@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -80,6 +81,12 @@ public interface DossierActionLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction addDossierAction(DossierAction dossierAction);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public DossierAction adminProcessDelete(Long id);
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
@@ -207,6 +214,10 @@ public interface DossierActionLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierAction getByDID_CODE_First(long dossierId, String actionCode,
+		OrderByComparator<DossierAction> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDossierAndStepCode(long dossierId,

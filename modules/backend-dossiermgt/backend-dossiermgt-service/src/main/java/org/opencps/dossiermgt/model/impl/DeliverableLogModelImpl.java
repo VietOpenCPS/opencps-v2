@@ -82,7 +82,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 			{ "content", Types.VARCHAR },
 			{ "deliverableAction", Types.INTEGER },
 			{ "actionDate", Types.TIMESTAMP },
-			{ "payload", Types.CLOB }
+			{ "payload", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -101,10 +101,10 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		TABLE_COLUMNS_MAP.put("content", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("deliverableAction", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("actionDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("payload", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableId VARCHAR(75) null,dossierUid VARCHAR(75) null,author VARCHAR(75) null,content STRING null,deliverableAction INTEGER,actionDate DATE null,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableId VARCHAR(75) null,dossierUid VARCHAR(75) null,author VARCHAR(75) null,content VARCHAR(75) null,deliverableAction INTEGER,actionDate DATE null,payload VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverablelog";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableLog.deliverableLogId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverablelog.deliverableLogId ASC";

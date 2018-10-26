@@ -9,8 +9,8 @@ create table opencps_actionconfig (
 	actionCode VARCHAR(75) null,
 	actionName VARCHAR(75) null,
 	extraForm BOOLEAN,
-	formConfig TEXT null,
-	sampleData TEXT null,
+	formConfig VARCHAR(75) null,
+	sampleData VARCHAR(75) null,
 	insideProcess BOOLEAN,
 	userNote INTEGER,
 	syncType INTEGER,
@@ -33,16 +33,16 @@ create table opencps_deliverable (
 	createDate DATE null,
 	modifiedDate DATE null,
 	deliverableCode VARCHAR(75) null,
-	deliverableName VARCHAR(255) null,
+	deliverableName VARCHAR(75) null,
 	deliverableType VARCHAR(75) null,
 	govAgencyCode VARCHAR(75) null,
-	govAgencyName VARCHAR(255) null,
+	govAgencyName VARCHAR(75) null,
 	applicantIdNo VARCHAR(75) null,
 	applicantName VARCHAR(75) null,
 	subject VARCHAR(75) null,
-	formData TEXT null,
-	formScript TEXT null,
-	formReport TEXT null,
+	formData VARCHAR(75) null,
+	formScript VARCHAR(75) null,
+	formReport VARCHAR(75) null,
 	expireDate DATE null,
 	issueDate DATE null,
 	revalidate DATE null,
@@ -61,10 +61,10 @@ create table opencps_deliverablelog (
 	deliverableId VARCHAR(75) null,
 	dossierUid VARCHAR(75) null,
 	author VARCHAR(75) null,
-	content STRING null,
+	content VARCHAR(75) null,
 	deliverableAction INTEGER,
 	actionDate DATE null,
-	payload TEXT null
+	payload VARCHAR(75) null
 );
 
 create table opencps_deliverabletype (
@@ -77,12 +77,12 @@ create table opencps_deliverabletype (
 	createDate DATE null,
 	modifiedDate DATE null,
 	typeCode VARCHAR(75) null,
-	typeName VARCHAR(255) null,
-	formScript TEXT null,
-	formReport TEXT null,
+	typeName VARCHAR(75) null,
+	formScript VARCHAR(75) null,
+	formReport VARCHAR(75) null,
 	codePattern VARCHAR(75) null,
 	counter VARCHAR(75) null,
-	mappingData TEXT null,
+	mappingData VARCHAR(75) null,
 	docSync INTEGER,
 	govAgencies VARCHAR(75) null
 );
@@ -96,9 +96,9 @@ create table opencps_documenttype (
 	modifiedDate DATE null,
 	typeCode VARCHAR(75) null,
 	templateClass INTEGER,
-	documentName VARCHAR(255) null,
+	documentName VARCHAR(75) null,
 	codePattern VARCHAR(75) null,
-	documentScript TEXT null,
+	documentScript VARCHAR(75) null,
 	docSync INTEGER
 );
 
@@ -118,10 +118,10 @@ create table opencps_dossier (
 	dossierRegister VARCHAR(75) null,
 	processNo VARCHAR(75) null,
 	serviceCode VARCHAR(75) null,
-	serviceName VARCHAR(1000) null,
+	serviceName VARCHAR(75) null,
 	govAgencyCode VARCHAR(75) null,
-	govAgencyName VARCHAR(255) null,
-	applicantName VARCHAR(255) null,
+	govAgencyName VARCHAR(75) null,
+	applicantName VARCHAR(75) null,
 	applicantIdType VARCHAR(75) null,
 	applicantIdNo VARCHAR(75) null,
 	applicantIdDate DATE null,
@@ -148,10 +148,10 @@ create table opencps_dossier (
 	delegateWardName VARCHAR(75) null,
 	dossierTemplateNo VARCHAR(75) null,
 	dossierTemplateName VARCHAR(75) null,
-	dossierNote STRING null,
-	submissionNote STRING null,
-	applicantNote STRING null,
-	briefNote STRING null,
+	dossierNote VARCHAR(75) null,
+	submissionNote VARCHAR(75) null,
+	applicantNote VARCHAR(75) null,
+	briefNote VARCHAR(75) null,
 	dossierNo VARCHAR(75) null,
 	submitting BOOLEAN,
 	processDate DATE null,
@@ -214,7 +214,7 @@ create table opencps_dossieraction (
 	actionCode VARCHAR(75) null,
 	actionUser VARCHAR(75) null,
 	actionName VARCHAR(75) null,
-	actionNote VARCHAR(500) null,
+	actionNote VARCHAR(75) null,
 	actionOverdue INTEGER,
 	syncActionCode VARCHAR(75) null,
 	pending BOOLEAN,
@@ -224,8 +224,8 @@ create table opencps_dossieraction (
 	sequenceNo VARCHAR(75) null,
 	dueDate DATE null,
 	nextActionId LONG,
-	payload STRING null,
-	stepInstruction STRING null,
+	payload VARCHAR(75) null,
+	stepInstruction VARCHAR(75) null,
 	state_ INTEGER,
 	eventStatus INTEGER
 );
@@ -245,7 +245,7 @@ create table opencps_dossieractionsync (
 	referenceUid VARCHAR(75) null,
 	actionCode VARCHAR(75) null,
 	actionUser VARCHAR(75) null,
-	actionNote VARCHAR(500) null
+	actionNote VARCHAR(75) null
 );
 
 create table opencps_dossieractionuser (
@@ -271,7 +271,7 @@ create table opencps_dossierdocument (
 	referenceUid VARCHAR(75) null,
 	dossierActionId LONG,
 	documentType VARCHAR(75) null,
-	documentName VARCHAR(255) null,
+	documentName VARCHAR(75) null,
 	documentCode VARCHAR(75) null,
 	documentFileId LONG,
 	docSync INTEGER
@@ -292,18 +292,18 @@ create table opencps_dossierfile (
 	dossierPartNo VARCHAR(75) null,
 	dossierPartType INTEGER,
 	fileTemplateNo VARCHAR(75) null,
-	displayName VARCHAR(500) null,
-	formData TEXT null,
+	displayName VARCHAR(75) null,
+	formData VARCHAR(75) null,
 	fileEntryId LONG,
 	original BOOLEAN,
 	eForm BOOLEAN,
 	isNew BOOLEAN,
 	removed BOOLEAN,
 	signCheck INTEGER,
-	signInfo STRING null,
-	formScript TEXT null,
-	formReport TEXT null,
-	formSchema TEXT null,
+	signInfo VARCHAR(75) null,
+	formScript VARCHAR(75) null,
+	formReport VARCHAR(75) null,
+	formSchema VARCHAR(75) null,
 	deliverableCode VARCHAR(75) null
 );
 
@@ -318,9 +318,9 @@ create table opencps_dossierlog (
 	modifiedDate DATE null,
 	dossierId LONG,
 	author VARCHAR(75) null,
-	content STRING null,
+	content VARCHAR(75) null,
 	notificationType VARCHAR(75) null,
-	payload TEXT null
+	payload VARCHAR(75) null
 );
 
 create table opencps_dossiermark (
@@ -335,7 +335,7 @@ create table opencps_dossiermark (
 	dossierPartNo VARCHAR(75) null,
 	fileCheck INTEGER,
 	fileMark INTEGER,
-	fileComment VARCHAR(500) null
+	fileComment VARCHAR(75) null
 );
 
 create table opencps_dossierpart (
@@ -349,13 +349,13 @@ create table opencps_dossierpart (
 	modifiedDate DATE null,
 	templateNo VARCHAR(75) null,
 	partNo VARCHAR(75) null,
-	partName VARCHAR(500) null,
+	partName VARCHAR(75) null,
 	partTip VARCHAR(75) null,
 	partType INTEGER,
 	multiple BOOLEAN,
-	formScript TEXT null,
-	formReport TEXT null,
-	sampleData TEXT null,
+	formScript VARCHAR(75) null,
+	formReport VARCHAR(75) null,
+	sampleData VARCHAR(75) null,
 	required BOOLEAN,
 	fileTemplateNo VARCHAR(75) null,
 	eSign BOOLEAN,
@@ -433,15 +433,15 @@ create table opencps_dossiersync (
 	actionCode VARCHAR(75) null,
 	actionName VARCHAR(75) null,
 	actionUser VARCHAR(75) null,
-	actionNote VARCHAR(500) null,
+	actionNote VARCHAR(75) null,
 	syncType INTEGER,
 	infoType INTEGER,
-	payload TEXT null,
+	payload VARCHAR(75) null,
 	serverNo VARCHAR(75) null,
 	state_ INTEGER,
 	retry INTEGER,
-	messageText TEXT null,
-	acknowlegement TEXT null
+	messageText VARCHAR(75) null,
+	acknowlegement VARCHAR(75) null
 );
 
 create table opencps_dossiertemplate (
@@ -453,8 +453,8 @@ create table opencps_dossiertemplate (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	templateName VARCHAR(500) null,
-	description STRING null,
+	templateName VARCHAR(75) null,
+	description VARCHAR(75) null,
 	templateNo VARCHAR(75) null
 );
 
@@ -480,8 +480,8 @@ create table opencps_menuconfig (
 	order_ INTEGER,
 	menuType INTEGER,
 	queryParams VARCHAR(75) null,
-	tableConfig TEXT null,
-	buttonConfig TEXT null
+	tableConfig VARCHAR(75) null,
+	buttonConfig VARCHAR(75) null
 );
 
 create table opencps_menurole (
@@ -507,8 +507,8 @@ create table opencps_paymentconfig (
 	invoiceIssueNo VARCHAR(75) null,
 	invoiceLastNo VARCHAR(75) null,
 	invoiceForm VARCHAR(75) null,
-	bankInfo STRING null,
-	epaymentConfig TEXT null
+	bankInfo VARCHAR(75) null,
+	epaymentConfig VARCHAR(75) null
 );
 
 create table opencps_paymentfile (
@@ -528,13 +528,13 @@ create table opencps_paymentfile (
 	serviceAmount LONG,
 	shipAmount LONG,
 	paymentAmount LONG,
-	paymentNote VARCHAR(255) null,
-	epaymentProfile STRING null,
-	bankInfo STRING null,
+	paymentNote VARCHAR(75) null,
+	epaymentProfile VARCHAR(75) null,
+	bankInfo VARCHAR(75) null,
 	paymentStatus INTEGER,
 	paymentMethod VARCHAR(75) null,
 	confirmDatetime DATE null,
-	confirmPayload TEXT null,
+	confirmPayload VARCHAR(75) null,
 	confirmFileEntryId LONG,
 	confirmNote VARCHAR(75) null,
 	approveDatetime DATE null,
@@ -543,8 +543,8 @@ create table opencps_paymentfile (
 	invoiceTemplateNo VARCHAR(75) null,
 	invoiceIssueNo VARCHAR(75) null,
 	invoiceNo VARCHAR(75) null,
-	invoicePayload TEXT null,
-	einvoice TEXT null
+	invoicePayload VARCHAR(75) null,
+	einvoice VARCHAR(75) null
 );
 
 create table opencps_process_plugin (
@@ -561,8 +561,8 @@ create table opencps_process_plugin (
 	pluginName VARCHAR(75) null,
 	pluginType INTEGER,
 	sequenceNo VARCHAR(75) null,
-	pluginForm STRING null,
-	sampleData STRING null,
+	pluginForm VARCHAR(75) null,
+	sampleData VARCHAR(75) null,
 	autoRun BOOLEAN
 );
 
@@ -585,10 +585,10 @@ create table opencps_processaction (
 	allowAssignUser INTEGER,
 	assignUserId LONG,
 	requestPayment INTEGER,
-	paymentFee VARCHAR(500) null,
+	paymentFee VARCHAR(75) null,
 	createDossierFiles VARCHAR(75) null,
 	returnDossierFiles VARCHAR(75) null,
-	makeBriefNote VARCHAR(500) null,
+	makeBriefNote VARCHAR(75) null,
 	syncActionCode VARCHAR(75) null,
 	rollbackable BOOLEAN,
 	createDossierNo BOOLEAN,
@@ -611,12 +611,12 @@ create table opencps_processoption (
 	modifiedDate DATE null,
 	serviceConfigId LONG,
 	optionOrder INTEGER,
-	optionName VARCHAR(500) null,
+	optionName VARCHAR(75) null,
 	autoSelect VARCHAR(75) null,
 	dossierTemplateId LONG,
 	serviceProcessId LONG,
-	instructionNote STRING null,
-	submissionNote STRING null,
+	instructionNote VARCHAR(75) null,
+	submissionNote VARCHAR(75) null,
 	sampleCount LONG
 );
 
@@ -631,7 +631,7 @@ create table opencps_processsequence (
 	modifiedDate DATE null,
 	serviceProcessId LONG,
 	sequenceNo VARCHAR(75) null,
-	sequenceName VARCHAR(255) null,
+	sequenceName VARCHAR(75) null,
 	sequenceRole VARCHAR(75) null,
 	durationCount DOUBLE
 );
@@ -652,9 +652,9 @@ create table opencps_processstep (
 	dossierStatus VARCHAR(75) null,
 	dossierSubStatus VARCHAR(75) null,
 	durationCount DOUBLE,
-	customProcessUrl VARCHAR(255) null,
-	stepInstruction STRING null,
-	briefNote STRING null,
+	customProcessUrl VARCHAR(75) null,
+	stepInstruction VARCHAR(75) null,
+	briefNote VARCHAR(75) null,
 	editable BOOLEAN,
 	restrictDossier VARCHAR(75) null,
 	lockState VARCHAR(75) null,
@@ -682,11 +682,11 @@ create table opencps_registration (
 	userId LONG,
 	createDate DATE null,
 	modifiedDate DATE null,
-	applicantName VARCHAR(255) null,
+	applicantName VARCHAR(75) null,
 	applicantIdType VARCHAR(75) null,
 	applicantIdNo VARCHAR(75) null,
 	applicantIdDate DATE null,
-	address VARCHAR(255) null,
+	address VARCHAR(75) null,
 	cityCode VARCHAR(75) null,
 	cityName VARCHAR(75) null,
 	districtCode VARCHAR(75) null,
@@ -715,10 +715,10 @@ create table opencps_registrationform (
 	registrationId LONG,
 	referenceUid VARCHAR(75) null,
 	formNo VARCHAR(75) null,
-	formName VARCHAR(255) null,
-	formData TEXT null,
-	formScript TEXT null,
-	formReport TEXT null,
+	formName VARCHAR(75) null,
+	formData VARCHAR(75) null,
+	formScript VARCHAR(75) null,
+	formReport VARCHAR(75) null,
 	fileEntryId LONG,
 	isNew BOOLEAN,
 	removed BOOLEAN
@@ -734,8 +734,8 @@ create table opencps_registrationlog (
 	modifiedDate DATE null,
 	registrationId LONG,
 	author VARCHAR(75) null,
-	content STRING null,
-	payload TEXT null
+	content VARCHAR(75) null,
+	payload VARCHAR(75) null
 );
 
 create table opencps_registrationtemplate (
@@ -749,11 +749,11 @@ create table opencps_registrationtemplate (
 	govAgencyCode VARCHAR(75) null,
 	govAgencyName VARCHAR(75) null,
 	formNo VARCHAR(75) null,
-	formName VARCHAR(255) null,
+	formName VARCHAR(75) null,
 	multiple BOOLEAN,
-	formScript TEXT null,
-	formReport TEXT null,
-	sampleData TEXT null
+	formScript VARCHAR(75) null,
+	formReport VARCHAR(75) null,
+	sampleData VARCHAR(75) null
 );
 
 create table opencps_serviceconfig (
@@ -768,9 +768,9 @@ create table opencps_serviceconfig (
 	serviceInfoId LONG,
 	govAgencyCode VARCHAR(75) null,
 	govAgencyName VARCHAR(75) null,
-	serviceInstruction STRING null,
+	serviceInstruction VARCHAR(75) null,
 	serviceLevel INTEGER,
-	serviceUrl VARCHAR(255) null,
+	serviceUrl VARCHAR(75) null,
 	forCitizen BOOLEAN,
 	forBusiness BOOLEAN,
 	postService BOOLEAN,
@@ -787,16 +787,16 @@ create table opencps_serviceinfo (
 	createDate DATE null,
 	modifiedDate DATE null,
 	serviceCode VARCHAR(75) null,
-	serviceName VARCHAR(1000) null,
-	processText STRING null,
-	methodText STRING null,
-	dossierText STRING null,
-	conditionText STRING null,
-	durationText STRING null,
-	applicantText STRING null,
-	resultText STRING null,
-	regularText STRING null,
-	feeText STRING null,
+	serviceName VARCHAR(75) null,
+	processText VARCHAR(75) null,
+	methodText VARCHAR(75) null,
+	dossierText VARCHAR(75) null,
+	conditionText VARCHAR(75) null,
+	durationText VARCHAR(75) null,
+	applicantText VARCHAR(75) null,
+	resultText VARCHAR(75) null,
+	regularText VARCHAR(75) null,
+	feeText VARCHAR(75) null,
 	administrationCode VARCHAR(75) null,
 	administrationName VARCHAR(75) null,
 	administrationIndex VARCHAR(75) null,
@@ -817,8 +817,8 @@ create table opencps_serviceprocess (
 	createDate DATE null,
 	modifiedDate DATE null,
 	processNo VARCHAR(75) null,
-	processName VARCHAR(255) null,
-	description STRING null,
+	processName VARCHAR(75) null,
+	description VARCHAR(75) null,
 	durationCount DOUBLE,
 	durationUnit INTEGER,
 	counter LONG,
@@ -849,7 +849,7 @@ create table opencps_services_filetemplates (
 	uuid_ VARCHAR(75) null,
 	serviceInfoId LONG not null,
 	fileTemplateNo VARCHAR(75) not null,
-	templateName VARCHAR(255) null,
+	templateName VARCHAR(75) null,
 	fileEntryId LONG,
 	primary key (serviceInfoId, fileTemplateNo)
 );
@@ -869,7 +869,7 @@ create table opencps_stepconfig (
 	dossierSubStatus VARCHAR(75) null,
 	menuGroup VARCHAR(75) null,
 	menuStepName VARCHAR(75) null,
-	buttonConfig VARCHAR(500) null
+	buttonConfig VARCHAR(75) null
 );
 
 create table opencps_userinfolog (
@@ -877,5 +877,5 @@ create table opencps_userinfolog (
 	userLogId LONG not null primary key,
 	userId LONG,
 	createDate DATE null,
-	payload STRING null
+	payload VARCHAR(75) null
 );

@@ -66,6 +66,16 @@ public class RegistrationTemplatesLocalServiceUtil {
 		return getService().addRegistrationTemplates(registrationTemplates);
 	}
 
+	public static org.opencps.dossiermgt.model.RegistrationTemplates adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.RegistrationTemplates adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new registration templates with the primary key. Does not add the registration templates to the database.
 	*

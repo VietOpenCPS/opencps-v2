@@ -14,8 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -568,17 +570,16 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		// TODO add more logic here
 	}
 
-	public DossierPart getByPartTypeEsign(String templateNo,
-			String partNo, int partType, boolean eSign) {
+	public DossierPart getByPartTypeEsign(String templateNo, String partNo, int partType, boolean eSign) {
 		try {
 			return dossierPartPersistence.findByTP_NO_PART_ESIGN(templateNo, partNo, partType, eSign);
 		} catch (NoSuchDossierPartException e) {
-//			_log.debug(e);
+			// _log.debug(e);
 			return null;
 		}
 	}
 
-	//LamTV_ Process output DossierPart to DB
+	// LamTV_ Process output DossierPart to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierPart updateDossierPartDB(long userId, long groupId, String templateNo, String partNo, String partName,
 			String partTip, Integer partType, boolean multiple, String formScript, String formReport, boolean required,
@@ -622,9 +623,72 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		return dossierPartPersistence.update(object);
 	}
 
-	//LamTV_Get dossierPart by partNo and dossierId
+	// LamTV_Get dossierPart by partNo and dossierId
 	public DossierPart getByTempAndPartNo(long groupId, String templateNo, String partNo) {
 		return dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DossierPart adminProcessDelete(Long id) {
+
+		DossierPart object = dossierPartPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dossierPartPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierPart adminProcessData(JSONObject objectData) {
+
+		DossierPart object = null;
+
+		if (objectData.getLong("dossierPartId") > 0) {
+
+			object = dossierPartPersistence.fetchByPrimaryKey(objectData.getLong("dossierPartId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DossierPart.class.getName());
+
+			object = dossierPartPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setTemplateNo(objectData.getString("templateNo"));
+		object.setPartNo(objectData.getString("partNo"));
+		object.setPartName(objectData.getString("partName"));
+		object.setPartTip(objectData.getString("partTip"));
+		object.setPartType(objectData.getInt("partType"));
+		object.setMultiple(objectData.getBoolean("multiple"));
+		object.setFormScript(objectData.getString("formScript"));
+		object.setFormReport(objectData.getString("formReport"));
+		object.setSampleData(objectData.getString("sampleData"));
+		object.setRequired(objectData.getBoolean("required"));
+		object.setFileTemplateNo(objectData.getString("fileTemplateNo"));
+		object.setESign(objectData.getBoolean("eSign"));
+		object.setDeliverableType(objectData.getString("deliverableType"));
+		object.setDeliverableAction(objectData.getInt("deliverableAction"));
+		object.setEForm(objectData.getBoolean("eForm"));
+		object.setFileMark(objectData.getInt("fileMark"));
+
+		dossierPartPersistence.update(object);
+
+		return object;
 	}
 
 	public static final String CLASS_NAME = DossierPart.class.getName();

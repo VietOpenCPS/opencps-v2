@@ -78,8 +78,8 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 			{ "actionCode", Types.VARCHAR },
 			{ "actionName", Types.VARCHAR },
 			{ "extraForm", Types.BOOLEAN },
-			{ "formConfig", Types.CLOB },
-			{ "sampleData", Types.CLOB },
+			{ "formConfig", Types.VARCHAR },
+			{ "sampleData", Types.VARCHAR },
 			{ "insideProcess", Types.BOOLEAN },
 			{ "userNote", Types.INTEGER },
 			{ "syncType", Types.INTEGER },
@@ -104,8 +104,8 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 		TABLE_COLUMNS_MAP.put("actionCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("actionName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("extraForm", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("formConfig", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("sampleData", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formConfig", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("sampleData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("insideProcess", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("userNote", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("syncType", Types.INTEGER);
@@ -118,7 +118,7 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 		TABLE_COLUMNS_MAP.put("mappingAction", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_actionconfig (uuid_ VARCHAR(75) null,actionConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,extraForm BOOLEAN,formConfig TEXT null,sampleData TEXT null,insideProcess BOOLEAN,userNote INTEGER,syncType INTEGER,eventType INTEGER,infoType INTEGER,pending BOOLEAN,rollbackable BOOLEAN,notificationType VARCHAR(75) null,documentType VARCHAR(75) null,mappingAction VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_actionconfig (uuid_ VARCHAR(75) null,actionConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,extraForm BOOLEAN,formConfig VARCHAR(75) null,sampleData VARCHAR(75) null,insideProcess BOOLEAN,userNote INTEGER,syncType INTEGER,eventType INTEGER,infoType INTEGER,pending BOOLEAN,rollbackable BOOLEAN,notificationType VARCHAR(75) null,documentType VARCHAR(75) null,mappingAction VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_actionconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY actionConfig.actionCode ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_actionconfig.actionCode ASC";

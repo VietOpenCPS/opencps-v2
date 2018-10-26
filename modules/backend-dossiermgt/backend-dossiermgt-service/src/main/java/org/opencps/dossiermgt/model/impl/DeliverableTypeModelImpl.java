@@ -78,11 +78,11 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "typeCode", Types.VARCHAR },
 			{ "typeName", Types.VARCHAR },
-			{ "formScript", Types.CLOB },
-			{ "formReport", Types.CLOB },
+			{ "formScript", Types.VARCHAR },
+			{ "formReport", Types.VARCHAR },
 			{ "codePattern", Types.VARCHAR },
 			{ "counter", Types.VARCHAR },
-			{ "mappingData", Types.CLOB },
+			{ "mappingData", Types.VARCHAR },
 			{ "docSync", Types.INTEGER },
 			{ "govAgencies", Types.VARCHAR }
 		};
@@ -99,16 +99,16 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("typeCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("typeName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("formScript", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formReport", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("codePattern", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("counter", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("mappingData", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("mappingData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("docSync", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("govAgencies", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,typeName VARCHAR(255) null,formScript TEXT null,formReport TEXT null,codePattern VARCHAR(75) null,counter VARCHAR(75) null,mappingData TEXT null,docSync INTEGER,govAgencies VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,typeName VARCHAR(75) null,formScript VARCHAR(75) null,formReport VARCHAR(75) null,codePattern VARCHAR(75) null,counter VARCHAR(75) null,mappingData VARCHAR(75) null,docSync INTEGER,govAgencies VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverabletype";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableType.deliverableTypeId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverabletype.deliverableTypeId ASC";

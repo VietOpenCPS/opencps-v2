@@ -54,6 +54,16 @@ public class PaymentConfigLocalServiceUtil {
 		return getService().addPaymentConfig(paymentConfig);
 	}
 
+	public static org.opencps.dossiermgt.model.PaymentConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.PaymentConfig adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

@@ -79,6 +79,12 @@ public interface DossierMarkLocalService extends BaseLocalService,
 		String fileComment, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierMark adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public DossierMark adminProcessDelete(Long id);
+
 	/**
 	* Creates a new dossier mark with the primary key. Does not add the dossier mark to the database.
 	*

@@ -54,6 +54,16 @@ public class PaymentFileLocalServiceUtil {
 		return getService().addPaymentFile(paymentFile);
 	}
 
+	public static org.opencps.dossiermgt.model.PaymentFile adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.PaymentFile adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Count number payment File using countLucene
 	*
@@ -494,6 +504,11 @@ public class PaymentFileLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.PaymentFile updatePaymentFile(
 		org.opencps.dossiermgt.model.PaymentFile paymentFile) {
 		return getService().updatePaymentFile(paymentFile);
+	}
+
+	public static org.opencps.dossiermgt.model.PaymentFile updatePaymentFileCustom(
+		org.opencps.dossiermgt.model.PaymentFile oldpaymentFile) {
+		return getService().updatePaymentFileCustom(oldpaymentFile);
 	}
 
 	public static PaymentFileLocalService getService() {

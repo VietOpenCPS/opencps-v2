@@ -54,6 +54,16 @@ public class ProcessOptionLocalServiceUtil {
 		return getService().addProcessOption(processOption);
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessOption adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ProcessOption adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

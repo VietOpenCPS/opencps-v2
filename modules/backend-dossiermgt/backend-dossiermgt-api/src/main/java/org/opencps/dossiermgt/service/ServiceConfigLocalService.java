@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -79,6 +80,12 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceConfig addServiceConfig(ServiceConfig serviceConfig);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ServiceConfig adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public ServiceConfig adminProcessDelete(Long id);
 
 	public long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId);

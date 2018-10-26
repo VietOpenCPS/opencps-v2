@@ -54,6 +54,16 @@ public class ServiceConfigLocalServiceUtil {
 		return getService().addServiceConfig(serviceConfig);
 	}
 
+	public static org.opencps.dossiermgt.model.ServiceConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ServiceConfig adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId) {
 		return getService().countByGovAgency(keyword, govAgencyCode, groupId);

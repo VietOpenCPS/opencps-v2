@@ -42,7 +42,6 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 
 	@Override
 	public ActionConfigItem addActionConfig(ActionConfigItem body) {
-
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		System.out.println("ActionConfigApiImpl.addActionConfig()" + body);

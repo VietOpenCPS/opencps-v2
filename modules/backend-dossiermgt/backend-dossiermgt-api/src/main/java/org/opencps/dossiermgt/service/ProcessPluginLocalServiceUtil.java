@@ -54,6 +54,16 @@ public class ProcessPluginLocalServiceUtil {
 		return getService().addProcessPlugin(processPlugin);
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessPlugin adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ProcessPlugin adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new process plugin with the primary key. Does not add the process plugin to the database.
 	*

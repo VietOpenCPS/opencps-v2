@@ -76,7 +76,7 @@ public class DocumentTypeModelImpl extends BaseModelImpl<DocumentType>
 			{ "templateClass", Types.INTEGER },
 			{ "documentName", Types.VARCHAR },
 			{ "codePattern", Types.VARCHAR },
-			{ "documentScript", Types.CLOB },
+			{ "documentScript", Types.VARCHAR },
 			{ "docSync", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
@@ -92,11 +92,11 @@ public class DocumentTypeModelImpl extends BaseModelImpl<DocumentType>
 		TABLE_COLUMNS_MAP.put("templateClass", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("documentName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("codePattern", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("documentScript", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("documentScript", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("docSync", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_documenttype (uuid_ VARCHAR(75) null,DocumentTypeId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,templateClass INTEGER,documentName VARCHAR(255) null,codePattern VARCHAR(75) null,documentScript TEXT null,docSync INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_documenttype (uuid_ VARCHAR(75) null,DocumentTypeId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,templateClass INTEGER,documentName VARCHAR(75) null,codePattern VARCHAR(75) null,documentScript VARCHAR(75) null,docSync INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_documenttype";
 	public static final String ORDER_BY_JPQL = " ORDER BY documentType.modifiedDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_documenttype.modifiedDate DESC";

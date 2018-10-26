@@ -64,6 +64,16 @@ public class StepConfigLocalServiceUtil {
 		return getService().addStepConfig(stepConfig);
 	}
 
+	public static org.opencps.dossiermgt.model.StepConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.StepConfig adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new step config with the primary key. Does not add the step config to the database.
 	*

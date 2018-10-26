@@ -78,6 +78,17 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 			isSync, serviceContext);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DossierFile adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dossierFileLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierFile adminProcessDelete(Long id) {
+		return _dossierFileLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* POST /dossiers/{id}/files/copyfile
 	*

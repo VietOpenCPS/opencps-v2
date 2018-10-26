@@ -47,6 +47,18 @@ public class DossierTemplateLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierTemplate adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dossierTemplateLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierTemplate adminProcessDelete(
+		Long id) {
+		return _dossierTemplateLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

@@ -91,7 +91,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 			{ "paymentStatus", Types.INTEGER },
 			{ "paymentMethod", Types.VARCHAR },
 			{ "confirmDatetime", Types.TIMESTAMP },
-			{ "confirmPayload", Types.CLOB },
+			{ "confirmPayload", Types.VARCHAR },
 			{ "confirmFileEntryId", Types.BIGINT },
 			{ "confirmNote", Types.VARCHAR },
 			{ "approveDatetime", Types.TIMESTAMP },
@@ -100,8 +100,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 			{ "invoiceTemplateNo", Types.VARCHAR },
 			{ "invoiceIssueNo", Types.VARCHAR },
 			{ "invoiceNo", Types.VARCHAR },
-			{ "invoicePayload", Types.CLOB },
-			{ "einvoice", Types.CLOB }
+			{ "invoicePayload", Types.VARCHAR },
+			{ "einvoice", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -128,7 +128,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		TABLE_COLUMNS_MAP.put("paymentStatus", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("paymentMethod", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("confirmDatetime", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("confirmPayload", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("confirmPayload", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("confirmFileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("confirmNote", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("approveDatetime", Types.TIMESTAMP);
@@ -137,11 +137,11 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		TABLE_COLUMNS_MAP.put("invoiceTemplateNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("invoiceIssueNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("invoiceNo", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("invoicePayload", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("einvoice", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("invoicePayload", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("einvoice", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_paymentfile (uuid_ VARCHAR(75) null,paymentFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,paymentFee VARCHAR(75) null,advanceAmount LONG,feeAmount LONG,serviceAmount LONG,shipAmount LONG,paymentAmount LONG,paymentNote VARCHAR(255) null,epaymentProfile STRING null,bankInfo STRING null,paymentStatus INTEGER,paymentMethod VARCHAR(75) null,confirmDatetime DATE null,confirmPayload TEXT null,confirmFileEntryId LONG,confirmNote VARCHAR(75) null,approveDatetime DATE null,accountUserName VARCHAR(75) null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo VARCHAR(75) null,invoiceIssueNo VARCHAR(75) null,invoiceNo VARCHAR(75) null,invoicePayload TEXT null,einvoice TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_paymentfile (uuid_ VARCHAR(75) null,paymentFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,paymentFee VARCHAR(75) null,advanceAmount LONG,feeAmount LONG,serviceAmount LONG,shipAmount LONG,paymentAmount LONG,paymentNote VARCHAR(75) null,epaymentProfile VARCHAR(75) null,bankInfo VARCHAR(75) null,paymentStatus INTEGER,paymentMethod VARCHAR(75) null,confirmDatetime DATE null,confirmPayload VARCHAR(75) null,confirmFileEntryId LONG,confirmNote VARCHAR(75) null,approveDatetime DATE null,accountUserName VARCHAR(75) null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo VARCHAR(75) null,invoiceIssueNo VARCHAR(75) null,invoiceNo VARCHAR(75) null,invoicePayload VARCHAR(75) null,einvoice VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_paymentfile";
 	public static final String ORDER_BY_JPQL = " ORDER BY paymentFile.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_paymentfile.createDate DESC";

@@ -79,7 +79,7 @@ public class RegistrationLogModelImpl extends BaseModelImpl<RegistrationLog>
 			{ "registrationId", Types.BIGINT },
 			{ "author", Types.VARCHAR },
 			{ "content", Types.VARCHAR },
-			{ "payload", Types.CLOB }
+			{ "payload", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -94,10 +94,10 @@ public class RegistrationLogModelImpl extends BaseModelImpl<RegistrationLog>
 		TABLE_COLUMNS_MAP.put("registrationId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("author", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("content", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("payload", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_registrationlog (uuid_ VARCHAR(75) null,registrationLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,author VARCHAR(75) null,content STRING null,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_registrationlog (uuid_ VARCHAR(75) null,registrationLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,author VARCHAR(75) null,content VARCHAR(75) null,payload VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_registrationlog";
 	public static final String ORDER_BY_JPQL = " ORDER BY registrationLog.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_registrationlog.createDate DESC";

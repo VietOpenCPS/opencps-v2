@@ -122,7 +122,7 @@ public class ProcessStepModelImpl extends BaseModelImpl<ProcessStep>
 		TABLE_COLUMNS_MAP.put("checkInput", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processstep (uuid_ VARCHAR(75) null,processStepId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,stepCode VARCHAR(75) null,serviceProcessId LONG,stepName VARCHAR(75) null,sequenceNo VARCHAR(75) null,dossierStatus VARCHAR(75) null,dossierSubStatus VARCHAR(75) null,durationCount DOUBLE,customProcessUrl VARCHAR(255) null,stepInstruction STRING null,briefNote STRING null,editable BOOLEAN,restrictDossier VARCHAR(75) null,lockState VARCHAR(75) null,groupName VARCHAR(75) null,roleAsStep VARCHAR(75) null,checkInput INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processstep (uuid_ VARCHAR(75) null,processStepId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,stepCode VARCHAR(75) null,serviceProcessId LONG,stepName VARCHAR(75) null,sequenceNo VARCHAR(75) null,dossierStatus VARCHAR(75) null,dossierSubStatus VARCHAR(75) null,durationCount DOUBLE,customProcessUrl VARCHAR(75) null,stepInstruction VARCHAR(75) null,briefNote VARCHAR(75) null,editable BOOLEAN,restrictDossier VARCHAR(75) null,lockState VARCHAR(75) null,groupName VARCHAR(75) null,roleAsStep VARCHAR(75) null,checkInput INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processstep";
 	public static final String ORDER_BY_JPQL = " ORDER BY processStep.processStepId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processstep.processStepId ASC";

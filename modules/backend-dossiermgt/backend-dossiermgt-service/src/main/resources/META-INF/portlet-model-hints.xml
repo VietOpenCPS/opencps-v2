@@ -12,12 +12,8 @@
 		<field name="actionCode" type="String" />
 		<field name="actionName" type="String" />
 		<field name="extraForm" type="boolean" />
-		<field name="formConfig" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="sampleData" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="formConfig" type="String" />
+		<field name="sampleData" type="String" />
 		<field name="insideProcess" type="boolean" />
 		<field name="userNote" type="int" />
 		<field name="syncType" type="int" />
@@ -39,26 +35,16 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="deliverableCode" type="String" />
-		<field name="deliverableName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="deliverableName" type="String" />
 		<field name="deliverableType" type="String" />
 		<field name="govAgencyCode" type="String" />
-		<field name="govAgencyName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="govAgencyName" type="String" />
 		<field name="applicantIdNo" type="String" />
 		<field name="applicantName" type="String" />
 		<field name="subject" type="String" />
-		<field name="formData" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formScript" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formReport" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="formData" type="String" />
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
 		<field name="expireDate" type="Date" />
 		<field name="issueDate" type="Date" />
 		<field name="revalidate" type="Date" />
@@ -76,14 +62,10 @@
 		<field name="deliverableId" type="String" />
 		<field name="dossierUid" type="String" />
 		<field name="author" type="String" />
-		<field name="content" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="content" type="String" />
 		<field name="deliverableAction" type="int" />
 		<field name="actionDate" type="Date" />
-		<field name="payload" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="payload" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableType">
 		<field name="uuid" type="String" />
@@ -95,20 +77,12 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="typeCode" type="String" />
-		<field name="typeName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="formScript" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formReport" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="typeName" type="String" />
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
 		<field name="codePattern" type="String" />
 		<field name="counter" type="String" />
-		<field name="mappingData" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="mappingData" type="String" />
 		<field name="docSync" type="int" />
 		<field name="govAgencies" type="String" />
 	</model>
@@ -121,13 +95,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="typeCode" type="String" />
 		<field name="templateClass" type="int" />
-		<field name="documentName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="documentName" type="String" />
 		<field name="codePattern" type="String" />
-		<field name="documentScript" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="documentScript" type="String" />
 		<field name="docSync" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.Dossier">
@@ -146,16 +116,10 @@
 		<field name="dossierRegister" type="String" />
 		<field name="processNo" type="String" />
 		<field name="serviceCode" type="String" />
-		<field name="serviceName" type="String">
-			<hint name="max-length">1000</hint>
-		</field>
+		<field name="serviceName" type="String" />
 		<field name="govAgencyCode" type="String" />
-		<field name="govAgencyName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="applicantName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="govAgencyName" type="String" />
+		<field name="applicantName" type="String" />
 		<field name="applicantIdType" type="String" />
 		<field name="applicantIdNo" type="String" />
 		<field name="applicantIdDate" type="Date" />
@@ -182,18 +146,10 @@
 		<field name="delegateWardName" type="String" />
 		<field name="dossierTemplateNo" type="String" />
 		<field name="dossierTemplateName" type="String" />
-		<field name="dossierNote" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="submissionNote" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="applicantNote" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="briefNote" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="dossierNote" type="String" />
+		<field name="submissionNote" type="String" />
+		<field name="applicantNote" type="String" />
+		<field name="briefNote" type="String" />
 		<field name="dossierNo" type="String" />
 		<field name="submitting" type="boolean" />
 		<field name="processDate" type="Date" />
@@ -255,9 +211,7 @@
 		<field name="actionCode" type="String" />
 		<field name="actionUser" type="String" />
 		<field name="actionName" type="String" />
-		<field name="actionNote" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="actionNote" type="String" />
 		<field name="actionOverdue" type="int" />
 		<field name="syncActionCode" type="String" />
 		<field name="pending" type="boolean" />
@@ -267,12 +221,8 @@
 		<field name="sequenceNo" type="String" />
 		<field name="dueDate" type="Date" />
 		<field name="nextActionId" type="long" />
-		<field name="payload" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="stepInstruction" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="payload" type="String" />
+		<field name="stepInstruction" type="String" />
 		<field name="state" type="int" />
 		<field name="eventStatus" type="int" />
 	</model>
@@ -291,9 +241,7 @@
 		<field name="referenceUid" type="String" />
 		<field name="actionCode" type="String" />
 		<field name="actionUser" type="String" />
-		<field name="actionNote" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="actionNote" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierActionUser">
 		<field name="uuid" type="String" />
@@ -316,9 +264,7 @@
 		<field name="referenceUid" type="String" />
 		<field name="dossierActionId" type="long" />
 		<field name="documentType" type="String" />
-		<field name="documentName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="documentName" type="String" />
 		<field name="documentCode" type="String" />
 		<field name="documentFileId" type="long" />
 		<field name="docSync" type="int" />
@@ -338,30 +284,18 @@
 		<field name="dossierPartNo" type="String" />
 		<field name="dossierPartType" type="int" />
 		<field name="fileTemplateNo" type="String" />
-		<field name="displayName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="formData" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="displayName" type="String" />
+		<field name="formData" type="String" />
 		<field name="fileEntryId" type="long" />
 		<field name="original" type="boolean" />
 		<field name="eForm" type="boolean" />
 		<field name="isNew" type="boolean" />
 		<field name="removed" type="boolean" />
 		<field name="signCheck" type="int" />
-		<field name="signInfo" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="formScript" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formReport" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formSchema" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="signInfo" type="String" />
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
+		<field name="formSchema" type="String" />
 		<field name="deliverableCode" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierLog">
@@ -375,13 +309,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="dossierId" type="long" />
 		<field name="author" type="String" />
-		<field name="content" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="content" type="String" />
 		<field name="notificationType" type="String" />
-		<field name="payload" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="payload" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierMark">
 		<field name="uuid" type="String" />
@@ -395,9 +325,7 @@
 		<field name="dossierPartNo" type="String" />
 		<field name="fileCheck" type="int" />
 		<field name="fileMark" type="int" />
-		<field name="fileComment" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="fileComment" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierPart">
 		<field name="uuid" type="String" />
@@ -410,21 +338,13 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="templateNo" type="String" />
 		<field name="partNo" type="String" />
-		<field name="partName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="partName" type="String" />
 		<field name="partTip" type="String" />
 		<field name="partType" type="int" />
 		<field name="multiple" type="boolean" />
-		<field name="formScript" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formReport" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="sampleData" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
+		<field name="sampleData" type="String" />
 		<field name="required" type="boolean" />
 		<field name="fileTemplateNo" type="String" />
 		<field name="eSign" type="boolean" />
@@ -499,23 +419,15 @@
 		<field name="actionCode" type="String" />
 		<field name="actionName" type="String" />
 		<field name="actionUser" type="String" />
-		<field name="actionNote" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="actionNote" type="String" />
 		<field name="syncType" type="int" />
 		<field name="infoType" type="int" />
-		<field name="payload" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="payload" type="String" />
 		<field name="serverNo" type="String" />
 		<field name="state" type="int" />
 		<field name="retry" type="int" />
-		<field name="messageText" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="acknowlegement" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="messageText" type="String" />
+		<field name="acknowlegement" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierTemplate">
 		<field name="uuid" type="String" />
@@ -526,12 +438,8 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="templateName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="description" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="templateName" type="String" />
+		<field name="description" type="String" />
 		<field name="templateNo" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierUser">
@@ -554,12 +462,8 @@
 		<field name="order" type="int" />
 		<field name="menuType" type="int" />
 		<field name="queryParams" type="String" />
-		<field name="tableConfig" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="buttonConfig" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="tableConfig" type="String" />
+		<field name="buttonConfig" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.MenuRole">
 		<field name="uuid" type="String" />
@@ -582,12 +486,8 @@
 		<field name="invoiceIssueNo" type="String" />
 		<field name="invoiceLastNo" type="String" />
 		<field name="invoiceForm" type="String" />
-		<field name="bankInfo" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="epaymentConfig" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="bankInfo" type="String" />
+		<field name="epaymentConfig" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.PaymentFile">
 		<field name="uuid" type="String" />
@@ -606,21 +506,13 @@
 		<field name="serviceAmount" type="long" />
 		<field name="shipAmount" type="long" />
 		<field name="paymentAmount" type="long" />
-		<field name="paymentNote" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="epaymentProfile" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="bankInfo" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="paymentNote" type="String" />
+		<field name="epaymentProfile" type="String" />
+		<field name="bankInfo" type="String" />
 		<field name="paymentStatus" type="int" />
 		<field name="paymentMethod" type="String" />
 		<field name="confirmDatetime" type="Date" />
-		<field name="confirmPayload" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="confirmPayload" type="String" />
 		<field name="confirmFileEntryId" type="long" />
 		<field name="confirmNote" type="String" />
 		<field name="approveDatetime" type="Date" />
@@ -629,12 +521,8 @@
 		<field name="invoiceTemplateNo" type="String" />
 		<field name="invoiceIssueNo" type="String" />
 		<field name="invoiceNo" type="String" />
-		<field name="invoicePayload" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="einvoice" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="invoicePayload" type="String" />
+		<field name="einvoice" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessAction">
 		<field name="uuid" type="String" />
@@ -655,14 +543,10 @@
 		<field name="allowAssignUser" type="int" />
 		<field name="assignUserId" type="long" />
 		<field name="requestPayment" type="int" />
-		<field name="paymentFee" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="paymentFee" type="String" />
 		<field name="createDossierFiles" type="String" />
 		<field name="returnDossierFiles" type="String" />
-		<field name="makeBriefNote" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="makeBriefNote" type="String" />
 		<field name="syncActionCode" type="String" />
 		<field name="rollbackable" type="boolean" />
 		<field name="createDossierNo" type="boolean" />
@@ -684,18 +568,12 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceConfigId" type="long" />
 		<field name="optionOrder" type="int" />
-		<field name="optionName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="optionName" type="String" />
 		<field name="autoSelect" type="String" />
 		<field name="dossierTemplateId" type="long" />
 		<field name="serviceProcessId" type="long" />
-		<field name="instructionNote" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="submissionNote" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="instructionNote" type="String" />
+		<field name="submissionNote" type="String" />
 		<field name="sampleCount" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessPlugin">
@@ -712,12 +590,8 @@
 		<field name="pluginName" type="String" />
 		<field name="pluginType" type="int" />
 		<field name="sequenceNo" type="String" />
-		<field name="pluginForm" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="sampleData" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="pluginForm" type="String" />
+		<field name="sampleData" type="String" />
 		<field name="autoRun" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessSequence">
@@ -731,9 +605,7 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceProcessId" type="long" />
 		<field name="sequenceNo" type="String" />
-		<field name="sequenceName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="sequenceName" type="String" />
 		<field name="sequenceRole" type="String" />
 		<field name="durationCount" type="double" />
 	</model>
@@ -753,15 +625,9 @@
 		<field name="dossierStatus" type="String" />
 		<field name="dossierSubStatus" type="String" />
 		<field name="durationCount" type="double" />
-		<field name="customProcessUrl" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="stepInstruction" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="briefNote" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="customProcessUrl" type="String" />
+		<field name="stepInstruction" type="String" />
+		<field name="briefNote" type="String" />
 		<field name="editable" type="boolean" />
 		<field name="restrictDossier" type="String" />
 		<field name="lockState" type="String" />
@@ -786,15 +652,11 @@
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="applicantName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="applicantName" type="String" />
 		<field name="applicantIdType" type="String" />
 		<field name="applicantIdNo" type="String" />
 		<field name="applicantIdDate" type="Date" />
-		<field name="address" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="address" type="String" />
 		<field name="cityCode" type="String" />
 		<field name="cityName" type="String" />
 		<field name="districtCode" type="String" />
@@ -822,18 +684,10 @@
 		<field name="registrationId" type="long" />
 		<field name="referenceUid" type="String" />
 		<field name="formNo" type="String" />
-		<field name="formName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="formData" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formScript" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formReport" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="formName" type="String" />
+		<field name="formData" type="String" />
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
 		<field name="fileEntryId" type="long" />
 		<field name="isNew" type="boolean" />
 		<field name="removed" type="boolean" />
@@ -848,12 +702,8 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="registrationId" type="long" />
 		<field name="author" type="String" />
-		<field name="content" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="payload" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="content" type="String" />
+		<field name="payload" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.RegistrationTemplates">
 		<field name="uuid" type="String" />
@@ -866,19 +716,11 @@
 		<field name="govAgencyCode" type="String" />
 		<field name="govAgencyName" type="String" />
 		<field name="formNo" type="String" />
-		<field name="formName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="formName" type="String" />
 		<field name="multiple" type="boolean" />
-		<field name="formScript" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="formReport" type="String">
-			<hint-collection name="CLOB" />
-		</field>
-		<field name="sampleData" type="String">
-			<hint-collection name="CLOB" />
-		</field>
+		<field name="formScript" type="String" />
+		<field name="formReport" type="String" />
+		<field name="sampleData" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceConfig">
 		<field name="uuid" type="String" />
@@ -892,13 +734,9 @@
 		<field name="serviceInfoId" type="long" />
 		<field name="govAgencyCode" type="String" />
 		<field name="govAgencyName" type="String" />
-		<field name="serviceInstruction" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="serviceInstruction" type="String" />
 		<field name="serviceLevel" type="int" />
-		<field name="serviceUrl" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="serviceUrl" type="String" />
 		<field name="forCitizen" type="boolean" />
 		<field name="forBusiness" type="boolean" />
 		<field name="postService" type="boolean" />
@@ -908,9 +746,7 @@
 		<field name="uuid" type="String" />
 		<field name="serviceInfoId" type="long" />
 		<field name="fileTemplateNo" type="String" />
-		<field name="templateName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="templateName" type="String" />
 		<field name="fileEntryId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfo">
@@ -923,36 +759,16 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceCode" type="String" />
-		<field name="serviceName" type="String">
-			<hint name="max-length">1000</hint>
-		</field>
-		<field name="processText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="methodText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="dossierText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="conditionText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="durationText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="applicantText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="resultText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="regularText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
-		<field name="feeText" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="serviceName" type="String" />
+		<field name="processText" type="String" />
+		<field name="methodText" type="String" />
+		<field name="dossierText" type="String" />
+		<field name="conditionText" type="String" />
+		<field name="durationText" type="String" />
+		<field name="applicantText" type="String" />
+		<field name="resultText" type="String" />
+		<field name="regularText" type="String" />
+		<field name="feeText" type="String" />
 		<field name="administrationCode" type="String" />
 		<field name="administrationName" type="String" />
 		<field name="administrationIndex" type="String" />
@@ -972,12 +788,8 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="processNo" type="String" />
-		<field name="processName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="description" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="processName" type="String" />
+		<field name="description" type="String" />
 		<field name="durationCount" type="double" />
 		<field name="durationUnit" type="int" />
 		<field name="counter" type="long" />
@@ -1016,17 +828,13 @@
 		<field name="dossierSubStatus" type="String" />
 		<field name="menuGroup" type="String" />
 		<field name="menuStepName" type="String" />
-		<field name="buttonConfig" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="buttonConfig" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.UserInfoLog">
 		<field name="uuid" type="String" />
 		<field name="userLogId" type="long" />
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
-		<field name="payload" type="String">
-			<hint-collection name="TEXTAREA" />
-		</field>
+		<field name="payload" type="String" />
 	</model>
 </model-hints>

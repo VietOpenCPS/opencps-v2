@@ -104,7 +104,7 @@ public class StepConfigModelImpl extends BaseModelImpl<StepConfig>
 		TABLE_COLUMNS_MAP.put("buttonConfig", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_stepconfig (uuid_ VARCHAR(75) null,stepConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,stepCode VARCHAR(75) null,stepName VARCHAR(75) null,stepType INTEGER,dossierStatus VARCHAR(75) null,dossierSubStatus VARCHAR(75) null,menuGroup VARCHAR(75) null,menuStepName VARCHAR(75) null,buttonConfig VARCHAR(500) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_stepconfig (uuid_ VARCHAR(75) null,stepConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,stepCode VARCHAR(75) null,stepName VARCHAR(75) null,stepType INTEGER,dossierStatus VARCHAR(75) null,dossierSubStatus VARCHAR(75) null,menuGroup VARCHAR(75) null,menuStepName VARCHAR(75) null,buttonConfig VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_stepconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY stepConfig.stepCode ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_stepconfig.stepCode ASC";

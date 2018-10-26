@@ -60,6 +60,18 @@ public class RegistrationFormLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.RegistrationForm adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _registrationFormLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.RegistrationForm adminProcessDelete(
+		Long id) {
+		return _registrationFormLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

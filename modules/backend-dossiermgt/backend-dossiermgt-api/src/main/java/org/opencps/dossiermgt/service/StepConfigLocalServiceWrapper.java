@@ -56,6 +56,17 @@ public class StepConfigLocalServiceWrapper implements StepConfigLocalService,
 		return _stepConfigLocalService.addStepConfig(stepConfig);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.StepConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _stepConfigLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.StepConfig adminProcessDelete(Long id) {
+		return _stepConfigLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new step config with the primary key. Does not add the step config to the database.
 	*

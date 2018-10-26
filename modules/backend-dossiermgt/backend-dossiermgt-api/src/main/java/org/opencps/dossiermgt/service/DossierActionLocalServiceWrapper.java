@@ -47,6 +47,18 @@ public class DossierActionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierAction adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dossierActionLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierAction adminProcessDelete(
+		Long id) {
+		return _dossierActionLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,
@@ -238,6 +250,14 @@ public class DossierActionLocalServiceWrapper
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierActionLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierAction getByDID_CODE_First(
+		long dossierId, String actionCode,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.DossierAction> orderByComparator) {
+		return _dossierActionLocalService.getByDID_CODE_First(dossierId,
+			actionCode, orderByComparator);
 	}
 
 	@Override

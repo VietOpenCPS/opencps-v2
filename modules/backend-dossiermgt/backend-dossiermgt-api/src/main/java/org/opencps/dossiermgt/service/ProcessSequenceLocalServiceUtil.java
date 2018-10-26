@@ -62,6 +62,16 @@ public class ProcessSequenceLocalServiceUtil {
 		return getService().addProcessSequence(processSequence);
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessSequence adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ProcessSequence adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new process sequence with the primary key. Does not add the process sequence to the database.
 	*

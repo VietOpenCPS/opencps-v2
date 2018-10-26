@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -84,6 +85,12 @@ public interface DossierLogLocalService extends BaseLocalService,
 	public DossierLog addDossierLog(long groupId, long dossierId,
 		String author, String content, String notificationType, String payload,
 		ServiceContext serviceContext) throws PortalException, SystemException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierLog adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public DossierLog adminProcessDelete(Long id);
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

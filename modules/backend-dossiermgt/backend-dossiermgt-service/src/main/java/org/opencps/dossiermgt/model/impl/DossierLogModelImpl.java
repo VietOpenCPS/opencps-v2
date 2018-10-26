@@ -80,7 +80,7 @@ public class DossierLogModelImpl extends BaseModelImpl<DossierLog>
 			{ "author", Types.VARCHAR },
 			{ "content", Types.VARCHAR },
 			{ "notificationType", Types.VARCHAR },
-			{ "payload", Types.CLOB }
+			{ "payload", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -97,10 +97,10 @@ public class DossierLogModelImpl extends BaseModelImpl<DossierLog>
 		TABLE_COLUMNS_MAP.put("author", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("content", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("notificationType", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("payload", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierlog (uuid_ VARCHAR(75) null,dossierLogId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,author VARCHAR(75) null,content STRING null,notificationType VARCHAR(75) null,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierlog (uuid_ VARCHAR(75) null,dossierLogId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,author VARCHAR(75) null,content VARCHAR(75) null,notificationType VARCHAR(75) null,payload VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierlog";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierLog.dossierLogId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierlog.dossierLogId ASC";

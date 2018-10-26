@@ -86,6 +86,12 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier addDossier(Dossier dossier);
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Dossier adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public Dossier adminProcessDelete(Long id);
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier assignToProcess(long dossierId, String dossierNote,
 		String submissionNote, String briefNote, String dossierNo,
 		long folderId, long dossierActionId, String serverNo,
@@ -236,6 +242,9 @@ public interface DossierLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier getByDossierNo(long groupId, String dossierNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier getByIdAndGovService(long groupId, String serviceCode,

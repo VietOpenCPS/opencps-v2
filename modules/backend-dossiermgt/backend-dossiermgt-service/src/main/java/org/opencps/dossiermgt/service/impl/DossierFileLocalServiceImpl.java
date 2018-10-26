@@ -14,6 +14,9 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.exception.FileNameException;
+import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -131,7 +134,13 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
 		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
 		long fileEntryId = 0;
-
+		try {
+			DLValidatorUtil.validateFileName(sourceFileName);
+		}
+		catch (FileNameException e) {
+			sourceFileName = displayName;
+			_log.debug(e);
+		}
 		if (inputStream != null) {
 			try {
 				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
@@ -141,7 +150,6 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 					fileEntryId = fileEntry.getFileEntryId();
 				}
 			} catch (Exception e) {
-//				e.printStackTrace();
 //				throw new SystemException(e);
 				_log.debug(e);
 				//_log.error(e);
@@ -1208,5 +1216,72 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	public DossierFile findLastDossierFile(long dossierId, String fileTemplateNo, String dossierTemplateNo) {
 		return dossierFilePersistence.fetchByD_FTN_DTN_First(dossierId, fileTemplateNo, dossierTemplateNo, null);
 	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DossierFile adminProcessDelete(Long id) {
+
+		DossierFile object = dossierFilePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dossierFilePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile adminProcessData(JSONObject objectData) {
+
+		DossierFile object = null;
+
+		if (objectData.getLong("dossierFileId") > 0) {
+
+			object = dossierFilePersistence.fetchByPrimaryKey(objectData.getLong("dossierFileId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DossierFile.class.getName());
+
+			object = dossierFilePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setDossierId(objectData.getLong("dossierId"));
+		object.setReferenceUid(objectData.getString("referenceUid"));
+		object.setDossierTemplateNo(objectData.getString("dossierTemplateNo"));
+		object.setDossierPartNo(objectData.getString("dossierPartNo"));
+		object.setDossierPartType(objectData.getInt("dossierPartType"));
+		object.setFileTemplateNo(objectData.getString("fileTemplateNo"));
+		object.setDisplayName(objectData.getString("displayName"));
+		object.setFormData(objectData.getString("formData"));
+		// object.setFileEntryId(objectData.getString("fileEntryId"));
+		object.setOriginal(objectData.getBoolean("original"));
+		object.setEForm(objectData.getBoolean("eForm"));
+		object.setIsNew(objectData.getBoolean("isNew"));
+		object.setRemoved(objectData.getBoolean("removed"));
+		object.setSignCheck(objectData.getInt("signCheck"));
+		object.setSignInfo(objectData.getString("signInfo"));
+		object.setFormScript(objectData.getString("formScript"));
+		object.setFormReport(objectData.getString("formReport"));
+		object.setFormSchema(objectData.getString("formSchema"));
+		object.setDeliverableCode(objectData.getString("deliverableCode"));
+
+		dossierFilePersistence.update(object);
+
+		return object;
+	}
+	
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

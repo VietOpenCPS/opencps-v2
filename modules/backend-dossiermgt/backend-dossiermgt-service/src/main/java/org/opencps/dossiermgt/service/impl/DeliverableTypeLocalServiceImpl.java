@@ -14,18 +14,22 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableTypeLocalServiceBaseImpl;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The implementation of the deliverable type local service.
@@ -47,8 +51,7 @@ import com.liferay.portal.kernel.util.Validator;
  */
 @ProviderType
 public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalServiceBaseImpl {
-	
-	
+
 	public DeliverableType getByCode(long groupId, String typeCode) {
 		return deliverableTypePersistence.fetchByG_DLT(groupId, typeCode);
 	}
@@ -220,9 +223,10 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	}
 
-	//LamTV_ Process output DeliverableType to DB
-	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
-			Integer docSync, String mappingData, String govAgencies, String formReport, String formScript) {
+	// LamTV_ Process output DeliverableType to DB
+	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName,
+			String codePattern, Integer docSync, String mappingData, String govAgencies, String formReport,
+			String formScript) {
 
 		Date now = new Date();
 		User userAction = userPersistence.fetchByPrimaryKey(userId);
@@ -276,9 +280,9 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			if (Validator.isNotNull(docSync)) {
 				object.setDocSync(docSync);
 			}
-//			if (Validator.isNotNull(fieldConfigs)) {
-//				object.setFieldConfigs(fieldConfigs);
-//			}
+			// if (Validator.isNotNull(fieldConfigs)) {
+			// object.setFieldConfigs(fieldConfigs);
+			// }
 		}
 
 		return deliverableTypePersistence.update(object);
@@ -288,5 +292,61 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	private void validateRemoveDeliverableType(long groupId, String deliverableTypeId) {
 		// TODO Auto-generated method stub
 
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DeliverableType adminProcessDelete(Long id) {
+
+		DeliverableType object = deliverableTypePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			deliverableTypePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DeliverableType adminProcessData(JSONObject objectData) {
+
+		DeliverableType object = null;
+
+		if (objectData.getLong("deliverableTypeId") > 0) {
+
+			object = deliverableTypePersistence.fetchByPrimaryKey(objectData.getLong("deliverableTypeId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DeliverableType.class.getName());
+
+			object = deliverableTypePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setTypeCode(objectData.getString("typeCode"));
+		object.setTypeName(objectData.getString("typeName"));
+		object.setFormScript(objectData.getString("formScript"));
+		object.setFormReport(objectData.getString("formReport"));
+		object.setCodePattern(objectData.getString("codePattern"));
+		object.setCounter(objectData.getString("counter"));
+		object.setMappingData(objectData.getString("mappingData"));
+		object.setDocSync(objectData.getInt("docSync"));
+		object.setGovAgencies(objectData.getString("govAgencies"));
+
+		deliverableTypePersistence.update(object);
+
+		return object;
 	}
 }

@@ -55,6 +55,18 @@ public class RegistrationLogLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.RegistrationLog adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _registrationLogLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.RegistrationLog adminProcessDelete(
+		Long id) {
+		return _registrationLogLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucense(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

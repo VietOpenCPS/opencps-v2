@@ -14,8 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -75,8 +77,8 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil} to access
-	 * the process option local service.
+	 * org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil} to access the
+	 * process option local service.
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public ProcessOption removeProcessOption(long processOptionId) throws PortalException {
@@ -100,15 +102,15 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		ProcessOption processOption = null;
 
 		Date now = new Date();
-		
-		//int autoSeqOrder = processOptionPersistence.countBySC_ID(serviceConfigId);
+
+		// int autoSeqOrder = processOptionPersistence.countBySC_ID(serviceConfigId);
 
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		if (processOptionId == 0) {
-			
-			//autoSeqOrder = autoSeqOrder + 1;
-			
+
+			// autoSeqOrder = autoSeqOrder + 1;
+
 			processOptionId = counterLocalService.increment(ProcessOption.class.getName());
 
 			processOption = processOptionPersistence.create(processOptionId);
@@ -130,7 +132,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			processOption.setOptionName(optionName);
 
 		} else {
-			
+
 			processOption = processOptionPersistence.fetchByPrimaryKey(processOptionId);
 
 			processOption.setModifiedDate(now);
@@ -152,7 +154,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 		return processOption;
 	}
-	
+
 	public List<ProcessOption> getByServiceProcessId(long serviceConfigId) throws PortalException {
 		return processOptionPersistence.findBySC_ID(serviceConfigId);
 	}
@@ -309,39 +311,39 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 	public ProcessOption getByDTPLNoAndServiceCF(long groupId, String dossierTemplateNo, long serviceConfigId)
 			throws PortalException {
-		
+
 		DossierTemplate dossierTemplate = dossierTemplatePersistence.findByGID_DTPLNO(groupId, dossierTemplateNo);
-		
+
 		return processOptionPersistence.fetchBySC_DT(serviceConfigId, dossierTemplate.getDossierTemplateId());
-		
+
 	}
 
 	private void validateAdd(long processOptionId, int seqOrder, String autoSelect, String instructionNote,
 			String submissionNote, long serviceConfigId) throws PortalException {
-		
+
 		if (processOptionId != 0) {
 			ProcessOption option = processOptionPersistence.fetchBySC_ID_OP(serviceConfigId, seqOrder);
-			
+
 			if (Validator.isNotNull(option) && option.getPrimaryKey() != processOptionId) {
 				throw new SeqOrderException("DuplicateSeqOrderException");
 			}
-			
+
 		} else {
 			ProcessOption option = processOptionPersistence.fetchBySC_ID_OP(serviceConfigId, seqOrder);
-			
+
 			if (Validator.isNotNull(option)) {
 				throw new SeqOrderException("DuplicateSeqOrderException");
 			}
 		}
-		
+
 	}
 
-	//LamTV_ Process ouput ProcessOption to DB
+	// LamTV_ Process ouput ProcessOption to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessOption updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
-			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
-			String templateName, String processNo, String processName, String registerBookCode, Integer sampleCount,
-			ServiceContext context) {
+	public ProcessOption updateOptionDB(long userId, long groupId, String optionCode, String optionName,
+			long serviceConfigId, Integer seqOrder, String autoSelect, String instructionNote, String submissionNote,
+			String templateNo, String templateName, String processNo, String processName, String registerBookCode,
+			Integer sampleCount, ServiceContext context) {
 
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
@@ -383,8 +385,64 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	private void validateRemove(long processOptionId) throws PortalException {
 		// TODO add more business logic here
 	}
-	
+
 	public List<ProcessOption> findAll(int start, int end) {
 		return processOptionPersistence.findAll(start, end);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ProcessOption adminProcessDelete(Long id) {
+
+		ProcessOption object = processOptionPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			processOptionPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ProcessOption adminProcessData(JSONObject objectData) {
+
+		ProcessOption object = null;
+
+		if (objectData.getLong("processOptionId") > 0) {
+
+			object = processOptionPersistence.fetchByPrimaryKey(objectData.getLong("processOptionId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ProcessOption.class.getName());
+
+			object = processOptionPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		object.setUserName(objectData.getString("userName"));
+
+		object.setServiceConfigId(objectData.getLong("serviceConfigId"));
+		object.setOptionOrder(objectData.getInt("optionOrder"));
+		object.setOptionName(objectData.getString("optionName"));
+		object.setAutoSelect(objectData.getString("autoSelect"));
+		object.setDossierTemplateId(objectData.getLong("dossierTemplateId"));
+		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
+		object.setInstructionNote(objectData.getString("instructionNote"));
+		object.setSubmissionNote(objectData.getString("submissionNote"));
+		object.setSampleCount(objectData.getLong("sampleCount"));
+
+		processOptionPersistence.update(object);
+
+		return object;
 	}
 }

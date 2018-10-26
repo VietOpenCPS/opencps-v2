@@ -47,6 +47,18 @@ public class ServiceConfigLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ServiceConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _serviceConfigLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ServiceConfig adminProcessDelete(
+		Long id) {
+		return _serviceConfigLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId) {
 		return _serviceConfigLocalService.countByGovAgency(keyword,

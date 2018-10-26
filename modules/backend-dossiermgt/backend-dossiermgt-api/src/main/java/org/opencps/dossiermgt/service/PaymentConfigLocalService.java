@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -79,6 +80,12 @@ public interface PaymentConfigLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentConfig addPaymentConfig(PaymentConfig paymentConfig);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentConfig adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public PaymentConfig adminProcessDelete(Long id);
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

@@ -45,6 +45,17 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 		return _paymentFileLocalService.addPaymentFile(paymentFile);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.PaymentFile adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _paymentFileLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.PaymentFile adminProcessDelete(Long id) {
+		return _paymentFileLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Count number payment File using countLucene
 	*
@@ -524,6 +535,12 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	public org.opencps.dossiermgt.model.PaymentFile updatePaymentFile(
 		org.opencps.dossiermgt.model.PaymentFile paymentFile) {
 		return _paymentFileLocalService.updatePaymentFile(paymentFile);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.PaymentFile updatePaymentFileCustom(
+		org.opencps.dossiermgt.model.PaymentFile oldpaymentFile) {
+		return _paymentFileLocalService.updatePaymentFileCustom(oldpaymentFile);
 	}
 
 	@Override

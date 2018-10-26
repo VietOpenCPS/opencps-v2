@@ -100,7 +100,7 @@ public class ProcessSequenceModelImpl extends BaseModelImpl<ProcessSequence>
 		TABLE_COLUMNS_MAP.put("durationCount", Types.DOUBLE);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processsequence (uuid_ VARCHAR(75) null,processSequenceId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceProcessId LONG,sequenceNo VARCHAR(75) null,sequenceName VARCHAR(255) null,sequenceRole VARCHAR(75) null,durationCount DOUBLE)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processsequence (uuid_ VARCHAR(75) null,processSequenceId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceProcessId LONG,sequenceNo VARCHAR(75) null,sequenceName VARCHAR(75) null,sequenceRole VARCHAR(75) null,durationCount DOUBLE)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processsequence";
 	public static final String ORDER_BY_JPQL = " ORDER BY processSequence.sequenceNo ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processsequence.sequenceNo ASC";

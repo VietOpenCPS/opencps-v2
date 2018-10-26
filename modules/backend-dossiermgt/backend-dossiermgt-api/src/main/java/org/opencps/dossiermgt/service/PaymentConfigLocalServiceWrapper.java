@@ -47,6 +47,18 @@ public class PaymentConfigLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.PaymentConfig adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _paymentConfigLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.PaymentConfig adminProcessDelete(
+		Long id) {
+		return _paymentConfigLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

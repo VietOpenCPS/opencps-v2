@@ -14,20 +14,10 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.action.RegistrationFormActions;
-import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
-import org.opencps.dossiermgt.constants.RegistrationTerm;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
-import org.opencps.usermgt.service.util.UserMgtUtils;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -49,6 +39,21 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.action.RegistrationFormActions;
+import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
+import org.opencps.dossiermgt.constants.RegistrationTerm;
+import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -100,14 +105,14 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setApplicantIdType(applicantIdType);
 		model.setApplicantIdNo(applicantIdNo);
 		if (Validator.isNotNull(applicantIdDate)) {
-            try {
-                Date idDate = UserMgtUtils.convertDate(applicantIdDate);
-                
-                model.setApplicantIdDate(idDate);
-            } catch (Exception e) {
-                _log.error(e);
-            }
-        }
+			try {
+				Date idDate = UserMgtUtils.convertDate(applicantIdDate);
+
+				model.setApplicantIdDate(idDate);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
 		model.setAddress(address);
 		model.setCityCode(cityCode);
 		model.setCityName(cityName);
@@ -126,16 +131,17 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setRepresentativeEnterprise(representativeEnterprise);
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
-		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(
-            groupId, applicantIdNo, govAgencyCode, 2);
-		
-		if(registrations.size() == 0) {
-		    actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode, serviceContext);
-		} else {
-		    Registration oldRegistration = registrations.get(0);
-		    actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(), registrationId, serviceContext);
-		}
+		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(groupId, applicantIdNo,
+				govAgencyCode, 2);
 
+		if (registrations.size() == 0) {
+			actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode,
+					serviceContext);
+		} else {
+			Registration oldRegistration = registrations.get(0);
+			actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(),
+					registrationId, serviceContext);
+		}
 
 		return registrationPersistence.update(model);
 	}
@@ -158,11 +164,11 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		} else {
 			model.setSubmitting(true);
 		}
-		
+
 		if (Validator.isNotNull(applicantIdDate)) {
 			try {
 				Date idDate = UserMgtUtils.convertDate(applicantIdDate);
-				
+
 				model.setApplicantIdDate(idDate);
 			} catch (Exception e) {
 				_log.error(e);
@@ -233,7 +239,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		return fileEntryId;
 	}
-	
+
 	public Registration getLastSubmittingByUser(long groupId, long userId, boolean submitting) {
 		return registrationPersistence.fetchByF_USERID_SUBMITTING_First(groupId, userId, true, null);
 	}
@@ -429,14 +435,14 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
 			if (Validator.isNotNull(applicantIdDate)) {
-	            try {
-	                Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
-	                
-	                registration.setApplicantIdDate(idDate);
-	            } catch (Exception e) {
-	                _log.error(e);
-	            }
-	        }
+				try {
+					Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
+
+					registration.setApplicantIdDate(idDate);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+			}
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
@@ -469,14 +475,14 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			registration.setApplicantIdType(applicantIdType);
 			registration.setApplicantIdNo(applicantIdNo);
 			if (Validator.isNotNull(applicantIdDate)) {
-                try {
-                    Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
-                    
-                    registration.setApplicantIdDate(idDate);
-                } catch (Exception e) {
-                    _log.error(e);
-                }
-            }
+				try {
+					Date idDate = APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._TIMESTAMP);
+
+					registration.setApplicantIdDate(idDate);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+			}
 			registration.setAddress(address);
 			registration.setCityCode(cityCode);
 			registration.setCityName(cityName);
@@ -527,13 +533,13 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 	 * 
 	 */
 	public Registration getByApplicantAndAgency(long groupId, String applicantNo, String agencyNo) {
-	    List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(
-	        groupId, applicantNo, agencyNo, 2);
-	    
-		if(registrations.size() > 0) {
-		    return registrations.get(0);
+		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(groupId, applicantNo, agencyNo,
+				2);
+
+		if (registrations.size() > 0) {
+			return registrations.get(0);
 		} else {
-		    return null;
+			return null;
 		}
 	}
 
@@ -561,6 +567,134 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			_log.error(e);
 			return null;
 		}
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public Registration adminProcessDelete(Long id) {
+
+		Registration object = registrationPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			registrationPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Registration adminProcessData(JSONObject objectData) {
+
+		Registration object = null;
+
+		if (objectData.getLong("registrationId") > 0) {
+
+			object = registrationPersistence.fetchByPrimaryKey(objectData.getLong("registrationId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(Registration.class.getName());
+
+			object = registrationPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setApplicantName(objectData.getString("applicantName"));
+		object.setApplicantIdType(objectData.getString("applicantIdType"));
+		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
+		if (Validator.isNotNull(objectData.getString("applicantIdDate"))) {
+			try {
+				Date idDate = UserMgtUtils.convertDate(objectData.getString("applicantIdDate"));
+
+				object.setApplicantIdDate(idDate);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
+		object.setAddress(objectData.getString("address"));
+		object.setContactName(objectData.getString("contactName"));
+		object.setContactTelNo(objectData.getString("contactTelNo"));
+		object.setContactEmail(objectData.getString("contactEmail"));
+		object.setRegistrationClass(objectData.getString("registrationClass"));
+		object.setRegistrationState(objectData.getInt("registrationState"));
+		object.setSubmitting(objectData.getBoolean("submitting"));
+		object.setRepresentativeEnterprise(objectData.getString("representativeEnterprise"));
+
+		object.setCityCode(objectData.getString("cityCode"));
+		object.setDistrictCode(objectData.getString("districtCode"));
+		object.setWardCode(objectData.getString("wardCode"));
+		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+
+		DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
+				objectData.getString("govAgencyCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(govAgencyName)) {
+			object.setGovAgencyName(govAgencyName.getItemName());
+		}
+
+		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("cityCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setCityName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("districtCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setDistrictName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("wardCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setWardName(dictItem.getItemName());
+		}
+
+		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
+
+		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(objectData.getLong("groupId"),
+				objectData.getString("applicantIdNo"), objectData.getString("govAgencyCode"), 2);
+
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setUserId(objectData.getLong("userId"));
+		serviceContext.setScopeGroupId(objectData.getLong("groupId"));
+		serviceContext.setCompanyId(objectData.getLong("companyId"));
+
+		try {
+
+			if (registrations.size() == 0) {
+
+				actionForm.addRegistrationFormbaseonRegTemplate(objectData.getLong("groupId"),
+						objectData.getLong("companyId"), objectData.getLong("registrationId"),
+						objectData.getString("govAgencyCode"), serviceContext);
+
+			} else {
+				Registration oldRegistration = registrations.get(0);
+				actionForm.cloneRegistrationFormByRegistrationId(objectData.getLong("groupId"),
+						oldRegistration.getRegistrationId(), objectData.getLong("registrationId"), serviceContext);
+			}
+
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		registrationPersistence.update(object);
+
+		return object;
 	}
 
 	private Log _log = LogFactoryUtil.getLog(RegistrationLocalServiceImpl.class);

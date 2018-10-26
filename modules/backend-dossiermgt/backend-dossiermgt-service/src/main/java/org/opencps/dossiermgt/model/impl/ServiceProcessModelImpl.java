@@ -122,7 +122,7 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 		TABLE_COLUMNS_MAP.put("paymentFee", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceprocess (uuid_ VARCHAR(75) null,serviceProcessId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,processNo VARCHAR(75) null,processName VARCHAR(255) null,description STRING null,durationCount DOUBLE,durationUnit INTEGER,counter LONG,generateDossierNo BOOLEAN,dossierNoPattern VARCHAR(75) null,generateDueDate BOOLEAN,dueDatePattern VARCHAR(75) null,generatePassword BOOLEAN,directNotification BOOLEAN,serverNo VARCHAR(75) null,serverName VARCHAR(75) null,requestPayment BOOLEAN,paymentFee VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceprocess (uuid_ VARCHAR(75) null,serviceProcessId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,processNo VARCHAR(75) null,processName VARCHAR(75) null,description VARCHAR(75) null,durationCount DOUBLE,durationUnit INTEGER,counter LONG,generateDossierNo BOOLEAN,dossierNoPattern VARCHAR(75) null,generateDueDate BOOLEAN,dueDatePattern VARCHAR(75) null,generatePassword BOOLEAN,directNotification BOOLEAN,serverNo VARCHAR(75) null,serverName VARCHAR(75) null,requestPayment BOOLEAN,paymentFee VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceprocess";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceProcess.serviceProcessId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceprocess.serviceProcessId ASC";

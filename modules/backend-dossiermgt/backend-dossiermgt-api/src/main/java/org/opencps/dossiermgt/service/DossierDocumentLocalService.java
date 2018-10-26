@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -90,6 +91,12 @@ public interface DossierDocumentLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDocument(DossierDocument dossierDocument);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierDocument adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public DossierDocument adminProcessDelete(Long id);
 
 	public long countDossierDocumentList(Long dossierId);
 

@@ -14,14 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import org.opencps.dossiermgt.constants.ActionConfigTerm;
-import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.service.base.ActionConfigLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -29,6 +22,14 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.List;
+
+import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
+import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.service.base.ActionConfigLocalServiceBaseImpl;
 
 /**
  * The implementation of the action config local service.
@@ -53,15 +54,15 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil} to access
-	 * the action config local service.
+	 * org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil} to access the
+	 * action config local service.
 	 */
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ActionConfig addActionConfig(long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
-			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType, String mappingAction)
-			throws PortalException {
+			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType,
+			String mappingAction) throws PortalException {
 
 		validate(groupId, actionCode, 0);
 
@@ -76,7 +77,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setGroupId(groupId);
 		actionConfig.setCompanyId(user.getCompanyId());
 		actionConfig.setUserId(user.getUserId());
-		
+
 		actionConfig.setCreateDate(now);
 		actionConfig.setModifiedDate(now);
 
@@ -101,9 +102,10 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public ActionConfig updateActionConfig(long actionConfigId, long userId, long groupId, String actionCode, String actionName,
-			Boolean extraForm, String formScript, String sampleData, Boolean insideProcess, Integer userNote,
-			Integer syncType, Boolean pending, Boolean rollbackable, String notificationType, String documentType, String mappingAction) throws PortalException {
+	public ActionConfig updateActionConfig(long actionConfigId, long userId, long groupId, String actionCode,
+			String actionName, Boolean extraForm, String formScript, String sampleData, Boolean insideProcess,
+			Integer userNote, Integer syncType, Boolean pending, Boolean rollbackable, String notificationType,
+			String documentType, String mappingAction) throws PortalException {
 
 		validate(groupId, actionCode, actionConfigId);
 
@@ -193,7 +195,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 	}
 
-	//LamTV_ Process Update DB ActionConfig
+	// LamTV_ Process Update DB ActionConfig
 	@Indexable(type = IndexableType.REINDEX)
 	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String sampleData, Boolean insideProcess, Integer userNote, Integer syncType,
@@ -225,15 +227,16 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setNotificationType(notificationType);
 		actionConfig.setDocumentType(documentType);
 		actionConfig.setMappingAction(mappingAction);
-		
+
 		return actionConfigPersistence.update(actionConfig);
 
 	}
 
-	//LamTV_Add
+	// LamTV_Add
 	public List<ActionConfig> getByGroupId(long groupId) {
 		return actionConfigPersistence.findByF_BY_GID(groupId);
 	}
+
 	private void validate(long groupId, String actionCode, long actionConfigId) throws PortalException {
 
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
@@ -244,10 +247,71 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		if (Validator.isNotNull(actionConfig) && actionConfigId == 0) {
 			throw new DuplicateActionCodeException("DuplicateActionCodeException");
 		}
-		
+
 		if (Validator.isNotNull(actionConfig) && actionConfigId != actionConfig.getActionConfigId()) {
 			throw new DuplicateActionCodeException("DuplicateStepCodeException");
 		}
 
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ActionConfig adminProcessDelete(Long id) {
+
+		ActionConfig object = actionConfigPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			actionConfigPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ActionConfig adminProcessData(JSONObject objectData) {
+
+		ActionConfig object = null;
+
+		if (objectData.getLong("actionConfigId") > 0) {
+
+			object = actionConfigPersistence.fetchByPrimaryKey(objectData.getLong("actionConfigId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ActionConfig.class.getName());
+
+			object = actionConfigPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setActionCode(objectData.getString("actionCode"));
+		object.setActionName(objectData.getString("actionName"));
+		object.setExtraForm(objectData.getBoolean("extraForm"));
+		object.setFormConfig(objectData.getString("formConfig"));
+		object.setSampleData(objectData.getString("sampleData"));
+		object.setInsideProcess(objectData.getBoolean("insideProcess"));
+		object.setUserNote(objectData.getInt("userNote"));
+		object.setSyncType(objectData.getInt("syncType"));
+		object.setEventType(objectData.getInt("eventType"));
+		object.setInfoType(objectData.getInt("infoType"));
+		object.setPending(objectData.getBoolean("pending"));
+		object.setRollbackable(objectData.getBoolean("rollbackable"));
+		object.setNotificationType(objectData.getString("notificationType"));
+		object.setDocumentType(objectData.getString("documentType"));
+		object.setMappingAction(objectData.getString("mappingAction"));
+
+		actionConfigPersistence.update(object);
+
+		return object;
 	}
 }

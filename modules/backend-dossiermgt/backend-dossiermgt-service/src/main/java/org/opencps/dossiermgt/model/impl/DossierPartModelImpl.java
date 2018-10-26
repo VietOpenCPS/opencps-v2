@@ -82,9 +82,9 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 			{ "partTip", Types.VARCHAR },
 			{ "partType", Types.INTEGER },
 			{ "multiple", Types.BOOLEAN },
-			{ "formScript", Types.CLOB },
-			{ "formReport", Types.CLOB },
-			{ "sampleData", Types.CLOB },
+			{ "formScript", Types.VARCHAR },
+			{ "formReport", Types.VARCHAR },
+			{ "sampleData", Types.VARCHAR },
 			{ "required", Types.BOOLEAN },
 			{ "fileTemplateNo", Types.VARCHAR },
 			{ "eSign", Types.BOOLEAN },
@@ -110,9 +110,9 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 		TABLE_COLUMNS_MAP.put("partTip", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("partType", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("multiple", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("formScript", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formReport", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("sampleData", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("sampleData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("required", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("fileTemplateNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("eSign", Types.BOOLEAN);
@@ -122,7 +122,7 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 		TABLE_COLUMNS_MAP.put("fileMark", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierpart (uuid_ VARCHAR(75) null,dossierPartId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,templateNo VARCHAR(75) null,partNo VARCHAR(75) null,partName VARCHAR(500) null,partTip VARCHAR(75) null,partType INTEGER,multiple BOOLEAN,formScript TEXT null,formReport TEXT null,sampleData TEXT null,required BOOLEAN,fileTemplateNo VARCHAR(75) null,eSign BOOLEAN,deliverableType VARCHAR(75) null,deliverableAction INTEGER,eForm BOOLEAN,fileMark INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierpart (uuid_ VARCHAR(75) null,dossierPartId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,templateNo VARCHAR(75) null,partNo VARCHAR(75) null,partName VARCHAR(75) null,partTip VARCHAR(75) null,partType INTEGER,multiple BOOLEAN,formScript VARCHAR(75) null,formReport VARCHAR(75) null,sampleData VARCHAR(75) null,required BOOLEAN,fileTemplateNo VARCHAR(75) null,eSign BOOLEAN,deliverableType VARCHAR(75) null,deliverableAction INTEGER,eForm BOOLEAN,fileMark INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierpart";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierPart.dossierPartId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierpart.dossierPartId ASC";
