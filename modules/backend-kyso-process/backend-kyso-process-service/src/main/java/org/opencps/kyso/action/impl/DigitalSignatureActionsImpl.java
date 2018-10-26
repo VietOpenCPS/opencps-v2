@@ -55,7 +55,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //			if (typeSignature == TYPE_KYSO) {
 			String realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
 //			_log.info("realPath_Kyso: "+realPath);
-			System.out.println("realPath_Kyso: "+realPath);
+			_log.info("realPath_Kyso: "+realPath);
 //			} else {
 //				realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/";
 //				_log.info("realPath_Dongdau: "+realPath);
@@ -71,21 +71,21 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 				
 				File fileTemp = FileUtil.createTempFile(dlFileEntry.getContentStream());
-				System.out.println("fileTemp URL: "+fileTemp.getAbsolutePath());
+				_log.info("fileTemp URL: "+fileTemp.getAbsolutePath());
 				
 				File file = new File(realPath + dlFileEntry.getFileName());
 				
 				FileUtil.move(fileTemp, file);
 				
 				fullPath = file.getAbsolutePath();
-				System.out.println("fullPath: "+fullPath);
+				_log.info("fullPath: "+fullPath);
 
 //				String signImagePath = StringPool.BLANK;
-				System.out.println("====***typeSignature+===: "+typeSignature);
-				System.out.println("====***postStepCode+===: "+postStepCode);
+				_log.info("====***typeSignature+===: "+typeSignature);
+				_log.info("====***postStepCode+===: "+postStepCode);
 //				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
 				String signImagePath = new File(realPath + email + ".png").getAbsolutePath();
-				System.out.println("signImagePath_Kyso: "+realPath);
+				_log.info("signImagePath_Kyso: "+realPath);
 //				} else if (TYPE_DONGDAU.contains(typeSignature) && STEPCODE_DONGDAU.equals(postStepCode)){
 //					signImagePath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/nguyenadmin.png";
 //					_log.info("signImagePath_Dongdau: "+realPath);
@@ -108,10 +108,10 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
 				ExtractTextLocations textLocation = new ExtractTextLocations(fullPath);
 
-				System.out.println("*********************************" + textLocation.getAnchorX() + "-"
+				_log.info("*********************************" + textLocation.getAnchorX() + "-"
 						+ textLocation.getAnchorY() + "********************************");
 
-				System.out.println("*********************************" + textLocation.getPageLLX() + "-"
+				_log.info("*********************************" + textLocation.getPageLLX() + "-"
 						+ textLocation.getPageURX() + "-" + textLocation.getPageLLY() + "-" + textLocation.getPageURY()
 						+ "*******************************");
 
@@ -172,17 +172,17 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //					_log.info("inHash_Dongdau: "+inHash);
 //				}
 //				inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
-					System.out.println("********************************* llx " + llx);
+					_log.info("********************************* llx " + llx);
 
-					System.out.println("********************************* lly " + lly);
+					_log.info("********************************* lly " + lly);
 				
-					System.out.println("********************************* urx " + urx);
+					_log.info("********************************* urx " + urx);
 				
-					System.out.println("********************************* ury " + ury);
+					_log.info("********************************* ury " + ury);
 				
-					System.out.println("********************************* signatureImageWidth " + signatureImageWidth);
+					_log.info("********************************* signatureImageWidth " + signatureImageWidth);
 				
-					System.out.println("********************************* signatureImageHeight " + signatureImageHeight);
+					_log.info("********************************* signatureImageHeight " + signatureImageHeight);
 
 //							signature = Base64.getDecoder().decode("");
 //							signer.completeSign(signature, fieldName);
@@ -198,13 +198,13 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				messages.put("success");
 				fullPathOfSignedFiles.put(fullPathSigned);
 				
-				System.out.println("hashComputers: "+hashComputers);
-				System.out.println("signFieldNames: "+signFieldNames);
-				System.out.println("fullPathOfSignedFiles: "+fullPathOfSignedFiles);
-				System.out.println("fileNames: "+fileNames);
-				System.out.println("messages: "+messages);
+				_log.info("hashComputers: "+hashComputers);
+				_log.info("signFieldNames: "+signFieldNames);
+				_log.info("fullPathOfSignedFiles: "+fullPathOfSignedFiles);
+				_log.info("fileNames: "+fileNames);
+				_log.info("messages: "+messages);
 				
-				System.out.println("===KY XONG YCGIAMDIDNH===: "+ fullPathSigned);
+				_log.info("===KY XONG YCGIAMDIDNH===: "+ fullPathSigned);
 
 			} catch (Exception e) {
 				hashComputers.put(StringPool.BLANK);
@@ -212,7 +212,6 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fileNames.put(StringPool.BLANK);
 				fullPathOfSignedFiles.put(StringPool.BLANK);
 				messages.put(e.getClass().getName());
-				System.out.println(e);
 				_log.error(e);
 			}
 			
@@ -222,7 +221,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 			jsonFeed.put("msg", messages);
 			jsonFeed.put("fullPathSigned", fullPathOfSignedFiles);
 			jsonFeed.put("fileEntryId", fileEntryId);
-			System.out.println("=====CHECK END kyDuyetYCGiamDinh=====" + jsonFeed.toString());
+			_log.info("=====CHECK END kyDuyetYCGiamDinh=====" + jsonFeed.toString());
 
 			return jsonFeed;
 
