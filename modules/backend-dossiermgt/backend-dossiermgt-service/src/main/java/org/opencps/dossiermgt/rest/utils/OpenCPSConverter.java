@@ -731,7 +731,7 @@ public class OpenCPSConverter {
 	    	params.put(PaymentFileTerm.PAYMENT_FEE, model.getPaymentFee());
 	    }
 	    if (Validator.isNotNull(model.getPaymentAmount())) {
-	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, GetterUtil.getLong(model.getPaymentAmount()));
+	    	params.put(PaymentFileTerm.PAYMENT_AMOUNT, model.getPaymentAmount());
 	    }
 	    if (Validator.isNotNull(model.getPaymentNote())) {
 	    	params.put(PaymentFileTerm.PAYMENT_NOTE, model.getPaymentNote());
@@ -760,6 +760,16 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getEinvoice())) {
 	    	params.put(PaymentFileTerm.EINVOICE, model.getEinvoice());
 	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.ADVANCE_AMOUNT, GetterUtil.getLong(model.getAdvanceAmount()));
+	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.SERVICE_AMOUNT, GetterUtil.getLong(model.getServiceAmount()));
+	    }
+	    if (Validator.isNotNull(model.getEinvoice())) {
+	    	params.put(PaymentFileTerm.SHIP_AMOUNT, GetterUtil.getLong(model.getShipAmount()));
+	    }
+	    
 	    return params;
 	}	
 	
@@ -787,7 +797,7 @@ public class OpenCPSConverter {
 			result.setPaymentFee(jsonObj.getString(PaymentFileTerm.PAYMENT_FEE));
 		}
 		if (jsonObj.has(PaymentFileTerm.PAYMENT_AMOUNT)) {
-			result.setPaymentAmount(jsonObj.getString(PaymentFileTerm.PAYMENT_AMOUNT));
+			result.setPaymentAmount(jsonObj.getLong(PaymentFileTerm.PAYMENT_AMOUNT));
 		}
 		if (jsonObj.has(PaymentFileTerm.PAYMENT_NOTE)) {
 			result.setPaymentNote(jsonObj.getString(PaymentFileTerm.PAYMENT_NOTE));
