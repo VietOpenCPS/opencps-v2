@@ -41,19 +41,19 @@ public class VnpostEvent implements MessageListener {
 	}
 	
 	private void _doReceiveRequest(Message message) {		
-//		_log.info("GO GO VNPOST event");
+
 		JSONObject dossierObj = (JSONObject) message.get("dossier");
 		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
 		InvokeREST callRest = new InvokeREST();
 		String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
-		
+		_log.info("SONDT VNPOST EVENT dossierObj ========= "+ dossierObj);
 		params.put("orderNumber", dossierObj.getString(DossierTerm.DOSSIER_NO)); 	    	
 		params.put("senderName", dossierObj.getString(DossierTerm.GOV_AGENCY_NAME)); 
 		params.put("receiverName", dossierObj.getString(DossierTerm.DELEGATE_NAME)); 
 		params.put("receiverAddress", dossierObj.get(DossierTerm.POSTAL_ADDRESS)); 
-		params.put("receiverTel", dossierObj.getString(DossierTerm.POSTAL_TEL_NO));
+		params.put("receiverTel", dossierObj.getString(DossierTerm.CONTACT_TEL_NO));
 		params.put("receiverProvince", dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
 		params.put("receiverDistrict", dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
 		params.put("receiverEmail", dossierObj.getString(DossierTerm.DELEGATE_EMAIL)); 
