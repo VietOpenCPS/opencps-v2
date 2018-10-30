@@ -214,10 +214,10 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			String strIdArr = input.getStrIdArr();
-			_log.info("array Id: "+strIdArr);
+			//_log.info("array Id: "+strIdArr);
 
 			String[] idSplit = strIdArr.split(StringPool.SEMICOLON);
-			_log.info("idSplit Id: "+idSplit);
+			//_log.info("idSplit Id: "+idSplit);
 
 			JSONObject hashComputed = JSONFactoryUtil.createJSONObject();
 			JSONObject results = null;
@@ -241,10 +241,10 @@ public class SignatureManagementImpl implements SignatureManagement{
 						_log.info("fileEntryId: "+fileEntryId);
 
 						try {
-							_log.info("START CALL HASHCOMPUTE: ");
+							//_log.info("START CALL HASHCOMPUTE: ");
 							JSONObject newHashComputedResult = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
 									input.getPostStepCode(), serviceContext);
-							_log.info("Obj: " + newHashComputedResult);
+							//_log.info("Obj: " + newHashComputedResult);
 							String newHashComputedStr = newHashComputedResult.getString("message");
 							
 							JSONObject newHashComputed = JSONFactoryUtil.createJSONObject(newHashComputedStr);
@@ -427,7 +427,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		String signs = input.getSign();
 		String signFieldNames = input.getSignFieldName();
 		String fileNames = input.getFileName();
-		_log.info("Sign: " + signs + ", field name: " + signFieldNames + ", file name: " + fileNames + ", file entry id: " + fileEntryIds);
+		//_log.info("Sign: " + signs + ", field name: " + signFieldNames + ", file name: " + fileNames + ", file entry id: " + fileEntryIds);
 		String[] fileEntryIdArr = StringUtil.split(fileEntryIds);
 		String[] signArr = StringUtil.split(signs);
 		String[] signFieldNameArr = StringUtil.split(signFieldNames);
@@ -435,7 +435,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 		String actionCode = input.getActionCode();
 		String actionUser = input.getActionUser();
 		String actionNote = input.getActionNote();
-		long assignUserId = Long.valueOf(input.getAssignUserId());
+		String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
+		long assignUserId = Long.valueOf(strAssignUserId);
 		String subUsers = input.getSubUsers();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		boolean signOk = true;
@@ -477,7 +478,11 @@ public class SignatureManagementImpl implements SignatureManagement{
 		//			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
 		//			_log.info("fileSigned Name: "+fileSigned.getName());
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-		//			_log.info("dlFileEntry: "+dlFileEntry.getFileName());
+//					_log.info("dlFileEntry: "+dlFileEntry.getFileName());
+//					_log.info("user.getUserId(): "+user.getUserId());
+//					_log.info("signedFilePath: "+signedFilePath);
+//					_log.info("UserFileEntry: "+dlFileEntry.getUserId());
+//					_log.info("UserFileEntryName: "+dlFileEntry.getUserName());
 		
 					DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),

@@ -54,6 +54,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
 //			if (typeSignature == TYPE_KYSO) {
 			String realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
+//			_log.info("realPath_Kyso: "+realPath);
 			_log.info("realPath_Kyso: "+realPath);
 //			} else {
 //				realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/";
@@ -171,17 +172,17 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //					_log.info("inHash_Dongdau: "+inHash);
 //				}
 //				inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
-				_log.info("********************************* llx " + llx);
+					_log.info("********************************* llx " + llx);
 
-				_log.info("********************************* lly " + lly);
+					_log.info("********************************* lly " + lly);
 				
-				_log.info("********************************* urx " + urx);
+					_log.info("********************************* urx " + urx);
 				
-				_log.info("********************************* ury " + ury);
+					_log.info("********************************* ury " + ury);
 				
-				_log.info("********************************* signatureImageWidth " + signatureImageWidth);
+					_log.info("********************************* signatureImageWidth " + signatureImageWidth);
 				
-				_log.info("********************************* signatureImageHeight " + signatureImageHeight);
+					_log.info("********************************* signatureImageHeight " + signatureImageHeight);
 
 //							signature = Base64.getDecoder().decode("");
 //							signer.completeSign(signature, fieldName);
@@ -211,7 +212,6 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				fileNames.put(StringPool.BLANK);
 				fullPathOfSignedFiles.put(StringPool.BLANK);
 				messages.put(e.getClass().getName());
-				
 				_log.error(e);
 			}
 			

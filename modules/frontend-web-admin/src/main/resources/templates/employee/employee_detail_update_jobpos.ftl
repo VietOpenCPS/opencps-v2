@@ -29,7 +29,7 @@
 		
 		</div>
 
-		<#-- <div class="form-group">
+		<div class="form-group">
 		
 			<label for="employee-jobpos-create-working-unit">Phòng ban
 
@@ -38,7 +38,7 @@
 			</label>
 			<input type="text" id="employee-jobpos-create-working-unit" name="employee-jobpos-create-working-unit" class="form-control"/>
 		
-		</div> -->
+		</div>
 
 		<div class="form-group">
 		
@@ -187,13 +187,13 @@
 		
 	});
 
-	// $("#employee-jobpos-create-working-unit").kendoDropDownList({
+	 $("#employee-jobpos-create-working-unit").kendoDropDownList({
 		
-	// 	dataTextField: "name",
-	// 	dataValueField: "workingUnitId",
-	// 	dataSource: getWorkingUnitDataSource
+	 	dataTextField: "name",
+	 	dataValueField: "workingUnitId",
+	 	dataSource: getWorkingUnitDataSource
 		
-	// });
+	 });
 
 	$(document).on('click', '#employee-jobpos-create-submit-btn', function(event){
 		
@@ -209,7 +209,7 @@
 			return;
 		}
 
-		// var workingUnitId = $("#employee-jobpos-create-working-unit").data("kendoDropDownList");
+		var workingUnitId = $("#employee-jobpos-create-working-unit").data("kendoDropDownList");
 		var jobPosId = $("#employee-jobpos-create-jobpos").data("kendoDropDownList");
 		var mainJobPos = $('#employee-jobpos-create-main-jobpos').is(":checked")?"true":"false";
 
@@ -219,7 +219,7 @@
 				"groupId": ${groupId}
 			},
 			data: {
-				
+				workingUnitId: workingUnitId.value(),
 				jobPosId: jobPosId.value(),
 				mainJobPos: mainJobPos
 
