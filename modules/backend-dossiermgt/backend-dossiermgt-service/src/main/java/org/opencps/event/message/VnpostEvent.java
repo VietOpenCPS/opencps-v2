@@ -48,6 +48,7 @@ public class VnpostEvent implements MessageListener {
 		String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
+		String senderDesc = "Chuyển phát hồ sơ khách hàng: ";
 		_log.info("SONDT VNPOST EVENT dossierObj ========= "+ dossierObj);
 		params.put("orderNumber", dossierObj.getString(DossierTerm.DOSSIER_NO)); 	    	
 		params.put("senderName", dossierObj.getString(DossierTerm.GOV_AGENCY_NAME)); 
@@ -56,7 +57,8 @@ public class VnpostEvent implements MessageListener {
 		params.put("receiverTel", dossierObj.getString(DossierTerm.CONTACT_TEL_NO));
 		params.put("receiverProvince", dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
 		params.put("receiverDistrict", dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
-		params.put("receiverEmail", dossierObj.getString(DossierTerm.DELEGATE_EMAIL)); 
+		params.put("receiverEmail", dossierObj.getString(DossierTerm.DELEGATE_EMAIL));
+		params.put("senderDesc", senderDesc + dossierObj.getString(DossierTerm.DELEGATE_NAME));
 		
 		ServiceContext context = null;
 		
