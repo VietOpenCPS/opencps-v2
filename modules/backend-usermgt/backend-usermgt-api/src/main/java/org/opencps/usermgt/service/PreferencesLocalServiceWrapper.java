@@ -57,6 +57,17 @@ public class PreferencesLocalServiceWrapper implements PreferencesLocalService,
 		return _preferencesLocalService.addPreferences(preferences);
 	}
 
+	@Override
+	public org.opencps.usermgt.model.Preferences adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _preferencesLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Preferences adminProcessDelete(Long id) {
+		return _preferencesLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new preferences with the primary key. Does not add the preferences to the database.
 	*

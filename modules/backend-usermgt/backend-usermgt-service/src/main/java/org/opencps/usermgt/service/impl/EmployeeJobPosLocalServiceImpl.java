@@ -14,21 +14,11 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.EmployeeJobPosTerm;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-import org.opencps.usermgt.service.base.EmployeeJobPosLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -53,6 +43,18 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.constants.EmployeeJobPosTerm;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.base.EmployeeJobPosLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -116,12 +118,13 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		EmployeeJobPos employeeJobPosCheck = employeeJobPosPersistence.fetchByF_EmployeeId_jobPostId_workingUnitId(groupId, employeeId, jobPostId, workingUnitId);
-		
-		if(Validator.isNotNull(employeeJobPosCheck)){
+		EmployeeJobPos employeeJobPosCheck = employeeJobPosPersistence
+				.fetchByF_EmployeeId_jobPostId_workingUnitId(groupId, employeeId, jobPostId, workingUnitId);
+
+		if (Validator.isNotNull(employeeJobPosCheck)) {
 			throw new DuplicateCategoryException();
 		}
-		
+
 		long employeeJobPosId = counterLocalService.increment(EmployeeJobPos.class.getName());
 
 		EmployeeJobPos employeeJobPos = employeeJobPosPersistence.create(employeeJobPosId);
@@ -143,7 +146,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		employeeJobPos.setWorkingUnitId(workingUnitId);
 
 		try {
-			
+
 			// role
 			Employee mEmployee = employeePersistence.fetchByPrimaryKey(employeeJobPos.getEmployeeId());
 
@@ -153,28 +156,28 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 				//
 				List<Role> roleIds = new ArrayList<Role>();
-				
+
 				JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(jobPostId);
-				
+
 				for (Role role : roles) {
-					
+
 					roleIds.add(role);
 				}
-				
+
 				Role roleMapping = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
-				
-				if(Validator.isNotNull(roleMapping)){
-		
+
+				if (Validator.isNotNull(roleMapping)) {
+
 					roleIds.add(roleMapping);
 				}
-				
+
 				try {
 					RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
 					RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
 				} catch (Exception e) {
 					_log.error(e);
 				}
-				
+
 				for (Role role : roleIds) {
 					try {
 						RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
@@ -182,7 +185,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 						_log.error(e);
 					}
 				}
-//				RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
+				// RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
 				//
 				Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 				//
@@ -191,7 +194,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		} catch (Exception e) {
 			// TODO: handle exception
 			_log.error(e);
-			
+
 		}
 
 		employeeJobPos.setExpandoBridgeAttributes(serviceContext);
@@ -232,7 +235,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 			indexer.delete(employeeJobPos);
 
 		} catch (Exception e) {
-			//throw new NotFoundException();
+			// throw new NotFoundException();
 			_log.error(e);
 		}
 
@@ -260,7 +263,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 				if (jobPos != null) {
 					roleMapping = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
 				}
-				if(Validator.isNotNull(roleMapping)){
+				if (Validator.isNotNull(roleMapping)) {
 					if (roleIds != null && roleIds.size() > 0) {
 						roleIds.remove(roleMapping);
 					}
@@ -284,47 +287,49 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 					if (roleIds != null && roleIds.size() > 0) {
 						RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
 						RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
-						//add Role
+						// add Role
 						for (Role role : roleIds) {
 							RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
 						}
 					}
-					//Indexer
+					// Indexer
 					Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 					indexer.reindex(newUser);
 				}
 			}
 
-//			List<Role> roles = RoleLocalServiceUtil.getUserRoles(newUser.getUserId());
-//			List<Role> roleIds = new ArrayList<Role>();
-//			for (Role role : roles) {
-//				roleIds.add(role);
-//			}
-//			JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId());
-//			Role roleMapping = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
-//			if(Validator.isNotNull(roleMapping)){
-//				roleIds.remove(roleMapping);
-//			}
-//			List<EmployeeJobPos> listEmJobPos = employeeJobPosPersistence.findByF_EmployeeId(mEmployee.getEmployeeId());
-//			for (EmployeeJobPos ett : listEmJobPos) {
-//				roleIds.add(RoleLocalServiceUtil
-//						.fetchRole(JobPosLocalServiceUtil.fetchJobPos(ett.getJobPostId()).getMappingRoleId()));
-//			}
-//			try {
-//				RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
-//				RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
-//			for (Role role : roleIds) {
-//				try {
-//					RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
-//				} catch (Exception e) {
-//					_log.error(e);
-//				}
-//			}
-//			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
-//			indexer.reindex(newUser);
+			// List<Role> roles = RoleLocalServiceUtil.getUserRoles(newUser.getUserId());
+			// List<Role> roleIds = new ArrayList<Role>();
+			// for (Role role : roles) {
+			// roleIds.add(role);
+			// }
+			// JobPos jobPos =
+			// JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId());
+			// Role roleMapping = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
+			// if(Validator.isNotNull(roleMapping)){
+			// roleIds.remove(roleMapping);
+			// }
+			// List<EmployeeJobPos> listEmJobPos =
+			// employeeJobPosPersistence.findByF_EmployeeId(mEmployee.getEmployeeId());
+			// for (EmployeeJobPos ett : listEmJobPos) {
+			// roleIds.add(RoleLocalServiceUtil
+			// .fetchRole(JobPosLocalServiceUtil.fetchJobPos(ett.getJobPostId()).getMappingRoleId()));
+			// }
+			// try {
+			// RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
+			// RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
+			// } catch (Exception e) {
+			// _log.error(e);
+			// }
+			// for (Role role : roleIds) {
+			// try {
+			// RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
+			// } catch (Exception e) {
+			// _log.error(e);
+			// }
+			// }
+			// Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+			// indexer.reindex(newUser);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -475,14 +480,63 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
-	
-	public EmployeeJobPos getEmployeeJobPosbyGidEmpId(long groupId, long employeeId){
+
+	public EmployeeJobPos getEmployeeJobPosbyGidEmpId(long groupId, long employeeId) {
 		return employeeJobPosPersistence.fetchByG_EmployeeId(groupId, employeeId);
 	}
-	
+
 	public List<EmployeeJobPos> getByJobPostId(long groupId, long jobPostId) {
 		return employeeJobPosPersistence.findByF_G_jobPostId(groupId, jobPostId);
 	}
-	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public EmployeeJobPos adminProcessDelete(Long id) {
+
+		EmployeeJobPos object = employeeJobPosPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			employeeJobPosPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public EmployeeJobPos adminProcessData(JSONObject objectData) {
+
+		EmployeeJobPos object = null;
+
+		if (objectData.getLong("employeeJobPosId") > 0) {
+
+			object = employeeJobPosPersistence.fetchByPrimaryKey(objectData.getLong("employeeJobPosId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(EmployeeJobPos.class.getName());
+
+			object = employeeJobPosPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setEmployeeId(objectData.getLong("employeeId"));
+		object.setJobPostId(objectData.getLong("jobPostId"));
+		object.setWorkingUnitId(objectData.getLong("workingUnitId"));
+
+		employeeJobPosPersistence.update(object);
+
+		return object;
+	}
+
 	private Log _log = LogFactoryUtil.getLog(EmployeeJobPosLocalServiceImpl.class.getName());
 }

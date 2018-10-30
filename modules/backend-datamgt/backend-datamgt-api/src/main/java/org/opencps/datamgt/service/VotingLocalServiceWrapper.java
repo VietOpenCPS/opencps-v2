@@ -44,6 +44,17 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 		return _votingLocalService.addVoting(voting);
 	}
 
+	@Override
+	public org.opencps.datamgt.model.Voting adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _votingLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.Voting adminProcessDelete(Long id) {
+		return _votingLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new voting with the primary key. Does not add the voting to the database.
 	*

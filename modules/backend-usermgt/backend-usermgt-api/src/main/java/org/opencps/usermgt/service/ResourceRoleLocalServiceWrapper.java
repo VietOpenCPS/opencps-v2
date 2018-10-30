@@ -58,6 +58,17 @@ public class ResourceRoleLocalServiceWrapper implements ResourceRoleLocalService
 	}
 
 	@Override
+	public org.opencps.usermgt.model.ResourceRole adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _resourceRoleLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.ResourceRole adminProcessDelete(Long id) {
+		return _resourceRoleLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

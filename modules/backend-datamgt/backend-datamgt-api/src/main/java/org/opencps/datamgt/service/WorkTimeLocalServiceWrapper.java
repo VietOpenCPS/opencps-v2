@@ -57,6 +57,17 @@ public class WorkTimeLocalServiceWrapper implements WorkTimeLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.WorkTime adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _workTimeLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.WorkTime adminProcessDelete(Long id) {
+		return _workTimeLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

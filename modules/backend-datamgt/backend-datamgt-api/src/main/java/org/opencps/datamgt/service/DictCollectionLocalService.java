@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -111,6 +112,12 @@ public interface DictCollectionLocalService extends BaseLocalService,
 		String description, ServiceContext serviceContext)
 		throws DuplicateCategoryException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public DictCollection adminProcessDelete(Long id);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DictCollection changeStatus(long dictCollectionId, int status);

@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -92,6 +93,12 @@ public interface OfficeSiteLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public OfficeSite addOfficeSite(OfficeSite officeSite);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public OfficeSite adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public OfficeSite adminProcessDelete(Long id);
 
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

@@ -14,13 +14,9 @@
 
 package backend.feedback.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.ws.rs.NotFoundException;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -43,6 +39,12 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.ws.rs.NotFoundException;
+
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.model.Voting;
@@ -52,10 +54,14 @@ import backend.feedback.service.base.VotingLocalServiceBaseImpl;
  * The implementation of the voting local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link backend.feedback.service.VotingLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link backend.feedback.service.VotingLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author sondt
@@ -66,10 +72,13 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link backend.feedback.service.VotingLocalServiceUtil} to access the voting local service.
+	 * Never reference this class directly. Always use {@link
+	 * backend.feedback.service.VotingLocalServiceUtil} to access the voting local
+	 * service.
 	 */
 
 	private static Log _log = LogFactoryUtil.getLog(VotingLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Voting addVoting(long userId, long groupId, String className, String classPK, String subject, String choices,
 			String templateNo, boolean commentable, ServiceContext serviceContext) throws NoSuchUserException {
@@ -110,19 +119,19 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 	 * @param dictCollectionId
 	 * @param serviceContext
 	 * @return
-	 * @throws NoSuchVotingException 
+	 * @throws NoSuchVotingException
 	 * @throws NotFoundException
 	 * @throws Exception
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public Voting deleteVote(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
 
-//		try {
+		// try {
 		return votingPersistence.remove(votingId);
 
-//		} catch (NoSuchVotingException e) {
-//			throw new NoSuchVotingException();
-//		}
+		// } catch (NoSuchVotingException e) {
+		// throw new NoSuchVotingException();
+		// }
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -134,9 +143,9 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
 
-//		if (Validator.isNull(voting)) {
-//			throw new NotFoundException();
-//		}
+		// if (Validator.isNull(voting)) {
+		// throw new NotFoundException();
+		// }
 
 		Date now = new Date();
 
@@ -178,7 +187,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
 		String groupId = (String) params.get("groupId");
-		_log.info("groupId: "+groupId);
+		_log.info("groupId: " + groupId);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
@@ -327,6 +336,58 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 	public long countVotingByClass_Name_PK(String className, String classPK) {
 		return votingPersistence.countByF_CLNAME_CLPK(className, classPK);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public Voting adminProcessDelete(Long id) {
+
+		Voting object = votingPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			votingPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Voting adminProcessData(JSONObject objectData) {
+
+		Voting object = null;
+
+		if (objectData.getLong("votingId") > 0) {
+
+			object = votingPersistence.fetchByPrimaryKey(objectData.getLong("votingId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(Voting.class.getName());
+
+			object = votingPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setClassName(objectData.getString("className"));
+		object.setClassPK(objectData.getString("classPK"));
+		object.setSubject(objectData.getString("subject"));
+		object.setChoices(objectData.getString("choices"));
+		object.setTemplateNo(objectData.getString("templateNo"));
+		object.setCommentable(objectData.getBoolean("commentable"));
+
+		votingPersistence.update(object);
+
+		return object;
 	}
 
 }

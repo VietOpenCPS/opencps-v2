@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -84,6 +85,12 @@ public interface PreferencesLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public Preferences addPreferences(Preferences preferences);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Preferences adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public Preferences adminProcessDelete(Long id);
 
 	/**
 	* Creates a new preferences with the primary key. Does not add the preferences to the database.

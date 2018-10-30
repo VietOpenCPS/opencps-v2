@@ -14,22 +14,9 @@
 
 package org.opencps.datamgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
-import org.opencps.datamgt.constants.HolidayTerm;
-import org.opencps.datamgt.exception.NoSuchHolidayException;
-import org.opencps.datamgt.model.Holiday;
-import org.opencps.datamgt.service.base.HolidayLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -51,6 +38,21 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.datamgt.constants.HolidayTerm;
+import org.opencps.datamgt.exception.NoSuchHolidayException;
+import org.opencps.datamgt.model.Holiday;
+import org.opencps.datamgt.service.base.HolidayLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -78,8 +80,8 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.datamgt.service.HolidayLocalServiceUtil} to access
-	 * the holiday local service.
+	 * org.opencps.datamgt.service.HolidayLocalServiceUtil} to access the holiday
+	 * local service.
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
@@ -165,7 +167,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		return holiday;
 
 	}
-	
+
 	public Holiday fetchByF_holidayDate(long groupId, Date holidayDate) {
 		return holidayPersistence.fetchByF_holidayDate(groupId, holidayDate);
 	}
@@ -213,7 +215,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		holiday.setExpandoBridgeAttributes(serviceContext);
 
 		return holidayPersistence.update(holiday);
-		//return holiday;
+		// return holiday;
 	}
 
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
@@ -238,7 +240,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		String groupId = (String) params.get("groupId");
 		String userId = (String) params.get("userId");
 		String year = (String) params.get("year");
-		
+
 		BooleanQuery booleanQuery = null;
 
 		if (Validator.isNotNull(keywords)) {
@@ -275,7 +277,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
 		if (Validator.isNotNull(year)) {
 			MultiMatchQuery query = new MultiMatchQuery(year);
 
@@ -354,6 +356,54 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 	public List<Holiday> getHolidayByGroupId(long groupId) {
 		return holidayPersistence.findByF_GID(groupId);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public Holiday adminProcessDelete(Long id) {
+
+		Holiday object = holidayPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			holidayPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Holiday adminProcessData(JSONObject objectData) {
+
+		Holiday object = null;
+
+		if (objectData.getLong("holidayId") > 0) {
+
+			object = holidayPersistence.fetchByPrimaryKey(objectData.getLong("holidayId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(Holiday.class.getName());
+
+			object = holidayPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setHolidayDate(new Date(objectData.getLong("holidayDate")));
+		object.setDescription(objectData.getString("description"));
+
+		holidayPersistence.update(object);
+
+		return object;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(HolidayLocalServiceImpl.class);

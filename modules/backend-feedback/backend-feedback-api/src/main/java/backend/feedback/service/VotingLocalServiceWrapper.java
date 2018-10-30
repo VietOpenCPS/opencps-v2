@@ -55,6 +55,17 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 	}
 
 	@Override
+	public backend.feedback.model.Voting adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _votingLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public backend.feedback.model.Voting adminProcessDelete(Long id) {
+		return _votingLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

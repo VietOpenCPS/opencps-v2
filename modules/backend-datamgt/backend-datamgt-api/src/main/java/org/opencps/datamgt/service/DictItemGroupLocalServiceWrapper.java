@@ -73,6 +73,17 @@ public class DictItemGroupLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.datamgt.model.DictItemGroup adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dictItemGroupLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.DictItemGroup adminProcessDelete(Long id) {
+		return _dictItemGroupLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

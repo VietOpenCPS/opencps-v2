@@ -37,9 +37,19 @@ dependencies {
 	
 	compileOnly group: "javax.websocket", name: "javax.websocket-api", version: "1.1"
 	compileOnly group: 'com.liferay', name: 'com.liferay.websocket.whiteboard', version: '1.0.0'
+	compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
+	
+	compileOnly project(":modules:backend-auth")
 	
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
+	
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-service")
+
+	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
+	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
+	
 	
 }
 

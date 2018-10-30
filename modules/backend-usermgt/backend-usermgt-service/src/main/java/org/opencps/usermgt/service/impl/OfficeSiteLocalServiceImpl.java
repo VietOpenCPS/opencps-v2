@@ -14,15 +14,9 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-
-import org.opencps.usermgt.constants.OfficeSiteTerm;
-import org.opencps.usermgt.exception.NoSuchOfficeSiteException;
-import org.opencps.usermgt.model.OfficeSite;
-import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -45,6 +39,14 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+
+import org.opencps.usermgt.constants.OfficeSiteTerm;
+import org.opencps.usermgt.exception.NoSuchOfficeSiteException;
+import org.opencps.usermgt.model.OfficeSite;
+import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
+
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
 import backend.auth.api.exception.NotFoundException;
@@ -59,8 +61,7 @@ import backend.auth.api.keys.ModelNameKeys;
  * <p>
  * All custom service methods should be put in this class. Whenever methods are
  * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.usermgt.service.OfficeSiteLocalService}
- * interface.
+ * {@link org.opencps.usermgt.service.OfficeSiteLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security
@@ -78,8 +79,8 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.usermgt.service.OfficeSiteLocalServiceUtil} to
-	 * access the office site local service.
+	 * org.opencps.usermgt.service.OfficeSiteLocalServiceUtil} to access the office
+	 * site local service.
 	 */
 
 	private static Log _log = LogFactoryUtil.getLog(OfficeSiteLocalServiceImpl.class);
@@ -167,8 +168,8 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 			officeSite = officeSitePersistence.remove(officeSiteId);
 
 		} catch (NoSuchOfficeSiteException e) {
-//			// TODO Auto-generated catch block
-//			throw new NotFoundException();
+			// // TODO Auto-generated catch block
+			// throw new NotFoundException();
 			_log.error(e);
 		}
 		return officeSite;
@@ -246,7 +247,8 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		BooleanQuery booleanQuery = null;
 
 		booleanQuery = Validator.isNotNull((String) keywords)
-				? BooleanQueryFactoryUtil.create((SearchContext) searchContext) : indexer.getFullQuery(searchContext);
+				? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+				: indexer.getFullQuery(searchContext);
 
 		if (Validator.isNotNull(groupId)) {
 			query = new MultiMatchQuery(groupId);
@@ -269,8 +271,8 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
-	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
-			SearchContext searchContext) throws ParseException, SearchException {
+	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
 		// TODO
 		MultiMatchQuery query = null;
 		String keywords = (String) params.get("keywords");
@@ -287,7 +289,8 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		BooleanQuery booleanQuery = null;
 
 		booleanQuery = Validator.isNotNull((String) keywords)
-				? BooleanQueryFactoryUtil.create((SearchContext) searchContext) : indexer.getFullQuery(searchContext);
+				? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+				: indexer.getFullQuery(searchContext);
 
 		if (Validator.isNotNull(groupId)) {
 			query = new MultiMatchQuery(groupId);
@@ -316,5 +319,64 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 
 		return officeSite;
 
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public OfficeSite adminProcessDelete(Long id) {
+
+		OfficeSite object = officeSitePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			officeSitePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public OfficeSite adminProcessData(JSONObject objectData) {
+
+		OfficeSite object = null;
+
+		if (objectData.getLong("officeSiteId") > 0) {
+
+			object = officeSitePersistence.fetchByPrimaryKey(objectData.getLong("officeSiteId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(OfficeSite.class.getName());
+
+			object = officeSitePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setName(objectData.getString("name"));
+		object.setEnName(objectData.getString("enName"));
+		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+		object.setAddress(objectData.getString("address"));
+		object.setTelNo(objectData.getString("telNo"));
+		object.setFaxNo(objectData.getString("faxNo"));
+		object.setEmail(objectData.getString("email"));
+		object.setWebsite(objectData.getString("website"));
+		// object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
+		object.setSiteGroupId(objectData.getLong("siteGroupId"));
+		object.setAdminUserId(objectData.getLong("adminUserId"));
+		object.setPreferences(objectData.getString("preferences"));
+		object.setCeremonyDate(new Date(objectData.getLong("ceremonyDate")));
+
+		officeSitePersistence.update(object);
+
+		return object;
 	}
 }

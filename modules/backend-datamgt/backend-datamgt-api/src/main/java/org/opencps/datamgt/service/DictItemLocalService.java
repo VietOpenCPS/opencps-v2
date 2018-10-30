@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -98,6 +99,12 @@ public interface DictItemLocalService extends BaseLocalService,
 		throws DuplicateCategoryException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException,
 			NoSuchDictItemException, SystemException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItem adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public DictItem adminProcessDelete(Long id);
 
 	public long countByOlderThanDate(Date date, long groupId);
 

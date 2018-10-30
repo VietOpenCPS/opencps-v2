@@ -67,6 +67,15 @@ public class CommentLocalServiceUtil {
 			upvoteCount, pings, serviceContext);
 	}
 
+	public static backend.feedback.model.Comment adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static backend.feedback.model.Comment adminProcessDelete(Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLuceneSearchEngine(
 		java.util.Map<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

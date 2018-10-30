@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -87,6 +88,12 @@ public interface VotingResultLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public VotingResult addVotingResult(VotingResult votingResult);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public VotingResult adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public VotingResult adminProcessDelete(Long id);
 
 	public int countByF_votingId_selected(long votingId, String selected);
 

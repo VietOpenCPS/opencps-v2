@@ -1,30 +1,54 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.dao.orm.Disjunction;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ProjectionList;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.api.configuration.WebKeys;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
+import org.opencps.socket.whiteboard.BundleLoader;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import backend.utils.FileUploadUtils;
 
 /**
  * Rest Controller
@@ -88,7 +112,93 @@ public class LiferayRestController {
 		return "";
 	}
 
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/upload/{code}/{column}/{pk}", method = RequestMethod.POST)
+	public void uploadAttachment(MultipartHttpServletRequest request, @PathVariable("code") String code,
+			@PathVariable("column") String column, @PathVariable("pk") long pk) {
+
+		CommonsMultipartFile multipartFile = null;
+
+		Iterator<String> iterator = request.getFileNames();
+
+		while (iterator.hasNext()) {
+			String key = (String) iterator.next();
+			// create multipartFile array if you upload multiple files
+			multipartFile = (CommonsMultipartFile) request.getFile(key);
+		}
+
+		long userId = 20139;
+		long groupId = 20126;
+		long companyId = CompanyThreadLocal.getCompanyId();
+		String desc = "FileAttach file upload";
+		String destination = "FileAttach/";
+
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setUserId(userId);
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setScopeGroupId(groupId);
+
+		try {
+
+			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
+					UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+					multipartFile.getOriginalFilename()
+							.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
+					multipartFile.getSize(), destination, desc, serviceContext);
+
+			if (code.equals("opencps_adminconfig")) {
+
+				ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(pk, fileEntry.getFileEntryId() + StringPool.BLANK, multipartFile.getOriginalFilename(),
+						fileEntry.getFileEntryId(), serviceContext);
+
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@RequestMapping(value = "/filetemplate/{pk}", method = RequestMethod.GET, 
+			produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getServiceFileTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable("pk") long pk) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
+		JSONArray resultArray = JSONFactoryUtil.createJSONArray();
+		
+		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil.getByServiceInfoId(pk);
+		
+		result.put("total", serviceFileTemplates.size());
+
+		JSONObject object = null;
+		for (ServiceFileTemplate serviceFileTemplate : serviceFileTemplates) {
+			
+			try {
+				
+				object = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(serviceFileTemplate));
+				
+				long fileEntryId = serviceFileTemplate.getFileEntryId();
+				
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+				
+				object.put("extension", fileEntry.getExtension());
+				object.put("size", fileEntry.getSize());
+				
+				resultArray.put(object);
+				
+			} catch (Exception e) {
+			}
+			
+		}
+		result.put("data", resultArray);
+
+		return result.toJSONString();
+		
+	}
+	
+	@RequestMapping(value = "/upload/", method = RequestMethod.POST)
 	public String uploadFile(MultipartHttpServletRequest request) {
 		CommonsMultipartFile multipartFile = null; // multipart file class depends on which class you use assuming you
 													// are using
@@ -113,5 +223,83 @@ public class LiferayRestController {
 
 		System.out.println("LiferayRestController.uploadFile()" + request.getParameter("dkm"));
 		return "sdfds";
+	}
+	
+	@RequestMapping(value = "/jexcel/{bundleName}/{modelName}/{serviceName}/{idCol}/{textCol}", method = RequestMethod.GET, 
+			produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getJExcelAutoComplate(HttpServletRequest request, HttpServletResponse response, 
+			@PathVariable("bundleName") String bundleName,
+			@PathVariable("modelName") String modelName,
+			@PathVariable("serviceName") String serviceName,
+			@PathVariable("idCol") String idCol,
+			@PathVariable("textCol") String textCol) {
+
+		JSONArray result = JSONFactoryUtil.createJSONArray();
+
+		try {
+			
+			BundleLoader bundleLoader = new BundleLoader(bundleName);
+			
+			Class<?> model = bundleLoader.getClassLoader().loadClass(modelName);
+			
+			Method method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery");
+
+			DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
+			
+			ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
+			
+			projectionList.add(ProjectionFactoryUtil.property(idCol));
+			projectionList.add(ProjectionFactoryUtil.property(textCol));
+			
+			dynamicQuery.setProjection(projectionList);
+			
+			Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
+			disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
+			disjunction.add(RestrictionsFactoryUtil.eq("groupId", Long.valueOf(request.getHeader("groupId"))));
+			dynamicQuery.add(disjunction);
+			
+			if (Validator.isNotNull(request.getParameter("pk")) && Validator.isNotNull(request.getParameter("col"))) {
+				dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("col"))
+						.eq(Validator.isNumber(request.getParameter("pk")) ? Long.valueOf(request.getParameter("pk")) : request.getParameter("pk")));
+			}
+			
+			method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery",
+					DynamicQuery.class, int.class, int.class);
+			
+			List<Object[]> list = (List<Object[]>) method.invoke(model, dynamicQuery, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
+			JSONObject object = null;
+			for (Object[] objects : list) {
+				
+				object = JSONFactoryUtil.createJSONObject();
+				
+				object.put("id", objects[0]);
+				
+				if (modelName.equals(EmployeeJobPos.class.getName())) {
+					
+					long jobPostId = (long) objects[1];
+					
+					JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(jobPostId);
+					
+					String name = Validator.isNotNull(jobPos) ? jobPos.getTitle() : StringPool.BLANK;
+					
+					object.put("name", name);
+					
+				} else {
+					object.put("name", objects[1]);
+				}
+				
+				result.put(object);
+				
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result.toJSONString();
+		
 	}
 }

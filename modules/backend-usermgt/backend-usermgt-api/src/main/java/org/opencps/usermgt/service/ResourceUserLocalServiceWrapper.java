@@ -60,6 +60,17 @@ public class ResourceUserLocalServiceWrapper implements ResourceUserLocalService
 	}
 
 	@Override
+	public org.opencps.usermgt.model.ResourceUser adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _resourceUserLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.ResourceUser adminProcessDelete(Long id) {
+		return _resourceUserLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

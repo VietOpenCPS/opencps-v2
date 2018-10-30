@@ -15,8 +15,10 @@
 package org.opencps.datamgt.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -685,5 +687,58 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		else {
 			return dc;
 		}
+	}
+	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DictCollection adminProcessDelete(Long id) {
+
+		DictCollection object = dictCollectionPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dictCollectionPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection adminProcessData(JSONObject objectData) {
+
+		DictCollection object = null;
+
+		if (objectData.getLong("dictCollectionId") > 0) {
+
+			object = dictCollectionPersistence.fetchByPrimaryKey(objectData.getLong("dictCollectionId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DictCollection.class.getName());
+
+			object = dictCollectionPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+		
+		object.setCollectionCode(objectData.getString("collectionCode"));
+		object.setCollectionName(objectData.getString("collectionName"));
+		object.setCollectionNameEN(objectData.getString("collectionNameEN"));
+		object.setDescription(objectData.getString("description"));
+		object.setDataForm(objectData.getString("dataForm"));
+		object.setStatus(objectData.getInt("status"));
+
+		dictCollectionPersistence.update(object);
+
+		return object;
 	}
 }

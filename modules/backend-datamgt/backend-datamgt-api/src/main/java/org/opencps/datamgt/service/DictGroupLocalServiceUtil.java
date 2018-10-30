@@ -83,6 +83,16 @@ public class DictGroupLocalServiceUtil {
 			groupName, groupNameEN, groupDescription, serviceContext);
 	}
 
+	public static org.opencps.datamgt.model.DictGroup adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.datamgt.model.DictGroup adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

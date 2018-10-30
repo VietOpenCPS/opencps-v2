@@ -1,0 +1,1 @@
+create index IX_6D65FCCE on opencps_adminconfig (code_[$COLUMN_LENGTH:75$]);

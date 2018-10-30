@@ -14,27 +14,10 @@
 
 package org.opencps.datamgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
-import org.opencps.datamgt.constants.DictCollectionTerm;
-import org.opencps.datamgt.constants.DictGroupTerm;
-import org.opencps.datamgt.constants.DictItemGroupTerm;
-import org.opencps.datamgt.exception.NoSuchDictItemGroupException;
-import org.opencps.datamgt.model.DictItemGroup;
-import org.opencps.datamgt.model.impl.DictItemGroupImpl;
-import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
-import org.opencps.datamgt.service.base.DictItemGroupLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -57,6 +40,25 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.datamgt.constants.DictCollectionTerm;
+import org.opencps.datamgt.constants.DictGroupTerm;
+import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.datamgt.exception.NoSuchDictItemGroupException;
+import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.model.impl.DictItemGroupImpl;
+import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
+import org.opencps.datamgt.service.base.DictItemGroupLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -84,8 +86,8 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.datamgt.service.DictItemGroupLocalServiceUtil} to access the
-	 * dict item group local service.
+	 * org.opencps.datamgt.service.DictItemGroupLocalServiceUtil} to access the dict
+	 * item group local service.
 	 */
 	/**
 	 * @author binhth
@@ -158,7 +160,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		return dictItemGroupPersistence.update(dictItemGroup);
 
-		//return dictItemGroup;
+		// return dictItemGroup;
 	}
 
 	/**
@@ -194,7 +196,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		} catch (NoSuchDictItemGroupException e) {
 			_log.error(e);
-			//throw new NotFoundException();
+			// throw new NotFoundException();
 
 		}
 
@@ -214,7 +216,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		} catch (NoSuchDictItemGroupException e) {
 			_log.error(e);
-			//throw new NotFoundException();
+			// throw new NotFoundException();
 		}
 
 		return dictItemGroup;
@@ -285,7 +287,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		return dictItemGroupPersistence.update(dictItemGroup);
 
-		//return dictItemGroup;
+		// return dictItemGroup;
 	}
 
 	/**
@@ -330,10 +332,10 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
 		String collectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
-		
-		//_log.info(collectionCode);
-		
-		//_log.info(groupCode);
+
+		// _log.info(collectionCode);
+
+		// _log.info(groupCode);
 
 		Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 
@@ -387,7 +389,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
+
 		if (Validator.isNotNull(collectionCode)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
@@ -397,7 +399,6 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
 
 		if (Validator.isNotNull(groupCode)) {
 
@@ -409,33 +410,32 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		}
 
-
-		
-/*
-		if (Validator.isNotNull(groupCode)) {
-
-			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
-					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
-					: indexer.getFullQuery(searchContext);
-			TermQuery catQuery1 = new TermQueryImpl(DictGroupTerm.GROUP_CODE, groupCode);
-			TermQuery catQuery2 = new TermQueryImpl(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
-
-			categoryQuery.add(catQuery1, BooleanClauseOccur.MUST);
-			categoryQuery.add(catQuery2, BooleanClauseOccur.MUST);
-			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
-
-		}*/
-/*		
-		if (Validator.isNotNull(collectionCode)) {
-
-			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
-
-			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-		}
-*/
+		/*
+		 * if (Validator.isNotNull(groupCode)) {
+		 * 
+		 * BooleanQuery categoryQuery = Validator.isNotNull((String) keywords) ?
+		 * BooleanQueryFactoryUtil.create((SearchContext) searchContext) :
+		 * indexer.getFullQuery(searchContext); TermQuery catQuery1 = new
+		 * TermQueryImpl(DictGroupTerm.GROUP_CODE, groupCode); TermQuery catQuery2 = new
+		 * TermQueryImpl(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
+		 * 
+		 * categoryQuery.add(catQuery1, BooleanClauseOccur.MUST);
+		 * categoryQuery.add(catQuery2, BooleanClauseOccur.MUST);
+		 * booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
+		 * 
+		 * }
+		 */
+		/*
+		 * if (Validator.isNotNull(collectionCode)) {
+		 * 
+		 * MultiMatchQuery query = new MultiMatchQuery(collectionCode);
+		 * 
+		 * query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+		 * 
+		 * booleanQuery.add(query, BooleanClauseOccur.MUST);
+		 * 
+		 * }
+		 */
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictItemGroup.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -504,31 +504,33 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		}
 
-/*		if (Validator.isNotNull(groupCode)) {
+		/*
+		 * if (Validator.isNotNull(groupCode)) {
+		 * 
+		 * BooleanQuery categoryQuery = Validator.isNotNull((String) keywords) ?
+		 * BooleanQueryFactoryUtil.create((SearchContext) searchContext) :
+		 * indexer.getFullQuery(searchContext); TermQuery catQuery1 = new
+		 * TermQueryImpl(DictGroupTerm.GROUP_CODE, groupCode); TermQuery catQuery2 = new
+		 * TermQueryImpl(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
+		 * 
+		 * categoryQuery.add(catQuery1, BooleanClauseOccur.MUST);
+		 * categoryQuery.add(catQuery2, BooleanClauseOccur.MUST);
+		 * booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
+		 * 
+		 * }
+		 */
+		/*
+		 * if (Validator.isNotNull(collectionCode)) {
+		 * 
+		 * MultiMatchQuery query = new MultiMatchQuery(collectionCode);
+		 * 
+		 * query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
+		 * 
+		 * booleanQuery.add(query, BooleanClauseOccur.MUST);
+		 * 
+		 * }
+		 */
 
-			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
-					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
-					: indexer.getFullQuery(searchContext);
-			TermQuery catQuery1 = new TermQueryImpl(DictGroupTerm.GROUP_CODE, groupCode);
-			TermQuery catQuery2 = new TermQueryImpl(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
-
-			categoryQuery.add(catQuery1, BooleanClauseOccur.MUST);
-			categoryQuery.add(catQuery2, BooleanClauseOccur.MUST);
-			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
-
-		}
-*/
-/*		if (Validator.isNotNull(collectionCode)) {
-
-			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
-
-			query.addFields(DictGroupTerm.DICT_COLLECTION_CODE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-		}
-*/
-				
 		if (Validator.isNotNull(collectionCode)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(collectionCode);
@@ -554,18 +556,68 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
-	
+
 	@Override
 	public List<DictItemGroup> findOlderThanDate(Date date, long groupId, int start, int end) {
-		OrderByComparator<DictItemGroup> comparator = OrderByComparatorFactoryUtil.create(DictItemGroupImpl.TABLE_NAME, DictCollectionTerm.MODIFIED_DATE, true);
-		
+		OrderByComparator<DictItemGroup> comparator = OrderByComparatorFactoryUtil.create(DictItemGroupImpl.TABLE_NAME,
+				DictCollectionTerm.MODIFIED_DATE, true);
+
 		return dictItemGroupPersistence.findByF_newerThan(date, groupId, start, end, comparator);
 	}
-	
+
 	@Override
 	public long countOlderThanDate(Date date, long groupId) {
 		return dictItemGroupPersistence.countByF_newerThan(date, groupId);
 	}
-	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DictItemGroup adminProcessDelete(Long id) {
+
+		DictItemGroup object = dictItemGroupPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dictItemGroupPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItemGroup adminProcessData(JSONObject objectData) {
+
+		DictItemGroup object = null;
+
+		if (objectData.getLong("dictItemGroupId") > 0) {
+
+			object = dictItemGroupPersistence.fetchByPrimaryKey(objectData.getLong("dictItemGroupId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DictItemGroup.class.getName());
+
+			object = dictItemGroupPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setDictGroupId(objectData.getLong("dictGroupId"));
+		object.setDictItemId(objectData.getLong("dictItemId"));
+		object.setDictGroupName(objectData.getString("dictGroupName"));
+
+		dictItemGroupPersistence.update(object);
+
+		return object;
+	}
+
 	Log _log = LogFactoryUtil.getLog(DictItemGroupLocalServiceUtil.class);
 }

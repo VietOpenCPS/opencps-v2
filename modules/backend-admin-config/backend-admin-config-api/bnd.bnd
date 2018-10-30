@@ -1,0 +1,9 @@
+Bundle-Name: backend-admin-config-api
+Bundle-SymbolicName: backend.admin.config.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	backend.admin.config.exception,\
+	backend.admin.config.model,\
+	backend.admin.config.service,\
+	backend.admin.config.service.persistence
+-includeresource: META-INF/service.xml=../backend-admin-config-service/service.xml

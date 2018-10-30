@@ -56,6 +56,17 @@ public class HolidayLocalServiceWrapper implements HolidayLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.Holiday adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _holidayLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.Holiday adminProcessDelete(Long id) {
+		return _holidayLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

@@ -62,6 +62,17 @@ public class OfficeSiteLocalServiceWrapper implements OfficeSiteLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.OfficeSite adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _officeSiteLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.OfficeSite adminProcessDelete(Long id) {
+		return _officeSiteLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

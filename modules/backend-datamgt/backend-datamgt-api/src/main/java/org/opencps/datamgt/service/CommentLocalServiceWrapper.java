@@ -58,6 +58,17 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.Comment adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _commentLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.Comment adminProcessDelete(Long id) {
+		return _commentLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(java.util.Map<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,

@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -90,6 +91,12 @@ public interface FileAttachLocalService extends BaseLocalService,
 		String fileName, ServiceContext serviceContext)
 		throws UnauthenticationException, UnauthorizationException,
 			NoSuchUserException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public FileAttach adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public FileAttach adminProcessDelete(Long id);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public FileAttach copyFileAttach(long userId, long groupId, long docFileId,

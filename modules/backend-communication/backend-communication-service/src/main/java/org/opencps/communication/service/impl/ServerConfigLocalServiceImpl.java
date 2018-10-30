@@ -14,6 +14,17 @@
 
 package org.opencps.communication.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Date;
 import java.util.List;
 
@@ -22,13 +33,6 @@ import org.opencps.communication.exception.ServerNoDuplicateException;
 import org.opencps.communication.exception.ServerNoException;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.base.ServerConfigLocalServiceBaseImpl;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -56,19 +60,20 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.communication.service.ServerConfigLocalServiceUtil} to access
-	 * the server config local service.
+	 * org.opencps.communication.service.ServerConfigLocalServiceUtil} to access the
+	 * server config local service.
 	 */
-	
+
 	private static Log _log = LogFactoryUtil.getLog(ServerConfigLocalServiceImpl.class);
 
-	public ServerConfig updateLastSync(long serverConfigId, Date lastSync, ServiceContext context) throws PortalException {
-		
+	public ServerConfig updateLastSync(long serverConfigId, Date lastSync, ServiceContext context)
+			throws PortalException {
+
 		ServerConfig serverConfig = serverConfigPersistence.fetchByPrimaryKey(serverConfigId);
-		
+
 		Date now = new Date();
 		long userId = context.getUserId();
-		
+
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 
 		serverConfig.setUserId(userId);
@@ -76,15 +81,15 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		serverConfig.setModifiedDate(now);
 
 		serverConfig.setLastSync(lastSync);
-		
+
 		serverConfigPersistence.update(serverConfig);
-		
+
 		return serverConfig;
 	}
 
-	public ServerConfig updateServerConfig(long groupId, long serverConfigId, String govAgencyCode, String serverNo, String serverName,
-			String protocol, String configs, Date lastSync, ServiceContext context) throws PortalException {
-
+	public ServerConfig updateServerConfig(long groupId, long serverConfigId, String govAgencyCode, String serverNo,
+			String serverName, String protocol, String configs, Date lastSync, ServiceContext context)
+			throws PortalException {
 
 		System.out.println("ServerConfigLocalServiceImpl.updateServerConfig()" + context);
 		validateAdd(groupId, serverConfigId, serverNo, serverName, protocol, configs, lastSync);
@@ -126,9 +131,9 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			serverConfig.setProtocol(protocol);
 			serverConfig.setConfigs(configs);
 		}
-		
+
 		serverConfigPersistence.update(serverConfig);
-		
+
 		return serverConfig;
 
 	}
@@ -150,11 +155,12 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			if (Validator.isNotNull(serverConfigNo)) {
 				throw new ServerNoDuplicateException("ServerNoDuplicateException");
 			}
-//			ServerConfig serverConfigName = serverConfigPersistence.fetchByCF_NM(serverName);
-//
-//			if (Validator.isNotNull(serverConfigName)) {
-//				throw new ServerNameDuplicateException("ServerNameDuplicateException");
-//			}
+			// ServerConfig serverConfigName =
+			// serverConfigPersistence.fetchByCF_NM(serverName);
+			//
+			// if (Validator.isNotNull(serverConfigName)) {
+			// throw new ServerNameDuplicateException("ServerNameDuplicateException");
+			// }
 		} else {
 
 			ServerConfig oldSC = serverConfigPersistence.fetchByPrimaryKey(serverConfigId);
@@ -169,18 +175,19 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 					throw new ServerNoDuplicateException("ServerNoDuplicateException");
 				}
 
-//				ServerConfig scByName = serverConfigPersistence.fetchByCF_NM(serverName);
+				// ServerConfig scByName = serverConfigPersistence.fetchByCF_NM(serverName);
 
-//				if (Validator.isNotNull(scByName) && scByName.getPrimaryKey() != serverConfigId) {
-//					throw new ServerNameDuplicateException("ServerNameDuplicateException");
-//				}
+				// if (Validator.isNotNull(scByName) && scByName.getPrimaryKey() !=
+				// serverConfigId) {
+				// throw new ServerNameDuplicateException("ServerNameDuplicateException");
+				// }
 			}
 		}
 
 		// TODO add more business logic in here
 
 	}
-	
+
 	public ServerConfig getByCode(String serverNo) {
 		return serverConfigPersistence.fetchByCF_CD(serverNo);
 	}
@@ -190,29 +197,80 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			return serverConfigPersistence.findByCF_GID(groupId);
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			return null;
 		}
-		
+
 	}
 
-	//LamTV_Remove all record
+	// LamTV_Remove all record
 	public void removeAllServer() {
 		serverConfigPersistence.removeAll();
 	}
 
-	//LamTV_Remove all record by groupId
+	// LamTV_Remove all record by groupId
 	public void deleteByGroupId(long groupId, long userId, ServiceContext serviceContext) {
 		serverConfigPersistence.removeByCF_GID(groupId);
 	}
 
-
 	public ServerConfig getByCode(long groupId, String serverNo) {
 		return serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
 	}
-	
+
 	public List<ServerConfig> getByProtocol(long groupId, String protocol) {
 		return serverConfigPersistence.findByG_P(groupId, protocol);
 	}
-	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ServerConfig adminProcessDelete(Long id) {
+
+		ServerConfig object = serverConfigPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			serverConfigPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ServerConfig adminProcessData(JSONObject objectData) {
+
+		ServerConfig object = null;
+
+		if (objectData.getLong("serverConfigId") > 0) {
+
+			object = serverConfigPersistence.fetchByPrimaryKey(objectData.getLong("serverConfigId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ServerConfig.class.getName());
+
+			object = serverConfigPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+		object.setServerNo(objectData.getString("serverNo"));
+		object.setServerName(objectData.getString("serverName"));
+		object.setProtocol(objectData.getString("protocol"));
+		object.setConfigs(objectData.getString("configs"));
+		object.setLastSync(new Date(objectData.getLong("lastSync")));
+
+		serverConfigPersistence.update(object);
+
+		return object;
+	}
+
 }

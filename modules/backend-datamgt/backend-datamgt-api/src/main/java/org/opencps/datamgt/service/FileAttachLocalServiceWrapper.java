@@ -60,6 +60,17 @@ public class FileAttachLocalServiceWrapper implements FileAttachLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.FileAttach adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _fileAttachLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.FileAttach adminProcessDelete(Long id) {
+		return _fileAttachLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public org.opencps.datamgt.model.FileAttach copyFileAttach(long userId,
 		long groupId, long docFileId,
 		org.opencps.datamgt.model.FileAttach fileAttach,

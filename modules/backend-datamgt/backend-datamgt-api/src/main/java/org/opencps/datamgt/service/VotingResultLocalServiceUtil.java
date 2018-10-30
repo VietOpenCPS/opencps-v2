@@ -54,6 +54,16 @@ public class VotingResultLocalServiceUtil {
 		return getService().addVotingResult(votingResult);
 	}
 
+	public static org.opencps.datamgt.model.VotingResult adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.datamgt.model.VotingResult adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new voting result with the primary key. Does not add the voting result to the database.
 	*

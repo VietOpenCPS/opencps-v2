@@ -66,6 +66,15 @@ public class JobPosLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static org.opencps.usermgt.model.JobPos adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.usermgt.model.JobPos adminProcessDelete(Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static void assignPermission(long jobPosId, String[] actionIds,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		getService().assignPermission(jobPosId, actionIds, serviceContext);

@@ -14,26 +14,10 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.ApplicantTerm;
-import org.opencps.usermgt.exception.DuplicateApplicantIdException;
-import org.opencps.usermgt.exception.DuplicateContactEmailException;
-import org.opencps.usermgt.exception.NoApplicantIdDateException;
-import org.opencps.usermgt.exception.NoApplicantIdNoException;
-import org.opencps.usermgt.exception.NoApplicantIdTypeException;
-import org.opencps.usermgt.exception.NoApplicantNameException;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
-import org.opencps.usermgt.service.util.DateTimeUtils;
-import org.opencps.usermgt.service.util.ServiceProps;
-import org.opencps.usermgt.service.util.UserMgtUtils;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -63,6 +47,27 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.exception.DuplicateApplicantIdException;
+import org.opencps.usermgt.exception.DuplicateContactEmailException;
+import org.opencps.usermgt.exception.NoApplicantIdDateException;
+import org.opencps.usermgt.exception.NoApplicantIdNoException;
+import org.opencps.usermgt.exception.NoApplicantIdTypeException;
+import org.opencps.usermgt.exception.NoApplicantNameException;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
+import org.opencps.usermgt.service.util.DateTimeUtils;
+import org.opencps.usermgt.service.util.ServiceProps;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -679,6 +684,93 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicantPersistence.update(applicant);
 	}
 
+	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public Applicant adminProcessDelete(Long id) {
+
+		Applicant object = applicantPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			applicantPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant adminProcessData(JSONObject objectData) {
+
+		Applicant object = null;
+
+		if (objectData.getLong("applicantId") > 0) {
+
+			object = applicantPersistence.fetchByPrimaryKey(objectData.getLong("applicantId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(Applicant.class.getName());
+
+			object = applicantPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setApplicantName(objectData.getString("applicantName"));
+		object.setApplicantIdType(objectData.getString("applicantIdType"));
+		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
+		object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
+		object.setAddress(objectData.getString("address"));
+		object.setContactName(objectData.getString("contactName"));
+		object.setContactTelNo(objectData.getString("contactTelNo"));
+		object.setContactEmail(objectData.getString("contactEmail"));
+		object.setMappingUserId(objectData.getLong("mappingUserId"));
+		object.setActivationCode(objectData.getString("activationCode"));
+		object.setLock_(objectData.getBoolean("lock_"));
+		object.setProfile(objectData.getString("profile"));
+		object.setTmpPass(objectData.getString("tmpPass"));
+		object.setRepresentativeEnterprise(objectData.getString("representativeEnterprise"));
+		
+		object.setCityCode(objectData.getString("cityCode"));
+		object.setDistrictCode(objectData.getString("districtCode"));
+		object.setWardCode(objectData.getString("wardCode"));
+		
+		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("cityCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setCityName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("districtCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setDistrictName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("wardCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setWardName(dictItem.getItemName());
+		}
+		
+		applicantPersistence.update(object);
+
+		return object;
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 }

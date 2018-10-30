@@ -63,6 +63,15 @@ public class VotingLocalServiceUtil {
 		return getService().addVoting(voting);
 	}
 
+	public static backend.feedback.model.Voting adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static backend.feedback.model.Voting adminProcessDelete(Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

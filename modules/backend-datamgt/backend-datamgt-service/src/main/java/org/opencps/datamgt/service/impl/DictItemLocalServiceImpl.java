@@ -15,11 +15,13 @@
 package org.opencps.datamgt.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -857,5 +859,71 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 	}
 
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DictItem adminProcessDelete(Long id) {
+
+		DictItem object = dictItemPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dictItemPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItem adminProcessData(JSONObject objectData) {
+
+		DictItem object = null;
+
+		if (objectData.getLong("dictItemId") > 0) {
+
+			object = dictItemPersistence.fetchByPrimaryKey(objectData.getLong("dictItemId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DictItem.class.getName());
+
+			object = dictItemPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setDictCollectionId(objectData.getLong("dictCollectionId"));
+		object.setItemCode(objectData.getString("itemCode"));
+		object.setItemName(objectData.getString("itemName"));
+		object.setItemNameEN(objectData.getString("itemNameEN"));
+		object.setItemDescription(objectData.getString("itemDescription"));
+		object.setParentItemId(objectData.getLong("parentItemId"));
+		object.setSibling(objectData.getString("sibling"));
+		object.setMetaData(objectData.getString("metaData"));
+
+		String treeIndex;
+		try {
+			
+			treeIndex = getTreeIndex(objectData.getLong("dictItemId"), objectData.getLong("parentItemId"), objectData.getString("sibling"));
+			object.setTreeIndex(treeIndex);
+			object.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
+			
+		} catch (NoSuchDictItemException e) {
+			_log.error(e);
+		}
+
+		dictItemPersistence.update(object);
+
+		return object;
+	}
+	
 	private static final Log _log = LogFactoryUtil.getLog(DictItemLocalServiceImpl.class);
 }

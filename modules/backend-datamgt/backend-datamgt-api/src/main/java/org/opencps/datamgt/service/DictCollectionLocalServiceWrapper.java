@@ -82,6 +82,17 @@ public class DictCollectionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.datamgt.model.DictCollection adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dictCollectionLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.DictCollection adminProcessDelete(Long id) {
+		return _dictCollectionLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public org.opencps.datamgt.model.DictCollection changeStatus(
 		long dictCollectionId, int status) {
 		return _dictCollectionLocalService.changeStatus(dictCollectionId, status);

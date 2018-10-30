@@ -15,8 +15,10 @@
 package org.opencps.communication.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -80,9 +82,8 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.communication.service.
-	 * NotificationtemplateLocalServiceUtil} to access the notificationtemplate
-	 * local service.
+	 * org.opencps.communication.service. NotificationtemplateLocalServiceUtil} to
+	 * access the notificationtemplate local service.
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
@@ -153,7 +154,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		notificationTemplate.setExpandoBridgeAttributes(serviceContext);
 
 		return notificationtemplatePersistence.update(notificationTemplate);
-		//return notificationTemplate;
+		// return notificationTemplate;
 	}
 
 	/**
@@ -240,7 +241,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		notificationTemplate.setGuestUrlPattern(guestUrlPattern);
 		notificationTemplate.setInterval(interval);
 		notificationTemplate.setGrouping(grouping);
-		
+
 		notificationTemplate.setExpandoBridgeAttributes(serviceContext);
 
 		notificationtemplatePersistence.update(notificationTemplate);
@@ -271,7 +272,8 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		BooleanQuery booleanQuery = null;
 
 		booleanQuery = Validator.isNotNull((String) keywords)
-				? BooleanQueryFactoryUtil.create((SearchContext) searchContext) : indexer.getFullQuery(searchContext);
+				? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+				: indexer.getFullQuery(searchContext);
 
 		if (Validator.isNotNull(keywords)) {
 			String[] keyword = keywords.split(StringPool.SPACE);
@@ -338,7 +340,8 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		BooleanQuery booleanQuery = null;
 
 		booleanQuery = Validator.isNotNull((String) keywords)
-				? BooleanQueryFactoryUtil.create((SearchContext) searchContext) : indexer.getFullQuery(searchContext);
+				? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
+				: indexer.getFullQuery(searchContext);
 
 		if (Validator.isNotNull(keywords)) {
 			String[] keyword = keywords.split(StringPool.SPACE);
@@ -407,11 +410,11 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 	}
 
-	//LamTV_Add ouput DB
+	// LamTV_Add ouput DB
 	@Indexable(type = IndexableType.REINDEX)
-	public Notificationtemplate updateNotificationTemplateDB(long userId, long groupId, String notificationType, Boolean sendEmail,
-			String emailSubject, String emailBody, String textMessage, Boolean sendSMS, Integer expireDuration,
-			String interval, ServiceContext serviceContext) throws NoSuchUserException {
+	public Notificationtemplate updateNotificationTemplateDB(long userId, long groupId, String notificationType,
+			Boolean sendEmail, String emailSubject, String emailBody, String textMessage, Boolean sendSMS,
+			Integer expireDuration, String interval, ServiceContext serviceContext) throws NoSuchUserException {
 
 		Date now = new Date();
 
@@ -451,6 +454,63 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 	@Override
 	public List<Notificationtemplate> findByInterval(String interval) {
 		return notificationtemplatePersistence.findByF_interval(interval);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public Notificationtemplate adminProcessDelete(Long id) {
+
+		Notificationtemplate object = notificationtemplatePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			notificationtemplatePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Notificationtemplate adminProcessData(JSONObject objectData) {
+
+		Notificationtemplate object = null;
+
+		if (objectData.getLong("notificationTemplateId") > 0) {
+
+			object = notificationtemplatePersistence.fetchByPrimaryKey(objectData.getLong("notificationTemplateId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(Notificationtemplate.class.getName());
+
+			object = notificationtemplatePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setNotificationType(objectData.getString("notificationType"));
+		object.setEmailSubject(objectData.getString("emailSubject"));
+		object.setEmailBody(objectData.getString("emailBody"));
+		object.setTextMessage(objectData.getString("textMessage"));
+		object.setSendSMS(objectData.getBoolean("sendSMS"));
+		object.setSendEmail(objectData.getBoolean("sendEmail"));
+		object.setExpireDuration(objectData.getInt("expireDuration"));
+		object.setUserUrlPattern(objectData.getString("userUrlPattern"));
+		object.setGuestUrlPattern(objectData.getString("guestUrlPattern"));
+		object.setInterval(objectData.getString("interval"));
+		object.setGrouping(objectData.getBoolean("grouping"));
+
+		notificationtemplatePersistence.update(object);
+
+		return object;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(NotificationtemplateLocalServiceImpl.class);

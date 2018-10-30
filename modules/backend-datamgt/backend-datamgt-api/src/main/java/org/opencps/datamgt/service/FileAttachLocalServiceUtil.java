@@ -68,6 +68,16 @@ public class FileAttachLocalServiceUtil {
 			fileName, serviceContext);
 	}
 
+	public static org.opencps.datamgt.model.FileAttach adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.datamgt.model.FileAttach adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static org.opencps.datamgt.model.FileAttach copyFileAttach(
 		long userId, long groupId, long docFileId,
 		org.opencps.datamgt.model.FileAttach fileAttach,

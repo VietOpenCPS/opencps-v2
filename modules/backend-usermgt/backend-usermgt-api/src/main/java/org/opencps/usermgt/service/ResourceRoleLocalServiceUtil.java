@@ -66,6 +66,16 @@ public class ResourceRoleLocalServiceUtil {
 		return getService().addResourceRole(resourceRole);
 	}
 
+	public static org.opencps.usermgt.model.ResourceRole adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.usermgt.model.ResourceRole adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

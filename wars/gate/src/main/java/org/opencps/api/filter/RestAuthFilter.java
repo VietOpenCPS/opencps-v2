@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class RestAuthFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(WebKeys.P_AUTH);
-
+		
 		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth)) {
 			Object userObj = httpRequest.getSession(true).getAttribute(WebKeys.USER_ID);
 			if (Validator.isNotNull(userObj)) {

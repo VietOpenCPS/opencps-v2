@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.adminconfig.model.AdminConfig">
+		<field name="id" type="long" />
+		<field name="code" type="String" />
+		<field name="name" type="String" />
+		<field name="bundleName" type="String" />
+		<field name="modelName" type="String" />
+		<field name="serviceUtilName" type="String" />
+		<field name="headersName" type="String" />
+		<field name="columns" type="String" />
+		<field name="detailColumns" type="String" />
+		<field name="extForm" type="boolean" />
+		<field name="groupFilter" type="boolean" />
+	</model>
+</model-hints>

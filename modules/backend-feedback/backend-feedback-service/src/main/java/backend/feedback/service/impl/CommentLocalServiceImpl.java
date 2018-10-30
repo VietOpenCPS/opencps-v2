@@ -14,16 +14,11 @@
 
 package backend.feedback.service.impl;
 
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-
-import javax.ws.rs.NotFoundException;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -53,6 +48,13 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+
+import javax.ws.rs.NotFoundException;
+
 import backend.feedback.constants.CommentTerm;
 import backend.feedback.model.Comment;
 import backend.feedback.service.base.CommentLocalServiceBaseImpl;
@@ -61,10 +63,14 @@ import backend.feedback.service.base.CommentLocalServiceBaseImpl;
  * The implementation of the comment local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link backend.feedback.service.CommentLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link backend.feedback.service.CommentLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author sondt
@@ -75,7 +81,9 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link backend.feedback.service.CommentLocalServiceUtil} to access the comment local service.
+	 * Never reference this class directly. Always use {@link
+	 * backend.feedback.service.CommentLocalServiceUtil} to access the comment local
+	 * service.
 	 */
 
 	private static Log _log = LogFactoryUtil.getLog(CommentLocalServiceImpl.class);
@@ -114,31 +122,34 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
 
-//			String destination = "Comments/";
+			// String destination = "Comments/";
 
 			Calendar calendar = Calendar.getInstance();
 
 			calendar.setTime(now);
 
-//			destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
-//			destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
-//			destination += calendar.get(Calendar.DAY_OF_MONTH);
+			// destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
+			// destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
+			// destination += calendar.get(Calendar.DAY_OF_MONTH);
 
-//			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
-//					"Comment attactment", false, serviceContext);
+			// DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId,
+			// false, 0, destination,
+			// "Comment attactment", false, serviceContext);
 
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
 
-//			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), fileName,
-//					fileType, fileName + StringPool.DASH + System.currentTimeMillis(), "Comment attachment",
-//					StringPool.BLANK, inputStream, fileSize, serviceContext);
+			// FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId,
+			// dlFolder.getFolderId(), fileName,
+			// fileType, fileName + StringPool.DASH + System.currentTimeMillis(), "Comment
+			// attachment",
+			// StringPool.BLANK, inputStream, fileSize, serviceContext);
 
 			// DLFolderUtil.setFilePermissions(fileEntry);
 
-//			comment.setFileEntryId(fileEntry.getFileEntryId());
+			// comment.setFileEntryId(fileEntry.getFileEntryId());
 
 		}
 
@@ -272,10 +283,10 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 	}
 
-//	public List<Comment> findByF_groupId(long groupId, int start, int end) {
-//
-//		return commentPersistence.findByF_groupId(groupId, start, end);
-//	}
+	// public List<Comment> findByF_groupId(long groupId, int start, int end) {
+	//
+	// return commentPersistence.findByF_groupId(groupId, start, end);
+	// }
 
 	public Hits luceneSearchEngine(Map<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
@@ -414,5 +425,62 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public Comment adminProcessDelete(Long id) {
+
+		Comment object = commentPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			commentPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Comment adminProcessData(JSONObject objectData) {
+
+		Comment object = null;
+
+		if (objectData.getLong("commentId") > 0) {
+
+			object = commentPersistence.fetchByPrimaryKey(objectData.getLong("commentId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(Comment.class.getName());
+
+			object = commentPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setClassName(objectData.getString("className"));
+		object.setClassPK(objectData.getString("classPK"));
+		object.setFullname(objectData.getString("fullname"));
+		object.setEmail(objectData.getString("email"));
+		object.setParent(objectData.getLong("parent"));
+		object.setContent(objectData.getString("content"));
+		// object.setFileEntryId(objectData.getString("actionCode")fileEntryId);
+		object.setPings(objectData.getString("pings"));
+		object.setUpvoteCount(objectData.getInt("upvoteCount"));
+		object.setUserHasUpvoted(objectData.getString("userHasUpvoted"));
+		object.setUpvotedUsers(objectData.getString("upvotedUsers"));
+
+		commentPersistence.update(object);
+
+		return object;
 	}
 }

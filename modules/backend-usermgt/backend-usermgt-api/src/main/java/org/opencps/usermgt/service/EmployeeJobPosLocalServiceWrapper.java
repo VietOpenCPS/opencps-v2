@@ -61,6 +61,17 @@ public class EmployeeJobPosLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.usermgt.model.EmployeeJobPos adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _employeeJobPosLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.EmployeeJobPos adminProcessDelete(Long id) {
+		return _employeeJobPosLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

@@ -65,6 +65,16 @@ public class PreferencesLocalServiceUtil {
 		return getService().addPreferences(preferences);
 	}
 
+	public static org.opencps.usermgt.model.Preferences adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.usermgt.model.Preferences adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new preferences with the primary key. Does not add the preferences to the database.
 	*

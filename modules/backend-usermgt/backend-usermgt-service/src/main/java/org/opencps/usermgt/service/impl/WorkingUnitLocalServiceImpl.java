@@ -14,21 +14,10 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.action.impl.EmployeeActions;
-import org.opencps.usermgt.constants.CommonTerm;
-import org.opencps.usermgt.constants.WorkingUnitTerm;
-import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.WorkingUnit;
-import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -52,6 +41,17 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.constants.WorkingUnitTerm;
+import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
+
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
 import backend.auth.api.exception.NotFoundException;
@@ -66,8 +66,7 @@ import backend.auth.api.keys.ModelNameKeys;
  * <p>
  * All custom service methods should be put in this class. Whenever methods are
  * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.usermgt.service.WorkingUnitLocalService}
- * interface.
+ * {@link org.opencps.usermgt.service.WorkingUnitLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security
@@ -85,15 +84,15 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.usermgt.service.WorkingUnitLocalServiceUtil} to
-	 * access the working unit local service.
+	 * org.opencps.usermgt.service.WorkingUnitLocalServiceUtil} to access the
+	 * working unit local service.
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public WorkingUnit addWorkingUnit(long userId, long groupId, String name, String enName, String govAgencyCode,
 			long parentWorkingUnitId, String sibling, String address, String telNo, String faxNo, String email,
-			String website, Date ceremonyDate, ServiceContext serviceContext) throws UnauthenticationException, UnauthorizationException,
-			NoSuchUserException, NotFoundException, DuplicateCategoryException {
+			String website, Date ceremonyDate, ServiceContext serviceContext) throws UnauthenticationException,
+			UnauthorizationException, NoSuchUserException, NotFoundException, DuplicateCategoryException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -109,9 +108,9 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-		System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()"+parentWorkingUnitId + "//"+ groupId);
+		System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()" + parentWorkingUnitId + "//" + groupId);
 		sibling = getSibling(groupId, parentWorkingUnitId, sibling);
-		
+
 		WorkingUnit workingUnitCheck = workingUnitPersistence.fetchByF_govAgencyCode(groupId, govAgencyCode);
 
 		if (Validator.isNotNull(workingUnitCheck)) {
@@ -154,7 +153,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		workingUnit.setEmail(email);
 		workingUnit.setWebsite(website);
 		workingUnit.setCeremonyDate(ceremonyDate);
-		
+
 		workingUnit.setExpandoBridgeAttributes(serviceContext);
 
 		workingUnitPersistence.update(workingUnit);
@@ -178,28 +177,29 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 				ActionKeys.EDIT_DATA);
 
 		WorkingUnit workingUnit = workingUnitPersistence.fetchByPrimaryKey(workingUnitId);
-		
-		//TODO
+
+		// TODO
 		List<EmployeeJobPos> listEmp = employeeJobPosPersistence.findByF_workingUnitId(workingUnitId);
 
 		if (!hasPermission || (Validator.isNotNull(listEmp) && listEmp.size() > 0)) {
 			_log.info("Working unit has employees");
 			throw new UnauthorizationException();
 		}
-		
-		List<WorkingUnit> listWor = workingUnitPersistence.findByF_childs_unit(workingUnit.getGroupId(), workingUnit.getTreeIndex());
-		
-		//It's own tree index and it's childs
+
+		List<WorkingUnit> listWor = workingUnitPersistence.findByF_childs_unit(workingUnit.getGroupId(),
+				workingUnit.getTreeIndex());
+
+		// It's own tree index and it's childs
 		if (Validator.isNotNull(listWor) && listWor.size() > 1) {
 			throw new UnauthorizationException();
 		}
-//		System.out.println("After check child wu");
+		// System.out.println("After check child wu");
 		try {
 
 			workingUnit = workingUnitPersistence.remove(workingUnitId);
 
 		} catch (NoSuchWorkingUnitException e) {
-			//throw new NotFoundException();
+			// throw new NotFoundException();
 			_log.error(e);
 		}
 
@@ -266,22 +266,22 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		workingUnit.setWebsite(website);
 		workingUnit.setLogoFileEntryId(logoFileEntryId);
 		workingUnit.setCeremonyDate(ceremonyDate);
-		
+
 		workingUnitPersistence.update(workingUnit);
 
 		return workingUnit;
 	}
 
-	protected String getSibling(long groupId, long parentId, String sibling){
+	protected String getSibling(long groupId, long parentId, String sibling) {
 		int level = 0;
-		
-		if(parentId == 0){
-			
+
+		if (parentId == 0) {
+
 		} else {
-			
+
 			WorkingUnit parentItem = workingUnitPersistence.fetchByPrimaryKey(parentId);
-			
-			level = Validator.isNotNull(parentItem)?parentItem.getLevel() + 1: 0;
+
+			level = Validator.isNotNull(parentItem) ? parentItem.getLevel() + 1 : 0;
 		}
 		WorkingUnit workingUnit = workingUnitPersistence.fetchByF_parentId_level_Last(groupId, parentId, level, null);
 		if ((Validator.isNotNull(workingUnit) && CommonTerm.STR_ZERO.equals(sibling))
@@ -293,7 +293,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 				sibling = String.valueOf(1);
 			}
 		}
-		
+
 		return sibling;
 
 	}
@@ -477,28 +477,100 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 				parentItem = workingUnitPersistence.findByPrimaryKey(parentWorkingUnitId);
 
 				String ext = "";
-	
+
 				for (int i = 0; i < 4 - sibling.length(); i++) {
 					ext += "0";
 				}
 
-				return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
-			
+				return parentItem.getTreeIndex() + StringPool.PERIOD + ext
+						+ Integer.toHexString(Integer.valueOf(sibling));
+
 			} catch (NoSuchWorkingUnitException e) {
-				//throw new NotFoundException();
+				// throw new NotFoundException();
 				_log.error(e);
 			}
 		}
-//		else {
-//			throw new NotFoundException();
-//		}
+		// else {
+		// throw new NotFoundException();
+		// }
 		return StringPool.BLANK;
 	}
-	
-	public WorkingUnit getWorkingUnitbyGidandWid(long groupId, long workingUnitId){
+
+	public WorkingUnit getWorkingUnitbyGidandWid(long groupId, long workingUnitId) {
 		return workingUnitPersistence.fetchByF_WID(groupId, workingUnitId);
 	}
-	
-	private final Log _log =
-			LogFactoryUtil.getLog(WorkingUnitLocalServiceImpl.class);	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public WorkingUnit adminProcessDelete(Long id) {
+
+		WorkingUnit object = workingUnitPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			workingUnitPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public WorkingUnit adminProcessData(JSONObject objectData) {
+
+		WorkingUnit object = null;
+
+		if (objectData.getLong("workingUnitId") > 0) {
+
+			object = workingUnitPersistence.fetchByPrimaryKey(objectData.getLong("workingUnitId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(WorkingUnit.class.getName());
+
+			object = workingUnitPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setName(objectData.getString("name"));
+		object.setEnName(objectData.getString("enName"));
+		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+		object.setParentWorkingUnitId(objectData.getLong("parentWorkingUnitId"));
+		object.setAddress(objectData.getString("address"));
+		object.setTelNo(objectData.getString("telNo"));
+		object.setFaxNo(objectData.getString("faxNo"));
+		object.setEmail(objectData.getString("email"));
+		object.setWebsite(objectData.getString("website"));
+//		object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
+		object.setCeremonyDate(new Date(objectData.getLong("ceremonyDate")));
+		
+		String sibling = getSibling(objectData.getLong("groupId"), objectData.getLong("parentWorkingUnitId"), objectData.getString("sibling"));
+		
+		object.setSibling(sibling);
+		
+		String treeIndex;
+		try {
+			treeIndex = getTreeIndex(objectData.getLong("workingUnitId"), objectData.getLong("parentWorkingUnitId"), objectData.getString("sibling"));
+			object.setTreeIndex(treeIndex);
+			object.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
+		} catch (NotFoundException e) {
+			_log.error(0);
+			object.setLevel(0);
+			object.setTreeIndex(StringPool.BLANK);
+		}
+		
+		workingUnitPersistence.update(object);
+
+		return object;
+	}
+
+	private final Log _log = LogFactoryUtil.getLog(WorkingUnitLocalServiceImpl.class);
 }

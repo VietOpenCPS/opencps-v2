@@ -66,6 +66,17 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Employee adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _employeeLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Employee adminProcessDelete(Long id) {
+		return _employeeLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

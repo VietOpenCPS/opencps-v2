@@ -680,10 +680,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		object.setSampleData(objectData.getString("sampleData"));
 		object.setRequired(objectData.getBoolean("required"));
 		object.setFileTemplateNo(objectData.getString("fileTemplateNo"));
-		object.setESign(objectData.getBoolean("eSign"));
+		object.setESign(objectData.getBoolean("ESign"));
 		object.setDeliverableType(objectData.getString("deliverableType"));
 		object.setDeliverableAction(objectData.getInt("deliverableAction"));
-		object.setEForm(objectData.getBoolean("eForm"));
+		object.setEForm(objectData.getBoolean("EForm"));
 		object.setFileMark(objectData.getInt("fileMark"));
 
 		dossierPartPersistence.update(object);

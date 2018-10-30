@@ -15,8 +15,10 @@
 package org.opencps.datamgt.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -84,8 +86,8 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.datamgt.service.DictGroupLocalServiceUtil} to access
-	 * the dict group local service.
+	 * org.opencps.datamgt.service.DictGroupLocalServiceUtil} to access the dict
+	 * group local service.
 	 */
 
 	private static Log _log = LogFactoryUtil.getLog(DictGroupLocalServiceImpl.class);
@@ -114,12 +116,12 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			NoSuchUserException {
 
 		/*
-		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode, groupId);
-		 * ThanhNV: hotFix check duplicate
+		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode,
+		 * groupId); ThanhNV: hotFix check duplicate
 		 * 
 		 */
 		DictGroup dictColl = dictGroupPersistence.fetchByGC_GI_DCI(groupCode, groupId, dictCollectionId);
-		
+
 		if (Validator.isNotNull(dictColl)) {
 
 			throw new DuplicateCategoryException();
@@ -177,7 +179,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		return dictGroupPersistence.update(dictGroup);
 
-		//return dictGroup;
+		// return dictGroup;
 	}
 
 	/**
@@ -208,8 +210,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		DictGroup dictGroup = dictGroupPersistence.fetchByPrimaryKey(dictGroupId);
 		try {
 
-			if (dictItemGroupPersistence.findByF_dictGroupId(dictGroup.getGroupId(), dictGroupId)
-					.size() > 0) {
+			if (dictItemGroupPersistence.findByF_dictGroupId(dictGroup.getGroupId(), dictGroupId).size() > 0) {
 				throw new DataInUsedException();
 			} else {
 
@@ -219,7 +220,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		} catch (NoSuchDictGroupException e) {
 			_log.error(e);
-			//throw new NotFoundException();
+			// throw new NotFoundException();
 
 		}
 
@@ -273,8 +274,8 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		DictGroup dictGroup = dictGroupPersistence.fetchByPrimaryKey(dictGroupId);
 
 		/*
-		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode, dictGroup.getGroupId());
-		 * ThanhNV: hotFix check duplicate
+		 * DictGroup dictColl = dictGroupPersistence.fetchByF_groupCode(groupCode,
+		 * dictGroup.getGroupId()); ThanhNV: hotFix check duplicate
 		 * 
 		 */
 		DictGroup dictColl = dictGroupPersistence.fetchByGC_GI_DCI(groupCode, dictGroup.getGroupId(), dictCollectionId);
@@ -311,7 +312,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		return dictGroupPersistence.update(dictGroup);
 
-		//return dictGroup;
+		// return dictGroup;
 	}
 
 	/**
@@ -354,7 +355,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		String groupId = (String) params.get(DictGroupTerm.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
-		
+
 		Indexer<DictGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictGroup.class);
 
 		searchContext.addFullQueryEntryClassName(DictGroup.class.getName());
@@ -417,7 +418,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
+
 		if (Validator.isNotNull(dictCollectionCode)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(dictCollectionCode);
@@ -427,8 +428,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
-		
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictGroup.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -443,7 +443,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 		String groupId = (String) params.get(DictGroupTerm.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
-		
+
 		Indexer<DictGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictGroup.class);
 
 		searchContext.addFullQueryEntryClassName(DictGroup.class.getName());
@@ -513,64 +513,117 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		}
-		
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictGroup.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
-	
+
 	public List<DictGroup> getDictGroupByDictCollection(long groupId, long dictCollectionId, int start, int end) {
 		return dictGroupPersistence.findByGID_DC(dictCollectionId, groupId, start, end);
 	}
-	
+
 	public DictGroup getByGC_GI_DCI(String groupCode, long groupId, long dictCollectionId) {
 		return dictGroupPersistence.fetchByGC_GI_DCI(groupCode, groupId, dictCollectionId);
 	}
-	
+
 	@Override
 	public List<DictGroup> findOlderThanDate(Date date, long groupId, int start, int end) {
-		OrderByComparator<DictGroup> comparator = OrderByComparatorFactoryUtil.create(DictItemGroupImpl.TABLE_NAME, DictGroupTerm.MODIFIED_DATE, true);
-		
+		OrderByComparator<DictGroup> comparator = OrderByComparatorFactoryUtil.create(DictItemGroupImpl.TABLE_NAME,
+				DictGroupTerm.MODIFIED_DATE, true);
+
 		return dictGroupPersistence.findByF_dictGroupNewerThan(date, groupId, start, end, comparator);
 	}
-	
+
 	@Override
 	public long countOlderThanDate(Date date, long groupId) {
 		return dictGroupPersistence.countByF_dictGroupNewerThan(date, groupId);
 	}
 
-	//LamTV_Process output DB
+	// LamTV_Process output DB
 	@Indexable(type = IndexableType.REINDEX)
-	public DictGroup updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
-			String groupNameEN, String groupDescription, ServiceContext serviceContext) throws NoSuchUserException {
+	public DictGroup updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode,
+			String groupName, String groupNameEN, String groupDescription, ServiceContext serviceContext)
+			throws NoSuchUserException {
 
-			Date now = new Date();
-			User user = userPersistence.findByPrimaryKey(userId);
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
 
-			long dictGroupId = counterLocalService.increment(DictGroup.class.getName());
+		long dictGroupId = counterLocalService.increment(DictGroup.class.getName());
 
-			DictGroup dictGroup = dictGroupPersistence.create(dictGroupId);
+		DictGroup dictGroup = dictGroupPersistence.create(dictGroupId);
 
-			// Group instance
-			dictGroup.setGroupId(groupId);
+		// Group instance
+		dictGroup.setGroupId(groupId);
 
-			// Audit fields
-			dictGroup.setUuid(serviceContext.getUuid());
-			dictGroup.setCompanyId(user.getCompanyId());
-			dictGroup.setUserId(user.getUserId());
-			dictGroup.setUserName(user.getFullName());
-			dictGroup.setCreateDate(serviceContext.getCreateDate(now));
-			dictGroup.setModifiedDate(serviceContext.getCreateDate(now));
+		// Audit fields
+		dictGroup.setUuid(serviceContext.getUuid());
+		dictGroup.setCompanyId(user.getCompanyId());
+		dictGroup.setUserId(user.getUserId());
+		dictGroup.setUserName(user.getFullName());
+		dictGroup.setCreateDate(serviceContext.getCreateDate(now));
+		dictGroup.setModifiedDate(serviceContext.getCreateDate(now));
 
-			// Other fields
-			dictGroup.setDictCollectionId(dictCollectionId);
-			dictGroup.setGroupCode(groupCode);
-			dictGroup.setGroupName(groupName);
-			dictGroup.setGroupNameEN(groupNameEN);
-			dictGroup.setGroupDescription(groupDescription);
+		// Other fields
+		dictGroup.setDictCollectionId(dictCollectionId);
+		dictGroup.setGroupCode(groupCode);
+		dictGroup.setGroupName(groupName);
+		dictGroup.setGroupNameEN(groupNameEN);
+		dictGroup.setGroupDescription(groupDescription);
 
-			return dictGroupPersistence.update(dictGroup);
+		return dictGroupPersistence.update(dictGroup);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DictGroup adminProcessDelete(Long id) {
+
+		DictGroup object = dictGroupPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dictGroupPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictGroup adminProcessData(JSONObject objectData) {
+
+		DictGroup object = null;
+
+		if (objectData.getLong("dictGroupId") > 0) {
+
+			object = dictGroupPersistence.fetchByPrimaryKey(objectData.getLong("dictGroupId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DictGroup.class.getName());
+
+			object = dictGroupPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setDictCollectionId(objectData.getLong("dictCollectionId"));
+		object.setGroupCode(objectData.getString("groupCode"));
+		object.setGroupName(objectData.getString("groupName"));
+		object.setGroupNameEN(objectData.getString("groupNameEN"));
+		object.setGroupDescription(objectData.getString("groupDescription"));
+
+		dictGroupPersistence.update(object);
+
+		return object;
 	}
 
 }

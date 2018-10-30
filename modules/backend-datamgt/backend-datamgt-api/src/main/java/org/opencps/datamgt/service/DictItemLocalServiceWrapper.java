@@ -63,6 +63,17 @@ public class DictItemLocalServiceWrapper implements DictItemLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.DictItem adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dictItemLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.DictItem adminProcessDelete(Long id) {
+		return _dictItemLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countByOlderThanDate(java.util.Date date, long groupId) {
 		return _dictItemLocalService.countByOlderThanDate(date, groupId);
 	}

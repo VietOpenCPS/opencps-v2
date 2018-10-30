@@ -14,17 +14,9 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.ResourceRoleTerm;
-import org.opencps.usermgt.exception.NoSuchResourceRoleException;
-import org.opencps.usermgt.model.ResourceRole;
-import org.opencps.usermgt.model.ResourceUser;
-import org.opencps.usermgt.service.base.ResourceRoleLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -49,6 +41,15 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.constants.ResourceRoleTerm;
+import org.opencps.usermgt.exception.NoSuchResourceRoleException;
+import org.opencps.usermgt.model.ResourceRole;
+import org.opencps.usermgt.service.base.ResourceRoleLocalServiceBaseImpl;
+
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
 import backend.auth.api.exception.NotFoundException;
@@ -63,8 +64,7 @@ import backend.auth.api.keys.ModelNameKeys;
  * <p>
  * All custom service methods should be put in this class. Whenever methods are
  * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.usermgt.service.ResourceRoleLocalService}
- * interface.
+ * {@link org.opencps.usermgt.service.ResourceRoleLocalService} interface.
  *
  * <p>
  * This is a local service. Methods of this service will not have security
@@ -82,8 +82,8 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.opencps.usermgt.service.ResourceRoleLocalServiceUtil} to
-	 * access the resource role local service.
+	 * org.opencps.usermgt.service.ResourceRoleLocalServiceUtil} to access the
+	 * resource role local service.
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
@@ -105,13 +105,13 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-		
+
 		Role role = RoleLocalServiceUtil.fetchRole(roleId);
-		
-		if(Validator.isNull(role)){
+
+		if (Validator.isNull(role)) {
 			throw new NotFoundException();
 		}
-		
+
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -176,7 +176,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		} catch (NoSuchResourceRoleException e) {
 			// TODO Auto-generated catch block
-			//throw new NotFoundException();
+			// throw new NotFoundException();
 			_log.error(e);
 		}
 
@@ -206,11 +206,11 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		}
 
 		Role role = RoleLocalServiceUtil.fetchRole(roleId);
-		
-		if(Validator.isNull(role)){
+
+		if (Validator.isNull(role)) {
 			throw new NotFoundException();
 		}
-		
+
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -246,7 +246,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 	public List<ResourceRole> findByF_className_classPK(long groupId, String className, String classPK) {
 		return resourceRolePersistence.findByF_className_classPK(groupId, className, classPK);
 	}
-	
+
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		// TODO Auto-generated method stub
@@ -400,6 +400,56 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ResourceRole adminProcessDelete(Long id) {
+
+		ResourceRole object = resourceRolePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			resourceRolePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ResourceRole adminProcessData(JSONObject objectData) {
+
+		ResourceRole object = null;
+
+		if (objectData.getLong("resourceRoleId") > 0) {
+
+			object = resourceRolePersistence.fetchByPrimaryKey(objectData.getLong("resourceRoleId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ResourceRole.class.getName());
+
+			object = resourceRolePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setClassName(objectData.getString("className"));
+		object.setClassPK(objectData.getString("classPK"));
+		object.setRoleId(objectData.getLong("roleId"));
+		object.setReadonly(objectData.getInt("readonly"));
+
+		resourceRolePersistence.update(object);
+
+		return object;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(ResourceRoleLocalServiceImpl.class);

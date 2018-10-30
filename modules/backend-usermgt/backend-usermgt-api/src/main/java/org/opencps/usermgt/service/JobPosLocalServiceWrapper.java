@@ -57,6 +57,17 @@ public class JobPosLocalServiceWrapper implements JobPosLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.JobPos adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _jobPosLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.JobPos adminProcessDelete(Long id) {
+		return _jobPosLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public void assignPermission(long jobPosId, String[] actionIds,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		_jobPosLocalService.assignPermission(jobPosId, actionIds, serviceContext);

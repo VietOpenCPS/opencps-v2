@@ -14,23 +14,10 @@
 
 package org.opencps.datamgt.service.impl;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
-import org.opencps.datamgt.constants.FileAttachTerm;
-import org.opencps.datamgt.model.FileAttach;
-import org.opencps.datamgt.service.base.FileAttachLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -53,6 +40,21 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.datamgt.constants.FileAttachTerm;
+import org.opencps.datamgt.model.FileAttach;
+import org.opencps.datamgt.service.base.FileAttachLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -77,9 +79,9 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 	/*
-	 * NOTE FOR DEVELOPERS: Never reference this class directly. Always use
-	 * {@link org.mobilink.backend.document.service.FileAttachLocalServiceUtil}
-	 * to access the file attach local service.
+	 * NOTE FOR DEVELOPERS: Never reference this class directly. Always use {@link
+	 * org.mobilink.backend.document.service.FileAttachLocalServiceUtil} to access
+	 * the file attach local service.
 	 */
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -206,15 +208,15 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		FileAttach fileAttach = fileAttachPersistence.fetchByPrimaryKey(fileAttachId);
 
-//		try {
+		// try {
 		if (fileAttach != null) {
 			fileAttach = fileAttachPersistence.remove(fileAttach);
 		}
 
-//		fileAttach = fileAttachPersistence.remove(fileAttachId);
-//		} catch (NoSuchFileAttachException e) {
-//			throw new NotFoundException();
-//		}
+		// fileAttach = fileAttachPersistence.remove(fileAttachId);
+		// } catch (NoSuchFileAttachException e) {
+		// throw new NotFoundException();
+		// }
 
 		return fileAttach;
 
@@ -507,6 +509,61 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public FileAttach adminProcessDelete(Long id) {
+
+		FileAttach object = fileAttachPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			fileAttachPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public FileAttach adminProcessData(JSONObject objectData) {
+
+		FileAttach object = null;
+
+		if (objectData.getLong("fileAttachId") > 0) {
+
+			object = fileAttachPersistence.fetchByPrimaryKey(objectData.getLong("fileAttachId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(FileAttach.class.getName());
+
+			object = fileAttachPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setClassName(objectData.getString("className"));
+		object.setClassPK(objectData.getString("classPK"));
+		object.setFullName(objectData.getString("fullName"));
+		object.setEmail(objectData.getString("email"));
+		// object.setFileEntryId(objectData.getString("actionCode")fileEntryId);
+		object.setSource(objectData.getString("source"));
+		object.setSourceUrl(objectData.getString("sourceUrl"));
+		object.setDocFileId(objectData.getLong("docFileId"));
+		object.setFileName(objectData.getString("fileName"));
+
+		fileAttachPersistence.update(object);
+
+		return object;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(FileAttachLocalServiceImpl.class);

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false" package-path="org.opencps.adminconfig">
+	<author>binhth</author>
+	<namespace>ADMIN_CONFIG</namespace>
+	
+	<entity name="AdminConfig" uuid="false" local-service="true"
+		remote-service="false" table="opencps_adminconfig">
+
+		<!-- PK fields -->
+		<column name="id" type="long" primary="true" />
+
+		<column name="code" type="String" />
+		<column name="name" type="String" />
+		<column name="bundleName" type="String" />
+		<column name="modelName" type="String" />
+		<column name="serviceUtilName" type="String" />
+		<column name="headersName" type="String" />
+		<column name="columns" type="String" />
+		<column name="detailColumns" type="String" />
+		<column name="extForm" type="boolean" />
+		<column name="groupFilter" type="boolean" />
+		
+		<order by="asc">
+			<order-column name="id" />
+		</order>
+		
+		<finder return-type="AdminConfig" name="F_Code">
+			<finder-column name="code"></finder-column>
+		</finder>
+		
+	</entity>
+	
+</service-builder>

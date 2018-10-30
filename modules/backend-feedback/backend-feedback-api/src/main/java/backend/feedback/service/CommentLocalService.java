@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -88,6 +89,12 @@ public interface CommentLocalService extends BaseLocalService,
 		String content, long fileSize, InputStream inputStream,
 		String fileName, String fileType, int upvoteCount, String pings,
 		ServiceContext serviceContext) throws Exception;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Comment adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public Comment adminProcessDelete(Long id);
 
 	public long countLuceneSearchEngine(Map<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

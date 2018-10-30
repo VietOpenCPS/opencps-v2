@@ -58,11 +58,13 @@ import java.util.concurrent.TimeUnit;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -3464,30 +3466,91 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
 		object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
 		object.setAddress(objectData.getString("address"));
-
-		object.setGovAgencyName(objectData.getString("govAgencyName"));
 		object.setApplicantName(objectData.getString("applicantName"));
+		object.setPostalAddress(objectData.getString("postalAddress"));
+
+		DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
+				objectData.getString("govAgencyCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(govAgencyName)) {
+			object.setGovAgencyName(govAgencyName.getItemName());
+		}
+		
 		object.setCityCode(objectData.getString("cityCode"));
-		object.setCityName(objectData.getString("cityName"));
 		object.setDistrictCode(objectData.getString("districtCode"));
-		object.setDistrictName(objectData.getString("districtName"));
 		object.setWardCode(objectData.getString("wardCode"));
-		object.setWardName(objectData.getString("wardName"));
 		object.setDelegateCityCode(objectData.getString("delegateCityCode"));
-		object.setDelegateCityName(objectData.getString("delegateCityName"));
 		object.setDelegateDistrictCode(objectData.getString("delegateDistrictCode"));
-		object.setDelegateDistrictName(objectData.getString("delegateDistrictName"));
 		object.setDelegateWardCode(objectData.getString("delegateWardCode"));
-		object.setDelegateWardName(objectData.getString("delegateWardName"));
+		object.setPostalCityCode(objectData.getString("postalCityCode"));
+		object.setPostalDistrictCode(objectData.getString("postalDistrictCode"));
+		object.setPostalWardCode(objectData.getString("postalWardCode"));
+		
+		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("cityCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setCityName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("districtCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setDistrictName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("wardCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setWardName(dictItem.getItemName());
+		}
+		
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("delegateCityCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setDelegateCityName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("delegateDistrictCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setDelegateDistrictName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("delegateWardCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setDelegateWardName(dictItem.getItemName());
+		}
+		
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("postalCityCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setPostalCityName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("postalDistrictCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setPostalDistrictName(dictItem.getItemName());
+		}
+
+		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
+				objectData.getString("postalWardCode"), objectData.getLong("groupId"));
+
+		if (Validator.isNotNull(dictItem)) {
+			object.setPostalWardName(dictItem.getItemName());
+		}
+		
 		object.setPostalServiceCode(objectData.getString("postalServiceCode"));
 		object.setPostalServiceName(objectData.getString("postalServiceName"));
-		object.setPostalAddress(objectData.getString("postalAddress"));
-		object.setPostalCityCode(objectData.getString("postalCityCode"));
-		object.setPostalCityName(objectData.getString("postalCityName"));
-		object.setPostalDistrictCode(objectData.getString("postalDistrictCode"));
-		object.setPostalDistrictName(objectData.getString("postalDistrictName"));
-		object.setPostalWardCode(objectData.getString("postalWardCode"));
-		object.setPostalWardName(objectData.getString("postalWardName"));
 		object.setDossierTemplateNo(objectData.getString("dossierTemplateNo"));
 		object.setDossierTemplateName(objectData.getString("dossierTemplateName"));
 		object.setDossierStatus(objectData.getString("dossierStatus"));

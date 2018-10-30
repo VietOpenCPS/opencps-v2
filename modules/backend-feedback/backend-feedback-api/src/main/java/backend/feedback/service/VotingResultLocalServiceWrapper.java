@@ -56,6 +56,17 @@ public class VotingResultLocalServiceWrapper implements VotingResultLocalService
 	}
 
 	@Override
+	public backend.feedback.model.VotingResult adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _votingResultLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public backend.feedback.model.VotingResult adminProcessDelete(Long id) {
+		return _votingResultLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public int countByF_votingId_selected(long votingId, String selected) {
 		return _votingResultLocalService.countByF_votingId_selected(votingId,
 			selected);

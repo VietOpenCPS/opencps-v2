@@ -63,6 +63,16 @@ public class VotingResultLocalServiceUtil {
 		return getService().addVotingResult(votingResult);
 	}
 
+	public static backend.feedback.model.VotingResult adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static backend.feedback.model.VotingResult adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static int countByF_votingId_selected(long votingId, String selected) {
 		return getService().countByF_votingId_selected(votingId, selected);
 	}

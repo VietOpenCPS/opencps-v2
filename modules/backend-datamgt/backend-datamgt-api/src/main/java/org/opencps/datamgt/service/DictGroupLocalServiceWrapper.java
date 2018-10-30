@@ -76,6 +76,17 @@ public class DictGroupLocalServiceWrapper implements DictGroupLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.DictGroup adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _dictGroupLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.datamgt.model.DictGroup adminProcessDelete(Long id) {
+		return _dictGroupLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

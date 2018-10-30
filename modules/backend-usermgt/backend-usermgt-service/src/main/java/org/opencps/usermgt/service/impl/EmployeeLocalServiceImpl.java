@@ -14,19 +14,10 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.EmployeeTerm;
-import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
-import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
-import org.opencps.usermgt.exception.NoSuchEmployeeException;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -51,6 +42,17 @@ import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.constants.EmployeeTerm;
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
+import org.opencps.usermgt.exception.NoSuchEmployeeException;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -84,8 +86,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.mobilink.backend.usermgt.service.EmployeeLocalServiceUtil} to access
-	 * the employee local service.
+	 * org.mobilink.backend.usermgt.service.EmployeeLocalServiceUtil} to access the
+	 * employee local service.
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
@@ -188,7 +190,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		try {
 			employee = employeePersistence.remove(employeeId);
 		} catch (NoSuchEmployeeException e) {
-//			throw new NotFoundException();
+			// throw new NotFoundException();
 			_log.error(e);
 		}
 
@@ -197,6 +199,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(EmployeeLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Employee updateEmployee(long userId, long employeeId, String fullName, String employeeNo, int gender,
@@ -235,10 +238,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new DuplicateEmployeeNoException();
 		}
 
-		_log.info("employeeId:"+employeeId);
+		_log.info("employeeId:" + employeeId);
 		employeeCheck = employeePersistence.findByF_email(employee.getGroupId(), email);
-		_log.info("employeeCheck:"+employeeCheck.size() +"| employeeCheckId: "+employeeCheck.get(0).getEmployeeId());
-		_log.info("employeeCheck:"+employeeCheck.get(0));
+		_log.info(
+				"employeeCheck:" + employeeCheck.size() + "| employeeCheckId: " + employeeCheck.get(0).getEmployeeId());
+		_log.info("employeeCheck:" + employeeCheck.get(0));
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
 				&& employeeCheck.get(0).getEmployeeId() != employeeId) {
@@ -357,27 +361,28 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-//		if (Validator.isNotNull(keywords)) {
-//
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//
-//			for (String string : keyword) {
-//
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//
-//				query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
-//						EmployeeTerm.TELNO);
-//
-//				// for (String moreField : advFilterOptions) {
-//				// if (Validator.isNotNull(moreField)) {
-//				// query.addField("alpaca_" + moreField);
-//				// }
-//				// }
-//
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
-//		}
+		// if (Validator.isNotNull(keywords)) {
+		//
+		// String[] keyword = keywords.split(StringPool.SPACE);
+		//
+		// for (String string : keyword) {
+		//
+		// MultiMatchQuery query = new MultiMatchQuery(string);
+		//
+		// query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME,
+		// EmployeeTerm.EMAIL,
+		// EmployeeTerm.TELNO);
+		//
+		// // for (String moreField : advFilterOptions) {
+		// // if (Validator.isNotNull(moreField)) {
+		// // query.addField("alpaca_" + moreField);
+		// // }
+		// // }
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		//
+		// }
+		// }
 
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
@@ -479,7 +484,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(strUserIdList)) {
 			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
 			if (sliptUserId != null && sliptUserId.length > 0) {
-			BooleanQuery subQuery = new BooleanQueryImpl();
+				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (String strUserId : sliptUserId) {
 					if (Validator.isNotNull(strUserId)) {
 
@@ -502,12 +507,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(employeeName)) {
 
 			String[] keywordArr = employeeName.split(StringPool.SPACE);
-				BooleanQuery query = new BooleanQueryImpl();
-				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-					query.add(wildQuery, BooleanClauseOccur.MUST);
-				}
+			BooleanQuery query = new BooleanQueryImpl();
+			for (String key : keywordArr) {
+				WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
+						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+				query.add(wildQuery, BooleanClauseOccur.MUST);
+			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
@@ -551,27 +556,28 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-//		if (Validator.isNotNull(keywords)) {
-//
-//			String[] keyword = keywords.split(StringPool.SPACE);
-//
-//			for (String string : keyword) {
-//
-//				MultiMatchQuery query = new MultiMatchQuery(string);
-//
-//				query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
-//						EmployeeTerm.TELNO);
-//
-//				// for (String moreField : advFilterOptions) {
-//				// if (Validator.isNotNull(moreField)) {
-//				// query.addField("alpaca_" + moreField);
-//				// }
-//				// }
-//
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//
-//			}
-//		}
+		// if (Validator.isNotNull(keywords)) {
+		//
+		// String[] keyword = keywords.split(StringPool.SPACE);
+		//
+		// for (String string : keyword) {
+		//
+		// MultiMatchQuery query = new MultiMatchQuery(string);
+		//
+		// query.addFields(EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME,
+		// EmployeeTerm.EMAIL,
+		// EmployeeTerm.TELNO);
+		//
+		// // for (String moreField : advFilterOptions) {
+		// // if (Validator.isNotNull(moreField)) {
+		// // query.addField("alpaca_" + moreField);
+		// // }
+		// // }
+		//
+		// booleanQuery.add(query, BooleanClauseOccur.MUST);
+		//
+		// }
+		// }
 
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
@@ -673,7 +679,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(strUserIdList)) {
 			String[] sliptUserId = strUserIdList.split(StringPool.COMMA);
 			if (sliptUserId != null && sliptUserId.length > 0) {
-			BooleanQuery subQuery = new BooleanQueryImpl();
+				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (String strUserId : sliptUserId) {
 					if (Validator.isNotNull(strUserId)) {
 
@@ -696,12 +702,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(employeeName)) {
 
 			String[] keywordArr = employeeName.split(StringPool.SPACE);
-				BooleanQuery query = new BooleanQueryImpl();
-				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
-					query.add(wildQuery, BooleanClauseOccur.MUST);
-				}
+			BooleanQuery query = new BooleanQueryImpl();
+			for (String key : keywordArr) {
+				WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
+						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+				query.add(wildQuery, BooleanClauseOccur.MUST);
+			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
@@ -716,52 +722,116 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			String fileSignPath, ServiceContext serviceContext) throws PortalException {
 
 		Employee employee = employeePersistence.fetchByF_mappingUserId(groupId, userId);
-		
+
 		if (Validator.isNotNull(employee)) {
-			
+
 			User user = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
-			
+
 			String userName = StringPool.BLANK;
-			
+
 			if (Validator.isNotNull(user)) {
 				userName = user.getFullName();
 			}
-			
+
 			Date now = new Date();
-			
+
 			if (fileCertId != 0) {
-				//update fileId of certFile
+				// update fileId of certFile
 				employee.setFileCertId(fileCertId);
 			}
 			if (fileSignId != 0) {
-				//update fileSignId
+				// update fileSignId
 				employee.setFileSignId(fileSignId);
 			}
 			if (fileCertPath.trim().length() != 0) {
-				//update fileCertPath
+				// update fileCertPath
 				employee.setFileCertPath(fileCertPath);
 			}
 			if (fileSignPath.trim().length() != 0) {
-				//update fileId of certFile
+				// update fileId of certFile
 				employee.setFileSignPath(fileSignPath);
 			}
-			
+
 			employee.setUserId(serviceContext.getUserId());
 			employee.setUserName(userName);
 			employee.setModifiedDate(now);
 		}
-		
+
 		employeePersistence.update(employee);
 
 		return employee;
 	}
 
-		
-	public List<Employee> getLstEmployee(long groupId, long userId){
+	public List<Employee> getLstEmployee(long groupId, long userId) {
 		return employeePersistence.findByG_UID(groupId, userId);
 	}
 
-	public Employee getEmployeeByEmpNo(long groupId, String employeeNo){
+	public Employee getEmployeeByEmpNo(long groupId, String employeeNo) {
 		return employeePersistence.fetchByF_GID_EMPNO(groupId, employeeNo);
 	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public Employee adminProcessDelete(Long id) {
+
+		Employee object = employeePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			employeePersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Employee adminProcessData(JSONObject objectData) {
+
+		Employee object = null;
+
+		if (objectData.getLong("employeeId") > 0) {
+
+			object = employeePersistence.fetchByPrimaryKey(objectData.getLong("employeeId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(Employee.class.getName());
+
+			object = employeePersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setEmployeeNo(objectData.getString("employeeNo"));
+		object.setFullName(objectData.getString("fullName"));
+		object.setTitle(objectData.getString("title"));
+		object.setGender(objectData.getInt("gender"));
+		object.setBirthdate(new Date(objectData.getLong("birthdate")));
+		object.setTelNo(objectData.getString("telNo"));
+		object.setMobile(objectData.getString("mobile"));
+		object.setEmail(objectData.getString("email"));
+		object.setWorkingStatus(objectData.getInt("workingStatus"));
+		object.setMappingUserId(objectData.getLong("mappingUserId"));
+		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
+		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));
+		object.setRecruitDate(new Date(objectData.getLong("recruitDate")));
+		object.setLeaveDate(new Date(objectData.getLong("leaveDate")));
+		// object.setFileCertId(fileCertId);
+		// object.setFileSignId(fileSignId);
+		// object.setFileCertPath(fileCertPath);
+		// object.setFileSignPath(fileSignPath);
+
+		employeePersistence.update(object);
+
+		return object;
+	}
+
 }

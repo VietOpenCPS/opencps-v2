@@ -86,6 +86,16 @@ public class DictCollectionLocalServiceUtil {
 			collectionName, collectionNameEN, description, serviceContext);
 	}
 
+	public static org.opencps.datamgt.model.DictCollection adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.datamgt.model.DictCollection adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static org.opencps.datamgt.model.DictCollection changeStatus(
 		long dictCollectionId, int status) {
 		return getService().changeStatus(dictCollectionId, status);

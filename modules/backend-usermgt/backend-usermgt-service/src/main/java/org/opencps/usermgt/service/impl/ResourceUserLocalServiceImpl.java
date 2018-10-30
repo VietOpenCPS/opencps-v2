@@ -14,16 +14,9 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.ResourceUserTerm;
-import org.opencps.usermgt.exception.NoSuchResourceUserException;
-import org.opencps.usermgt.model.ResourceUser;
-import org.opencps.usermgt.service.base.ResourceUserLocalServiceBaseImpl;
-
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -45,6 +38,15 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.constants.ResourceUserTerm;
+import org.opencps.usermgt.exception.NoSuchResourceUserException;
+import org.opencps.usermgt.model.ResourceUser;
+import org.opencps.usermgt.service.base.ResourceUserLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -406,5 +408,58 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 	}
 
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public ResourceUser adminProcessDelete(Long id) {
+
+		ResourceUser object = resourceUserPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			resourceUserPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ResourceUser adminProcessData(JSONObject objectData) {
+
+		ResourceUser object = null;
+
+		if (objectData.getLong("resourceUserId") > 0) {
+
+			object = resourceUserPersistence.fetchByPrimaryKey(objectData.getLong("resourceUserId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(ResourceUser.class.getName());
+
+			object = resourceUserPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setClassName(objectData.getString("className"));
+		object.setClassPK(objectData.getString("classPK"));
+		object.setToUserId(objectData.getLong("toUserId"));
+		object.setFullname(objectData.getString("fullname"));
+		object.setEmail(objectData.getString("email"));
+		object.setReadonly(objectData.getBoolean("readonly"));
+
+		resourceUserPersistence.update(object);
+
+		return object;
+	}
+	
 	private static final Log _log = LogFactoryUtil.getLog(ResourceUserLocalServiceImpl.class);
 }

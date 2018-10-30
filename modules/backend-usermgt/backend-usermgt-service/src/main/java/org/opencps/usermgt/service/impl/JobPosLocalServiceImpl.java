@@ -14,21 +14,11 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import org.opencps.usermgt.constants.JobPosTerm;
-import org.opencps.usermgt.constants.UserMGTConstants;
-import org.opencps.usermgt.exception.NoSuchJobPosException;
-import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
@@ -57,6 +47,18 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import org.opencps.usermgt.constants.JobPosTerm;
+import org.opencps.usermgt.constants.UserMGTConstants;
+import org.opencps.usermgt.exception.NoSuchJobPosException;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -90,8 +92,8 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link
-	 * org.mobilink.backend.usermgt.service.JobPosLocalServiceUtil} to access
-	 * the job pos local service.
+	 * org.mobilink.backend.usermgt.service.JobPosLocalServiceUtil} to access the
+	 * job pos local service.
 	 */
 	public void assignPermission(long jobPosId, String[] actionIds, ServiceContext serviceContext) {
 
@@ -104,10 +106,10 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		String[] listPermission = ActionKeys.getListPermission();
 
 		try {
-			
+
 			ResourcePermissionLocalServiceUtil.setResourcePermissions(jobPos.getCompanyId(), modelName,
 					ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(roleId), roleId, actionIds);
-			
+
 		} catch (PortalException e) {
 			_log.error(e);
 			for (int i = 0; i < listPermission.length; i++) {
@@ -121,25 +123,30 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 					resourceAction.setBitwiseValue((long) Math.pow(2, i));
 					ResourceActionLocalServiceUtil.updateResourceAction(resourceAction);
 				} else {
-					ResourceActionLocalServiceUtil.addResourceAction(Role.class.getName(), actionId, (long) Math.pow(2, i));
+					ResourceActionLocalServiceUtil.addResourceAction(Role.class.getName(), actionId,
+							(long) Math.pow(2, i));
 				}
 
 			}
 
-//			for (String actionKey : actionIds) {
-//				try {
-//					if (!ResourcePermissionLocalServiceUtil.hasResourcePermission(jobPos.getCompanyId(), modelName,
-//							ResourceConstants.SCOPE_INDIVIDUAL, "" + roleId, roleId, actionKey)) {
-//						ResourcePermissionLocalServiceUtil.setResourcePermissions(jobPos.getCompanyId(), modelName,
-//								ResourceConstants.SCOPE_INDIVIDUAL, "" + roleId, roleId, actionIds);
-//					} else {
-//						System.out.println("Role(" + roleId + ") already have this permission(" + actionKey
-//								+ ") for this model(" + modelName + ")");
-//					}
-//				} catch (PortalException ex) {
-//					ex.printStackTrace();
-//				}
-//			}
+			// for (String actionKey : actionIds) {
+			// try {
+			// if
+			// (!ResourcePermissionLocalServiceUtil.hasResourcePermission(jobPos.getCompanyId(),
+			// modelName,
+			// ResourceConstants.SCOPE_INDIVIDUAL, "" + roleId, roleId, actionKey)) {
+			// ResourcePermissionLocalServiceUtil.setResourcePermissions(jobPos.getCompanyId(),
+			// modelName,
+			// ResourceConstants.SCOPE_INDIVIDUAL, "" + roleId, roleId, actionIds);
+			// } else {
+			// System.out.println("Role(" + roleId + ") already have this permission(" +
+			// actionKey
+			// + ") for this model(" + modelName + ")");
+			// }
+			// } catch (PortalException ex) {
+			// ex.printStackTrace();
+			// }
+			// }
 
 		}
 
@@ -167,11 +174,11 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		}
 
 		JobPos jobPosCheck = jobPosPersistence.fetchByF_title(groupId, title);
-		
+
 		if (Validator.isNotNull(jobPosCheck)) {
 			throw new DuplicateCategoryException();
 		}
-		
+
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -179,19 +186,20 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		long jobPosId = counterLocalService.increment(JobPos.class.getName());
 
 		// create role name
-//		String role_name = title;
+		// String role_name = title;
 
 		String role_name = title + jobPosId;
 
 		// add role
-//		Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-//				role_name, null, null, 1, "", serviceContext);
+		// Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(),
+		// counterLocalService.increment(),
+		// role_name, null, null, 1, "", serviceContext);
 		Map<Locale, String> titleMap = new HashMap<>();
 		titleMap.put(Locale.getDefault(), title);
-		
+
 		Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
 				role_name, titleMap, null, RoleConstants.TYPE_SITE, "", serviceContext);
-		
+
 		JobPos jobPos = jobPosPersistence.create(jobPosId);
 
 		// Group instance
@@ -210,13 +218,13 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		jobPos.setDescription(description);
 		jobPos.setLeader(leader);
 
-		if(Validator.isNotNull(role)){
-			//TODO: user_group
-//			RoleLocalServiceUtil.addGroupRole(groupId, role.getRoleId());
+		if (Validator.isNotNull(role)) {
+			// TODO: user_group
+			// RoleLocalServiceUtil.addGroupRole(groupId, role.getRoleId());
 
-		jobPos.setMappingRoleId(role.getRoleId());
+			jobPos.setMappingRoleId(role.getRoleId());
 		}
-		
+
 		jobPos.setExpandoBridgeAttributes(serviceContext);
 
 		jobPosPersistence.update(jobPos);
@@ -252,7 +260,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			jobPos = jobPosPersistence.remove(JobPosId);
 
 		} catch (NoSuchJobPosException e) {
-//			throw new NotFoundException();
+			// throw new NotFoundException();
 			_log.error(e);
 		}
 
@@ -263,8 +271,8 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public JobPos updateJobPos(long userId, long jobPosId, String title, String description, int leader,
-			ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NoSuchUserException, NotFoundException, DuplicateCategoryException {
+			ServiceContext serviceContext) throws UnauthenticationException, UnauthorizationException,
+			NoSuchUserException, NotFoundException, DuplicateCategoryException {
 		// authen
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -288,11 +296,11 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		JobPos jobPos = jobPosPersistence.fetchByPrimaryKey(jobPosId);
 
 		JobPos jobPosCheck = jobPosPersistence.fetchByF_title(jobPos.getGroupId(), title);
-		
+
 		if (Validator.isNotNull(jobPosCheck) && jobPosCheck.getJobPosId() != jobPosId) {
 			throw new DuplicateCategoryException();
 		}
-		
+
 		// Audit fields
 		jobPos.setUserId(user.getUserId());
 		jobPos.setUserName(user.getFullName());
@@ -311,7 +319,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	public JobPos fetchByF_mappingRoleId(long groupId, long mappingRoleId) {
 		return jobPosPersistence.fetchByF_mappingRoleId(groupId, mappingRoleId);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
@@ -417,8 +425,9 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 	}
 
-	//LamTV_ADD
+	// LamTV_ADD
 	private static Log _log = LogFactoryUtil.getLog(JobPosLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.REINDEX)
 	public JobPos updateJobPosDB(long userId, long groupId, String jobPosCode, String title, String description,
 			ServiceContext serviceContext) throws PortalException {
@@ -428,17 +437,19 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 		JobPos jobPos = jobPosPersistence.fetchByF_CODE(groupId, jobPosCode);
 
-//		JobPos jobPosCheck = jobPosPersistence.fetchByF_title(jobPos.getGroupId(), title);
-		
-//		if (Validator.isNotNull(jobPosCheck) && jobPosCheck.getJobPosId() != jobPosId) {
-//			throw new DuplicateCategoryException();
-//		}
+		// JobPos jobPosCheck = jobPosPersistence.fetchByF_title(jobPos.getGroupId(),
+		// title);
+
+		// if (Validator.isNotNull(jobPosCheck) && jobPosCheck.getJobPosId() !=
+		// jobPosId) {
+		// throw new DuplicateCategoryException();
+		// }
 		if (jobPos != null) {
-			//Audit field
+			// Audit field
 			jobPos.setUserId(user.getUserId());
 			jobPos.setUserName(user.getFullName());
 			jobPos.setModifiedDate(serviceContext.getCreateDate(now));
-			//Other field
+			// Other field
 			if (Validator.isNotNull(title))
 				jobPos.setTitle(title);
 			if (Validator.isNotNull(description))
@@ -448,20 +459,21 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			long jobPosId = counterLocalService.increment(JobPos.class.getName());
 			jobPos = jobPosPersistence.create(jobPosId);
 			// create role name
-//			String role_name = title;
+			// String role_name = title;
 			String role_name = jobPosCode + StringPool.UNDERLINE + jobPosId;
 
 			// add role
-			_log.info("role_name:"+role_name);
-//			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-//					role_name, null, null, 1, "", serviceContext);
+			_log.info("role_name:" + role_name);
+			// Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(),
+			// counterLocalService.increment(),
+			// role_name, null, null, 1, "", serviceContext);
 
 			Map<Locale, String> titleMap = new HashMap<>();
 			titleMap.put(Locale.getDefault(), title);
-			
+
 			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
 					role_name, titleMap, null, RoleConstants.TYPE_SITE, "", serviceContext);
-			
+
 			// Audit fields
 			jobPos.setUserId(user.getUserId());
 			jobPos.setUserName(user.getFullName());
@@ -484,6 +496,78 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 	public JobPos getByJobCode(long groupId, String jobCode) {
 		return jobPosPersistence.fetchByF_CODE(groupId, jobCode);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public JobPos adminProcessDelete(Long id) {
+
+		JobPos object = jobPosPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			jobPosPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public JobPos adminProcessData(JSONObject objectData) {
+
+		JobPos object = null;
+
+		if (objectData.getLong("jobPosId") > 0) {
+
+			object = jobPosPersistence.fetchByPrimaryKey(objectData.getLong("jobPosId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(JobPos.class.getName());
+
+			object = jobPosPersistence.create(id);
+
+			object.setGroupId(objectData.getLong("groupId"));
+			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCreateDate(new Date());
+
+			ServiceContext serviceContext = new ServiceContext();
+			serviceContext.setUserId(objectData.getLong("userId"));
+
+			String role_name = objectData.getString("title") + id;
+
+			Map<Locale, String> titleMap = new HashMap<>();
+			titleMap.put(Locale.getDefault(), objectData.getString("title"));
+
+			Role role;
+
+			try {
+
+				role = RoleLocalServiceUtil.addRole(objectData.getLong("userId"), Role.class.getName(),
+						counterLocalService.increment(), role_name, titleMap, null, RoleConstants.TYPE_SITE, "",
+						serviceContext);
+
+				object.setMappingRoleId(role.getRoleId());
+
+			} catch (PortalException e) {
+				_log.error(e);
+			}
+
+		}
+
+		object.setUserId(objectData.getLong("userId"));
+
+		object.setJobPosCode(objectData.getString("jobPosCode"));
+		object.setTitle(objectData.getString("title"));
+		object.setDescription(objectData.getString("description"));
+		object.setLeader(objectData.getInt("leader"));
+
+		jobPosPersistence.update(object);
+
+		return object;
 	}
 
 }

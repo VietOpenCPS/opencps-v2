@@ -70,6 +70,16 @@ public class WorkingUnitLocalServiceUtil {
 		return getService().addWorkingUnit(workingUnit);
 	}
 
+	public static org.opencps.usermgt.model.WorkingUnit adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.usermgt.model.WorkingUnit adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

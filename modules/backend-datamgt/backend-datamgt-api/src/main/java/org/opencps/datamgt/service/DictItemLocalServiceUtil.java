@@ -71,6 +71,15 @@ public class DictItemLocalServiceUtil {
 			level, metaData, serviceContext);
 	}
 
+	public static org.opencps.datamgt.model.DictItem adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.datamgt.model.DictItem adminProcessDelete(Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static long countByOlderThanDate(java.util.Date date, long groupId) {
 		return getService().countByOlderThanDate(date, groupId);
 	}
