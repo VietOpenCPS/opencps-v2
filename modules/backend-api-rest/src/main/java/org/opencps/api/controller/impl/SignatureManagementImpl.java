@@ -478,16 +478,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 		//			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
 		//			_log.info("fileSigned Name: "+fileSigned.getName());
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-//					_log.info("dlFileEntry: "+dlFileEntry.getFileName());
-//					_log.info("user.getUserId(): "+user.getUserId());
-//					_log.info("signedFilePath: "+signedFilePath);
-//					_log.info("UserFileEntry: "+dlFileEntry.getUserId());
-//					_log.info("UserFileEntryName: "+dlFileEntry.getUserName());
-		
 					DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
 							StringPool.BLANK, true, fileSigned, serviceContext);
-		
 					// Update deliverable with deliverableType
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
 					if (dossierFile != null) {
@@ -502,7 +495,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 								}
 							}
 						}
-					}					
+					}
 				}
 			} else {
 //				result.put("msg", "fileEntryId");
