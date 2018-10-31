@@ -2844,7 +2844,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				JSONObject resultObj = null;
 				Map<String, Object> params = new HashMap<>();
-				
+				_log.info("SONDT payment REQUESTPAYMENT 5: DOSSIERID ========= "+ dossier.getDossierId());
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				
 				
@@ -5874,9 +5874,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		Map<String, Object> params = new HashMap<>();
 		
 		StringBuilder address = new StringBuilder();
-		address.append(dossier.getAddress());
-		address.append(dossier.getWardName());
-		address.append(dossier.getDistrictName());
+		address.append(dossier.getAddress());address.append(", ");
+		address.append(dossier.getWardName());address.append(", ");
+		address.append(dossier.getDistrictName());address.append(", ");
 		address.append(dossier.getCityName());
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
