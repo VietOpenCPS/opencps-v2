@@ -341,7 +341,6 @@ public class ExampleEndpoind extends Endpoint {
 				} catch (Exception e) {
 					responeData = JSONFactoryUtil.createJSONArray(resultString);
 				}
-				System.out.println("ExampleEndpoind.resultString()" + resultString);
 				messageData.put(message.getString(RESPONE), responeData);
 
 				messageData.put(STATUS, HttpStatus.OK);
