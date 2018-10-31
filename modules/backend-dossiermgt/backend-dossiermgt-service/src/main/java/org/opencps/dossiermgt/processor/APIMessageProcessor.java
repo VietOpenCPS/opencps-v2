@@ -322,7 +322,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
 			}
-			if (processAction.getPreCondition().contains("payok")) {
+			if (processAction.getPreCondition().contains("payok")
+					|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1")) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 				//_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
@@ -714,7 +715,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			
 			_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
-		if (processAction.getPreCondition().contains("payok")) {
+		if (processAction.getPreCondition().contains("payok")
+				|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1")) {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 			//_log.info("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //			_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
@@ -732,6 +734,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+			pfiModel.setEinvoice(paymentFile.getEinvoice());
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);			
 		}
