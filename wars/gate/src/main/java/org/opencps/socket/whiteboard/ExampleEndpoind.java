@@ -259,6 +259,8 @@ public class ExampleEndpoind extends Endpoint {
 						config.put("columns", adminConfig.getColumns());
 						config.put("detailColumns", adminConfig.getDetailColumns());
 						config.put("extForm", adminConfig.getExtForm());
+						config.put("dependency_title", headersObj.get("dependency_title"));
+						config.put("dependency_link", headersObj.get("dependency_link"));
 
 						messageData.put(message.getString(RESPONE), config);
 
@@ -328,7 +330,7 @@ public class ExampleEndpoind extends Endpoint {
 				
 				HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 				
-				HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+				HttpEntity<String> response = restTemplate.exchange("http://" + portalURL + message.getString("api"),
 						HttpMethod.GET, entity, String.class);
 
 				String resultString = response.getBody();
@@ -339,7 +341,7 @@ public class ExampleEndpoind extends Endpoint {
 				} catch (Exception e) {
 					responeData = JSONFactoryUtil.createJSONArray(resultString);
 				}
-				
+				System.out.println("ExampleEndpoind.resultString()" + resultString);
 				messageData.put(message.getString(RESPONE), responeData);
 
 				messageData.put(STATUS, HttpStatus.OK);

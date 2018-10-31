@@ -91,6 +91,11 @@
 			<finder-column name="serviceInfoId" />
 		</finder>
 
+		<finder name="F_serviceInfoId_fileTemplateNo" return-type="ServiceFileTemplate">
+			<finder-column name="serviceInfoId" />
+			<finder-column name="fileTemplateNo" />
+		</finder>
+		
 		<!-- References -->
 
 		<reference entity="DLApp" package-path="com.liferay.portlet.documentlibrary" />

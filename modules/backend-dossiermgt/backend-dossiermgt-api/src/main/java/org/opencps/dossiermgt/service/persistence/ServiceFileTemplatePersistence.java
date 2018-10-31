@@ -307,6 +307,60 @@ public interface ServiceFileTemplatePersistence extends BasePersistence<ServiceF
 	public int countByServiceInfoId(long serviceInfoId);
 
 	/**
+	* Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or throws a {@link NoSuchServiceFileTemplateException} if it could not be found.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the matching service file template
+	* @throws NoSuchServiceFileTemplateException if a matching service file template could not be found
+	*/
+	public ServiceFileTemplate findByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo)
+		throws NoSuchServiceFileTemplateException;
+
+	/**
+	* Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the matching service file template, or <code>null</code> if a matching service file template could not be found
+	*/
+	public ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo);
+
+	/**
+	* Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching service file template, or <code>null</code> if a matching service file template could not be found
+	*/
+	public ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo, boolean retrieveFromCache);
+
+	/**
+	* Removes the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; from the database.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the service file template that was removed
+	*/
+	public ServiceFileTemplate removeByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo)
+		throws NoSuchServiceFileTemplateException;
+
+	/**
+	* Returns the number of service file templates where serviceInfoId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the number of matching service file templates
+	*/
+	public int countByF_serviceInfoId_fileTemplateNo(long serviceInfoId,
+		String fileTemplateNo);
+
+	/**
 	* Caches the service file template in the entity cache if it is enabled.
 	*
 	* @param serviceFileTemplate the service file template

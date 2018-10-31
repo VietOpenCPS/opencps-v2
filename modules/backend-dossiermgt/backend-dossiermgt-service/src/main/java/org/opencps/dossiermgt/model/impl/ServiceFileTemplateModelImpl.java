@@ -90,9 +90,9 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.ServiceFileTemplate"),
 			true);
-	public static final long SERVICEINFOID_COLUMN_BITMASK = 1L;
-	public static final long UUID_COLUMN_BITMASK = 2L;
-	public static final long FILETEMPLATENO_COLUMN_BITMASK = 4L;
+	public static final long FILETEMPLATENO_COLUMN_BITMASK = 1L;
+	public static final long SERVICEINFOID_COLUMN_BITMASK = 2L;
+	public static final long UUID_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ServiceFileTemplate"));
 
@@ -236,7 +236,17 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 
 	@Override
 	public void setFileTemplateNo(String fileTemplateNo) {
+		_columnBitmask |= FILETEMPLATENO_COLUMN_BITMASK;
+
+		if (_originalFileTemplateNo == null) {
+			_originalFileTemplateNo = _fileTemplateNo;
+		}
+
 		_fileTemplateNo = fileTemplateNo;
+	}
+
+	public String getOriginalFileTemplateNo() {
+		return GetterUtil.getString(_originalFileTemplateNo);
 	}
 
 	@Override
@@ -347,6 +357,8 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 
 		serviceFileTemplateModelImpl._setOriginalServiceInfoId = false;
 
+		serviceFileTemplateModelImpl._originalFileTemplateNo = serviceFileTemplateModelImpl._fileTemplateNo;
+
 		serviceFileTemplateModelImpl._columnBitmask = 0;
 	}
 
@@ -450,6 +462,7 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 	private long _originalServiceInfoId;
 	private boolean _setOriginalServiceInfoId;
 	private String _fileTemplateNo;
+	private String _originalFileTemplateNo;
 	private String _templateName;
 	private long _fileEntryId;
 	private long _columnBitmask;

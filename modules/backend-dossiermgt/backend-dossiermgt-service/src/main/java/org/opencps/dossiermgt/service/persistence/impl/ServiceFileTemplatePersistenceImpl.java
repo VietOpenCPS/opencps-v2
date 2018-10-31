@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -1157,6 +1158,281 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 	}
 
 	private static final String _FINDER_COLUMN_SERVICEINFOID_SERVICEINFOID_2 = "serviceFileTemplate.id.serviceInfoId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO =
+		new FinderPath(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceFileTemplateModelImpl.FINDER_CACHE_ENABLED,
+			ServiceFileTemplateImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByF_serviceInfoId_fileTemplateNo",
+			new String[] { Long.class.getName(), String.class.getName() },
+			ServiceFileTemplateModelImpl.SERVICEINFOID_COLUMN_BITMASK |
+			ServiceFileTemplateModelImpl.FILETEMPLATENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_SERVICEINFOID_FILETEMPLATENO =
+		new FinderPath(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceFileTemplateModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_serviceInfoId_fileTemplateNo",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or throws a {@link NoSuchServiceFileTemplateException} if it could not be found.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param fileTemplateNo the file template no
+	 * @return the matching service file template
+	 * @throws NoSuchServiceFileTemplateException if a matching service file template could not be found
+	 */
+	@Override
+	public ServiceFileTemplate findByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo)
+		throws NoSuchServiceFileTemplateException {
+		ServiceFileTemplate serviceFileTemplate = fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+				fileTemplateNo);
+
+		if (serviceFileTemplate == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("serviceInfoId=");
+			msg.append(serviceInfoId);
+
+			msg.append(", fileTemplateNo=");
+			msg.append(fileTemplateNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchServiceFileTemplateException(msg.toString());
+		}
+
+		return serviceFileTemplate;
+	}
+
+	/**
+	 * Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param fileTemplateNo the file template no
+	 * @return the matching service file template, or <code>null</code> if a matching service file template could not be found
+	 */
+	@Override
+	public ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo) {
+		return fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo, true);
+	}
+
+	/**
+	 * Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param fileTemplateNo the file template no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching service file template, or <code>null</code> if a matching service file template could not be found
+	 */
+	@Override
+	public ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { serviceInfoId, fileTemplateNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO,
+					finderArgs, this);
+		}
+
+		if (result instanceof ServiceFileTemplate) {
+			ServiceFileTemplate serviceFileTemplate = (ServiceFileTemplate)result;
+
+			if ((serviceInfoId != serviceFileTemplate.getServiceInfoId()) ||
+					!Objects.equals(fileTemplateNo,
+						serviceFileTemplate.getFileTemplateNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_SERVICEFILETEMPLATE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_SERVICEINFOID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceInfoId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				List<ServiceFileTemplate> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ServiceFileTemplatePersistenceImpl.fetchByF_serviceInfoId_fileTemplateNo(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ServiceFileTemplate serviceFileTemplate = list.get(0);
+
+					result = serviceFileTemplate;
+
+					cacheResult(serviceFileTemplate);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ServiceFileTemplate)result;
+		}
+	}
+
+	/**
+	 * Removes the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; from the database.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param fileTemplateNo the file template no
+	 * @return the service file template that was removed
+	 */
+	@Override
+	public ServiceFileTemplate removeByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo)
+		throws NoSuchServiceFileTemplateException {
+		ServiceFileTemplate serviceFileTemplate = findByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+				fileTemplateNo);
+
+		return remove(serviceFileTemplate);
+	}
+
+	/**
+	 * Returns the number of service file templates where serviceInfoId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param fileTemplateNo the file template no
+	 * @return the number of matching service file templates
+	 */
+	@Override
+	public int countByF_serviceInfoId_fileTemplateNo(long serviceInfoId,
+		String fileTemplateNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_SERVICEINFOID_FILETEMPLATENO;
+
+		Object[] finderArgs = new Object[] { serviceInfoId, fileTemplateNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SERVICEFILETEMPLATE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_SERVICEINFOID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceInfoId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_SERVICEINFOID_2 =
+		"serviceFileTemplate.id.serviceInfoId = ? AND ";
+	private static final String _FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_1 =
+		"serviceFileTemplate.id.fileTemplateNo IS NULL";
+	private static final String _FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_2 =
+		"serviceFileTemplate.id.fileTemplateNo = ?";
+	private static final String _FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_3 =
+		"(serviceFileTemplate.id.fileTemplateNo IS NULL OR serviceFileTemplate.id.fileTemplateNo = '')";
 
 	public ServiceFileTemplatePersistenceImpl() {
 		setModelClass(ServiceFileTemplate.class);
@@ -1190,6 +1466,12 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 		entityCache.putResult(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceFileTemplateImpl.class, serviceFileTemplate.getPrimaryKey(),
 			serviceFileTemplate);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO,
+			new Object[] {
+				serviceFileTemplate.getServiceInfoId(),
+				serviceFileTemplate.getFileTemplateNo()
+			}, serviceFileTemplate);
 
 		serviceFileTemplate.resetOriginalValues();
 	}
@@ -1244,6 +1526,9 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		clearUniqueFindersCache((ServiceFileTemplateModelImpl)serviceFileTemplate,
+			true);
 	}
 
 	@Override
@@ -1255,6 +1540,51 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 			entityCache.removeResult(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
 				ServiceFileTemplateImpl.class,
 				serviceFileTemplate.getPrimaryKey());
+
+			clearUniqueFindersCache((ServiceFileTemplateModelImpl)serviceFileTemplate,
+				true);
+		}
+	}
+
+	protected void cacheUniqueFindersCache(
+		ServiceFileTemplateModelImpl serviceFileTemplateModelImpl) {
+		Object[] args = new Object[] {
+				serviceFileTemplateModelImpl.getServiceInfoId(),
+				serviceFileTemplateModelImpl.getFileTemplateNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_SERVICEINFOID_FILETEMPLATENO,
+			args, Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO,
+			args, serviceFileTemplateModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		ServiceFileTemplateModelImpl serviceFileTemplateModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					serviceFileTemplateModelImpl.getServiceInfoId(),
+					serviceFileTemplateModelImpl.getFileTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_SERVICEINFOID_FILETEMPLATENO,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO,
+				args);
+		}
+
+		if ((serviceFileTemplateModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					serviceFileTemplateModelImpl.getOriginalServiceInfoId(),
+					serviceFileTemplateModelImpl.getOriginalFileTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_SERVICEINFOID_FILETEMPLATENO,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_SERVICEINFOID_FILETEMPLATENO,
+				args);
 		}
 	}
 
@@ -1481,6 +1811,9 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 		entityCache.putResult(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceFileTemplateImpl.class, serviceFileTemplate.getPrimaryKey(),
 			serviceFileTemplate, false);
+
+		clearUniqueFindersCache(serviceFileTemplateModelImpl, false);
+		cacheUniqueFindersCache(serviceFileTemplateModelImpl);
 
 		serviceFileTemplate.resetOriginalValues();
 

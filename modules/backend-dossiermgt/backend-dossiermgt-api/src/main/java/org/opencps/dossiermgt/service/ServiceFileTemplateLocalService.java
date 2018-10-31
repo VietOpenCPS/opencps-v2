@@ -183,6 +183,10 @@ public interface ServiceFileTemplateLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ServiceFileTemplate fetchServiceFileTemplate(
 		ServiceFileTemplatePK serviceFileTemplatePK);
 

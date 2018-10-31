@@ -225,7 +225,7 @@ create index IX_645BCD10 on opencps_serviceprocessrole (roleCode[$COLUMN_LENGTH:
 create index IX_8F9EE2C2 on opencps_serviceprocessrole (serviceProcessId);
 create index IX_645000FB on opencps_serviceprocessrole (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_6C3BEC69 on opencps_services_filetemplates (serviceInfoId);
+create index IX_FE574094 on opencps_services_filetemplates (serviceInfoId, fileTemplateNo[$COLUMN_LENGTH:75$]);
 create index IX_71CB1E6F on opencps_services_filetemplates (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_5E562335 on opencps_stepconfig (groupId, dossierStatus[$COLUMN_LENGTH:75$], dossierSubStatus[$COLUMN_LENGTH:75$]);

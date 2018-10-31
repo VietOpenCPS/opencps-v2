@@ -66,7 +66,7 @@ public class RestAuthFilter implements Filter {
 
 		String pAuth = httpRequest.getHeader(WebKeys.P_AUTH);
 		
-		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth)) {
+		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth) || Validator.isNotNull(httpRequest.getSession(true).getAttribute(WebKeys.USER_ID))) {
 			Object userObj = httpRequest.getSession(true).getAttribute(WebKeys.USER_ID);
 			if (Validator.isNotNull(userObj)) {
 				authOK(servletRequest, servletResponse, filterChain, (Long) userObj);

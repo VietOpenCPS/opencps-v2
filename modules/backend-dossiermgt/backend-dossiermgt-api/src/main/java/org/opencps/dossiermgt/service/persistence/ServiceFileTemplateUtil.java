@@ -439,6 +439,80 @@ public class ServiceFileTemplateUtil {
 	}
 
 	/**
+	* Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or throws a {@link NoSuchServiceFileTemplateException} if it could not be found.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the matching service file template
+	* @throws NoSuchServiceFileTemplateException if a matching service file template could not be found
+	*/
+	public static ServiceFileTemplate findByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo)
+		throws org.opencps.dossiermgt.exception.NoSuchServiceFileTemplateException {
+		return getPersistence()
+				   .findByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo);
+	}
+
+	/**
+	* Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the matching service file template, or <code>null</code> if a matching service file template could not be found
+	*/
+	public static ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo) {
+		return getPersistence()
+				   .fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo);
+	}
+
+	/**
+	* Returns the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching service file template, or <code>null</code> if a matching service file template could not be found
+	*/
+	public static ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo, retrieveFromCache);
+	}
+
+	/**
+	* Removes the service file template where serviceInfoId = &#63; and fileTemplateNo = &#63; from the database.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the service file template that was removed
+	*/
+	public static ServiceFileTemplate removeByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo)
+		throws org.opencps.dossiermgt.exception.NoSuchServiceFileTemplateException {
+		return getPersistence()
+				   .removeByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo);
+	}
+
+	/**
+	* Returns the number of service file templates where serviceInfoId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param fileTemplateNo the file template no
+	* @return the number of matching service file templates
+	*/
+	public static int countByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo) {
+		return getPersistence()
+				   .countByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo);
+	}
+
+	/**
 	* Caches the service file template in the entity cache if it is enabled.
 	*
 	* @param serviceFileTemplate the service file template

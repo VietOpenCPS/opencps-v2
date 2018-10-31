@@ -182,5 +182,11 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 		return serviceFileTemplatePersistence.update(object);
 	}
 
+	public ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(long serviceInfoId, String fileTemplateNo) {
+
+		return serviceFileTemplatePersistence.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+				fileTemplateNo);
+	}
+
 	Log _log = LogFactoryUtil.getLog(ServiceFileTemplateLocalServiceImpl.class);
 }

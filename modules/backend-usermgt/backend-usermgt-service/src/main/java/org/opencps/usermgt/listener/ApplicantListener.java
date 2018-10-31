@@ -86,7 +86,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 	public void onAfterCreate(Applicant model) throws ModelListenerException {
 		
 		try {
-			
+
 			_log.info("Applicant Log trigger!");
 			if (model.getMappingUserId() > 0) {
 				NotificationQueue queue = null;

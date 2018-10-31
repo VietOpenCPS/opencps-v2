@@ -210,6 +210,13 @@ public class ServiceFileTemplateLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo) {
+		return _serviceFileTemplateLocalService.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ServiceFileTemplate fetchServiceFileTemplate(
 		org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK serviceFileTemplatePK) {
 		return _serviceFileTemplateLocalService.fetchServiceFileTemplate(serviceFileTemplatePK);

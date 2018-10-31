@@ -203,6 +203,13 @@ public class ServiceFileTemplateLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.ServiceFileTemplate fetchByF_serviceInfoId_fileTemplateNo(
+		long serviceInfoId, String fileTemplateNo) {
+		return getService()
+				   .fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
+			fileTemplateNo);
+	}
+
 	public static org.opencps.dossiermgt.model.ServiceFileTemplate fetchServiceFileTemplate(
 		org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK serviceFileTemplatePK) {
 		return getService().fetchServiceFileTemplate(serviceFileTemplatePK);
