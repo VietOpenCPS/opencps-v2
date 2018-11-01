@@ -478,27 +478,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 		//			_log.info("fileSigned Path: "+fileSigned.getAbsolutePath());
 		//			_log.info("fileSigned Name: "+fileSigned.getName());
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-//					_log.info("dlFileEntry: "+dlFileEntry.getFileName());
-//					_log.info("user.getUserId(): "+user.getUserId());
-//					_log.info("signedFilePath: "+signedFilePath);
-//					_log.info("UserFileEntry: "+dlFileEntry.getUserId());
-//					_log.info("UserFileEntryName: "+dlFileEntry.getUserName());
-					_log.info("Has lock: " + dlFileEntry.hasLock());
-					_log.info("Has lock: " + DLFileEntryLocalServiceUtil.hasFileEntryLock(user.getUserId(), fileEntryId));
-					_log.info("Has checkout: " + dlFileEntry.isCheckedOut());
-					_log.info("Has checkout: " + DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(fileEntryId));
-					_log.info("User id: " + user.getUserId());
-					_log.info("User id: " + serviceContext.getUserId());
-					_log.info("Is logged in: " + serviceContext.isSignedIn());
-					
-					try {
-						DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-								dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-								StringPool.BLANK, true, fileSigned, serviceContext);
-					}
-					catch (Exception e) {
-						throw new PortalException("Sign fail");
-					}
+					DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+							StringPool.BLANK, true, fileSigned, serviceContext);
 					// Update deliverable with deliverableType
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
 					if (dossierFile != null) {
@@ -513,7 +495,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 								}
 							}
 						}
-					}					
+					}
 				}
 			} else {
 //				result.put("msg", "fileEntryId");
