@@ -86,6 +86,11 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.SECRET, dossier.getPassword());
 		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
 		obj.put(DossierTerm.DOSSIER_ACTION_ID, dossier.getDossierActionId());
+		obj.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+		obj.put(DossierTerm.POSTAL_CITY_CODE, dossier.getPostalCityCode());
+		obj.put(DossierTerm.POSTAL_DISTRICT_CODE, dossier.getPostalDistrictCode());
+		obj.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
+		obj.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
 		
 		return obj;
 	}

@@ -63,6 +63,7 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.NotFoundException;
 
 public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
@@ -1089,6 +1090,77 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
+	}
+
+	@Override
+	public Response getProcessStep(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String code) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException();
+			}
+
+			ProcessStep foundStep = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
+
+			if (Validator.isNull(foundStep)) {
+				throw new NotFoundException("InvalidStepCode");
+			}
+			
+			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(foundStep);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
+	}
+
+	@Override
+	public Response getProcessAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, long actionid) {
+		ServiceProcessActions actions = new ServiceProcessActionsImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException("UnauthorizationException");
+			}
+
+			
+			ProcessAction processAction = null; 
+			
+			try {
+				processAction = actions.getProcessActionDetail(actionid);
+			}
+			catch (Exception e)  {
+				
+			}
+			
+			ProcessActionReturnModel results;
+
+			results = ServiceProcessUtils.mappingToActionPOST(processAction);
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
 	}
 
 }

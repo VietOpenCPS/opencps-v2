@@ -171,7 +171,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			if (dossier.getOriginDossierId() != 0) {
 				//HSLT
-				Dossier hsltDossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+				Dossier hsltDossier = DossierLocalServiceUtil.fetchDossier(dossier.getDossierId());
 				
 				dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), hsltDossier.getGovAgencyCode());
