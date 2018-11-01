@@ -1,11 +1,13 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -20,6 +22,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -29,23 +33,35 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.SignatureManagement;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.ErrorMsgModel;
 
 public class SignatureManagementImpl implements SignatureManagement{
 
@@ -418,6 +434,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long dossierId = Long.valueOf(id);
+		long userId = user.getUserId();
 
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
@@ -514,27 +531,55 @@ public class SignatureManagementImpl implements SignatureManagement{
 //			_log.info("assignUserId: "+assignUserId);
 //			_log.info("subUsers: "+subUsers);
 			DossierActions dossierAction = new DossierActionsImpl();
-			dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-			0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-			serviceContext);
+//			dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
+//			0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
+//			serviceContext);
+			if (Validator.isNotNull(actionCode)) {
+				ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+				_log.info("Action config: " + actConfig);
+				String serviceCode = dossier.getServiceCode();
+				String govAgencyCode = dossier.getGovAgencyCode();
+				String dossierTempNo = dossier.getDossierTemplateNo();
+				ErrorMsgModel errorModel = new ErrorMsgModel();
+				if (actConfig != null) {
+					boolean insideProcess = actConfig.getInsideProcess();
+					ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode,
+							dossierTempNo, groupId);
+					if (insideProcess) {
+						if (option != null) {
+							long serviceProcessId = option.getServiceProcessId();
+							ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
+									serviceProcessId);
+							if (proAction != null) {
+								dossierAction.doAction(groupId, userId, dossier, option, proAction,
+										actionCode, input.getActionUser(), input.getActionNote(),
+										input.getPayload(), input.getAssignUsers(), input.getPayment(),
+										actConfig.getSyncType(), serviceContext, errorModel);
+							}
+						}
+					} else {
+						dossierAction.doAction(groupId, userId, dossier, option, null, actionCode,
+								input.getActionUser(), input.getActionNote(), input.getPayload(),
+								input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
+								serviceContext, errorModel);
+					}
+					//Process send email or sms
+				} else {
+					ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode, dossierTempNo,
+							groupId);
+					if (option != null) {
+						long serviceProcessId = option.getServiceProcessId();
+						ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
+								serviceProcessId);
+						if (proAction != null) {
+							dossierAction.doAction(groupId, userId, dossier, option, proAction,
+									actionCode, input.getActionUser(), input.getActionNote(), input.getPayload(),
+									input.getAssignUsers(), input.getPayment(), 0, serviceContext, errorModel);
+						}
+					}
+				}
+			}
 
-//			if (TYPE_KYSO.contains(actionCode)) {
-//				dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-//						0L, actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-//						serviceContext);
-//			} else if(TYPE_DONGDAU.contains(actionCode)) {
-//				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-//						dossier.getDossierTemplateNo(), groupId);
-//	
-//				ProcessAction action = getProcessAction(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
-//						input.getActionCode(), option.getServiceProcessId());
-//	
-//				dossierAction.doAction(groupId, dossierId, dossier.getReferenceUid(), actionCode,
-//						action.getProcessActionId(), actionUser, actionNote, assignUserId, user.getUserId(), subUsers,
-//						serviceContext);
-//			} else {
-//				//TODO
-//			}
 			// Process success
 			result.put("msg", "success");
 		}
