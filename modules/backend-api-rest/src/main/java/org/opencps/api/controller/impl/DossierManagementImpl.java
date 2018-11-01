@@ -1556,18 +1556,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-//			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
-//			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
+			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
+			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
 
 			if (dossier != null) {
-//				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
+				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
 				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-//					_log.info("Action config: " + actConfig);
+					_log.info("Action config: " + actConfig);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
