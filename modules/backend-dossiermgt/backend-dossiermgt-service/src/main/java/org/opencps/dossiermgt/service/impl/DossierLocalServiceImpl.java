@@ -67,6 +67,7 @@ import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -1878,6 +1879,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toFinishDate = GetterUtil.getString(params.get(DossierTerm.TO_FINISH_DATE));
 		String fromReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVE_NOTDONE_DATE));
 		String toReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.TO_RECEIVE_NOTDONE_DATE));
+		String paymentStatus = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_STATUS));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1907,7 +1909,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
-				fromReceiveNotDoneDate, toReceiveNotDoneDate, booleanCommon);
+				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1971,6 +1973,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toFinishDate = GetterUtil.getString(params.get(DossierTerm.TO_FINISH_DATE));
 		String fromReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVE_NOTDONE_DATE));
 		String toReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.TO_RECEIVE_NOTDONE_DATE));
+		String paymentStatus = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_STATUS));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1997,7 +2000,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
-				fromReceiveNotDoneDate, toReceiveNotDoneDate, booleanCommon);
+				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2109,7 +2112,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String assigned, String statusStep, String subStatusStep, String permission, String domain,
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
-			String toReceiveNotDoneDate, BooleanQuery booleanQuery) throws ParseException {
+			String toReceiveNotDoneDate, String paymentStatus, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2756,6 +2759,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNotNull(paymentStatus)) {
+			MultiMatchQuery query = new MultiMatchQuery(paymentStatus);
+
+			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
 		return booleanQuery;
 	}
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
