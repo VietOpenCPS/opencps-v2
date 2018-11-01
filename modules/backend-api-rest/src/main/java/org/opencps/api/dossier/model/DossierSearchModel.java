@@ -210,6 +210,8 @@ public class DossierSearchModel {
     protected String fromReceiveNotDoneDate;
     @QueryParam(value = "toReceiveNotDoneDate")
     protected String toReceiveNotDoneDate;
+    @QueryParam(value = "paymentStatus")
+    protected String paymentStatus;
 
     public Integer getAssigned() {
 		return assigned;
@@ -955,4 +957,11 @@ public class DossierSearchModel {
 		this.toFinishDate = toFinishDate;
 	}
 
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String value) {
+		this.paymentStatus = value;
+	}
 }
