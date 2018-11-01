@@ -173,8 +173,20 @@ public class PaymentFileInputModel {
 	@FormParam(value = "confirmFileEntryId")
     protected Long confirmFileEntryId;
 
+	@DefaultValue("0")
+	@FormParam(value = "paymentStatus")
+    protected Integer paymentStatus;
 	
-    public Long getConfirmFileEntryId() {
+
+    public Integer getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(Integer paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public Long getConfirmFileEntryId() {
 		return confirmFileEntryId;
 	}
 

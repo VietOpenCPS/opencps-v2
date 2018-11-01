@@ -84,9 +84,18 @@ public class PaymentFileInputModel {
     protected Long advanceAmount;
     protected Long serviceAmount;
     protected Long shipAmount;
+    protected String paymentMethod;
     
     
-    public Long getAdvanceAmount() {
+    public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public Long getAdvanceAmount() {
 		return advanceAmount;
 	}
 
