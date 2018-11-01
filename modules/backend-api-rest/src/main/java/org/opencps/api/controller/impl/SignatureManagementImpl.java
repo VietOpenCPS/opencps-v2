@@ -483,11 +483,22 @@ public class SignatureManagementImpl implements SignatureManagement{
 //					_log.info("signedFilePath: "+signedFilePath);
 //					_log.info("UserFileEntry: "+dlFileEntry.getUserId());
 //					_log.info("UserFileEntryName: "+dlFileEntry.getUserName());
-		
-					DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-							StringPool.BLANK, true, fileSigned, serviceContext);
-		
+					_log.info("Has lock: " + dlFileEntry.hasLock());
+					_log.info("Has lock: " + DLFileEntryLocalServiceUtil.hasFileEntryLock(user.getUserId(), fileEntryId));
+					_log.info("Has checkout: " + dlFileEntry.isCheckedOut());
+					_log.info("Has checkout: " + DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(fileEntryId));
+					_log.info("User id: " + user.getUserId());
+					_log.info("User id: " + serviceContext.getUserId());
+					_log.info("Is logged in: " + serviceContext.isSignedIn());
+					
+					try {
+						DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+								dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+								StringPool.BLANK, true, fileSigned, serviceContext);
+					}
+					catch (Exception e) {
+						throw new PortalException("Sign fail");
+					}
 					// Update deliverable with deliverableType
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
 					if (dossierFile != null) {
