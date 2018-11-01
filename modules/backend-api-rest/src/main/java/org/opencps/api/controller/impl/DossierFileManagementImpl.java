@@ -113,6 +113,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			long dossierId = GetterUtil.getLong(id);
+			//_log.info("dossierId: "+dossierId);
 			Dossier dossier = null;
 
 			if (dossierId != 0) {
