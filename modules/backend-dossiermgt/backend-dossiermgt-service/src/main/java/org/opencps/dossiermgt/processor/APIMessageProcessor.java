@@ -735,6 +735,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 			pfiModel.setEinvoice(paymentFile.getEinvoice());
+			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);			
 		}
