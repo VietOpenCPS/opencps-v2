@@ -42,7 +42,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 @Component(immediate = true, property = {
-		"org.osgi.http.websocket.endpoint.path=/o/socket-gate" }, service = Endpoint.class)
+		"org.osgi.http.websocket.endpoint.path=/o/gate/socket/web" }, service = Endpoint.class)
 public class ExampleEndpoind extends Endpoint {
 
 	private static final Log _log = LogFactoryUtil.getLog(ExampleEndpoind.class);

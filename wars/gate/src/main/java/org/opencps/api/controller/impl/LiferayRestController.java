@@ -69,12 +69,35 @@ import backend.utils.FileUploadUtils;
 @RestController
 public class LiferayRestController {
 
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		result.put("email", StringPool.BLANK);
+		result.put("screenName", StringPool.BLANK);
+
+		try {
+
+			User user = UserLocalServiceUtil.fetchUser(id);
+
+			result.put("email", user.getEmailAddress());
+			result.put("screenName", user.getScreenName());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result.toJSONString();
+	}
+
 	@RequestMapping(value = "/user/login", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getUserLoginInfo(HttpServletRequest request, HttpServletResponse response) {
 
 		JSONArray dataUser = JSONFactoryUtil.createJSONArray();
-		
+
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		result.put("email", StringPool.BLANK);
@@ -83,9 +106,9 @@ public class LiferayRestController {
 		try {
 
 			long userId = 0;
-			
-			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+
+			if (Validator.isNotNull(request.getSession(true).getAttribute(WebKeys.USER_ID))) {
+				userId = Long.valueOf(request.getSession(true).getAttribute(WebKeys.USER_ID).toString());
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
 
@@ -117,7 +140,7 @@ public class LiferayRestController {
 		}
 
 		dataUser.put(result);
-		
+
 		return dataUser.toJSONString();
 	}
 
@@ -190,8 +213,8 @@ public class LiferayRestController {
 		}
 
 		long userId = 0;
-		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+		if (Validator.isNotNull(request.getSession(true).getAttribute(WebKeys.USER_ID))) {
+			userId = Long.valueOf(request.getSession(true).getAttribute(WebKeys.USER_ID).toString());
 		}
 		long groupId = 0;
 		if (Validator.isNotNull(request.getHeader("groupId"))) {

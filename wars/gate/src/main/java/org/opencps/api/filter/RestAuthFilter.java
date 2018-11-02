@@ -49,7 +49,8 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"servlet-context-name=",
 		"servlet-filter-name=Rest Auth Filter",
-		"url-pattern=/o/gate/*"
+		"url-pattern=/o/gate/v2/users/*",
+		"url-pattern=/o/gate/socket/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
@@ -65,7 +66,7 @@ public class RestAuthFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(WebKeys.P_AUTH);
-		
+
 		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth) || Validator.isNotNull(httpRequest.getSession(true).getAttribute(WebKeys.USER_ID))) {
 			Object userObj = httpRequest.getSession(true).getAttribute(WebKeys.USER_ID);
 			if (Validator.isNotNull(userObj)) {

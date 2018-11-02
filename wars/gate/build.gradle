@@ -50,7 +50,6 @@ dependencies {
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
 	
-	
 }
 
 war {

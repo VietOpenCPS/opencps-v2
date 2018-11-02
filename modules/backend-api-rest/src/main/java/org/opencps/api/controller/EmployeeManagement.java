@@ -126,7 +126,7 @@ public interface EmployeeManagement {
 
 	@POST
 	@Path("/{id}/account")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response createEmployeeAccount(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
