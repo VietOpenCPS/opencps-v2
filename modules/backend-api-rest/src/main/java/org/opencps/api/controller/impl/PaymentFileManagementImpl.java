@@ -802,7 +802,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
 						input.getPaymentFee(), input.getAdvanceAmount(), input.getFeeAmount(), input.getServiceAmount(),
 						input.getShipAmount(), input.getPaymentAmount(), input.getPaymentNote(),
-						input.getEpaymentProfile(), input.getBankInfo(), input.getPaymentStatus(),
+						input.getEpaymentProfile(), input.getBankInfo(), 0,
 						input.getPaymentMethod(), serviceContext);		
 			}
 			

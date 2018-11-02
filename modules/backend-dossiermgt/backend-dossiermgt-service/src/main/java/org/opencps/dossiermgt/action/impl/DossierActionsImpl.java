@@ -2670,7 +2670,10 @@ public class DossierActionsImpl implements DossierActions {
 //			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
-				
+		_log.info("SONDT DOSSIER ACTION proAction ========= "+ JSONFactoryUtil.looseSerialize(proAction));
+		_log.info("SONDT DOSSIER ACTION payment ========= "+ payment);
+		
+		
 		if (option != null && proAction != null) {
 //			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
@@ -2679,7 +2682,7 @@ public class DossierActionsImpl implements DossierActions {
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
 //			_log.info("Payment fee: " + JSONFactoryUtil.looseSerialize(proAction.getPaymentFee()) + ", request payment: " + proAction.getRequestPayment());
-//			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
+			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
 
 			if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 					|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI && Validator.isNotNull(payment)) {
@@ -2700,7 +2703,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-//						_log.info("Payment object in do action: " + paymentObj);
+					_log.info("Payment object in do action: " + paymentObj);
 					if (paymentObj.has("paymentNote")) {
 						paymentNote = paymentObj.getString("paymentNote");
 					}
