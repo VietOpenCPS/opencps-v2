@@ -2633,7 +2633,7 @@ public class DossierActionsImpl implements DossierActions {
 			String payment,
 			int syncType,
 			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
-//		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
+		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
@@ -2670,7 +2670,10 @@ public class DossierActionsImpl implements DossierActions {
 //			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
-				
+		_log.info("SONDT DOSSIER ACTION proAction ========= "+ JSONFactoryUtil.looseSerialize(proAction));
+		_log.info("SONDT DOSSIER ACTION payment ========= "+ payment);
+		
+		
 		if (option != null && proAction != null) {
 //			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
@@ -2679,7 +2682,7 @@ public class DossierActionsImpl implements DossierActions {
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
 //			_log.info("Payment fee: " + JSONFactoryUtil.looseSerialize(proAction.getPaymentFee()) + ", request payment: " + proAction.getRequestPayment());
-//			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
+			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
 
 			if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 					|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI && Validator.isNotNull(payment)) {
@@ -2700,7 +2703,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-//						_log.info("Payment object in do action: " + paymentObj);
+					_log.info("Payment object in do action: " + paymentObj);
 					if (paymentObj.has("paymentNote")) {
 						paymentNote = paymentObj.getString("paymentNote");
 					}
@@ -2727,10 +2730,10 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				catch (JSONException e) {
 					_log.debug(e);
-					//_log.error(e);
+					_log.error(e);
 				} catch (ParseException e) {
 					_log.debug(e);
-					//_log.error(e);
+					_log.error(e);
 				}
 //					_log.info("Fee amount: " + feeAmount + ", serviceAmount: " + serviceAmount + ", shipAmount: " + shipAmount);
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
@@ -2972,7 +2975,7 @@ public class DossierActionsImpl implements DossierActions {
 								dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
 								dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
 								dossier.getDistrictName(), dossier.getWardCode(), dossier.getWardName(), dossier.getContactName(),
-								dossier.getContactName(), dossier.getContactEmail(), dossierTemplate.getTemplateNo(), 
+								dossier.getContactTelNo(), dossier.getContactEmail(), dossierTemplate.getTemplateNo(), 
 								dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
 								dossier.getPostalCityName(), dossier.getPostalTelNo(), 
 								dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
@@ -3337,13 +3340,16 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		//Do action hslt
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
+			_log.info("START HSLT");
 			ActionConfig mappingConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionConfig.getMappingAction());
+			_log.info("mappingConfig: "+mappingConfig);
+			_log.info("dossier.getOriginDossierId(): "+dossier.getOriginDossierId());
 			if (dossier.getOriginDossierId() != 0) {
 				Dossier hslt = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
 				ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
 						hslt.getDossierTemplateNo(), groupId);
 				ProcessAction actionHslt = getProcessAction(groupId, hslt.getDossierId(), hslt.getReferenceUid(), actionConfig.getMappingAction(), optionHslt.getServiceProcessId());
-				
+				_log.info("START HSLT PAyLOAD: "+payload);
 				String actionUserHslt = actionUser;
 				if (employee != null) {
 					actionUserHslt = actionUser;
@@ -3352,11 +3358,12 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			else {
 				Dossier originDossier = DossierLocalServiceUtil.getByOrigin(groupId, dossierId);
+				_log.info("originDossier: "+originDossier);
 				if (originDossier != null) {					
 					ProcessOption optionOrigin = getProcessOption(originDossier.getServiceCode(), originDossier.getGovAgencyCode(),
 							originDossier.getDossierTemplateNo(), groupId);
 					ProcessAction actionOrigin = getProcessAction(groupId, originDossier.getDossierId(), originDossier.getReferenceUid(), actionConfig.getMappingAction(), optionOrigin.getServiceProcessId());
-					
+					_log.info("START HSLT PAyLOAD: "+payload);
 					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context, errorModel);
 				}
 			}
@@ -3455,7 +3462,7 @@ public class DossierActionsImpl implements DossierActions {
 			String payment,
 			int syncType,
 			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
-//		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
+		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 

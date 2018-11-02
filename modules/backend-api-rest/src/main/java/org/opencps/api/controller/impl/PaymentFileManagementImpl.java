@@ -802,16 +802,23 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				paymentFile = actions.createPaymentFile(userId, groupId, dossierId, input.getReferenceUid(),
 						input.getPaymentFee(), input.getAdvanceAmount(), input.getFeeAmount(), input.getServiceAmount(),
 						input.getShipAmount(), input.getPaymentAmount(), input.getPaymentNote(),
-						input.getEpaymentProfile(), input.getBankInfo(), 0, input.getPaymentMethod(), serviceContext);				
+						input.getEpaymentProfile(), input.getBankInfo(), 0,
+						input.getPaymentMethod(), serviceContext);		
 			}
 			
 			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
 			paymentFile.setConfirmFileEntryId(input.getConfirmFileEntryId());
+			if(Validator.isNotNull(input.getPaymentStatus())){
+				paymentFile.setPaymentStatus(input.getPaymentStatus());
+			}
 			if(Validator.isNotNull(input.getEinvoice())) {
 				paymentFile.setEinvoice(input.getEinvoice());
 			}
 			if(Validator.isNotNull(input.getPaymentAmount())) {
 				paymentFile.setPaymentAmount(input.getPaymentAmount());
+			}
+			if(Validator.isNotNull(input.getPaymentMethod())){
+				paymentFile.setPaymentMethod(input.getPaymentMethod());
 			}
 			
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);

@@ -191,10 +191,22 @@ public class DossierMgtUtils {
 					result = result && checkServiceCode(splitCodes[1], dossier);
 				}			
 			}
+			if (preCondition.contains("notservice=")) {
+				String[] splitCodes = preCondition.split("=");
+				if (splitCodes.length == 2) {
+					result = result && checkNotServiceCode(splitCodes[1], dossier);
+				}			
+			}
 			if (preCondition.contains("agency=")) {
 				String[] splitAgencies = preCondition.split("=");
 				if (splitAgencies.length == 2) {
 					result = result && checkAgencyCode(splitAgencies[1], dossier);
+				}							
+			}
+			if (preCondition.contains("notagency=")) {
+				String[] splitAgencies = preCondition.split("=");
+				if (splitAgencies.length == 2) {
+					result = result && checkNotAgencyCode(splitAgencies[1], dossier);
 				}							
 			}
 			if (preCondition.contains("template=")) {
@@ -254,12 +266,30 @@ public class DossierMgtUtils {
 		}
 	}
 	
+	private static boolean checkNotServiceCode(String serviceCode, Dossier dossier) {
+		if (serviceCode.equalsIgnoreCase(dossier.getServiceCode())) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
 	private static boolean checkAgencyCode(String agencyCode, Dossier dossier) {
 		if (agencyCode.equalsIgnoreCase(dossier.getGovAgencyCode())) {
 			return true;
 		}
 		else {
 			return false;
+		}
+	}
+	
+	private static boolean checkNotAgencyCode(String agencyCode, Dossier dossier) {
+		if (agencyCode.equalsIgnoreCase(dossier.getGovAgencyCode())) {
+			return false;
+		}
+		else {
+			return true;
 		}
 	}
 
