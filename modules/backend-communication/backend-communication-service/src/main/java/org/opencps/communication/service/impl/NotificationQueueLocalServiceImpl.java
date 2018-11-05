@@ -133,4 +133,9 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 	public void deleteByGroup(long groupId) {
 		notificationQueuePersistence.removeByG(groupId);
 	}
+
+	public List<NotificationQueue> findByF_LessThan_ExpireDate(Date date) {
+		return notificationQueuePersistence.findByF_LessThan_ExpireDate(date);
+	}
+
 }
