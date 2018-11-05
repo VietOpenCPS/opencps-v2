@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
@@ -32,6 +33,7 @@ import javax.websocket.Session;
 
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
+import org.opencps.api.configuration.WebKeys;
 import org.osgi.service.component.annotations.Component;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -327,6 +329,8 @@ public class ExampleEndpoind extends Endpoint {
 					headers.set(key, value);
 
 				}
+				headers.set("localaccess", headerObject.getString(WebKeys.P_AUTH));
+				headers.set("userid", headerObject.getString(WebKeys.USER_ID));
 				
 				HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 				

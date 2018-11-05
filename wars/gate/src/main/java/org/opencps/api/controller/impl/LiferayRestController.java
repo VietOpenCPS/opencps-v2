@@ -17,12 +17,15 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +72,58 @@ import backend.utils.FileUploadUtils;
 @RestController
 public class LiferayRestController {
 
+	@RequestMapping(value = "/user/{id}/deactive", method = RequestMethod.PUT)
+	@ResponseStatus(HttpStatus.OK)
+	public void deactiveAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
+
+		try {
+
+			User user = UserLocalServiceUtil.getUser(id);
+			
+			boolean locked = Boolean.valueOf(request.getParameter("locked"));
+
+			if (locked) {
+				user.setStatus(WorkflowConstants.STATUS_INACTIVE);
+			}
+			else {
+				user.setStatus(WorkflowConstants.STATUS_APPROVED);
+			}
+			
+			UserLocalServiceUtil.updateUser(user);
+
+			Indexer<User> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+			indexer.reindex(user);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	@RequestMapping(value = "/user/{id}/changepass", method = RequestMethod.PUT)
+	@ResponseStatus(HttpStatus.OK)
+	public void changePassWordUser(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
+
+		try {
+
+			String password = request.getParameter("password");
+
+			User user = UserLocalServiceUtil.updatePassword(id, password, password, Boolean.FALSE);
+			
+			Indexer<User> indexer =
+					IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+				indexer.reindex(user);
+				
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
@@ -77,13 +132,15 @@ public class LiferayRestController {
 
 		result.put("email", StringPool.BLANK);
 		result.put("screenName", StringPool.BLANK);
-
+		result.put("deactiveAccountFlag", 0);
+		
 		try {
 
 			User user = UserLocalServiceUtil.fetchUser(id);
 
 			result.put("email", user.getEmailAddress());
 			result.put("screenName", user.getScreenName());
+			result.put("deactiveAccountFlag", user.getStatus());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,7 +149,7 @@ public class LiferayRestController {
 		return result.toJSONString();
 	}
 
-	@RequestMapping(value = "/user/login", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/users/login", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getUserLoginInfo(HttpServletRequest request, HttpServletResponse response) {
 
@@ -102,13 +159,13 @@ public class LiferayRestController {
 
 		result.put("email", StringPool.BLANK);
 		result.put("role", StringPool.BLANK);
+		result.put("deactiveAccountFlag", 0);
 
 		try {
 
 			long userId = 0;
-
-			if (Validator.isNotNull(request.getSession(true).getAttribute(WebKeys.USER_ID))) {
-				userId = Long.valueOf(request.getSession(true).getAttribute(WebKeys.USER_ID).toString());
+			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
 
@@ -132,6 +189,7 @@ public class LiferayRestController {
 
 				result.put("email", user.getEmailAddress());
 				result.put("role", roleName);
+				result.put("deactiveAccountFlag", user.getStatus());
 
 			}
 
@@ -349,21 +407,13 @@ public class LiferayRestController {
 		ServiceFileTemplate serviceFileTemplate = ServiceFileTemplateLocalServiceUtil
 				.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, fileTemplateNo);
 
-		System.out.println("LiferayRestController.serviceFileTemplate()" + serviceFileTemplate);
-
 		ServiceFileTemplatePK serviceFileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
-
-		System.out.println("LiferayRestController.serviceFileTemplatePK()" + serviceFileTemplatePK);
 
 		ServiceFileTemplate serviceFileTemplateNew;
 		try {
 			serviceFileTemplateNew = ServiceFileTemplateLocalServiceUtil.getServiceFileTemplate(serviceFileTemplatePK);
 
-			System.out.println("LiferayRestController.serviceFileTemplateNew()" + serviceFileTemplateNew);
-
 			ServiceFileTemplateLocalServiceUtil.deleteServiceFileTemplate(serviceFileTemplate);
-
-			System.out.println("LiferayRestController.serviceFileTemplate()" + serviceFileTemplate);
 
 			if (Validator.isNotNull(serviceFileTemplateNew)) {
 
@@ -397,8 +447,6 @@ public class LiferayRestController {
 			multipartFile = (CommonsMultipartFile) request.getFile(key);
 		}
 
-		System.out.println("LiferayRestController.uploadFile()" + multipartFile.getSize());
-
 		try {
 			System.out.println("LiferayRestController.uploadFile()" + multipartFile.getInputStream());
 		} catch (IOException e) {
@@ -406,7 +454,6 @@ public class LiferayRestController {
 			e.printStackTrace();
 		}
 
-		System.out.println("LiferayRestController.uploadFile()" + request.getParameter("dkm"));
 		return "sdfds";
 	}
 
@@ -438,7 +485,9 @@ public class LiferayRestController {
 
 			Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
 			disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
-			disjunction.add(RestrictionsFactoryUtil.eq("groupId", Long.valueOf(request.getHeader("groupId"))));
+			if (Validator.isNotNull(request.getHeader("groupId"))) {
+				disjunction.add(RestrictionsFactoryUtil.eq("groupId", Long.valueOf(request.getHeader("groupId"))));
+			}
 			dynamicQuery.add(disjunction);
 
 			if (Validator.isNotNull(request.getParameter("pk")) && Validator.isNotNull(request.getParameter("col"))) {

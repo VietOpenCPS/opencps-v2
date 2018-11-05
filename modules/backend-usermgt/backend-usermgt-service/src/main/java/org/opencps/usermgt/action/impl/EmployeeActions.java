@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import backend.auth.api.exception.NotFoundException;
@@ -411,7 +412,6 @@ public class EmployeeActions implements EmployeeInterface {
 		if (Validator.isNull(screenName)) {
 			screenName = email.substring(0, email.indexOf(StringPool.AT));
 		}
-
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);

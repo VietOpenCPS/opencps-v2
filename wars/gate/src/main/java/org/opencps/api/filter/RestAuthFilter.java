@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -66,13 +67,19 @@ public class RestAuthFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(WebKeys.P_AUTH);
-
-		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth) || Validator.isNotNull(httpRequest.getSession(true).getAttribute(WebKeys.USER_ID))) {
+		
+		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
+			pAuth = httpRequest.getParameter("Token");
+		}
+		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(WebKeys.USER_ID);
 			if (Validator.isNotNull(userObj)) {
+				httpRequest.setAttribute(WebKeys.USER_ID, userObj);
 				authOK(servletRequest, servletResponse, filterChain, (Long) userObj);
 			} else {
-				authOK(servletRequest, servletResponse, filterChain, 0);
+				long sockId = Validator.isNotNull(httpRequest.getHeader("userid")) ? Long.valueOf(httpRequest.getHeader("userid")) : 0;
+				httpRequest.setAttribute(WebKeys.USER_ID, sockId);
+				authOK(servletRequest, servletResponse, filterChain, sockId);
 			}
 		
 		} else {
