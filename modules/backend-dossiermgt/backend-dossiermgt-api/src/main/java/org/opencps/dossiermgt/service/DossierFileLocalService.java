@@ -273,6 +273,9 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public DossierFile getByDeliverableCode(String deliverableCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierFile getByDossierAndRef(long dossierId, String referenceUid);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierFile> getByDossierIdAndIsNew(long dossierId,
 		boolean isNew);
 
