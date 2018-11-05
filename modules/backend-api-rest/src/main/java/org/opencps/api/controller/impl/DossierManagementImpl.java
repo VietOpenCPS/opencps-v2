@@ -1548,6 +1548,10 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierActions actions = new DossierActionsImpl();
 		DossierAction dossierResult = null;
 		ErrorMsgModel errorModel = new ErrorMsgModel();
+		String actionUser = input.getActionUser();
+		if (Validator.isNull(actionUser)) {
+			actionUser = user.getFullName();
+		}
 		
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1582,7 +1586,7 @@ public class DossierManagementImpl implements DossierManagement {
 										serviceProcessId);
 								if (proAction != null) {
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
-											actionCode, input.getActionUser(), input.getActionNote(),
+											actionCode, actionUser, input.getActionNote(),
 											input.getPayload(), input.getAssignUsers(), input.getPayment(),
 											actConfig.getSyncType(), serviceContext, errorModel);
 								} else {
@@ -1591,7 +1595,7 @@ public class DossierManagementImpl implements DossierManagement {
 							}
 						} else {
 							dossierResult = actions.doAction(groupId, userId, dossier, option, null, actionCode,
-									input.getActionUser(), input.getActionNote(), input.getPayload(),
+									actionUser, input.getActionNote(), input.getPayload(),
 									input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
 									serviceContext, errorModel);
 						}
@@ -1667,7 +1671,7 @@ public class DossierManagementImpl implements DossierManagement {
 									serviceProcessId);
 							if (proAction != null) {
 								dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
-										actionCode, input.getActionUser(), input.getActionNote(), input.getPayload(),
+										actionCode, actionUser, input.getActionNote(), input.getPayload(),
 										input.getAssignUsers(), input.getPayment(), 0, serviceContext, errorModel);
 							} else {
 								// TODO: Error
