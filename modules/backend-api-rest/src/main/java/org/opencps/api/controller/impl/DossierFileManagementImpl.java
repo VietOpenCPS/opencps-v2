@@ -210,7 +210,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				DossierFile dossierFile =  null;
 				DossierFile oldDossierFile = null;
 				if (Validator.isNotNull(referenceUid)) {
-					oldDossierFile = DossierFileLocalServiceUtil.getByDossierAndRef(dossierId, referenceUid);
+					oldDossierFile = DossierFileLocalServiceUtil.getByDossierAndRef(dossier.getDossierId(), referenceUid);
 				}
 				if (oldDossierFile != null && modifiedDate != null) {
 					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
@@ -287,7 +287,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				//_log.info("lastDossierFile: "+lastDossierFile);
 				DossierFile oldDossierFile = null;
 				if (Validator.isNotNull(referenceUid)) {
-					oldDossierFile = DossierFileLocalServiceUtil.getByDossierAndRef(dossierId, referenceUid);
+					oldDossierFile = DossierFileLocalServiceUtil.getByDossierAndRef(dossier.getDossierId(), referenceUid);
 				}
 				if (oldDossierFile != null && modifiedDate != null) {
 					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
