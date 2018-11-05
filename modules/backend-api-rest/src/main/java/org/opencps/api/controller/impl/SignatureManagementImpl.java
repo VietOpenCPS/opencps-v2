@@ -431,6 +431,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 			Locale locale, User user, ServiceContext serviceContext, long id, DigitalSignatureInputModel input)
 			throws PortalException {
 		BackendAuth auth = new BackendAuthImpl();
+		
+		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long dossierId = Long.valueOf(id);
@@ -447,8 +449,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 		//_log.info("Sign: " + signs + ", field name: " + signFieldNames + ", file name: " + fileNames + ", file entry id: " + fileEntryIds);
 		String[] fileEntryIdArr = StringUtil.split(fileEntryIds);
 		String[] signArr = StringUtil.split(signs);
-		String[] signFieldNameArr = StringUtil.split(signFieldNames);
-		String[] fileNameArr = StringUtil.split(fileNames);
+		String[] signFieldNameArr = Validator.isNotNull(signFieldNames) ? StringUtil.split(signFieldNames): new String[fileEntryIdArr.length];
+		String[] fileNameArr = Validator.isNotNull(fileNames) ? StringUtil.split(fileNames): new String[fileEntryIdArr.length];
 		String actionCode = input.getActionCode();
 		String actionUser = input.getActionUser();
 		String actionNote = input.getActionNote();
