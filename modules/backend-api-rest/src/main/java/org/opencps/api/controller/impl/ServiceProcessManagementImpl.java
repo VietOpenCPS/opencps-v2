@@ -1109,10 +1109,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
-
 			ProcessStep foundStep = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
 			if (Validator.isNull(foundStep)) {
@@ -1142,11 +1138,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
-			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
-
 			
 			ProcessAction processAction = null; 
 			
