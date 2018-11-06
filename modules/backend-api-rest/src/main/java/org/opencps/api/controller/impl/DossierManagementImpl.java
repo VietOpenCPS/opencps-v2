@@ -356,6 +356,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
 			params.put(DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
 			params.put(PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -3184,6 +3185,7 @@ public class DossierManagementImpl implements DossierManagement {
 			long endorsementDateLong = GetterUtil.getLong(input.getEndorsementDate());
 			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
+			String submissionNote = input.getSubmissionNote();
 			
 			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType,
@@ -3213,6 +3215,7 @@ public class DossierManagementImpl implements DossierManagement {
 			dossier.setDossierSubStatus(input.getDossierSubStatus());
 			dossier.setDossierSubStatusText(input.getDossierSubStatusText());
 			dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
+			dossier.setSubmissionNote(submissionNote);
 			//Update dossier
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			

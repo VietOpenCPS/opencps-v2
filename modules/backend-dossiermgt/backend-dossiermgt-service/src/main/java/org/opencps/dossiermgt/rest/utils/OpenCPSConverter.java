@@ -510,6 +510,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_ACTION_ID)) {
 			model.setDossierActionId(jsonObj.getLong(DossierTerm.DOSSIER_ACTION_ID));
 		}
+		if (jsonObj.has(DossierTerm.SUBMISSION_NOTE)) {
+			model.setSubmissionNote(jsonObj.getString(DossierTerm.SUBMISSION_NOTE));
+		}
 
 		return model;
 	}	

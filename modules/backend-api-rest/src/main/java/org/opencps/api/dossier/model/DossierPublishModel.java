@@ -107,8 +107,8 @@ import javax.xml.bind.annotation.XmlType;
 	"delegateCityCode",
 	"delegateDistrictCode",
 	"delegateWardCode",
-	"dossierActionId"
-
+	"dossierActionId",
+	"submissionNote"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierPublishModel {
@@ -224,6 +224,8 @@ public class DossierPublishModel {
 	private String delegateWardCode;
 	@FormParam(value = "dossierActionId")
 	private Long dossierActionId;
+	@FormParam(value = "submissionNote")
+	private String submissionNote;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -1105,4 +1107,11 @@ public class DossierPublishModel {
 		this.dossierActionId = dossierActionId;
 	} 
 
+	public String getSubmissionNote() {
+		return submissionNote;
+	}
+
+	public void setSubmissionNote(String value) {
+		this.submissionNote = value;
+	} 	
 }
