@@ -61,6 +61,7 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.NotFoundException;
@@ -357,6 +358,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, roleid,
 					GetterUtil.getBoolean(input.getModerator()), input.getCondition());
+			if (role != null) {
+				role.setRoleName(input.getRoleName());
+				ServiceProcessRoleLocalServiceUtil.updateServiceProcessRole(role);
+			}
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 

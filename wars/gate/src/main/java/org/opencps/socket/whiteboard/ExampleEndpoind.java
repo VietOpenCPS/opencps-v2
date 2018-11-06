@@ -1,5 +1,7 @@
 package org.opencps.socket.whiteboard;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -19,7 +21,9 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.websocket.Endpoint;
@@ -30,6 +34,7 @@ import javax.websocket.Session;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.configuration.WebKeys;
+import org.opencps.usermgt.model.impl.EmployeeImpl;
 import org.osgi.service.component.annotations.Component;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -277,8 +282,26 @@ public class ExampleEndpoind extends Endpoint {
 						int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 
+						if (message.getString(RESPONE).equals("detail")) {
+							
+							List<Object> detailObject = (List<Object>) method.invoke(model, dynamicQuery, start, end);
+
+							String arr = JSONFactoryUtil.looseSerializeDeep(detailObject);
+							
+							JSONObject resultObj = JSONFactoryUtil.createJSONArray(arr).getJSONObject(0).getJSONObject("modelAttributes");
+							
+							JSONArray result = JSONFactoryUtil.createJSONArray();
+							
+							result.put(resultObj);
+							
+							messageData.put(message.getString(RESPONE), result);
+							
+						} else {
+							
+							messageData.put(message.getString(RESPONE), method.invoke(model, dynamicQuery, start, end));
+							
+						}
 						
-						messageData.put(message.getString(RESPONE), method.invoke(model, dynamicQuery, start, end));
 					}
 
 					messageData.put("title", headersObj.getString("title"));

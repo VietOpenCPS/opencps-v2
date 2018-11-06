@@ -26,6 +26,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.util.TextPosition;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -47,90 +48,107 @@ public class ExtractTextLocations extends PDFTextStripper {
 	private float pageURX = 0;
 	private float pageLLY = 0;
 	private float pageURY = 0;
+	
+	private boolean found;
+	
+	public boolean isFound() {
+		return found;
+	}
+
+	public void setFound(boolean found) {
+		this.found = found;
+	}
+
+	private int pageSize = 1;
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 
 	public ExtractTextLocations()
 		throws IOException {
 		super.setSortByPosition(true);
 	}
 
-	public ExtractTextLocations(String fullPath)
-		throws IOException {
+	public ExtractTextLocations(String fullPath) throws IOException {
 
 		PDDocument document = null;
 
 		try {
 			File input = new File(fullPath);
-			document = PDDocument
-				.load(input);
+			document = PDDocument.load(input);
 
-			if (document
-				.isEncrypted()) {
+			if (document.isEncrypted()) {
 				try {
-					document
-						.decrypt(StringPool.BLANK);
-				}
-				catch (Exception e) {
-					_log
-						.error(e);
+					document.decrypt(StringPool.BLANK);
+				} catch (Exception e) {
+					_log.error(e);
 				}
 			}
 
 			// ExtractTextLocations printer = new ExtractTextLocations();
 
-			List allPages = document
-				.getDocumentCatalog().getAllPages();
-			if (allPages != null && allPages
-				.size() > 0) {
-				PDPage page = (PDPage) allPages
-					.get(0);
+			List allPages = document.getDocumentCatalog().getAllPages();
 
-				PDStream contents = page
-					.getContents();
-				if (contents != null) {
-					this
-						.processStream(page, page
-							.findResources(), page
-								.getContents().getStream());
-				}
+			if (allPages != null && allPages.size() > 0) {
 
-				PDRectangle pageSize = page
-					.findMediaBox();
-				if (pageSize != null) {
-					setPageWidth(pageSize
-						.getWidth());
-					setPageHeight(pageSize
-						.getHeight());
-					setPageLLX(pageSize
-						.getLowerLeftX());
-					setPageURX(pageSize
-						.getUpperRightX());
-					setPageLLY(pageSize
-						.getLowerLeftY());
-					setPageURY(pageSize
-						.getUpperRightY());
+				setPageSize(allPages.size());
+
+				for (int i = 0; i < allPages.size(); i++) {
+					PDPage page = (PDPage) allPages.get(i);
+
+					_log.info("***Page__" + i + 1);
+					PDStream contents = page.getContents();
+					if (contents != null) {
+						this.processStream(page, page.findResources(), page.getContents().getStream());
+					}
+
+					PDRectangle pageSize = page.findMediaBox();
+
+					if (pageSize != null) {
+						// setPageSize(i);
+
+						setPageWidth(pageSize.getWidth());
+						setPageHeight(pageSize.getHeight());
+						setPageLLX(pageSize.getLowerLeftX());
+						setPageURX(pageSize.getUpperRightX());
+						setPageLLY(pageSize.getLowerLeftY());
+						setPageURY(pageSize.getUpperRightY());
+
+						// Already find special character
+						// break;
+					}
+
+					if (isFound()) {
+
+						_log.info("IS_FOUND");
+						setPageSize(i + 1);
+
+						break;
+					}
 				}
 			}
-		}
-		catch (Exception e) {
-			_log
-				.error(e);
-		}
-		finally {
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
 			if (document != null) {
-				document
-					.close();
+				document.close();
 			}
 		}
 	}
 
-/**
 	@Override
 	protected void processTextPosition(TextPosition text) {
 
-		if (text
-			.getCharacter().equals(StringPool.POUND) && text
-				.getFontSize() == 1L) {
+		
 
+		if (text.getCharacter().equals(StringPool.POUND) && text.getFontSize() == 1L) {
+			setFound(true);
+			
 			System.out.println("String[" + text.getXDirAdj() + "," + text.getYDirAdj() + " fs=" + text.getFontSize()
 					+ " xscale=" + text.getXScale() + " height=" + text.getHeightDir() + " space="
 					+ text.getWidthOfSpace() + " width=" + text.getWidthDirAdj() + "]" + text.getCharacter());
@@ -145,7 +163,6 @@ public class ExtractTextLocations extends PDFTextStripper {
 		}
 
 	}
-**/
 
 	public float getAnchorX() {
 

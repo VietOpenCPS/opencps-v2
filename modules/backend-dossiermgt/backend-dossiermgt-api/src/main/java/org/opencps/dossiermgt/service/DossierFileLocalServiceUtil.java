@@ -336,6 +336,11 @@ public class DossierFileLocalServiceUtil {
 		return getService().getByDeliverableCode(deliverableCode);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile getByDossierAndRef(
+		long dossierId, String referenceUid) {
+		return getService().getByDossierAndRef(dossierId, referenceUid);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByDossierIdAndIsNew(
 		long dossierId, boolean isNew) {
 		return getService().getByDossierIdAndIsNew(dossierId, isNew);

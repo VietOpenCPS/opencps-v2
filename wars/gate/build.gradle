@@ -7,21 +7,6 @@ buildscript {
 
 }
 
-plugins {
-    id 'java'
-    id 'eclipse'
-    id 'idea'
-    id 'net.ltgt.apt' version '0.8'
-}
-
-jar {
-    baseName = 'graphql-java-spring-example'
-    version =  '0.1.0'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 dependencies {
 	compile group: "org.springframework", name: "spring-webmvc-portlet", version: "4.3.9.RELEASE"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
@@ -65,23 +50,6 @@ dependencies {
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
 	
-	compile 'com.graphql-java:graphql-java:3.0.0'
-    compile "com.graphql-java:graphql-java-annotations:0.13.1"
-    compile "postgresql:postgresql:9.1-901-1.jdbc4"
-    compile "org.hsqldb:hsqldb:2.3.2"
-    compile "org.json:json:20140107"
-    compile 'org.mapstruct:mapstruct-jdk8:1.1.0.Final'
-    compile "org.mapstruct:mapstruct-processor:1.1.0.Final"
-
-	compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.1.0.RELEASE'
-	compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.1.2.RELEASE'
-compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.7'
-compile group: 'javax.persistence', name: 'persistence-api', version: '1.0.2'
-compile group: 'org.hibernate', name: 'hibernate-annotations', version: '3.5.6-Final'
-compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.3.7.Final'
-
-
-    apt 'org.mapstruct:mapstruct-processor:1.1.0.Final'
 }
 
 war {

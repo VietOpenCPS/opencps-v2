@@ -81,7 +81,19 @@ public class DigitalSignatureInputModel {
 	protected String payment;
 	@FormParam(value = "assignUsers")
 	protected String assignUsers;
-	 /**
+	@FormParam(value = "userNote")
+	protected String userNote;
+	
+	
+	 public String getUserNote() {
+		return userNote;
+	}
+
+	public void setUserNote(String userNote) {
+		this.userNote = userNote;
+	}
+
+	/**
 	  * Gets the value of the deliverableType property.
 	  * 
 	  * @return
