@@ -807,7 +807,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 			
 			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
-			paymentFile.setConfirmFileEntryId(input.getConfirmFileEntryId());
+			if(Validator.isNotNull(input.getConfirmFileEntryId())){
+				paymentFile.setConfirmFileEntryId(input.getConfirmFileEntryId());
+			}
 			if(Validator.isNotNull(input.getPaymentStatus())){
 				paymentFile.setPaymentStatus(input.getPaymentStatus());
 			}

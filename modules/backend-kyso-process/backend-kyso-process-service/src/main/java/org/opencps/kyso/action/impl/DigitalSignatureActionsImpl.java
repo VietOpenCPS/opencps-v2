@@ -35,6 +35,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //	private static final String TYPE_DONGDAU = "1137, 1160, 1162";
 //	private static final String STEPCODE_KYSO = "300, 301, 105";
 //	private static final String STEPCODE_DONGDAU = "400";
+	private static final String TYPE_KYSO = "1032,1050,3000,6100";
+	private static final String TYPE_DONGDAU = "1035,1053,3000,6100";
 
 	@Override
 	public JSONObject createHashSignature(String email, long fileEntryId, String typeSignature, String postStepCode) {
@@ -171,18 +173,33 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 115, urx + 90, ury-95), 1);
 //					_log.info("inHash_Dongdau: "+inHash);
 //				}
+				if (TYPE_KYSO.contains(typeSignature)) {
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
+					_log.info("inHash_Kyso: "+inHash);
+				} else if (TYPE_DONGDAU.contains(typeSignature)) {
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 115, urx + 90, ury-95), 1);
+					_log.info("inHash_Dongdau: "+inHash);
+				}
+				
+				if (TYPE_KYSO.contains(typeSignature)) {
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury),textLocation.getPageSize());
+					_log.info("inHash_Kyso: "+inHash);
+				} else if (TYPE_DONGDAU.contains(typeSignature)) {
+					inHash = signer.computeHash(new Rectangle(llx + 10, lly - 115, urx + 90, ury-95), textLocation.getPageSize());
+					_log.info("inHash_Dongdau: "+inHash);
+				}
 //				inHash = signer.computeHash(new Rectangle(llx + 10, lly - 15, urx + 90, ury), 1);
-					_log.info("********************************* llx " + llx);
+				_log.info("********************************* llx " + llx);
 
-					_log.info("********************************* lly " + lly);
-				
-					_log.info("********************************* urx " + urx);
-				
-					_log.info("********************************* ury " + ury);
-				
-					_log.info("********************************* signatureImageWidth " + signatureImageWidth);
-				
-					_log.info("********************************* signatureImageHeight " + signatureImageHeight);
+				_log.info("********************************* lly " + lly);
+			
+				_log.info("********************************* urx " + urx);
+			
+				_log.info("********************************* ury " + ury);
+			
+				_log.info("********************************* signatureImageWidth " + signatureImageWidth);
+			
+				_log.info("********************************* signatureImageHeight " + signatureImageHeight);
 
 //							signature = Base64.getDecoder().decode("");
 //							signer.completeSign(signature, fieldName);
