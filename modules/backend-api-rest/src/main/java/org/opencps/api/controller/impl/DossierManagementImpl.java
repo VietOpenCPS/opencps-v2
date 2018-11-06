@@ -3185,6 +3185,7 @@ public class DossierManagementImpl implements DossierManagement {
 			long endorsementDateLong = GetterUtil.getLong(input.getEndorsementDate());
 			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
+			String submissionNote = input.getSubmissionNote();
 			
 			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType,
@@ -3214,6 +3215,7 @@ public class DossierManagementImpl implements DossierManagement {
 			dossier.setDossierSubStatus(input.getDossierSubStatus());
 			dossier.setDossierSubStatusText(input.getDossierSubStatusText());
 			dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
+			dossier.setSubmissionNote(submissionNote);
 			//Update dossier
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			

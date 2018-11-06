@@ -1,26 +1,35 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -91,8 +100,130 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.POSTAL_DISTRICT_CODE, dossier.getPostalDistrictCode());
 		obj.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
 		obj.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+		String serviceCode = dossier.getServiceCode();
+		ServiceProcess serviceProcess;
+		try {
+			serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(), serviceCode, dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
+			if (serviceProcess == null) {
+			}
+			else {
+				JSONObject submissionNoteObj = getDossierProcessSequencesJSON(dossier.getGroupId(), dossier, serviceProcess);
+				obj.put(DossierTerm.SUBMISSION_NOTE, submissionNoteObj.toJSONString());
+			}
+		} catch (PortalException e) {
+			_log.debug(e);;
+		}
 		
 		return obj;
+	}
+	
+	private static JSONObject getDossierProcessSequencesJSON(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
+
+		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
+		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
+		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
+		result.put("total", lstSequences.size());
+		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
+		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
+		
+		for (ProcessSequence ps : lstSequences) {		
+			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
+			sequenceObj.put("sequenceNo", ps.getSequenceNo());
+			sequenceObj.put("sequenceName", ps.getSequenceName());
+			sequenceObj.put("sequenceRole", ps.getSequenceRole());
+			sequenceObj.put("durationCount", ps.getDurationCount());
+			
+			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
+			}
+			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+			List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+				
+			DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
+			if (lastAction != null) {
+				sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
+			}			
+			
+			if (lstDossierActions.size() > 0) {
+				DossierAction lastDASequence = lstDossierActions.get(lstDossierActions.size() - 1);
+				if (lastDASequence.getActionOverdue() != 0) {
+					String preText = (lastDASequence.getActionOverdue() > 0 ? "Còn " : "Quá ");
+					sequenceObj.put("overdueText", preText + lastDASequence.getActionOverdue() + " ngày");
+				}
+			}
+			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
+			List<Long> lstUsers = new ArrayList<>();
+			
+			if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+				for (DossierActionUser dau : lstDus) {
+					User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+					
+					if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+						lstUsers.add(dau.getUserId());
+						assignUserObj.put("userId", dau.getUserId());
+						assignUserObj.put("userName", u.getFullName());
+						
+						assignUserArr.put(assignUserObj);					
+					}					
+				}
+			}
+			for (DossierAction da : lstDossierActions) {
+				if (!lstUsers.contains(da.getUserId())) {
+					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+					lstUsers.add(da.getUserId());
+					assignUserObj.put("userId", da.getUserId());
+					assignUserObj.put("userName", da.getUserName());
+					
+					assignUserArr.put(assignUserObj);					
+				}
+			}
+			
+			sequenceObj.put("assignUsers", assignUserArr);
+			
+			JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
+			for (DossierAction da : lstDossierActions) {
+				JSONObject actionObj = JSONFactoryUtil.createJSONObject();
+				
+				actionObj.put(DossierActionTerm.USER_ID, da.getUserId());
+				actionObj.put("fromStepCode", da.getFromStepCode());
+				actionObj.put("fromStepName", da.getFromStepName());
+				actionObj.put("sequenceNo", da.getSequenceNo());
+				actionObj.put("dossierId", da.getDossierId());
+				actionObj.put("serviceProcessId", da.getServiceProcessId());
+				actionObj.put("previousActionId", da.getPreviousActionId());
+				actionObj.put("actionCode", da.getActionCode());
+				actionObj.put("actionName", da.getActionName());
+				actionObj.put("actionNote", da.getActionNote());
+				actionObj.put("actionUser", da.getActionUser());
+				actionObj.put("actionOverdue", da.getActionOverdue());
+				actionObj.put("payload", da.getPayload());
+				actionObj.put("pending", da.getPending());
+				actionObj.put("rollbackable", da.getRollbackable());
+				actionObj.put("createDate", da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
+				actionObj.put("modifiedDate", da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
+				actionObj.put("dueDate", da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
+				actionObj.put("nextActionId", da.getNextActionId());
+				actionObj.put("state", da.getState());
+				actionObj.put("stepCode", da.getStepCode());
+				actionObj.put("stepName", da.getStepName());
+				actionObj.put("userId", da.getUserId());				
+				
+				_log.info("Action obj: " + actionObj.toJSONString());
+				actionsArr.put(actionObj);
+			}			
+			
+			sequenceObj.put("actions", actionsArr);
+			
+			sequenceArr.put(sequenceObj);
+			
+		}
+		
+		result.put("data", sequenceArr);
+		return result;
 	}
 	
 	public static boolean isDueDateEditable(String condition) {
