@@ -365,6 +365,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long dossierId = object.getDossierId();
 
 			document.addNumberSortable(DossierTerm.DOSSIER_ID, dossierId);
+			document.addNumberSortable(DossierTerm.ORIGIN, object.getOriginDossierId());
+			
 			if (Validator.isNotNull(object.getReferenceUid())) {
 				document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
 			}

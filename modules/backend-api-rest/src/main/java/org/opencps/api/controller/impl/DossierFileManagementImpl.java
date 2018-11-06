@@ -84,11 +84,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
-			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
-
-			results.setTotal(dossierFiles.size());
-			results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
-
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null && dossier.getOriginDossierId() == 0) {
+				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
+	
+				results.setTotal(dossierFiles.size());
+				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			}
+			else if (dossier != null && dossier.getOriginDossierId() != 0) {
+				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getOriginDossierId());
+				
+				results.setTotal(dossierFiles.size());
+				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			}
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {

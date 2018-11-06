@@ -356,6 +356,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
 			params.put(DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
 			params.put(PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
