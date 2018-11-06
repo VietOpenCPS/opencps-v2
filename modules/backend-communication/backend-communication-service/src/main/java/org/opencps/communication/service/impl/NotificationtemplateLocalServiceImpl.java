@@ -511,6 +511,11 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		notificationtemplatePersistence.update(object);
 
 		return object;
+
+	}
+
+	public Notificationtemplate findByF_TYPE_INTER(long groupId, String notificationType, String interval) {
+		return notificationtemplatePersistence.fetchByF_GID_TYPE_INTER(groupId, notificationType, interval);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(NotificationtemplateLocalServiceImpl.class);

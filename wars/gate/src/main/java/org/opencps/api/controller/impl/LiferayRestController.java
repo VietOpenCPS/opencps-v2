@@ -52,7 +52,9 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,6 +65,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import backend.utils.FileUploadUtils;
+import graphql.ExecutionResult;
 
 /**
  * Rest Controller
@@ -71,7 +74,7 @@ import backend.utils.FileUploadUtils;
  */
 @RestController
 public class LiferayRestController {
-
+	
 	@RequestMapping(value = "/user/{id}/deactive", method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
 	public void deactiveAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
@@ -241,11 +244,25 @@ public class LiferayRestController {
 						CompanyConstants.AUTH_TYPE_EA);
 
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-
+				
+				User user = UserLocalServiceUtil.fetchUser(userId);
+				
 				if (Validator.isNotNull(employee)) {
-					return "/c";
+					
+					if (user != null &&
+							user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+						return "pending";
+					} else {
+						return "/c";
+					}
 				} else {
-					return "ok";
+					if (user != null &&
+							user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+						return "pending";
+					} else {
+						return "ok";
+					}
+					
 				}
 			}
 

@@ -22,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalService;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.utils.NotificationQueueBusinessFactoryUtil;
 import org.opencps.communication.utils.NotificationUtil;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
@@ -51,69 +53,64 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 
 	private void doProcessNotification(Message message) {
 		
-		List<Notificationtemplate> notificationtemplates =
-			_notificationTemplateLocalService.findByInterval(
-				NotificationTemplateTerm.MINUTELY);
+		List<NotificationQueue> notificationQueues = NotificationQueueLocalServiceUtil
+				.findByF_LessThan_ExpireDate(new Date());
 
-		if (notificationtemplates != null) {
-			_log.info("notificationtemplates SIZE: "+notificationtemplates.size());
-			for (Notificationtemplate notificationtemplate : notificationtemplates) {
-				_log.info("TYPE: "+notificationtemplate.getNotificationType());
-				List<NotificationQueue> notificationQueues =
-					NotificationQueueBusinessFactoryUtil.findByNotificationType_LessThanExpireDate(
-						notificationtemplate.getNotificationType(), new Date());
-				
-				if (notificationQueues != null) {
-					_log.info("notificationtemplates SIZE: "+notificationQueues.size());
-					for (NotificationQueue notificationQueue : notificationQueues) {
-						try {
-							ServiceContext serviceContext =
-								MBServiceContextFactoryUtil.create(
-									notificationQueue.getCompanyId(),
-									notificationQueue.getGroupId(),
-									notificationQueue.getUserId());
+		if (notificationQueues != null) {
+			_log.info("notificationQueues SIZE: "+notificationQueues.size());
+			for (NotificationQueue notificationQueue : notificationQueues) {
+				Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.findByF_TYPE_INTER(
+						notificationQueue.getGroupId(), notificationQueue.getNotificationType(),
+						NotificationTemplateTerm.MINUTELY);
+				if (notificationtemplate != null) {
+					_log.info("Template: "+notificationtemplate.getNotificationType());
+					try {
+						ServiceContext serviceContext =
+							MBServiceContextFactoryUtil.create(
+								notificationQueue.getCompanyId(),
+								notificationQueue.getGroupId(),
+								notificationQueue.getUserId());
 
-							MBMessageEntry messageEntry =
-								NotificationUtil.createMBMessageEntry(
-									notificationQueue, notificationtemplate,
-									serviceContext);
-							_log.info("messageEntry: "+messageEntry);
-							//Process send SMS
-							boolean flagSend = false;
-							if(messageEntry.isSendSMS()){
-								_log.info("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
-								String results = SendMTConverterUtils.sendSMS(messageEntry.getEmailBody(),
-										messageEntry.getEmailSubject(), messageEntry.getToTelNo());
-								if (Validator.isNotNull(results)
-										&& results.equals(String.valueOf(HttpServletResponse.SC_ACCEPTED))) {
-									flagSend = true;
-								}
-								_log.info("END SEND SMS"+flagSend);
-							} else {
+						MBMessageEntry messageEntry =
+							NotificationUtil.createMBMessageEntry(
+								notificationQueue, notificationtemplate,
+								serviceContext);
+						_log.info("messageEntry: "+messageEntry);
+						//Process send SMS
+						boolean flagSend = false;
+						if(messageEntry.isSendSMS()){
+							_log.info("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
+							String results = SendMTConverterUtils.sendSMS(messageEntry.getEmailBody(),
+									messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+							if (Validator.isNotNull(results)
+									&& results.equals(String.valueOf(HttpServletResponse.SC_ACCEPTED))) {
 								flagSend = true;
 							}
+							_log.info("END SEND SMS"+flagSend);
+						} else {
+							flagSend = true;
+						}
 
-							if(messageEntry.isSendEmail()){
-								_log.info("messageEntry.isSendEmail(): "+messageEntry.isSendEmail());
-								MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
-							}
+						if(messageEntry.isSendEmail()){
+							_log.info("messageEntry.isSendEmail(): "+messageEntry.isSendEmail());
+							MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
+						}
 
-							if(messageEntry.isSendNotify()){
-								_log.info("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
-								MBNotificationSenderFactoryUtil.send(
-									messageEntry, messageEntry.getClassName(),
+						if(messageEntry.isSendNotify()){
+							_log.info("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
+							MBNotificationSenderFactoryUtil.send(
+								messageEntry, messageEntry.getClassName(),
+								serviceContext);
+						}
+						// Remove queue when send SMS success
+						if (flagSend) {
+							NotificationQueueBusinessFactoryUtil.delete(
+									notificationQueue.getNotificationQueueId(),
 									serviceContext);
-							}
-							// Remove queue when send SMS success
-							if (flagSend) {
-								NotificationQueueBusinessFactoryUtil.delete(
-										notificationQueue.getNotificationQueueId(),
-										serviceContext);
-							}
 						}
-						catch (Exception e) {
-							_log.warn("Can't send message from queue " + e);
-						}
+					}
+					catch (Exception e) {
+						_log.warn("Can't send message from queue " + e);
 					}
 				}
 			}

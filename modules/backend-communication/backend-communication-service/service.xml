@@ -63,6 +63,11 @@
 		<finder name="F_interval" return-type="Collection">
 			<finder-column name="interval"></finder-column>
 		</finder>
+		<finder name="F_GID_TYPE_INTER" return-type="Notificationtemplate">
+			<finder-column name="groupId" />
+			<finder-column name="notificationType" />
+			<finder-column name="interval" />
+		</finder>
 
 	</entity>
 	
@@ -115,6 +120,10 @@
 			return-type="Collection">
 			<finder-column name="notificationType"></finder-column>
 			<finder-column name="expireDate" comparator="&gt;="></finder-column>
+		</finder>
+		<finder name="F_LessThan_ExpireDate"
+			return-type="Collection">
+			<finder-column name="expireDate" comparator="&gt;=" />
 		</finder>
 
 	</entity>

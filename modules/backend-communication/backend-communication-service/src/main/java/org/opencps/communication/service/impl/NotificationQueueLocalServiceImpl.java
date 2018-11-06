@@ -192,4 +192,9 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 
 		return object;
 	}
+
+	public List<NotificationQueue> findByF_LessThan_ExpireDate(Date date) {
+		return notificationQueuePersistence.findByF_LessThan_ExpireDate(date);
+	}
+
 }

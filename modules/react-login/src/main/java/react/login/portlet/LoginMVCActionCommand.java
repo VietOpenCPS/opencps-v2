@@ -84,8 +84,8 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		if (user != null &&
 			user.getStatus() == WorkflowConstants.STATUS_PENDING) {
 
-			actionResponse.sendRedirect(
-				"/confirm-account?active_user_id=" + user.getUserId() +
+			actionResponse.sendRedirect(themeDisplay.getURLHome() +
+				"/register#/xac-thuc-tai-khoan?active_user_id=" + user.getUserId() +
 					"&redirectURL=" + themeDisplay.getURLCurrent());
 		}
 		else {
@@ -94,7 +94,7 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 
 			if (action != null && "confirm_account".equals(action)) {
 				actionResponse.sendRedirect(
-					themeDisplay.getPortalURL() + "/profile");
+						themeDisplay.getURLHome() + "/profile");
 			}
 			else {
 				actionResponse.sendRedirect(themeDisplay.getPathMain());

@@ -13,10 +13,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -24,7 +21,6 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
@@ -86,7 +82,10 @@ public class ExampleEndpoind extends Endpoint {
 	 */
 	@Override
 	public void onOpen(Session session, EndpointConfig config) {
-
+		
+		session.setMaxBinaryMessageBufferSize(8388608);
+		session.setMaxTextMessageBufferSize(8388608);
+		
 		MessageHandler handler = new MessageHandler.Whole<String>() {
 
 			@Override
