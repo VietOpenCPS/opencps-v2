@@ -985,14 +985,14 @@ public class DossierUtils {
 				_log.info("LamTV_preStepCode: "+preStepCode);
 
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-				_log.info("LamTV_ProcessStep: "+step);
+//				_log.info("LamTV_ProcessStep: "+step);
 
 				if (Validator.isNull(step) && dossierAction == null) {
 					action = act;
 					break;
 				} else {
-					String stepStatus = step.getDossierStatus();
-					String stepSubStatus = step.getDossierSubStatus();
+					String stepStatus = step != null ? step.getDossierStatus() : StringPool.BLANK;
+					String stepSubStatus = step != null ?  step.getDossierSubStatus() : StringPool.BLANK;
 					boolean flagCheck = false;
 					
 					if (dossierAction != null) {
