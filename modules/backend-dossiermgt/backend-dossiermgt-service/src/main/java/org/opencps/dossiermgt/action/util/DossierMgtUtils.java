@@ -322,7 +322,7 @@ public class DossierMgtUtils {
 					result = result && checkServiceCode(splitCodes[1], dossier);
 				}			
 			}
-			if (preCondition.contains("notservice=")) {
+			if (preCondition.contains("notservicecode=")) {
 				String[] splitCodes = preCondition.split("=");
 				if (splitCodes.length == 2) {
 					result = result && checkNotServiceCode(splitCodes[1], dossier);
@@ -334,7 +334,7 @@ public class DossierMgtUtils {
 					result = result && checkAgencyCode(splitAgencies[1], dossier);
 				}							
 			}
-			if (preCondition.contains("notagency=")) {
+			if (preCondition.contains("notagencycode=")) {
 				String[] splitAgencies = preCondition.split("=");
 				if (splitAgencies.length == 2) {
 					result = result && checkNotAgencyCode(splitAgencies[1], dossier);
