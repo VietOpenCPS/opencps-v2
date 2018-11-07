@@ -180,7 +180,27 @@ public class GetDossierRequest extends CommonRequest {
 	public void setYear(String year) {
 		this.year = year;
 	}
-	
+
+	public String getFromStatisticDate() {
+		return fromStatisticDate;
+	}
+	public void setFromStatisticDate(String fromStatisticDate) {
+		this.fromStatisticDate = fromStatisticDate;
+	}
+	public String getToStatisticDate() {
+		return toStatisticDate;
+	}
+	public void setToStatisticDate(String toStatisticDate) {
+		this.toStatisticDate = toStatisticDate;
+	}
+
+	public boolean isCalculate() {
+		return calculate;
+	}
+	public void setCalculate(boolean calculate) {
+		this.calculate = calculate;
+	}
+
 	private String month;
 	private String year;
 	private String registerBookCode;
@@ -210,4 +230,7 @@ public class GetDossierRequest extends CommonRequest {
 	private boolean betime;
 	private boolean ontime;
 	private boolean undue;
+	private String fromStatisticDate;
+	private String toStatisticDate;
+	private boolean calculate;
 }
