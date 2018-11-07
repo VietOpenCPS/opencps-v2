@@ -2285,13 +2285,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				BooleanQuery subQueryThree = new BooleanQueryImpl();
 
 				String fromStatisDateFilter = fromStatisticDate + ConstantsTerm.HOUR_START;
-				String toStatisDateFilter = toStatisticDate + ConstantsTerm.HOUR_START;
+				String toStatisDateFilter = toStatisticDate + ConstantsTerm.HOUR_END;
 				_log.info("fromStatisDateFilter: "+fromStatisDateFilter);
 				_log.info("toStatisDateFilter: "+toStatisDateFilter);
 
 				//Check startDate <= receiveDate < endDate
 				TermRangeQueryImpl termRangeQueryOne = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
-						fromStatisDateFilter, toStatisDateFilter, true, false);
+						fromStatisDateFilter, toStatisDateFilter, true, true);
 
 				subQueryOne.add(termRangeQueryOne, BooleanClauseOccur.SHOULD);
 				/** Check receiveDate < startDate and (startDate <= releaseDate or releaseDate = null) - START **/
