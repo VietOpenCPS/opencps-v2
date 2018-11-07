@@ -1373,7 +1373,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
+//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
@@ -2671,8 +2671,8 @@ public class DossierActionsImpl implements DossierActions {
 //			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
-		_log.info("SONDT DOSSIER ACTION proAction ========= "+ JSONFactoryUtil.looseSerialize(proAction));
-		_log.info("SONDT DOSSIER ACTION payment ========= "+ payment);
+//		_log.info("SONDT DOSSIER ACTION proAction ========= "+ JSONFactoryUtil.looseSerialize(proAction));
+//		_log.info("SONDT DOSSIER ACTION payment ========= "+ payment);
 		
 		
 		if (option != null && proAction != null) {
@@ -2684,7 +2684,7 @@ public class DossierActionsImpl implements DossierActions {
 			String paymentFee = StringPool.BLANK;
 //			_log.info("Payment fee: " + JSONFactoryUtil.looseSerialize(proAction.getPaymentFee()) + ", request payment: " + proAction.getRequestPayment());
 			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
-
+			_log.info("SONDT DOSSIER ACTION Precondition ========= "+ proAction.getPreCondition());
 			if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 					|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI && Validator.isNotNull(payment)) {
 				Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
@@ -2866,11 +2866,12 @@ public class DossierActionsImpl implements DossierActions {
 				_log.info("SONDT payment REQUESTPAYMENT 5: DOSSIERID ========= "+ dossier.getDossierId());
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				
+				int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
 				
 				if(oldPaymentFile != null && proAction.getPreCondition().toLowerCase().contains("sendinvoice=1")){
 					
 					//_log.info("SONDT oldPaymentFile REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
-					params = createParamsInvoice(oldPaymentFile, dossier);
+					params = createParamsInvoice(oldPaymentFile, dossier, intpaymentMethod);
 					InvokeREST callRest = new InvokeREST();
 					String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 					HashMap<String, String> properties = new HashMap<String, String>();
@@ -2882,12 +2883,11 @@ public class DossierActionsImpl implements DossierActions {
 				//_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
 				
 				if (Validator.isNotNull(oldPaymentFile) ) {
-//					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
-//							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
-//							oldPaymentFile.getShipAmount());
+					String paymentMethod = checkPaymentMethod(intpaymentMethod);
 					if(Validator.isNotNull(resultObj)) {
 						oldPaymentFile.setEinvoice(resultObj.toString());
 						oldPaymentFile.setInvoicePayload(params.toString());
+						oldPaymentFile.setPaymentMethod(paymentMethod);
 					}
 					
 					oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
@@ -2899,10 +2899,16 @@ public class DossierActionsImpl implements DossierActions {
 			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				_log.info("SONDT DOSSIERACTION oldPaymentFile REQUESTPAYMENT 3 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
+				String paymentMethod = checkPaymentMethod(intpaymentMethod);
 				if (oldPaymentFile != null) {
-					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
-							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
-							oldPaymentFile.getShipAmount());
+//					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
+//							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
+//							oldPaymentFile.getShipAmount());
+					oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
+					oldPaymentFile.setPaymentMethod(paymentMethod);
+					
+					PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 				}
 			}
 
@@ -5664,8 +5670,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			return false;
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
-		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
-		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
+//		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
+//		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
 		if (preConditionArr != null && preConditionArr.length > 0) {
 			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
 		}
@@ -5894,7 +5900,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return dossier;	
 	}
 	
-	private Map<String, Object> createParamsInvoice(PaymentFile oldPaymentFile, Dossier dossier) {
+	private Map<String, Object> createParamsInvoice(PaymentFile oldPaymentFile, Dossier dossier, int intpaymentMethod) {
 		Map<String, Object> params = new HashMap<>();
 		
 		StringBuilder address = new StringBuilder();
@@ -5932,7 +5938,11 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		params.put("maKhL", "K");
 		params.put("maNt", "VND");
 		params.put("tg", "1");
-		params.put("hthuc", "C");
+		if(intpaymentMethod == 3) {
+			params.put("hthuc", "M");
+		}else {
+			params.put("hthuc", "C");
+		}
 		params.put("han", "");
 		params.put("tlGgia", "0");
 		params.put("ggia", "0");
@@ -5953,4 +5963,38 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return params;
 	}
 
+	private int checkPaymentMethodinPrecondition(String preCondition) {
+		//_log.info("SONDT checkPaymentMethodinPrecondition preCondition ===== " + preCondition);
+		int paymentMethod = 0;
+		String[] preConditions = StringUtil.split(preCondition);
+		for(String pre : preConditions) {
+			pre = pre.trim();
+			//_log.info("SONDT checkPaymentMethodinPrecondition pre ===== " + pre);
+			if (pre.toLowerCase().contains("paymentmethod=")) {
+				String[] splitPaymentMethod = pre.split("=");
+				//_log.info("SONDT checkPaymentMethodinPrecondition splitPaymentMethod ===== " + splitPaymentMethod);
+				if (splitPaymentMethod.length == 2) {
+					paymentMethod = Integer.parseInt(splitPaymentMethod[1]);
+					//_log.info("SONDT checkPaymentMethodinPrecondition paymentMethod in if ===== " + paymentMethod);
+				}
+				break;
+			}
+		}
+		_log.info("SONDT checkPaymentMethodinPrecondition paymentMethod ===== " + paymentMethod);
+		return paymentMethod;
+	}
+
+	private String checkPaymentMethod(int mt) {
+		String pmMethod = "";
+		if (mt == 1) {
+			pmMethod = "Keypay";
+		} else if (mt == 2) {
+			pmMethod = "Chuyen khoan";
+		} else if (mt == 3) {
+			pmMethod = "Truc tiep";
+		}
+		
+		_log.info("SONDT checkPaymentMethod pmMethod ===== " + pmMethod);
+		return pmMethod;
+	}
 }

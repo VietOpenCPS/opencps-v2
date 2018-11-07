@@ -303,6 +303,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setAdvanceAmount(paymentFile.getAdvanceAmount());
 				pfiModel.setServiceAmount(paymentFile.getServiceAmount());
 				pfiModel.setShipAmount(paymentFile.getShipAmount());
+				
 				//_log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 
@@ -316,6 +317,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 				pfiModel.setEinvoice(paymentFile.getEinvoice());
+				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 				
@@ -342,6 +344,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 				pfiModel.setEinvoice(paymentFile.getEinvoice());
+				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			}
@@ -710,6 +713,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
+			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			
