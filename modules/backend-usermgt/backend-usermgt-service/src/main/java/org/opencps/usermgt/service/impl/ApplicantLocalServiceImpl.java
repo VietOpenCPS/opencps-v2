@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -183,7 +184,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
 			}
 
-			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(applicantName, applicantIdType);
+			String firstName = ("citizen".equals(applicantIdType) ? "Ông/bà" : ("business".equals(applicantIdType) ? "Quý công ty" : "Tổ chức"));
+			String lastName = applicantName;
+			
+			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
 
 			// add default role
 			if (Validator.isNotNull(roleDefault)) {
@@ -207,13 +211,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			int year = calendar.get(Calendar.YEAR);
 			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
 			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-
+			_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
 					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
 					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);
-
+			_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 
 			long mappingUserId = mappingUser.getUserId();
