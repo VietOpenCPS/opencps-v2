@@ -295,6 +295,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			
 			result.put("year", resultBody.getInt("year"));
 			result.put("month", resultBody.getInt("month"));
+			result.put("fromStatisticDate", resultBody.get("fromStatisticDate"));
+			result.put("toStatisticDate", resultBody.get("toStatisticDate"));
 			result.put("govAgencyName", siteName);
 			//Process statistic all agency
 			int flagAgency = resultBody.getInt("flagAgency");
