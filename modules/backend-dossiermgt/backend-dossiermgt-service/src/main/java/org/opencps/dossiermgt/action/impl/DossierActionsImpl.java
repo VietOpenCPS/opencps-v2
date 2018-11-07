@@ -3034,6 +3034,11 @@ public class DossierActionsImpl implements DossierActions {
 									jsonDataStatusText != null ? jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW) : StringPool.BLANK, StringPool.BLANK,
 									StringPool.BLANK, StringPool.BLANK, dossierNote, context);
 						}
+						else {
+							errorModel.setMessage("Không tạo được hồ sơ liên thông");
+							errorModel.setDescription("Chưa rõ nguyên nhân");
+							return null;								
+						}
 						JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_INTEROPERATING, StringPool.BLANK);
 						if (curStep != null) {
 							dossier = DossierLocalServiceUtil.updateStatus(groupId, dossier.getDossierId(),
@@ -3044,6 +3049,16 @@ public class DossierActionsImpl implements DossierActions {
 							
 						}					
 					}
+					else {
+						errorModel.setMessage("Không tạo được hồ sơ liên thông");
+						errorModel.setDescription("Chưa gắn mẫu hồ sơ cho dịch vụ công liên thông");
+						return null;						
+					}
+				}
+				else {
+					errorModel.setMessage("Không tạo được hồ sơ liên thông");
+					errorModel.setDescription("Chưa cấu hình dịch vụ công cho quy trình liên thông");
+					return null;
 				}
 			}
 			else {
