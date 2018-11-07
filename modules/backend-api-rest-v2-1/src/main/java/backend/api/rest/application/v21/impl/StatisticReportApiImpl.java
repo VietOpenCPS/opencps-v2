@@ -292,11 +292,19 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
 			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
-			
-			result.put("year", resultBody.getInt("year"));
-			result.put("month", resultBody.getInt("month"));
-			result.put("fromStatisticDate", resultBody.get("fromStatisticDate"));
-			result.put("toStatisticDate", resultBody.get("toStatisticDate"));
+			//
+			int year = resultBody.getInt("year");
+			int month = resultBody.getInt("month");
+			String fromStatisticDate = resultBody.getString("fromStatisticDate");
+			String toStatisticDate = resultBody.getString("toStatisticDate");
+			if (year > 0 || month > 0) {
+				result.put("year", year);
+				result.put("month", month);
+			} else if (Validator.isNotNull(fromStatisticDate) || Validator.isNotNull(toStatisticDate)){
+				result.put("fromStatisticDate", fromStatisticDate);
+				result.put("toStatisticDate", toStatisticDate);
+			}
+
 			result.put("govAgencyName", siteName);
 			//Process statistic all agency
 			int flagAgency = resultBody.getInt("flagAgency");
