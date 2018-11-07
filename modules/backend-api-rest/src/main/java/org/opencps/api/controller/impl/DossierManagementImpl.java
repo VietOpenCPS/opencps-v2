@@ -3533,9 +3533,7 @@ public class DossierManagementImpl implements DossierManagement {
 					result.append("0((Bắt đầu))\n");
 					for (ProcessStep ps : lstSteps) {
 						result.append(ps.getStepCode());
-						result.append("(\"[");
-						result.append(ps.getStepCode());
-						result.append("] ");
+						result.append("(\"");
 						result.append(ps.getStepName());
 						result.append("\")\n");
 					}
@@ -3548,16 +3546,13 @@ public class DossierManagementImpl implements DossierManagement {
 							result.append(pa.getPreStepCode());
 						}
 						if ("listener".equals(pa.getAutoEvent()) || "timmer".equals(pa.getAutoEvent())) {
-							result.append("-.->|\"[");
-							result.append(pa.getActionCode());
-							result.append("] ");
+							result.append("-.->|\"");
+							result.append("");
 							result.append(pa.getActionName());
 							result.append("\"|");
 						}
 						else {
-							result.append("-->|\"[");
-							result.append(pa.getActionCode());
-							result.append("] ");
+							result.append("-->|\"");
 							result.append(pa.getActionName());
 							result.append("\"|");						
 						}

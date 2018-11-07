@@ -1,0 +1,169 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:element name="MResult">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Status" type="xsd:int" minOccurs="0" />
+				<xsd:element name="Message" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Mtoken">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="access_token" type="xsd:string" />
+				<xsd:element name="token_type" type="xsd:string" />
+				<xsd:element name="expires_in" type="xsd:int" />
+				<xsd:element name="scope" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="MSyncDocument">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="DocTypeCode" type="xsd:string" />
+				<xsd:element name="DocTypeName" type="xsd:string" />
+				<xsd:element name="DocCode" type="xsd:string" />
+				<xsd:element name="CitizenName" type="xsd:string" />
+				<xsd:element name="CitizenInfo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ApplicantsId" type="xsd:string" />
+				<xsd:element name="ApplicantsType" type="xsd:int" />
+				<xsd:element name="Address" type="xsd:string" minOccurs="0" />
+				<xsd:element name="Email" type="xsd:string" minOccurs="0" />
+				<xsd:element name="Phone" type="xsd:string" />
+				<xsd:element name="Compendium" type="xsd:string" minOccurs="0" />
+				<xsd:element name="DateReceived" type="xsd:string" />
+				<xsd:element name="DateAppointed" type="xsd:string" />
+				<xsd:element name="IsSuccess" type="xsd:boolean" />
+				<xsd:element name="SuccessDate" type="xsd:string" />
+				<xsd:element name="ApproverName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ApproverPosition" type="xsd:string" minOccurs="0" />
+				<xsd:element name="SuccessNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="IsReturned" type="xsd:string" />
+				<xsd:element name="ReturnedDate" type="xsd:string" />
+				<xsd:element name="ReturnNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="ReturnedType" type="xsd:int" />
+				<xsd:element name="FinishedDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="Status" type="xsd:int" />
+				<xsd:element name="ProcessingOrganName" type="xsd:string" />
+				<xsd:element name="HasSupplementary" type="xsd:string" minOccurs="0" />
+				<xsd:element name="RequireSupplementaryDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="Note" type="xsd:string" minOccurs="0" />
+				<xsd:element name="Attachments" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Attachmentld" type="xsd:int" />
+							<xsd:element name="AttachmentName" type="xsd:string" />
+							<xsd:element name="IsDeleted" type="xsd:boolean" minOccurs="0" />
+							<xsd:element name="Base64" type="xsd:string" />
+							<xsd:element name="IsVerified" type="xsd:boolean" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="DocFees" minOccurs="0" maxOccurs="unbounded" type="DocFees">
+				</xsd:element>
+				<xsd:element name="DocPapers" minOccurs="0" maxOccurs="unbounded" type="DocPapers">
+				</xsd:element>	
+				<xsd:element name="Supplementaries" minOccurs="0" maxOccurs="unbounded" type="Supplementaries">
+				</xsd:element>
+				<xsd:element name="OrganInchargeIdLevel1" type="xsd:string" />
+				<xsd:element name="OrganInchargeName" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+	<xsd:complexType name="Supplementaries">
+		<xsd:sequence>
+			<xsd:element name="SupplementaryId" type="xsd:int" />
+			<xsd:element name="SendUser" type="xsd:string" />
+			<xsd:element name="SendComment" type="xsd:string" />
+			<xsd:element name="SendDate" type="xsd:string" />
+			<xsd:element name="ReceivedUser" type="xsd:string" minOccurs="0" />
+			<xsd:element name="ReceivedComment" type="xsd:string" minOccurs="0" />
+			<xsd:element name="ReceivedDate" type="xsd:string" />
+			<xsd:element name="IsReceived" type="xsd:boolean" />
+			<xsd:element name="Papers" minOccurs="0" maxOccurs="unbounded" type="DocPapers">
+			</xsd:element>
+			<xsd:element name="Fees" minOccurs="0" maxOccurs="unbounded" type="DocFees">
+			</xsd:element>
+			<xsd:element name="OldDateAppointed" type="xsd:string" />
+			<xsd:element name="NewDateAppointed" type="xsd:string" minOccurs="0" />					
+		</xsd:sequence>
+	</xsd:complexType>	
+	<xsd:complexType name="DocPapers">
+		<xsd:sequence>
+			<xsd:element name="PaperName" type="xsd:string" />
+			<xsd:element name="Amount" type="xsd:int" />
+			<xsd:element name="PaperType" type="xsd:int" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DocFees">
+		<xsd:sequence>
+			<xsd:element name="FeeName" type="xsd:string" />
+			<xsd:element name="FeeType" type="xsd:int" />
+			<xsd:element name="Price" type="xsd:double" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="MDocumentTraces">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="DocumentId" type="xsd:string" />
+				<xsd:element name="DocCode" type="xsd:string" />
+				<xsd:element name="UserName" type="xsd:string" />
+				<xsd:element name="UserPosition" type="xsd:string" />
+				<xsd:element name="DateCreated" type="xsd:string" />
+				<xsd:element name="Comment" type="xsd:string" minOccurs="0" />
+				<xsd:element name="Status" type="xsd:int" minOccurs="0" />
+				<xsd:element name="OrganizationInchargeIdLevel1" type="xsd:string" />
+				<xsd:element name="OrganizationInchargeName" type="xsd:string" />					
+			</xsd:sequence>
+		</xsd:complexType>			
+	</xsd:element>
+	<xsd:element name="MVotes">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="DateCreated" type="xsd:string" />
+				<xsd:element name="TotalVoted" type="xsd:int" />
+				<xsd:element name="PercentVeryGood" type="xsd:double" />
+				<xsd:element name="PercentGood" type="xsd:double" />
+				<xsd:element name="PercentBad" type="xsd:double" />
+				<xsd:element name="Questions" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="DocTypeCode" type="xsd:string" minOccurs="0" />
+							<xsd:element name="Content" type="xsd:string" />
+							<xsd:element name="PercentVeryGood" type="xsd:double" />
+							<xsd:element name="PercentGood" type="xsd:double" />
+							<xsd:element name="PercentBad" type="xsd:double" />	
+						</xsd:sequence>					
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="OrganizationInchargeIdLevel1" type="xsd:string" />
+				<xsd:element name="OrganizationInchargeName" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>			
+	</xsd:element>	
+	<xsd:element name="MStatistic">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Month" type="xsd:int" />
+				<xsd:element name="Year" type="xsd:int" />
+				<xsd:element name="IsMonthStatistic" type="xsd:boolean" />
+				<xsd:element name="NewReception" type="xsd:int" />
+				<xsd:element name="PreExtisting" type="xsd:int" />
+				<xsd:element name="Total" type="xsd:int" />
+				<xsd:element name="TotalSolved" type="xsd:int" />
+				<xsd:element name="SolvedInTime" type="xsd:int" />
+				<xsd:element name="SolvedInTimePercent" type="xsd:double" />
+				<xsd:element name="SolvedLate" type="xsd:int" />
+				<xsd:element name="SolvedLatePercent" type="xsd:double" />
+				<xsd:element name="TotalPending" type="xsd:int" />
+				<xsd:element name="Pending" type="xsd:int" />
+				<xsd:element name="PendingLate" type="xsd:int" />
+				<xsd:element name="PendingLatePercent" type="xsd:double" />
+				<xsd:element name="PendingPercent" type="xsd:double" />
+				<xsd:element name="Note" type="xsd:string" />
+				<xsd:element name="OrganizationInchargeIdlevel1" type="xsd:string" />
+				<xsd:element name="OrganizationInchargeName" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+</xsd:schema>

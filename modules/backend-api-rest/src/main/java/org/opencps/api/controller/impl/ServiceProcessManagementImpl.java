@@ -51,6 +51,7 @@ import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.exception.DuplicateStepNoException;
+import org.opencps.dossiermgt.exception.NoSuchServiceProcessException;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -1161,18 +1162,29 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 	@Override
 	public Response getServiceProcessMermaidGraph(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id) {
+			Locale locale, User user, ServiceContext serviceContext, String id) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
 		BackendAuth auth = new BackendAuthImpl();
-
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-			ServiceProcess serviceProcess = actions.getServiceProcessDetail(id);
+			long serviceProcessId = GetterUtil.getLong(id);
+			
+			ServiceProcess serviceProcess = null; 
+			try {
+				serviceProcess = actions.getServiceProcessDetail(serviceProcessId);
+			}
+			catch (NoSuchServiceProcessException e) {
+				
+			}
+			if (serviceProcess == null) {
+				serviceProcess = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, id);
+			}
 			if (serviceProcess != null) {
 				List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
 				StringBuilder result = new StringBuilder();
