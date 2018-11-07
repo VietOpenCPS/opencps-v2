@@ -124,6 +124,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 						DossierDocumentParser.mappingDocumentResultModel((List<DossierDocument>) jsonData.get("data")));
 			}
 		} catch (Exception e) {
+			_log.info(e);
 			_log.debug(e);
 			//_log.error(e);
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
@@ -157,8 +158,20 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			if (dossier != null) {
-				dossierActionId = dossier.getDossierActionId();
-				dossierId = dossier.getDossierId();
+				if (dossier.getOriginDossierId() != 0) {
+					Dossier hsltDossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+					if (hsltDossier != null) {
+						dossierActionId = hsltDossier.getDossierActionId();
+						dossierId = hsltDossier.getDossierId();	
+					}
+					else {
+						dossierId = 0l;
+					}
+				}
+				else {
+					dossierActionId = dossier.getDossierActionId();
+					dossierId = dossier.getDossierId();
+				}
 			} else {
 				dossierId = 0l;
 			}

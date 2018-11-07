@@ -340,6 +340,13 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierFile getByDossierAndRef(
+		long dossierId, String referenceUid) {
+		return _dossierFileLocalService.getByDossierAndRef(dossierId,
+			referenceUid);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getByDossierIdAndIsNew(
 		long dossierId, boolean isNew) {
 		return _dossierFileLocalService.getByDossierIdAndIsNew(dossierId, isNew);

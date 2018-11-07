@@ -1,6 +1,5 @@
 package org.opencps.rest.application.model;
 
-import java.time.OffsetDateTime;
 import javax.validation.constraints.*;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -20,9 +19,9 @@ import javax.xml.bind.annotation.XmlRootElement;
   @ApiModelProperty(example = "referenceUid", value = "")
   private String referenceUid = null;
   @ApiModelProperty(example = "2016-04-16T16:06:05Z", value = "")
-  private OffsetDateTime createDate = null;
+  private java.util.Date createDate = null;
   @ApiModelProperty(example = "2016-04-16T16:06:05Z", value = "")
-  private OffsetDateTime modifiedDate = null;
+  private java.util.Date modifiedDate = null;
   @ApiModelProperty(example = "0", value = "")
   private Long dossierId = null;
   @ApiModelProperty(example = "0", value = "")
@@ -81,15 +80,15 @@ import javax.xml.bind.annotation.XmlRootElement;
    * Get createDate
    * @return createDate
   **/
-  public OffsetDateTime getCreateDate() {
+  public java.util.Date getCreateDate() {
     return createDate;
   }
 
-  public void setCreateDate(OffsetDateTime createDate) {
+  public void setCreateDate(java.util.Date createDate) {
     this.createDate = createDate;
   }
 
-  public DossierDocumentModel createDate(OffsetDateTime createDate) {
+  public DossierDocumentModel createDate(java.util.Date createDate) {
     this.createDate = createDate;
     return this;
   }
@@ -98,15 +97,15 @@ import javax.xml.bind.annotation.XmlRootElement;
    * Get modifiedDate
    * @return modifiedDate
   **/
-  public OffsetDateTime getModifiedDate() {
+  public java.util.Date getModifiedDate() {
     return modifiedDate;
   }
 
-  public void setModifiedDate(OffsetDateTime modifiedDate) {
+  public void setModifiedDate(java.util.Date modifiedDate) {
     this.modifiedDate = modifiedDate;
   }
 
-  public DossierDocumentModel modifiedDate(OffsetDateTime modifiedDate) {
+  public DossierDocumentModel modifiedDate(java.util.Date modifiedDate) {
     this.modifiedDate = modifiedDate;
     return this;
   }

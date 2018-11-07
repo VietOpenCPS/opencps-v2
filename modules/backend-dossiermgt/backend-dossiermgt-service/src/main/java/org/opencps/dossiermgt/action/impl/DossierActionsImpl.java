@@ -1373,6 +1373,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
+							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
@@ -2269,7 +2270,7 @@ public class DossierActionsImpl implements DossierActions {
 						// processAction.getReturnDossierFiles();
 
 						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier);
-
+						
 						if (!checkPreCondition) {
 							continue;
 						}
@@ -2670,7 +2671,10 @@ public class DossierActionsImpl implements DossierActions {
 //			pl.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 			dossier = DossierLocalServiceUtil.updateDossier(dossierId, pl);			
 		}
-				
+		_log.info("SONDT DOSSIER ACTION proAction ========= "+ JSONFactoryUtil.looseSerialize(proAction));
+		_log.info("SONDT DOSSIER ACTION payment ========= "+ payment);
+		
+		
 		if (option != null && proAction != null) {
 //			_log.info("In do action process action");
 			long serviceProcessId = option.getServiceProcessId();
@@ -2679,7 +2683,7 @@ public class DossierActionsImpl implements DossierActions {
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
 //			_log.info("Payment fee: " + JSONFactoryUtil.looseSerialize(proAction.getPaymentFee()) + ", request payment: " + proAction.getRequestPayment());
-//			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
+			_log.info("SONDT DOSSIER ACTION RequestPayment ========= "+ JSONFactoryUtil.looseSerialize(proAction.getRequestPayment()));
 
 			if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 					|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI && Validator.isNotNull(payment)) {
@@ -2700,7 +2704,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				try {
 					JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-//						_log.info("Payment object in do action: " + paymentObj);
+					_log.info("Payment object in do action: " + paymentObj);
 					if (paymentObj.has("paymentNote")) {
 						paymentNote = paymentObj.getString("paymentNote");
 					}
@@ -2739,8 +2743,27 @@ public class DossierActionsImpl implements DossierActions {
 				if (oldPaymentFile != null) {
 					if (Validator.isNotNull(paymentNote))
 						oldPaymentFile.setPaymentNote(paymentNote);
-					oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
-					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
+					//oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
+					try {
+						PaymentFile paymentFile = PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
+								proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
+						
+						String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+								paymentFile.getPaymentFileId(), paymentFee, dossierId);
+						
+						JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+						
+						epaymentProfileJsonNew.put("keypayUrl", generatorPayURL);
+						
+						PaymentFileActions actions = new PaymentFileActionsImpl();
+						
+						actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJsonNew.toJSONString(),
+								context);
+						
+					} catch (IOException e) {
+						_log.error(e);
+					}
+					
 				} else {
 					
 					paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
@@ -2807,10 +2830,6 @@ public class DossierActionsImpl implements DossierActions {
 							epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
 							epaymentProfileJSON.put("bank", "true");
 							epaymentProfileJSON.put("paygate", "true");
-							epaymentProfileJSON.put("feeAmount", feeAmount);
-							epaymentProfileJSON.put("shipAmount", shipAmount);
-							epaymentProfileJSON.put("advanceAmount", advanceAmount);
-							epaymentProfileJSON.put("paymentAmount", paymentAmount);
 							epaymentProfileJSON.put("serviceAmount", serviceAmount);
 							epaymentProfileJSON.put("paymentNote", paymentNote);
 							epaymentProfileJSON.put("paymentFee", paymentFee);
@@ -2879,12 +2898,11 @@ public class DossierActionsImpl implements DossierActions {
 				
 			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				_log.info("SONDT oldPaymentFile REQUESTPAYMENT 3 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				_log.info("SONDT DOSSIERACTION oldPaymentFile REQUESTPAYMENT 3 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 				if (oldPaymentFile != null) {
 					PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
 							proAction.getRequestPayment(), oldPaymentFile.getFeeAmount(), oldPaymentFile.getServiceAmount(),
 							oldPaymentFile.getShipAmount());
-					
 				}
 			}
 
@@ -5646,6 +5664,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			return false;
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
+		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
+		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
 		if (preConditionArr != null && preConditionArr.length > 0) {
 			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
 		}

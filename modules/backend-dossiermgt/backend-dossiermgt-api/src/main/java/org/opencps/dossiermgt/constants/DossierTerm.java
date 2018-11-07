@@ -208,4 +208,6 @@ public class DossierTerm {
 	//
 	public static final String FROM_STATISTIC_DATE = "fromStatisticDate";
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
+	public static final String ORIGIN = "origin";
+
 }

@@ -510,6 +510,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_ACTION_ID)) {
 			model.setDossierActionId(jsonObj.getLong(DossierTerm.DOSSIER_ACTION_ID));
 		}
+		if (jsonObj.has(DossierTerm.SUBMISSION_NOTE)) {
+			model.setSubmissionNote(jsonObj.getString(DossierTerm.SUBMISSION_NOTE));
+		}
 
 		return model;
 	}	
@@ -778,6 +781,9 @@ public class OpenCPSConverter {
 	    }
 	    if (Validator.isNotNull(model.getEinvoice())) {
 	    	params.put(PaymentFileTerm.SHIP_AMOUNT, GetterUtil.getLong(model.getShipAmount()));
+	    }
+	    if (Validator.isNotNull(model.getPaymentMethod())) {
+	    	params.put(PaymentFileTerm.PAYMENT_METHOD, model.getPaymentMethod());
 	    }
 	    
 	    return params;

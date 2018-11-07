@@ -94,8 +94,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			@QueryParam("group") String groupAgencyCode, @QueryParam("reporting") boolean reporting,
 			@QueryParam("start") int start, @QueryParam("end") int end, 
 			@QueryParam("fromStatisticDate") @DefaultValue(StringPool.BLANK) String fromStatisticDate,
-			@QueryParam("toStatisticDate") @DefaultValue(StringPool.BLANK) String toStatisticDate,
-			@QueryParam("calculate") boolean calculate) {
+			@QueryParam("toStatisticDate") @DefaultValue(StringPool.BLANK) String toStatisticDate) {
 
 		//LOG.info("GET DossierStatisticResponse");
 		_log.info("START DossierStatisticResponse: "+govAgencyCode);
@@ -105,6 +104,11 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		if (end == 0)
 			end = QueryUtil.ALL_POS;
+		
+		boolean calculate = false;
+		if (month > 0 || year > 0) {
+			calculate = true;
+		}
 
 		if (calculate) {
 			try {

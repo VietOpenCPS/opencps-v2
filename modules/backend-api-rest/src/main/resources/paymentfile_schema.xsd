@@ -39,6 +39,8 @@
 				<xsd:element name="invoiceNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="invoicePayload" type="xsd:string" minOccurs="0" />
 				<xsd:element name="einvoice" type="xsd:string" minOccurs="0" />
+				<xsd:element name="confirmFileEntryId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="paymentStatus" type="xsd:int" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
