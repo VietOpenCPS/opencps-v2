@@ -1,11 +1,6 @@
 package org.opencps.statistic.service.persistence.impl;
 
-import java.util.List;
-
-import org.opencps.statistic.model.OpencpsDossierStatistic;
-import org.opencps.statistic.model.impl.OpencpsDossierStatisticImpl;
-import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -14,10 +9,15 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
+
+import java.util.List;
+
+import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.model.impl.OpencpsDossierStatisticImpl;
+import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
 
 public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFinderBaseImpl
 		implements OpencpsDossierStatisticFinder {

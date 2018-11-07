@@ -237,17 +237,26 @@ public class DossierManagementImpl implements DossierManagement {
 			//Process Top using statistic
 			int year = query.getYear();
 			int month = query.getMonth();
+			String fromStatisticDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromStatisticDate());
+			String toStatisticDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToStatisticDate());
 			String top = query.getTop();
 			if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-				Calendar baseDateCal = Calendar.getInstance();
-				baseDateCal.setTime(new Date());
-				if (month == 0) {
-					month = baseDateCal.get(Calendar.MONTH) + 1;
-				}
-				if (year == 0) {
-					year = baseDateCal.get(Calendar.YEAR);
+				if ((year > 0 || month > 0) || (Validator.isNotNull(fromStatisticDate) || Validator.isNotNull(toStatisticDate))) {
+//					if (Validator.isNotNull(fromStatisticDate) || Validator.isNotNull(toStatisticDate)) {
+//						
+//					}
+				} else {
+					Calendar baseDateCal = Calendar.getInstance();
+					baseDateCal.setTime(new Date());
+					if (month == 0) {
+						month = baseDateCal.get(Calendar.MONTH) + 1;
+					}
+					if (year == 0) {
+						year = baseDateCal.get(Calendar.YEAR);
+					}
 				}
 			}
+
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
 			String dossierNoSearch = StringPool.BLANK;
@@ -357,6 +366,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
 			params.put(DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
 			params.put(PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			params.put(DossierTerm.FROM_STATISTIC_DATE, fromStatisticDate);
+			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			
 			Sort[] sorts = null;
@@ -3522,9 +3533,7 @@ public class DossierManagementImpl implements DossierManagement {
 					result.append("0((Bắt đầu))\n");
 					for (ProcessStep ps : lstSteps) {
 						result.append(ps.getStepCode());
-						result.append("(\"[");
-						result.append(ps.getStepCode());
-						result.append("] ");
+						result.append("(\"");
 						result.append(ps.getStepName());
 						result.append("\")\n");
 					}
@@ -3537,16 +3546,13 @@ public class DossierManagementImpl implements DossierManagement {
 							result.append(pa.getPreStepCode());
 						}
 						if ("listener".equals(pa.getAutoEvent()) || "timmer".equals(pa.getAutoEvent())) {
-							result.append("-.->|\"[");
-							result.append(pa.getActionCode());
-							result.append("] ");
+							result.append("-.->|\"");
+							result.append("");
 							result.append(pa.getActionName());
 							result.append("\"|");
 						}
 						else {
-							result.append("-->|\"[");
-							result.append(pa.getActionCode());
-							result.append("] ");
+							result.append("-->|\"");
 							result.append(pa.getActionName());
 							result.append("\"|");						
 						}
