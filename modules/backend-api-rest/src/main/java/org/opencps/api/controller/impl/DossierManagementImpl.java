@@ -130,6 +130,7 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -356,6 +357,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
 			params.put(DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
 			params.put(PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -3184,6 +3186,7 @@ public class DossierManagementImpl implements DossierManagement {
 			long endorsementDateLong = GetterUtil.getLong(input.getEndorsementDate());
 			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
+			String submissionNote = input.getSubmissionNote();
 			
 			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType,
@@ -3213,6 +3216,7 @@ public class DossierManagementImpl implements DossierManagement {
 			dossier.setDossierSubStatus(input.getDossierSubStatus());
 			dossier.setDossierSubStatusText(input.getDossierSubStatusText());
 			dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
+			dossier.setSubmissionNote(submissionNote);
 			//Update dossier
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			
@@ -3492,6 +3496,85 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getMermaidGraphDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if (dossier != null && dossier.getDossierActionId() != 0) {
+				DossierAction lastAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(lastAction.getServiceProcessId());
+				if (serviceProcess != null) {
+					List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
+					StringBuilder result = new StringBuilder();
+					result.append("graph TD\n");
+					result.append("0((Bắt đầu))\n");
+					for (ProcessStep ps : lstSteps) {
+						result.append(ps.getStepCode());
+						result.append("(\"[");
+						result.append(ps.getStepCode());
+						result.append("] ");
+						result.append(ps.getStepName());
+						result.append("\")\n");
+					}
+					List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcess.getServiceProcessId());
+					for (ProcessAction pa : lstActions) {
+						if ("".equals(pa.getPreStepCode())) {
+							result.append("0");
+						}
+						else {
+							result.append(pa.getPreStepCode());
+						}
+						if ("listener".equals(pa.getAutoEvent()) || "timmer".equals(pa.getAutoEvent())) {
+							result.append("-.->|\"[");
+							result.append(pa.getActionCode());
+							result.append("] ");
+							result.append(pa.getActionName());
+							result.append("\"|");
+						}
+						else {
+							result.append("-->|\"[");
+							result.append(pa.getActionCode());
+							result.append("] ");
+							result.append(pa.getActionName());
+							result.append("\"|");						
+						}
+						if ("".equals(pa.getPostStepCode())) {
+							result.append("1{Quay lại}");
+						}
+						else {
+							result.append(pa.getPostStepCode());
+						}
+						result.append("\n");
+						if (lastAction.getStepCode().equals(pa.getPostStepCode())) {
+							result.append("style " + pa.getPostStepCode() + " fill:#f9f,stroke:#333,stroke-width:4px");
+							result.append("\n");
+						}
+					}
+					return Response.status(200).entity(result.toString()).build();				
+				}
+				else {
+					return Response.status(200).entity(StringPool.BLANK).build();
+				}				
+			}
+			else {
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}		
 	}
 	
 }

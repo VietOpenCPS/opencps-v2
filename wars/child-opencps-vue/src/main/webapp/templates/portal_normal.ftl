@@ -33,6 +33,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery-comments.js"></script>
 	<script src="${themeDisplay.getPathThemeRoot()}/js/jquery.textcomplete.js"></script>
+	<script src="${themeDisplay.getPathThemeRoot()}/js/svg-pan-zoom.min.js"></script>
 	
 	<script>
         window.define = window.__define;
@@ -43,7 +44,11 @@
 </head>
 
 <body class="${css_class} mBody">
-
+<style>
+	#theGraph {
+	    min-height: 500px !important;
+	}
+</style>
 	<@liferay_util["include"] page=body_top_include />
 		
 	<#if permissionChecker.isOmniadmin()>

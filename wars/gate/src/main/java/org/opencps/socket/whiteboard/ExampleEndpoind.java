@@ -1,7 +1,5 @@
 package org.opencps.socket.whiteboard;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -15,13 +13,11 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +30,6 @@ import javax.websocket.Session;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.configuration.WebKeys;
-import org.opencps.usermgt.model.impl.EmployeeImpl;
 import org.osgi.service.component.annotations.Component;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -110,11 +105,14 @@ public class ExampleEndpoind extends Endpoint {
 
 	private void onMessageHandler(String text, Session session) throws JSONException {
 
-		Map<String, String[]> parameters = HttpUtil.getParameterMap(session.getQueryString());
+		Map<String, List<String>> parameters = session.getRequestParameterMap();
 		
 		// user parameters
-		String groupIdStr = parameters.get("groupId")[0];
-		String portalURL = parameters.get("portalURL")[0];
+		String groupIdStr = parameters.get("groupId").get(0);
+		String portalURL = parameters.get("portalURL").get(0);
+		String companyId = parameters.get("companyId").get(0);
+		String userId = parameters.get("userId").get(0);
+		String userName = parameters.get("userName").get(0);
 
 		JSONObject messageData = JSONFactoryUtil.createJSONObject();
 
@@ -282,25 +280,7 @@ public class ExampleEndpoind extends Endpoint {
 						int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 
-						if (message.getString(RESPONE).equals("detail")) {
-							
-							List<Object> detailObject = (List<Object>) method.invoke(model, dynamicQuery, start, end);
-
-							String arr = JSONFactoryUtil.looseSerializeDeep(detailObject);
-							
-							JSONObject resultObj = JSONFactoryUtil.createJSONArray(arr).getJSONObject(0).getJSONObject("modelAttributes");
-							
-							JSONArray result = JSONFactoryUtil.createJSONArray();
-							
-							result.put(resultObj);
-							
-							messageData.put(message.getString(RESPONE), result);
-							
-						} else {
-							
-							messageData.put(message.getString(RESPONE), method.invoke(model, dynamicQuery, start, end));
-							
-						}
+						messageData.put(message.getString(RESPONE), method.invoke(model, dynamicQuery, start, end));
 						
 					}
 
@@ -321,6 +301,13 @@ public class ExampleEndpoind extends Endpoint {
 						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("adminProcessData",
 								JSONObject.class);
 
+						JSONObject postData = message.getJSONObject(DATA);
+						
+						postData.put("groupId", groupIdStr);
+						postData.put("companyId", companyId);
+						postData.put("userId", userId);
+						postData.put("userName", userName);
+						
 						messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
 
 						messageData.put(STATUS, HttpStatus.OK);
@@ -379,6 +366,7 @@ public class ExampleEndpoind extends Endpoint {
 			e.printStackTrace();
 			messageData.put(STATUS, HttpStatus.INTERNAL_SERVER_ERROR);
 			messageData.put(RESPONE, message.getString(RESPONE));
+			messageData.put(CMD, message.getString(CMD));
 		}
 
 		messageData.put(TYPE, message.getString(TYPE));

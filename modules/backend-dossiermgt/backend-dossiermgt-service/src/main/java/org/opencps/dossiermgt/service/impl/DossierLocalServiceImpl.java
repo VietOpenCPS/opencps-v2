@@ -1883,6 +1883,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String fromReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVE_NOTDONE_DATE));
 		String toReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.TO_RECEIVE_NOTDONE_DATE));
 		String paymentStatus = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_STATUS));
+		String origin = GetterUtil.getString(params.get(DossierTerm.ORIGIN));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -1912,7 +1913,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
-				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, booleanCommon);
+				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, booleanCommon);
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1977,6 +1978,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String fromReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVE_NOTDONE_DATE));
 		String toReceiveNotDoneDate = GetterUtil.getString(params.get(DossierTerm.TO_RECEIVE_NOTDONE_DATE));
 		String paymentStatus = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_STATUS));
+		String origin = GetterUtil.getString(params.get(DossierTerm.ORIGIN));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2003,7 +2005,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
-				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, booleanCommon);
+				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2115,7 +2117,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String assigned, String statusStep, String subStatusStep, String permission, String domain,
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
-			String toReceiveNotDoneDate, String paymentStatus, BooleanQuery booleanQuery) throws ParseException {
+			String toReceiveNotDoneDate, String paymentStatus, String origin, BooleanQuery booleanQuery) throws ParseException {
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -2766,6 +2768,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(paymentStatus);
 
 			query.addFields(PaymentFileTerm.PAYMENT_STATUS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if (Validator.isNotNull(origin)) {
+			MultiMatchQuery query = new MultiMatchQuery(origin);
+
+			query.addFields(DossierTerm.ORIGIN);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

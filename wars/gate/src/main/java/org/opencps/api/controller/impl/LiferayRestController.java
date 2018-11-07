@@ -41,6 +41,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.opencps.api.configuration.WebKeys;
 import org.opencps.api.model.FileTemplateMiniItem;
+import org.opencps.datamgt.model.FileAttach;
+import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
@@ -71,59 +73,61 @@ import backend.utils.FileUploadUtils;
  */
 @RestController
 public class LiferayRestController {
-	
+
 	@RequestMapping(value = "/user/{id}/deactive", method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
-	public void deactiveAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
+	public void deactiveAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id,
+			@RequestBody String body) {
 
 		try {
 
+			JSONObject bodyData = JSONFactoryUtil.createJSONObject(body);
+
 			User user = UserLocalServiceUtil.getUser(id);
-			
-			boolean locked = Boolean.valueOf(request.getParameter("locked"));
+
+			boolean locked = bodyData.getBoolean("locked");
 
 			if (locked) {
 				user.setStatus(WorkflowConstants.STATUS_INACTIVE);
-			}
-			else {
+			} else {
 				user.setStatus(WorkflowConstants.STATUS_APPROVED);
 			}
-			
+
 			UserLocalServiceUtil.updateUser(user);
 
-			Indexer<User> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 
 			indexer.reindex(user);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	@RequestMapping(value = "/user/{id}/changepass", method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
-	public void changePassWordUser(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
+	public void changePassWordUser(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("id") long id, @RequestBody String body) {
 
 		try {
 
-			String password = request.getParameter("password");
+			JSONObject bodyData = JSONFactoryUtil.createJSONObject(body);
+
+			String password = bodyData.getString("password");
 
 			User user = UserLocalServiceUtil.updatePassword(id, password, password, Boolean.FALSE);
-			
-			Indexer<User> indexer =
-					IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 
-				indexer.reindex(user);
-				
-				
+			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+			indexer.reindex(user);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id) {
@@ -133,7 +137,7 @@ public class LiferayRestController {
 		result.put("email", StringPool.BLANK);
 		result.put("screenName", StringPool.BLANK);
 		result.put("deactiveAccountFlag", 0);
-		
+
 		try {
 
 			User user = UserLocalServiceUtil.fetchUser(id);
@@ -241,25 +245,23 @@ public class LiferayRestController {
 						CompanyConstants.AUTH_TYPE_EA);
 
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-				
+
 				User user = UserLocalServiceUtil.fetchUser(userId);
-				
+
 				if (Validator.isNotNull(employee)) {
-					
-					if (user != null &&
-							user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+
+					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
 						return "pending";
 					} else {
 						return "/c";
 					}
 				} else {
-					if (user != null &&
-							user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
 						return "pending";
 					} else {
 						return "ok";
 					}
-					
+
 				}
 			}
 
@@ -270,9 +272,9 @@ public class LiferayRestController {
 		return "";
 	}
 
-	@RequestMapping(value = "/upload/{code}/{column}/{pk}", method = RequestMethod.POST)
+	@RequestMapping(value = "/users/upload/{code}/{className}/{pk}", method = RequestMethod.POST)
 	public void uploadAttachment(MultipartHttpServletRequest request, @PathVariable("code") String code,
-			@PathVariable("column") String column, @PathVariable("pk") long pk) {
+			@PathVariable("className") String className, @PathVariable("pk") String pk) {
 
 		CommonsMultipartFile multipartFile = null;
 
@@ -285,8 +287,8 @@ public class LiferayRestController {
 		}
 
 		long userId = 0;
-		if (Validator.isNotNull(request.getSession(true).getAttribute(WebKeys.USER_ID))) {
-			userId = Long.valueOf(request.getSession(true).getAttribute(WebKeys.USER_ID).toString());
+		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 		}
 		long groupId = 0;
 		if (Validator.isNotNull(request.getHeader("groupId"))) {
@@ -311,9 +313,16 @@ public class LiferayRestController {
 
 			if (code.equals("opencps_adminconfig")) {
 
-				ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(pk,
+				ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(Long.valueOf(pk),
 						fileEntry.getFileEntryId() + StringPool.BLANK, multipartFile.getOriginalFilename(),
 						fileEntry.getFileEntryId(), serviceContext);
+
+			} else {
+
+				User user = UserLocalServiceUtil.fetchUser(userId);
+				
+				FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, pk, user.getFullName(), user.getEmailAddress(),
+						fileEntry.getFileEntryId(), StringPool.BLANK, StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
 
 			}
 
@@ -345,6 +354,60 @@ public class LiferayRestController {
 				object = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(serviceFileTemplate));
 
 				long fileEntryId = serviceFileTemplate.getFileEntryId();
+
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+
+				object.put("extension", fileEntry.getExtension());
+				object.put("size", fileEntry.getSize());
+
+				resultArray.put(object);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		result.put("data", resultArray);
+
+		return result.toJSONString();
+
+	}
+
+	@RequestMapping(value = "/fileattach/{className}/{pk}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getAttachFileData(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("className") String className, @PathVariable("pk") String pk) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		JSONArray resultArray = JSONFactoryUtil.createJSONArray();
+
+		long groupId = 0;
+
+		if (Validator.isNotNull(request.getHeader("groupId"))) {
+			groupId = Long.valueOf(request.getHeader("groupId"));
+		}
+
+		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(groupId, className, pk);
+
+		result.put("total", fileAttachs.size());
+
+		JSONObject object = null;
+		for (FileAttach ett : fileAttachs) {
+
+			try {
+				
+				String newName = ett.getFileName();
+
+				if (newName.indexOf("_") > 0) {
+					
+					ett.setFileName(newName.substring(newName.indexOf("_") + 1));
+					
+				}
+				
+				object = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(ett));
+
+				long fileEntryId = ett.getFileEntryId();
 
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
 

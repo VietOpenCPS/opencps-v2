@@ -1109,10 +1109,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
-
 			ProcessStep foundStep = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
 			if (Validator.isNull(foundStep)) {
@@ -1143,11 +1139,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
-
-			
 			ProcessAction processAction = null; 
 			
 			try {
@@ -1162,6 +1153,74 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
 			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
+	}
+
+	@Override
+	public Response getServiceProcessMermaidGraph(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		ServiceProcessActions actions = new ServiceProcessActionsImpl();
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			ServiceProcess serviceProcess = actions.getServiceProcessDetail(id);
+			if (serviceProcess != null) {
+				List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
+				StringBuilder result = new StringBuilder();
+				result.append("graph TD\n");
+				result.append("0((Bắt đầu))\n");
+				for (ProcessStep ps : lstSteps) {
+					result.append(ps.getStepCode());
+					result.append("(\"[");
+					result.append(ps.getStepCode());
+					result.append("] ");
+					result.append(ps.getStepName());
+					result.append("\")\n");
+				}
+				List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcess.getServiceProcessId());
+				for (ProcessAction pa : lstActions) {
+					if ("".equals(pa.getPreStepCode())) {
+						result.append("0");
+					}
+					else {
+						result.append(pa.getPreStepCode());
+					}
+					if ("listener".equals(pa.getAutoEvent()) || "timmer".equals(pa.getAutoEvent())) {
+						result.append("-.->|\"[");
+						result.append(pa.getActionCode());
+						result.append("] ");
+						result.append(pa.getActionName());
+						result.append("\"|");
+					}
+					else {
+						result.append("-->|\"[");
+						result.append(pa.getActionCode());
+						result.append("] ");
+						result.append(pa.getActionName());
+						result.append("\"|");						
+					}
+					if ("".equals(pa.getPostStepCode())) {
+						result.append("1{Quay lại}");
+					}
+					else {
+						result.append(pa.getPostStepCode());
+					}
+					result.append("\n");
+				}
+				return Response.status(200).entity(result.toString()).build();				
+			}
+			else {
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
