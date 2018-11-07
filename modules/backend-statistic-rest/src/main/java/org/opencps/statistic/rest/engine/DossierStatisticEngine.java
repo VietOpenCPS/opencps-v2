@@ -98,6 +98,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				
 				payload.setMonth(Integer.toString(month));
 				payload.setYear(Integer.toString(LocalDate.now().getYear()));
+				payload.setCalculate(true);
 				
 				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 				if (dossierResponse != null) {

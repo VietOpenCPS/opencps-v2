@@ -1,5 +1,7 @@
 package org.opencps.statistic.rest.facade;
 
+import com.liferay.portal.kernel.util.Validator;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -63,19 +65,31 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
+		if (payload.isCalculate()) {
+			if (payload.getMonth() != null) {
+				urlQueryParams.add("month", payload.getMonth());
+			}
+			else {
+				urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));
+			}
+			if (payload.getYear() != null) {
+				urlQueryParams.add("year", payload.getYear());
+			}
+			else {
+				urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
+			}
+		} else {
+			if (Validator.isNotNull(payload.getGovAgencyCode())) {
+				urlQueryParams.add("agency", payload.getGovAgencyCode());
+			}
+			if (Validator.isNotNull(payload.getFromStatisticDate())) {
+				urlQueryParams.add("fromStatisticDate", payload.getFromStatisticDate());
+			}
+			if (Validator.isNotNull(payload.getToStatisticDate())) {
+				urlQueryParams.add("toStatisticDate", payload.getToStatisticDate());
+			}
+		}
 		
-		if (payload.getMonth() != null) {
-			urlQueryParams.add("month", payload.getMonth());
-		}
-		else {
-			urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));
-		}
-		if (payload.getYear() != null) {
-			urlQueryParams.add("year", payload.getYear());
-		}
-		else {
-			urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
-		}
 		urlQueryParams.add("top", "statistic");
 		
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
