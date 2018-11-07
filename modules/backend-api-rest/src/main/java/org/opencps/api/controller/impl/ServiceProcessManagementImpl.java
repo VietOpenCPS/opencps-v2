@@ -208,10 +208,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
-
 			String processNo = HtmlUtil.escape(input.getProcessNo());
 			String processName = HtmlUtil.escape(input.getProcessName());
 			String description = HtmlUtil.escape(input.getDescription());
