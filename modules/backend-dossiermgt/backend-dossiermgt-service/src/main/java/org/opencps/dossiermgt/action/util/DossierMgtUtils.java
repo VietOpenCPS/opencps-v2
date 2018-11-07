@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
@@ -428,4 +429,15 @@ public class DossierMgtUtils {
 		
 		return false;
 	}
+
+	//Calculator startDate and endDate
+	public static int minDay(int month, int year) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.MONTH, month - 1);
+		// cal.set(Calendar.DAY_OF_MONTH, month);
+		cal.set(Calendar.YEAR, year);
+		int minDay = cal.getActualMinimum(Calendar.DAY_OF_MONTH);
+		return minDay;
+	}
+
 }

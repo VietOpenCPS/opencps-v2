@@ -205,4 +205,7 @@ public class DossierTerm {
 	public static final String TO_FINISH_DATE = "toFinishDate";
 	public static final String FROM_RECEIVE_NOTDONE_DATE = "fromReceiveNotDoneDate";
 	public static final String TO_RECEIVE_NOTDONE_DATE = "toReceiveNotDoneDate";
+	//
+	public static final String FROM_STATISTIC_DATE = "fromStatisticDate";
+	public static final String TO_STATISTIC_DATE = "toStatisticDate";
 }
