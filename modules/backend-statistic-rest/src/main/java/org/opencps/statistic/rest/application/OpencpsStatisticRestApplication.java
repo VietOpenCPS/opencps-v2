@@ -112,7 +112,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		if (calculate) {
 			try {
-				processUpdateDB(groupId, month, year);
+				//processUpdateDB(groupId, month, year);
 				//
 				validInput(month, year, start, end);
 				//

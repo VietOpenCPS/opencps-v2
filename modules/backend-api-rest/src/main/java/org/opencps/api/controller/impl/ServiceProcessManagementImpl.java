@@ -219,7 +219,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String dueDatePattern = input.getDueDatePattern();
 			String generatePassword = HtmlUtil.escape(String.valueOf(input.getGeneratePassword()));
 			String directNotification = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
-			String serverNo = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
+			String serverNo = HtmlUtil.escape(String.valueOf(input.getServerNo()));
 			String paymentFee = HtmlUtil.escape(input.getPaymentFee());
 			
 			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, id, processNo,
