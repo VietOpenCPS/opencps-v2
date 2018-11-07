@@ -91,14 +91,14 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 			ServiceContext serviceContext)
 			throws UnauthenticationException, UnauthorizationException, NoSuchUserException {
 
-		// authen
-		BackendAuthImpl authImpl = new BackendAuthImpl();
-
-		boolean isAuth = authImpl.isAuth(serviceContext);
-
-		if (!isAuth) {
-			throw new UnauthenticationException();
-		}
+//		// authen
+//		BackendAuthImpl authImpl = new BackendAuthImpl();
+//
+//		boolean isAuth = authImpl.isAuth(serviceContext);
+//
+//		if (!isAuth) {
+//			throw new UnauthenticationException();
+//		}
 
 		Date now = new Date();
 
