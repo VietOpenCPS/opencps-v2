@@ -537,7 +537,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setUserId(objectData.getLong("userId"));
 
-			String role_name = objectData.getString("title") + id;
+			String role_name = objectData.getString("jobPosCode") + StringPool.UNDERLINE + id;
 
 			Map<Locale, String> titleMap = new HashMap<>();
 			titleMap.put(Locale.getDefault(), objectData.getString("title"));
