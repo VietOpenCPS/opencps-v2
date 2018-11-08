@@ -73,7 +73,8 @@ import javax.xml.bind.annotation.XmlType;
     "createDossierNo",
     "eSignature",
     "configNote",
-    "createDossiers"
+    "createDossiers",
+    "dossierTemplateNo"
 })
 @XmlRootElement(name = "ProcessActionReturnModel")
 public class ProcessActionReturnModel {
@@ -99,7 +100,8 @@ public class ProcessActionReturnModel {
     protected boolean eSignature;
     protected String configNote;
     protected String createDossiers;
-
+    protected String dossierTemplateNo;
+    
     public String getConfigNote() {
 		return configNote;
 	}
@@ -548,5 +550,13 @@ public class ProcessActionReturnModel {
     
     public void setCreateDossiers(String value) {
     	this.createDossiers = value;
+    }
+    
+    public String getDossierTemplateNo() {
+    	return dossierTemplateNo;
+    }
+    
+    public void setDossierTemplateNo(String value) {
+    	this.dossierTemplateNo = value;
     }
 }
