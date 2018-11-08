@@ -338,6 +338,7 @@ public class ServiceProcessUtils {
 		model.setConfigNote(action.getConfigNote());
 		model.setPaymentFee(action.getPaymentFee());
 		model.setCreateDossiers(action.getCreateDossiers());
+		model.setDossierTemplateNo(action.getDossierTemplateNo());
 		
 		return model;
 	}
