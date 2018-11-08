@@ -370,7 +370,7 @@ public class ExampleEndpoind extends Endpoint {
 		}
 
 		messageData.put(TYPE, message.getString(TYPE));
-
+		
 		broadcast(messageData.toJSONString(), session);
 
 	}

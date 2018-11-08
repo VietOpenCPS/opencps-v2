@@ -41,7 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.opencps.api.configuration.WebKeys;
 import org.opencps.api.model.FileTemplateMiniItem;
+import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
@@ -571,6 +573,20 @@ public class LiferayRestController {
 				dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("col"))
 						.eq(Validator.isNumber(request.getParameter("pk")) ? Long.valueOf(request.getParameter("pk"))
 								: request.getParameter("pk")));
+			}
+			if (Validator.isNotNull(request.getParameter("collectionCode")) && Validator.isNotNull(request.getParameter("column")) && Validator.isNotNull(request.getParameter("type"))) {
+				
+				if (request.getParameter("type").equals("int")) {
+					DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(request.getParameter("collectionCode"), Long.valueOf(request.getHeader("groupId")));
+					
+					if (Validator.isNotNull(dictCollection)) {
+						dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("column"))
+								.eq(dictCollection.getDictCollectionId()));
+					}
+				} else {
+					dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("column"))
+							.eq(request.getParameter("collectionCode")));
+				}
 			}
 
 			method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery", DynamicQuery.class,
