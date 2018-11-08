@@ -275,6 +275,19 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							}
 						}
 					}
+					
+					if (DossierTerm.DOSSIER_STATUS_NEW.equals(dossier.getDossierStatus())
+							&& dossier.getUserId() == user.getUserId()) {
+						modelUser = new DossierActionNextActiontoUser();
+						long userId = GetterUtil.getLong(user.getUserId());
+
+						modelUser.setUserId(userId);
+						modelUser.setUserName(user.getFullName() != null ? user.getFullName().toUpperCase() : StringPool.BLANK);
+						modelUser.setModerator(true);
+						modelUser.setAssigned(1);
+						
+						outputUsers.add(modelUser);
+					}
 					result.setUsers(outputUsers);					
 				}
 			} else {
