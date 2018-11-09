@@ -378,7 +378,7 @@ public class UserActions implements UserInterface {
 			queue.setGroupId(groupId);
 			queue.setCompanyId(user.getCompanyId());
 			
-			queue.setNotificationType(NotificationType.USER_03);
+			queue.setNotificationType(NotificationType.USER_05);
 			queue.setClassName(User.class.getName());
 			if (employee != null) {
 				queue.setClassPK(String.valueOf(employee.getPrimaryKey()));
@@ -447,6 +447,7 @@ public class UserActions implements UserInterface {
 			if (user.getDigest().equals(code)) {
 				user = UserLocalServiceUtil.updatePassword(user.getUserId(), secretKey, secretKey, Boolean.TRUE);
 				user.setDigest(secretKey + System.currentTimeMillis());
+				user.setPasswordReset(false);
 				UserLocalServiceUtil.updateUser(user);
 			} else {
 				throw new DigestException();
