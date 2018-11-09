@@ -1,6 +1,8 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -274,6 +276,41 @@ public class LiferayRestController {
 		return "";
 	}
 
+	@RequestMapping(value = "/users/avatar/{className}/{pk}", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getAttachment(HttpServletRequest request,
+			@PathVariable("className") String className, @PathVariable("pk") String pk) {
+		
+		String result = StringPool.BLANK;
+		
+		long groupId = 0;
+		
+		if (Validator.isNotNull(request.getHeader("groupId"))) {
+			groupId = Long.valueOf(request.getHeader("groupId"));
+		}
+		
+		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(groupId, className, pk);
+
+		if (Validator.isNotNull(fileAttachs) && fileAttachs.size() > 0) {
+			
+			FileAttach fileAttach = fileAttachs.get(0);
+			
+			try {
+
+				DLFileEntry file = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
+
+				result = "/documents/" + file.getGroupId() + StringPool.FORWARD_SLASH + file.getFolderId() + StringPool.FORWARD_SLASH
+			            + file.getTitle() + StringPool.FORWARD_SLASH + file.getUuid();
+				
+			} catch (PortalException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return result;
+	}
 	@RequestMapping(value = "/users/upload/{code}/{className}/{pk}", method = RequestMethod.POST)
 	public void uploadAttachment(MultipartHttpServletRequest request, @PathVariable("code") String code,
 			@PathVariable("className") String className, @PathVariable("pk") String pk) {
@@ -323,9 +360,15 @@ public class LiferayRestController {
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
 				
-				FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, pk, user.getFullName(), user.getEmailAddress(),
+				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, pk, user.getFullName(), user.getEmailAddress(),
 						fileEntry.getFileEntryId(), StringPool.BLANK, StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
 
+				if (code.equals("opencps_employee")) {
+					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
+					employee.setPhotoFileEntryId(fileAttach.getFileEntryId());
+					EmployeeLocalServiceUtil.updateEmployee(employee);
+				}
+				
 			}
 
 		} catch (Exception e) {
