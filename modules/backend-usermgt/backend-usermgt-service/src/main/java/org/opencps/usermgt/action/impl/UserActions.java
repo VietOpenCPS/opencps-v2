@@ -378,7 +378,7 @@ public class UserActions implements UserInterface {
 			queue.setGroupId(groupId);
 			queue.setCompanyId(user.getCompanyId());
 			
-			queue.setNotificationType(NotificationType.USER_03);
+			queue.setNotificationType(NotificationType.USER_05);
 			queue.setClassName(User.class.getName());
 			if (employee != null) {
 				queue.setClassPK(String.valueOf(employee.getPrimaryKey()));
