@@ -21,6 +21,7 @@
 		<column name="detailColumns" type="String" />
 		<column name="extForm" type="boolean" />
 		<column name="groupFilter" type="boolean" />
+		<column name="publicManager" type="boolean" />
 		
 		<order by="asc">
 			<order-column name="id" />

@@ -63,7 +63,7 @@ public class AdminConfigCacheModel implements CacheModel<AdminConfig>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{id=");
 		sb.append(id);
@@ -87,6 +87,8 @@ public class AdminConfigCacheModel implements CacheModel<AdminConfig>,
 		sb.append(extForm);
 		sb.append(", groupFilter=");
 		sb.append(groupFilter);
+		sb.append(", publicManager=");
+		sb.append(publicManager);
 		sb.append("}");
 
 		return sb.toString();
@@ -156,6 +158,7 @@ public class AdminConfigCacheModel implements CacheModel<AdminConfig>,
 
 		adminConfigImpl.setExtForm(extForm);
 		adminConfigImpl.setGroupFilter(groupFilter);
+		adminConfigImpl.setPublicManager(publicManager);
 
 		adminConfigImpl.resetOriginalValues();
 
@@ -177,6 +180,8 @@ public class AdminConfigCacheModel implements CacheModel<AdminConfig>,
 		extForm = objectInput.readBoolean();
 
 		groupFilter = objectInput.readBoolean();
+
+		publicManager = objectInput.readBoolean();
 	}
 
 	@Override
@@ -243,6 +248,8 @@ public class AdminConfigCacheModel implements CacheModel<AdminConfig>,
 		objectOutput.writeBoolean(extForm);
 
 		objectOutput.writeBoolean(groupFilter);
+
+		objectOutput.writeBoolean(publicManager);
 	}
 
 	public long id;
@@ -256,4 +263,5 @@ public class AdminConfigCacheModel implements CacheModel<AdminConfig>,
 	public String detailColumns;
 	public boolean extForm;
 	public boolean groupFilter;
+	public boolean publicManager;
 }

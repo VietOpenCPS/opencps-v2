@@ -43,6 +43,7 @@ public class AdminConfigSoap implements Serializable {
 		soapModel.setDetailColumns(model.getDetailColumns());
 		soapModel.setExtForm(model.isExtForm());
 		soapModel.setGroupFilter(model.isGroupFilter());
+		soapModel.setPublicManager(model.isPublicManager());
 
 		return soapModel;
 	}
@@ -191,6 +192,18 @@ public class AdminConfigSoap implements Serializable {
 		_groupFilter = groupFilter;
 	}
 
+	public boolean getPublicManager() {
+		return _publicManager;
+	}
+
+	public boolean isPublicManager() {
+		return _publicManager;
+	}
+
+	public void setPublicManager(boolean publicManager) {
+		_publicManager = publicManager;
+	}
+
 	private long _id;
 	private String _code;
 	private String _name;
@@ -202,4 +215,5 @@ public class AdminConfigSoap implements Serializable {
 	private String _detailColumns;
 	private boolean _extForm;
 	private boolean _groupFilter;
+	private boolean _publicManager;
 }

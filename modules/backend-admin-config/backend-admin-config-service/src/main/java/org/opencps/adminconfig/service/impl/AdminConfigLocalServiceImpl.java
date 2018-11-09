@@ -112,6 +112,8 @@ public class AdminConfigLocalServiceImpl extends AdminConfigLocalServiceBaseImpl
 
 		adminConfig.setGroupFilter(adminConfigData.getBoolean("groupFilter"));
 		
+		adminConfig.setPublicManager(adminConfigData.getBoolean("publicManager"));
+		
 		adminConfigPersistence.update(adminConfig);
 
 		return adminConfig;

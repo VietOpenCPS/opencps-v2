@@ -13,5 +13,6 @@
 		<field name="detailColumns" type="String" />
 		<field name="extForm" type="boolean" />
 		<field name="groupFilter" type="boolean" />
+		<field name="publicManager" type="boolean" />
 	</model>
 </model-hints>

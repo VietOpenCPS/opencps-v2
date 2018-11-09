@@ -168,6 +168,10 @@ public class ExampleEndpoind extends Endpoint {
 								projectionList.add(ProjectionFactoryUtil.property(column.getString("column")));
 
 							}
+							
+							if (message.getString(RESPONE).equals("listTableMenu")) {
+								projectionList.add(ProjectionFactoryUtil.property("publicManager"));
+							}
 
 							dynamicQuery.setProjection(projectionList);
 

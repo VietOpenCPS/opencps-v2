@@ -71,7 +71,8 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 			{ "columns", Types.VARCHAR },
 			{ "detailColumns", Types.VARCHAR },
 			{ "extForm", Types.BOOLEAN },
-			{ "groupFilter", Types.BOOLEAN }
+			{ "groupFilter", Types.BOOLEAN },
+			{ "publicManager", Types.BOOLEAN }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -87,9 +88,10 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 		TABLE_COLUMNS_MAP.put("detailColumns", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("extForm", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("groupFilter", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("publicManager", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_adminconfig (id_ LONG not null primary key,code_ VARCHAR(75) null,name VARCHAR(75) null,bundleName VARCHAR(75) null,modelName VARCHAR(75) null,serviceUtilName VARCHAR(75) null,headersName VARCHAR(75) null,columns VARCHAR(75) null,detailColumns VARCHAR(75) null,extForm BOOLEAN,groupFilter BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_adminconfig (id_ LONG not null primary key,code_ VARCHAR(75) null,name VARCHAR(75) null,bundleName VARCHAR(75) null,modelName VARCHAR(75) null,serviceUtilName VARCHAR(75) null,headersName VARCHAR(75) null,columns VARCHAR(75) null,detailColumns VARCHAR(75) null,extForm BOOLEAN,groupFilter BOOLEAN,publicManager BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_adminconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY adminConfig.id ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_adminconfig.id_ ASC";
@@ -158,6 +160,7 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 		attributes.put("detailColumns", getDetailColumns());
 		attributes.put("extForm", isExtForm());
 		attributes.put("groupFilter", isGroupFilter());
+		attributes.put("publicManager", isPublicManager());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -231,6 +234,12 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 
 		if (groupFilter != null) {
 			setGroupFilter(groupFilter);
+		}
+
+		Boolean publicManager = (Boolean)attributes.get("publicManager");
+
+		if (publicManager != null) {
+			setPublicManager(publicManager);
 		}
 	}
 
@@ -406,6 +415,21 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 		_groupFilter = groupFilter;
 	}
 
+	@Override
+	public boolean getPublicManager() {
+		return _publicManager;
+	}
+
+	@Override
+	public boolean isPublicManager() {
+		return _publicManager;
+	}
+
+	@Override
+	public void setPublicManager(boolean publicManager) {
+		_publicManager = publicManager;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -448,6 +472,7 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 		adminConfigImpl.setDetailColumns(getDetailColumns());
 		adminConfigImpl.setExtForm(isExtForm());
 		adminConfigImpl.setGroupFilter(isGroupFilter());
+		adminConfigImpl.setPublicManager(isPublicManager());
 
 		adminConfigImpl.resetOriginalValues();
 
@@ -595,12 +620,14 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 
 		adminConfigCacheModel.groupFilter = isGroupFilter();
 
+		adminConfigCacheModel.publicManager = isPublicManager();
+
 		return adminConfigCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{id=");
 		sb.append(getId());
@@ -624,6 +651,8 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 		sb.append(isExtForm());
 		sb.append(", groupFilter=");
 		sb.append(isGroupFilter());
+		sb.append(", publicManager=");
+		sb.append(isPublicManager());
 		sb.append("}");
 
 		return sb.toString();
@@ -631,7 +660,7 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(40);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.adminconfig.model.AdminConfig");
@@ -681,6 +710,10 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 			"<column><column-name>groupFilter</column-name><column-value><![CDATA[");
 		sb.append(isGroupFilter());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>publicManager</column-name><column-value><![CDATA[");
+		sb.append(isPublicManager());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -703,6 +736,7 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 	private String _detailColumns;
 	private boolean _extForm;
 	private boolean _groupFilter;
+	private boolean _publicManager;
 	private long _columnBitmask;
 	private AdminConfig _escapedModel;
 }

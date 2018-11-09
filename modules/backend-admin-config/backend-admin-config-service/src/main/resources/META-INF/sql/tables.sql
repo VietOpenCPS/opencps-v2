@@ -9,5 +9,6 @@ create table opencps_adminconfig (
 	columns VARCHAR(75) null,
 	detailColumns VARCHAR(75) null,
 	extForm BOOLEAN,
-	groupFilter BOOLEAN
+	groupFilter BOOLEAN,
+	publicManager BOOLEAN
 );

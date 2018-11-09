@@ -68,6 +68,7 @@ public class AdminConfigWrapper implements AdminConfig,
 		attributes.put("detailColumns", getDetailColumns());
 		attributes.put("extForm", isExtForm());
 		attributes.put("groupFilter", isGroupFilter());
+		attributes.put("publicManager", isPublicManager());
 
 		return attributes;
 	}
@@ -138,6 +139,12 @@ public class AdminConfigWrapper implements AdminConfig,
 
 		if (groupFilter != null) {
 			setGroupFilter(groupFilter);
+		}
+
+		Boolean publicManager = (Boolean)attributes.get("publicManager");
+
+		if (publicManager != null) {
+			setPublicManager(publicManager);
 		}
 	}
 
@@ -272,6 +279,16 @@ public class AdminConfigWrapper implements AdminConfig,
 	}
 
 	/**
+	* Returns the public manager of this admin config.
+	*
+	* @return the public manager of this admin config
+	*/
+	@Override
+	public boolean getPublicManager() {
+		return _adminConfig.getPublicManager();
+	}
+
+	/**
 	* Returns the service util name of this admin config.
 	*
 	* @return the service util name of this admin config
@@ -319,6 +336,16 @@ public class AdminConfigWrapper implements AdminConfig,
 	@Override
 	public boolean isNew() {
 		return _adminConfig.isNew();
+	}
+
+	/**
+	* Returns <code>true</code> if this admin config is public manager.
+	*
+	* @return <code>true</code> if this admin config is public manager; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isPublicManager() {
+		return _adminConfig.isPublicManager();
 	}
 
 	@Override
@@ -465,6 +492,16 @@ public class AdminConfigWrapper implements AdminConfig,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_adminConfig.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets whether this admin config is public manager.
+	*
+	* @param publicManager the public manager of this admin config
+	*/
+	@Override
+	public void setPublicManager(boolean publicManager) {
+		_adminConfig.setPublicManager(publicManager);
 	}
 
 	/**

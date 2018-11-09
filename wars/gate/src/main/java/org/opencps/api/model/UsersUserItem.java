@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  * UsersUserItem
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-10-08T02:56:13.835Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-11-09T07:01:00.204Z")
 
 public class UsersUserItem   {
   @JsonProperty("className")
@@ -64,7 +64,7 @@ public class UsersUserItem   {
   private Long employeeMainJobPostId = null;
 
   @JsonProperty("employeeMainJobPostName")
-  private String employeeMainJobPostName = null;
+  private Long employeeMainJobPostName = null;
 
   @JsonProperty("employeePhotoFileEntryId")
   private Long employeePhotoFileEntryId = null;
@@ -83,6 +83,12 @@ public class UsersUserItem   {
 
   @JsonProperty("applicantNo")
   private String applicantNo = null;
+
+  @JsonProperty("applicantIdNo")
+  private String applicantIdNo = null;
+
+  @JsonProperty("applicantIdDate")
+  private String applicantIdDate = null;
 
   @JsonProperty("applicantAddress")
   private String applicantAddress = null;
@@ -443,7 +449,7 @@ public class UsersUserItem   {
     this.employeeMainJobPostId = employeeMainJobPostId;
   }
 
-  public UsersUserItem employeeMainJobPostName(String employeeMainJobPostName) {
+  public UsersUserItem employeeMainJobPostName(Long employeeMainJobPostName) {
     this.employeeMainJobPostName = employeeMainJobPostName;
     return this;
   }
@@ -452,14 +458,14 @@ public class UsersUserItem   {
    * Get employeeMainJobPostName
    * @return employeeMainJobPostName
   **/
-  @ApiModelProperty(example = "", value = "")
+  @ApiModelProperty(value = "")
 
 
-  public String getEmployeeMainJobPostName() {
+  public Long getEmployeeMainJobPostName() {
     return employeeMainJobPostName;
   }
 
-  public void setEmployeeMainJobPostName(String employeeMainJobPostName) {
+  public void setEmployeeMainJobPostName(Long employeeMainJobPostName) {
     this.employeeMainJobPostName = employeeMainJobPostName;
   }
 
@@ -581,6 +587,46 @@ public class UsersUserItem   {
 
   public void setApplicantNo(String applicantNo) {
     this.applicantNo = applicantNo;
+  }
+
+  public UsersUserItem applicantIdNo(String applicantIdNo) {
+    this.applicantIdNo = applicantIdNo;
+    return this;
+  }
+
+  /**
+   * Get applicantIdNo
+   * @return applicantIdNo
+  **/
+  @ApiModelProperty(example = "", value = "")
+
+
+  public String getApplicantIdNo() {
+    return applicantIdNo;
+  }
+
+  public void setApplicantIdNo(String applicantIdNo) {
+    this.applicantIdNo = applicantIdNo;
+  }
+
+  public UsersUserItem applicantIdDate(String applicantIdDate) {
+    this.applicantIdDate = applicantIdDate;
+    return this;
+  }
+
+  /**
+   * Get applicantIdDate
+   * @return applicantIdDate
+  **/
+  @ApiModelProperty(example = "", value = "")
+
+
+  public String getApplicantIdDate() {
+    return applicantIdDate;
+  }
+
+  public void setApplicantIdDate(String applicantIdDate) {
+    this.applicantIdDate = applicantIdDate;
   }
 
   public UsersUserItem applicantAddress(String applicantAddress) {
@@ -876,6 +922,8 @@ public class UsersUserItem   {
         Objects.equals(this.applicantName, usersUserItem.applicantName) &&
         Objects.equals(this.applicantType, usersUserItem.applicantType) &&
         Objects.equals(this.applicantNo, usersUserItem.applicantNo) &&
+        Objects.equals(this.applicantIdNo, usersUserItem.applicantIdNo) &&
+        Objects.equals(this.applicantIdDate, usersUserItem.applicantIdDate) &&
         Objects.equals(this.applicantAddress, usersUserItem.applicantAddress) &&
         Objects.equals(this.applicantCityCode, usersUserItem.applicantCityCode) &&
         Objects.equals(this.applicantCityName, usersUserItem.applicantCityName) &&
@@ -893,7 +941,7 @@ public class UsersUserItem   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(className, classPK, userId, userName, avatar, mappingUserId, screenName, employeeFullName, employeeNo, employeeGender, employeeBirthDate, employeeTelNo, employeeMobile, employeeEmail, employeeWorkingStatus, employeeMainJobPostId, employeeMainJobPostName, employeePhotoFileEntryId, employeeFileCerId, employeeFileSignId, applicantName, applicantType, applicantNo, applicantAddress, applicantCityCode, applicantCityName, applicantDistrictCode, applicantDistrictName, applicantWardCode, applicantWardName, applicantContactName, applicantContactTelNo, applicantContactEmail, applicantActivationCode, applicantLock, applicantTmpPass);
+    return Objects.hash(className, classPK, userId, userName, avatar, mappingUserId, screenName, employeeFullName, employeeNo, employeeGender, employeeBirthDate, employeeTelNo, employeeMobile, employeeEmail, employeeWorkingStatus, employeeMainJobPostId, employeeMainJobPostName, employeePhotoFileEntryId, employeeFileCerId, employeeFileSignId, applicantName, applicantType, applicantNo, applicantIdNo, applicantIdDate, applicantAddress, applicantCityCode, applicantCityName, applicantDistrictCode, applicantDistrictName, applicantWardCode, applicantWardName, applicantContactName, applicantContactTelNo, applicantContactEmail, applicantActivationCode, applicantLock, applicantTmpPass);
   }
 
   @Override
@@ -924,6 +972,8 @@ public class UsersUserItem   {
     sb.append("    applicantName: ").append(toIndentedString(applicantName)).append("\n");
     sb.append("    applicantType: ").append(toIndentedString(applicantType)).append("\n");
     sb.append("    applicantNo: ").append(toIndentedString(applicantNo)).append("\n");
+    sb.append("    applicantIdNo: ").append(toIndentedString(applicantIdNo)).append("\n");
+    sb.append("    applicantIdDate: ").append(toIndentedString(applicantIdDate)).append("\n");
     sb.append("    applicantAddress: ").append(toIndentedString(applicantAddress)).append("\n");
     sb.append("    applicantCityCode: ").append(toIndentedString(applicantCityCode)).append("\n");
     sb.append("    applicantCityName: ").append(toIndentedString(applicantCityName)).append("\n");

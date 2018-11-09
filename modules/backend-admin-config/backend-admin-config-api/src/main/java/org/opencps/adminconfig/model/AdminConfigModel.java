@@ -236,6 +236,27 @@ public interface AdminConfigModel extends BaseModel<AdminConfig> {
 	 */
 	public void setGroupFilter(boolean groupFilter);
 
+	/**
+	 * Returns the public manager of this admin config.
+	 *
+	 * @return the public manager of this admin config
+	 */
+	public boolean getPublicManager();
+
+	/**
+	 * Returns <code>true</code> if this admin config is public manager.
+	 *
+	 * @return <code>true</code> if this admin config is public manager; <code>false</code> otherwise
+	 */
+	public boolean isPublicManager();
+
+	/**
+	 * Sets whether this admin config is public manager.
+	 *
+	 * @param publicManager the public manager of this admin config
+	 */
+	public void setPublicManager(boolean publicManager);
+
 	@Override
 	public boolean isNew();
 

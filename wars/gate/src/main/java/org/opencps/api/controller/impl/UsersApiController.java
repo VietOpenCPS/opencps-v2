@@ -66,8 +66,6 @@ public class UsersApiController implements UsersApi {
 			
 			String userData = actions.getUserById(Long.valueOf(id));
 			
-			System.out.println("UsersApiController.getUserById()" + Long.valueOf(id));
-			System.out.println("UsersApiController.getUserById()" + userData);
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}

@@ -17,5 +17,6 @@
 		<property name="detailColumns" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="extForm" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="groupFilter" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="publicManager" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 </hibernate-mapping>
