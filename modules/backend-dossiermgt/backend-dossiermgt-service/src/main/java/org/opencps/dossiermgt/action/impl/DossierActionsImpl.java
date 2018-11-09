@@ -3237,7 +3237,7 @@ public class DossierActionsImpl implements DossierActions {
 			
 			//Generate output
 			try {
-				generateCreateDossierFiles(groupId, userId, dossier, proAction);
+//				generateCreateDossierFiles(groupId, userId, dossier, proAction);
 			}
 			catch (Exception e) {
 //				_log.debug(e);

@@ -449,6 +449,7 @@ public class UserActions implements UserInterface {
 			if (user.getDigest().equals(code)) {
 				user = UserLocalServiceUtil.updatePassword(user.getUserId(), secretKey, secretKey, Boolean.TRUE);
 				user.setDigest(secretKey + System.currentTimeMillis());
+				user.setPasswordReset(false);
 				UserLocalServiceUtil.updateUser(user);
 			} else {
 				throw new DigestException();
