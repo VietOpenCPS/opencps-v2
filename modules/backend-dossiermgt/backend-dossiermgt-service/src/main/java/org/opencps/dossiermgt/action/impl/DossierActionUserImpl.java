@@ -288,7 +288,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 				}
 				
 				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
-				
 				if (Validator.isNull(dau)) {
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
 					if (dAction != null) {
