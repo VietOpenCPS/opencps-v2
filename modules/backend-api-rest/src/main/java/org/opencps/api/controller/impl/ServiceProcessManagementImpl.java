@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -218,7 +219,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String dueDatePattern = input.getDueDatePattern();
 			String generatePassword = HtmlUtil.escape(String.valueOf(input.getGeneratePassword()));
 			String directNotification = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
-			String serverNo = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
+			String serverNo = HtmlUtil.escape(String.valueOf(input.getServerNo()));
 			String paymentFee = HtmlUtil.escape(input.getPaymentFee());
 			
 			ServiceProcess serviceProcess = actions.updateServiceProcess(groupId, id, processNo,
@@ -461,10 +462,18 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
 			ProcessStep addstep = ProcessStepLocalServiceUtil.fetchBySC_GID(input.getStepCode(), groupId, id);
 
 			if (Validator.isNotNull(addstep)) {
@@ -512,10 +521,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			ProcessStep addstep = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
 			if (Validator.isNull(addstep)) {
@@ -798,11 +816,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			ProcessActionReturnModel results;
 
 			String preStepCode = HtmlUtil.escape(input.getPreStepCode());
@@ -871,11 +897,20 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
-			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
+		
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			ProcessActionReturnModel results;
 
 /*			ProcessAction processAction = actions.updateProcessAction(groupId, actionid, id, input.getPreStepCode(),

@@ -688,8 +688,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 			
-			// Change payment Status = 2
-			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "N\u1ED9p online", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+			// Change payment Status = 5
+			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "Keypay", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			result.put("dossierNo", dossier.getDossierNo());
