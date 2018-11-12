@@ -130,6 +130,7 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -236,17 +237,26 @@ public class DossierManagementImpl implements DossierManagement {
 			//Process Top using statistic
 			int year = query.getYear();
 			int month = query.getMonth();
+			String fromStatisticDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromStatisticDate());
+			String toStatisticDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToStatisticDate());
 			String top = query.getTop();
 			if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-				Calendar baseDateCal = Calendar.getInstance();
-				baseDateCal.setTime(new Date());
-				if (month == 0) {
-					month = baseDateCal.get(Calendar.MONTH) + 1;
-				}
-				if (year == 0) {
-					year = baseDateCal.get(Calendar.YEAR);
+				if ((year > 0 || month > 0) || (Validator.isNotNull(fromStatisticDate) || Validator.isNotNull(toStatisticDate))) {
+//					if (Validator.isNotNull(fromStatisticDate) || Validator.isNotNull(toStatisticDate)) {
+//						
+//					}
+				} else {
+					Calendar baseDateCal = Calendar.getInstance();
+					baseDateCal.setTime(new Date());
+					if (month == 0) {
+						month = baseDateCal.get(Calendar.MONTH) + 1;
+					}
+					if (year == 0) {
+						year = baseDateCal.get(Calendar.YEAR);
+					}
 				}
 			}
+
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
 			String dossierNoSearch = StringPool.BLANK;
@@ -356,6 +366,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
 			params.put(DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
 			params.put(PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			params.put(DossierTerm.FROM_STATISTIC_DATE, fromStatisticDate);
+			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			
 			Sort[] sorts = null;
@@ -773,6 +785,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.APPLICANT_NAME, applicantName);
 			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DossierTerm.SERVICE_NAME, serviceName);
+			params.put(PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
 				params.put(DossierTerm.DOSSIER_STATUS_STEP, strStatusStep.toString());
@@ -3495,6 +3509,80 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getMermaidGraphDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if (dossier != null && dossier.getDossierActionId() != 0) {
+				DossierAction lastAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(lastAction.getServiceProcessId());
+				if (serviceProcess != null) {
+					List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
+					StringBuilder result = new StringBuilder();
+					result.append("graph TD\n");
+					result.append("0((Bắt đầu))\n");
+					for (ProcessStep ps : lstSteps) {
+						result.append(ps.getStepCode());
+						result.append("(\"");
+						result.append(ps.getStepName());
+						result.append("\")\n");
+					}
+					List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcess.getServiceProcessId());
+					for (ProcessAction pa : lstActions) {
+						if ("".equals(pa.getPreStepCode())) {
+							result.append("0");
+						}
+						else {
+							result.append(pa.getPreStepCode());
+						}
+						if ("listener".equals(pa.getAutoEvent()) || "timmer".equals(pa.getAutoEvent())) {
+							result.append("-.->|\"");
+							result.append("");
+							result.append(pa.getActionName());
+							result.append("\"|");
+						}
+						else {
+							result.append("-->|\"");
+							result.append(pa.getActionName());
+							result.append("\"|");						
+						}
+						if ("".equals(pa.getPostStepCode())) {
+							result.append("1{Quay lại}");
+						}
+						else {
+							result.append(pa.getPostStepCode());
+						}
+						result.append("\n");
+						if (lastAction.getStepCode().equals(pa.getPostStepCode())) {
+							result.append("style " + pa.getPostStepCode() + " fill:#f9f,stroke:#333,stroke-width:4px");
+							result.append("\n");
+						}
+					}
+					return Response.status(200).entity(result.toString()).build();				
+				}
+				else {
+					return Response.status(200).entity(StringPool.BLANK).build();
+				}				
+			}
+			else {
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}		
 	}
 	
 }

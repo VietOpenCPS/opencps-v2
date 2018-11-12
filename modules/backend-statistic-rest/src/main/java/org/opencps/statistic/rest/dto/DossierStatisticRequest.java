@@ -49,10 +49,37 @@ public class DossierStatisticRequest extends CommonRequest {
 		this.year = year;
 	}
 
+	public String getFromStatisticDate() {
+		return fromStatisticDate;
+	}
+
+	public void setFromStatisticDate(String fromStatisticDate) {
+		this.fromStatisticDate = fromStatisticDate;
+	}
+
+	public String getToStatisticDate() {
+		return toStatisticDate;
+	}
+
+	public void setToStatisticDate(String toStatisticDate) {
+		this.toStatisticDate = toStatisticDate;
+	}
+
+	public boolean isCalculate() {
+		return calculate;
+	}
+
+	public void setCalculate(boolean calculate) {
+		this.calculate = calculate;
+	}
+
 	private String domain;
 	private String govAgencyCode;
 	private String groupAgencyCode;
 	private boolean reporting;
 	private int month;
 	private int year;
+	private String fromStatisticDate;
+	private String toStatisticDate;
+	private boolean calculate;
 }

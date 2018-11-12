@@ -496,20 +496,22 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
 
-		try {
+		  try {
 
-			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+		   //Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+		   
+		   DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileTemplateNo(dossierId, fileTemplateNo);
 
-			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
+		   //DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
 
-			formData = part.getFormScript();
+		   formData = dossierFile.getFormScript();
 
-		} catch (Exception e) {
-			_log.error(e);
-			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
-		}
+		  } catch (Exception e) {
+		   _log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
+		  }
 
-		return formData;
+		  return formData;
+
 	}
 
 	Log _log = LogFactoryUtil.getLog(ProcessPluginManagementImpl.class);

@@ -238,6 +238,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getProcessDate())) {
 	    	params.put(DossierTerm.PROCESS_DATE, model.getProcessDate());
 	    }
+	    if (Validator.isNotNull(model.getSubmissionNote())) {
+	    	params.put(DossierTerm.SUBMISSION_NOTE, model.getSubmissionNote());
+	    }
 	    
 	    return params;
 	}	
