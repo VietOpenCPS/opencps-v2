@@ -109,7 +109,8 @@ import javax.xml.bind.annotation.XmlType;
     "toReceiveNotDoneDate",
     "fromStatisticDate",
     "toStatisticDate",
-    "origin"
+    "origin",
+    "originDossierId"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -221,6 +222,8 @@ public class DossierSearchModel {
     protected String toStatisticDate;
     @QueryParam(value = "origin")
     protected String origin;
+    @QueryParam(value = "originDossierId")
+    protected Integer originDossierId;
 
     public Integer getAssigned() {
 		return assigned;
@@ -996,6 +999,14 @@ public class DossierSearchModel {
 
 	public void setOrigin(String value) {
 		this.origin = value;
+	}
+
+	public Integer getOriginDossierId() {
+		return originDossierId;
+	}
+
+	public void setOriginDossierId(Integer originDossierId) {
+		this.originDossierId = originDossierId;
 	}
 
 }
