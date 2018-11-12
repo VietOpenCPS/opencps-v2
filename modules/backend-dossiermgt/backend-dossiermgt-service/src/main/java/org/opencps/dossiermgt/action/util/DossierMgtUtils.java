@@ -112,7 +112,7 @@ public class DossierMgtUtils {
 				obj.put(DossierTerm.SUBMISSION_NOTE, submissionNoteObj.toJSONString());
 			}
 		} catch (PortalException e) {
-			_log.debug(e);;
+			_log.debug(e);
 		}
 		
 		return obj;
