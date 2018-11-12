@@ -213,4 +213,5 @@ public class DossierTerm {
 	//
 	public static final int CONSTANT_INDEX_ORIGINALITY = 100;
 
+	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 }

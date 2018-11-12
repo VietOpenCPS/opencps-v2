@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,8 @@ import org.opencps.dossiermgt.constants.DossierMarkTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.lgsp.model.MSyncDocument;
+import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
@@ -516,9 +520,36 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.SUBMISSION_NOTE)) {
 			model.setSubmissionNote(jsonObj.getString(DossierTerm.SUBMISSION_NOTE));
 		}
+		if (jsonObj.has(DossierTerm.BRIEF_NOTE)) {
+			model.setBriefNote(jsonObj.getString(DossierTerm.BRIEF_NOTE));
+		}
 
 		return model;
 	}	
+	
+	public static MSyncDocument convertLGSPSyncDocument(JSONObject jsonObj) {
+		MSyncDocument model = new MSyncDocument();
+		
+		return model;
+	}
+	
+	public static Mtoken convertMtoken(JSONObject jsonObj) {
+		Mtoken model = new Mtoken();
+		if (jsonObj.has("access_token")) {
+			model.setAccessToken(jsonObj.getString("access_token"));
+		}
+		if (jsonObj.has("scope")) {
+			model.setScope(jsonObj.getString("scope"));
+		}
+		if (jsonObj.has("token_type")) {
+			model.setTokenType(jsonObj.getString("token_type"));
+		}
+		if (jsonObj.has("expires_in")) {
+			model.setExpiresIn(jsonObj.getInt("expires_in"));
+		}
+		return model;
+	}
+	
 	private static Log _log = LogFactoryUtil.getLog(OpenCPSConverter.class);
 	public static DossierDetailModel convertDossierDetail(JSONObject jsonObj) {
 		DossierDetailModel model = new DossierDetailModel();
@@ -862,6 +893,47 @@ public class OpenCPSConverter {
 		return obj;
 	}
 	
+	public static JSONObject convertDossierToLGSPJSON(DossierPublishModel model) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("DocTypeCode", model.getServiceCode());
+		result.put("DocTypeName", model.getServiceName());
+		result.put("DocCode", model.getDossierNo());
+		result.put("CitizenName", model.getApplicantName());
+		result.put("CitizenInfo", model.getApplicantNote());
+		result.put("ApplicantsId", model.getApplicantIdNo());
+		result.put("ApplicantsType", model.getApplicantIdType());
+		result.put("Address", model.getAddress());
+		result.put("Email", model.getContactEmail());
+		result.put("Phone", model.getContactTelNo());
+		result.put("Compendium", model.getBriefNote());
+		if (model.getReceiveDate() != 0) {
+			result.put("DateReceived", new Date(model.getReceiveDate()));
+		}
+		if (model.getDueDate() != 0) {
+			result.put("DateAppointed", new Date(model.getDueDate()));
+		}		
+		result.put("IsSuccess", isSuccess(model));
+		
+		return result;
+	}
+	
+	public static Boolean isSuccess(DossierPublishModel model) {
+		if (DossierTerm.DOSSIER_STATUS_DONE.equals(model.getDossierStatus())) {
+			return Boolean.TRUE;
+		}
+		else if (DossierTerm.DOSSIER_STATUS_DENIED.equals(model.getDossierStatus())) {
+			return Boolean.FALSE;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public static String convertToUTCDate(Date d) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		String s = df.format(d);
+		return s;
+	}
 	public static HashMap<String, String> convertDossierDocumentHttpParams(DossierDocumentModel model) {
 		HashMap<String, String> params = new HashMap<>();
 	    
@@ -924,4 +996,13 @@ public class OpenCPSConverter {
 		}
 		return result;
 	}
+	
+	public static MSyncDocument convertDossierToLGSPSyncDocument(DossierPublishModel model) {
+		MSyncDocument result = new MSyncDocument();
+		result.setDocTypeCode(model.getServiceCode());
+		result.setDocTypeName(model.getServiceName());
+		result.setDocCode(model.getDossierNo());
+		return result;
+	}
+	
 }
