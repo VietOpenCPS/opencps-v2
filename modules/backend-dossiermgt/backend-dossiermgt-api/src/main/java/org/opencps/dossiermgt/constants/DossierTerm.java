@@ -210,4 +210,5 @@ public class DossierTerm {
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
 	public static final String ORIGIN = "origin";
 
+	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 }
