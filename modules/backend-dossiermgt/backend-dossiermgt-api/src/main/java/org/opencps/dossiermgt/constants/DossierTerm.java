@@ -120,6 +120,7 @@ public class DossierTerm {
 	public static final String SECET_KEY = "secetKey";
 	public static final String ASSIGNED = "assigned";
 	
+	public static final int ORIGINALITY_PUBLISH = 0;
 	public static final int ORIGINALITY_DVCTT = 1;
 	public static final int ORIGINALITY_LIENTHONG = 2;
 	public static final int ORIGINALITY_MOTCUA = 3;
@@ -209,6 +210,8 @@ public class DossierTerm {
 	public static final String FROM_STATISTIC_DATE = "fromStatisticDate";
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
 	public static final String ORIGIN = "origin";
+	//
+	public static final int CONSTANT_INDEX_ORIGINALITY = 100;
 
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 }

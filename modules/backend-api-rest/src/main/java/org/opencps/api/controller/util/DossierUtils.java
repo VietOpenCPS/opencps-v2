@@ -112,6 +112,7 @@ public class DossierUtils {
 			model.setSubmissionNote(doc.get(DossierTerm.SUBMISSION_NOTE));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+			model.setOriginality(GetterUtil.getInteger(doc.get(DossierTerm.ORIGINALLITY)));
 //			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 //			_log.info("SUBMIT_DATE: "+doc.get(DossierTerm.SUBMIT_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.SUBMIT_DATE))) {

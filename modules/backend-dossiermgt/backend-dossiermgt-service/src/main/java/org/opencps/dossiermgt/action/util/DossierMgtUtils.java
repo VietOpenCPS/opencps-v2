@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -19,6 +21,7 @@ import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -599,6 +602,35 @@ public class DossierMgtUtils {
 		cal.set(Calendar.YEAR, year);
 		int minDay = cal.getActualMinimum(Calendar.DAY_OF_MONTH);
 		return minDay;
+	}
+
+	// Process delete dossier
+	public static void processSyncDeleteDossier(Dossier model, int originality) {
+		if (originality == DossierTerm.ORIGINALITY_MOTCUA || Math.abs(originality) == DossierTerm.ORIGINALITY_LIENTHONG) {
+			long groupId = model.getGroupId();
+			String serverNo = model.getServerNo();
+			if (Validator.isNotNull(serverNo)) {
+				ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+				if (sc != null) {
+					String config = sc.getConfigs();
+					if (Validator.isNotNull(config)) {
+						try {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(config);
+							if (jsonData != null) {
+								OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(jsonData);
+								if (client != null) {
+									_log.info("Dossiser Remove DONE.....");
+									client.removeDossier(model);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+						
+					}
+				}
+			}
+		}
 	}
 
 }

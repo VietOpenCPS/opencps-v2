@@ -227,7 +227,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.DOSSIER_ACTION_ID, object.getDossierActionId());
 			document.addNumberSortable(DossierTerm.VIA_POSTAL, object.getViaPostal());
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
-			document.addNumberSortable(DossierTerm.ORIGINALLITY, object.getOriginality());
+			if (object.getOriginality() > 0) {
+				document.addNumberSortable(DossierTerm.ORIGINALLITY, object.getOriginality());
+			} else {
+				document.addNumberSortable(DossierTerm.ORIGINALLITY,
+						DossierTerm.CONSTANT_INDEX_ORIGINALITY + object.getOriginality());
+			}
 			document.addTextSortable(DossierTerm.DOSSIER_NAME, object.getDossierName());
 			//Index month, year using search statistic
 			int yearDossier = 0;
