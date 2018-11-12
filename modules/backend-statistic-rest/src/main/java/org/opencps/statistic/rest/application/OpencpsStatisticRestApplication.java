@@ -150,10 +150,6 @@ public class OpencpsStatisticRestApplication extends Application {
 			
 		} else {
 			try {
-				//
-				String fromLuceneDate = convertNormalDateToLuceneDate(fromStatisticDate);
-				String toLuceneDate = convertNormalDateToLuceneDate(toStatisticDate);
-				//
 				GetDossierRequest payload = new GetDossierRequest();
 				if ("all".equals(govAgencyCode)) {
 					payload.setGovAgencyCode(StringPool.BLANK);
@@ -163,8 +159,8 @@ public class OpencpsStatisticRestApplication extends Application {
 				payload.setGroupId(groupId);
 				payload.setStart(start);
 				payload.setEnd(end);
-				payload.setFromStatisticDate(fromLuceneDate);
-				payload.setToStatisticDate(toLuceneDate);
+				payload.setFromStatisticDate(fromStatisticDate);
+				payload.setToStatisticDate(toStatisticDate);
 				payload.setCalculate(calculate);
 				
 				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
