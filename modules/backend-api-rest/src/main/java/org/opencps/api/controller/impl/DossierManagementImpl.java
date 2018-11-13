@@ -971,9 +971,13 @@ public class DossierManagementImpl implements DossierManagement {
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 //			_log.info("Service code: " + input.getServiceCode());
 			String password = StringPool.BLANK;
-			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-//				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
-				password = PwdGenerator.getPinNumber();
+			if (Validator.isNotNull(input.getPassword())) {
+				password = input.getPassword();
+			} else {
+				if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
+//					password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
+					password = PwdGenerator.getPinNumber();
+				}
 			}
 
 //			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
