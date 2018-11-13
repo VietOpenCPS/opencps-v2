@@ -3522,7 +3522,15 @@ public class DossierActionsImpl implements DossierActions {
 		message.put("msgToEngine", msgData);
 		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
-		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);		
+		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);	
+		
+		Message lgspMessage = new Message();
+		JSONObject lgspMsgData = msgData;
+
+		lgspMessage.put("msgToEngine", lgspMsgData);
+		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
+		
+		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
 	}
 	
 	private void vnpostEvent(Dossier dossier) {

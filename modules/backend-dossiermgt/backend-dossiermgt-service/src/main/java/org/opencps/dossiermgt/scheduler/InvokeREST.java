@@ -409,5 +409,187 @@ public class InvokeREST {
 
 		return response;
 	}
+	
+	public JSONObject callPostAPI(String httpMethod, String accept, String pathBase, String endPoint,
+			HashMap<String, String> properties, Map<String, Object> params) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+
+		HttpURLConnection conn = null;
+
+		BufferedReader br = null;
+
+		try {
+
+			String urlPath = pathBase;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				urlPath = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
+					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				urlPath = pathBase + endPoint;
+			}
+			else {
+				urlPath = pathBase + "/" + endPoint;
+			}
+			URL url = new URL(urlPath);
+
+			conn = (HttpURLConnection) url.openConnection();
+
+			conn.setRequestMethod(httpMethod);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			conn.setRequestProperty("Accept", accept);
+
+			if (!properties.isEmpty()) {
+				for (Map.Entry m : properties.entrySet()) {
+					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
+				}
+			}
+
+			StringBuilder postData = new StringBuilder();
+
+			for (Map.Entry<String, Object> param : params.entrySet()) {
+				if (postData.length() != 0)
+					postData.append('&');
+				postData.append(java.net.URLEncoder.encode(param.getKey(), "UTF-8"));
+				postData.append('=');
+				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+			}
+
+			byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+
+			conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+
+			conn.getOutputStream().write(postDataBytes);
+
+			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+
+			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
+			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+			_log.error(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
+		} catch (IOException e) {
+			_log.debug(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
+
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					_log.debug(e);
+					//_log.error(e);
+				}
+			}
+
+		}
+
+		return response;
+	}
+	
+	public JSONObject callPostAPIRaw(String token, String httpMethod, String accept, String pathBase, String endPoint, String raw) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+
+		HttpURLConnection conn = null;
+
+		BufferedReader br = null;
+
+		try {
+
+			String urlPath = pathBase;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				urlPath = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
+					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				urlPath = pathBase + endPoint;
+			}
+			else {
+				urlPath = pathBase + "/" + endPoint;
+			}
+			URL url = new URL(urlPath);
+
+			conn = (HttpURLConnection) url.openConnection();
+
+			conn.setRequestMethod(httpMethod);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty("Authorization", "Bearer " + token);
+			conn.setRequestProperty("Content-Type", "application/json");
+			
+			byte[] postDataBytes = raw.toString().getBytes("UTF-8");
+
+			conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+
+			conn.getOutputStream().write(postDataBytes);
+
+			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+
+			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
+			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+			_log.error(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
+		} catch (IOException e) {
+			_log.debug(e);
+			//_log.error(e);
+			_log.error("Can't invoke api " + pathBase + endPoint);
+
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					_log.debug(e);
+					//_log.error(e);
+				}
+			}
+
+		}
+
+		return response;
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(InvokeREST.class.getName());
 }

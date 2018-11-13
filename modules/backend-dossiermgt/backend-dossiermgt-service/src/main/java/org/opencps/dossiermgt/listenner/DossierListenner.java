@@ -1,21 +1,14 @@
 package org.opencps.dossiermgt.listenner;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.util.Validator;
-
 import java.util.Date;
 
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.rest.model.DossierDetailModel;
-import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -161,31 +154,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 	@Override
 	public void onAfterRemove(Dossier model) throws ModelListenerException {
 		_log.info("Dossiser Remove.....");
-		if (Validator.isNotNull(model.getOriginality()) && model.getOriginality() == 3) {
-			long groupId = model.getGroupId();
-			String serverNo = model.getServerNo();
-			if (Validator.isNotNull(serverNo)) {
-				ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
-				if (sc != null) {
-					String config = sc.getConfigs();
-					if (Validator.isNotNull(config)) {
-						try {
-							JSONObject jsonData = JSONFactoryUtil.createJSONObject(config);
-							if (jsonData != null) {
-								OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(jsonData);
-								if (client != null) {
-									_log.info("Dossiser Remove DONE.....");
-									client.removeDossier(model);
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-						
-					}
-				}
-			}
-		}
+		DossierMgtUtils.processSyncDeleteDossier(model, model.getOriginality());
 	}
 
 	public Dossier modelBeforeUpdate;
