@@ -22,6 +22,7 @@ import java.util.List;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
@@ -40,6 +41,7 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
@@ -62,6 +64,7 @@ import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 public class APIMessageProcessor extends BaseMessageProcessor {
 	private static final int N_OF_RETRIES = 10;
@@ -357,9 +360,26 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setActionNote(dossierSync.getActionNote());
-		actionModel.setPayload(dossierSync.getPayload());
 		actionModel.setActionNote(dossierSync.getActionNote());
+		//actionModel.setPayload(dossierSync.getPayload());
 		
+		//Test submitsionNote
+		try {
+			JSONObject payloadData = JSONFactoryUtil.createJSONObject(payload);
+			String serviceCode = dossier.getServiceCode();
+			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(dossier.getGroupId(),
+					serviceCode, dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
+			if (serviceProcess != null) {
+				JSONObject submissionNoteObj = DossierMgtUtils.getDossierProcessSequencesJSON(dossier.getGroupId(),
+						dossier, serviceProcess);
+				payloadData.put(DossierTerm.SUBMISSION_NOTE, submissionNoteObj.toJSONString());
+			}
+			actionModel.setPayload(payloadData.toJSONString());
+		} catch (Exception e) {
+			actionModel.setPayload(dossierSync.getPayload());
+			_log.debug(e);
+		}
+
 		ExecuteOneAction actionResult = client.postDossierAction(dossier.getReferenceUid(), actionModel);
 		if (actionResult != null) {
 			dossierSync.setAcknowlegement(OpenCPSConverter.convertExecuteOneActionToJSON(actionResult).toJSONString());
