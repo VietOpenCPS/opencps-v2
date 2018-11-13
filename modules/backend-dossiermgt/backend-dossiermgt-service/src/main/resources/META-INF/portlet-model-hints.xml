@@ -469,6 +469,7 @@
 	</model>
 	<model name="org.opencps.dossiermgt.model.MenuRole">
 		<field name="uuid" type="String" />
+		<field name="menuRoleId" type="long" />
 		<field name="menuConfigId" type="long" />
 		<field name="roleId" type="long" />
 	</model>

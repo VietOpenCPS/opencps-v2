@@ -40,7 +40,6 @@ import org.opencps.dossiermgt.exception.NoSuchMenuRoleException;
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.impl.MenuRoleImpl;
 import org.opencps.dossiermgt.model.impl.MenuRoleModelImpl;
-import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
 
 import java.io.Serializable;
@@ -51,6 +50,8 @@ import java.lang.reflect.InvocationHandler;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -394,17 +395,17 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu roles before and after the current menu role in the ordered set where uuid = &#63;.
 	 *
-	 * @param menuRolePK the primary key of the current menu role
+	 * @param menuRoleId the primary key of the current menu role
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next menu role
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole[] findByUuid_PrevAndNext(MenuRolePK menuRolePK,
-		String uuid, OrderByComparator<MenuRole> orderByComparator)
+	public MenuRole[] findByUuid_PrevAndNext(long menuRoleId, String uuid,
+		OrderByComparator<MenuRole> orderByComparator)
 		throws NoSuchMenuRoleException {
-		MenuRole menuRole = findByPrimaryKey(menuRolePK);
+		MenuRole menuRole = findByPrimaryKey(menuRoleId);
 
 		Session session = null;
 
@@ -926,17 +927,17 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu roles before and after the current menu role in the ordered set where roleId = &#63;.
 	 *
-	 * @param menuRolePK the primary key of the current menu role
+	 * @param menuRoleId the primary key of the current menu role
 	 * @param roleId the role ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next menu role
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole[] findByF_RID_PrevAndNext(MenuRolePK menuRolePK,
-		long roleId, OrderByComparator<MenuRole> orderByComparator)
+	public MenuRole[] findByF_RID_PrevAndNext(long menuRoleId, long roleId,
+		OrderByComparator<MenuRole> orderByComparator)
 		throws NoSuchMenuRoleException {
-		MenuRole menuRole = findByPrimaryKey(menuRolePK);
+		MenuRole menuRole = findByPrimaryKey(menuRoleId);
 
 		Session session = null;
 
@@ -1387,8 +1388,8 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_F_RID_ROLEID_2 = "menuRole.id.roleId = ?";
-	private static final String _FINDER_COLUMN_F_RID_ROLEID_7 = "menuRole.id.roleId IN (";
+	private static final String _FINDER_COLUMN_F_RID_ROLEID_2 = "menuRole.roleId = ?";
+	private static final String _FINDER_COLUMN_F_RID_ROLEID_7 = "menuRole.roleId IN (";
 	public static final FinderPath FINDER_PATH_FETCH_BY_F_MENU_ROLE = new FinderPath(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
 			MenuRoleModelImpl.FINDER_CACHE_ENABLED, MenuRoleImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByF_MENU_ROLE",
@@ -1616,8 +1617,8 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_F_MENU_ROLE_MENUCONFIGID_2 = "menuRole.id.menuConfigId = ? AND ";
-	private static final String _FINDER_COLUMN_F_MENU_ROLE_ROLEID_2 = "menuRole.id.roleId = ?";
+	private static final String _FINDER_COLUMN_F_MENU_ROLE_MENUCONFIGID_2 = "menuRole.menuConfigId = ? AND ";
+	private static final String _FINDER_COLUMN_F_MENU_ROLE_ROLEID_2 = "menuRole.roleId = ?";
 
 	public MenuRolePersistenceImpl() {
 		setModelClass(MenuRole.class);
@@ -1762,15 +1763,15 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Creates a new menu role with the primary key. Does not add the menu role to the database.
 	 *
-	 * @param menuRolePK the primary key for the new menu role
+	 * @param menuRoleId the primary key for the new menu role
 	 * @return the new menu role
 	 */
 	@Override
-	public MenuRole create(MenuRolePK menuRolePK) {
+	public MenuRole create(long menuRoleId) {
 		MenuRole menuRole = new MenuRoleImpl();
 
 		menuRole.setNew(true);
-		menuRole.setPrimaryKey(menuRolePK);
+		menuRole.setPrimaryKey(menuRoleId);
 
 		String uuid = PortalUUIDUtil.generate();
 
@@ -1782,14 +1783,13 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Removes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param menuRolePK the primary key of the menu role
+	 * @param menuRoleId the primary key of the menu role
 	 * @return the menu role that was removed
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole remove(MenuRolePK menuRolePK)
-		throws NoSuchMenuRoleException {
-		return remove((Serializable)menuRolePK);
+	public MenuRole remove(long menuRoleId) throws NoSuchMenuRoleException {
+		return remove((Serializable)menuRoleId);
 	}
 
 	/**
@@ -2007,14 +2007,14 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu role with the primary key or throws a {@link NoSuchMenuRoleException} if it could not be found.
 	 *
-	 * @param menuRolePK the primary key of the menu role
+	 * @param menuRoleId the primary key of the menu role
 	 * @return the menu role
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole findByPrimaryKey(MenuRolePK menuRolePK)
+	public MenuRole findByPrimaryKey(long menuRoleId)
 		throws NoSuchMenuRoleException {
-		return findByPrimaryKey((Serializable)menuRolePK);
+		return findByPrimaryKey((Serializable)menuRoleId);
 	}
 
 	/**
@@ -2067,12 +2067,12 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu role with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param menuRolePK the primary key of the menu role
+	 * @param menuRoleId the primary key of the menu role
 	 * @return the menu role, or <code>null</code> if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole fetchByPrimaryKey(MenuRolePK menuRolePK) {
-		return fetchByPrimaryKey((Serializable)menuRolePK);
+	public MenuRole fetchByPrimaryKey(long menuRoleId) {
+		return fetchByPrimaryKey((Serializable)menuRoleId);
 	}
 
 	@Override
@@ -2084,12 +2084,86 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 
 		Map<Serializable, MenuRole> map = new HashMap<Serializable, MenuRole>();
 
-		for (Serializable primaryKey : primaryKeys) {
+		if (primaryKeys.size() == 1) {
+			Iterator<Serializable> iterator = primaryKeys.iterator();
+
+			Serializable primaryKey = iterator.next();
+
 			MenuRole menuRole = fetchByPrimaryKey(primaryKey);
 
 			if (menuRole != null) {
 				map.put(primaryKey, menuRole);
 			}
+
+			return map;
+		}
+
+		Set<Serializable> uncachedPrimaryKeys = null;
+
+		for (Serializable primaryKey : primaryKeys) {
+			Serializable serializable = entityCache.getResult(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
+					MenuRoleImpl.class, primaryKey);
+
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
+
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (MenuRole)serializable);
+				}
+			}
+		}
+
+		if (uncachedPrimaryKeys == null) {
+			return map;
+		}
+
+		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
+				1);
+
+		query.append(_SQL_SELECT_MENUROLE_WHERE_PKS_IN);
+
+		for (Serializable primaryKey : uncachedPrimaryKeys) {
+			query.append((long)primaryKey);
+
+			query.append(",");
+		}
+
+		query.setIndex(query.index() - 1);
+
+		query.append(")");
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = session.createQuery(sql);
+
+			for (MenuRole menuRole : (List<MenuRole>)q.list()) {
+				map.put(menuRole.getPrimaryKeyObj(), menuRole);
+
+				cacheResult(menuRole);
+
+				uncachedPrimaryKeys.remove(menuRole.getPrimaryKeyObj());
+			}
+
+			for (Serializable primaryKey : uncachedPrimaryKeys) {
+				entityCache.putResult(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
+					MenuRoleImpl.class, primaryKey, nullModel);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
 		}
 
 		return map;
@@ -2291,11 +2365,6 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	}
 
 	@Override
-	public Set<String> getCompoundPKColumnNames() {
-		return _compoundPKColumnNames;
-	}
-
-	@Override
 	protected Map<String, Integer> getTableColumnsMap() {
 		return MenuRoleModelImpl.TABLE_COLUMNS_MAP;
 	}
@@ -2318,6 +2387,7 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
 	private static final String _SQL_SELECT_MENUROLE = "SELECT menuRole FROM MenuRole menuRole";
+	private static final String _SQL_SELECT_MENUROLE_WHERE_PKS_IN = "SELECT menuRole FROM MenuRole menuRole WHERE menuRoleId IN (";
 	private static final String _SQL_SELECT_MENUROLE_WHERE = "SELECT menuRole FROM MenuRole menuRole WHERE ";
 	private static final String _SQL_COUNT_MENUROLE = "SELECT COUNT(menuRole) FROM MenuRole menuRole";
 	private static final String _SQL_COUNT_MENUROLE_WHERE = "SELECT COUNT(menuRole) FROM MenuRole menuRole WHERE ";
@@ -2327,8 +2397,5 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	private static final Log _log = LogFactoryUtil.getLog(MenuRolePersistenceImpl.class);
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
-			});
-	private static final Set<String> _compoundPKColumnNames = SetUtil.fromArray(new String[] {
-				"menuConfigId", "roleId"
 			});
 }

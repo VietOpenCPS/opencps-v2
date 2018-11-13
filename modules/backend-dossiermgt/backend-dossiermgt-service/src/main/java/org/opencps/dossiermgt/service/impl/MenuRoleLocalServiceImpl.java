@@ -14,23 +14,29 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.List;
 
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.service.base.MenuRoleLocalServiceBaseImpl;
-import org.opencps.dossiermgt.service.persistence.MenuRolePK;
-
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 
 /**
  * The implementation of the menu role local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.opencps.dossiermgt.service.MenuRoleLocalService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.dossiermgt.service.MenuRoleLocalService} interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security
+ * checks based on the propagated JAAS credentials because this service can only
+ * be accessed from within the same VM.
  * </p>
  *
  * @author huymq
@@ -41,23 +47,65 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil} to access the menu role local service.
+	 * Never reference this class directly. Always use {@link
+	 * org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil} to access the menu
+	 * role local service.
 	 */
-	
+
 	public List<MenuRole> getByRoles(long[] roleIds) {
 		return menuRolePersistence.findByF_RID(roleIds);
 	}
-	
+
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuRole updateMenuRoleDB(long menuConfigId, long roleId) {
-		MenuRolePK pk = new MenuRolePK();
-		pk.setMenuConfigId(menuConfigId);
-		pk.setRoleId(roleId);
-		MenuRole model = menuRolePersistence.fetchByF_MENU_ROLE(menuConfigId, roleId);
-		if (model == null) {
-			model = menuRolePersistence.create(pk);
+
+		long menuRoleId = CounterLocalServiceUtil.increment(MenuRole.class.getName());
+
+		MenuRole object = menuRolePersistence.create(menuRoleId);
+
+		object.setMenuConfigId(menuConfigId);
+		object.setRoleId(roleId);
+
+		return menuRolePersistence.update(object);
+	}
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public MenuRole adminProcessDelete(Long id) {
+
+		MenuRole object = menuRolePersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			menuRolePersistence.remove(object);
 		}
 
-		return menuRolePersistence.update(model);
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public MenuRole adminProcessData(JSONObject objectData) {
+
+		MenuRole object = null;
+
+		if (objectData.getLong("menuRoleId") > 0) {
+
+			object = menuRolePersistence.fetchByPrimaryKey(objectData.getLong("menuRoleId"));
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(MenuRole.class.getName());
+
+			object = menuRolePersistence.create(id);
+
+		}
+
+		object.setMenuConfigId(objectData.getLong("menuConfigId"));
+		object.setRoleId(objectData.getLong("roleId"));
+
+		menuRolePersistence.update(object);
+
+		return object;
 	}
 }

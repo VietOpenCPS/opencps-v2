@@ -23,8 +23,6 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.opencps.dossiermgt.service.persistence.MenuRolePK;
-
 import java.io.Serializable;
 
 /**
@@ -53,14 +51,14 @@ public interface MenuRoleModel extends BaseModel<MenuRole> {
 	 *
 	 * @return the primary key of this menu role
 	 */
-	public MenuRolePK getPrimaryKey();
+	public long getPrimaryKey();
 
 	/**
 	 * Sets the primary key of this menu role.
 	 *
 	 * @param primaryKey the primary key of this menu role
 	 */
-	public void setPrimaryKey(MenuRolePK primaryKey);
+	public void setPrimaryKey(long primaryKey);
 
 	/**
 	 * Returns the uuid of this menu role.
@@ -76,6 +74,20 @@ public interface MenuRoleModel extends BaseModel<MenuRole> {
 	 * @param uuid the uuid of this menu role
 	 */
 	public void setUuid(String uuid);
+
+	/**
+	 * Returns the menu role ID of this menu role.
+	 *
+	 * @return the menu role ID of this menu role
+	 */
+	public long getMenuRoleId();
+
+	/**
+	 * Sets the menu role ID of this menu role.
+	 *
+	 * @param menuRoleId the menu role ID of this menu role
+	 */
+	public void setMenuRoleId(long menuRoleId);
 
 	/**
 	 * Returns the menu config ID of this menu role.

@@ -16,17 +16,20 @@ package org.opencps.dossiermgt.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.MenuRoleModel;
-import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 
 import java.io.Serializable;
 
@@ -59,6 +62,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	public static final String TABLE_NAME = "opencps_menurole";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
+			{ "menuRoleId", Types.BIGINT },
 			{ "menuConfigId", Types.BIGINT },
 			{ "roleId", Types.BIGINT }
 		};
@@ -66,14 +70,15 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("menuRoleId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("menuConfigId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("roleId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_menurole (uuid_ VARCHAR(75) null,menuConfigId LONG not null,roleId LONG not null,primary key (menuConfigId, roleId))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_menurole (uuid_ VARCHAR(75) null,menuRoleId LONG not null primary key,menuConfigId LONG,roleId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_menurole";
-	public static final String ORDER_BY_JPQL = " ORDER BY menuRole.id.menuConfigId ASC, menuRole.id.roleId ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY opencps_menurole.menuConfigId ASC, opencps_menurole.roleId ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY menuRole.menuRoleId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY opencps_menurole.menuRoleId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -89,6 +94,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	public static final long MENUCONFIGID_COLUMN_BITMASK = 1L;
 	public static final long ROLEID_COLUMN_BITMASK = 2L;
 	public static final long UUID_COLUMN_BITMASK = 4L;
+	public static final long MENUROLEID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.MenuRole"));
 
@@ -96,24 +102,23 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	}
 
 	@Override
-	public MenuRolePK getPrimaryKey() {
-		return new MenuRolePK(_menuConfigId, _roleId);
+	public long getPrimaryKey() {
+		return _menuRoleId;
 	}
 
 	@Override
-	public void setPrimaryKey(MenuRolePK primaryKey) {
-		setMenuConfigId(primaryKey.menuConfigId);
-		setRoleId(primaryKey.roleId);
+	public void setPrimaryKey(long primaryKey) {
+		setMenuRoleId(primaryKey);
 	}
 
 	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new MenuRolePK(_menuConfigId, _roleId);
+		return _menuRoleId;
 	}
 
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
-		setPrimaryKey((MenuRolePK)primaryKeyObj);
+		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
 	@Override
@@ -131,6 +136,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
+		attributes.put("menuRoleId", getMenuRoleId());
 		attributes.put("menuConfigId", getMenuConfigId());
 		attributes.put("roleId", getRoleId());
 
@@ -146,6 +152,12 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		Long menuRoleId = (Long)attributes.get("menuRoleId");
+
+		if (menuRoleId != null) {
+			setMenuRoleId(menuRoleId);
 		}
 
 		Long menuConfigId = (Long)attributes.get("menuConfigId");
@@ -182,6 +194,16 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	public String getOriginalUuid() {
 		return GetterUtil.getString(_originalUuid);
+	}
+
+	@Override
+	public long getMenuRoleId() {
+		return _menuRoleId;
+	}
+
+	@Override
+	public void setMenuRoleId(long menuRoleId) {
+		_menuRoleId = menuRoleId;
 	}
 
 	@Override
@@ -233,6 +255,19 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	}
 
 	@Override
+	public ExpandoBridge getExpandoBridge() {
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			MenuRole.class.getName(), getPrimaryKey());
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
 	public MenuRole toEscapedModel() {
 		if (_escapedModel == null) {
 			_escapedModel = (MenuRole)ProxyUtil.newProxyInstance(_classLoader,
@@ -247,6 +282,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 		MenuRoleImpl menuRoleImpl = new MenuRoleImpl();
 
 		menuRoleImpl.setUuid(getUuid());
+		menuRoleImpl.setMenuRoleId(getMenuRoleId());
 		menuRoleImpl.setMenuConfigId(getMenuConfigId());
 		menuRoleImpl.setRoleId(getRoleId());
 
@@ -257,9 +293,17 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	@Override
 	public int compareTo(MenuRole menuRole) {
-		MenuRolePK primaryKey = menuRole.getPrimaryKey();
+		long primaryKey = menuRole.getPrimaryKey();
 
-		return getPrimaryKey().compareTo(primaryKey);
+		if (getPrimaryKey() < primaryKey) {
+			return -1;
+		}
+		else if (getPrimaryKey() > primaryKey) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 	}
 
 	@Override
@@ -274,9 +318,9 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 		MenuRole menuRole = (MenuRole)obj;
 
-		MenuRolePK primaryKey = menuRole.getPrimaryKey();
+		long primaryKey = menuRole.getPrimaryKey();
 
-		if (getPrimaryKey().equals(primaryKey)) {
+		if (getPrimaryKey() == primaryKey) {
 			return true;
 		}
 		else {
@@ -286,7 +330,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	@Override
 	public int hashCode() {
-		return getPrimaryKey().hashCode();
+		return (int)getPrimaryKey();
 	}
 
 	@Override
@@ -320,8 +364,6 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	public CacheModel<MenuRole> toCacheModel() {
 		MenuRoleCacheModel menuRoleCacheModel = new MenuRoleCacheModel();
 
-		menuRoleCacheModel.menuRolePK = getPrimaryKey();
-
 		menuRoleCacheModel.uuid = getUuid();
 
 		String uuid = menuRoleCacheModel.uuid;
@@ -329,6 +371,8 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 		if ((uuid != null) && (uuid.length() == 0)) {
 			menuRoleCacheModel.uuid = null;
 		}
+
+		menuRoleCacheModel.menuRoleId = getMenuRoleId();
 
 		menuRoleCacheModel.menuConfigId = getMenuConfigId();
 
@@ -339,10 +383,12 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(9);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
+		sb.append(", menuRoleId=");
+		sb.append(getMenuRoleId());
 		sb.append(", menuConfigId=");
 		sb.append(getMenuConfigId());
 		sb.append(", roleId=");
@@ -354,7 +400,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(16);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.MenuRole");
@@ -363,6 +409,10 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 		sb.append(
 			"<column><column-name>uuid</column-name><column-value><![CDATA[");
 		sb.append(getUuid());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>menuRoleId</column-name><column-value><![CDATA[");
+		sb.append(getMenuRoleId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>menuConfigId</column-name><column-value><![CDATA[");
@@ -384,6 +434,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 		};
 	private String _uuid;
 	private String _originalUuid;
+	private long _menuRoleId;
 	private long _menuConfigId;
 	private long _originalMenuConfigId;
 	private boolean _setOriginalMenuConfigId;

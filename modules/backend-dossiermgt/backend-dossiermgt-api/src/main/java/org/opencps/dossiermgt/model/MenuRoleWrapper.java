@@ -57,6 +57,7 @@ public class MenuRoleWrapper implements MenuRole, ModelWrapper<MenuRole> {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
+		attributes.put("menuRoleId", getMenuRoleId());
 		attributes.put("menuConfigId", getMenuConfigId());
 		attributes.put("roleId", getRoleId());
 
@@ -69,6 +70,12 @@ public class MenuRoleWrapper implements MenuRole, ModelWrapper<MenuRole> {
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		Long menuRoleId = (Long)attributes.get("menuRoleId");
+
+		if (menuRoleId != null) {
+			setMenuRoleId(menuRoleId);
 		}
 
 		Long menuConfigId = (Long)attributes.get("menuConfigId");
@@ -110,12 +117,22 @@ public class MenuRoleWrapper implements MenuRole, ModelWrapper<MenuRole> {
 	}
 
 	/**
+	* Returns the menu role ID of this menu role.
+	*
+	* @return the menu role ID of this menu role
+	*/
+	@Override
+	public long getMenuRoleId() {
+		return _menuRole.getMenuRoleId();
+	}
+
+	/**
 	* Returns the primary key of this menu role.
 	*
 	* @return the primary key of this menu role
 	*/
 	@Override
-	public org.opencps.dossiermgt.service.persistence.MenuRolePK getPrimaryKey() {
+	public long getPrimaryKey() {
 		return _menuRole.getPrimaryKey();
 	}
 
@@ -200,6 +217,16 @@ public class MenuRoleWrapper implements MenuRole, ModelWrapper<MenuRole> {
 		_menuRole.setMenuConfigId(menuConfigId);
 	}
 
+	/**
+	* Sets the menu role ID of this menu role.
+	*
+	* @param menuRoleId the menu role ID of this menu role
+	*/
+	@Override
+	public void setMenuRoleId(long menuRoleId) {
+		_menuRole.setMenuRoleId(menuRoleId);
+	}
+
 	@Override
 	public void setNew(boolean n) {
 		_menuRole.setNew(n);
@@ -211,8 +238,7 @@ public class MenuRoleWrapper implements MenuRole, ModelWrapper<MenuRole> {
 	* @param primaryKey the primary key of this menu role
 	*/
 	@Override
-	public void setPrimaryKey(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK primaryKey) {
+	public void setPrimaryKey(long primaryKey) {
 		_menuRole.setPrimaryKey(primaryKey);
 	}
 

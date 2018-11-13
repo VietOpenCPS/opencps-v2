@@ -547,11 +547,12 @@
 		<property name="buttonConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuRoleImpl" table="opencps_menurole">
-		<composite-id class="org.opencps.dossiermgt.service.persistence.MenuRolePK" name="primaryKey">
-			<key-property name="menuConfigId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-			<key-property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		</composite-id>
+		<id name="menuRoleId" type="long">
+			<generator class="assigned" />
+		</id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="menuConfigId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.PaymentConfigImpl" table="opencps_paymentconfig">
 		<id name="paymentConfigId" type="long">

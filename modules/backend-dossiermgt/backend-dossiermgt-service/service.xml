@@ -1922,9 +1922,12 @@
 	<entity local-service="true" name="MenuRole" remote-service="false"
 		table="opencps_menurole" uuid="true">
 
-		<column name="menuConfigId" type="long" primary="true" />
+		<column name="menuRoleId" type="long" primary="true" />
+		
+		<column name="menuConfigId" type="long"/>
 
-		<column name="roleId" type="long" primary="true" />
+		<column name="roleId" type="long"/>
+		
         <finder name="F_RID" return-type="Collection">
             <finder-column name="roleId" arrayable-operator="OR"></finder-column>
         </finder>		

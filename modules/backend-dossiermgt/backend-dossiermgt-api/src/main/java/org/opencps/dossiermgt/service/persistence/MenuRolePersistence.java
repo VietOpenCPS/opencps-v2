@@ -144,14 +144,13 @@ public interface MenuRolePersistence extends BasePersistence<MenuRole> {
 	/**
 	* Returns the menu roles before and after the current menu role in the ordered set where uuid = &#63;.
 	*
-	* @param menuRolePK the primary key of the current menu role
+	* @param menuRoleId the primary key of the current menu role
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next menu role
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public MenuRole[] findByUuid_PrevAndNext(MenuRolePK menuRolePK,
-		String uuid,
+	public MenuRole[] findByUuid_PrevAndNext(long menuRoleId, String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<MenuRole> orderByComparator)
 		throws NoSuchMenuRoleException;
 
@@ -275,14 +274,13 @@ public interface MenuRolePersistence extends BasePersistence<MenuRole> {
 	/**
 	* Returns the menu roles before and after the current menu role in the ordered set where roleId = &#63;.
 	*
-	* @param menuRolePK the primary key of the current menu role
+	* @param menuRoleId the primary key of the current menu role
 	* @param roleId the role ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next menu role
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public MenuRole[] findByF_RID_PrevAndNext(MenuRolePK menuRolePK,
-		long roleId,
+	public MenuRole[] findByF_RID_PrevAndNext(long menuRoleId, long roleId,
 		com.liferay.portal.kernel.util.OrderByComparator<MenuRole> orderByComparator)
 		throws NoSuchMenuRoleException;
 
@@ -439,40 +437,39 @@ public interface MenuRolePersistence extends BasePersistence<MenuRole> {
 	/**
 	* Creates a new menu role with the primary key. Does not add the menu role to the database.
 	*
-	* @param menuRolePK the primary key for the new menu role
+	* @param menuRoleId the primary key for the new menu role
 	* @return the new menu role
 	*/
-	public MenuRole create(MenuRolePK menuRolePK);
+	public MenuRole create(long menuRoleId);
 
 	/**
 	* Removes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param menuRolePK the primary key of the menu role
+	* @param menuRoleId the primary key of the menu role
 	* @return the menu role that was removed
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public MenuRole remove(MenuRolePK menuRolePK)
-		throws NoSuchMenuRoleException;
+	public MenuRole remove(long menuRoleId) throws NoSuchMenuRoleException;
 
 	public MenuRole updateImpl(MenuRole menuRole);
 
 	/**
 	* Returns the menu role with the primary key or throws a {@link NoSuchMenuRoleException} if it could not be found.
 	*
-	* @param menuRolePK the primary key of the menu role
+	* @param menuRoleId the primary key of the menu role
 	* @return the menu role
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public MenuRole findByPrimaryKey(MenuRolePK menuRolePK)
+	public MenuRole findByPrimaryKey(long menuRoleId)
 		throws NoSuchMenuRoleException;
 
 	/**
 	* Returns the menu role with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param menuRolePK the primary key of the menu role
+	* @param menuRoleId the primary key of the menu role
 	* @return the menu role, or <code>null</code> if a menu role with the primary key could not be found
 	*/
-	public MenuRole fetchByPrimaryKey(MenuRolePK menuRolePK);
+	public MenuRole fetchByPrimaryKey(long menuRoleId);
 
 	@Override
 	public java.util.Map<java.io.Serializable, MenuRole> fetchByPrimaryKeys(
@@ -544,6 +541,4 @@ public interface MenuRolePersistence extends BasePersistence<MenuRole> {
 
 	@Override
 	public java.util.Set<String> getBadColumnNames();
-
-	public java.util.Set<String> getCompoundPKColumnNames();
 }

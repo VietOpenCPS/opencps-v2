@@ -64,7 +64,7 @@ public class UsersUserItem   {
   private Long employeeMainJobPostId = null;
 
   @JsonProperty("employeeMainJobPostName")
-  private Long employeeMainJobPostName = null;
+  private String employeeMainJobPostName = null;
 
   @JsonProperty("employeePhotoFileEntryId")
   private Long employeePhotoFileEntryId = null;
@@ -128,6 +128,9 @@ public class UsersUserItem   {
 
   @JsonProperty("applicantTmpPass")
   private String applicantTmpPass = null;
+  
+  @JsonProperty("title")
+  private String title = null;
 
   public UsersUserItem className(String className) {
     this.className = className;
@@ -449,7 +452,7 @@ public class UsersUserItem   {
     this.employeeMainJobPostId = employeeMainJobPostId;
   }
 
-  public UsersUserItem employeeMainJobPostName(Long employeeMainJobPostName) {
+  public UsersUserItem employeeMainJobPostName(String employeeMainJobPostName) {
     this.employeeMainJobPostName = employeeMainJobPostName;
     return this;
   }
@@ -461,11 +464,11 @@ public class UsersUserItem   {
   @ApiModelProperty(value = "")
 
 
-  public Long getEmployeeMainJobPostName() {
+  public String getEmployeeMainJobPostName() {
     return employeeMainJobPostName;
   }
 
-  public void setEmployeeMainJobPostName(Long employeeMainJobPostName) {
+  public void setEmployeeMainJobPostName(String employeeMainJobPostName) {
     this.employeeMainJobPostName = employeeMainJobPostName;
   }
 
@@ -883,6 +886,26 @@ public class UsersUserItem   {
 
   public String getApplicantTmpPass() {
     return applicantTmpPass;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+  
+  public UsersUserItem title(String title) {
+    this.title = title;
+    return this;
+  }
+
+  /**
+   * Get title
+   * @return title
+  **/
+  @ApiModelProperty(example = "", value = "")
+
+
+  public String getTitle() {
+    return title;
   }
 
   public void setApplicantTmpPass(String applicantTmpPass) {

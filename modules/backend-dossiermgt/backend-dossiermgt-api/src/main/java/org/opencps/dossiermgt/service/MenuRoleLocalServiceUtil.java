@@ -54,15 +54,38 @@ public class MenuRoleLocalServiceUtil {
 		return getService().addMenuRole(menuRole);
 	}
 
+	public static org.opencps.dossiermgt.model.MenuRole adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.MenuRole adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new menu role with the primary key. Does not add the menu role to the database.
 	*
-	* @param menuRolePK the primary key for the new menu role
+	* @param menuRoleId the primary key for the new menu role
 	* @return the new menu role
 	*/
 	public static org.opencps.dossiermgt.model.MenuRole createMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK) {
-		return getService().createMenuRole(menuRolePK);
+		long menuRoleId) {
+		return getService().createMenuRole(menuRoleId);
+	}
+
+	/**
+	* Deletes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
+	*
+	* @param menuRoleId the primary key of the menu role
+	* @return the menu role that was removed
+	* @throws PortalException if a menu role with the primary key could not be found
+	*/
+	public static org.opencps.dossiermgt.model.MenuRole deleteMenuRole(
+		long menuRoleId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deleteMenuRole(menuRoleId);
 	}
 
 	/**
@@ -74,19 +97,6 @@ public class MenuRoleLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.MenuRole deleteMenuRole(
 		org.opencps.dossiermgt.model.MenuRole menuRole) {
 		return getService().deleteMenuRole(menuRole);
-	}
-
-	/**
-	* Deletes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
-	*
-	* @param menuRolePK the primary key of the menu role
-	* @return the menu role that was removed
-	* @throws PortalException if a menu role with the primary key could not be found
-	*/
-	public static org.opencps.dossiermgt.model.MenuRole deleteMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteMenuRole(menuRolePK);
 	}
 
 	/**
@@ -177,8 +187,8 @@ public class MenuRoleLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.MenuRole fetchMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK) {
-		return getService().fetchMenuRole(menuRolePK);
+		long menuRoleId) {
+		return getService().fetchMenuRole(menuRoleId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -197,14 +207,14 @@ public class MenuRoleLocalServiceUtil {
 	/**
 	* Returns the menu role with the primary key.
 	*
-	* @param menuRolePK the primary key of the menu role
+	* @param menuRoleId the primary key of the menu role
 	* @return the menu role
 	* @throws PortalException if a menu role with the primary key could not be found
 	*/
 	public static org.opencps.dossiermgt.model.MenuRole getMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK)
+		long menuRoleId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getMenuRole(menuRolePK);
+		return getService().getMenuRole(menuRoleId);
 	}
 
 	/**
