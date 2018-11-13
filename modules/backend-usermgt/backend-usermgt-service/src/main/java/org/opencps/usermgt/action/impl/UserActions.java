@@ -808,7 +808,8 @@ public class UserActions implements UserInterface {
 
 				result.put("employeeMainJobPostId", employee.getMainJobPostId());
 				result.put("employeeMainJobPostName", StringPool.BLANK);
-
+				result.put("title", employee.getTitle());
+				
 				EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil
 						.fetchEmployeeJobPos(employee.getMainJobPostId());
 
