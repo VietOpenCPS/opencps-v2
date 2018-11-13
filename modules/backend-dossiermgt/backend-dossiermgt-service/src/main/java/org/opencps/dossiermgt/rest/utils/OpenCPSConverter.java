@@ -708,6 +708,9 @@ public class OpenCPSConverter {
 		model.setPostalWardCode(dossier.getPostalWardCode());
 		model.setOriginDossierNo(dossier.getOriginDossierNo());
 		model.setDossierName(dossier.getDossierName());
+		if (Validator.isNotNull(dossier.getPassword())) {
+			model.setPassword(dossier.getPassword());
+		}
 		
 		return model;
 	}
