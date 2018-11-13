@@ -121,7 +121,7 @@ public class DossierMgtUtils {
 		return obj;
 	}
 	
-	private static JSONObject getDossierProcessSequencesJSON(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
+	public static JSONObject getDossierProcessSequencesJSON(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
 
