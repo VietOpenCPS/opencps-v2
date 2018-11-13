@@ -2865,8 +2865,10 @@ public class DossierActionsImpl implements DossierActions {
 				Map<String, Object> params = new HashMap<>();
 				_log.info("SONDT payment REQUESTPAYMENT 5: DOSSIERID ========= "+ dossier.getDossierId());
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				
-				int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
+				int intpaymentMethod = 0;
+				if(Validator.isNotNull(proAction.getPreCondition())) {
+					intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
+				}
 				
 				if(oldPaymentFile != null && proAction.getPreCondition().toLowerCase().contains("sendinvoice=1")){
 					
@@ -2880,14 +2882,19 @@ public class DossierActionsImpl implements DossierActions {
 							CINVOICEUrl, "", "", properties, params, context);
 					
 				}
-				//_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
+				_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
 				
 				if (Validator.isNotNull(oldPaymentFile) ) {
-					String paymentMethod = checkPaymentMethod(intpaymentMethod);
+					String paymentMethod = "";
+					if (intpaymentMethod != 0) {
+						paymentMethod = checkPaymentMethod(intpaymentMethod);
+					}
 					if(Validator.isNotNull(resultObj)) {
 						oldPaymentFile.setEinvoice(resultObj.toString());
 						oldPaymentFile.setInvoicePayload(params.toString());
-						oldPaymentFile.setPaymentMethod(paymentMethod);
+						if (Validator.isNotNull(paymentMethod)) {
+							oldPaymentFile.setPaymentMethod(paymentMethod);
+						}
 					}
 					
 					oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
