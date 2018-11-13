@@ -40,12 +40,15 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.http.HttpClientConnection;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
@@ -74,7 +77,9 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -92,6 +97,7 @@ import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -119,6 +125,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -172,34 +179,13 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 		String emailLogin = user.getEmailAddress();
-//		_log.info("userId: "+userId);
-//		_log.info("emailLogin: "+emailLogin);
-//		BackendAuth auth = new BackendAuthImpl();
-//		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
 
 		try {
 			boolean isCitizen = false;
-
-//			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
-//
-//				if (!auth.isAuth(serviceContext)) {
-//					throw new UnauthenticationException();
-//				}
-//
-//				isCitizen = dossierPermission.isCitizen(user.getUserId());
-//
-//				dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
-//			} else {
-//				groupId = 55217;
-//			}
-
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-
 				query.setStart(-1);
-
 				query.setEnd(-1);
-
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -220,16 +206,17 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			String service = query.getService();
 			String template = query.getTemplate();
-			Integer originality = GetterUtil.getInteger(query.getOriginality());
+			//Integer originality = GetterUtil.getInteger(query.getOriginality());
+			String originality = query.getOriginality();
 			String owner = query.getOwner();
-			if (originality == -1) {
-				owner = String.valueOf(false);
-			} else {
+//			if (originality == -1) {
+//				owner = String.valueOf(false);
+//			} else {
 				// If user is citizen then default owner true
-				if (isCitizen) {
-					owner = String.valueOf(true);
-				}
-			}
+//				if (isCitizen) {
+//					owner = String.valueOf(true);
+//				}
+//			}
 
 			String follow = query.getFollow();
 			String step = query.getStep();
@@ -312,6 +299,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String applicantName = query.getApplicantName();
 			String applicantIdNo = query.getApplicantIdNo();
 			String serviceName = query.getServiceName();
+			Integer originDossierId = query.getOriginDossierId();
 
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
@@ -369,6 +357,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_STATISTIC_DATE, fromStatisticDate);
 			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
+			//Search theo tu tuong moi
+			//params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
+			params.put(DossierTerm.ORIGIN_DOSSIER_ID, originDossierId);
 			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -980,9 +971,13 @@ public class DossierManagementImpl implements DossierManagement {
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 //			_log.info("Service code: " + input.getServiceCode());
 			String password = StringPool.BLANK;
-			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-//				password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
-				password = PwdGenerator.getPinNumber();
+			if (Validator.isNotNull(input.getPassword())) {
+				password = input.getPassword();
+			} else {
+				if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
+//					password = DossierNumberGenerator.generatePassword(DEFAULT_PATTERN_PASSWORD, LENGHT_DOSSIER_PASSWORD);
+					password = PwdGenerator.getPinNumber();
+				}
 			}
 
 //			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
@@ -1412,16 +1407,27 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (dossier != null) {
+				int originality = dossier.getOriginality();
+				Dossier removeDossier = null;
+				if (originality > 0) {
+					dossier.setOriginality(-originality);
+					removeDossier = DossierLocalServiceUtil.updateDossier(dossier);
+					if (removeDossier != null && originality > DossierTerm.ORIGINALITY_DVCTT) {
+						DossierMgtUtils.processSyncDeleteDossier(removeDossier, originality);
+					}
+				} else {
+					removeDossier = actions.removeDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid());
+				}
 
-			// dossierPermission.allowSubmitting(user.getUserId(),
-			// dossier.getDossierId());
-
-			Dossier removeDossier = actions.removeDossier(groupId, dossier.getDossierId(), dossier.getReferenceUid());
-
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(removeDossier, user.getUserId());
-
-			return Response.status(200).entity(result).build();
-
+				DossierDetailModel result = null;
+				if (removeDossier != null) {
+					result = DossierUtils.mappingForGetDetail(removeDossier, user.getUserId());
+				}
+				return Response.status(200).entity(result).build();
+			} else {
+				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier is delete").build();
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

@@ -92,7 +92,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String serverNo = HtmlUtil.escape(input.getServerNo());
 			String serverName = HtmlUtil.escape(input.getServerName());
 			String protocol = HtmlUtil.escape(input.getProtocol());
-			String configs = HtmlUtil.escape(input.getConfigs());
+//			String configs = HtmlUtil.escape(input.getConfigs());
 						
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0l, govAgencyCode,
 					serverNo, serverName, protocol, StringPool.BLANK, new Date(),
@@ -162,7 +162,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String serverNo = HtmlUtil.escape(input.getServerNo());
 			String serverName = HtmlUtil.escape(input.getServerName());
 			String protocol = HtmlUtil.escape(input.getProtocol());
-			String configs = HtmlUtil.escape(input.getConfigs());
+//			String configs = HtmlUtil.escape(input.getConfigs());
+			String configs = input.getConfigs();
 			
 			ServerConfig config = ServerConfigLocalServiceUtil.updateServerConfig(groupId, id, govAgencyCode,
 					serverNo, serverName, protocol, configs, new Date(),

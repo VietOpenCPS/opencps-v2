@@ -182,7 +182,8 @@ import javax.xml.bind.annotation.XmlType;
     "lastActionUserId",
     "currentActionUser",
     "dossierName",
-    "dueDateComing"
+    "dueDateComing",
+    "originality"
 })
 public class DossierDataModel {
 
@@ -271,6 +272,7 @@ public class DossierDataModel {
 	protected String currentActionUser;
 	protected String dossierName;
 	protected String dueDateComing;
+	protected Integer originality;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1961,4 +1963,13 @@ public class DossierDataModel {
 	public void setDueDateComing(String value) {
 		this.dueDateComing = value;
 	}
+
+	public Integer getOriginality() {
+		return originality;
+	}
+
+	public void setOriginality(Integer originality) {
+		this.originality = originality;
+	}
+
 }
