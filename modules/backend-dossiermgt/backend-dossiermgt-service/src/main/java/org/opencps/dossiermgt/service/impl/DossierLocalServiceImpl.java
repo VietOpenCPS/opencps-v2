@@ -3224,6 +3224,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setDossierNote(obj.getString(DossierTerm.DOSSIER_NOTE));
 			}
 		}
+		if (obj.has(DossierTerm.SUBMISSION_NOTE)) {
+			if (!obj.getString(DossierTerm.SUBMISSION_NOTE).equals(dossier.getDossierNote())) {
+				dossier.setSubmissionNote(obj.getString(DossierTerm.SUBMISSION_NOTE));
+			}
+		}
 		
 		return dossierPersistence.update(dossier);
 	}

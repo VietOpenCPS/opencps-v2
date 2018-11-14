@@ -227,7 +227,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.DOSSIER_ACTION_ID, object.getDossierActionId());
 			document.addNumberSortable(DossierTerm.VIA_POSTAL, object.getViaPostal());
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
-			if (object.getOriginality() > 0) {
+			if (object.getOriginality() >= 0) {
 				document.addNumberSortable(DossierTerm.ORIGINALLITY, object.getOriginality());
 			} else {
 				document.addNumberSortable(DossierTerm.ORIGINALLITY,

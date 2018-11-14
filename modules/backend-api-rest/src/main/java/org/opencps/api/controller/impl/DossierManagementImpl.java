@@ -2724,14 +2724,14 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response getDossierSequences(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
-		BackendAuth auth = new BackendAuthImpl();
+		//BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
 //			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException("UnauthorizationException");
 //			}
