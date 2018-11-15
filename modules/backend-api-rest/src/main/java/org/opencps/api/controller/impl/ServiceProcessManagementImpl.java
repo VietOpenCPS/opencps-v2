@@ -1048,10 +1048,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, id);
 			ProcessSequenceResultModel result = new ProcessSequenceResultModel();
 			result.setTotal(lstSequences.size());
