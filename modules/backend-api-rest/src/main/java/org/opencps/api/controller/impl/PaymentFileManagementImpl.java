@@ -774,7 +774,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
-		_log.info("SONDT CREATE PAYMENTFILE GROUPID ====================== " + JSONFactoryUtil.looseSerialize(input));
+		//_log.info("SONDT API CREATE PAYMENTFILE INPUT ====================== " + JSONFactoryUtil.looseSerialize(input));
 		
 		long userId = serviceContext.getUserId();
 		
