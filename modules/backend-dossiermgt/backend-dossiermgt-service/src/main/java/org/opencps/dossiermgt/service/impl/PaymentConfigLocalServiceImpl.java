@@ -346,6 +346,9 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 
 	}
 
+	public PaymentConfig getByInvoiceTemplateNo(long groupId, String invoiceTemplateNo) {
+		return paymentConfigPersistence.fetchByG_ITN(groupId, invoiceTemplateNo);
+	}
 	public static final String CLASS_NAME = PaymentConfig.class.getName();
 
 }
