@@ -336,7 +336,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		return fileAttachPersistence.findByF_className_classPK(groupId, className, classPK);
 	}
-
+	
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		// TODO Auto-generated method stub

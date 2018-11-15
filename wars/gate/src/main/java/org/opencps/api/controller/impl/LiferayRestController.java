@@ -47,6 +47,10 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
+import org.opencps.deliverable.model.OpenCPSDeliverable;
+import org.opencps.deliverable.model.OpenCPSDeliverableType;
+import org.opencps.deliverable.service.OpenCPSDeliverableTypeLocalServiceUtil;
+import org.opencps.deliverable.service.persistence.OpenCPSDeliverableTypeRolePersistence;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
@@ -293,7 +297,7 @@ public class LiferayRestController {
 
 		if (Validator.isNotNull(fileAttachs) && fileAttachs.size() > 0) {
 			
-			FileAttach fileAttach = fileAttachs.get(0);
+			FileAttach fileAttach = fileAttachs.get(fileAttachs.size() - 1);
 			
 			try {
 
@@ -367,6 +371,18 @@ public class LiferayRestController {
 					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
 					employee.setPhotoFileEntryId(fileAttach.getFileEntryId());
 					EmployeeLocalServiceUtil.updateEmployee(employee);
+				} else if (code.equals("opencps_deliverabletype")) {
+					
+					OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil.fetchOpenCPSDeliverableType(Long.valueOf(pk));
+					
+					if (className.endsWith("FORM")) {
+						openCPSDeliverableType.setFormScriptFileId(fileAttach.getFileEntryId());
+					} else if (className.endsWith("JASPER")) {
+						openCPSDeliverableType.setFormReportFileId(fileAttach.getFileEntryId());
+					}
+					
+					OpenCPSDeliverableTypeLocalServiceUtil.updateOpenCPSDeliverableType(openCPSDeliverableType);
+					
 				}
 				
 			}
