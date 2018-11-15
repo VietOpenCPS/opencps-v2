@@ -804,19 +804,16 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getConfirmFileEntryId())) {
 	    	params.put(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID, GetterUtil.getLong(model.getConfirmFileEntryId()));
 	    }
-	    if (Validator.isNotNull(model.getPaymentStatus())) {
-	    	params.put(PaymentFileTerm.PAYMENT_STATUS, model.getPaymentStatus());
-	    }
 	    if (Validator.isNotNull(model.getEinvoice())) {
 	    	params.put(PaymentFileTerm.EINVOICE, model.getEinvoice());
 	    }
-	    if (Validator.isNotNull(model.getEinvoice())) {
+	    if (Validator.isNotNull(model.getAdvanceAmount())) {
 	    	params.put(PaymentFileTerm.ADVANCE_AMOUNT, GetterUtil.getLong(model.getAdvanceAmount()));
 	    }
-	    if (Validator.isNotNull(model.getEinvoice())) {
-	    	params.put(PaymentFileTerm.SERVICE_AMOUNT, GetterUtil.getLong(model.getServiceAmount()));
+	    if (Validator.isNotNull(model.getServiceAmount())) {
+	    	params.put(PaymentFileTerm.SERVICE_AMOUNT, model.getServiceAmount());
 	    }
-	    if (Validator.isNotNull(model.getEinvoice())) {
+	    if (Validator.isNotNull(model.getShipAmount())) {
 	    	params.put(PaymentFileTerm.SHIP_AMOUNT, GetterUtil.getLong(model.getShipAmount()));
 	    }
 	    if (Validator.isNotNull(model.getPaymentMethod())) {

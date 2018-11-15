@@ -277,12 +277,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				//_log.info("SONDT SYNC INFORM PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-//				_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+				//_log.info("SONDT SYNC INFORM REQUESTPAYMENT = 2 PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+				//_log.info("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
 				String paymentFee = StringPool.BLANK; String paymentNote = StringPool.BLANK;
 				
 				JSONObject paymentObj = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
-				_log.info("SONDT SYNC INFORM Payment object: " + paymentObj);
+				//_log.info("SONDT SYNC INFORM Payment object: " + paymentObj);
 				if (paymentObj.has("paymentFee")) {
 					paymentFee = paymentObj.getString("paymentFee");
 				}
@@ -309,7 +309,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				
 				//_log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-
+				_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
+						+ APIDateTimeUtils.convertDateToString(new Date()));
 			} else if (processAction != null && (processAction
 					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI)) {
 				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
