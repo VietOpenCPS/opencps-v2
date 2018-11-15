@@ -2031,8 +2031,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME, DossierTerm.APPLICANT_NAME,
-					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN, DossierTerm.BRIEF_NOTE };
+			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME_SEARCH, DossierTerm.APPLICANT_NAME,
+					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN, DossierTerm.BRIEF_NOTE,
+					DossierTerm.DOSSIER_NAME_SEARCH, DossierTerm.CURRENT_ACTION_USER};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -2442,6 +2443,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_COMING,
 							String.valueOf(0), String.valueOf(nowTime), false, true);
 					subQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+					//Check nowDate < dueDate
+					TermRangeQueryImpl termRangeQueryNow = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+							String.valueOf(nowTime), null, true, true);
+					subQuery.add(termRangeQueryNow, BooleanClauseOccur.MUST);
 				}
 				//
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);

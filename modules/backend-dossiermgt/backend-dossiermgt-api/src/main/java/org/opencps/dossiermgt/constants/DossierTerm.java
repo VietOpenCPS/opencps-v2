@@ -10,6 +10,7 @@ public class DossierTerm {
 	public static final String COUNTER = "counter";
 	public static final String SERVICE_CODE = "serviceCode";
 	public static final String SERVICE_NAME = "serviceName";
+	public static final String SERVICE_NAME_SEARCH = "serviceNameSearch";
 	public static final String GOV_AGENCY_CODE = "govAgencyCode";
 	public static final String GOV_AGENCY_NAME = "govAgencyName";
 	public static final String APPLICANT_NAME = "applicantName";
@@ -200,6 +201,7 @@ public class DossierTerm {
 	
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 	public static final String DOSSIER_NAME = "dossierName";
+	public static final String DOSSIER_NAME_SEARCH = "dossierNameSearch";
 	public static final String ORIGIN_DOSSIER_NO = "originDossierNo";
 	//
 	public static final String FROM_FINISH_DATE = "fromFinishDate";
@@ -212,5 +214,6 @@ public class DossierTerm {
 	public static final String ORIGIN = "origin";
 	//
 	public static final int CONSTANT_INDEX_ORIGINALITY = 100;
+	public static final String DATE_OPTION = "dateOption";
 
 }

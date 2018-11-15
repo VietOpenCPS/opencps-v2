@@ -1816,6 +1816,7 @@
 		<column name="notificationType" type="String" />
 		<column name="documentType" type="String" />
 		<column name="mappingAction" type="String" />
+		<column name="dateOption" type="int" />
 		
         <order by="asc">
             <order-column name="actionCode" order-by="asc" case-sensitive="true"></order-column>
