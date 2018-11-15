@@ -3517,6 +3517,16 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	private String sequenceOf(List<ProcessStep> lstSteps, String stepCode) {
+		for (ProcessStep ps : lstSteps) {
+			if (ps.getStepCode().equals(stepCode)) {
+				return ps.getSequenceNo();
+			}
+		}
+		
+		return "";
+	}
+	
 	@Override
 	public Response getMermaidGraphDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
@@ -3535,47 +3545,44 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierAction lastAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(lastAction.getServiceProcessId());
 				if (serviceProcess != null) {
-					List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
 					StringBuilder result = new StringBuilder();
 					result.append("graph TD\n");
-					result.append("0((Bắt đầu))\n");
-					for (ProcessStep ps : lstSteps) {
-						result.append(ps.getStepCode());
-						result.append("(\"");
-						result.append(ps.getStepName());
+					List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
+					List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
+					
+					for (ProcessSequence ps : lstSequences) {
+						result.append(ps.getSequenceNo());
+						result.append("(\"[");
+						result.append(ps.getSequenceRole());
+						result.append("] ");
+						result.append(ps.getSequenceName());
 						result.append("\")\n");
-					}
-					List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcess.getServiceProcessId());
-					for (ProcessAction pa : lstActions) {
-						if ("".equals(pa.getPreStepCode())) {
-							result.append("0");
-						}
-						else {
-							result.append(pa.getPreStepCode());
-						}
-						if ("listener".equals(pa.getAutoEvent()) || "timmer".equals(pa.getAutoEvent())) {
-							result.append("-.->|\"");
-							result.append("");
-							result.append(pa.getActionName());
-							result.append("\"|");
-						}
-						else {
-							result.append("-->|\"");
-							result.append(pa.getActionName());
-							result.append("\"|");						
-						}
-						if ("".equals(pa.getPostStepCode())) {
-							result.append("1{Quay lại}");
-						}
-						else {
-							result.append(pa.getPostStepCode());
-						}
-						result.append("\n");
-						if (lastAction.getStepCode().equals(pa.getPostStepCode())) {
-							result.append("style " + pa.getPostStepCode() + " fill:#f9f,stroke:#333,stroke-width:4px");
-							result.append("\n");
+						for (ProcessSequence psOther : lstSequences) {
+							List<String> arcs = new ArrayList<>();
+							
+							if (!psOther.getSequenceNo().equals(ps.getSequenceNo())) {
+								List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcess.getServiceProcessId());
+								for (ProcessAction pa : lstActions) {
+									if (sequenceOf(lstSteps, pa.getPreStepCode()).equals(ps.getSequenceNo())
+											&& sequenceOf(lstSteps, pa.getPostStepCode()).equals(psOther.getSequenceNo())
+											&& !arcs.contains(pa.getActionName())) {
+										result.append(ps.getSequenceNo());
+										result.append("-->|\"");
+										result.append(pa.getActionName());
+										result.append("\"|");
+										result.append(psOther.getSequenceNo());
+										result.append("\n");
+										if (lastAction.getStepCode().equals(pa.getPostStepCode())) {
+											result.append("style " + ps.getSequenceNo() + " fill:#f9f,stroke:#333,stroke-width:4px");
+											result.append("\n");
+										}
+										arcs.add(pa.getActionName());
+									}
+								}								
+							}
 						}
 					}
+					
 					return Response.status(200).entity(result.toString()).build();				
 				}
 				else {

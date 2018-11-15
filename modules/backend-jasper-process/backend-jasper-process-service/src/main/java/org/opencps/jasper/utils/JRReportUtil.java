@@ -37,6 +37,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.export.SimpleDocxReportConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -266,8 +267,8 @@ public class JRReportUtil {
 //		configuration.setOnePagePerSheet(true);
 		configuration.setDetectCellType(true);
 		configuration.setCollapseRowSpan(false);
+		configuration.setRemoveEmptySpaceBetweenRows(true);
 		exporter.setConfiguration(configuration);
-
 		exporter.exportReport();
 
 		return destFileName;
