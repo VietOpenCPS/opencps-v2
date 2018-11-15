@@ -1086,13 +1086,22 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(id);
 			
-			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.addProcessSequence(serviceContext.getUserId(), groupId, serviceProcess.getServiceProcessId(), input.getSequenceNo(), input.getSequenceName(), input.getDurationCount());
+			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.addProcessSequence(serviceContext.getUserId(), groupId, serviceProcess.getServiceProcessId(), input.getSequenceNo(), input.getSequenceName(), input.getSequenceRole(), input.getDurationCount());
 			
 			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
 		} catch (Exception e) {
@@ -1113,14 +1122,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.fetchProcessSequence(id);
 			
 			if (processSequence != null) {
-				processSequence = ProcessSequenceLocalServiceUtil.updateProcessSequence(serviceContext.getUserId(), groupId, processSequence.getServiceProcessId(), processSequence.getProcessSequenceId(), sequenceNo, input.getSequenceName(), input.getDurationCount());				
+				processSequence = ProcessSequenceLocalServiceUtil.updateProcessSequence(serviceContext.getUserId(), groupId, processSequence.getServiceProcessId(), processSequence.getProcessSequenceId(), sequenceNo, input.getSequenceName(), input.getSequenceRole(), input.getDurationCount());				
 			}
 						
 			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
@@ -1268,6 +1286,42 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}		
+	}
+
+	@Override
+	public Response deleteProcessSequence(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String sequenceNo) {
+		BackendAuth auth = new BackendAuthImpl();
+		
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+	
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
+			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.fetchProcessSequence(id);
+			
+			if (processSequence != null) {
+				processSequence = ProcessSequenceLocalServiceUtil.deleteProcessSequence(processSequence.getProcessSequenceId());
+			}
+						
+			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}			
 	}
 
 }

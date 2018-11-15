@@ -109,5 +109,4 @@ public class DossierActionUserLocalServiceImpl
 				
 		return dossierActionUserPersistence.update(dau);
 	}
-
 }
