@@ -26,10 +26,12 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
@@ -74,11 +76,18 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 			if (dossier != null) {
 				long dossierActionId = dossier.getDossierActionId();
 				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				
 				if (Validator.isNull(stepCode) && da != null) {
 					stepCode = da.getStepCode();
 				}
 				long userId = 0;
 				
+				ProcessStep ps = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, da.getServiceProcessId());
+				if (!dossier.getDossierStatus().equals(ps.getDossierStatus())
+						|| !dossier.getDossierSubStatus().equals(ps.getDossierSubStatus())) {
+					dossier.setDossierStatus(ps.getDossierStatus());
+					dossier.setDossierSubStatus(ps.getDossierSubStatus());
+				}
 				DossierUserPK duPK = new DossierUserPK();
 				if (Validator.isNotNull(input.getUserId())) {
 					duPK.setUserId(input.getUserId());
