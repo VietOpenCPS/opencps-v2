@@ -263,7 +263,7 @@ public class JRReportUtil {
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFileName));
 		SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
-		configuration.setOnePagePerSheet(true);
+//		configuration.setOnePagePerSheet(true);
 		configuration.setDetectCellType(true);
 		configuration.setCollapseRowSpan(false);
 		exporter.setConfiguration(configuration);
