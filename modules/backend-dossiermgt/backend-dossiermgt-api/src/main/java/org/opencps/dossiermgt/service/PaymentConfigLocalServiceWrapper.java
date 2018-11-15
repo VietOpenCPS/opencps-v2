@@ -225,6 +225,13 @@ public class PaymentConfigLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.PaymentConfig getByInvoiceTemplateNo(
+		long groupId, String invoiceTemplateNo) {
+		return _paymentConfigLocalService.getByInvoiceTemplateNo(groupId,
+			invoiceTemplateNo);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return _paymentConfigLocalService.getExportActionableDynamicQuery(portletDataContext);

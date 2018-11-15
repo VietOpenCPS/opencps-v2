@@ -825,6 +825,11 @@
 			<finder-column name="govAgencyCode" />
 		</finder>
 
+		<finder return-type="PaymentConfig" name="G_ITN">
+			<finder-column name="groupId" />
+			<finder-column name="invoiceTemplateNo" />
+		</finder>
+		
 		<!-- References -->
 
 	</entity>
@@ -1832,6 +1837,7 @@
 		<column name="notificationType" type="String" />
 		<column name="documentType" type="String" />
 		<column name="mappingAction" type="String" />
+		<column name="dateOption" type="int" />
 		
         <order by="asc">
             <order-column name="actionCode" order-by="asc" case-sensitive="true"></order-column>

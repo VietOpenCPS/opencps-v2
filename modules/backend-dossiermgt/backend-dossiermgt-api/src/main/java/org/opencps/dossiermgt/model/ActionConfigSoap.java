@@ -55,6 +55,7 @@ public class ActionConfigSoap implements Serializable {
 		soapModel.setNotificationType(model.getNotificationType());
 		soapModel.setDocumentType(model.getDocumentType());
 		soapModel.setMappingAction(model.getMappingAction());
+		soapModel.setDateOption(model.getDateOption());
 
 		return soapModel;
 	}
@@ -299,6 +300,14 @@ public class ActionConfigSoap implements Serializable {
 		_mappingAction = mappingAction;
 	}
 
+	public int getDateOption() {
+		return _dateOption;
+	}
+
+	public void setDateOption(int dateOption) {
+		_dateOption = dateOption;
+	}
+
 	private String _uuid;
 	private long _actionConfigId;
 	private long _companyId;
@@ -321,4 +330,5 @@ public class ActionConfigSoap implements Serializable {
 	private String _notificationType;
 	private String _documentType;
 	private String _mappingAction;
+	private int _dateOption;
 }

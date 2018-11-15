@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.interceptor.ServiceInvokerInterceptor;
 import org.opencps.api.controller.ServiceProcessManagement;
 import org.opencps.api.controller.util.ProcessSequenceUtils;
 import org.opencps.api.controller.util.ServiceProcessUtils;
@@ -1048,10 +1049,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ProcessSequence.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
-
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, id);
 			ProcessSequenceResultModel result = new ProcessSequenceResultModel();
 			result.setTotal(lstSequences.size());
@@ -1312,13 +1322,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.fetchProcessSequence(id);
-			
-			if (processSequence != null) {
-				processSequence = ProcessSequenceLocalServiceUtil.deleteProcessSequence(processSequence.getProcessSequenceId());
+			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(id);
+			if (serviceProcess != null) {
+				ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(serviceProcess.getGroupId(), serviceProcess.getServiceProcessId(), sequenceNo);
+				
+				if (processSequence != null) {
+					processSequence = ProcessSequenceLocalServiceUtil.deleteProcessSequence(processSequence.getProcessSequenceId());
+				}
+							
+				return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();				
 			}
-						
-			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
+			else {
+				throw new NotFoundException("Service process not found");
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}			

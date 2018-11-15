@@ -67,6 +67,7 @@
 		<property name="notificationType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="documentType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="mappingAction" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dateOption" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableImpl" table="opencps_deliverable">
 		<id name="deliverableId" type="long">

@@ -24,6 +24,7 @@
 		<field name="notificationType" type="String" />
 		<field name="documentType" type="String" />
 		<field name="mappingAction" type="String" />
+		<field name="dateOption" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
 		<field name="uuid" type="String" />

@@ -89,7 +89,8 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 			{ "rollbackable", Types.BOOLEAN },
 			{ "notificationType", Types.VARCHAR },
 			{ "documentType", Types.VARCHAR },
-			{ "mappingAction", Types.VARCHAR }
+			{ "mappingAction", Types.VARCHAR },
+			{ "dateOption", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -116,9 +117,10 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 		TABLE_COLUMNS_MAP.put("notificationType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("documentType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("mappingAction", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("dateOption", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_actionconfig (uuid_ VARCHAR(75) null,actionConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,extraForm BOOLEAN,formConfig VARCHAR(75) null,sampleData VARCHAR(75) null,insideProcess BOOLEAN,userNote INTEGER,syncType INTEGER,eventType INTEGER,infoType INTEGER,pending BOOLEAN,rollbackable BOOLEAN,notificationType VARCHAR(75) null,documentType VARCHAR(75) null,mappingAction VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_actionconfig (uuid_ VARCHAR(75) null,actionConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,extraForm BOOLEAN,formConfig TEXT null,sampleData TEXT null,insideProcess BOOLEAN,userNote INTEGER,syncType INTEGER,eventType INTEGER,infoType INTEGER,pending BOOLEAN,rollbackable BOOLEAN,notificationType VARCHAR(75) null,documentType VARCHAR(75) null,mappingAction VARCHAR(75) null,dateOption INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_actionconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY actionConfig.actionCode ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_actionconfig.actionCode ASC";
@@ -200,6 +202,7 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 		attributes.put("notificationType", getNotificationType());
 		attributes.put("documentType", getDocumentType());
 		attributes.put("mappingAction", getMappingAction());
+		attributes.put("dateOption", getDateOption());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -339,6 +342,12 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 
 		if (mappingAction != null) {
 			setMappingAction(mappingAction);
+		}
+
+		Integer dateOption = (Integer)attributes.get("dateOption");
+
+		if (dateOption != null) {
+			setDateOption(dateOption);
 		}
 	}
 
@@ -687,6 +696,16 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 	}
 
 	@Override
+	public int getDateOption() {
+		return _dateOption;
+	}
+
+	@Override
+	public void setDateOption(int dateOption) {
+		_dateOption = dateOption;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				ActionConfig.class.getName()));
@@ -745,6 +764,7 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 		actionConfigImpl.setNotificationType(getNotificationType());
 		actionConfigImpl.setDocumentType(getDocumentType());
 		actionConfigImpl.setMappingAction(getMappingAction());
+		actionConfigImpl.setDateOption(getDateOption());
 
 		actionConfigImpl.resetOriginalValues();
 
@@ -932,12 +952,14 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 			actionConfigCacheModel.mappingAction = null;
 		}
 
+		actionConfigCacheModel.dateOption = getDateOption();
+
 		return actionConfigCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(45);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -983,6 +1005,8 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 		sb.append(getDocumentType());
 		sb.append(", mappingAction=");
 		sb.append(getMappingAction());
+		sb.append(", dateOption=");
+		sb.append(getDateOption());
 		sb.append("}");
 
 		return sb.toString();
@@ -990,7 +1014,7 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(70);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ActionConfig");
@@ -1084,6 +1108,10 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 			"<column><column-name>mappingAction</column-name><column-value><![CDATA[");
 		sb.append(getMappingAction());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dateOption</column-name><column-value><![CDATA[");
+		sb.append(getDateOption());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1123,6 +1151,7 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 	private String _notificationType;
 	private String _documentType;
 	private String _mappingAction;
+	private int _dateOption;
 	private long _columnBitmask;
 	private ActionConfig _escapedModel;
 }
