@@ -3572,7 +3572,7 @@ public class DossierManagementImpl implements DossierManagement {
 										result.append("\"|");
 										result.append(psOther.getSequenceNo());
 										result.append("\n");
-										if (lastAction.getStepCode().equals(pa.getPostStepCode())) {
+										if (lastAction.getStepCode().equals(pa.getPreStepCode())) {
 											result.append("style " + ps.getSequenceNo() + " fill:#f9f,stroke:#333,stroke-width:4px");
 											result.append("\n");
 										}
