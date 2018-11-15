@@ -46,7 +46,6 @@ import java.util.List;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -501,5 +500,13 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.fetchByDID_CODE_First(dossierId, actionCode, orderByComparator);
 	}
 
+	public List<DossierAction> getByDID_U_SC(long dossierId, long userId, String stepCode) {
+		return dossierActionPersistence.findByDID_U_SC(dossierId, userId, stepCode);
+	}	
+	
+	public List<DossierAction> getByDID_SC_NOT_DAI(long dossierId, String stepCode, long dossierActionId) {
+		return dossierActionPersistence.findByDID_SC_NOT_DAI(dossierId, stepCode, dossierActionId);
+	}
+	
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }
