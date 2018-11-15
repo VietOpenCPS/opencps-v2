@@ -822,7 +822,15 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			if(Validator.isNotNull(input.getPaymentMethod())){
 				paymentFile.setPaymentMethod(input.getPaymentMethod());
 			}
-			
+			if(Validator.isNotNull(input.getServiceAmount())){
+				paymentFile.setServiceAmount(input.getServiceAmount());
+			}
+			if(Validator.isNotNull(input.getShipAmount())){
+				paymentFile.setShipAmount(input.getShipAmount());
+			}
+			if(Validator.isNotNull(input.getShipAmount())){
+				paymentFile.setShipAmount(input.getShipAmount());
+			}
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 
 			PaymentFileInput = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
