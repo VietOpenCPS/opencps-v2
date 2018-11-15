@@ -828,8 +828,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			if(Validator.isNotNull(input.getShipAmount())){
 				paymentFile.setShipAmount(input.getShipAmount());
 			}
-			if(Validator.isNotNull(input.getShipAmount())){
-				paymentFile.setShipAmount(input.getShipAmount());
+			if(Validator.isNotNull(input.getAdvanceAmount())){
+				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
 			}
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 
