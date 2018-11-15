@@ -67,7 +67,7 @@ public interface ProcessSequenceLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessSequence addProcessSequence(long userId, long groupId,
 		long serviceProcessId, String sequenceNo, String sequenceName,
-		double durationCount) throws PortalException;
+		String sequenceRole, double durationCount) throws PortalException;
 
 	/**
 	* Adds the process sequence to the database. Also notifies the appropriate model listeners.
@@ -293,7 +293,8 @@ public interface ProcessSequenceLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessSequence updateProcessSequence(long userId, long groupId,
 		long processSequenceId, long serviceProcessId, String sequenceNo,
-		String sequenceName, double durationCount) throws PortalException;
+		String sequenceName, String sequenceRole, double durationCount)
+		throws PortalException;
 
 	/**
 	* Updates the process sequence in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

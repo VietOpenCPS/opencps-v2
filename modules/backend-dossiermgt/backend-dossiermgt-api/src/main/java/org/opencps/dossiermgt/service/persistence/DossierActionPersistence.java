@@ -1751,6 +1751,310 @@ public interface DossierActionPersistence extends BasePersistence<DossierAction>
 	public int countByDID_CODE(long dossierId, String actionCode);
 
 	/**
+	* Returns all the dossier actions where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @return the matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_U_SC(long dossierId,
+		long userId, String stepCode);
+
+	/**
+	* Returns a range of all the dossier actions where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @return the range of matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_U_SC(long dossierId,
+		long userId, String stepCode, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_U_SC(long dossierId,
+		long userId, String stepCode, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_U_SC(long dossierId,
+		long userId, String stepCode, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public DossierAction findByDID_U_SC_First(long dossierId, long userId,
+		String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator)
+		throws NoSuchDossierActionException;
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public DossierAction fetchByDID_U_SC_First(long dossierId, long userId,
+		String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator);
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public DossierAction findByDID_U_SC_Last(long dossierId, long userId,
+		String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator)
+		throws NoSuchDossierActionException;
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public DossierAction fetchByDID_U_SC_Last(long dossierId, long userId,
+		String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator);
+
+	/**
+	* Returns the dossier actions before and after the current dossier action in the ordered set where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierActionId the primary key of the current dossier action
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier action
+	* @throws NoSuchDossierActionException if a dossier action with the primary key could not be found
+	*/
+	public DossierAction[] findByDID_U_SC_PrevAndNext(long dossierActionId,
+		long dossierId, long userId, String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator)
+		throws NoSuchDossierActionException;
+
+	/**
+	* Removes all the dossier actions where dossierId = &#63; and userId = &#63; and stepCode = &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	*/
+	public void removeByDID_U_SC(long dossierId, long userId, String stepCode);
+
+	/**
+	* Returns the number of dossier actions where dossierId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @return the number of matching dossier actions
+	*/
+	public int countByDID_U_SC(long dossierId, long userId, String stepCode);
+
+	/**
+	* Returns all the dossier actions where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @return the matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_SC_NOT_DAI(long dossierId,
+		String stepCode, long dossierActionId);
+
+	/**
+	* Returns a range of all the dossier actions where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @return the range of matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_SC_NOT_DAI(long dossierId,
+		String stepCode, long dossierActionId, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_SC_NOT_DAI(long dossierId,
+		String stepCode, long dossierActionId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier actions
+	*/
+	public java.util.List<DossierAction> findByDID_SC_NOT_DAI(long dossierId,
+		String stepCode, long dossierActionId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public DossierAction findByDID_SC_NOT_DAI_First(long dossierId,
+		String stepCode, long dossierActionId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator)
+		throws NoSuchDossierActionException;
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public DossierAction fetchByDID_SC_NOT_DAI_First(long dossierId,
+		String stepCode, long dossierActionId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator);
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public DossierAction findByDID_SC_NOT_DAI_Last(long dossierId,
+		String stepCode, long dossierActionId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator)
+		throws NoSuchDossierActionException;
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public DossierAction fetchByDID_SC_NOT_DAI_Last(long dossierId,
+		String stepCode, long dossierActionId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierAction> orderByComparator);
+
+	/**
+	* Removes all the dossier actions where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	*/
+	public void removeByDID_SC_NOT_DAI(long dossierId, String stepCode,
+		long dossierActionId);
+
+	/**
+	* Returns the number of dossier actions where dossierId = &#63; and stepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param stepCode the step code
+	* @param dossierActionId the dossier action ID
+	* @return the number of matching dossier actions
+	*/
+	public int countByDID_SC_NOT_DAI(long dossierId, String stepCode,
+		long dossierActionId);
+
+	/**
 	* Caches the dossier action in the entity cache if it is enabled.
 	*
 	* @param dossierAction the dossier action

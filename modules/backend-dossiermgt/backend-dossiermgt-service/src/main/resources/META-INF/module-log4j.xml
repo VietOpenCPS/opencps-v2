@@ -4,4 +4,7 @@
     <category name="org.opencps.dossiermgt">
         <priority value="INFO" />
     </category>
+    <category name="org.opencps.event.message">
+        <priority value="INFO" />
+    </category>    
 </log4j:configuration>

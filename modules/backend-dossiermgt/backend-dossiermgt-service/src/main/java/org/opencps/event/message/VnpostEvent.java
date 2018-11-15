@@ -54,7 +54,7 @@ public class VnpostEvent implements MessageListener {
 		params.put("senderName", dossierObj.getString(DossierTerm.GOV_AGENCY_NAME)); 
 		params.put("receiverName", dossierObj.getString(DossierTerm.DELEGATE_NAME)); 
 		params.put("receiverAddress", dossierObj.get(DossierTerm.POSTAL_ADDRESS)); 
-		params.put("receiverTel", dossierObj.getString(DossierTerm.CONTACT_TEL_NO));
+		params.put("receiverTel", dossierObj.getString(DossierTerm.POSTAL_TEL_NO));
 		params.put("receiverProvince", dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
 		params.put("receiverDistrict", dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
 		params.put("receiverEmail", dossierObj.getString(DossierTerm.DELEGATE_EMAIL));

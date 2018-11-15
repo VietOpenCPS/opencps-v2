@@ -37,10 +37,11 @@ public class ProcessSequenceLocalServiceWrapper
 	@Override
 	public org.opencps.dossiermgt.model.ProcessSequence addProcessSequence(
 		long userId, long groupId, long serviceProcessId, String sequenceNo,
-		String sequenceName, double durationCount)
+		String sequenceName, String sequenceRole, double durationCount)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _processSequenceLocalService.addProcessSequence(userId, groupId,
-			serviceProcessId, sequenceNo, sequenceName, durationCount);
+			serviceProcessId, sequenceNo, sequenceName, sequenceRole,
+			durationCount);
 	}
 
 	/**
@@ -355,11 +356,11 @@ public class ProcessSequenceLocalServiceWrapper
 	public org.opencps.dossiermgt.model.ProcessSequence updateProcessSequence(
 		long userId, long groupId, long processSequenceId,
 		long serviceProcessId, String sequenceNo, String sequenceName,
-		double durationCount)
+		String sequenceRole, double durationCount)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _processSequenceLocalService.updateProcessSequence(userId,
 			groupId, processSequenceId, serviceProcessId, sequenceNo,
-			sequenceName, durationCount);
+			sequenceName, sequenceRole, durationCount);
 	}
 
 	/**

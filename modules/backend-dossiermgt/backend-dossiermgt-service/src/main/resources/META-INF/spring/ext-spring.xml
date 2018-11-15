@@ -73,6 +73,7 @@
 	<bean id="dossier.listener.jasper" class="org.opencps.jasper.message.Engine" />
 	<bean id="dossier.event.message" class="org.opencps.event.message.PublishEvent" />
 	<bean id="dossier.vnpost.message" class="org.opencps.event.message.VnpostEvent" />
+	<bean id="lgsp.event.message" class="org.opencps.event.message.LGSPEvent" />
 
 	<!-- Destinations -->
 	<bean id="jasper.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
@@ -83,6 +84,9 @@
 	</bean>
 	<bean id="vnpost.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
 		<property name="name" value="vnpost/dossier/in/destination" />
+	</bean>
+	<bean id="lgsp.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
+		<property name="name" value="lgsp/dossier/in/destination" />
 	</bean>
 
 	<!-- Configurator -->
@@ -105,6 +109,11 @@
 						<ref bean="dossier.vnpost.message" />
 					</list>
 				</entry>
+				<entry key="lgsp/dossier/in/destination">
+					<list value-type="com.liferay.portal.kernel.messaging.MessageListener">
+						<ref bean="lgsp.event.message" />
+					</list>
+				</entry>				
 			</map>
 		</property>
 		<property name="destinations">
@@ -112,6 +121,7 @@
 				<ref bean="jasper.dossier.in.destination" />
 				<ref bean="publish.dossier.in.destination" />
 				<ref bean="vnpost.dossier.in.destination" />
+				<ref bean="lgsp.dossier.in.destination" />
 			</list>
 		</property>
 	</bean>

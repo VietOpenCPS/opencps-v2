@@ -2865,8 +2865,10 @@ public class DossierActionsImpl implements DossierActions {
 				Map<String, Object> params = new HashMap<>();
 				_log.info("SONDT payment REQUESTPAYMENT 5: DOSSIERID ========= "+ dossier.getDossierId());
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				
-				int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
+				int intpaymentMethod = 0;
+				if(Validator.isNotNull(proAction.getPreCondition())) {
+					intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
+				}
 				
 				if(oldPaymentFile != null && proAction.getPreCondition().toLowerCase().contains("sendinvoice=1")){
 					
@@ -2880,14 +2882,19 @@ public class DossierActionsImpl implements DossierActions {
 							CINVOICEUrl, "", "", properties, params, context);
 					
 				}
-				//_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
+				_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
 				
 				if (Validator.isNotNull(oldPaymentFile) ) {
-					String paymentMethod = checkPaymentMethod(intpaymentMethod);
+					String paymentMethod = "";
+					if (intpaymentMethod != 0) {
+						paymentMethod = checkPaymentMethod(intpaymentMethod);
+					}
 					if(Validator.isNotNull(resultObj)) {
 						oldPaymentFile.setEinvoice(resultObj.toString());
 						oldPaymentFile.setInvoicePayload(params.toString());
-						oldPaymentFile.setPaymentMethod(paymentMethod);
+						if (Validator.isNotNull(paymentMethod)) {
+							oldPaymentFile.setPaymentMethod(paymentMethod);
+						}
 					}
 					
 					oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
@@ -3522,7 +3529,15 @@ public class DossierActionsImpl implements DossierActions {
 		message.put("msgToEngine", msgData);
 		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
-		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);		
+		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);	
+		
+		Message lgspMessage = new Message();
+		JSONObject lgspMsgData = msgData;
+
+		lgspMessage.put("msgToEngine", lgspMsgData);
+		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
+		
+		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
 	}
 	
 	private void vnpostEvent(Dossier dossier) {
@@ -5963,17 +5978,17 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		params.put("ggia", "0");
 		params.put("phi", "0");
 		params.put("noidung", dossier.getDossierNo());
-		params.put("tien", Long.toString(oldPaymentFile.getFeeAmount()));
-		params.put("ttoan", Long.toString(oldPaymentFile.getFeeAmount()));
+		params.put("tien", Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put("ttoan", Long.toString(oldPaymentFile.getPaymentAmount()));
 		params.put("maVtDetail", dossier.getDossierNo());
 		params.put("tenDetail", GetterUtil.getString(dossier.getServiceName()));
 		params.put("dvtDetail", "bo");
 		params.put("luongDetail", "1");
-		params.put("giaDetail", Long.toString(oldPaymentFile.getFeeAmount()));
-		params.put("tienDetail", Long.toString(oldPaymentFile.getFeeAmount()));
+		params.put("giaDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put("tienDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
 		params.put("tsDetail", "0");
 		params.put("thueDetail", "0");
-		params.put("ttoanDetail", Long.toString(oldPaymentFile.getFeeAmount()));
+		params.put("ttoanDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
 		
 		return params;
 	}
