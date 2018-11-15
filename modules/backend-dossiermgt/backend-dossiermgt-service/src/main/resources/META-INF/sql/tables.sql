@@ -20,7 +20,8 @@ create table opencps_actionconfig (
 	rollbackable BOOLEAN,
 	notificationType VARCHAR(75) null,
 	documentType VARCHAR(75) null,
-	mappingAction VARCHAR(75) null
+	mappingAction VARCHAR(75) null,
+	dateOption INTEGER
 );
 
 create table opencps_deliverable (

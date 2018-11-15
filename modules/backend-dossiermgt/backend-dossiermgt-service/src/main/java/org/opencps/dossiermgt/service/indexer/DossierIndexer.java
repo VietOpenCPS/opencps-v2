@@ -33,6 +33,7 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -234,6 +235,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						DossierTerm.CONSTANT_INDEX_ORIGINALITY + object.getOriginality());
 			}
 			document.addTextSortable(DossierTerm.DOSSIER_NAME, object.getDossierName());
+			if (Validator.isNotNull(object.getDossierName())) {
+				document.addTextSortable(DossierTerm.DOSSIER_NAME_SEARCH,
+						SpecialCharacterUtils.splitSpecial(object.getDossierName()));
+			} else {
+				document.addTextSortable(DossierTerm.DOSSIER_NAME_SEARCH, StringPool.BLANK);
+			}
 			//Index month, year using search statistic
 			int yearDossier = 0;
 			int monthDossier = 0;
@@ -351,8 +358,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					if (act != null) {
 //						_log.info("act: "+act.getUserNote());
 						document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
+						document.addNumberSortable(DossierTerm.DATE_OPTION, act.getDateOption());
 					} else {
 						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
+						document.addNumberSortable(DossierTerm.DATE_OPTION, 0);
 					}
 					//Add userActionId
 					document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
@@ -381,6 +390,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 //			if (Validator.isNotNull(object.getServiceName())) {
 				document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
 //			}
+			if (Validator.isNotNull(object.getServiceName())) {
+				document.addTextSortable(DossierTerm.SERVICE_NAME_SEARCH,
+						SpecialCharacterUtils.splitSpecial(object.getServiceName()));
+			} else {
+				document.addTextSortable(DossierTerm.SERVICE_NAME_SEARCH, StringPool.BLANK);
+			}
 //			if (Validator.isNotNull(object.getGovAgencyCode())) {
 				document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
 //			}

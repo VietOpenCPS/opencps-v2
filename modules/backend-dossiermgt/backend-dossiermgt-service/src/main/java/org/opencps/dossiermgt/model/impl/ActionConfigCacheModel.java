@@ -65,7 +65,7 @@ public class ActionConfigCacheModel implements CacheModel<ActionConfig>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(45);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -111,6 +111,8 @@ public class ActionConfigCacheModel implements CacheModel<ActionConfig>,
 		sb.append(documentType);
 		sb.append(", mappingAction=");
 		sb.append(mappingAction);
+		sb.append(", dateOption=");
+		sb.append(dateOption);
 		sb.append("}");
 
 		return sb.toString();
@@ -205,6 +207,8 @@ public class ActionConfigCacheModel implements CacheModel<ActionConfig>,
 			actionConfigImpl.setMappingAction(mappingAction);
 		}
 
+		actionConfigImpl.setDateOption(dateOption);
+
 		actionConfigImpl.resetOriginalValues();
 
 		return actionConfigImpl;
@@ -246,6 +250,8 @@ public class ActionConfigCacheModel implements CacheModel<ActionConfig>,
 		notificationType = objectInput.readUTF();
 		documentType = objectInput.readUTF();
 		mappingAction = objectInput.readUTF();
+
+		dateOption = objectInput.readInt();
 	}
 
 	@Override
@@ -332,6 +338,8 @@ public class ActionConfigCacheModel implements CacheModel<ActionConfig>,
 		else {
 			objectOutput.writeUTF(mappingAction);
 		}
+
+		objectOutput.writeInt(dateOption);
 	}
 
 	public String uuid;
@@ -356,4 +364,5 @@ public class ActionConfigCacheModel implements CacheModel<ActionConfig>,
 	public String notificationType;
 	public String documentType;
 	public String mappingAction;
+	public int dateOption;
 }

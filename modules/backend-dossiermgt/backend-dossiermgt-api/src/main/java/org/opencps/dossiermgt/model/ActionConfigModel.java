@@ -431,6 +431,20 @@ public interface ActionConfigModel extends BaseModel<ActionConfig>, ShardedModel
 	 */
 	public void setMappingAction(String mappingAction);
 
+	/**
+	 * Returns the date option of this action config.
+	 *
+	 * @return the date option of this action config
+	 */
+	public int getDateOption();
+
+	/**
+	 * Sets the date option of this action config.
+	 *
+	 * @param dateOption the date option of this action config
+	 */
+	public void setDateOption(int dateOption);
+
 	@Override
 	public boolean isNew();
 

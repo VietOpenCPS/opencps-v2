@@ -82,6 +82,7 @@ public class ActionConfigWrapper implements ActionConfig,
 		attributes.put("notificationType", getNotificationType());
 		attributes.put("documentType", getDocumentType());
 		attributes.put("mappingAction", getMappingAction());
+		attributes.put("dateOption", getDateOption());
 
 		return attributes;
 	}
@@ -219,6 +220,12 @@ public class ActionConfigWrapper implements ActionConfig,
 		if (mappingAction != null) {
 			setMappingAction(mappingAction);
 		}
+
+		Integer dateOption = (Integer)attributes.get("dateOption");
+
+		if (dateOption != null) {
+			setDateOption(dateOption);
+		}
 	}
 
 	@Override
@@ -279,6 +286,16 @@ public class ActionConfigWrapper implements ActionConfig,
 	@Override
 	public Date getCreateDate() {
 		return _actionConfig.getCreateDate();
+	}
+
+	/**
+	* Returns the date option of this action config.
+	*
+	* @return the date option of this action config
+	*/
+	@Override
+	public int getDateOption() {
+		return _actionConfig.getDateOption();
 	}
 
 	/**
@@ -599,6 +616,16 @@ public class ActionConfigWrapper implements ActionConfig,
 	@Override
 	public void setCreateDate(Date createDate) {
 		_actionConfig.setCreateDate(createDate);
+	}
+
+	/**
+	* Sets the date option of this action config.
+	*
+	* @param dateOption the date option of this action config
+	*/
+	@Override
+	public void setDateOption(int dateOption) {
+		_actionConfig.setDateOption(dateOption);
 	}
 
 	/**
