@@ -5978,17 +5978,17 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		params.put("ggia", "0");
 		params.put("phi", "0");
 		params.put("noidung", dossier.getDossierNo());
-		params.put("tien", Long.toString(oldPaymentFile.getFeeAmount()));
-		params.put("ttoan", Long.toString(oldPaymentFile.getFeeAmount()));
+		params.put("tien", Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put("ttoan", Long.toString(oldPaymentFile.getPaymentAmount()));
 		params.put("maVtDetail", dossier.getDossierNo());
 		params.put("tenDetail", GetterUtil.getString(dossier.getServiceName()));
 		params.put("dvtDetail", "bo");
 		params.put("luongDetail", "1");
-		params.put("giaDetail", Long.toString(oldPaymentFile.getFeeAmount()));
-		params.put("tienDetail", Long.toString(oldPaymentFile.getFeeAmount()));
+		params.put("giaDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put("tienDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
 		params.put("tsDetail", "0");
 		params.put("thueDetail", "0");
-		params.put("ttoanDetail", Long.toString(oldPaymentFile.getFeeAmount()));
+		params.put("ttoanDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
 		
 		return params;
 	}

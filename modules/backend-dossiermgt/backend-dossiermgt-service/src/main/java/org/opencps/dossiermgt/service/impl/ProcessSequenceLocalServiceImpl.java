@@ -61,8 +61,12 @@ public class ProcessSequenceLocalServiceImpl extends ProcessSequenceLocalService
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessSequence addProcessSequence(long userId, long groupId, long serviceProcessId, String sequenceNo,
-			String sequenceName, double durationCount) throws PortalException {
+
+	public ProcessSequence addProcessSequence(long userId, long groupId, 
+			long serviceProcessId,
+			String sequenceNo, String sequenceName, 
+			String sequenceRole,
+			double durationCount) throws PortalException {
 		User user = userLocalService.getUser(userId);
 
 		long processSequenceId = counterLocalService.increment();
@@ -78,15 +82,19 @@ public class ProcessSequenceLocalServiceImpl extends ProcessSequenceLocalService
 		processSequence.setGroupId(groupId);
 		processSequence.setSequenceNo(sequenceNo);
 		processSequence.setSequenceName(sequenceName);
+		processSequence.setSequenceRole(sequenceRole);
 		processSequence.setDurationCount(durationCount);
 
 		return processSequencePersistence.update(processSequence);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public ProcessSequence updateProcessSequence(long userId, long groupId, long processSequenceId,
-			long serviceProcessId, String sequenceNo, String sequenceName, double durationCount)
-			throws PortalException {
+	public ProcessSequence updateProcessSequence(long userId, long groupId, 
+			long processSequenceId,
+			long serviceProcessId,
+			String sequenceNo, String sequenceName, 
+			String sequenceRole,
+			double durationCount) throws PortalException {
 		User user = userLocalService.getUser(userId);
 
 		ProcessSequence processSequence = processSequencePersistence.findByPrimaryKey(processSequenceId);
@@ -101,6 +109,7 @@ public class ProcessSequenceLocalServiceImpl extends ProcessSequenceLocalService
 		processSequence.setGroupId(groupId);
 		processSequence.setSequenceNo(sequenceNo);
 		processSequence.setSequenceName(sequenceName);
+		processSequence.setSequenceRole(sequenceRole);
 		processSequence.setDurationCount(durationCount);
 
 		return processSequencePersistence.update(processSequence);

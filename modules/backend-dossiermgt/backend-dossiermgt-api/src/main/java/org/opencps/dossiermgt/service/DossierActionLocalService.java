@@ -220,6 +220,14 @@ public interface DossierActionLocalService extends BaseLocalService,
 		OrderByComparator<DossierAction> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierAction> getByDID_SC_NOT_DAI(long dossierId,
+		String stepCode, long dossierActionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierAction> getByDID_U_SC(long dossierId, long userId,
+		String stepCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDossierAndStepCode(long dossierId,
 		String stepCode);
 

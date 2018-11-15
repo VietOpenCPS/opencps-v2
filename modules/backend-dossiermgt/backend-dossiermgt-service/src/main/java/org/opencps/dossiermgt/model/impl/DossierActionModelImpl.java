@@ -155,17 +155,18 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 			true);
 	public static final long ACTIONCODE_COLUMN_BITMASK = 1L;
 	public static final long COMPANYID_COLUMN_BITMASK = 2L;
-	public static final long DOSSIERID_COLUMN_BITMASK = 4L;
-	public static final long FROMSEQUENCENO_COLUMN_BITMASK = 8L;
-	public static final long FROMSTEPCODE_COLUMN_BITMASK = 16L;
-	public static final long GROUPID_COLUMN_BITMASK = 32L;
-	public static final long NEXTACTIONID_COLUMN_BITMASK = 64L;
-	public static final long PENDING_COLUMN_BITMASK = 128L;
-	public static final long SEQUENCENO_COLUMN_BITMASK = 256L;
-	public static final long STEPCODE_COLUMN_BITMASK = 512L;
-	public static final long USERID_COLUMN_BITMASK = 1024L;
-	public static final long UUID_COLUMN_BITMASK = 2048L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 4096L;
+	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 4L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 8L;
+	public static final long FROMSEQUENCENO_COLUMN_BITMASK = 16L;
+	public static final long FROMSTEPCODE_COLUMN_BITMASK = 32L;
+	public static final long GROUPID_COLUMN_BITMASK = 64L;
+	public static final long NEXTACTIONID_COLUMN_BITMASK = 128L;
+	public static final long PENDING_COLUMN_BITMASK = 256L;
+	public static final long SEQUENCENO_COLUMN_BITMASK = 512L;
+	public static final long STEPCODE_COLUMN_BITMASK = 1024L;
+	public static final long USERID_COLUMN_BITMASK = 2048L;
+	public static final long UUID_COLUMN_BITMASK = 4096L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 8192L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierAction"));
 
@@ -463,7 +464,19 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 
 	@Override
 	public void setDossierActionId(long dossierActionId) {
+		_columnBitmask |= DOSSIERACTIONID_COLUMN_BITMASK;
+
+		if (!_setOriginalDossierActionId) {
+			_setOriginalDossierActionId = true;
+
+			_originalDossierActionId = _dossierActionId;
+		}
+
 		_dossierActionId = dossierActionId;
+	}
+
+	public long getOriginalDossierActionId() {
+		return _originalDossierActionId;
 	}
 
 	@Override
@@ -1113,6 +1126,10 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 
 		dossierActionModelImpl._originalUuid = dossierActionModelImpl._uuid;
 
+		dossierActionModelImpl._originalDossierActionId = dossierActionModelImpl._dossierActionId;
+
+		dossierActionModelImpl._setOriginalDossierActionId = false;
+
 		dossierActionModelImpl._originalCompanyId = dossierActionModelImpl._companyId;
 
 		dossierActionModelImpl._setOriginalCompanyId = false;
@@ -1548,6 +1565,8 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 	private String _uuid;
 	private String _originalUuid;
 	private long _dossierActionId;
+	private long _originalDossierActionId;
+	private boolean _setOriginalDossierActionId;
 	private long _companyId;
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;

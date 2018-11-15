@@ -41,8 +41,8 @@ create index IX_FE50C2F2 on opencps_dossieraction (dossierId, fromSequenceNo[$CO
 create index IX_B1E42E29 on opencps_dossieraction (dossierId, fromStepCode[$COLUMN_LENGTH:75$]);
 create index IX_E4D6634A on opencps_dossieraction (dossierId, nextActionId);
 create index IX_5637775 on opencps_dossieraction (dossierId, pending);
-create index IX_C6FFF0DF on opencps_dossieraction (dossierId, stepCode[$COLUMN_LENGTH:75$]);
-create index IX_7A6BCA0C on opencps_dossieraction (dossierId, userId);
+create index IX_18340D0D on opencps_dossieraction (dossierId, stepCode[$COLUMN_LENGTH:75$], dossierActionId);
+create index IX_8965699 on opencps_dossieraction (dossierId, userId, stepCode[$COLUMN_LENGTH:75$]);
 create index IX_850662D0 on opencps_dossieraction (groupId, dossierId, fromSequenceNo[$COLUMN_LENGTH:75$]);
 create index IX_9252EF06 on opencps_dossieraction (groupId, dossierId, sequenceNo[$COLUMN_LENGTH:75$]);
 create index IX_51E985C1 on opencps_dossieraction (groupId, pending);
