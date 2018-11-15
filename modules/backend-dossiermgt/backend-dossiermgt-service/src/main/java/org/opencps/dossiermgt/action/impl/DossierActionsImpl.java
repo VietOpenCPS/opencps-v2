@@ -2781,9 +2781,17 @@ public class DossierActionsImpl implements DossierActions {
 					
 					int prefix = cal.get(Calendar.YEAR);
 					
-					String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+					String invoiceNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
 					
-					paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
+					paymentFile.setInvoiceNo(invoiceNo);
+					
+					// get paymentConfig
+					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
+							dossier.getGovAgencyCode());
+					
+					if (Validator.isNotNull(paymentConfig)) {
+						paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
+					}
 					
 					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 					//_log.info("==========Dossier Action SONDT START ========= ");
@@ -2792,9 +2800,6 @@ public class DossierActionsImpl implements DossierActions {
 					// create paymentFileActions
 					PaymentFileActions actions = new PaymentFileActionsImpl();
 
-					// get paymentConfig
-					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
-							dossier.getGovAgencyCode());
 //					_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
 //					_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
 					// generator epaymentProfile
