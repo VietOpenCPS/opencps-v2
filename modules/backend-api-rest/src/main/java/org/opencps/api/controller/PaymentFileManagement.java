@@ -300,6 +300,7 @@ public interface PaymentFileManagement {
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "body params for post", required = true) @BeanParam PaymentFileInputModel input);	
 	
+	@GET
 	@Path("/{id}/payments/{referenceUid}/invoicefile/preview")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@ApiOperation(value = "Download invoice file")
