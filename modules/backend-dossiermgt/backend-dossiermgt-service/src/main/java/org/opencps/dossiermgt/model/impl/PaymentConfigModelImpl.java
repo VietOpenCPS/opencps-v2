@@ -127,8 +127,9 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
-	public static final long PAYMENTCONFIGID_COLUMN_BITMASK = 16L;
+	public static final long INVOICETEMPLATENO_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long PAYMENTCONFIGID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.PaymentConfig"));
 
@@ -509,7 +510,17 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 
 	@Override
 	public void setInvoiceTemplateNo(String invoiceTemplateNo) {
+		_columnBitmask |= INVOICETEMPLATENO_COLUMN_BITMASK;
+
+		if (_originalInvoiceTemplateNo == null) {
+			_originalInvoiceTemplateNo = _invoiceTemplateNo;
+		}
+
 		_invoiceTemplateNo = invoiceTemplateNo;
+	}
+
+	public String getOriginalInvoiceTemplateNo() {
+		return GetterUtil.getString(_originalInvoiceTemplateNo);
 	}
 
 	@Override
@@ -716,6 +727,8 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 		paymentConfigModelImpl._setModifiedDate = false;
 
 		paymentConfigModelImpl._originalGovAgencyCode = paymentConfigModelImpl._govAgencyCode;
+
+		paymentConfigModelImpl._originalInvoiceTemplateNo = paymentConfigModelImpl._invoiceTemplateNo;
 
 		paymentConfigModelImpl._columnBitmask = 0;
 	}
@@ -989,6 +1002,7 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 	private String _govAgencyName;
 	private String _govAgencyTaxNo;
 	private String _invoiceTemplateNo;
+	private String _originalInvoiceTemplateNo;
 	private String _invoiceIssueNo;
 	private String _invoiceLastNo;
 	private String _invoiceForm;

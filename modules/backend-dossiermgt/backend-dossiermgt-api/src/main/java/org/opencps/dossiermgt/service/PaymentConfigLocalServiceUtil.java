@@ -205,6 +205,11 @@ public class PaymentConfigLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.PaymentConfig getByInvoiceTemplateNo(
+		long groupId, String invoiceTemplateNo) {
+		return getService().getByInvoiceTemplateNo(groupId, invoiceTemplateNo);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return getService().getExportActionableDynamicQuery(portletDataContext);

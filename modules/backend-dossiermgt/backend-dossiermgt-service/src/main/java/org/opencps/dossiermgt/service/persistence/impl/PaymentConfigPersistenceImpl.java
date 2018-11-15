@@ -2246,6 +2246,265 @@ public class PaymentConfigPersistenceImpl extends BasePersistenceImpl<PaymentCon
 		"paymentConfig.govAgencyCode = ?";
 	private static final String _FINDER_COLUMN_FB_GID_GOVAGENCYCODE_GOVAGENCYCODE_3 =
 		"(paymentConfig.govAgencyCode IS NULL OR paymentConfig.govAgencyCode = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_ITN = new FinderPath(PaymentConfigModelImpl.ENTITY_CACHE_ENABLED,
+			PaymentConfigModelImpl.FINDER_CACHE_ENABLED,
+			PaymentConfigImpl.class, FINDER_CLASS_NAME_ENTITY, "fetchByG_ITN",
+			new String[] { Long.class.getName(), String.class.getName() },
+			PaymentConfigModelImpl.GROUPID_COLUMN_BITMASK |
+			PaymentConfigModelImpl.INVOICETEMPLATENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_ITN = new FinderPath(PaymentConfigModelImpl.ENTITY_CACHE_ENABLED,
+			PaymentConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ITN",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the payment config where groupId = &#63; and invoiceTemplateNo = &#63; or throws a {@link NoSuchPaymentConfigException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param invoiceTemplateNo the invoice template no
+	 * @return the matching payment config
+	 * @throws NoSuchPaymentConfigException if a matching payment config could not be found
+	 */
+	@Override
+	public PaymentConfig findByG_ITN(long groupId, String invoiceTemplateNo)
+		throws NoSuchPaymentConfigException {
+		PaymentConfig paymentConfig = fetchByG_ITN(groupId, invoiceTemplateNo);
+
+		if (paymentConfig == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", invoiceTemplateNo=");
+			msg.append(invoiceTemplateNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchPaymentConfigException(msg.toString());
+		}
+
+		return paymentConfig;
+	}
+
+	/**
+	 * Returns the payment config where groupId = &#63; and invoiceTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param invoiceTemplateNo the invoice template no
+	 * @return the matching payment config, or <code>null</code> if a matching payment config could not be found
+	 */
+	@Override
+	public PaymentConfig fetchByG_ITN(long groupId, String invoiceTemplateNo) {
+		return fetchByG_ITN(groupId, invoiceTemplateNo, true);
+	}
+
+	/**
+	 * Returns the payment config where groupId = &#63; and invoiceTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param invoiceTemplateNo the invoice template no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching payment config, or <code>null</code> if a matching payment config could not be found
+	 */
+	@Override
+	public PaymentConfig fetchByG_ITN(long groupId, String invoiceTemplateNo,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, invoiceTemplateNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_ITN,
+					finderArgs, this);
+		}
+
+		if (result instanceof PaymentConfig) {
+			PaymentConfig paymentConfig = (PaymentConfig)result;
+
+			if ((groupId != paymentConfig.getGroupId()) ||
+					!Objects.equals(invoiceTemplateNo,
+						paymentConfig.getInvoiceTemplateNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_PAYMENTCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_ITN_GROUPID_2);
+
+			boolean bindInvoiceTemplateNo = false;
+
+			if (invoiceTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_1);
+			}
+			else if (invoiceTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_3);
+			}
+			else {
+				bindInvoiceTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindInvoiceTemplateNo) {
+					qPos.add(invoiceTemplateNo);
+				}
+
+				List<PaymentConfig> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_ITN,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"PaymentConfigPersistenceImpl.fetchByG_ITN(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					PaymentConfig paymentConfig = list.get(0);
+
+					result = paymentConfig;
+
+					cacheResult(paymentConfig);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_ITN, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (PaymentConfig)result;
+		}
+	}
+
+	/**
+	 * Removes the payment config where groupId = &#63; and invoiceTemplateNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param invoiceTemplateNo the invoice template no
+	 * @return the payment config that was removed
+	 */
+	@Override
+	public PaymentConfig removeByG_ITN(long groupId, String invoiceTemplateNo)
+		throws NoSuchPaymentConfigException {
+		PaymentConfig paymentConfig = findByG_ITN(groupId, invoiceTemplateNo);
+
+		return remove(paymentConfig);
+	}
+
+	/**
+	 * Returns the number of payment configs where groupId = &#63; and invoiceTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param invoiceTemplateNo the invoice template no
+	 * @return the number of matching payment configs
+	 */
+	@Override
+	public int countByG_ITN(long groupId, String invoiceTemplateNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_ITN;
+
+		Object[] finderArgs = new Object[] { groupId, invoiceTemplateNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_PAYMENTCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_ITN_GROUPID_2);
+
+			boolean bindInvoiceTemplateNo = false;
+
+			if (invoiceTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_1);
+			}
+			else if (invoiceTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_3);
+			}
+			else {
+				bindInvoiceTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindInvoiceTemplateNo) {
+					qPos.add(invoiceTemplateNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_ITN_GROUPID_2 = "paymentConfig.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_1 = "paymentConfig.invoiceTemplateNo IS NULL";
+	private static final String _FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_2 = "paymentConfig.invoiceTemplateNo = ?";
+	private static final String _FINDER_COLUMN_G_ITN_INVOICETEMPLATENO_3 = "(paymentConfig.invoiceTemplateNo IS NULL OR paymentConfig.invoiceTemplateNo = '')";
 
 	public PaymentConfigPersistenceImpl() {
 		setModelClass(PaymentConfig.class);
@@ -2287,6 +2546,11 @@ public class PaymentConfigPersistenceImpl extends BasePersistenceImpl<PaymentCon
 		finderCache.putResult(FINDER_PATH_FETCH_BY_FB_GID_GOVAGENCYCODE,
 			new Object[] {
 				paymentConfig.getGroupId(), paymentConfig.getGovAgencyCode()
+			}, paymentConfig);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_ITN,
+			new Object[] {
+				paymentConfig.getGroupId(), paymentConfig.getInvoiceTemplateNo()
 			}, paymentConfig);
 
 		paymentConfig.resetOriginalValues();
@@ -2379,6 +2643,16 @@ public class PaymentConfigPersistenceImpl extends BasePersistenceImpl<PaymentCon
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_FB_GID_GOVAGENCYCODE, args,
 			paymentConfigModelImpl, false);
+
+		args = new Object[] {
+				paymentConfigModelImpl.getGroupId(),
+				paymentConfigModelImpl.getInvoiceTemplateNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_ITN, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_ITN, args,
+			paymentConfigModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -2427,6 +2701,27 @@ public class PaymentConfigPersistenceImpl extends BasePersistenceImpl<PaymentCon
 				args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_FB_GID_GOVAGENCYCODE,
 				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					paymentConfigModelImpl.getGroupId(),
+					paymentConfigModelImpl.getInvoiceTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_ITN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_ITN, args);
+		}
+
+		if ((paymentConfigModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_ITN.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					paymentConfigModelImpl.getOriginalGroupId(),
+					paymentConfigModelImpl.getOriginalInvoiceTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_ITN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_ITN, args);
 		}
 	}
 

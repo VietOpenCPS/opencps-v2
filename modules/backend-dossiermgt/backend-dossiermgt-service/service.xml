@@ -820,6 +820,11 @@
 			<finder-column name="govAgencyCode" />
 		</finder>
 
+		<finder return-type="PaymentConfig" name="G_ITN">
+			<finder-column name="groupId" />
+			<finder-column name="invoiceTemplateNo" />
+		</finder>
+		
 		<!-- References -->
 
 	</entity>

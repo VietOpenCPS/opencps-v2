@@ -726,6 +726,70 @@ public class PaymentConfigUtil {
 	}
 
 	/**
+	* Returns the payment config where groupId = &#63; and invoiceTemplateNo = &#63; or throws a {@link NoSuchPaymentConfigException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param invoiceTemplateNo the invoice template no
+	* @return the matching payment config
+	* @throws NoSuchPaymentConfigException if a matching payment config could not be found
+	*/
+	public static PaymentConfig findByG_ITN(long groupId,
+		String invoiceTemplateNo)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentConfigException {
+		return getPersistence().findByG_ITN(groupId, invoiceTemplateNo);
+	}
+
+	/**
+	* Returns the payment config where groupId = &#63; and invoiceTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param invoiceTemplateNo the invoice template no
+	* @return the matching payment config, or <code>null</code> if a matching payment config could not be found
+	*/
+	public static PaymentConfig fetchByG_ITN(long groupId,
+		String invoiceTemplateNo) {
+		return getPersistence().fetchByG_ITN(groupId, invoiceTemplateNo);
+	}
+
+	/**
+	* Returns the payment config where groupId = &#63; and invoiceTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param invoiceTemplateNo the invoice template no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching payment config, or <code>null</code> if a matching payment config could not be found
+	*/
+	public static PaymentConfig fetchByG_ITN(long groupId,
+		String invoiceTemplateNo, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByG_ITN(groupId, invoiceTemplateNo, retrieveFromCache);
+	}
+
+	/**
+	* Removes the payment config where groupId = &#63; and invoiceTemplateNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param invoiceTemplateNo the invoice template no
+	* @return the payment config that was removed
+	*/
+	public static PaymentConfig removeByG_ITN(long groupId,
+		String invoiceTemplateNo)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentConfigException {
+		return getPersistence().removeByG_ITN(groupId, invoiceTemplateNo);
+	}
+
+	/**
+	* Returns the number of payment configs where groupId = &#63; and invoiceTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param invoiceTemplateNo the invoice template no
+	* @return the number of matching payment configs
+	*/
+	public static int countByG_ITN(long groupId, String invoiceTemplateNo) {
+		return getPersistence().countByG_ITN(groupId, invoiceTemplateNo);
+	}
+
+	/**
 	* Caches the payment config in the entity cache if it is enabled.
 	*
 	* @param paymentConfig the payment config
