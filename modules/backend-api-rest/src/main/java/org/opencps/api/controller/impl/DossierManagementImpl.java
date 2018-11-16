@@ -1606,6 +1606,7 @@ public class DossierManagementImpl implements DossierManagement {
 								ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 										serviceProcessId);
 								if (proAction != null) {
+									_log.info("DO ACTION: " + proAction.getActionCode());
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 											actionCode, actionUser, input.getActionNote(),
 											input.getPayload(), input.getAssignUsers(), input.getPayment(),
