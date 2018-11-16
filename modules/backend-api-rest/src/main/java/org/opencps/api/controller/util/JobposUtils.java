@@ -71,6 +71,7 @@ public class JobposUtils {
 				ett.setDescription(document.get(JobPosTerm.DESCRIPTION));
 				ett.setLeader(Integer.valueOf(document.get(JobPosTerm.LEADER)));
 				ett.setRoleId(Long.valueOf(document.get(JobPosTerm.MAPPING_ROLE_ID)));
+				ett.setJobPosCode(document.get(JobPosTerm.JOBPOS_CODE));
 
 				results.add(ett);
 			}

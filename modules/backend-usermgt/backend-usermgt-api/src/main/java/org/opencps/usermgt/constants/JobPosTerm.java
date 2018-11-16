@@ -30,6 +30,8 @@ public class JobPosTerm {
 	public static final String LEADER = "leader";
 
 	public static final String MAPPING_ROLE_ID = "mappingRoleId";
+	
+	public static final String JOBPOS_CODE = "jobPosCode";
 
 	// sortable
 	public static final String JOBPOS_ID_SORTABLE = "jobPosId_sortable";
@@ -53,6 +55,8 @@ public class JobPosTerm {
 	public static final String LEADER_SORTABLE = "leader_sortable";
 
 	public static final String MAPPING_ROLE_ID_SORTABLE = "mappingRoleId_sortable";
+
+	public static final String JOBPOS_CODE_SORTABLE = "jobPosCode_sortable";
 
 	private long jobPosId;
 
