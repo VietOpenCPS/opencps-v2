@@ -64,7 +64,7 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 		return processStepRolePersistence.findByP_S_ID(processStepId);
 	}
 
-	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition) {
+	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition, String roleCode) {
 		ProcessStepRolePK pk = new ProcessStepRolePK(processStepId, roleId);
 
 		ProcessStepRole processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
@@ -74,11 +74,13 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 
 			processStepRole.setModerator(moderator);
 			processStepRole.setCondition(condition);
+			processStepRole.setRoleCode(roleCode);
 		} else {
 			processStepRole = processStepRolePersistence.fetchByPrimaryKey(pk);
 			
 			processStepRole.setModerator(moderator);
 			processStepRole.setCondition(condition);
+			processStepRole.setRoleCode(roleCode);
 		}
 
 		processStepRolePersistence.update(processStepRole);

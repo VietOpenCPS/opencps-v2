@@ -32,7 +32,7 @@ public interface ServiceProcessActions {
 	public JSONObject getServiceProcessRoles(long serviceProcessId) throws PortalException;
 
 	public ServiceProcessRole updateServiceProcessRole(long groupId, long serviceProcessId, long roleId,
-			boolean moderator, String condition) throws PortalException;
+			boolean moderator, String condition, String roleCode) throws PortalException;
 
 	public ServiceProcessRole removeServiceProcessRole(long serviceProcessId, long roleId) throws PortalException;
 
@@ -52,7 +52,7 @@ public interface ServiceProcessActions {
 
 	public ProcessStepRole getProcessStepRoleDetail(long processStepId, long roleId) throws PortalException;
 
-	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition)
+	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition, String roleCode)
 			throws PortalException;
 
 	public ProcessStepRole deleteProcessStepRole(long processStepId, long roleId) throws PortalException;

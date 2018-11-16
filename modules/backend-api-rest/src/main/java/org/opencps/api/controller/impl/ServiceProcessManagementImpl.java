@@ -324,7 +324,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			}
 
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, input.getRoleId(),
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
@@ -356,7 +356,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			}
 
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, roleid,
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
 			if (role != null) {
 				role.setRoleName(input.getRoleName());
 				ServiceProcessRoleLocalServiceUtil.updateServiceProcessRole(role);
@@ -667,7 +667,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				processStepId = step.getPrimaryKey();
 
 			ProcessStepRole role = actions.updateProcessStepRole(processStepId, input.getRoleId(),
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
@@ -707,7 +707,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				processStepId = step.getPrimaryKey();
 
 			ProcessStepRole role = actions.updateProcessStepRole(processStepId, roleid,
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
