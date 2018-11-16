@@ -77,6 +77,7 @@ public class JobPosIndexer extends BaseIndexer<JobPos> {
 		document.addTextSortable(JobPosTerm.DESCRIPTION, jobPos.getDescription());
 		document.addNumberSortable(JobPosTerm.MAPPING_ROLE_ID, jobPos.getMappingRoleId());
 		document.addNumberSortable(JobPosTerm.LEADER, jobPos.getLeader());
+		document.addTextSortable(JobPosTerm.JOBPOS_CODE, jobPos.getJobPosCode());
 		
 		return document;
 	}
