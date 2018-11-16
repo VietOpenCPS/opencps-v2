@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="roleName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="moderator" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="condition" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="roleCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -40,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
     "roleId",
     "roleName",
     "moderator",
-    "condition"
+    "condition",
+    "roleCode"
 })
 public class RoleDataModel {
 
@@ -48,8 +50,18 @@ public class RoleDataModel {
     protected String roleName;
     protected String moderator;
     protected String condition;
+    protected String roleCode;
+    
 
-    /**
+    public String getRoleCode() {
+		return roleCode;
+	}
+
+	public void setRoleCode(String roleCode) {
+		this.roleCode = roleCode;
+	}
+
+	/**
      * Gets the value of the roleId property.
      * 
      * @return

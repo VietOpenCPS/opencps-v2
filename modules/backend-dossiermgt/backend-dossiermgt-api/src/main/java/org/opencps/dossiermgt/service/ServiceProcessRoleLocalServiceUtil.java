@@ -258,10 +258,10 @@ public class ServiceProcessRoleLocalServiceUtil {
 
 	public static org.opencps.dossiermgt.model.ServiceProcessRole updateServiceProcessRole(
 		long groupId, long serviceProcessId, long roleId, boolean moderator,
-		String condition) {
+		String condition, String roleCode) {
 		return getService()
 				   .updateServiceProcessRole(groupId, serviceProcessId, roleId,
-			moderator, condition);
+			moderator, condition, roleCode);
 	}
 
 	/**

@@ -281,9 +281,10 @@ public class ProcessStepRoleLocalServiceWrapper
 
 	@Override
 	public org.opencps.dossiermgt.model.ProcessStepRole updateProcessStepRole(
-		long processStepId, long roleId, boolean moderator, String condition) {
+		long processStepId, long roleId, boolean moderator, String condition,
+		String roleCode) {
 		return _processStepRoleLocalService.updateProcessStepRole(processStepId,
-			roleId, moderator, condition);
+			roleId, moderator, condition, roleCode);
 	}
 
 	/**
