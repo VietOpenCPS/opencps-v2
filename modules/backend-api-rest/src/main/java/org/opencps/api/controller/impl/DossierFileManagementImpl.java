@@ -224,13 +224,17 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
 				
 						if (dataHandler != null && dataHandler.getInputStream() != null) {
-							dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
-									dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
-									dataHandler.getInputStream(), fileType, isSync, serviceContext);
+							dossierFile = action.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									dataHandler.getInputStream(), serviceContext);
 						} else {
-							dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
-									dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
-									serviceContext);
+							dossierFile = action.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									null, serviceContext);
 						}
 						
 						_log.info("__End add file at:" + new Date());
@@ -303,13 +307,17 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						DossierFile dossierFile =  null;
 						
 						if (dataHandler != null && dataHandler.getInputStream() != null) {
-							dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
-									dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
-									dataHandler.getInputStream(), fileType, isSync, serviceContext);
+							dossierFile = action.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									dataHandler.getInputStream(), serviceContext);
 						} else {
-							dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
-									dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
-									serviceContext);
+							dossierFile = action.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									null, serviceContext);
 						}
 						
 						_log.info("__End add file at:" + new Date());
