@@ -275,9 +275,9 @@ public class ServiceProcessRoleLocalServiceWrapper
 	@Override
 	public org.opencps.dossiermgt.model.ServiceProcessRole updateServiceProcessRole(
 		long groupId, long serviceProcessId, long roleId, boolean moderator,
-		String condition, String roleCode) {
+		String condition, String roleCode, String roleName) {
 		return _serviceProcessRoleLocalService.updateServiceProcessRole(groupId,
-			serviceProcessId, roleId, moderator, condition, roleCode);
+			serviceProcessId, roleId, moderator, condition, roleCode, roleName);
 	}
 
 	/**

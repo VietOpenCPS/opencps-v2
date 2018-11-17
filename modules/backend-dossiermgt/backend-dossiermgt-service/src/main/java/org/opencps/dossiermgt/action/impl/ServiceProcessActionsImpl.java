@@ -102,10 +102,10 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 
 	@Override
 	public ServiceProcessRole updateServiceProcessRole(long groupId, long serviceProcessId, long roleId,
-			boolean moderator, String condition, String roleCode) throws PortalException {
+			boolean moderator, String condition, String roleCode, String roleName) throws PortalException {
 
 		return ServiceProcessRoleLocalServiceUtil.updateServiceProcessRole(groupId, serviceProcessId, roleId, moderator,
-				condition, roleCode);
+				condition, roleCode, roleName);
 	}
 
 	@Override
@@ -187,9 +187,9 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	}
 
 	@Override
-	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition, String roleCode)
+	public ProcessStepRole updateProcessStepRole(long processStepId, long roleId, boolean moderator, String condition, String roleCode, String roleName)
 			throws PortalException {
-		return ProcessStepRoleLocalServiceUtil.updateProcessStepRole(processStepId, roleId, moderator, condition, roleCode);
+		return ProcessStepRoleLocalServiceUtil.updateProcessStepRole(processStepId, roleId, moderator, condition, roleCode, roleName);
 	}
 
 	@Override
