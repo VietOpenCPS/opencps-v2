@@ -234,7 +234,7 @@ public interface ProcessStepRoleLocalService extends BaseLocalService,
 	public ProcessStepRole removeProcessStepRole(long processStepId, long roleId);
 
 	public ProcessStepRole updateProcessStepRole(long processStepId,
-		long roleId, boolean moderator, String condition);
+		long roleId, boolean moderator, String condition, String roleCode);
 
 	/**
 	* Updates the process step role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

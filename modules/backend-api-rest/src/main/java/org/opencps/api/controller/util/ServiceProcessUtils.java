@@ -140,10 +140,12 @@ public class ServiceProcessUtils {
 			RoleDataModel model = new RoleDataModel();
 
 			model.setRoleId(GetterUtil.getInteger(role.getRoleId()));
-			model.setRoleName(_getRoleName(role.getRoleId()));
+//			model.setRoleName(_getRoleName(role.getRoleId()));
+			model.setRoleName(role.getRoleName());
 			model.setCondition(role.getCondition());
 			model.setModerator(Boolean.toString(role.getModerator()));
-
+			model.setRoleCode(role.getRoleCode());
+			
 			outputs.add(model);
 		}
 
@@ -158,10 +160,12 @@ public class ServiceProcessUtils {
 			RoleDataModel model = new RoleDataModel();
 
 			model.setRoleId(GetterUtil.getInteger(role.getRoleId()));
-			model.setRoleName(_getRoleName(role.getRoleId()));
+//			model.setRoleName(_getRoleName(role.getRoleId()));
+			model.setRoleName(role.getRoleName());
 			model.setCondition(role.getCondition());
 			model.setModerator(Boolean.toString(role.getModerator()));
-
+			model.setRoleCode(role.getRoleCode());
+			
 			outputs.add(model);
 		}
 
@@ -176,7 +180,8 @@ public class ServiceProcessUtils {
 		model.setRoleName(_getRoleName(processRole.getRoleId()));
 		model.setCondition(processRole.getCondition());
 		model.setModerator(Boolean.toString(processRole.getModerator()));
-
+		model.setRoleCode(processRole.getRoleCode());
+		
 		return model;
 	}
 
@@ -188,6 +193,7 @@ public class ServiceProcessUtils {
 		model.setRoleName(_getRoleName(stepRole.getRoleId()));
 		model.setCondition(stepRole.getCondition());
 		model.setModerator(Boolean.toString(stepRole.getModerator()));
+		model.setRoleCode(stepRole.getRoleCode());
 
 		return model;
 	}

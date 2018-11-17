@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="workingUnitName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="leader" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="mappingRoleId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="jobPosCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -51,7 +52,8 @@ import javax.xml.bind.annotation.XmlType;
     "workingUnitId",
     "workingUnitName",
     "leader",
-    "roleId"
+    "roleId",
+    "jobPosCode"
 })
 @XmlRootElement(name = "JobposModel")
 public class JobposModel {
@@ -65,8 +67,17 @@ public class JobposModel {
     protected String workingUnitName;
     protected Integer leader;
     protected Long roleId;
+    protected String jobPosCode;
 
-    /**
+    public String getJobPosCode() {
+		return jobPosCode;
+	}
+
+	public void setJobPosCode(String jobPosCode) {
+		this.jobPosCode = jobPosCode;
+	}
+
+	/**
      * Gets the value of the jobPosId property.
      * 
      * @return
