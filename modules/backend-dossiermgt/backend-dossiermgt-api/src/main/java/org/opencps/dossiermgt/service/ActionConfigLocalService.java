@@ -320,5 +320,6 @@ public interface ActionConfigLocalService extends BaseLocalService,
 		String sampleData, Boolean insideProcess, Integer userNote,
 		Integer syncType, Integer eventType, Integer infoType,
 		Boolean rollbackable, String notificationType, String documentType,
-		String formConfig, String mappingAction) throws PortalException;
+		String formConfig, String mappingAction, int dateOption)
+		throws PortalException;
 }

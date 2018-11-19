@@ -43,6 +43,8 @@ public class PaymentFileSoap implements Serializable {
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setDossierId(model.getDossierId());
 		soapModel.setReferenceUid(model.getReferenceUid());
+		soapModel.setGovAgencyCode(model.getGovAgencyCode());
+		soapModel.setGovAgencyName(model.getGovAgencyName());
 		soapModel.setPaymentFee(model.getPaymentFee());
 		soapModel.setAdvanceAmount(model.getAdvanceAmount());
 		soapModel.setFeeAmount(model.getFeeAmount());
@@ -196,6 +198,22 @@ public class PaymentFileSoap implements Serializable {
 
 	public void setReferenceUid(String referenceUid) {
 		_referenceUid = referenceUid;
+	}
+
+	public String getGovAgencyCode() {
+		return _govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		_govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return _govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		_govAgencyName = govAgencyName;
 	}
 
 	public String getPaymentFee() {
@@ -392,6 +410,8 @@ public class PaymentFileSoap implements Serializable {
 	private Date _modifiedDate;
 	private long _dossierId;
 	private String _referenceUid;
+	private String _govAgencyCode;
+	private String _govAgencyName;
 	private String _paymentFee;
 	private long _advanceAmount;
 	private long _feeAmount;

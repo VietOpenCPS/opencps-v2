@@ -79,6 +79,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "dossierId", Types.BIGINT },
 			{ "referenceUid", Types.VARCHAR },
+			{ "govAgencyCode", Types.VARCHAR },
+			{ "govAgencyName", Types.VARCHAR },
 			{ "paymentFee", Types.VARCHAR },
 			{ "advanceAmount", Types.BIGINT },
 			{ "feeAmount", Types.BIGINT },
@@ -116,6 +118,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("dossierId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("referenceUid", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("govAgencyCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("govAgencyName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("paymentFee", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("advanceAmount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("feeAmount", Types.BIGINT);
@@ -141,7 +145,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		TABLE_COLUMNS_MAP.put("einvoice", Types.CLOB);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_paymentfile (uuid_ VARCHAR(75) null,paymentFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,paymentFee VARCHAR(75) null,advanceAmount LONG,feeAmount LONG,serviceAmount LONG,shipAmount LONG,paymentAmount LONG,paymentNote VARCHAR(255) null,epaymentProfile STRING null,bankInfo STRING null,paymentStatus INTEGER,paymentMethod VARCHAR(75) null,confirmDatetime DATE null,confirmPayload TEXT null,confirmFileEntryId LONG,confirmNote VARCHAR(75) null,approveDatetime DATE null,accountUserName VARCHAR(75) null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo VARCHAR(75) null,invoiceIssueNo VARCHAR(75) null,invoiceNo VARCHAR(75) null,invoicePayload TEXT null,einvoice TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_paymentfile (uuid_ VARCHAR(75) null,paymentFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,paymentFee VARCHAR(75) null,advanceAmount LONG,feeAmount LONG,serviceAmount LONG,shipAmount LONG,paymentAmount LONG,paymentNote VARCHAR(255) null,epaymentProfile STRING null,bankInfo STRING null,paymentStatus INTEGER,paymentMethod VARCHAR(75) null,confirmDatetime DATE null,confirmPayload TEXT null,confirmFileEntryId LONG,confirmNote VARCHAR(75) null,approveDatetime DATE null,accountUserName VARCHAR(75) null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo VARCHAR(75) null,invoiceIssueNo VARCHAR(75) null,invoiceNo VARCHAR(75) null,invoicePayload TEXT null,einvoice TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_paymentfile";
 	public static final String ORDER_BY_JPQL = " ORDER BY paymentFile.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_paymentfile.createDate DESC";
@@ -213,6 +217,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("dossierId", getDossierId());
 		attributes.put("referenceUid", getReferenceUid());
+		attributes.put("govAgencyCode", getGovAgencyCode());
+		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("paymentFee", getPaymentFee());
 		attributes.put("advanceAmount", getAdvanceAmount());
 		attributes.put("feeAmount", getFeeAmount());
@@ -303,6 +309,18 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 
 		if (referenceUid != null) {
 			setReferenceUid(referenceUid);
+		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
+		}
+
+		String govAgencyName = (String)attributes.get("govAgencyName");
+
+		if (govAgencyName != null) {
+			setGovAgencyName(govAgencyName);
 		}
 
 		String paymentFee = (String)attributes.get("paymentFee");
@@ -635,6 +653,36 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 
 	public String getOriginalReferenceUid() {
 		return GetterUtil.getString(_originalReferenceUid);
+	}
+
+	@Override
+	public String getGovAgencyCode() {
+		if (_govAgencyCode == null) {
+			return "";
+		}
+		else {
+			return _govAgencyCode;
+		}
+	}
+
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_govAgencyCode = govAgencyCode;
+	}
+
+	@Override
+	public String getGovAgencyName() {
+		if (_govAgencyName == null) {
+			return "";
+		}
+		else {
+			return _govAgencyName;
+		}
+	}
+
+	@Override
+	public void setGovAgencyName(String govAgencyName) {
+		_govAgencyName = govAgencyName;
 	}
 
 	@Override
@@ -984,6 +1032,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		paymentFileImpl.setModifiedDate(getModifiedDate());
 		paymentFileImpl.setDossierId(getDossierId());
 		paymentFileImpl.setReferenceUid(getReferenceUid());
+		paymentFileImpl.setGovAgencyCode(getGovAgencyCode());
+		paymentFileImpl.setGovAgencyName(getGovAgencyName());
 		paymentFileImpl.setPaymentFee(getPaymentFee());
 		paymentFileImpl.setAdvanceAmount(getAdvanceAmount());
 		paymentFileImpl.setFeeAmount(getFeeAmount());
@@ -1146,6 +1196,22 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 			paymentFileCacheModel.referenceUid = null;
 		}
 
+		paymentFileCacheModel.govAgencyCode = getGovAgencyCode();
+
+		String govAgencyCode = paymentFileCacheModel.govAgencyCode;
+
+		if ((govAgencyCode != null) && (govAgencyCode.length() == 0)) {
+			paymentFileCacheModel.govAgencyCode = null;
+		}
+
+		paymentFileCacheModel.govAgencyName = getGovAgencyName();
+
+		String govAgencyName = paymentFileCacheModel.govAgencyName;
+
+		if ((govAgencyName != null) && (govAgencyName.length() == 0)) {
+			paymentFileCacheModel.govAgencyName = null;
+		}
+
 		paymentFileCacheModel.paymentFee = getPaymentFee();
 
 		String paymentFee = paymentFileCacheModel.paymentFee;
@@ -1295,7 +1361,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(71);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1317,6 +1383,10 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		sb.append(getDossierId());
 		sb.append(", referenceUid=");
 		sb.append(getReferenceUid());
+		sb.append(", govAgencyCode=");
+		sb.append(getGovAgencyCode());
+		sb.append(", govAgencyName=");
+		sb.append(getGovAgencyName());
 		sb.append(", paymentFee=");
 		sb.append(getPaymentFee());
 		sb.append(", advanceAmount=");
@@ -1370,7 +1440,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(103);
+		StringBundler sb = new StringBundler(109);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.PaymentFile");
@@ -1415,6 +1485,14 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		sb.append(
 			"<column><column-name>referenceUid</column-name><column-value><![CDATA[");
 		sb.append(getReferenceUid());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>govAgencyCode</column-name><column-value><![CDATA[");
+		sb.append(getGovAgencyCode());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>govAgencyName</column-name><column-value><![CDATA[");
+		sb.append(getGovAgencyName());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>paymentFee</column-name><column-value><![CDATA[");
@@ -1537,6 +1615,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 	private boolean _setOriginalDossierId;
 	private String _referenceUid;
 	private String _originalReferenceUid;
+	private String _govAgencyCode;
+	private String _govAgencyName;
 	private String _paymentFee;
 	private long _advanceAmount;
 	private long _feeAmount;
