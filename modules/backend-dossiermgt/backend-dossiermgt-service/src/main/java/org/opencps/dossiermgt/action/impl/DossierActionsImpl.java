@@ -3293,11 +3293,9 @@ public class DossierActionsImpl implements DossierActions {
 					List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
 					if (lstFiles.size() > 0) {
 						for (DossierFile df : lstFiles) {
-							if (df.getDossierPartType() == DossierPartTerm.DOSSIER_PART_TYPE_INPUT) {
-								JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-								dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
-								dossierFilesArr.put(dossierFileObj);
-							}
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
 						}
 					}					
 				}
