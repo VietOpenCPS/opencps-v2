@@ -391,12 +391,14 @@ public class ActionConfigLocalServiceWrapper implements ActionConfigLocalService
 		Boolean extraForm, String sampleData, Boolean insideProcess,
 		Integer userNote, Integer syncType, Integer eventType,
 		Integer infoType, Boolean rollbackable, String notificationType,
-		String documentType, String formConfig, String mappingAction)
+		String documentType, String formConfig, String mappingAction,
+		int dateOption)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _actionConfigLocalService.updateActionConfigDB(userId, groupId,
 			actionCode, actionName, extraForm, sampleData, insideProcess,
 			userNote, syncType, eventType, infoType, rollbackable,
-			notificationType, documentType, formConfig, mappingAction);
+			notificationType, documentType, formConfig, mappingAction,
+			dateOption);
 	}
 
 	@Override

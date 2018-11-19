@@ -46,10 +46,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.http.HttpClientConnection;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
@@ -78,14 +76,15 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
@@ -126,7 +125,6 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
-import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -1614,6 +1612,56 @@ public class DossierManagementImpl implements DossierManagement {
 											actConfig.getSyncType(), serviceContext, errorModel);
 								} else {
 									//TODO: Error
+								}
+							}
+							if (dossierResult != null) {
+								String actionCodeResult = dossierResult.getActionCode();
+								_log.info("actionCodeResult: "+actionCodeResult);
+								if (Validator.isNotNull(actionCodeResult)) {
+									ActionConfig actConfigResult = ActionConfigLocalServiceUtil.getByCode(groupId, actionCodeResult);
+									int dateOption = actConfigResult.getDateOption();
+									_log.info("dateOption: "+dateOption);
+									if (dateOption == DossierTerm.DATE_OPTION_THREE) {
+										DossierAction dActEnd = DossierActionLocalServiceUtil
+												.fetchDossierAction(dossierResult.getPreviousActionId());
+										if (dActEnd != null) {
+											DossierAction dActStart = DossierActionLocalServiceUtil
+													.fetchDossierAction(dActEnd.getPreviousActionId());
+											if (dActStart != null) {
+												long createEnd = dActEnd.getCreateDate().getTime();
+												long createStart = dActStart.getCreateDate().getTime();
+												_log.info("createStart: "+createStart);
+												_log.info("createEnd: "+createEnd);
+												if (createEnd > createStart) {
+													long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, groupId);
+													_log.info("extendDateTimeStamp: "+extendDateTimeStamp);
+													if (extendDateTimeStamp > 0) {
+														long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
+														_log.info("hoursCount: "+hoursCount);
+														_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
+														List<Holiday> holidayList = HolidayLocalServiceUtil
+																.getHolidayByGroupId(groupId);
+
+														Date dueDateExtend = HolidayUtils.getEndDate(groupId,
+																dossier.getExtendDate(), hoursCount, holidayList);
+														_log.info("dueDateExtend: "+dueDateExtend);
+														if (dueDateExtend != null) {
+															dossier.setDueDate(dueDateExtend);
+															dossier.setExtendDate(null);
+															DossierLocalServiceUtil.updateDossier(dossier);
+														}
+													}
+													
+												}
+											}
+										}
+									} else if (dateOption == DossierTerm.DATE_OPTION_ONE) {
+										if (dossier.getDueDate() != null) {
+											dossier.setExtendDate(dossier.getDueDate());
+											dossier.setDueDate(null);
+											DossierLocalServiceUtil.updateDossier(dossier);
+										}
+									}
 								}
 							}
 						} else {

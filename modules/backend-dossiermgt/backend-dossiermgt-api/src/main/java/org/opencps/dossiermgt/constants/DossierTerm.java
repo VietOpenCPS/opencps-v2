@@ -215,6 +215,15 @@ public class DossierTerm {
 	//
 	public static final int CONSTANT_INDEX_ORIGINALITY = 100;
 	public static final String DATE_OPTION = "dateOption";
+	//Constant dateOption
+	public static final int DATE_OPTION_ONE = 1;
+	public static final int DATE_OPTION_TWO = 2;
+	public static final int DATE_OPTION_THREE = 3;
+	public static final int DATE_OPTION_FOUR = 4;
+	public static final int DATE_OPTION_FIVE = 5;
+	public static final int DATE_OPTION_SIX = 6;
+	public static final int DATE_OPTION_SEVEN = 7;
+	public static final int DATE_OPTION_EIGHT = 8;
 
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 }
