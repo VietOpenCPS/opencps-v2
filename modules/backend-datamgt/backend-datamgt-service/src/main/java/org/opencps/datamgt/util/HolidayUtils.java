@@ -412,7 +412,7 @@ public class HolidayUtils {
 //			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.PERIOD);
 			String[] strMorningSplit = StringUtil.split(hourArr1[0], StringPool.COLON);
 			if (strMorningSplit != null) {
-				startHourMorning = Integer.parseInt(strMorningSplit[0]) - 7;
+				startHourMorning = Integer.parseInt(strMorningSplit[0]);
 				startMinuteMorning = Integer.parseInt(strMorningSplit[1]);
 			}
 		}
@@ -421,7 +421,7 @@ public class HolidayUtils {
 //			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.PERIOD);
 			String[] strMorningSplit = StringUtil.split(hourArr1[1], StringPool.COLON);
 			if (strMorningSplit != null) {
-				endHourMorning = Integer.parseInt(strMorningSplit[0]) - 7;
+				endHourMorning = Integer.parseInt(strMorningSplit[0]);
 				endMinuteMorning = Integer.parseInt(strMorningSplit[1]);
 			}
 		}
@@ -429,7 +429,7 @@ public class HolidayUtils {
 		if (Validator.isNotNull(hourArr2[0])) {
 			String[] strAfternoonSplit = StringUtil.split(hourArr2[0], StringPool.COLON);
 			if (strAfternoonSplit != null) {
-				startHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]) - 7;
+				startHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]);
 				startMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[1]);
 			}
 		}
@@ -437,7 +437,7 @@ public class HolidayUtils {
 		if (Validator.isNotNull(hourArr2[1])) {
 			String[] strAfternoonSplit = StringUtil.split(hourArr2[1], StringPool.COLON);
 			if (strAfternoonSplit != null) {
-				endHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]) - 7;
+				endHourAfterNoon = Integer.parseInt(strAfternoonSplit[0]);
 				endMinuteAfterNoon = Integer.parseInt(strAfternoonSplit[1]);
 			}
 		}
