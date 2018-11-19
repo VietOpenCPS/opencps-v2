@@ -227,7 +227,8 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						else if (processAction != null) {
 							List<DossierActionUser> assignedUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
 							for (DossierActionUser dau : assignedUsers) {
-								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH) {
+								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH
+										&& dau.getModerator() == 1) {
 									User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
 									lstUser.add(u);
 								}
