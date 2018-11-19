@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="org.opencps.sms.service.impl.SMSGatewayLogLocalServiceImpl" id="org.opencps.sms.service.SMSGatewayLogLocalService" />
+	<bean class="org.opencps.sms.service.impl.SMSGatewayLogServiceImpl" id="org.opencps.sms.service.SMSGatewayLogService" />
+	<bean class="org.opencps.sms.service.persistence.impl.SMSGatewayLogPersistenceImpl" id="org.opencps.sms.service.persistence.SMSGatewayLogPersistence" parent="basePersistence" />
+	<bean class="org.opencps.sms.service.impl.SMSLookUpQueueLocalServiceImpl" id="org.opencps.sms.service.SMSLookUpQueueLocalService" />
+	<bean class="org.opencps.sms.service.impl.SMSLookUpQueueServiceImpl" id="org.opencps.sms.service.SMSLookUpQueueService" />
+	<bean class="org.opencps.sms.service.persistence.impl.SMSLookUpQueuePersistenceImpl" id="org.opencps.sms.service.persistence.SMSLookUpQueuePersistence" parent="basePersistence" />
+</beans>
