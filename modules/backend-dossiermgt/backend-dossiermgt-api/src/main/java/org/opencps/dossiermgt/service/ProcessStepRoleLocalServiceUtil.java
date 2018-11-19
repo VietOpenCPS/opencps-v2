@@ -262,10 +262,11 @@ public class ProcessStepRoleLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.ProcessStepRole updateProcessStepRole(
-		long processStepId, long roleId, boolean moderator, String condition) {
+		long processStepId, long roleId, boolean moderator, String condition,
+		String roleCode) {
 		return getService()
 				   .updateProcessStepRole(processStepId, roleId, moderator,
-			condition);
+			condition, roleCode);
 	}
 
 	/**
