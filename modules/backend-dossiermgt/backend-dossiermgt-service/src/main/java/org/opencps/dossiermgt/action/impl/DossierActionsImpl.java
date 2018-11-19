@@ -2791,6 +2791,9 @@ public class DossierActionsImpl implements DossierActions {
 					
 					if (Validator.isNotNull(paymentConfig)) {
 						paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
+						paymentFile.setGovAgencyTaxNo(paymentConfig.getGovAgencyTaxNo());
+						paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
+						paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
 					}
 					
 					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
