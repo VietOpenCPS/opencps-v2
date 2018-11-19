@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder package-path="org.opencps.sms">
+	<author>khoa</author>
+	<namespace>SMS</namespace>
+	<!--<entity data-source="sampleDataSource" local-service="true" name="Foo" remote-service="false" session-factory="sampleSessionFactory" table="foo" tx-manager="sampleTransactionManager uuid="true"">-->
+	<entity local-service="true" name="SMSLookUpQueue" remote-service="true" uuid="true" table="opencps_smsqueue">
+
+		<!-- PK fields -->
+
+		<column name="queueId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="moid" type="String" />
+		<column name="src" type="String" />
+		<column name="dest" type="String" />
+		<column name="moseq" type="String" />
+		<column name="cmdcode" type="String" />
+		<column name="msgbody" type="String" />
+		<column name="password" type="String" />
+		<column name="status" type="int"/>
+		<column name="receivedDate" type="Date" />
+		<column name="userName" type="String" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="receivedDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="M_O_I_D" return-type="SMSLookUpQueue">
+			<finder-column name="moid" />
+		</finder>
+
+	</entity>
+	
+	<entity local-service="true" name="SMSGatewayLog" remote-service="true" uuid="true" table="opencps_smsgatewaylog">
+
+		<!-- PK fields -->
+
+		<column name="smsId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="src" type="String" />
+		<column name="smsReq" type="String" />
+		<column name="smsReply" type="String" />
+		<column name="dossierNo" type="String" />
+		<column name="applicationName" type="String" />
+		<column name="reqDate" type="Date" />
+		<column name="replyDate" type="Date" />
+
+		<!-- 0 - success -->
+		<!-- 1 - fail -->
+		<column name="status" type="int"/>
+
+		<!-- 0 - MO -->
+		<!-- 1 - MT -->
+		<column name="smsType" type="int"/>
+
+		<!-- Order -->
+		<column name="lastReplyManualDate" type="Date" />
+		<column name="lastReplyManualUserId" type="long" />
+		<column name="lastReplyManualUserName" type="String" />
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+
+	</entity>
+	
+	<exceptions>
+		<exception>InvalidDossierNo</exception>
+		<exception>DossierNotFound</exception>
+	</exceptions>
+</service-builder>

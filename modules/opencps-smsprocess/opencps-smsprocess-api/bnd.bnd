@@ -1,0 +1,9 @@
+Bundle-Name: opencps-smsprocess-api
+Bundle-SymbolicName: SMSProcess.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	SMSProcess.exception,\
+	SMSProcess.model,\
+	SMSProcess.service,\
+	SMSProcess.service.persistence
+-includeresource: META-INF/service.xml=../opencps-smsprocess-service/service.xml
