@@ -117,12 +117,13 @@ public class ProcessUpdateDBUtils {
 						String notificationType = actConfig.getNotificationType();
 						String documentType = actConfig.getDocumentType();
 						String mappingAction = actConfig.getMappingAction();
-						
+						int dateOption = actConfig.getDateOption();
+
 						if (Validator.isNotNull(actionCode)) {
 							// Check record exits DB
 							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
 									insideProcess, userNote, syncType, eventType, infoType, rollbackable,
-									notificationType, documentType, formConfig, mappingAction);
+									notificationType, documentType, formConfig, mappingAction, dateOption);
 						}
 					}
 				}

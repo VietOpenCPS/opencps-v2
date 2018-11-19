@@ -368,13 +368,14 @@ public class ActionConfigLocalServiceUtil {
 		Boolean extraForm, String sampleData, Boolean insideProcess,
 		Integer userNote, Integer syncType, Integer eventType,
 		Integer infoType, Boolean rollbackable, String notificationType,
-		String documentType, String formConfig, String mappingAction)
+		String documentType, String formConfig, String mappingAction,
+		int dateOption)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .updateActionConfigDB(userId, groupId, actionCode,
 			actionName, extraForm, sampleData, insideProcess, userNote,
 			syncType, eventType, infoType, rollbackable, notificationType,
-			documentType, formConfig, mappingAction);
+			documentType, formConfig, mappingAction, dateOption);
 	}
 
 	public static ActionConfigLocalService getService() {
