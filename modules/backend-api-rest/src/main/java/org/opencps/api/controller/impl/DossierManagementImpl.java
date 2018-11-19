@@ -1621,7 +1621,7 @@ public class DossierManagementImpl implements DossierManagement {
 									ActionConfig actConfigResult = ActionConfigLocalServiceUtil.getByCode(groupId, actionCodeResult);
 									int dateOption = actConfigResult.getDateOption();
 									_log.info("dateOption: "+dateOption);
-									if (dateOption == DossierTerm.DATE_OPTION_THREE) {
+									if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
 										DossierAction dActEnd = DossierActionLocalServiceUtil
 												.fetchDossierAction(dossierResult.getPreviousActionId());
 										if (dActEnd != null) {
@@ -1655,11 +1655,26 @@ public class DossierManagementImpl implements DossierManagement {
 												}
 											}
 										}
-									} else if (dateOption == DossierTerm.DATE_OPTION_ONE) {
+									} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 										if (dossier.getDueDate() != null) {
 											dossier.setExtendDate(dossier.getDueDate());
 											dossier.setDueDate(null);
 											DossierLocalServiceUtil.updateDossier(dossier);
+										}
+									} else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+										if (dossier.getDueDate() != null) {
+											ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
+													.fetchServiceProcess(dossierResult.getServiceProcessId());
+											if (serviceProcess != null) {
+												Date newDueDate = HolidayUtils.getDueDate(new Date(),
+														serviceProcess.getDurationCount(),
+														serviceProcess.getDurationUnit(), groupId);
+												if (newDueDate != null) {
+													dossier.setDueDate(newDueDate);
+													DossierLocalServiceUtil.updateDossier(dossier);
+												}
+											}
+
 										}
 									}
 								}
