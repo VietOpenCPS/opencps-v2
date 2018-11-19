@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom-sql>
+	<sql id="org.opencps.sms.service.persistence.SMSGatewayLogFinder.search">
+		<![CDATA[
+			SELECT
+			  *
+			FROM opencps_smsgatewaylog
+			WHERE 1 = 1
+			AND smsType = ?
+			AND reqDate >= ?
+			AND reqDate <= ?
+			AND replyDate >= ?
+			AND replyDate <= ?
+			AND src = ?
+			AND status = ?
+			
+			ORDER BY reqDate DESC
+		]]>
+	</sql>
+</custom-sql>
