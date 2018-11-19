@@ -65,7 +65,7 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(71);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -87,6 +87,10 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 		sb.append(dossierId);
 		sb.append(", referenceUid=");
 		sb.append(referenceUid);
+		sb.append(", govAgencyCode=");
+		sb.append(govAgencyCode);
+		sb.append(", govAgencyName=");
+		sb.append(govAgencyName);
 		sb.append(", paymentFee=");
 		sb.append(paymentFee);
 		sb.append(", advanceAmount=");
@@ -182,6 +186,20 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 		}
 		else {
 			paymentFileImpl.setReferenceUid(referenceUid);
+		}
+
+		if (govAgencyCode == null) {
+			paymentFileImpl.setGovAgencyCode("");
+		}
+		else {
+			paymentFileImpl.setGovAgencyCode(govAgencyCode);
+		}
+
+		if (govAgencyName == null) {
+			paymentFileImpl.setGovAgencyName("");
+		}
+		else {
+			paymentFileImpl.setGovAgencyName(govAgencyName);
 		}
 
 		if (paymentFee == null) {
@@ -328,6 +346,8 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 
 		dossierId = objectInput.readLong();
 		referenceUid = objectInput.readUTF();
+		govAgencyCode = objectInput.readUTF();
+		govAgencyName = objectInput.readUTF();
 		paymentFee = objectInput.readUTF();
 
 		advanceAmount = objectInput.readLong();
@@ -395,6 +415,20 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 		}
 		else {
 			objectOutput.writeUTF(referenceUid);
+		}
+
+		if (govAgencyCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(govAgencyCode);
+		}
+
+		if (govAgencyName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(govAgencyName);
 		}
 
 		if (paymentFee == null) {
@@ -524,6 +558,8 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 	public long modifiedDate;
 	public long dossierId;
 	public String referenceUid;
+	public String govAgencyCode;
+	public String govAgencyName;
 	public String paymentFee;
 	public long advanceAmount;
 	public long feeAmount;

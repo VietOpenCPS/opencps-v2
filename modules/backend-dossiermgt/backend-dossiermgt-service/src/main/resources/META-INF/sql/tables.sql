@@ -523,6 +523,8 @@ create table opencps_paymentfile (
 	modifiedDate DATE null,
 	dossierId LONG,
 	referenceUid VARCHAR(75) null,
+	govAgencyCode VARCHAR(75) null,
+	govAgencyName VARCHAR(75) null,
 	paymentFee VARCHAR(75) null,
 	advanceAmount LONG,
 	feeAmount LONG,
