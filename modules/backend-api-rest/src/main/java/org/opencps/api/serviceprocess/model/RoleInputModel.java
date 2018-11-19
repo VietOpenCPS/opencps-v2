@@ -8,6 +8,10 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import com.liferay.petra.string.StringPool;
+
+import javax.enterprise.inject.Default;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="roleName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="moderator" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="condition" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="roleCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -42,20 +47,34 @@ import javax.xml.bind.annotation.XmlType;
     "roleId",
     "roleName",
     "moderator",
-    "condition"
+    "condition",	
+    "roleCode"
 })
 @XmlRootElement(name = "RoleInputModel")
 public class RoleInputModel {
 	@FormParam("roleId")
     protected int roleId;
 	@FormParam("roleName")
+	@DefaultValue(value = StringPool.BLANK)
     protected String roleName;
 	@FormParam("moderator")
     protected String moderator;
 	@FormParam("condition")
     protected String condition;
+	@FormParam("roleCode")
+	@DefaultValue(value = StringPool.BLANK)
+    protected String roleCode;
+	
 
-    /**
+    public String getRoleCode() {
+		return roleCode;
+	}
+
+	public void setRoleCode(String roleCode) {
+		this.roleCode = roleCode;
+	}
+
+	/**
      * Gets the value of the roleId property.
      * 
      * @return

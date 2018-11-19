@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -1604,6 +1605,7 @@ public class DossierManagementImpl implements DossierManagement {
 								ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 										serviceProcessId);
 								if (proAction != null) {
+									_log.info("DO ACTION: " + proAction.getActionCode());
 									dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 											actionCode, actionUser, input.getActionNote(),
 											input.getPayload(), input.getAssignUsers(), input.getPayment(),
@@ -2746,6 +2748,15 @@ public class DossierManagementImpl implements DossierManagement {
 		if (dossier == null) {
 			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 		}
+		List<Role> userRoles = user.getRoles();
+		boolean isAdmin = false;
+		for (Role r : userRoles) {
+			if (r.getName().startsWith("Administrator")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		
 		if (dossier != null) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			if (dossierAction != null && dossierAction.isRollbackable()) {
@@ -2761,6 +2772,20 @@ public class DossierManagementImpl implements DossierManagement {
 						return BusinessExceptionImpl.processException(e);
 					}
 				}
+			}
+			else if (dossierAction != null && isAdmin) {
+				DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
+				
+				DossierAction previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getPreviousActionId());
+				if (previousAction != null) {
+					DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+					try {
+						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
+						DossierLocalServiceUtil.rollback(dossier, previousAction);
+					} catch (PortalException e) {
+						return BusinessExceptionImpl.processException(e);
+					}
+				}				
 			}
 			return Response.status(200).entity(null).build();			
 		}
@@ -3620,7 +3645,7 @@ public class DossierManagementImpl implements DossierManagement {
 										result.append("\"|");
 										result.append(psOther.getSequenceNo());
 										result.append("\n");
-										if (lastAction.getStepCode().equals(pa.getPostStepCode())) {
+										if (lastAction.getStepCode().equals(pa.getPreStepCode())) {
 											result.append("style " + ps.getSequenceNo() + " fill:#f9f,stroke:#333,stroke-width:4px");
 											result.append("\n");
 										}

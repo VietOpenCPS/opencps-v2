@@ -234,7 +234,8 @@ public interface ServiceProcessRoleLocalService extends BaseLocalService,
 		long roleId);
 
 	public ServiceProcessRole updateServiceProcessRole(long groupId,
-		long serviceProcessId, long roleId, boolean moderator, String condition);
+		long serviceProcessId, long roleId, boolean moderator,
+		String condition, String roleCode, String roleName);
 
 	/**
 	* Updates the service process role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

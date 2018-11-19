@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import java.io.File;
 import java.net.URI;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -25,12 +26,17 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -39,11 +45,15 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusException;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
@@ -766,7 +776,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
-		_log.info("SONDT CREATE PAYMENTFILE GROUPID ====================== " + JSONFactoryUtil.looseSerialize(input));
+		//_log.info("SONDT API CREATE PAYMENTFILE INPUT ====================== " + JSONFactoryUtil.looseSerialize(input));
 		
 		long userId = serviceContext.getUserId();
 		
@@ -828,8 +838,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			if(Validator.isNotNull(input.getShipAmount())){
 				paymentFile.setShipAmount(input.getShipAmount());
 			}
-			if(Validator.isNotNull(input.getShipAmount())){
-				paymentFile.setShipAmount(input.getShipAmount());
+			if(Validator.isNotNull(input.getAdvanceAmount())){
+				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
 			}
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 
@@ -840,5 +850,87 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
+	}
+
+	@Override
+	public Response previewInvoiceFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			Dossier dossier = getDossier(id, groupId);
+
+			if (dossier != null) {
+				PaymentFileActions action = new PaymentFileActionsImpl();
+				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
+				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
+				
+				String formData = JSONFactoryUtil.looseSerialize(paymentFile);
+				String formReport = paymentConfig.getInvoiceForm();
+
+				ObjectMapper mapper = new ObjectMapper();
+		        Map<String, String> map = (Map<String, String>)mapper.readValue(formData, Map.class);
+
+		        map.put("applicantName", dossier.getApplicantName());
+		        
+		        StringBuilder address = new StringBuilder();
+				address.append(dossier.getAddress());address.append(", ");
+				address.append(dossier.getWardName());address.append(", ");
+				address.append(dossier.getDistrictName());address.append(", ");
+				address.append(dossier.getCityName());
+		        
+		        map.put("address", address.toString());
+		        
+		        formData = mapper.writeValueAsString(map);
+		        _log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);
+				
+				Message message = new Message();
+
+				message.put("formReport", formReport);
+
+				message.put("formData", formData);
+
+				message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
+				message.setResponseDestinationName("jasper/engine/preview/callback");
+
+				try {
+					String previewResponse = (String) MessageBusUtil
+							.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+
+					if (Validator.isNotNull(previewResponse)) {
+						// jsonObject =
+						// JSONFactoryUtil.createJSONObject(previewResponse);
+					}
+
+					// String fileDes = jsonObject.getString("fileDes");
+
+					File file = new File(previewResponse);
+
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+					responseBuilder.header("Content-Disposition",
+								"attachment; filename=\"" + file.getName() + "\"");
+					responseBuilder.header("Content-Type", "application/pdf");
+
+					return responseBuilder.build();
+
+				} catch (MessageBusException e) {
+					_log.error(e);
+					throw new Exception("Preview rendering not avariable");
+				}
+			} else {
+				throw new Exception("Cant get dossier with id_" + id);
+			}
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
 	}
 }

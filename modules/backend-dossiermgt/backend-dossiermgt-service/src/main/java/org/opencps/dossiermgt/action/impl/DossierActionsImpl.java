@@ -2781,9 +2781,20 @@ public class DossierActionsImpl implements DossierActions {
 					
 					int prefix = cal.get(Calendar.YEAR);
 					
-					String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+					String invoiceNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
 					
-					paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
+					paymentFile.setInvoiceNo(invoiceNo);
+					
+					// get paymentConfig
+					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
+							dossier.getGovAgencyCode());
+					
+					if (Validator.isNotNull(paymentConfig)) {
+						paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
+						paymentFile.setGovAgencyTaxNo(paymentConfig.getGovAgencyTaxNo());
+						paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
+						paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
+					}
 					
 					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 					//_log.info("==========Dossier Action SONDT START ========= ");
@@ -2792,9 +2803,6 @@ public class DossierActionsImpl implements DossierActions {
 					// create paymentFileActions
 					PaymentFileActions actions = new PaymentFileActionsImpl();
 
-					// get paymentConfig
-					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
-							dossier.getGovAgencyCode());
 //					_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
 //					_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
 					// generator epaymentProfile
@@ -2863,7 +2871,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				JSONObject resultObj = null;
 				Map<String, Object> params = new HashMap<>();
-				_log.info("SONDT payment REQUESTPAYMENT 5: DOSSIERID ========= "+ dossier.getDossierId());
+				//_log.info("SONDT payment REQUESTPAYMENT 5: DOSSIERID ========= "+ dossier.getDossierId());
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 				int intpaymentMethod = 0;
 				if(Validator.isNotNull(proAction.getPreCondition())) {
@@ -2882,7 +2890,7 @@ public class DossierActionsImpl implements DossierActions {
 							CINVOICEUrl, "", "", properties, params, context);
 					
 				}
-				_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
+				//_log.info("SONDT resultCINVOICE REQUESTPAYMENT 5 ===========================  " + JSONFactoryUtil.looseSerialize(resultObj));
 				
 				if (Validator.isNotNull(oldPaymentFile) ) {
 					String paymentMethod = "";
@@ -2905,7 +2913,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 			} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				_log.info("SONDT DOSSIERACTION oldPaymentFile REQUESTPAYMENT 3 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
+				//_log.info("SONDT DOSSIERACTION oldPaymentFile REQUESTPAYMENT 3 ===========================  " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 				int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
 				String paymentMethod = checkPaymentMethod(intpaymentMethod);
 				if (oldPaymentFile != null) {
@@ -6017,11 +6025,11 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	private String checkPaymentMethod(int mt) {
 		String pmMethod = "";
 		if (mt == 1) {
-			pmMethod = "Keypay";
+			pmMethod = "Chuyển khoản";//KeyPay
 		} else if (mt == 2) {
-			pmMethod = "Chuyen khoan";
+			pmMethod = "Chuyển khoản";
 		} else if (mt == 3) {
-			pmMethod = "Truc tiep";
+			pmMethod = "Tiền mặt";
 		}
 		
 		_log.info("SONDT checkPaymentMethod pmMethod ===== " + pmMethod);

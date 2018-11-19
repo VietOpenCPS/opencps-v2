@@ -66,7 +66,7 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 	}
 
 	public ServiceProcessRole updateServiceProcessRole(long groupId, long serviceProcessId, long roleId,
-			boolean moderator, String condition) {
+			boolean moderator, String condition, String roleCode, String roleName) {
 
 		ServiceProcessRole serviceProcessRole = null;
 		
@@ -78,12 +78,15 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 			
 			serviceProcessRole.setModerator(moderator);
 			serviceProcessRole.setCondition(condition);
+			serviceProcessRole.setRoleCode(roleCode);
+			serviceProcessRole.setRoleName(roleName);
 		} else {
 			serviceProcessRole = serviceProcessRolePersistence.create(pk);
 			
 			serviceProcessRole.setModerator(moderator);
 			serviceProcessRole.setCondition(condition);
-			
+			serviceProcessRole.setRoleCode(roleCode);
+			serviceProcessRole.setRoleName(roleName);
 		}
 		
 		serviceProcessRolePersistence.update(serviceProcessRole);
