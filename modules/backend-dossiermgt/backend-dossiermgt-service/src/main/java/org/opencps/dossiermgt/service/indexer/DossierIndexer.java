@@ -379,7 +379,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long dossierId = object.getDossierId();
 
 			document.addNumberSortable(DossierTerm.DOSSIER_ID, dossierId);
-			document.addNumberSortable(DossierTerm.ORIGIN, object.getOriginDossierId());
 			
 			if (Validator.isNotNull(object.getReferenceUid())) {
 				document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
@@ -658,8 +657,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 			document.addTextSortable(DossierTerm.DOMAIN_CODE, domainCode);
 			document.addTextSortable(DossierTerm.DOMAIN_NAME, domainName);
-			document.addNumberSortable(DossierTerm.ORIGIN_DOSSIER_ID, object.getOriginDossierId());
-			document.addNumberSortable(DossierTerm.ORIGIN, object.getOriginDossierId());
+			document.addTextSortable(DossierTerm.ORIGIN_DOSSIER_ID, String.valueOf(object.getOriginDossierId()));
+			document.addTextSortable(DossierTerm.ORIGIN, String.valueOf(object.getOriginDossierId()));
 			
 			//Add payment status
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(object.getGroupId(), dossierId);

@@ -411,6 +411,8 @@ public class DossierUtils {
 				model.setSampleCount(0l);
 			}
 
+			model.setOrigin(doc.get(DossierTerm.ORIGIN));
+			
 			ouputs.add(model);
 		}
 
