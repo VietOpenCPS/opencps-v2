@@ -2,17 +2,20 @@ package org.opencps.dossiermgt.action;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessStep;
 
 import backend.auth.api.exception.ErrorMsgModel;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -147,4 +150,5 @@ public interface DossierActions {
 			Date endorsementDate, Date extendDate,
 			Date processDate, ServiceContext context) throws PortalException;
 	
+	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps);
 }
