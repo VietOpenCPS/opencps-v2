@@ -589,6 +589,8 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="referenceUid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="paymentFee" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="advanceAmount" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="feeAmount" type="com.liferay.portal.dao.orm.hibernate.LongType" />

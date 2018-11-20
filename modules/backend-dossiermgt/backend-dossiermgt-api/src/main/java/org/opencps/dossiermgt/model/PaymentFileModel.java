@@ -240,6 +240,36 @@ public interface PaymentFileModel extends BaseModel<PaymentFile>, GroupedModel,
 	public void setReferenceUid(String referenceUid);
 
 	/**
+	 * Returns the gov agency code of this payment file.
+	 *
+	 * @return the gov agency code of this payment file
+	 */
+	@AutoEscape
+	public String getGovAgencyCode();
+
+	/**
+	 * Sets the gov agency code of this payment file.
+	 *
+	 * @param govAgencyCode the gov agency code of this payment file
+	 */
+	public void setGovAgencyCode(String govAgencyCode);
+
+	/**
+	 * Returns the gov agency name of this payment file.
+	 *
+	 * @return the gov agency name of this payment file
+	 */
+	@AutoEscape
+	public String getGovAgencyName();
+
+	/**
+	 * Sets the gov agency name of this payment file.
+	 *
+	 * @param govAgencyName the gov agency name of this payment file
+	 */
+	public void setGovAgencyName(String govAgencyName);
+
+	/**
 	 * Returns the payment fee of this payment file.
 	 *
 	 * @return the payment fee of this payment file

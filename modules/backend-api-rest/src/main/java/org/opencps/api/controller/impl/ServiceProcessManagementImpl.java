@@ -315,16 +315,17 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
-			}
-
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException("UnauthenticationException");
+//			}
+//
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, input.getRoleId(),
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode(),
+					input.getRoleName());
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
@@ -356,7 +357,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			}
 
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, roleid,
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode(),
+					input.getRoleName());
 			if (role != null) {
 				role.setRoleName(input.getRoleName());
 				ServiceProcessRoleLocalServiceUtil.updateServiceProcessRole(role);
@@ -651,13 +653,13 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
-			}
-
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException("UnauthenticationException");
+//			}
+//
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
 			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
@@ -667,7 +669,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				processStepId = step.getPrimaryKey();
 
 			ProcessStepRole role = actions.updateProcessStepRole(processStepId, input.getRoleId(),
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode(),
+					input.getRoleName());
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
@@ -707,7 +710,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				processStepId = step.getPrimaryKey();
 
 			ProcessStepRole role = actions.updateProcessStepRole(processStepId, roleid,
-					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode());
+					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode(),
+					input.getRoleName());
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 

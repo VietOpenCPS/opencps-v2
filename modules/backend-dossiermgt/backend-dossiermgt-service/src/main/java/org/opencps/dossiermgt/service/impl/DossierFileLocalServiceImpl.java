@@ -700,19 +700,20 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		long fileEntryId = 0;
 
-		try {
-			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, dossierFile.getFileEntryId(),
-					inputStream, sourceFileName, null, 0, serviceContext);
-
-			if (fileEntry != null) {
-				fileEntryId = fileEntry.getFileEntryId();
+		if (inputStream != null) {
+			try {
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, dossierFile.getFileEntryId(),
+						inputStream, sourceFileName, null, 0, serviceContext);
+	
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			} catch (Exception e) {
+				_log.debug(e);
+				//_log.error(e);
+				throw new SystemException(e);
 			}
-		} catch (Exception e) {
-			_log.debug(e);
-			//_log.error(e);
-			throw new SystemException(e);
 		}
-
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(userId);

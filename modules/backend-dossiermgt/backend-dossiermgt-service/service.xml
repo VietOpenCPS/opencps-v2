@@ -726,9 +726,9 @@
 
 		<column name="dossierId" type="long" />
 		<column name="referenceUid" type="String" />
-<!-- 		<column name="govAgencyCode" type="String" /> -->
-<!-- 		<column name="govAgencyName" type="String" /> -->
-<!-- 		<column name="isNew" type="boolean" /> -->
+ 		<column name="govAgencyCode" type="String" />
+ 		<column name="govAgencyName" type="String" />
+		<!-- <column name="isNew" type="boolean" /> -->
 		<column name="paymentFee" type="String" />
 		<column name="advanceAmount" type="long" />
 		<column name="feeAmount" type="long" />

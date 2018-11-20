@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import java.io.File;
 import java.net.URI;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -873,6 +875,22 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				String formData = JSONFactoryUtil.looseSerialize(paymentFile);
 				String formReport = paymentConfig.getInvoiceForm();
 
+				ObjectMapper mapper = new ObjectMapper();
+		        Map<String, String> map = (Map<String, String>)mapper.readValue(formData, Map.class);
+
+		        map.put("applicantName", dossier.getApplicantName());
+		        
+		        StringBuilder address = new StringBuilder();
+				address.append(dossier.getAddress());address.append(", ");
+				address.append(dossier.getWardName());address.append(", ");
+				address.append(dossier.getDistrictName());address.append(", ");
+				address.append(dossier.getCityName());
+		        
+		        map.put("address", address.toString());
+		        
+		        formData = mapper.writeValueAsString(map);
+		        _log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);
+				
 				Message message = new Message();
 
 				message.put("formReport", formReport);

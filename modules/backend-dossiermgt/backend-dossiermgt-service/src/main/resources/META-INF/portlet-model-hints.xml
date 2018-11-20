@@ -504,6 +504,8 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="dossierId" type="long" />
 		<field name="referenceUid" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
 		<field name="paymentFee" type="String" />
 		<field name="advanceAmount" type="long" />
 		<field name="feeAmount" type="long" />

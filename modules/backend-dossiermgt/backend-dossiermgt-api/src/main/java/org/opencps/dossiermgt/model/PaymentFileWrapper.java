@@ -70,6 +70,8 @@ public class PaymentFileWrapper implements PaymentFile,
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("dossierId", getDossierId());
 		attributes.put("referenceUid", getReferenceUid());
+		attributes.put("govAgencyCode", getGovAgencyCode());
+		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("paymentFee", getPaymentFee());
 		attributes.put("advanceAmount", getAdvanceAmount());
 		attributes.put("feeAmount", getFeeAmount());
@@ -157,6 +159,18 @@ public class PaymentFileWrapper implements PaymentFile,
 
 		if (referenceUid != null) {
 			setReferenceUid(referenceUid);
+		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
+		}
+
+		String govAgencyName = (String)attributes.get("govAgencyName");
+
+		if (govAgencyName != null) {
+			setGovAgencyName(govAgencyName);
 		}
 
 		String paymentFee = (String)attributes.get("paymentFee");
@@ -451,6 +465,26 @@ public class PaymentFileWrapper implements PaymentFile,
 	@Override
 	public long getFeeAmount() {
 		return _paymentFile.getFeeAmount();
+	}
+
+	/**
+	* Returns the gov agency code of this payment file.
+	*
+	* @return the gov agency code of this payment file
+	*/
+	@Override
+	public String getGovAgencyCode() {
+		return _paymentFile.getGovAgencyCode();
+	}
+
+	/**
+	* Returns the gov agency name of this payment file.
+	*
+	* @return the gov agency name of this payment file
+	*/
+	@Override
+	public String getGovAgencyName() {
+		return _paymentFile.getGovAgencyName();
 	}
 
 	/**
@@ -852,6 +886,26 @@ public class PaymentFileWrapper implements PaymentFile,
 	@Override
 	public void setFeeAmount(long feeAmount) {
 		_paymentFile.setFeeAmount(feeAmount);
+	}
+
+	/**
+	* Sets the gov agency code of this payment file.
+	*
+	* @param govAgencyCode the gov agency code of this payment file
+	*/
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_paymentFile.setGovAgencyCode(govAgencyCode);
+	}
+
+	/**
+	* Sets the gov agency name of this payment file.
+	*
+	* @param govAgencyName the gov agency name of this payment file
+	*/
+	@Override
+	public void setGovAgencyName(String govAgencyName) {
+		_paymentFile.setGovAgencyName(govAgencyName);
 	}
 
 	/**

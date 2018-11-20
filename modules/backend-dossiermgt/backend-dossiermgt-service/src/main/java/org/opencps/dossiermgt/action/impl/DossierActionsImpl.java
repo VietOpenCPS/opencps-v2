@@ -2791,6 +2791,9 @@ public class DossierActionsImpl implements DossierActions {
 					
 					if (Validator.isNotNull(paymentConfig)) {
 						paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
+						paymentFile.setGovAgencyTaxNo(paymentConfig.getGovAgencyTaxNo());
+						paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
+						paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
 					}
 					
 					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
@@ -3290,11 +3293,9 @@ public class DossierActionsImpl implements DossierActions {
 					List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
 					if (lstFiles.size() > 0) {
 						for (DossierFile df : lstFiles) {
-							if (df.getDossierPartType() == DossierPartTerm.DOSSIER_PART_TYPE_INPUT) {
-								JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-								dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
-								dossierFilesArr.put(dossierFileObj);
-							}
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
 						}
 					}					
 				}
@@ -6024,11 +6025,11 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	private String checkPaymentMethod(int mt) {
 		String pmMethod = "";
 		if (mt == 1) {
-			pmMethod = "Keypay";
+			pmMethod = "Chuyển khoản";//KeyPay
 		} else if (mt == 2) {
-			pmMethod = "Chuyen khoan";
+			pmMethod = "Chuyển khoản";
 		} else if (mt == 3) {
-			pmMethod = "Truc tiep";
+			pmMethod = "Tiền mặt";
 		}
 		
 		_log.info("SONDT checkPaymentMethod pmMethod ===== " + pmMethod);

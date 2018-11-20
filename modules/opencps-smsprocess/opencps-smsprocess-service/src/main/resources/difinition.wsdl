@@ -1,0 +1,77 @@
+<definitions
+	xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:tns="http://tempuri.org/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/"
+	targetNamespace="http://tempuri.org/">
+	<types>
+		<xsd:schema targetNamespace="http://tempuri.org/">
+			<xsd:import
+				namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+			<xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+			<xsd:complexType name="ReceiveMORequestType">
+				<xsd:all>
+					<xsd:element name="moid" type="xsd:string" />
+					<xsd:element name="src" type="xsd:string" />
+					<xsd:element name="dest" type="xsd:string" />
+					<xsd:element name="moseq" type="xsd:string" />
+					<xsd:element name="cmdcode" type="xsd:string" />
+					<xsd:element name="msgbody" type="xsd:string" />
+					<xsd:element name="username" type="xsd:string" />
+					<xsd:element name="password" type="xsd:string" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="ReceiveMOResponseType">
+				<xsd:all>
+					<xsd:element name="ReceiveMOResult" type="xsd:int" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:all>
+				<xsd:element name="ReceiveMOResult" type="xsd:int" />
+			</xsd:all>
+		</xsd:complexType>
+			<xsd:element name="ReceiveMO"
+				type="tns:ReceiveMORequestType" />
+			<xsd:element name="ReceiveMOResponse"
+				type="tns:ReceiveMOResponseType" />
+		</xsd:schema>
+	</types>
+	<message name="ReceiveMORequest">
+		<part name="parameters" element="tns:ReceiveMO" />
+	</message>
+	<message name="ReceiveMOResponse">
+		<part name="parameters" element="tns:ReceiveMOResponse" />
+	</message>
+	<portType name="MonoWebServicePortType">
+		<operation name="ReceiveMO">
+			<input message="tns:ReceiveMORequest" />
+			<output message="tns:ReceiveMOResponse" />
+		</operation>
+	</portType>
+	<binding name="MonoWebServiceBinding"
+		type="tns:MonoWebServicePortType">
+		<soap:binding style="rpc"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="ReceiveMO">
+			<soap:operation
+				soapAction="http://example.com/service.php/ReceiveMO"
+				style="document" />
+			<input>
+				<soap:body use="literal" namespace="" />
+			</input>
+			<output>
+				<soap:body use="literal" namespace="" />
+			</output>
+		</operation>
+	</binding>
+	<service name="MonoWebService">
+		<port name="MonoWebServicePort"
+			binding="tns:MonoWebServiceBinding">
+			<soap:address location="http://example.com/service.php" />
+		</port>
+	</service>
+</definitions>
