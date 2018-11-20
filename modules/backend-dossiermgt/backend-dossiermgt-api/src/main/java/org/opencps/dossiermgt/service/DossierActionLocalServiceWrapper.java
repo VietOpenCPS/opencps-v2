@@ -249,6 +249,13 @@ public class DossierActionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierAction> getByDID_FSC_NOT_DAI(
+		long dossierId, String stepCode, long dossierActionId) {
+		return _dossierActionLocalService.getByDID_FSC_NOT_DAI(dossierId,
+			stepCode, dossierActionId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierAction> getByDID_SC_NOT_DAI(
 		long dossierId, String stepCode, long dossierActionId) {
 		return _dossierActionLocalService.getByDID_SC_NOT_DAI(dossierId,
