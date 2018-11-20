@@ -20,5 +20,6 @@ public class ServiceConfigTerm {
 	public static final String PROCESSES = "processes";
 	public static final String ACTION_USER = "actionUser";
 	public static final String DOMAIN_INDEX = "domainIndex";
+	public static final String DOSSIER_PART_OPTION = "dossierPartOption";
 
 }

@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -15,10 +16,12 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -36,17 +39,25 @@ import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.ProcessSequence;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -368,9 +379,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 
 			if (sequenceArr != null && sequenceArr.length > 0) {
-				for (int i = 0; i < sequenceArr.length; i++) {
-						_log.info("sequenceArr[i]: "+sequenceArr[i]);
-				}
 				Arrays.sort(sequenceArr);
 				for (int i = 0; i < sequenceArr.length - 1; i++) {
 					String seq = sequenceArr[i];
@@ -392,9 +400,46 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			} else {
 				jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
 			}
+			//Process array sequence
+			JSONArray jsonSequenceArr = getProcessSequencesJSON(sequenceArr, sequenceList);
+			if (jsonSequenceArr != null) {
+				jsonData.put("processSequenceArr", jsonSequenceArr);
+			}
 		}
 
 		return jsonData;
+	}
+
+	private static JSONArray getProcessSequencesJSON(String[] sequenceArr, List<ProcessSequence> sequenceList) {
+
+		JSONArray jsonSequenceArr = JSONFactoryUtil.createJSONArray();
+		if (sequenceArr != null && sequenceArr.length > 0) {
+			for (int i = 0; i < sequenceArr.length - 1; i++) {
+				String sequenceNo = sequenceArr[i];
+				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
+				for (ProcessSequence proSeq : sequenceList) {
+					if (sequenceNo.equals(proSeq.getSequenceNo())) {
+						sequenceObj.put("sequenceNo", proSeq.getSequenceNo());
+						sequenceObj.put("sequenceName", proSeq.getSequenceName());
+						sequenceObj.put("sequenceRole", proSeq.getSequenceRole());
+						sequenceObj.put("durationCount", proSeq.getDurationCount());
+						sequenceObj.put("createDate", proSeq.getCreateDate());
+					}
+				}
+				String nextSequenceNo = sequenceArr[i + 1];
+				for (ProcessSequence proSeq : sequenceList) {
+					if (nextSequenceNo.equals(proSeq.getSequenceNo())) {
+						sequenceObj.put("nextSequenceNo", proSeq.getSequenceNo());
+						sequenceObj.put("nextSequenceName", proSeq.getSequenceName());
+						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
+						sequenceObj.put("nextCreateDate", proSeq.getCreateDate());
+					}
+				}
+				jsonSequenceArr.put(sequenceObj);
+			}
+		}
+
+		return jsonSequenceArr;
 	}
 
 }
