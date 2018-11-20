@@ -202,35 +202,44 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						if (dossierAction != null) {
 							processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
 						}
-						if (processAction != null && processAction.getAllowAssignUser() == ProcessActionTerm.NOT_ASSIGNED) {
-							if (Validator.isNotNull(processStep.getRoleAsStep())) {
-								String[] steps = StringUtil.split(processStep.getRoleAsStep());
-								for (String sc : steps) {
-									if (sc.startsWith("!")) {
-										int index = sc.indexOf("!");
-										String stepCodePunc = sc.substring(index + 1);
-										lstUser.addAll(DossierActionUtils.processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep));
-									}
-									else {
-										lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, sc, serviceProcessId, processStep));								
-									}
-								}							
-							}
-							else {
-								if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
-									lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
-								}							
-							}
-							if (lstUser != null && !lstUser.isEmpty()) {
-							}
-						}
-						else if (processAction != null) {
-							List<DossierActionUser> assignedUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
-							for (DossierActionUser dau : assignedUsers) {
-								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH) {
-									User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-									lstUser.add(u);
-								}
+//						if (processAction != null && processAction.getAllowAssignUser() == ProcessActionTerm.NOT_ASSIGNED) {
+//							if (Validator.isNotNull(processStep.getRoleAsStep())) {
+//								String[] steps = StringUtil.split(processStep.getRoleAsStep());
+//								for (String sc : steps) {
+//									if (sc.startsWith("!")) {
+//										int index = sc.indexOf("!");
+//										String stepCodePunc = sc.substring(index + 1);
+//										lstUser.addAll(DossierActionUtils.processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep));
+//									}
+//									else {
+//										lstUser.addAll(DossierActionUtils.processRoleAsStepListUser(dossier, sc, serviceProcessId, processStep));								
+//									}
+//								}							
+//							}
+//							else {
+//								if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+//									lstUser.addAll(DossierActionUtils.processRoleListUser(processStepRoleList, serviceProcessId));
+//								}							
+//							}
+//							if (lstUser != null && !lstUser.isEmpty()) {
+//							}
+//						}
+//						else if (processAction != null) {
+//							List<DossierActionUser> assignedUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
+//							for (DossierActionUser dau : assignedUsers) {
+//								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH
+//										&& dau.getModerator() == 1) {
+//									User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+//									lstUser.add(u);
+//								}
+//							}
+//						}
+						List<DossierActionUser> assignedUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
+						for (DossierActionUser dau : assignedUsers) {
+							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH
+									&& dau.getModerator() == 1) {
+								User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+								lstUser.add(u);
 							}
 						}
 					}

@@ -460,7 +460,7 @@ public class ProcessActionLocalServiceWrapper
 		String paymentFee, String createDossierFiles,
 		String returnDossierFiles, String makeBriefNote, String syncActionCode,
 		boolean rollbackable, boolean createDossierNo, boolean eSignature,
-		String configNote, String dossierTemplateNo,
+		String signatureType, String configNote, String dossierTemplateNo,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _processActionLocalService.updateProcessAction(groupId,
@@ -468,7 +468,8 @@ public class ProcessActionLocalServiceWrapper
 			autoEvent, preCondition, actionCode, actionName, allowAssignUser,
 			assignUserId, requestPayment, paymentFee, createDossierFiles,
 			returnDossierFiles, makeBriefNote, syncActionCode, rollbackable,
-			createDossierNo, eSignature, configNote, dossierTemplateNo, context);
+			createDossierNo, eSignature, signatureType, configNote,
+			dossierTemplateNo, context);
 	}
 
 	@Deprecated

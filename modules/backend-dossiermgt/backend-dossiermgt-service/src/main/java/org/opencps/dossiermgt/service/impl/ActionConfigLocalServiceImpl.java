@@ -200,7 +200,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 	public ActionConfig updateActionConfigDB(long userId, long groupId, String actionCode, String actionName,
 			Boolean extraForm, String sampleData, Boolean insideProcess, Integer userNote, Integer syncType,
 			Integer eventType, Integer infoType, Boolean rollbackable, String notificationType, String documentType,
-			String formConfig, String mappingAction) throws PortalException {
+			String formConfig, String mappingAction, int dateOption) throws PortalException {
 
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
@@ -227,7 +227,8 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		actionConfig.setNotificationType(notificationType);
 		actionConfig.setDocumentType(documentType);
 		actionConfig.setMappingAction(mappingAction);
-
+		actionConfig.setDateOption(dateOption);
+		
 		return actionConfigPersistence.update(actionConfig);
 
 	}
