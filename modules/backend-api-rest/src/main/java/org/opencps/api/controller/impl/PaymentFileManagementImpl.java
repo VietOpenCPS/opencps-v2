@@ -856,7 +856,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response previewInvoiceFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
-
+		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
@@ -887,6 +887,12 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				address.append(dossier.getCityName());
 		        
 		        map.put("address", address.toString());
+		        
+		        String numberToSymbo = PaymentFileUtils.chuyenSangChu(Long.toString(paymentFile.getPaymentAmount()));
+		        map.put("numberToSymbo", numberToSymbo);
+		        
+		        map.put("invoiceTemplateNo", paymentConfig.getInvoiceTemplateNo());
+		        map.put("invoiceIssueNo", paymentConfig.getInvoiceIssueNo());
 		        
 		        formData = mapper.writeValueAsString(map);
 		        _log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);
@@ -923,7 +929,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 				} catch (MessageBusException e) {
 					_log.error(e);
-					throw new Exception("Preview rendering not avariable");
+					throw new Exception("Preview rendering not available");
 				}
 			} else {
 				throw new Exception("Cant get dossier with id_" + id);
