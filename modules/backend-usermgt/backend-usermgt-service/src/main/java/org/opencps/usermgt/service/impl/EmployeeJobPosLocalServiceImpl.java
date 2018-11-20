@@ -533,6 +533,57 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		object.setJobPostId(objectData.getLong("jobPostId"));
 		object.setWorkingUnitId(objectData.getLong("workingUnitId"));
 
+		try {
+
+			// role
+			Employee mEmployee = employeePersistence.fetchByPrimaryKey(objectData.getLong("employeeId"));
+
+			User newUser = UserLocalServiceUtil.fetchUser(mEmployee.getMappingUserId());
+			if (newUser != null) {
+				List<Role> roles = RoleLocalServiceUtil.getUserRoles(newUser.getUserId());
+
+				//
+				List<Role> roleIds = new ArrayList<Role>();
+
+				JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(objectData.getLong("jobPostId"));
+
+				for (Role role : roles) {
+
+					roleIds.add(role);
+				}
+
+				Role roleMapping = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
+
+				if (Validator.isNotNull(roleMapping)) {
+
+					roleIds.add(roleMapping);
+				}
+
+				try {
+					RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
+					RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+				for (Role role : roleIds) {
+					try {
+						RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
+					} catch (Exception e) {
+						_log.error(e);
+					}
+				}
+				// RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
+				//
+				Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+				//
+				indexer.reindex(newUser);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			_log.error(e);
+
+		}
 		employeeJobPosPersistence.update(object);
 
 		return object;
