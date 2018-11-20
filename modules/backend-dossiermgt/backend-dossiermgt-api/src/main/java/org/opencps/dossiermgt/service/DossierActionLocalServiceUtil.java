@@ -247,6 +247,11 @@ public class DossierActionLocalServiceUtil {
 				   .getByDID_SC_NOT_DAI(dossierId, stepCode, dossierActionId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> getByDID_U_FSC(
+		long dossierId, long userId, String stepCode) {
+		return getService().getByDID_U_FSC(dossierId, userId, stepCode);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> getByDID_U_SC(
 		long dossierId, long userId, String stepCode) {
 		return getService().getByDID_U_SC(dossierId, userId, stepCode);

@@ -110,7 +110,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				List<DossierAction> lstStepActions = DossierActionLocalServiceUtil.getByDID_FSC_NOT_DAI(dossier.getDossierId(), stepCode, dossierAction.getDossierActionId());
 					for (User user : users) {
 //						_log.info("user in assign process step role: "+user.getUserId());
-						List<DossierAction> lstDoneActions = DossierActionLocalServiceUtil.getByDID_U_SC(dossier.getDossierId(), user.getUserId(), stepCode);
+						List<DossierAction> lstDoneActions = DossierActionLocalServiceUtil.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
 						if (!lstStepActions.isEmpty()) {
 							if (!lstDoneActions.isEmpty())
 								mod = 1;

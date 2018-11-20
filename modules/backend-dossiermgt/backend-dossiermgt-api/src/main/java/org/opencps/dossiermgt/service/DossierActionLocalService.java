@@ -221,6 +221,10 @@ public interface DossierActionLocalService extends BaseLocalService,
 		String stepCode, long dossierActionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierAction> getByDID_U_FSC(long dossierId, long userId,
+		String stepCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDID_U_SC(long dossierId, long userId,
 		String stepCode);
 

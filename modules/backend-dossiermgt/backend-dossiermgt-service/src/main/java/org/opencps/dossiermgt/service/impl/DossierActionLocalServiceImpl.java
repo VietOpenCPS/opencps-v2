@@ -512,5 +512,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.findByDID_FSC_NOT_DAI(dossierId, stepCode, dossierActionId);
 	}
 	
+	public List<DossierAction> getByDID_U_FSC(long dossierId, long userId, String stepCode) {
+		return dossierActionPersistence.findByDID_U_FSC(dossierId, userId, stepCode);
+	}	
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }
