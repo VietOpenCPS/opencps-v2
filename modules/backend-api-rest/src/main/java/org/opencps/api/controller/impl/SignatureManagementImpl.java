@@ -661,14 +661,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 		}
 
 		String fileEntryIds = input.getFileEntryId();
-		String signs = input.getSign();
-		String signFieldNames = input.getSignFieldName();
-		String fileNames = input.getFileName();
 		//_log.info("Sign: " + signs + ", field name: " + signFieldNames + ", file name: " + fileNames + ", file entry id: " + fileEntryIds);
 		String[] fileEntryIdArr = StringUtil.split(fileEntryIds);
-		String[] signArr = StringUtil.split(signs);
-		String[] signFieldNameArr = Validator.isNotNull(signFieldNames) ? StringUtil.split(signFieldNames): new String[fileEntryIdArr.length];
-		String[] fileNameArr = Validator.isNotNull(fileNames) ? StringUtil.split(fileNames): new String[fileEntryIdArr.length];
 		String actionCode = input.getActionCode();
 		String actionUser = input.getActionUser();
 		String actionNote = input.getActionNote();
@@ -681,9 +675,6 @@ public class SignatureManagementImpl implements SignatureManagement{
 		for (int i = 0; i < fileEntryIdArr.length; i++) {
 			long fileEntryId = Long.valueOf(fileEntryIdArr[i]);
 			if (fileEntryId > 0) {
-				String sign = signArr[i];
-				String signFieldName = signFieldNameArr[i];
-				String fileName = fileNameArr[i];
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();

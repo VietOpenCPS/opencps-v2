@@ -1891,8 +1891,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		
 		String fromStatisticDate = GetterUtil.getString(params.get(DossierTerm.FROM_STATISTIC_DATE));
 		String toStatisticDate = GetterUtil.getString(params.get(DossierTerm.TO_STATISTIC_DATE));
-		Integer originDossierId = GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID));
-		
+		Integer originDossierId = (params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null) ? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID)) : null;
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -1992,7 +1991,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String fromStatisticDate = GetterUtil.getString(params.get(DossierTerm.FROM_STATISTIC_DATE));
 		String toStatisticDate = GetterUtil.getString(params.get(DossierTerm.TO_STATISTIC_DATE));
 		String origin = GetterUtil.getString(params.get(DossierTerm.ORIGIN));
-		Integer originDossierId = GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID));
+		Integer originDossierId = (params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null ? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID)) : null);
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
