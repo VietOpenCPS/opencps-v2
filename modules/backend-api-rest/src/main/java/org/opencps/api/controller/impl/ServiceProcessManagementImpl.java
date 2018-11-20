@@ -348,13 +348,13 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
-			}
-
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException("UnauthenticationException");
+//			}
+//
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, roleid,
 					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode(),
@@ -382,13 +382,13 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
-			}
-
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException("UnauthenticationException");
+//			}
+//
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
 			ServiceProcessRole role = actions.removeServiceProcessRole(id, roleid);
 
@@ -582,13 +582,13 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
+//
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException();
+//			}
 
 			ProcessStep serviceProcess = actions.deleteProcessStep(code, groupId, id);
 
