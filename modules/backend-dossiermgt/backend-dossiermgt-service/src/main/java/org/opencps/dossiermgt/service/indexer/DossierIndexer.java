@@ -659,6 +659,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.DOMAIN_CODE, domainCode);
 			document.addTextSortable(DossierTerm.DOMAIN_NAME, domainName);
 			document.addNumberSortable(DossierTerm.ORIGIN_DOSSIER_ID, object.getOriginDossierId());
+			document.addNumberSortable(DossierTerm.ORIGIN, object.getOriginDossierId());
 			
 			//Add payment status
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(object.getGroupId(), dossierId);

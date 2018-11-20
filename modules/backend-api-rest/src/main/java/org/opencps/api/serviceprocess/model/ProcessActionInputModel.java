@@ -73,7 +73,8 @@ import javax.xml.bind.annotation.XmlType;
     "eSignature",
     "configNote",
     "dossierTemplateNo",
-    "createDossiers"
+    "createDossiers",
+    "signatureType"
 })
 @XmlRootElement(name = "ProcessActionInputModel")
 public class ProcessActionInputModel {
@@ -122,6 +123,8 @@ public class ProcessActionInputModel {
 	
 	@FormParam("configNote")
 	protected String configNote;
+	@FormParam("signatureType")
+	protected String signatureType;
 	
 	public String getDossierTemplateNo() {
 		return dossierTemplateNo;
@@ -569,5 +572,13 @@ public class ProcessActionInputModel {
     
     public void setCreateDossies(String value) {
     	this.createDossiers = value;
+    }
+
+    public String getSignatureType() {
+    	return signatureType;
+    }
+    
+    public void setSignatureType(String value) {
+    	this.signatureType = value;
     }
 }
