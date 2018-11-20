@@ -358,7 +358,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			//Search theo tu tuong moi
 			//params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
-			params.put(DossierTerm.ORIGIN_DOSSIER_ID, originDossierId);
+			if (Validator.isNotNull(originDossierId))
+				params.put(DossierTerm.ORIGIN_DOSSIER_ID, originDossierId);
 			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
