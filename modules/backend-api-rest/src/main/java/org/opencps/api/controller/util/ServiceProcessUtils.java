@@ -341,6 +341,7 @@ public class ServiceProcessUtils {
 		
 		model.setCreateDossierNo(action.getCreateDossierNo());
 		model.seteSignature(action.getESignature());
+		model.setSignatureType(action.getSignatureType());
 		model.setConfigNote(action.getConfigNote());
 		model.setPaymentFee(action.getPaymentFee());
 		model.setCreateDossiers(action.getCreateDossiers());

@@ -1,0 +1,12 @@
+Bundle-Name: opencps-smsprocess-service
+Bundle-SymbolicName: org.opencps.sms.service
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+Export-Package: \
+	org.opencps.sms.service.persistence,\
+	org.opencps.sms.exception,\
+	org.opencps.sms.service,\
+	org.opencps.sms.model,\
+	org.opencps.sms.exception

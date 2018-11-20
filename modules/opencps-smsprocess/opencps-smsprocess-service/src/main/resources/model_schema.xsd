@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://tempuri.org/" xmlns:tns="http://tempuri.org/"
+	elementFormDefault="qualified">
+	
+	<xsd:complexType name="ReceiveMORequestType">
+		<xsd:all>
+			<xsd:element name="moid" type="xsd:string" />
+			<xsd:element name="src" type="xsd:string" />
+			<xsd:element name="dest" type="xsd:string" />
+			<xsd:element name="moseq" type="xsd:string" />
+			<xsd:element name="cmdcode" type="xsd:string" />
+			<xsd:element name="msgbody" type="xsd:string" />
+			<xsd:element name="username" type="xsd:string" />
+			<xsd:element name="password" type="xsd:string" />
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="ReceiveMOResponseType">
+		<xsd:all>
+			<xsd:element name="ReceiveMOResult" type="xsd:int" />
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:element name="ReceiveMO" type="tns:ReceiveMORequestType" />
+	<xsd:element name="ReceiveMOResponse" type="tns:ReceiveMOResponseType" />
+</xsd:schema>
+

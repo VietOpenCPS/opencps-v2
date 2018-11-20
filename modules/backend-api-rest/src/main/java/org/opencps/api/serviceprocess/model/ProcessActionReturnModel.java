@@ -74,7 +74,8 @@ import javax.xml.bind.annotation.XmlType;
     "eSignature",
     "configNote",
     "createDossiers",
-    "dossierTemplateNo"
+    "dossierTemplateNo",
+    "signatureType"
 })
 @XmlRootElement(name = "ProcessActionReturnModel")
 public class ProcessActionReturnModel {
@@ -101,6 +102,7 @@ public class ProcessActionReturnModel {
     protected String configNote;
     protected String createDossiers;
     protected String dossierTemplateNo;
+    protected String signatureType;
     
     public String getConfigNote() {
 		return configNote;
@@ -558,5 +560,13 @@ public class ProcessActionReturnModel {
     
     public void setDossierTemplateNo(String value) {
     	this.dossierTemplateNo = value;
+    }
+    
+    public String getSignatureType() {
+    	return signatureType;
+    }
+    
+    public void setSignatureType(String value) {
+    	this.signatureType = value;
     }
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.sms.model.SMSGatewayLog">
+		<field name="uuid" type="String" />
+		<field name="smsId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="src" type="String" />
+		<field name="smsReq" type="String" />
+		<field name="smsReply" type="String" />
+		<field name="dossierNo" type="String" />
+		<field name="applicationName" type="String" />
+		<field name="reqDate" type="Date" />
+		<field name="replyDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="smsType" type="int" />
+		<field name="lastReplyManualDate" type="Date" />
+		<field name="lastReplyManualUserId" type="long" />
+		<field name="lastReplyManualUserName" type="String" />
+	</model>
+	<model name="org.opencps.sms.model.SMSLookUpQueue">
+		<field name="uuid" type="String" />
+		<field name="queueId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="moid" type="String" />
+		<field name="src" type="String" />
+		<field name="dest" type="String" />
+		<field name="moseq" type="String" />
+		<field name="cmdcode" type="String" />
+		<field name="msgbody" type="String" />
+		<field name="password" type="String" />
+		<field name="status" type="int" />
+		<field name="receivedDate" type="Date" />
+		<field name="userName" type="String" />
+	</model>
+</model-hints>

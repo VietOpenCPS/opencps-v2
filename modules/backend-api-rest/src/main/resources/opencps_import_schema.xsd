@@ -63,6 +63,7 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="dateOption" type = "xsd:int" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
