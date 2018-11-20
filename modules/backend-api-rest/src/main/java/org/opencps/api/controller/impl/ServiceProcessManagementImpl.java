@@ -868,7 +868,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					GetterUtil.getLong(assignUserId), GetterUtil.getInteger(requestPayment),
 					paymentFee, createDossierFiles, returnDossierFiles,
 					makeBriefNote, syncActionCode, GetterUtil.getBoolean(rollbackable),
-					input.isCreateDossierNo(), input.iseSignature(), configNote,
+					input.isCreateDossierNo(), input.iseSignature(), input.getSignatureType(), configNote,
 					dossierTemplateNo, serviceContext);
 			
 			if (Validator.isNotNull(input.getCreateDossiers())) {
@@ -932,7 +932,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					GetterUtil.getLong(input.getAssignUserId()), Integer.parseInt(input.getRequestPayment()),
 					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
 					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					input.isCreateDossierNo(), input.iseSignature(), input.getConfigNote(),
+					input.isCreateDossierNo(), input.iseSignature(), input.getSignatureType(), input.getConfigNote(),
 					input.getDossierTemplateNo(), serviceContext);
 
 			if (Validator.isNotNull(input.getCreateDossiers())) {

@@ -86,7 +86,9 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			String preStepCode, String postStepCode, String autoEvent, String preCondition, String actionCode,
 			String actionName, int allowAssignUser, long assignUserId, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, String makeBriefNote, String syncActionCode,
-			boolean rollbackable, boolean createDossierNo, boolean eSignature, String configNote,
+			boolean rollbackable, boolean createDossierNo, boolean eSignature, 
+			String signatureType,
+			String configNote,
 			String dossierTemplateNo, ServiceContext context) throws PortalException {
 
 		Date now = new Date();
@@ -133,6 +135,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setRollbackable(rollbackable);
 			object.setCreateDossierNo(createDossierNo);
 			object.setESignature(eSignature);
+			object.setSignatureType(signatureType);
 			object.setConfigNote(configNote);
 			object.setDossierTemplateNo(dossierTemplateNo);
 
@@ -162,6 +165,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			object.setRollbackable(rollbackable);
 			object.setCreateDossierNo(createDossierNo);
 			object.setESignature(eSignature);
+			object.setSignatureType(signatureType);
 			object.setConfigNote(configNote);
 			object.setDossierTemplateNo(dossierTemplateNo);
 

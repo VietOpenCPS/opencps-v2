@@ -354,8 +354,8 @@ public interface ProcessActionLocalService extends BaseLocalService,
 		long assignUserId, Integer requestPayment, String paymentFee,
 		String createDossierFiles, String returnDossierFiles,
 		String makeBriefNote, String syncActionCode, boolean rollbackable,
-		boolean createDossierNo, boolean eSignature, String configNote,
-		String dossierTemplateNo, ServiceContext context)
+		boolean createDossierNo, boolean eSignature, String signatureType,
+		String configNote, String dossierTemplateNo, ServiceContext context)
 		throws PortalException;
 
 	@Deprecated
