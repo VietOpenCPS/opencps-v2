@@ -444,6 +444,7 @@ public class PaymentFileUtils {
             sb.append(s);
             sb.append(" ");
         }
+		sb.append("đồng");
 		
 		return sb.toString();
 	}
