@@ -94,12 +94,12 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					String payload = StringPool.BLANK;
 					if (dAction != null) {
 						payload = dAction.getPayload();
+						if (Validator.isNotNull(payload)) {
+							jsonData = JSONFactoryUtil.createJSONObject(payload);
+						}
 						jsonData = processMergeDossierProcessRole(dossier, 1, jsonData, dAction);
 					}
 					
-					if (Validator.isNotNull(payload)) {
-						jsonData = JSONFactoryUtil.createJSONObject(payload);
-					}
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
 					jsonData.put("userName", user.getFullName());
 					//
