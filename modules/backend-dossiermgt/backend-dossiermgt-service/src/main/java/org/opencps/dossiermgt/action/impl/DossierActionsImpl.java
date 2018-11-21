@@ -2768,95 +2768,95 @@ public class DossierActionsImpl implements DossierActions {
 					
 					paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
 					
-					PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
-							dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
-							serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
-							paymentStatus, paymentMethod, context);
-					
-					long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
-					
-					Calendar cal = Calendar.getInstance();
-					
-					cal.setTime(new Date());
-					
-					int prefix = cal.get(Calendar.YEAR);
-					
-					String invoiceNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
-					
-					paymentFile.setInvoiceNo(invoiceNo);
-					
-					// get paymentConfig
-					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
-							dossier.getGovAgencyCode());
-					
-					if (Validator.isNotNull(paymentConfig)) {
-						paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
-						paymentFile.setGovAgencyTaxNo(paymentConfig.getGovAgencyTaxNo());
-						paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
-						paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
-					}
-					
-					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-					//_log.info("==========Dossier Action SONDT START ========= ");
-					//sondt create ePaymentProfile
-					
-					// create paymentFileActions
-					PaymentFileActions actions = new PaymentFileActionsImpl();
+					if(paymentAmount > 0) {
+						PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
+								dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
+								serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
+								paymentStatus, paymentMethod, context);
+						
+						long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
+						
+						Calendar cal = Calendar.getInstance();
+						
+						cal.setTime(new Date());
+						
+						int prefix = cal.get(Calendar.YEAR);
+						
+						String invoiceNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+						
+						paymentFile.setInvoiceNo(invoiceNo);
+						
+						// get paymentConfig
+						PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
+								dossier.getGovAgencyCode());
+						
+						if (Validator.isNotNull(paymentConfig)) {
+							paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
+							paymentFile.setGovAgencyTaxNo(paymentConfig.getGovAgencyTaxNo());
+							paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
+							paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
+						}
+						
+						PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+						//_log.info("==========Dossier Action SONDT START ========= ");
+						//sondt create ePaymentProfile
+						
+						// create paymentFileActions
+						PaymentFileActions actions = new PaymentFileActionsImpl();
 
-//					_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
-//					_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
-					// generator epaymentProfile
-					JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
-					
-					JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+//						_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
+//						_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
+						// generator epaymentProfile
+						JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
+						
+						JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
-					if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+						if (epaymentConfigJSON.has("paymentKeypayDomain")) {
 
-						try {
-							String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-									paymentFile.getPaymentFileId(), paymentFee, dossierId);
-							//_log.info("Dossier Action SONDT paymentFee ========= "+ paymentFee);
-							epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+							try {
+								String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+										paymentFile.getPaymentFileId(), paymentFee, dossierId);
+								//_log.info("Dossier Action SONDT paymentFee ========= "+ paymentFee);
+								epaymentProfileJSON.put("keypayUrl", generatorPayURL);
 
-							// fill good_code to keypayGoodCode
-							String pattern1 = "good_code=";
-							String pattern2 = "&";
+								// fill good_code to keypayGoodCode
+								String pattern1 = "good_code=";
+								String pattern2 = "&";
 
-							String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+								String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
 
-							Pattern p = Pattern.compile(regexString);
-							Matcher m = p.matcher(generatorPayURL);
+								Pattern p = Pattern.compile(regexString);
+								Matcher m = p.matcher(generatorPayURL);
 
-							if (m.find()) {
-								String goodCode = m.group(1);
+								if (m.find()) {
+									String goodCode = m.group(1);
 
-								epaymentProfileJSON.put("keypayGoodCode", goodCode);
-							} else {
-								epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+									epaymentProfileJSON.put("keypayGoodCode", goodCode);
+								} else {
+									epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+								}
+
+								epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+								epaymentProfileJSON.put("bank", "true");
+								epaymentProfileJSON.put("paygate", "true");
+								epaymentProfileJSON.put("serviceAmount", serviceAmount);
+								epaymentProfileJSON.put("paymentNote", paymentNote);
+								epaymentProfileJSON.put("paymentFee", paymentFee);
+								actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+										context);
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+//									e.printStackTrace();
+								_log.error(e);
 							}
 
-							epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
-							epaymentProfileJSON.put("bank", "true");
-							epaymentProfileJSON.put("paygate", "true");
-							epaymentProfileJSON.put("serviceAmount", serviceAmount);
-							epaymentProfileJSON.put("paymentNote", paymentNote);
-							epaymentProfileJSON.put("paymentFee", paymentFee);
+						} else {
 							actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 									context);
-
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-//								e.printStackTrace();
-							_log.error(e);
 						}
-
-					} else {
-						actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
-								context);
+						// end sondt
 					}
-					
-					// end sondt
-					
 				}
 //				try {
 //					String serveNo = serviceProcess.getServerNo();
