@@ -28,6 +28,9 @@ dependencies {
 
 	compileOnly project(":modules:backend-kyso-process:backend-kyso-process-api")
 	
+	compileOnly project(":modules:backend-communication:backend-communication-service")
+	compileOnly project(":modules:backend-communication:backend-communication-api")
+	
 	compile name : "vgca.svrsigner"
 	compile name : "bcpkix"
 	compile name : "bcprov"
