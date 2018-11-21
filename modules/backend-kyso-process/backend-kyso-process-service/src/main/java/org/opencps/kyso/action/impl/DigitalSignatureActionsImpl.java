@@ -84,9 +84,14 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	public JSONObject createHashSignature(String email, long fileEntryId, String typeSignature, String postStepCode, long groupId) {
 		
 		kysoServerConfigModel config = getServerConfig(groupId, "KYSO");
+		if(Validator.isNotNull(config)){
+			TYPE_KYSO = config.getType_kyso();
+			TYPE_DONGDAU = config.getType_dongdau();	
+		}else {
+			TYPE_KYSO = "1032,1050,3000,6100,4000";
+			TYPE_DONGDAU = "1032,1050,3000,6100,4000";
+		}
 		
-		TYPE_KYSO = config.getType_kyso();
-		TYPE_DONGDAU = config.getType_dongdau();
 		
 			byte[] inHash = null;
 			String fieldName = StringPool.BLANK;
