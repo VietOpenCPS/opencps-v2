@@ -782,6 +782,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier updateDossierSpecial(
+		long dossierId, com.liferay.portal.kernel.json.JSONObject obj)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return _dossierLocalService.updateDossierSpecial(dossierId, obj);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier updateDueDate(long groupId,
 		long id, String refId, java.util.Date date,
 		com.liferay.portal.kernel.service.ServiceContext context)
