@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.deliverable.model.OpenCPSDeliverable">
+		<field name="uuid" type="String" />
+		<field name="deliverableId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="deliverableCode" type="String" />
+		<field name="deliverableName" type="String" />
+		<field name="deliverableType" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="applicantIdNo" type="String" />
+		<field name="applicantName" type="String" />
+		<field name="subject" type="String" />
+		<field name="formData" type="String" />
+		<field name="formScript" type="String" />
+		<field name="formScriptFileId" type="long" />
+		<field name="formReport" type="String" />
+		<field name="formReportFileId" type="long" />
+		<field name="issueDate" type="Date" />
+		<field name="expireDate" type="Date" />
+		<field name="revalidate" type="Date" />
+		<field name="deliverableState" type="int" />
+		<field name="fileEntryId" type="long" />
+		<field name="docSync" type="int" />
+		<field name="dossierId" type="long" />
+	</model>
+	<model name="org.opencps.deliverable.model.OpenCPSDeliverableLog">
+		<field name="uuid" type="String" />
+		<field name="deliverableLogId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="deliverableId" type="long" />
+		<field name="dossierUid" type="String" />
+		<field name="author" type="String" />
+		<field name="content" type="String" />
+		<field name="deliverableAction" type="int" />
+		<field name="actionDate" type="Date" />
+		<field name="payload" type="String" />
+	</model>
+	<model name="org.opencps.deliverable.model.OpenCPSDeliverableType">
+		<field name="uuid" type="String" />
+		<field name="deliverableTypeId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="typeCode" type="String" />
+		<field name="typeName" type="String" />
+		<field name="formScriptFileId" type="long" />
+		<field name="formReportFileId" type="long" />
+		<field name="codePattern" type="String" />
+		<field name="counter" type="long" />
+		<field name="mappingData" type="String" />
+		<field name="dataConfig" type="String" />
+		<field name="tableConfig" type="String" />
+		<field name="docSync" type="int" />
+		<field name="govAgencies" type="String" />
+	</model>
+	<model name="org.opencps.deliverable.model.OpenCPSDeliverableTypeRole">
+		<field name="uuid" type="String" />
+		<field name="deliverableTypeRoleId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="deliverableTypeId" type="long" />
+		<field name="roleId" type="long" />
+		<field name="moderator" type="boolean" />
+	</model>
+</model-hints>

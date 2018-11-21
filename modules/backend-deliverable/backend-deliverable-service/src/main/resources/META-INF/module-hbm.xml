@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping auto-import="false" default-lazy="false">
+	<import class="org.opencps.deliverable.model.OpenCPSDeliverable" />
+	<import class="org.opencps.deliverable.model.OpenCPSDeliverableLog" />
+	<import class="org.opencps.deliverable.model.OpenCPSDeliverableType" />
+	<import class="org.opencps.deliverable.model.OpenCPSDeliverableTypeRole" />
+	<class name="org.opencps.deliverable.model.impl.OpenCPSDeliverableImpl" table="opencps_deliverable">
+		<id name="deliverableId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="deliverableCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="deliverableName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="deliverableType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="applicantIdNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="applicantName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="subject" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScriptFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formReportFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="issueDate" type="org.hibernate.type.TimestampType" />
+		<property name="expireDate" type="org.hibernate.type.TimestampType" />
+		<property name="revalidate" type="org.hibernate.type.TimestampType" />
+		<property name="deliverableState" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+	</class>
+	<class name="org.opencps.deliverable.model.impl.OpenCPSDeliverableLogImpl" table="opencps_deliverablelog">
+		<id name="deliverableLogId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="deliverableId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="dossierUid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="author" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="deliverableAction" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="actionDate" type="org.hibernate.type.TimestampType" />
+		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.deliverable.model.impl.OpenCPSDeliverableTypeImpl" table="opencps_deliverabletype">
+		<id name="deliverableTypeId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="typeCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="typeName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScriptFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="formReportFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="codePattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="mappingData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dataConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="govAgencies" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.deliverable.model.impl.OpenCPSDeliverableTypeRoleImpl" table="opencps_deliverabletyperole">
+		<id name="deliverableTypeRoleId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="deliverableTypeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+	</class>
+</hibernate-mapping>
