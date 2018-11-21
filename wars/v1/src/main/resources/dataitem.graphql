@@ -1,0 +1,81 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+	allDictCollections(start: Int = 0, end: Int = 10): [DictCollection]
+ 	itemDictCollection(dictCollectionId: Long): DictCollection
+	allDictItemsByDictCollectionId(dictCollectionId: Long, start: Int = 0, end: Int = 10): [DictItem]
+	itemDictItem(dictItemId: Long): DictItem
+}
+
+type Mutation {
+    createDictCollection(input: DictCollectionInput): DictCollection
+    createDictItem(input: DictItemInput): DictItem
+    deleteDictCollection(dictCollectionId: Long): DictCollection
+ 	deleteDictItem(dictItemId: Long): DictItem
+}
+
+type DictCollection {
+	uuid_: String
+ 	dictCollectionId : Long
+ 	companyId: Long
+ 	groupId: Long
+ 	userId: Long
+ 	userName: String
+ 	createDate: String
+ 	modifiedDate: String
+ 	collectionCode: String
+ 	collectionName: String
+ 	collectionNameEN: String
+ 	description: String
+ 	dataForm: String
+ 	status: String
+ 	dictItems: [DictItem]
+}
+
+input DictCollectionInput {
+ 	collectionCode: String
+ 	collectionName: String
+ 	collectionNameEN: String
+ 	description: String
+ 	dataForm: String
+ 	status: String
+}
+
+type DictItem {
+	uuid_: String
+ 	dictItemId : Long
+ 	companyId: Long
+ 	groupId: Long
+ 	userId: Long
+ 	userName: String
+ 	createDate: String
+ 	modifiedDate: String
+ 	dictCollectionId: Long
+ 	itemCode: String
+ 	itemName: String
+ 	itemNameEN: String
+ 	itemDescription: String
+ 	parentItemId: Long
+ 	level: Int
+ 	sibling: String
+ 	treeIndex: String
+ 	dataForm: String
+ 	metaData: String
+}
+
+input DictItemInput {
+ 	dictCollectionId: Long
+ 	itemCode: String
+ 	itemName: String
+ 	itemNameEN: String
+ 	itemDescription: String
+ 	parentItemId: Long
+ 	level: Int
+ 	sibling: String
+ 	treeIndex: String
+ 	dataForm: String
+ 	metaData: String
+}

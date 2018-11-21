@@ -23,18 +23,34 @@ public class GraphQLController {
 	public GraphQLController() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	@Autowired
-	GraphQLService graphQLService;
 
-	public GraphQLController(GraphQLService graphQLService) {
-		this.graphQLService = graphQLService;
+	@Autowired
+	DeliverableService deliverableService;
+	@Autowired
+	DataItemService dataItemService;
+
+	public GraphQLController(DeliverableService deliverableService, DataItemService dataItemService) {
+		this.deliverableService = deliverableService;
+		this.dataItemService = dataItemService;
 	}
 
-	@RequestMapping(value = "/process", method = RequestMethod.POST, produces = "application/json; charset=utf-8" )
-	public ResponseEntity<Object> allItems(@RequestBody String query) {
+	@RequestMapping(value = "/deliverable", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<Object> deliverable(@RequestBody String query) {
+		System.out.println("GraphQLController.deliverable()" + query);
+		ExecutionResult result = deliverableService.getGraphQL().execute(query);
 
-		ExecutionResult result = graphQLService.getGraphQL().execute(query);
+		Gson gson = new Gson();
+
+		String json = gson.toJson(result.getData(), LinkedHashMap.class);
+
+		return new ResponseEntity<>(json, HttpStatus.OK);
+
+	}
+
+	@RequestMapping(value = "/dataitem", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<Object> dataitem(@RequestBody String query) {
+
+		ExecutionResult result = dataItemService.getGraphQL().execute(query);
 
 		Gson gson = new Gson();
 

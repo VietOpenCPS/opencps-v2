@@ -59,7 +59,13 @@ import javax.xml.bind.annotation.XmlType;
     "applicant",
     "serviceCode",
     "serviceName",
-    "typeCode"
+    "typeCode",
+    "templateNo",
+    "applicantName",
+    "applicantAddress",
+    "applicantEmail",
+    "applicantTelNo",
+    "employeeName"
 })
 @XmlRootElement(name = "ServiceConfigSearchModel")
 public class ServiceConfigSearchModel {
@@ -90,6 +96,18 @@ public class ServiceConfigSearchModel {
     protected String serviceName;
 	@QueryParam(value = "typeCode")
     protected String typeCode;
+	@QueryParam(value = "templateNo")
+    protected String templateNo;
+	@QueryParam(value = "applicantName")
+    protected String applicantName;
+	@QueryParam(value = "applicantAddress")
+    protected String applicantAddress;
+	@QueryParam(value = "applicantEmail")
+    protected String applicantEmail;
+	@QueryParam(value = "applicantTelNo")
+    protected String applicantTelNo;
+	@QueryParam(value = "employeeName")
+    protected String employeeName;
 
     /**
      * Gets the value of the keyword property.
@@ -353,6 +371,54 @@ public class ServiceConfigSearchModel {
 
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
+	}
+
+	public String getTemplateNo() {
+		return templateNo;
+	}
+
+	public void setTemplateNo(String templateNo) {
+		this.templateNo = templateNo;
+	}
+
+	public String getApplicantName() {
+		return applicantName;
+	}
+
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
+
+	public String getApplicantAddress() {
+		return applicantAddress;
+	}
+
+	public void setApplicantAddress(String applicantAddress) {
+		this.applicantAddress = applicantAddress;
+	}
+
+	public String getApplicantEmail() {
+		return applicantEmail;
+	}
+
+	public void setApplicantEmail(String applicantEmail) {
+		this.applicantEmail = applicantEmail;
+	}
+
+	public String getApplicantTelNo() {
+		return applicantTelNo;
+	}
+
+	public void setApplicantTelNo(String applicantTelNo) {
+		this.applicantTelNo = applicantTelNo;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
 
 }

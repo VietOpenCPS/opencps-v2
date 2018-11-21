@@ -1295,6 +1295,17 @@
             <finder-column name="dossierActionId" comparator="!="></finder-column>
 			
 		</finder>				
+     	<finder return-type="Collection" name="DID_FSC_NOT_DAI">
+			<finder-column name="dossierId" />
+			<finder-column name="fromStepCode" />
+            <finder-column name="dossierActionId" comparator="!="></finder-column>
+			
+		</finder>				
+     	<finder return-type="Collection" name="DID_U_FSC">
+			<finder-column name="dossierId" />
+			<finder-column name="userId" />
+			<finder-column name="fromStepCode" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierUser"

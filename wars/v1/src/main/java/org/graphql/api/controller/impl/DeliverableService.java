@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.deliverable.crud.CreateDeliverableType;
 import org.graphql.api.controller.deliverable.crud.GetDeliverableType;
 import org.graphql.api.controller.deliverable.crud.GetDeliverableTypes;
+import org.graphql.api.controller.utils.GraphQLUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
  * Created binhth
  */
 @Service
-public class GraphQLService {
+public class DeliverableService {
 
 	private GraphQL graphQL;
 
@@ -35,21 +36,8 @@ public class GraphQLService {
 
 		String schema = StringPool.BLANK;
 
-		InputStream is = GraphQLService.class.getClassLoader().getResourceAsStream("deliverable.graphql");
-		try {
-			schema = IOUtils.toString(is, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
+		schema = GraphQLUtils.readGrapQL("deliverable.graphql");
+		
 		TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(schema);
 
 		RuntimeWiring runtimeWiring = initWiring();

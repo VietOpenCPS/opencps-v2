@@ -60,22 +60,18 @@ import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
-import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-
+import org.opencps.usermgt.constants.ApplicantTerm;
 import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ServiceConfigManagementImpl implements ServiceConfigManagement {
@@ -840,66 +836,101 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			jsonGuide.put(ServiceConfigTerm.SERVICE_CODE, search.getServiceCode());
 			jsonGuide.put(ServiceConfigTerm.SERVICE_NAME, search.getServiceName());
 			jsonGuide.put(ServiceConfigTerm.ACTION_USER, user.getFullName());
+			jsonGuide.put(ApplicantTerm.APPLICANTNAME, search.getApplicantName());
+			jsonGuide.put(ApplicantTerm.ADDRESS, search.getApplicantAddress());
+			jsonGuide.put(ApplicantTerm.CONTACTEMAIL, search.getApplicantEmail());
+			jsonGuide.put(ApplicantTerm.CONTACTTELNO, search.getApplicantTelNo());
+			jsonGuide.put("employeeName", search.getEmployeeName());
+			jsonGuide.put(DossierTemplateTerm.TEMPLATE_NO, search.getTemplateNo());
 			if (serviceConfig != null) {
 				jsonGuide.put(ServiceConfigTerm.SERVICE_INSTRUCTION, serviceConfig.getServiceInstruction());
 			}
 
-			List<ProcessOption> optionList = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfigId);
-			JSONArray optionArr = JSONFactoryUtil.createJSONArray();
-			if (optionList != null && optionList.size() > 0) {
-				JSONObject jsonOption = null;
-				JSONArray partArr = null;
-				for (ProcessOption option : optionList) {
-					if (option != null) {
-						jsonOption = JSONFactoryUtil.createJSONObject();
-						jsonOption.put(ProcessOptionTerm.INSTRUCTION_NOTE, option.getInstructionNote());
-						// Get serviceProcess by optionId
-						ServiceProcess process = ServiceProcessLocalServiceUtil
-								.fetchServiceProcess(option.getServiceProcessId());
-						if (process != null) {
-							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, process.getDurationCount());
-							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, process.getDurationUnit());
-						} else {
-							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, StringPool.BLANK);
-							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, StringPool.BLANK);
-						}
-						// Get dossierTemplate by dossierTemplateId
-						DossierTemplate template = DossierTemplateLocalServiceUtil
-								.fetchDossierTemplate(option.getDossierTemplateId());
-						partArr = JSONFactoryUtil.createJSONArray();
-						if (template != null) {
-							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, template.getTemplateName());
-							// Get list part by templateNo
-							List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
-									template.getTemplateNo());
-							if (partList != null && partList.size() > 0) {
-								JSONObject jsonPart = null;
-								for (DossierPart part : partList) {
-									if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
-										jsonPart = JSONFactoryUtil.createJSONObject();
-										jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
-										jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
-										jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
-										jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
-										jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
+//			List<ProcessOption> optionList = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfigId);
+//			JSONArray optionArr = JSONFactoryUtil.createJSONArray();
+//			if (optionList != null && optionList.size() > 0) {
+//				JSONObject jsonOption = null;
+//				JSONArray partArr = null;
+//				for (ProcessOption option : optionList) {
+//					if (option != null) {
+//						jsonOption = JSONFactoryUtil.createJSONObject();
+//						jsonOption.put(ProcessOptionTerm.INSTRUCTION_NOTE, option.getInstructionNote());
+//						// Get serviceProcess by optionId
+//						ServiceProcess process = ServiceProcessLocalServiceUtil
+//								.fetchServiceProcess(option.getServiceProcessId());
+//						if (process != null) {
+//							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, process.getDurationCount());
+//							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, process.getDurationUnit());
+//						} else {
+//							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, StringPool.BLANK);
+//							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, StringPool.BLANK);
+//						}
+//						// Get dossierTemplate by dossierTemplateId
+//						DossierTemplate template = DossierTemplateLocalServiceUtil
+//								.fetchDossierTemplate(option.getDossierTemplateId());
+//						partArr = JSONFactoryUtil.createJSONArray();
+//						if (template != null) {
+//							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, template.getTemplateName());
+//							// Get list part by templateNo
+//							List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+//									template.getTemplateNo());
+//							if (partList != null && partList.size() > 0) {
+//								JSONObject jsonPart = null;
+//								for (DossierPart part : partList) {
+//									if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
+//										jsonPart = JSONFactoryUtil.createJSONObject();
+//										jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
+//										jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
+//										jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
+//										jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
+//										jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
+//
+//										partArr.put(jsonPart);
+//									}
+//								}
+//							}
+//							// Add key template in jsonOption
+//							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
+//						} else {
+//							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, StringPool.BLANK);
+//							// Add key template in jsonOption
+//							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
+//						}
+//						// add array process option
+//						optionArr.put(jsonOption);
+//					}
+//				}
+//			}
+			// Get dossierTemplate by dossierTemplateNo
+			DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, search.getTemplateNo());
+			JSONArray partArr = JSONFactoryUtil.createJSONArray();
+			if (template != null) {
+				jsonGuide.put(DossierTemplateTerm.TEMPLATE_NAME, template.getTemplateName());
+				// Get list part by templateNo
+				List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+						template.getTemplateNo());
+				if (partList != null && partList.size() > 0) {
+					JSONObject jsonPart = null;
+					for (DossierPart part : partList) {
+						if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
+							jsonPart = JSONFactoryUtil.createJSONObject();
+							jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
+							jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
+							jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
+							jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
+							jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
 
-										partArr.put(jsonPart);
-									}
-								}
-							}
-							// Add key template in jsonOption
-							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
-						} else {
-							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, StringPool.BLANK);
-							// Add key template in jsonOption
-							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
+							partArr.put(jsonPart);
 						}
-						// add array process option
-						optionArr.put(jsonOption);
 					}
 				}
+				// Add key template in jsonOption
+				jsonGuide.put(ProcessOptionTerm.TEMPLATE, partArr);
+			} else {
+				jsonGuide.put(DossierTemplateTerm.TEMPLATE_NAME, StringPool.BLANK);
+				// Add key template in jsonOption
+				jsonGuide.put(ProcessOptionTerm.TEMPLATE, partArr);
 			}
-			jsonGuide.put(ServiceConfigTerm.PROCESSES, optionArr);
 
 			DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, search.getTypeCode());
 			String documentScript = StringPool.BLANK;
