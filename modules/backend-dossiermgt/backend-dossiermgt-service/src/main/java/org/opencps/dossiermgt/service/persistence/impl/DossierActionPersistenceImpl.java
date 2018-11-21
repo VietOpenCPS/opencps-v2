@@ -8214,6 +8214,462 @@ public class DossierActionPersistenceImpl extends BasePersistenceImpl<DossierAct
 	private static final String _FINDER_COLUMN_DID_SC_NOT_DAI_STEPCODE_2 = "dossierAction.stepCode = ? AND ";
 	private static final String _FINDER_COLUMN_DID_SC_NOT_DAI_STEPCODE_3 = "(dossierAction.stepCode IS NULL OR dossierAction.stepCode = '') AND ";
 	private static final String _FINDER_COLUMN_DID_SC_NOT_DAI_DOSSIERACTIONID_2 = "dossierAction.dossierActionId != ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FSC_NOT_DAI =
+		new FinderPath(DossierActionModelImpl.ENTITY_CACHE_ENABLED,
+			DossierActionModelImpl.FINDER_CACHE_ENABLED,
+			DossierActionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByDID_FSC_NOT_DAI",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FSC_NOT_DAI =
+		new FinderPath(DossierActionModelImpl.ENTITY_CACHE_ENABLED,
+			DossierActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByDID_FSC_NOT_DAI",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Long.class.getName()
+			});
+
+	/**
+	 * Returns all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @return the matching dossier actions
+	 */
+	@Override
+	public List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId) {
+		return findByDID_FSC_NOT_DAI(dossierId, fromStepCode, dossierActionId,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @param start the lower bound of the range of dossier actions
+	 * @param end the upper bound of the range of dossier actions (not inclusive)
+	 * @return the range of matching dossier actions
+	 */
+	@Override
+	public List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId, int start, int end) {
+		return findByDID_FSC_NOT_DAI(dossierId, fromStepCode, dossierActionId,
+			start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @param start the lower bound of the range of dossier actions
+	 * @param end the upper bound of the range of dossier actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossier actions
+	 */
+	@Override
+	public List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId, int start, int end,
+		OrderByComparator<DossierAction> orderByComparator) {
+		return findByDID_FSC_NOT_DAI(dossierId, fromStepCode, dossierActionId,
+			start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @param start the lower bound of the range of dossier actions
+	 * @param end the upper bound of the range of dossier actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossier actions
+	 */
+	@Override
+	public List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId, int start, int end,
+		OrderByComparator<DossierAction> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FSC_NOT_DAI;
+		finderArgs = new Object[] {
+				dossierId, fromStepCode, dossierActionId,
+				
+				start, end, orderByComparator
+			};
+
+		List<DossierAction> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DossierAction>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DossierAction dossierAction : list) {
+					if ((dossierId != dossierAction.getDossierId()) ||
+							!Objects.equals(fromStepCode,
+								dossierAction.getFromStepCode()) ||
+							(dossierActionId == dossierAction.getDossierActionId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_DOSSIERACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_DOSSIERID_2);
+
+			boolean bindFromStepCode = false;
+
+			if (fromStepCode == null) {
+				query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_1);
+			}
+			else if (fromStepCode.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_3);
+			}
+			else {
+				bindFromStepCode = true;
+
+				query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_DOSSIERACTIONID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierActionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFromStepCode) {
+					qPos.add(fromStepCode);
+				}
+
+				qPos.add(dossierActionId);
+
+				if (!pagination) {
+					list = (List<DossierAction>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DossierAction>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier action
+	 * @throws NoSuchDossierActionException if a matching dossier action could not be found
+	 */
+	@Override
+	public DossierAction findByDID_FSC_NOT_DAI_First(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator)
+		throws NoSuchDossierActionException {
+		DossierAction dossierAction = fetchByDID_FSC_NOT_DAI_First(dossierId,
+				fromStepCode, dossierActionId, orderByComparator);
+
+		if (dossierAction != null) {
+			return dossierAction;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", fromStepCode=");
+		msg.append(fromStepCode);
+
+		msg.append(", dossierActionId=");
+		msg.append(dossierActionId);
+
+		msg.append("}");
+
+		throw new NoSuchDossierActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	 */
+	@Override
+	public DossierAction fetchByDID_FSC_NOT_DAI_First(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator) {
+		List<DossierAction> list = findByDID_FSC_NOT_DAI(dossierId,
+				fromStepCode, dossierActionId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier action
+	 * @throws NoSuchDossierActionException if a matching dossier action could not be found
+	 */
+	@Override
+	public DossierAction findByDID_FSC_NOT_DAI_Last(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator)
+		throws NoSuchDossierActionException {
+		DossierAction dossierAction = fetchByDID_FSC_NOT_DAI_Last(dossierId,
+				fromStepCode, dossierActionId, orderByComparator);
+
+		if (dossierAction != null) {
+			return dossierAction;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", fromStepCode=");
+		msg.append(fromStepCode);
+
+		msg.append(", dossierActionId=");
+		msg.append(dossierActionId);
+
+		msg.append("}");
+
+		throw new NoSuchDossierActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	 */
+	@Override
+	public DossierAction fetchByDID_FSC_NOT_DAI_Last(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator) {
+		int count = countByDID_FSC_NOT_DAI(dossierId, fromStepCode,
+				dossierActionId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DossierAction> list = findByDID_FSC_NOT_DAI(dossierId,
+				fromStepCode, dossierActionId, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Removes all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63; from the database.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 */
+	@Override
+	public void removeByDID_FSC_NOT_DAI(long dossierId, String fromStepCode,
+		long dossierActionId) {
+		for (DossierAction dossierAction : findByDID_FSC_NOT_DAI(dossierId,
+				fromStepCode, dossierActionId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(dossierAction);
+		}
+	}
+
+	/**
+	 * Returns the number of dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fromStepCode the from step code
+	 * @param dossierActionId the dossier action ID
+	 * @return the number of matching dossier actions
+	 */
+	@Override
+	public int countByDID_FSC_NOT_DAI(long dossierId, String fromStepCode,
+		long dossierActionId) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FSC_NOT_DAI;
+
+		Object[] finderArgs = new Object[] {
+				dossierId, fromStepCode, dossierActionId
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_DOSSIERACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_DOSSIERID_2);
+
+			boolean bindFromStepCode = false;
+
+			if (fromStepCode == null) {
+				query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_1);
+			}
+			else if (fromStepCode.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_3);
+			}
+			else {
+				bindFromStepCode = true;
+
+				query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FSC_NOT_DAI_DOSSIERACTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFromStepCode) {
+					qPos.add(fromStepCode);
+				}
+
+				qPos.add(dossierActionId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_DID_FSC_NOT_DAI_DOSSIERID_2 = "dossierAction.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_1 = "dossierAction.fromStepCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_2 = "dossierAction.fromStepCode = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FSC_NOT_DAI_FROMSTEPCODE_3 = "(dossierAction.fromStepCode IS NULL OR dossierAction.fromStepCode = '') AND ";
+	private static final String _FINDER_COLUMN_DID_FSC_NOT_DAI_DOSSIERACTIONID_2 =
+		"dossierAction.dossierActionId != ?";
 
 	public DossierActionPersistenceImpl() {
 		setModelClass(DossierAction.class);

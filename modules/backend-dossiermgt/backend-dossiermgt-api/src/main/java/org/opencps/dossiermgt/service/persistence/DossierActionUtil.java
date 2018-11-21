@@ -2581,6 +2581,190 @@ public class DossierActionUtil {
 	}
 
 	/**
+	* Returns all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @return the matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId) {
+		return getPersistence()
+				   .findByDID_FSC_NOT_DAI(dossierId, fromStepCode,
+			dossierActionId);
+	}
+
+	/**
+	* Returns a range of all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @return the range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId, int start, int end) {
+		return getPersistence()
+				   .findByDID_FSC_NOT_DAI(dossierId, fromStepCode,
+			dossierActionId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId, int start, int end,
+		OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence()
+				   .findByDID_FSC_NOT_DAI(dossierId, fromStepCode,
+			dossierActionId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId, int start, int end,
+		OrderByComparator<DossierAction> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_FSC_NOT_DAI(dossierId, fromStepCode,
+			dossierActionId, start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public static DossierAction findByDID_FSC_NOT_DAI_First(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence()
+				   .findByDID_FSC_NOT_DAI_First(dossierId, fromStepCode,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public static DossierAction fetchByDID_FSC_NOT_DAI_First(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_FSC_NOT_DAI_First(dossierId, fromStepCode,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public static DossierAction findByDID_FSC_NOT_DAI_Last(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence()
+				   .findByDID_FSC_NOT_DAI_Last(dossierId, fromStepCode,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action in the ordered set where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public static DossierAction fetchByDID_FSC_NOT_DAI_Last(long dossierId,
+		String fromStepCode, long dossierActionId,
+		OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_FSC_NOT_DAI_Last(dossierId, fromStepCode,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Removes all the dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	*/
+	public static void removeByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId) {
+		getPersistence()
+			.removeByDID_FSC_NOT_DAI(dossierId, fromStepCode, dossierActionId);
+	}
+
+	/**
+	* Returns the number of dossier actions where dossierId = &#63; and fromStepCode = &#63; and dossierActionId &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fromStepCode the from step code
+	* @param dossierActionId the dossier action ID
+	* @return the number of matching dossier actions
+	*/
+	public static int countByDID_FSC_NOT_DAI(long dossierId,
+		String fromStepCode, long dossierActionId) {
+		return getPersistence()
+				   .countByDID_FSC_NOT_DAI(dossierId, fromStepCode,
+			dossierActionId);
+	}
+
+	/**
 	* Caches the dossier action in the entity cache if it is enabled.
 	*
 	* @param dossierAction the dossier action
