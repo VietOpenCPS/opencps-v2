@@ -1625,7 +1625,7 @@ public class DossierManagementImpl implements DossierManagement {
 									_log.info("dateOption: "+dateOption);
 									if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
 										DossierAction dActEnd = DossierActionLocalServiceUtil
-												.fetchDossierAction(dossierResult.getPreviousActionId());
+												.fetchDossierAction(dossierResult.getDossierActionId());
 										if (dActEnd != null) {
 											DossierAction dActStart = DossierActionLocalServiceUtil
 													.fetchDossierAction(dActEnd.getPreviousActionId());
@@ -1638,6 +1638,7 @@ public class DossierManagementImpl implements DossierManagement {
 													long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, groupId);
 													_log.info("extendDateTimeStamp: "+extendDateTimeStamp);
 													if (extendDateTimeStamp > 0) {
+														dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 														long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
 														_log.info("hoursCount: "+hoursCount);
 														_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
@@ -1653,17 +1654,19 @@ public class DossierManagementImpl implements DossierManagement {
 															DossierLocalServiceUtil.updateDossier(dossier);
 														}
 													}
-													
 												}
 											}
 										}
 									} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
+										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 										if (dossier.getDueDate() != null) {
 											dossier.setExtendDate(dossier.getDueDate());
 											dossier.setDueDate(null);
 											DossierLocalServiceUtil.updateDossier(dossier);
 										}
-									} else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+									} 
+									else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 										if (dossier.getDueDate() != null) {
 											ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
 													.fetchServiceProcess(dossierResult.getServiceProcessId());
