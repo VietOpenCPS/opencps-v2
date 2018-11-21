@@ -527,6 +527,10 @@ public interface DossierLocalService extends BaseLocalService,
 		ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateDossierSpecial(long dossierId, JSONObject obj)
+		throws NoSuchDossierException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateDueDate(long groupId, long id, String refId,
 		Date date, ServiceContext context) throws PortalException;
 

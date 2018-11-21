@@ -3458,7 +3458,12 @@ public class DossierActionsImpl implements DossierActions {
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
 		
 		if (Validator.isNotNull(payload)) {
-			dossier = DossierLocalServiceUtil.updateDossier(dossier.getDossierId(), payloadObject);			
+			if (DossierActionTerm.OUTSIDE_ACTION_9100.equals(actionCode)) {
+				dossier = DossierLocalServiceUtil.updateDossierSpecial(dossier.getDossierId(), payloadObject);							
+			}
+			else {
+				dossier = DossierLocalServiceUtil.updateDossier(dossier.getDossierId(), payloadObject);											
+			}
 		}
 		
 		//Create DossierSync
