@@ -51,6 +51,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.sms.model.SMSGatewayLog;
 import org.opencps.sms.service.SMSGatewayLogLocalService;
+import org.opencps.sms.service.persistence.SMSGatewayLogFinder;
 import org.opencps.sms.service.persistence.SMSGatewayLogPersistence;
 import org.opencps.sms.service.persistence.SMSLookUpQueuePersistence;
 
@@ -470,6 +471,24 @@ public abstract class SMSGatewayLogLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the sms gateway log finder.
+	 *
+	 * @return the sms gateway log finder
+	 */
+	public SMSGatewayLogFinder getSMSGatewayLogFinder() {
+		return smsGatewayLogFinder;
+	}
+
+	/**
+	 * Sets the sms gateway log finder.
+	 *
+	 * @param smsGatewayLogFinder the sms gateway log finder
+	 */
+	public void setSMSGatewayLogFinder(SMSGatewayLogFinder smsGatewayLogFinder) {
+		this.smsGatewayLogFinder = smsGatewayLogFinder;
+	}
+
+	/**
 	 * Returns the sms look up queue local service.
 	 *
 	 * @return the sms look up queue local service
@@ -676,6 +695,8 @@ public abstract class SMSGatewayLogLocalServiceBaseImpl
 	protected SMSGatewayLogLocalService smsGatewayLogLocalService;
 	@BeanReference(type = SMSGatewayLogPersistence.class)
 	protected SMSGatewayLogPersistence smsGatewayLogPersistence;
+	@BeanReference(type = SMSGatewayLogFinder.class)
+	protected SMSGatewayLogFinder smsGatewayLogFinder;
 	@BeanReference(type = org.opencps.sms.service.SMSLookUpQueueLocalService.class)
 	protected org.opencps.sms.service.SMSLookUpQueueLocalService smsLookUpQueueLocalService;
 	@BeanReference(type = SMSLookUpQueuePersistence.class)

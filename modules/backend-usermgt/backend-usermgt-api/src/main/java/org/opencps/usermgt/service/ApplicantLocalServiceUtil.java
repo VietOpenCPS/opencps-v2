@@ -225,6 +225,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().fetchByEmail(email);
 	}
 
+	public static org.opencps.usermgt.model.Applicant fetchByF_APLC_GID(
+		long groupId, String applicantIdNo) {
+		return getService().fetchByF_APLC_GID(groupId, applicantIdNo);
+	}
+
 	public static org.opencps.usermgt.model.Applicant fetchByMappingID(
 		long mappingID) {
 		return getService().fetchByMappingID(mappingID);

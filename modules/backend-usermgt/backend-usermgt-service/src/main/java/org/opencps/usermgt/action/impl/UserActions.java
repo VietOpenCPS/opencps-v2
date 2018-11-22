@@ -49,11 +49,13 @@ import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.model.Preferences;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
 
@@ -814,7 +816,8 @@ public class UserActions implements UserInterface {
 						.fetchEmployeeJobPos(employee.getMainJobPostId());
 
 				if (Validator.isNotNull(employeeJobPos)) {
-					Role role = RoleLocalServiceUtil.fetchRole(employeeJobPos.getJobPostId());
+					JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId());
+					Role role = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
 					result.put("employeeMainJobPostName", role.getTitleCurrentValue());
 				}
 

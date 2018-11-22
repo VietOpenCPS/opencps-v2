@@ -232,6 +232,12 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Applicant fetchByF_APLC_GID(long groupId,
+		String applicantIdNo) {
+		return _applicantLocalService.fetchByF_APLC_GID(groupId, applicantIdNo);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.Applicant fetchByMappingID(long mappingID) {
 		return _applicantLocalService.fetchByMappingID(mappingID);
 	}

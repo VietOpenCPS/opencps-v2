@@ -209,6 +209,9 @@ public interface ApplicantLocalService extends BaseLocalService,
 	public Applicant fetchByEmail(String email);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Applicant fetchByF_APLC_GID(long groupId, String applicantIdNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Applicant fetchByMappingID(long mappingID);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

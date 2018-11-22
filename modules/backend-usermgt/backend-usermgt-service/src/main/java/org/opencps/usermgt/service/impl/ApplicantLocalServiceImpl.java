@@ -775,6 +775,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return object;
 	}
 	
+	public Applicant fetchByF_APLC_GID(long groupId, String applicantIdNo) {
+		Applicant applicant = applicantPersistence.fetchByF_APLC_GID(groupId, applicantIdNo);
+		return applicant;
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 }
