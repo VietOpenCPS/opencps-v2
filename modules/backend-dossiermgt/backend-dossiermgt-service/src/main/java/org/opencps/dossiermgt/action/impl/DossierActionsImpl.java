@@ -3458,7 +3458,12 @@ public class DossierActionsImpl implements DossierActions {
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
 		
 		if (Validator.isNotNull(payload)) {
-			dossier = DossierLocalServiceUtil.updateDossier(dossier.getDossierId(), payloadObject);			
+			if (DossierActionTerm.OUTSIDE_ACTION_9100.equals(actionCode)) {
+				dossier = DossierLocalServiceUtil.updateDossierSpecial(dossier.getDossierId(), payloadObject);							
+			}
+			else {
+				dossier = DossierLocalServiceUtil.updateDossier(dossier.getDossierId(), payloadObject);											
+			}
 		}
 		
 		//Create DossierSync
@@ -6034,5 +6039,49 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		
 		_log.info("SONDT checkPaymentMethod pmMethod ===== " + pmMethod);
 		return pmMethod;
+	}
+
+	@Override
+	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps) {
+		List<User> lstUser = new ArrayList<>();
+
+		if (ps != null) {
+			
+			List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+					.findByP_S_ID(ps.getProcessStepId());
+			if (Validator.isNotNull(ps.getRoleAsStep())) {
+				String[] steps = StringUtil.split(ps.getRoleAsStep());
+				for (String stepCode : steps) {
+					if (stepCode.startsWith("!")) {
+						int index = stepCode.indexOf("!");
+						String stepCodePunc = stepCode.substring(index + 1);
+						lstUser.addAll(processRoleAsStepDonedListUser(dossier, stepCodePunc, ps.getServiceProcessId(), ps));
+					}
+					else {
+						lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, ps.getServiceProcessId(), ps));								
+					}
+				}
+			}
+			else {
+				if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+					List<ProcessStepRole> lstStepRoles = new ArrayList<>();
+					for (ProcessStepRole psr : processStepRoleList) {
+						if (Validator.isNotNull(psr.getCondition())) {
+							String[] conditions = StringUtil.split(psr.getCondition());
+							
+							if (DossierMgtUtils.checkPreCondition(conditions, dossier)) {
+								lstStepRoles.add(psr);
+							}
+						}
+						else {
+							lstStepRoles.add(psr);
+						}
+					}
+					lstUser.addAll(processRoleListUser(lstStepRoles, ps.getServiceProcessId()));
+				}						
+			}
+		}
+		
+		return lstUser;
 	}
 }
