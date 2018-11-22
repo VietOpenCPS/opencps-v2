@@ -29,7 +29,6 @@ public class MenuRoleManagementImpl implements MenuRoleManagement {
 	@Override
 	public Response autoGenerateId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
