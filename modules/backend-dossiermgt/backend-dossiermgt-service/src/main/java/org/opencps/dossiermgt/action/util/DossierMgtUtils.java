@@ -555,12 +555,12 @@ public class DossierMgtUtils {
 	}
 
 	private static boolean checkPayNotOk(Dossier dossier) {
-		boolean result = false;
+		boolean result = true;
 		PaymentFileActions actions = new PaymentFileActionsImpl();
 		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
 		if (paymentFile != null) {
-			if (paymentFile.getPaymentStatus() != 5) {
-				result = result && true;
+			if (paymentFile.getPaymentStatus() == 5) {
+				result = result && false;
 			}
 		}
 		return result;
