@@ -2768,7 +2768,7 @@ public class DossierActionsImpl implements DossierActions {
 					
 					paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
 					
-					if(paymentAmount > 0) {
+//					if(paymentAmount > 0) {
 						PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
 								dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
 								serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
@@ -2857,7 +2857,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 						// end sondt
 					}
-				}
+//				}
 //				try {
 //					String serveNo = serviceProcess.getServerNo();
 //					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), userId, context,
