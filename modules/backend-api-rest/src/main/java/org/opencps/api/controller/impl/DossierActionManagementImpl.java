@@ -360,7 +360,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				query.setEnd(-1);
 			}
 			ProcessAction proAction = ProcessActionLocalServiceUtil.fetchProcessAction(GetterUtil.getInteger(actionId));
-			String actionCode = (proAction != null) ? proAction.getActionCode() : StringPool.BLANK;
+			String actionCode = (proAction != null) ? proAction.getActionCode() : actionId;
 			
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 

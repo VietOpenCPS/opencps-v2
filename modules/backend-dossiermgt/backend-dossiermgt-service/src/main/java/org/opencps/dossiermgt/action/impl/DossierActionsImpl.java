@@ -113,6 +113,7 @@ import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.impl.ProcessActionImpl;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
@@ -152,6 +153,7 @@ import backend.auth.api.exception.NotFoundException;
 public class DossierActionsImpl implements DossierActions {
 
 	public static final String SPECIAL_ACTION = "1100";
+	public static final String FIX_DOSSIER_ACTION = "9100";
 	public static final String AUTO_EVENT_SUBMIT = "submit";
 	public static final String AUTO_EVENT_TIMMER = "timer";
 	public static final String AUTO_EVENT_LISTENER = "listener";
@@ -1297,6 +1299,17 @@ public class DossierActionsImpl implements DossierActions {
 		List<ProcessAction> processActionList = null;
 		JSONArray results = null;
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		User user = UserLocalServiceUtil.fetchUser(userId);
+		
+		List<Role> userRolesAdminCheck = user.getRoles();
+		boolean isAdministratorData = false;
+		for (Role r : userRolesAdminCheck) {
+			if (r.getName().startsWith("Administrator")) {
+				isAdministratorData = true;
+				break;
+			}
+		}
+		
 //		_log.info("dossier: "+dossier);
 		try {
 			if (dossier != null) {
@@ -1315,6 +1328,26 @@ public class DossierActionsImpl implements DossierActions {
 					pending = dossierAction.getPending();
 				}
 
+				if (isAdministratorData) {
+					ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, FIX_DOSSIER_ACTION);
+					if (ac != null) {
+						if (results == null) {
+							results = JSONFactoryUtil.createJSONArray();							
+						}
+						JSONObject data = JSONFactoryUtil.createJSONObject();
+						data.put(ProcessActionTerm.ENABLE, 1);
+						data.put(ProcessActionTerm.PROCESS_ACTION_ID, ac.getActionCode());
+						data.put(ProcessActionTerm.ACTION_CODE, FIX_DOSSIER_ACTION);
+						data.put(ProcessActionTerm.ACTION_NAME, ac.getActionName());
+						data.put(ProcessActionTerm.PRESTEP_CODE, StringPool.BLANK);
+						data.put(ProcessActionTerm.POSTSTEP_CODE, StringPool.BLANK);
+						data.put(ProcessActionTerm.AUTO_EVENT, StringPool.BLANK);
+						data.put(ProcessActionTerm.PRE_CONDITION, StringPool.BLANK);
+						//
+						results.put(data);						
+					}
+				}
+				
 				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 							.getByDossierAndUser(dossierActionId, userId);
@@ -1353,7 +1386,9 @@ public class DossierActionsImpl implements DossierActions {
 					// _log.info("processActionList:
 					// "+processActionList.size());
 					if (processActionList != null && processActionList.size() > 0) {
-						results = JSONFactoryUtil.createJSONArray();
+						if (results == null) {
+							results = JSONFactoryUtil.createJSONArray();							
+						}
 						JSONObject data = null;
 						long processActionId = 0;
 						String actionCode;
@@ -2003,7 +2038,22 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 				}
-				result.put("processAction", processAction);
+				if (processAction != null) {
+					result.put("processAction", processAction);
+				}
+				else {
+					String actionCode = GetterUtil.getString(params.get(ProcessActionTerm.PROCESS_ACTION_ID));
+					if (Validator.isNotNull(actionCode) && FIX_DOSSIER_ACTION.equals(actionCode)) {
+						ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+						ProcessAction newProcessAction = new ProcessActionImpl();
+						newProcessAction.setActionCode(ac.getActionCode());
+						newProcessAction.setGroupId(ac.getGroupId());
+						result.put("processAction", newProcessAction);
+					}
+					else {
+						result.put("processAction", processAction);
+					}
+				}
 				result.put("createFiles", createFiles);
 			}
 		} catch (Exception e) {
@@ -3432,7 +3482,6 @@ public class DossierActionsImpl implements DossierActions {
 			String payment,
 			int syncType,
 			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
-//		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 
@@ -3486,27 +3535,33 @@ public class DossierActionsImpl implements DossierActions {
 				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
 					//Generate document
 					DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, ac.getDocumentType());
-					String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
-					
-					DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
-
-					//Generate PDF
-					String formData = payload;
-					JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
-//					_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
-					Message message = new Message();
-//					_log.info("Document script: " + dt.getDocumentScript());
-					JSONObject msgData = JSONFactoryUtil.createJSONObject();
-					msgData.put("className", DossierDocument.class.getName());
-					msgData.put("classPK", dossierDocument.getDossierDocumentId());
-					msgData.put("jrxmlTemplate", dt.getDocumentScript());
-					msgData.put("formData", formDataObj.toJSONString());
-					msgData.put("userId", userId);
-
-					message.put("msgToEngine", msgData);
-					MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+					if (dt != null) {
+						String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
+						
+						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
+	
+						//Generate PDF
+						String formData = payload;
+						JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
+	//					_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
+						Message message = new Message();
+	//					_log.info("Document script: " + dt.getDocumentScript());
+						JSONObject msgData = JSONFactoryUtil.createJSONObject();
+						msgData.put("className", DossierDocument.class.getName());
+						msgData.put("classPK", dossierDocument.getDossierDocumentId());
+						msgData.put("jrxmlTemplate", dt.getDocumentScript());
+						msgData.put("formData", formDataObj.toJSONString());
+						msgData.put("userId", userId);
+	
+						message.put("msgToEngine", msgData);
+						MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+					}
 				}					
 			}
+		}
+		
+		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+			publishEvent(dossier);			
 		}
 		
 		return dossierAction;
