@@ -1,0 +1,25 @@
+schema {
+    query: Query
+}
+
+type Query {
+	getAdminConfig(code: String): AdminConfig
+}
+
+type AdminConfig {
+ 	id : Long
+ 	code: String
+ 	name: String
+ 	bundleName: String
+ 	modelName: String
+ 	serviceUtilName: String
+ 	headersName: String
+ 	mappingData: String
+ 	columns: String
+ 	detailColumns: String
+ 	extForm: Boolean
+ 	groupFilter: Boolean
+ 	publicManager: Boolean
+ 	foreignTable: Boolean
+}
+

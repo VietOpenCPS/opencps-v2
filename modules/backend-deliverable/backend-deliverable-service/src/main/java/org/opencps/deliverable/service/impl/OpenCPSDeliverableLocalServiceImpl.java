@@ -18,6 +18,7 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -27,6 +28,8 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.deliverable.model.OpenCPSDeliverable;
 import org.opencps.deliverable.service.base.OpenCPSDeliverableLocalServiceBaseImpl;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 /**
  * The implementation of the open cps deliverable local service.
@@ -109,7 +112,15 @@ public class OpenCPSDeliverableLocalServiceImpl extends OpenCPSDeliverableLocalS
 			}
 			
 			object.setApplicantIdNo(objectData.getString(ModelKeys.APPLICANTIDNO));
-			object.setApplicantName(objectData.getString(ModelKeys.APPLICANTNAME));
+			
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(objectData.getLong(ModelKeys.GROUPID), objectData.getString(ModelKeys.APPLICANTIDNO));
+			
+			if (Validator.isNotNull(applicant)) {
+				object.setApplicantName(applicant.getApplicantName());
+			} else {
+				object.setApplicantName(StringPool.BLANK);
+			}
+			
 			object.setSubject(objectData.getString(ModelKeys.SUBJECT));
 			object.setFormData(objectData.getString(ModelKeys.FORMDATA));
 			object.setFormScriptFileId(objectData.getLong(ModelKeys.FORMSCRIPTFILEID));

@@ -28,10 +28,14 @@ public class GraphQLController {
 	DeliverableService deliverableService;
 	@Autowired
 	DataItemService dataItemService;
+	@Autowired
+	AdminConfigService adminConfigService;
 
-	public GraphQLController(DeliverableService deliverableService, DataItemService dataItemService) {
+	public GraphQLController(DeliverableService deliverableService, DataItemService dataItemService,
+			AdminConfigService adminConfigService) {
 		this.deliverableService = deliverableService;
 		this.dataItemService = dataItemService;
+		this.adminConfigService = adminConfigService;
 	}
 
 	@RequestMapping(value = "/deliverable", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -51,6 +55,19 @@ public class GraphQLController {
 	public ResponseEntity<Object> dataitem(@RequestBody String query) {
 
 		ExecutionResult result = dataItemService.getGraphQL().execute(query);
+
+		Gson gson = new Gson();
+
+		String json = gson.toJson(result.getData(), LinkedHashMap.class);
+
+		return new ResponseEntity<>(json, HttpStatus.OK);
+
+	}
+
+	@RequestMapping(value = "/adminconfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<Object> adminconfig(@RequestBody String query) {
+
+		ExecutionResult result = adminConfigService.getGraphQL().execute(query);
 
 		Gson gson = new Gson();
 

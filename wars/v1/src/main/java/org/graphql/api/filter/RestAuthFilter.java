@@ -71,6 +71,7 @@ public class RestAuthFilter implements Filter {
 		}
 		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(WebKeys.USER_ID);
+			System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj)) {
 				httpRequest.setAttribute(WebKeys.USER_ID, userObj);
 				authOK(servletRequest, servletResponse, filterChain, (Long) userObj);

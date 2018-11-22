@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -285,39 +286,40 @@ public class RestfulController {
 
 	@RequestMapping(value = "/users/avatar/{className}/{pk}", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
-	public String getAttachment(HttpServletRequest request,
-			@PathVariable("className") String className, @PathVariable("pk") String pk) {
-		
+	public String getAttachment(HttpServletRequest request, @PathVariable("className") String className,
+			@PathVariable("pk") String pk) {
+
 		String result = StringPool.BLANK;
-		
+
 		long groupId = 0;
-		
+
 		if (Validator.isNotNull(request.getHeader("groupId"))) {
 			groupId = Long.valueOf(request.getHeader("groupId"));
 		}
-		
+
 		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(groupId, className, pk);
 
 		if (Validator.isNotNull(fileAttachs) && fileAttachs.size() > 0) {
-			
+
 			FileAttach fileAttach = fileAttachs.get(fileAttachs.size() - 1);
-			
+
 			try {
 
 				DLFileEntry file = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
 
-				result = "/documents/" + file.getGroupId() + StringPool.FORWARD_SLASH + file.getFolderId() + StringPool.FORWARD_SLASH
-			            + file.getTitle() + StringPool.FORWARD_SLASH + file.getUuid();
-				
+				result = "/documents/" + file.getGroupId() + StringPool.FORWARD_SLASH + file.getFolderId()
+						+ StringPool.FORWARD_SLASH + file.getTitle() + StringPool.FORWARD_SLASH + file.getUuid();
+
 			} catch (PortalException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 		return result;
 	}
+
 	@RequestMapping(value = "/users/upload/{code}/{className}/{pk}", method = RequestMethod.POST)
 	public void uploadAttachment(MultipartHttpServletRequest request, @PathVariable("code") String code,
 			@PathVariable("className") String className, @PathVariable("pk") String pk) {
@@ -366,28 +368,30 @@ public class RestfulController {
 			} else {
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
-				
-				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, pk, user.getFullName(), user.getEmailAddress(),
-						fileEntry.getFileEntryId(), StringPool.BLANK, StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
+
+				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, pk,
+						user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
+						StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
 
 				if (code.equals("opencps_employee")) {
 					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
 					employee.setPhotoFileEntryId(fileAttach.getFileEntryId());
 					EmployeeLocalServiceUtil.updateEmployee(employee);
 				} else if (code.equals("opencps_deliverabletype")) {
-					
-					OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil.fetchOpenCPSDeliverableType(Long.valueOf(pk));
-					
+
+					OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil
+							.fetchOpenCPSDeliverableType(Long.valueOf(pk));
+
 					if (className.endsWith("FORM")) {
 						openCPSDeliverableType.setFormScriptFileId(fileAttach.getFileEntryId());
 					} else if (className.endsWith("JASPER")) {
 						openCPSDeliverableType.setFormReportFileId(fileAttach.getFileEntryId());
 					}
-					
+
 					OpenCPSDeliverableTypeLocalServiceUtil.updateOpenCPSDeliverableType(openCPSDeliverableType);
-					
+
 				}
-				
+
 			}
 
 		} catch (Exception e) {
@@ -460,15 +464,15 @@ public class RestfulController {
 		for (FileAttach ett : fileAttachs) {
 
 			try {
-				
+
 				String newName = ett.getFileName();
 
 				if (newName.indexOf("_") > 0) {
-					
+
 					ett.setFileName(newName.substring(newName.indexOf("_") + 1));
-					
+
 				}
-				
+
 				object = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(ett));
 
 				long fileEntryId = ett.getFileEntryId();
@@ -636,11 +640,14 @@ public class RestfulController {
 						.eq(Validator.isNumber(request.getParameter("pk")) ? Long.valueOf(request.getParameter("pk"))
 								: request.getParameter("pk")));
 			}
-			if (Validator.isNotNull(request.getParameter("collectionCode")) && Validator.isNotNull(request.getParameter("column")) && Validator.isNotNull(request.getParameter("type"))) {
-				
+			if (Validator.isNotNull(request.getParameter("collectionCode"))
+					&& Validator.isNotNull(request.getParameter("column"))
+					&& Validator.isNotNull(request.getParameter("type"))) {
+
 				if (request.getParameter("type").equals("int")) {
-					DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(request.getParameter("collectionCode"), Long.valueOf(request.getHeader("groupId")));
-					
+					DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
+							request.getParameter("collectionCode"), Long.valueOf(request.getHeader("groupId")));
+
 					if (Validator.isNotNull(dictCollection)) {
 						dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("column"))
 								.eq(dictCollection.getDictCollectionId()));
@@ -690,30 +697,61 @@ public class RestfulController {
 		return result.toJSONString();
 
 	}
-	
-	@RequestMapping(value = "/users/{id}",
-	        produces = { "application/json", "application/xml" }, 
-	        method = RequestMethod.GET)
+
+	@RequestMapping(value = "/users/{id}", produces = { "application/json",
+			"application/xml" }, method = RequestMethod.GET)
 	public ResponseEntity<UsersUserItem> getUserById(
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") String id) {
-		
+
 		if (Validator.isNull(id)) {
 
 			throw new OpenCPSNotFoundException(User.class.getName());
 
 		} else {
-			
+
 			UserActions actions = new UserActions();
-			
+
 			String userData = actions.getUserById(Long.valueOf(id));
 
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}
-			
-			return new ResponseEntity<UsersUserItem>(JSONFactoryUtil.looseDeserialize(userData, UsersUserItem.class), HttpStatus.OK);
+
+			return new ResponseEntity<UsersUserItem>(JSONFactoryUtil.looseDeserialize(userData, UsersUserItem.class),
+					HttpStatus.OK);
 
 		}
+
+	}
+
+	@RequestMapping(value = "/fileattach/{id}/text", produces = { "text/plain; charset=utf-8" }, method = RequestMethod.GET)
+	public String getTextFromFileEntryId(
+			@ApiParam(value = "id của user", required = true) @PathVariable("id") Long id) {
+
+		String result = StringPool.BLANK;
+
+		InputStream is = null;
+
+		try {
+
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(id);
+
+			is = dlFileEntry.getContentStream();
+
+			result = IOUtils.toString(is, StandardCharsets.UTF_8);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = StringPool.BLANK;
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
 
 	}
 }

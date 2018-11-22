@@ -6,8 +6,7 @@ import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 
-import org.graphql.api.controller.dataitem.crud.AllDictCollectionsFetcher;
-import org.graphql.api.controller.dataitem.crud.CreateDictCollectionMutation;
+import org.graphql.api.controller.adminconfig.crud.GetAdminConfig;
 import org.graphql.api.controller.utils.GraphQLUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,10 @@ import graphql.schema.idl.TypeDefinitionRegistry;
  * Created binhth
  */
 @Service
-public class DataItemService {
+public class AdminConfigService {
 
 	@Autowired
-	private AllDictCollectionsFetcher allDictCollectionsFetcher;
-	
-	@Autowired
-	private CreateDictCollectionMutation createDictCollection;
+	private GetAdminConfig getAdminConfig;
 	
 	private GraphQL graphQL;
 
@@ -38,7 +34,7 @@ public class DataItemService {
 
 		String schema = StringPool.BLANK;
 
-		schema = GraphQLUtils.readGrapQL("dataitem.graphql");
+		schema = GraphQLUtils.readGrapQL("adminconfig.graphql");
 
 		TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(schema);
 		RuntimeWiring runtimeWiring = initWiring();
@@ -53,11 +49,8 @@ public class DataItemService {
 		
 		return RuntimeWiring.newRuntimeWiring()
 				.type("Query",
-						typeWiring -> typeWiring.dataFetcher("allDictCollections", allDictCollectionsFetcher)
+						typeWiring -> typeWiring.dataFetcher("getAdminConfig", getAdminConfig)
 				)
-				.type("Mutation", 
-						typeWiring -> typeWiring.dataFetcher("createDictCollection", createDictCollection)
-                )
 				.build();
 	}
 

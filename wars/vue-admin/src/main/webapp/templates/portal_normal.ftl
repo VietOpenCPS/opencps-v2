@@ -17,6 +17,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
 	
 	<link href="/o/vue-admin/css/roboto-fontface.css" rel="stylesheet" type="text/css">
+	<link href="/o/vue-admin/css/trumbowyg.css?t=123123123" rel="stylesheet" type="text/css">
 	
 	<script>
         window.__define = window.define;
@@ -25,7 +26,9 @@
         window.require = undefined;
     </script>
     
-	<script src="/o/vue-admin/js/jquery.min.js"></script>
+	<script src="/o/vue-admin/js/jquery.min.js?t=123"></script>
+	<script src="/o/vue-admin/js/trumbowyg.min.js?t=123"></script>
+	<script src="/o/vue-admin/js/vue-trumbowyg.js?t=123"></script>
     <script src="/o/vue-admin/js/jquery.jexcel.js"></script>
     <script src="/o/vue-admin/js/svg-pan-zoom.min.js"></script>
     

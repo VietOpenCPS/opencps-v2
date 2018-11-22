@@ -3,12 +3,10 @@ package org.graphql.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.io.IOUtils;
+import org.graphql.api.controller.deliverable.crud.CreateDeliverable;
 import org.graphql.api.controller.deliverable.crud.CreateDeliverableType;
 import org.graphql.api.controller.deliverable.crud.GetDeliverableType;
 import org.graphql.api.controller.deliverable.crud.GetDeliverableTypes;
@@ -55,8 +53,10 @@ public class DeliverableService {
 		return RuntimeWiring.newRuntimeWiring()
 				.type("Query",
 						typeWiring -> typeWiring.dataFetcher("getDeliverableTypes", getDeliverableTypes)
-								.dataFetcher("getDeliverableType", getDeliverableType))
-				.type("Mutation", typeWiring -> typeWiring.dataFetcher("createDeliverableType", createDeliverableType))
+								.dataFetcher("getDeliverableType", getDeliverableType)
+								.dataFetcher("createDeliverable", createDeliverable))
+//				.type("Mutation", typeWiring -> typeWiring.dataFetcher("createDeliverableType", createDeliverableType)
+//						.dataFetcher("createDeliverable", createDeliverable))
 				.build();
 	}
 
@@ -67,5 +67,8 @@ public class DeliverableService {
 	private GetDeliverableType getDeliverableType;
 	@Autowired
 	private CreateDeliverableType createDeliverableType;
-
+	
+	// createDeliverable
+	@Autowired
+	private CreateDeliverable createDeliverable;
 }
