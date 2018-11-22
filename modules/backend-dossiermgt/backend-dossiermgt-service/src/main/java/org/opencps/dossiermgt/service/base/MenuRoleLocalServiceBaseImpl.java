@@ -66,6 +66,7 @@ import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
+import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
@@ -132,26 +133,27 @@ public abstract class MenuRoleLocalServiceBaseImpl extends BaseLocalServiceImpl
 	/**
 	 * Creates a new menu role with the primary key. Does not add the menu role to the database.
 	 *
-	 * @param menuRoleId the primary key for the new menu role
+	 * @param menuRolePK the primary key for the new menu role
 	 * @return the new menu role
 	 */
 	@Override
 	@Transactional(enabled = false)
-	public MenuRole createMenuRole(long menuRoleId) {
-		return menuRolePersistence.create(menuRoleId);
+	public MenuRole createMenuRole(MenuRolePK menuRolePK) {
+		return menuRolePersistence.create(menuRolePK);
 	}
 
 	/**
 	 * Deletes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param menuRoleId the primary key of the menu role
+	 * @param menuRolePK the primary key of the menu role
 	 * @return the menu role that was removed
 	 * @throws PortalException if a menu role with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public MenuRole deleteMenuRole(long menuRoleId) throws PortalException {
-		return menuRolePersistence.remove(menuRoleId);
+	public MenuRole deleteMenuRole(MenuRolePK menuRolePK)
+		throws PortalException {
+		return menuRolePersistence.remove(menuRolePK);
 	}
 
 	/**
@@ -249,20 +251,21 @@ public abstract class MenuRoleLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	@Override
-	public MenuRole fetchMenuRole(long menuRoleId) {
-		return menuRolePersistence.fetchByPrimaryKey(menuRoleId);
+	public MenuRole fetchMenuRole(MenuRolePK menuRolePK) {
+		return menuRolePersistence.fetchByPrimaryKey(menuRolePK);
 	}
 
 	/**
 	 * Returns the menu role with the primary key.
 	 *
-	 * @param menuRoleId the primary key of the menu role
+	 * @param menuRolePK the primary key of the menu role
 	 * @return the menu role
 	 * @throws PortalException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole getMenuRole(long menuRoleId) throws PortalException {
-		return menuRolePersistence.findByPrimaryKey(menuRoleId);
+	public MenuRole getMenuRole(MenuRolePK menuRolePK)
+		throws PortalException {
+		return menuRolePersistence.findByPrimaryKey(menuRolePK);
 	}
 
 	@Override
@@ -273,7 +276,8 @@ public abstract class MenuRoleLocalServiceBaseImpl extends BaseLocalServiceImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(MenuRole.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("menuRoleId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName(
+			"primaryKey.menuConfigId");
 
 		return actionableDynamicQuery;
 	}
@@ -286,7 +290,8 @@ public abstract class MenuRoleLocalServiceBaseImpl extends BaseLocalServiceImpl
 		indexableActionableDynamicQuery.setClassLoader(getClassLoader());
 		indexableActionableDynamicQuery.setModelClass(MenuRole.class);
 
-		indexableActionableDynamicQuery.setPrimaryKeyPropertyName("menuRoleId");
+		indexableActionableDynamicQuery.setPrimaryKeyPropertyName(
+			"primaryKey.menuConfigId");
 
 		return indexableActionableDynamicQuery;
 	}
@@ -297,7 +302,8 @@ public abstract class MenuRoleLocalServiceBaseImpl extends BaseLocalServiceImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(MenuRole.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("menuRoleId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName(
+			"primaryKey.menuConfigId");
 	}
 
 	/**

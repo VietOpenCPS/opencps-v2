@@ -127,6 +127,7 @@ create index IX_EE2AE89E on opencps_menuconfig (uuid_[$COLUMN_LENGTH:75$], compa
 create unique index IX_5FF0FEA0 on opencps_menuconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_864BDC33 on opencps_menurole (menuConfigId, roleId);
+create index IX_63A8D9C2 on opencps_menurole (menuRoleId);
 create index IX_FCA73F43 on opencps_menurole (roleId);
 create index IX_DA361616 on opencps_menurole (uuid_[$COLUMN_LENGTH:75$]);
 

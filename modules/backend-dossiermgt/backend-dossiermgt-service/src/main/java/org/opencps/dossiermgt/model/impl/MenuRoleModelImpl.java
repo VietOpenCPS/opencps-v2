@@ -16,20 +16,17 @@ package org.opencps.dossiermgt.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.expando.kernel.model.ExpandoBridge;
-import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
-
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.MenuRoleModel;
+import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 
 import java.io.Serializable;
 
@@ -75,10 +72,10 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 		TABLE_COLUMNS_MAP.put("roleId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_menurole (uuid_ VARCHAR(75) null,menuRoleId LONG not null primary key,menuConfigId LONG,roleId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_menurole (uuid_ VARCHAR(75) null,menuRoleId LONG,menuConfigId LONG not null,roleId LONG not null,primary key (menuConfigId, roleId))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_menurole";
-	public static final String ORDER_BY_JPQL = " ORDER BY menuRole.menuRoleId ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY opencps_menurole.menuRoleId ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY menuRole.id.menuConfigId ASC, menuRole.id.roleId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY opencps_menurole.menuConfigId ASC, opencps_menurole.roleId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -92,9 +89,9 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.MenuRole"),
 			true);
 	public static final long MENUCONFIGID_COLUMN_BITMASK = 1L;
-	public static final long ROLEID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long MENUROLEID_COLUMN_BITMASK = 8L;
+	public static final long MENUROLEID_COLUMN_BITMASK = 2L;
+	public static final long ROLEID_COLUMN_BITMASK = 4L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.MenuRole"));
 
@@ -102,23 +99,24 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	}
 
 	@Override
-	public long getPrimaryKey() {
-		return _menuRoleId;
+	public MenuRolePK getPrimaryKey() {
+		return new MenuRolePK(_menuConfigId, _roleId);
 	}
 
 	@Override
-	public void setPrimaryKey(long primaryKey) {
-		setMenuRoleId(primaryKey);
+	public void setPrimaryKey(MenuRolePK primaryKey) {
+		setMenuConfigId(primaryKey.menuConfigId);
+		setRoleId(primaryKey.roleId);
 	}
 
 	@Override
 	public Serializable getPrimaryKeyObj() {
-		return _menuRoleId;
+		return new MenuRolePK(_menuConfigId, _roleId);
 	}
 
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
-		setPrimaryKey(((Long)primaryKeyObj).longValue());
+		setPrimaryKey((MenuRolePK)primaryKeyObj);
 	}
 
 	@Override
@@ -203,7 +201,19 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	@Override
 	public void setMenuRoleId(long menuRoleId) {
+		_columnBitmask |= MENUROLEID_COLUMN_BITMASK;
+
+		if (!_setOriginalMenuRoleId) {
+			_setOriginalMenuRoleId = true;
+
+			_originalMenuRoleId = _menuRoleId;
+		}
+
 		_menuRoleId = menuRoleId;
+	}
+
+	public long getOriginalMenuRoleId() {
+		return _originalMenuRoleId;
 	}
 
 	@Override
@@ -255,19 +265,6 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	}
 
 	@Override
-	public ExpandoBridge getExpandoBridge() {
-		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-			MenuRole.class.getName(), getPrimaryKey());
-	}
-
-	@Override
-	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		ExpandoBridge expandoBridge = getExpandoBridge();
-
-		expandoBridge.setAttributes(serviceContext);
-	}
-
-	@Override
 	public MenuRole toEscapedModel() {
 		if (_escapedModel == null) {
 			_escapedModel = (MenuRole)ProxyUtil.newProxyInstance(_classLoader,
@@ -293,17 +290,9 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	@Override
 	public int compareTo(MenuRole menuRole) {
-		long primaryKey = menuRole.getPrimaryKey();
+		MenuRolePK primaryKey = menuRole.getPrimaryKey();
 
-		if (getPrimaryKey() < primaryKey) {
-			return -1;
-		}
-		else if (getPrimaryKey() > primaryKey) {
-			return 1;
-		}
-		else {
-			return 0;
-		}
+		return getPrimaryKey().compareTo(primaryKey);
 	}
 
 	@Override
@@ -318,9 +307,9 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 		MenuRole menuRole = (MenuRole)obj;
 
-		long primaryKey = menuRole.getPrimaryKey();
+		MenuRolePK primaryKey = menuRole.getPrimaryKey();
 
-		if (getPrimaryKey() == primaryKey) {
+		if (getPrimaryKey().equals(primaryKey)) {
 			return true;
 		}
 		else {
@@ -330,7 +319,7 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 	@Override
 	public int hashCode() {
-		return (int)getPrimaryKey();
+		return getPrimaryKey().hashCode();
 	}
 
 	@Override
@@ -349,6 +338,10 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 
 		menuRoleModelImpl._originalUuid = menuRoleModelImpl._uuid;
 
+		menuRoleModelImpl._originalMenuRoleId = menuRoleModelImpl._menuRoleId;
+
+		menuRoleModelImpl._setOriginalMenuRoleId = false;
+
 		menuRoleModelImpl._originalMenuConfigId = menuRoleModelImpl._menuConfigId;
 
 		menuRoleModelImpl._setOriginalMenuConfigId = false;
@@ -363,6 +356,8 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	@Override
 	public CacheModel<MenuRole> toCacheModel() {
 		MenuRoleCacheModel menuRoleCacheModel = new MenuRoleCacheModel();
+
+		menuRoleCacheModel.menuRolePK = getPrimaryKey();
 
 		menuRoleCacheModel.uuid = getUuid();
 
@@ -435,6 +430,8 @@ public class MenuRoleModelImpl extends BaseModelImpl<MenuRole>
 	private String _uuid;
 	private String _originalUuid;
 	private long _menuRoleId;
+	private long _originalMenuRoleId;
+	private boolean _setOriginalMenuRoleId;
 	private long _menuConfigId;
 	private long _originalMenuConfigId;
 	private boolean _setOriginalMenuConfigId;
