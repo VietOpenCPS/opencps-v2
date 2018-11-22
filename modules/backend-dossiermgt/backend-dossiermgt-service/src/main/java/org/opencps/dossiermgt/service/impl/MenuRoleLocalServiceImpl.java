@@ -22,8 +22,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
+import org.opencps.dossiermgt.exception.NoSuchMenuRoleException;
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.service.base.MenuRoleLocalServiceBaseImpl;
+import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 
 /**
  * The implementation of the menu role local service.
@@ -61,11 +63,12 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 
 		long menuRoleId = CounterLocalServiceUtil.increment(MenuRole.class.getName());
 
-		MenuRole object = menuRolePersistence.create(menuRoleId);
+		MenuRolePK pk = new MenuRolePK(menuConfigId, roleId);
+		
+		MenuRole object = menuRolePersistence.create(pk);
 
-		object.setMenuConfigId(menuConfigId);
-		object.setRoleId(roleId);
-
+		object.setMenuRoleId(menuRoleId);
+		
 		return menuRolePersistence.update(object);
 	}
 
@@ -73,12 +76,16 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.DELETE)
 	public MenuRole adminProcessDelete(Long id) {
 
-		MenuRole object = menuRolePersistence.fetchByPrimaryKey(id);
+		MenuRole object = null;
+		try {
+			object = menuRolePersistence.findByF_MID(id);
 
-		if (Validator.isNull(object)) {
-			return null;
-		} else {
-			menuRolePersistence.remove(object);
+			if (Validator.isNull(object)) {
+				return null;
+			} else {
+				object = menuRolePersistence.remove(object);
+			}
+		} catch (NoSuchMenuRoleException e) {
 		}
 
 		return object;
@@ -96,16 +103,19 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 		} else {
 
 			long id = CounterLocalServiceUtil.increment(MenuRole.class.getName());
+			MenuRolePK pk = new MenuRolePK(objectData.getLong("menuConfigId"), objectData.getLong("roleId"));
+			
+			object = menuRolePersistence.create(pk);
 
-			object = menuRolePersistence.create(id);
-
+			object.setMenuRoleId(id);
 		}
-
-		object.setMenuConfigId(objectData.getLong("menuConfigId"));
-		object.setRoleId(objectData.getLong("roleId"));
 
 		menuRolePersistence.update(object);
 
 		return object;
+	}
+	
+	public void deleteAll() {
+		menuRolePersistence.removeAll();
 	}
 }

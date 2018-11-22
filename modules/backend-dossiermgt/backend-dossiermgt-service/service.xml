@@ -1950,11 +1950,11 @@
 	<entity local-service="true" name="MenuRole" remote-service="false"
 		table="opencps_menurole" uuid="true">
 
-		<column name="menuRoleId" type="long" primary="true" />
+		<column name="menuRoleId" type="long" />
 		
-		<column name="menuConfigId" type="long"/>
+		<column name="menuConfigId" type="long" primary="true"/>
 
-		<column name="roleId" type="long"/>
+		<column name="roleId" type="long" primary="true"/>
 		
         <finder name="F_RID" return-type="Collection">
             <finder-column name="roleId" arrayable-operator="OR"></finder-column>
@@ -1963,6 +1963,10 @@
 		<finder return-type="MenuRole" name="F_MENU_ROLE">
 			<finder-column name="menuConfigId" />
 			<finder-column name="roleId" />
+		</finder>
+
+		<finder return-type="MenuRole" name="F_MID">
+			<finder-column name="menuRoleId" />
 		</finder>
 
 	</entity>
