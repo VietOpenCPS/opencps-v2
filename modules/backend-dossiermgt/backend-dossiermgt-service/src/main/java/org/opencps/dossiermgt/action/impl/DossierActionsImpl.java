@@ -1319,7 +1319,7 @@ public class DossierActionsImpl implements DossierActions {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 							.getByDossierAndUser(dossierActionId, userId);
 					// _log.info("User id: " + userId);
-					// _log.info("Dossier action user:" );
+					 _log.info("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 					// GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
@@ -1334,10 +1334,12 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					//Check if user if admin
 					User checkAU = UserLocalServiceUtil.fetchUser(userId);
+					_log.info("SONDT checkAU: " + JSONFactoryUtil.looseSerialize(checkAU));
 					if (checkAU != null) {
 						List<Role> userRoles = checkAU.getRoles();
 						boolean isAdmin = false;
 						for (Role r : userRoles) {
+							_log.info("SONDT userRoles: " + JSONFactoryUtil.looseSerialize(r));
 							if ("Administrator".equalsIgnoreCase(r.getName())) {
 								isAdmin = true;
 								break;
@@ -1373,7 +1375,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
+							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
