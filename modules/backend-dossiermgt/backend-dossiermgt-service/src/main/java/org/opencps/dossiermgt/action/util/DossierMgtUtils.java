@@ -283,7 +283,10 @@ public class DossierMgtUtils {
 			switch (preCondition) {
 				case "payok":
 					result = result && checkPayOk(dossier);
-					break;					
+					break;
+				case "paynotok":
+					result = result && checkPayNotOk(dossier);
+					break;
 				case "cancelling":
 					result = result && checkCancelling(dossier);
 					break;
@@ -551,6 +554,18 @@ public class DossierMgtUtils {
 		return result;
 	}
 
+	private static boolean checkPayNotOk(Dossier dossier) {
+		boolean result = false;
+		PaymentFileActions actions = new PaymentFileActionsImpl();
+		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
+		if (paymentFile != null) {
+			if (paymentFile.getPaymentStatus() != 5) {
+				result = result && true;
+			}
+		}
+		return result;
+	}
+	
 	private static boolean checkCancelling(Dossier dossier) {
 		if (dossier.getCancellingDate() != null) {
 			return true;
