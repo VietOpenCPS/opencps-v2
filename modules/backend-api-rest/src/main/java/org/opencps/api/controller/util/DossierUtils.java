@@ -7,9 +7,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -282,6 +284,17 @@ public class DossierUtils {
 //			}
 			//LamTV: Process Assigned dossier
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
+			User user = UserLocalServiceUtil.fetchUser(userId);
+			boolean isAdministratorData = false;
+			if (user != null) {
+				List<Role> userRoles = user.getRoles();
+				for (Role r : userRoles) {
+					if (r.getName().startsWith("Administrator")) {
+						isAdministratorData = true;
+						break;
+					}
+				}				
+			}
 //			_log.info("ASSIGNED" + dau);
 			if (dau != null) {
 				model.setAssigned(dau.getAssigned());
@@ -289,6 +302,9 @@ public class DossierUtils {
 				model.setAssigned(ConstantsTerm.NO_ASSINED);
 			}
 			
+			if (isAdministratorData) {
+				model.setAssigned(1);
+			}
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
 			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));

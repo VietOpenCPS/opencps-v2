@@ -1,16 +1,20 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -594,6 +598,47 @@ public class UserManagementImpl implements UserManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getUserLoginInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		JSONArray dataUser = JSONFactoryUtil.createJSONArray();
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		result.put("email", StringPool.BLANK);
+		result.put("role", StringPool.BLANK);
+		result.put("deactiveAccountFlag", 0);
+
+		try {
+			List<Role> roles = user.getRoles();
+
+			String roleName = StringPool.BLANK;
+
+			for (Role role : roles) {
+
+				if (role.getName().equals("Administrator")) {
+					roleName = "Administrator";
+					break;
+				}
+
+				if (role.getName().equals("Administrator_data")) {
+					roleName = "Administrator_data";
+					break;
+				}
+
+			}
+
+			result.put("email", user.getEmailAddress());
+			result.put("role", roleName);
+			result.put("deactiveAccountFlag", user.getStatus());
+		} catch (Exception e) {
+		}
+
+		dataUser.put(result);
+
+		return Response.status(200).entity(dataUser.toJSONString()).build();
 	}
 
 }
