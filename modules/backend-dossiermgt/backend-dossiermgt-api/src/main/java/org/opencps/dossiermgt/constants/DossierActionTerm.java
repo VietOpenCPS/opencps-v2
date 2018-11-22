@@ -34,4 +34,6 @@ public class DossierActionTerm {
 	public static final int EVENT_STATUS_WAIT_SENDING = 1;
 	public static final int EVENT_STATUS_SENDED_SUCCESS = 2;
 	public static final int EVENT_STATUS_SENDED_ERROR = 3;
+	
+	public static final String OUTSIDE_ACTION_9100 = "9100";
 }

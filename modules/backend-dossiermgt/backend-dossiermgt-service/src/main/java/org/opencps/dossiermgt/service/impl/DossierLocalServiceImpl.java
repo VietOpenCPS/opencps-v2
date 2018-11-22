@@ -3555,6 +3555,55 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier getByDossierNo(long groupId, String dossierNo) {
 		return dossierPersistence.fetchByG_DN(groupId, dossierNo);
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateDossierSpecial(long dossierId, JSONObject obj) throws NoSuchDossierException {
+//		_log.info("Object dossier update: " + obj.toJSONString());
+		Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+		if (obj.has(DossierTerm.DOSSIER_NOTE)) {
+			if (!obj.getString(DossierTerm.DOSSIER_NOTE).equals(dossier.getDossierNote())) {
+				dossier.setDossierNote(obj.getString(DossierTerm.DOSSIER_NOTE));
+			}
+		}
+		if (obj.has(DossierTerm.DOSSIER_STATUS)) {
+			if (!obj.getString(DossierTerm.DOSSIER_STATUS).equals(dossier.getDossierStatus())) {
+				dossier.setDossierStatus(obj.getString(DossierTerm.DOSSIER_STATUS));
+			}
+		}
+		if (obj.has(DossierTerm.RECEIVE_DATE) && Validator.isNotNull(obj.get(DossierTerm.RECEIVE_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.RECEIVE_DATE)) > 0) {
+			if (dossier.getReceiveDate() == null || obj.getLong(DossierTerm.RECEIVE_DATE) != dossier.getReceiveDate().getTime()) {
+				dossier.setReceiveDate(new Date(obj.getLong(DossierTerm.RECEIVE_DATE)));
+			}
+		}
+		if (obj.has(DossierTerm.EXTEND_DATE) && Validator.isNotNull(obj.get(DossierTerm.EXTEND_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.EXTEND_DATE)) > 0) {
+			if (dossier.getExtendDate() == null || obj.getLong(DossierTerm.EXTEND_DATE) != dossier.getExtendDate().getTime()) {
+				dossier.setExtendDate(new Date(obj.getLong(DossierTerm.EXTEND_DATE)));
+			}
+		}
+		if (obj.has(DossierTerm.DUE_DATE) && Validator.isNotNull(obj.get(DossierTerm.DUE_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.DUE_DATE)) > 0) {
+			if (dossier.getDueDate() == null || obj.getLong(DossierTerm.DUE_DATE) != dossier.getDueDate().getTime()) {
+				dossier.setDueDate(new Date(obj.getLong(DossierTerm.DUE_DATE)));
+			}
+		}
+		if (obj.has(DossierTerm.FINISH_DATE) && Validator.isNotNull(obj.get(DossierTerm.FINISH_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.FINISH_DATE)) > 0) {
+			if (dossier.getFinishDate() == null || obj.getLong(DossierTerm.FINISH_DATE) != dossier.getFinishDate().getTime()) {
+				dossier.setFinishDate(new Date(obj.getLong(DossierTerm.FINISH_DATE)));	
+			}
+		}
+		if (obj.has(DossierTerm.RELEASE_DATE) && Validator.isNotNull(obj.get(DossierTerm.RELEASE_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.RELEASE_DATE)) > 0) {
+			if (dossier.getReleaseDate() == null || obj.getLong(DossierTerm.RELEASE_DATE) != dossier.getReleaseDate().getTime()) {
+				dossier.setReleaseDate(new Date(obj.getLong(DossierTerm.RELEASE_DATE)));	
+			}
+		}
+
+		return dossierPersistence.update(dossier);
+	}
+	
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

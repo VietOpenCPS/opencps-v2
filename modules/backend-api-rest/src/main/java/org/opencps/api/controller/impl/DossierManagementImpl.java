@@ -90,6 +90,7 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
@@ -1624,7 +1625,7 @@ public class DossierManagementImpl implements DossierManagement {
 									_log.info("dateOption: "+dateOption);
 									if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
 										DossierAction dActEnd = DossierActionLocalServiceUtil
-												.fetchDossierAction(dossierResult.getPreviousActionId());
+												.fetchDossierAction(dossierResult.getDossierActionId());
 										if (dActEnd != null) {
 											DossierAction dActStart = DossierActionLocalServiceUtil
 													.fetchDossierAction(dActEnd.getPreviousActionId());
@@ -1637,6 +1638,7 @@ public class DossierManagementImpl implements DossierManagement {
 													long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, groupId);
 													_log.info("extendDateTimeStamp: "+extendDateTimeStamp);
 													if (extendDateTimeStamp > 0) {
+														dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 														long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
 														_log.info("hoursCount: "+hoursCount);
 														_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
@@ -1652,17 +1654,19 @@ public class DossierManagementImpl implements DossierManagement {
 															DossierLocalServiceUtil.updateDossier(dossier);
 														}
 													}
-													
 												}
 											}
 										}
 									} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
+										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 										if (dossier.getDueDate() != null) {
 											dossier.setExtendDate(dossier.getDueDate());
 											dossier.setDueDate(null);
 											DossierLocalServiceUtil.updateDossier(dossier);
 										}
-									} else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+									} 
+									else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 										if (dossier.getDueDate() != null) {
 											ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
 													.fetchServiceProcess(dossierResult.getServiceProcessId());
@@ -3685,6 +3689,81 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}		
+	}
+
+	@Override
+	public Response getAssignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierActions actions = new DossierActionsImpl();
+		
+		try {
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if (dossier != null && dossier.getDossierActionId() != 0) {
+				JSONObject result = JSONFactoryUtil.createJSONObject();
+				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				ProcessStep ps = ProcessStepLocalServiceUtil.fetchBySC_GID(da.getStepCode(), groupId, da.getServiceProcessId());
+				
+				List<User> lstUsers = actions.getAssignUsersByStep(dossier, ps);
+				result.put("total", lstUsers.size());
+				JSONArray userArr = JSONFactoryUtil.createJSONArray();
+				
+				for (User u : lstUsers) {
+					JSONObject userObj = JSONFactoryUtil.createJSONObject();
+					userObj.put("userId", u.getUserId());
+					userObj.put("userName", u.getFullName());
+					
+					userArr.put(userObj);
+				}
+				
+				result.put("data", userArr);
+				
+				return Response.status(200).entity(result.toJSONString()).build();
+			}
+			else {
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}			
+	}
+
+	@Override
+	public Response assignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String assignUsers) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		org.opencps.dossiermgt.action.DossierActionUser actions = new DossierActionUserImpl();
+		
+		try {
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (dossier != null && dossier.getDossierActionId() != 0) {
+				JSONArray assignUserArr = JSONFactoryUtil.createJSONArray(assignUsers);
+				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				
+				actions.assignDossierActionUser(dossier, 1, da, user.getUserId(), groupId, 0, assignUserArr);
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+			else {
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}					
 	}
 	
 }
