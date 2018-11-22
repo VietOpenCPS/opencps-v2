@@ -1,12 +1,9 @@
 package org.opencps.api.vnpost.model;
 
-import com.liferay.portal.kernel.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-
-import backend.postal.api.rest.controller.impl.VnPostTerm;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "VNPostServerConfigModel", propOrder = { "apiPostOrder", "apiGetOrderTracking", "apiGetToken",

@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import io.swagger.annotations.ApiOperation;
@@ -59,7 +60,8 @@ public class BackendKysoApiRestApplication extends Application {
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getByTokens(@Context HttpHeaders header, @BeanParam DigitalSignatureInputModel input) {
-
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
 		_log.info("START: =========");
 			try {
 
@@ -73,7 +75,7 @@ public class BackendKysoApiRestApplication extends Application {
 				_log.info("fileEntryId Id: "+fileEntryId);
 				_log.info("typeSignature: "+typeSignature);
 				
-				JSONObject results = action.createHashSignature(emailUser, fileEntryId, typeSignature, postStepCode);
+				JSONObject results = action.createHashSignature(emailUser, fileEntryId, typeSignature, postStepCode, groupId);
 //				JSONObject results = JSONFactoryUtil.createJSONObject();
 				_log.info("results : "+results);
 
