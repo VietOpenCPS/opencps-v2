@@ -50,6 +50,7 @@ public class MenuRoleManagementImpl implements MenuRoleManagement {
 			}
 			
 			List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getMenuRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
 			for (MenuRole mr : lstMenuRoles) {
 				long menuRoleId = CounterLocalServiceUtil.increment(MenuRole.class.getName());
 				mr.setMenuRoleId(menuRoleId);
@@ -61,6 +62,12 @@ public class MenuRoleManagementImpl implements MenuRoleManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getMenuRoles(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		return Response.status(200).entity(StringPool.BLANK).build();
 	}
 
 }

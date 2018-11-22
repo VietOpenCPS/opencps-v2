@@ -487,9 +487,10 @@ create table opencps_menuconfig (
 
 create table opencps_menurole (
 	uuid_ VARCHAR(75) null,
-	menuRoleId LONG not null primary key,
-	menuConfigId LONG,
-	roleId LONG
+	menuRoleId LONG,
+	menuConfigId LONG not null,
+	roleId LONG not null,
+	primary key (menuConfigId, roleId)
 );
 
 create table opencps_paymentconfig (

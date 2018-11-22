@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.dossiermgt.model.MenuRole;
+import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 
 import java.io.Serializable;
 
@@ -80,21 +81,13 @@ public interface MenuRoleLocalService extends BaseLocalService,
 	/**
 	* Creates a new menu role with the primary key. Does not add the menu role to the database.
 	*
-	* @param menuRoleId the primary key for the new menu role
+	* @param menuRolePK the primary key for the new menu role
 	* @return the new menu role
 	*/
 	@Transactional(enabled = false)
-	public MenuRole createMenuRole(long menuRoleId);
+	public MenuRole createMenuRole(MenuRolePK menuRolePK);
 
-	/**
-	* Deletes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
-	*
-	* @param menuRoleId the primary key of the menu role
-	* @return the menu role that was removed
-	* @throws PortalException if a menu role with the primary key could not be found
-	*/
-	@Indexable(type = IndexableType.DELETE)
-	public MenuRole deleteMenuRole(long menuRoleId) throws PortalException;
+	public void deleteAll();
 
 	/**
 	* Deletes the menu role from the database. Also notifies the appropriate model listeners.
@@ -104,6 +97,17 @@ public interface MenuRoleLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.DELETE)
 	public MenuRole deleteMenuRole(MenuRole menuRole);
+
+	/**
+	* Deletes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
+	*
+	* @param menuRolePK the primary key of the menu role
+	* @return the menu role that was removed
+	* @throws PortalException if a menu role with the primary key could not be found
+	*/
+	@Indexable(type = IndexableType.DELETE)
+	public MenuRole deleteMenuRole(MenuRolePK menuRolePK)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -172,7 +176,7 @@ public interface MenuRoleLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MenuRole fetchMenuRole(long menuRoleId);
+	public MenuRole fetchMenuRole(MenuRolePK menuRolePK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -186,12 +190,13 @@ public interface MenuRoleLocalService extends BaseLocalService,
 	/**
 	* Returns the menu role with the primary key.
 	*
-	* @param menuRoleId the primary key of the menu role
+	* @param menuRolePK the primary key of the menu role
 	* @return the menu role
 	* @throws PortalException if a menu role with the primary key could not be found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MenuRole getMenuRole(long menuRoleId) throws PortalException;
+	public MenuRole getMenuRole(MenuRolePK menuRolePK)
+		throws PortalException;
 
 	/**
 	* Returns a range of all the menu roles.

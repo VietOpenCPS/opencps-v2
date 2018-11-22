@@ -40,6 +40,7 @@ import org.opencps.dossiermgt.exception.NoSuchMenuRoleException;
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.impl.MenuRoleImpl;
 import org.opencps.dossiermgt.model.impl.MenuRoleModelImpl;
+import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
 
 import java.io.Serializable;
@@ -50,8 +51,6 @@ import java.lang.reflect.InvocationHandler;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -395,17 +394,17 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu roles before and after the current menu role in the ordered set where uuid = &#63;.
 	 *
-	 * @param menuRoleId the primary key of the current menu role
+	 * @param menuRolePK the primary key of the current menu role
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next menu role
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole[] findByUuid_PrevAndNext(long menuRoleId, String uuid,
-		OrderByComparator<MenuRole> orderByComparator)
+	public MenuRole[] findByUuid_PrevAndNext(MenuRolePK menuRolePK,
+		String uuid, OrderByComparator<MenuRole> orderByComparator)
 		throws NoSuchMenuRoleException {
-		MenuRole menuRole = findByPrimaryKey(menuRoleId);
+		MenuRole menuRole = findByPrimaryKey(menuRolePK);
 
 		Session session = null;
 
@@ -927,17 +926,17 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu roles before and after the current menu role in the ordered set where roleId = &#63;.
 	 *
-	 * @param menuRoleId the primary key of the current menu role
+	 * @param menuRolePK the primary key of the current menu role
 	 * @param roleId the role ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next menu role
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole[] findByF_RID_PrevAndNext(long menuRoleId, long roleId,
-		OrderByComparator<MenuRole> orderByComparator)
+	public MenuRole[] findByF_RID_PrevAndNext(MenuRolePK menuRolePK,
+		long roleId, OrderByComparator<MenuRole> orderByComparator)
 		throws NoSuchMenuRoleException {
-		MenuRole menuRole = findByPrimaryKey(menuRoleId);
+		MenuRole menuRole = findByPrimaryKey(menuRolePK);
 
 		Session session = null;
 
@@ -1388,8 +1387,8 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_F_RID_ROLEID_2 = "menuRole.roleId = ?";
-	private static final String _FINDER_COLUMN_F_RID_ROLEID_7 = "menuRole.roleId IN (";
+	private static final String _FINDER_COLUMN_F_RID_ROLEID_2 = "menuRole.id.roleId = ?";
+	private static final String _FINDER_COLUMN_F_RID_ROLEID_7 = "menuRole.id.roleId IN (";
 	public static final FinderPath FINDER_PATH_FETCH_BY_F_MENU_ROLE = new FinderPath(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
 			MenuRoleModelImpl.FINDER_CACHE_ENABLED, MenuRoleImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByF_MENU_ROLE",
@@ -1617,8 +1616,215 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_F_MENU_ROLE_MENUCONFIGID_2 = "menuRole.menuConfigId = ? AND ";
-	private static final String _FINDER_COLUMN_F_MENU_ROLE_ROLEID_2 = "menuRole.roleId = ?";
+	private static final String _FINDER_COLUMN_F_MENU_ROLE_MENUCONFIGID_2 = "menuRole.id.menuConfigId = ? AND ";
+	private static final String _FINDER_COLUMN_F_MENU_ROLE_ROLEID_2 = "menuRole.id.roleId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_MID = new FinderPath(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
+			MenuRoleModelImpl.FINDER_CACHE_ENABLED, MenuRoleImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_MID",
+			new String[] { Long.class.getName() },
+			MenuRoleModelImpl.MENUROLEID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_MID = new FinderPath(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
+			MenuRoleModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_MID",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns the menu role where menuRoleId = &#63; or throws a {@link NoSuchMenuRoleException} if it could not be found.
+	 *
+	 * @param menuRoleId the menu role ID
+	 * @return the matching menu role
+	 * @throws NoSuchMenuRoleException if a matching menu role could not be found
+	 */
+	@Override
+	public MenuRole findByF_MID(long menuRoleId) throws NoSuchMenuRoleException {
+		MenuRole menuRole = fetchByF_MID(menuRoleId);
+
+		if (menuRole == null) {
+			StringBundler msg = new StringBundler(4);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("menuRoleId=");
+			msg.append(menuRoleId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchMenuRoleException(msg.toString());
+		}
+
+		return menuRole;
+	}
+
+	/**
+	 * Returns the menu role where menuRoleId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param menuRoleId the menu role ID
+	 * @return the matching menu role, or <code>null</code> if a matching menu role could not be found
+	 */
+	@Override
+	public MenuRole fetchByF_MID(long menuRoleId) {
+		return fetchByF_MID(menuRoleId, true);
+	}
+
+	/**
+	 * Returns the menu role where menuRoleId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param menuRoleId the menu role ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching menu role, or <code>null</code> if a matching menu role could not be found
+	 */
+	@Override
+	public MenuRole fetchByF_MID(long menuRoleId, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { menuRoleId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_MID,
+					finderArgs, this);
+		}
+
+		if (result instanceof MenuRole) {
+			MenuRole menuRole = (MenuRole)result;
+
+			if ((menuRoleId != menuRole.getMenuRoleId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_SELECT_MENUROLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_MID_MENUROLEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(menuRoleId);
+
+				List<MenuRole> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_MID,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"MenuRolePersistenceImpl.fetchByF_MID(long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					MenuRole menuRole = list.get(0);
+
+					result = menuRole;
+
+					cacheResult(menuRole);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MID, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (MenuRole)result;
+		}
+	}
+
+	/**
+	 * Removes the menu role where menuRoleId = &#63; from the database.
+	 *
+	 * @param menuRoleId the menu role ID
+	 * @return the menu role that was removed
+	 */
+	@Override
+	public MenuRole removeByF_MID(long menuRoleId)
+		throws NoSuchMenuRoleException {
+		MenuRole menuRole = findByF_MID(menuRoleId);
+
+		return remove(menuRole);
+	}
+
+	/**
+	 * Returns the number of menu roles where menuRoleId = &#63;.
+	 *
+	 * @param menuRoleId the menu role ID
+	 * @return the number of matching menu roles
+	 */
+	@Override
+	public int countByF_MID(long menuRoleId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_MID;
+
+		Object[] finderArgs = new Object[] { menuRoleId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_MENUROLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_MID_MENUROLEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(menuRoleId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_MID_MENUROLEID_2 = "menuRole.menuRoleId = ?";
 
 	public MenuRolePersistenceImpl() {
 		setModelClass(MenuRole.class);
@@ -1655,6 +1861,9 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MENU_ROLE,
 			new Object[] { menuRole.getMenuConfigId(), menuRole.getRoleId() },
 			menuRole);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MID,
+			new Object[] { menuRole.getMenuRoleId() }, menuRole);
 
 		menuRole.resetOriginalValues();
 	}
@@ -1734,6 +1943,13 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MENU_ROLE, args,
 			menuRoleModelImpl, false);
+
+		args = new Object[] { menuRoleModelImpl.getMenuRoleId() };
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_MID, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MID, args,
+			menuRoleModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1758,20 +1974,37 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MENU_ROLE, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MENU_ROLE, args);
 		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] { menuRoleModelImpl.getMenuRoleId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MID, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MID, args);
+		}
+
+		if ((menuRoleModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_MID.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					menuRoleModelImpl.getOriginalMenuRoleId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MID, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MID, args);
+		}
 	}
 
 	/**
 	 * Creates a new menu role with the primary key. Does not add the menu role to the database.
 	 *
-	 * @param menuRoleId the primary key for the new menu role
+	 * @param menuRolePK the primary key for the new menu role
 	 * @return the new menu role
 	 */
 	@Override
-	public MenuRole create(long menuRoleId) {
+	public MenuRole create(MenuRolePK menuRolePK) {
 		MenuRole menuRole = new MenuRoleImpl();
 
 		menuRole.setNew(true);
-		menuRole.setPrimaryKey(menuRoleId);
+		menuRole.setPrimaryKey(menuRolePK);
 
 		String uuid = PortalUUIDUtil.generate();
 
@@ -1783,13 +2016,14 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Removes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param menuRoleId the primary key of the menu role
+	 * @param menuRolePK the primary key of the menu role
 	 * @return the menu role that was removed
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole remove(long menuRoleId) throws NoSuchMenuRoleException {
-		return remove((Serializable)menuRoleId);
+	public MenuRole remove(MenuRolePK menuRolePK)
+		throws NoSuchMenuRoleException {
+		return remove((Serializable)menuRolePK);
 	}
 
 	/**
@@ -2007,14 +2241,14 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu role with the primary key or throws a {@link NoSuchMenuRoleException} if it could not be found.
 	 *
-	 * @param menuRoleId the primary key of the menu role
+	 * @param menuRolePK the primary key of the menu role
 	 * @return the menu role
 	 * @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole findByPrimaryKey(long menuRoleId)
+	public MenuRole findByPrimaryKey(MenuRolePK menuRolePK)
 		throws NoSuchMenuRoleException {
-		return findByPrimaryKey((Serializable)menuRoleId);
+		return findByPrimaryKey((Serializable)menuRolePK);
 	}
 
 	/**
@@ -2067,12 +2301,12 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	/**
 	 * Returns the menu role with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param menuRoleId the primary key of the menu role
+	 * @param menuRolePK the primary key of the menu role
 	 * @return the menu role, or <code>null</code> if a menu role with the primary key could not be found
 	 */
 	@Override
-	public MenuRole fetchByPrimaryKey(long menuRoleId) {
-		return fetchByPrimaryKey((Serializable)menuRoleId);
+	public MenuRole fetchByPrimaryKey(MenuRolePK menuRolePK) {
+		return fetchByPrimaryKey((Serializable)menuRolePK);
 	}
 
 	@Override
@@ -2084,86 +2318,12 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 
 		Map<Serializable, MenuRole> map = new HashMap<Serializable, MenuRole>();
 
-		if (primaryKeys.size() == 1) {
-			Iterator<Serializable> iterator = primaryKeys.iterator();
-
-			Serializable primaryKey = iterator.next();
-
+		for (Serializable primaryKey : primaryKeys) {
 			MenuRole menuRole = fetchByPrimaryKey(primaryKey);
 
 			if (menuRole != null) {
 				map.put(primaryKey, menuRole);
 			}
-
-			return map;
-		}
-
-		Set<Serializable> uncachedPrimaryKeys = null;
-
-		for (Serializable primaryKey : primaryKeys) {
-			Serializable serializable = entityCache.getResult(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
-					MenuRoleImpl.class, primaryKey);
-
-			if (serializable != nullModel) {
-				if (serializable == null) {
-					if (uncachedPrimaryKeys == null) {
-						uncachedPrimaryKeys = new HashSet<Serializable>();
-					}
-
-					uncachedPrimaryKeys.add(primaryKey);
-				}
-				else {
-					map.put(primaryKey, (MenuRole)serializable);
-				}
-			}
-		}
-
-		if (uncachedPrimaryKeys == null) {
-			return map;
-		}
-
-		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
-				1);
-
-		query.append(_SQL_SELECT_MENUROLE_WHERE_PKS_IN);
-
-		for (Serializable primaryKey : uncachedPrimaryKeys) {
-			query.append((long)primaryKey);
-
-			query.append(",");
-		}
-
-		query.setIndex(query.index() - 1);
-
-		query.append(")");
-
-		String sql = query.toString();
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query q = session.createQuery(sql);
-
-			for (MenuRole menuRole : (List<MenuRole>)q.list()) {
-				map.put(menuRole.getPrimaryKeyObj(), menuRole);
-
-				cacheResult(menuRole);
-
-				uncachedPrimaryKeys.remove(menuRole.getPrimaryKeyObj());
-			}
-
-			for (Serializable primaryKey : uncachedPrimaryKeys) {
-				entityCache.putResult(MenuRoleModelImpl.ENTITY_CACHE_ENABLED,
-					MenuRoleImpl.class, primaryKey, nullModel);
-			}
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
 		}
 
 		return map;
@@ -2365,6 +2525,11 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	}
 
 	@Override
+	public Set<String> getCompoundPKColumnNames() {
+		return _compoundPKColumnNames;
+	}
+
+	@Override
 	protected Map<String, Integer> getTableColumnsMap() {
 		return MenuRoleModelImpl.TABLE_COLUMNS_MAP;
 	}
@@ -2387,7 +2552,6 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
 	private static final String _SQL_SELECT_MENUROLE = "SELECT menuRole FROM MenuRole menuRole";
-	private static final String _SQL_SELECT_MENUROLE_WHERE_PKS_IN = "SELECT menuRole FROM MenuRole menuRole WHERE menuRoleId IN (";
 	private static final String _SQL_SELECT_MENUROLE_WHERE = "SELECT menuRole FROM MenuRole menuRole WHERE ";
 	private static final String _SQL_COUNT_MENUROLE = "SELECT COUNT(menuRole) FROM MenuRole menuRole";
 	private static final String _SQL_COUNT_MENUROLE_WHERE = "SELECT COUNT(menuRole) FROM MenuRole menuRole WHERE ";
@@ -2397,5 +2561,8 @@ public class MenuRolePersistenceImpl extends BasePersistenceImpl<MenuRole>
 	private static final Log _log = LogFactoryUtil.getLog(MenuRolePersistenceImpl.class);
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
+			});
+	private static final Set<String> _compoundPKColumnNames = SetUtil.fromArray(new String[] {
+				"menuConfigId", "roleId"
 			});
 }

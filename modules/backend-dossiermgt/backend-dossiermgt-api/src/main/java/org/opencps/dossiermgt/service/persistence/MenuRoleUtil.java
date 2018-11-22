@@ -231,17 +231,17 @@ public class MenuRoleUtil {
 	/**
 	* Returns the menu roles before and after the current menu role in the ordered set where uuid = &#63;.
 	*
-	* @param menuRoleId the primary key of the current menu role
+	* @param menuRolePK the primary key of the current menu role
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next menu role
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public static MenuRole[] findByUuid_PrevAndNext(long menuRoleId,
+	public static MenuRole[] findByUuid_PrevAndNext(MenuRolePK menuRolePK,
 		String uuid, OrderByComparator<MenuRole> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchMenuRoleException {
 		return getPersistence()
-				   .findByUuid_PrevAndNext(menuRoleId, uuid, orderByComparator);
+				   .findByUuid_PrevAndNext(menuRolePK, uuid, orderByComparator);
 	}
 
 	/**
@@ -384,17 +384,17 @@ public class MenuRoleUtil {
 	/**
 	* Returns the menu roles before and after the current menu role in the ordered set where roleId = &#63;.
 	*
-	* @param menuRoleId the primary key of the current menu role
+	* @param menuRolePK the primary key of the current menu role
 	* @param roleId the role ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next menu role
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public static MenuRole[] findByF_RID_PrevAndNext(long menuRoleId,
+	public static MenuRole[] findByF_RID_PrevAndNext(MenuRolePK menuRolePK,
 		long roleId, OrderByComparator<MenuRole> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchMenuRoleException {
 		return getPersistence()
-				   .findByF_RID_PrevAndNext(menuRoleId, roleId,
+				   .findByF_RID_PrevAndNext(menuRolePK, roleId,
 			orderByComparator);
 	}
 
@@ -560,6 +560,61 @@ public class MenuRoleUtil {
 	}
 
 	/**
+	* Returns the menu role where menuRoleId = &#63; or throws a {@link NoSuchMenuRoleException} if it could not be found.
+	*
+	* @param menuRoleId the menu role ID
+	* @return the matching menu role
+	* @throws NoSuchMenuRoleException if a matching menu role could not be found
+	*/
+	public static MenuRole findByF_MID(long menuRoleId)
+		throws org.opencps.dossiermgt.exception.NoSuchMenuRoleException {
+		return getPersistence().findByF_MID(menuRoleId);
+	}
+
+	/**
+	* Returns the menu role where menuRoleId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param menuRoleId the menu role ID
+	* @return the matching menu role, or <code>null</code> if a matching menu role could not be found
+	*/
+	public static MenuRole fetchByF_MID(long menuRoleId) {
+		return getPersistence().fetchByF_MID(menuRoleId);
+	}
+
+	/**
+	* Returns the menu role where menuRoleId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param menuRoleId the menu role ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching menu role, or <code>null</code> if a matching menu role could not be found
+	*/
+	public static MenuRole fetchByF_MID(long menuRoleId,
+		boolean retrieveFromCache) {
+		return getPersistence().fetchByF_MID(menuRoleId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the menu role where menuRoleId = &#63; from the database.
+	*
+	* @param menuRoleId the menu role ID
+	* @return the menu role that was removed
+	*/
+	public static MenuRole removeByF_MID(long menuRoleId)
+		throws org.opencps.dossiermgt.exception.NoSuchMenuRoleException {
+		return getPersistence().removeByF_MID(menuRoleId);
+	}
+
+	/**
+	* Returns the number of menu roles where menuRoleId = &#63;.
+	*
+	* @param menuRoleId the menu role ID
+	* @return the number of matching menu roles
+	*/
+	public static int countByF_MID(long menuRoleId) {
+		return getPersistence().countByF_MID(menuRoleId);
+	}
+
+	/**
 	* Caches the menu role in the entity cache if it is enabled.
 	*
 	* @param menuRole the menu role
@@ -580,23 +635,23 @@ public class MenuRoleUtil {
 	/**
 	* Creates a new menu role with the primary key. Does not add the menu role to the database.
 	*
-	* @param menuRoleId the primary key for the new menu role
+	* @param menuRolePK the primary key for the new menu role
 	* @return the new menu role
 	*/
-	public static MenuRole create(long menuRoleId) {
-		return getPersistence().create(menuRoleId);
+	public static MenuRole create(MenuRolePK menuRolePK) {
+		return getPersistence().create(menuRolePK);
 	}
 
 	/**
 	* Removes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param menuRoleId the primary key of the menu role
+	* @param menuRolePK the primary key of the menu role
 	* @return the menu role that was removed
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public static MenuRole remove(long menuRoleId)
+	public static MenuRole remove(MenuRolePK menuRolePK)
 		throws org.opencps.dossiermgt.exception.NoSuchMenuRoleException {
-		return getPersistence().remove(menuRoleId);
+		return getPersistence().remove(menuRolePK);
 	}
 
 	public static MenuRole updateImpl(MenuRole menuRole) {
@@ -606,23 +661,23 @@ public class MenuRoleUtil {
 	/**
 	* Returns the menu role with the primary key or throws a {@link NoSuchMenuRoleException} if it could not be found.
 	*
-	* @param menuRoleId the primary key of the menu role
+	* @param menuRolePK the primary key of the menu role
 	* @return the menu role
 	* @throws NoSuchMenuRoleException if a menu role with the primary key could not be found
 	*/
-	public static MenuRole findByPrimaryKey(long menuRoleId)
+	public static MenuRole findByPrimaryKey(MenuRolePK menuRolePK)
 		throws org.opencps.dossiermgt.exception.NoSuchMenuRoleException {
-		return getPersistence().findByPrimaryKey(menuRoleId);
+		return getPersistence().findByPrimaryKey(menuRolePK);
 	}
 
 	/**
 	* Returns the menu role with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param menuRoleId the primary key of the menu role
+	* @param menuRolePK the primary key of the menu role
 	* @return the menu role, or <code>null</code> if a menu role with the primary key could not be found
 	*/
-	public static MenuRole fetchByPrimaryKey(long menuRoleId) {
-		return getPersistence().fetchByPrimaryKey(menuRoleId);
+	public static MenuRole fetchByPrimaryKey(MenuRolePK menuRolePK) {
+		return getPersistence().fetchByPrimaryKey(menuRolePK);
 	}
 
 	public static java.util.Map<java.io.Serializable, MenuRole> fetchByPrimaryKeys(
@@ -708,6 +763,10 @@ public class MenuRoleUtil {
 
 	public static java.util.Set<String> getBadColumnNames() {
 		return getPersistence().getBadColumnNames();
+	}
+
+	public static java.util.Set<String> getCompoundPKColumnNames() {
+		return getPersistence().getCompoundPKColumnNames();
 	}
 
 	public static MenuRolePersistence getPersistence() {
