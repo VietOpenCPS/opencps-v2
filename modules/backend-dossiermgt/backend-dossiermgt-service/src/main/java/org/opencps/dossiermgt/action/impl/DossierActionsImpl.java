@@ -113,6 +113,7 @@ import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.impl.ProcessActionImpl;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
@@ -152,6 +153,7 @@ import backend.auth.api.exception.NotFoundException;
 public class DossierActionsImpl implements DossierActions {
 
 	public static final String SPECIAL_ACTION = "1100";
+	public static final String FIX_DOSSIER_ACTION = "9100";
 	public static final String AUTO_EVENT_SUBMIT = "submit";
 	public static final String AUTO_EVENT_TIMMER = "timer";
 	public static final String AUTO_EVENT_LISTENER = "listener";
@@ -1297,6 +1299,17 @@ public class DossierActionsImpl implements DossierActions {
 		List<ProcessAction> processActionList = null;
 		JSONArray results = null;
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		User user = UserLocalServiceUtil.fetchUser(userId);
+		
+		List<Role> userRolesAdminCheck = user.getRoles();
+		boolean isAdministratorData = false;
+		for (Role r : userRolesAdminCheck) {
+			if (r.getName().startsWith("Administrator")) {
+				isAdministratorData = true;
+				break;
+			}
+		}
+		
 //		_log.info("dossier: "+dossier);
 		try {
 			if (dossier != null) {
@@ -1315,11 +1328,31 @@ public class DossierActionsImpl implements DossierActions {
 					pending = dossierAction.getPending();
 				}
 
+				if (isAdministratorData) {
+					ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, FIX_DOSSIER_ACTION);
+					if (ac != null) {
+						if (results == null) {
+							results = JSONFactoryUtil.createJSONArray();							
+						}
+						JSONObject data = JSONFactoryUtil.createJSONObject();
+						data.put(ProcessActionTerm.ENABLE, 1);
+						data.put(ProcessActionTerm.PROCESS_ACTION_ID, ac.getActionCode());
+						data.put(ProcessActionTerm.ACTION_CODE, FIX_DOSSIER_ACTION);
+						data.put(ProcessActionTerm.ACTION_NAME, ac.getActionName());
+						data.put(ProcessActionTerm.PRESTEP_CODE, StringPool.BLANK);
+						data.put(ProcessActionTerm.POSTSTEP_CODE, StringPool.BLANK);
+						data.put(ProcessActionTerm.AUTO_EVENT, StringPool.BLANK);
+						data.put(ProcessActionTerm.PRE_CONDITION, StringPool.BLANK);
+						//
+						results.put(data);						
+					}
+				}
+				
 				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 							.getByDossierAndUser(dossierActionId, userId);
 					// _log.info("User id: " + userId);
-					// _log.info("Dossier action user:" );
+					 _log.info("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 					// GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
@@ -1334,10 +1367,12 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					//Check if user if admin
 					User checkAU = UserLocalServiceUtil.fetchUser(userId);
+					_log.info("SONDT checkAU: " + JSONFactoryUtil.looseSerialize(checkAU));
 					if (checkAU != null) {
 						List<Role> userRoles = checkAU.getRoles();
 						boolean isAdmin = false;
 						for (Role r : userRoles) {
+							_log.info("SONDT userRoles: " + JSONFactoryUtil.looseSerialize(r));
 							if ("Administrator".equalsIgnoreCase(r.getName())) {
 								isAdmin = true;
 								break;
@@ -1353,7 +1388,9 @@ public class DossierActionsImpl implements DossierActions {
 					// _log.info("processActionList:
 					// "+processActionList.size());
 					if (processActionList != null && processActionList.size() > 0) {
-						results = JSONFactoryUtil.createJSONArray();
+						if (results == null) {
+							results = JSONFactoryUtil.createJSONArray();							
+						}
 						JSONObject data = null;
 						long processActionId = 0;
 						String actionCode;
@@ -1373,7 +1410,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
+							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 								data.put(ProcessActionTerm.ENABLE, enable);
 							else
@@ -2003,7 +2040,22 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 				}
-				result.put("processAction", processAction);
+				if (processAction != null) {
+					result.put("processAction", processAction);
+				}
+				else {
+					String actionCode = GetterUtil.getString(params.get(ProcessActionTerm.PROCESS_ACTION_ID));
+					if (Validator.isNotNull(actionCode) && FIX_DOSSIER_ACTION.equals(actionCode)) {
+						ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+						ProcessAction newProcessAction = new ProcessActionImpl();
+						newProcessAction.setActionCode(ac.getActionCode());
+						newProcessAction.setGroupId(ac.getGroupId());
+						result.put("processAction", newProcessAction);
+					}
+					else {
+						result.put("processAction", processAction);
+					}
+				}
 				result.put("createFiles", createFiles);
 			}
 		} catch (Exception e) {
@@ -2768,96 +2820,96 @@ public class DossierActionsImpl implements DossierActions {
 					
 					paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
 					
-					PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
-							dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
-							serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
-							paymentStatus, paymentMethod, context);
-					
-					long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
-					
-					Calendar cal = Calendar.getInstance();
-					
-					cal.setTime(new Date());
-					
-					int prefix = cal.get(Calendar.YEAR);
-					
-					String invoiceNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
-					
-					paymentFile.setInvoiceNo(invoiceNo);
-					
-					// get paymentConfig
-					PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
-							dossier.getGovAgencyCode());
-					
-					if (Validator.isNotNull(paymentConfig)) {
-						paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
-						paymentFile.setGovAgencyTaxNo(paymentConfig.getGovAgencyTaxNo());
-						paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
-						paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
-					}
-					
-					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-					//_log.info("==========Dossier Action SONDT START ========= ");
-					//sondt create ePaymentProfile
-					
-					// create paymentFileActions
-					PaymentFileActions actions = new PaymentFileActionsImpl();
+//					if(paymentAmount > 0) {
+						PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFiles(userId, groupId,
+								dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
+								serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo,
+								paymentStatus, paymentMethod, context);
+						
+						long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
+						
+						Calendar cal = Calendar.getInstance();
+						
+						cal.setTime(new Date());
+						
+						int prefix = cal.get(Calendar.YEAR);
+						
+						String invoiceNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+						
+						paymentFile.setInvoiceNo(invoiceNo);
+						
+						// get paymentConfig
+						PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
+								dossier.getGovAgencyCode());
+						
+						if (Validator.isNotNull(paymentConfig)) {
+							paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
+							paymentFile.setGovAgencyTaxNo(paymentConfig.getGovAgencyTaxNo());
+							paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
+							paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
+						}
+						
+						PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+						//_log.info("==========Dossier Action SONDT START ========= ");
+						//sondt create ePaymentProfile
+						
+						// create paymentFileActions
+						PaymentFileActions actions = new PaymentFileActionsImpl();
 
-//					_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
-//					_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
-					// generator epaymentProfile
-					JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
-					
-					JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+//						_log.info("Dossier Action SONDT groupId ========= "+ groupId + " === getGovAgencyCode ======== " + dossier.getGovAgencyCode());
+//						_log.info("Dossier Action SONDT paymentConfig ========= "+ JSONFactoryUtil.looseSerialize(paymentConfig));
+						// generator epaymentProfile
+						JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
+						
+						JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
-					if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+						if (epaymentConfigJSON.has("paymentKeypayDomain")) {
 
-						try {
-							String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-									paymentFile.getPaymentFileId(), paymentFee, dossierId);
-							//_log.info("Dossier Action SONDT paymentFee ========= "+ paymentFee);
-							epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+							try {
+								String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+										paymentFile.getPaymentFileId(), paymentFee, dossierId);
+								//_log.info("Dossier Action SONDT paymentFee ========= "+ paymentFee);
+								epaymentProfileJSON.put("keypayUrl", generatorPayURL);
 
-							// fill good_code to keypayGoodCode
-							String pattern1 = "good_code=";
-							String pattern2 = "&";
+								// fill good_code to keypayGoodCode
+								String pattern1 = "good_code=";
+								String pattern2 = "&";
 
-							String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+								String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
 
-							Pattern p = Pattern.compile(regexString);
-							Matcher m = p.matcher(generatorPayURL);
+								Pattern p = Pattern.compile(regexString);
+								Matcher m = p.matcher(generatorPayURL);
 
-							if (m.find()) {
-								String goodCode = m.group(1);
+								if (m.find()) {
+									String goodCode = m.group(1);
 
-								epaymentProfileJSON.put("keypayGoodCode", goodCode);
-							} else {
-								epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+									epaymentProfileJSON.put("keypayGoodCode", goodCode);
+								} else {
+									epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+								}
+
+								epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+								epaymentProfileJSON.put("bank", "true");
+								epaymentProfileJSON.put("paygate", "true");
+								epaymentProfileJSON.put("serviceAmount", serviceAmount);
+								epaymentProfileJSON.put("paymentNote", paymentNote);
+								epaymentProfileJSON.put("paymentFee", paymentFee);
+								actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+										context);
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+//									e.printStackTrace();
+								_log.error(e);
 							}
 
-							epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
-							epaymentProfileJSON.put("bank", "true");
-							epaymentProfileJSON.put("paygate", "true");
-							epaymentProfileJSON.put("serviceAmount", serviceAmount);
-							epaymentProfileJSON.put("paymentNote", paymentNote);
-							epaymentProfileJSON.put("paymentFee", paymentFee);
+						} else {
 							actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 									context);
-
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-//								e.printStackTrace();
-							_log.error(e);
 						}
-
-					} else {
-						actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
-								context);
+						// end sondt
 					}
-					
-					// end sondt
-					
-				}
+//				}
 //				try {
 //					String serveNo = serviceProcess.getServerNo();
 //					DossierPaymentUtils.processPaymentFile(proAction, paymentFee, groupId, dossier.getDossierId(), userId, context,
@@ -3432,7 +3484,6 @@ public class DossierActionsImpl implements DossierActions {
 			String payment,
 			int syncType,
 			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
-//		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 
@@ -3458,7 +3509,12 @@ public class DossierActionsImpl implements DossierActions {
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
 		
 		if (Validator.isNotNull(payload)) {
-			dossier = DossierLocalServiceUtil.updateDossier(dossier.getDossierId(), payloadObject);			
+			if (DossierActionTerm.OUTSIDE_ACTION_9100.equals(actionCode)) {
+				dossier = DossierLocalServiceUtil.updateDossierSpecial(dossier.getDossierId(), payloadObject);							
+			}
+			else {
+				dossier = DossierLocalServiceUtil.updateDossier(dossier.getDossierId(), payloadObject);											
+			}
 		}
 		
 		//Create DossierSync
@@ -3481,27 +3537,33 @@ public class DossierActionsImpl implements DossierActions {
 				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
 					//Generate document
 					DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, ac.getDocumentType());
-					String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
-					
-					DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
-
-					//Generate PDF
-					String formData = payload;
-					JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
-//					_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
-					Message message = new Message();
-//					_log.info("Document script: " + dt.getDocumentScript());
-					JSONObject msgData = JSONFactoryUtil.createJSONObject();
-					msgData.put("className", DossierDocument.class.getName());
-					msgData.put("classPK", dossierDocument.getDossierDocumentId());
-					msgData.put("jrxmlTemplate", dt.getDocumentScript());
-					msgData.put("formData", formDataObj.toJSONString());
-					msgData.put("userId", userId);
-
-					message.put("msgToEngine", msgData);
-					MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+					if (dt != null) {
+						String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
+						
+						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId, dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
+	
+						//Generate PDF
+						String formData = payload;
+						JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
+	//					_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
+						Message message = new Message();
+	//					_log.info("Document script: " + dt.getDocumentScript());
+						JSONObject msgData = JSONFactoryUtil.createJSONObject();
+						msgData.put("className", DossierDocument.class.getName());
+						msgData.put("classPK", dossierDocument.getDossierDocumentId());
+						msgData.put("jrxmlTemplate", dt.getDocumentScript());
+						msgData.put("formData", formDataObj.toJSONString());
+						msgData.put("userId", userId);
+	
+						message.put("msgToEngine", msgData);
+						MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+					}
 				}					
 			}
+		}
+		
+		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+			publishEvent(dossier);			
 		}
 		
 		return dossierAction;
@@ -6034,5 +6096,49 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		
 		_log.info("SONDT checkPaymentMethod pmMethod ===== " + pmMethod);
 		return pmMethod;
+	}
+
+	@Override
+	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps) {
+		List<User> lstUser = new ArrayList<>();
+
+		if (ps != null) {
+			
+			List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+					.findByP_S_ID(ps.getProcessStepId());
+			if (Validator.isNotNull(ps.getRoleAsStep())) {
+				String[] steps = StringUtil.split(ps.getRoleAsStep());
+				for (String stepCode : steps) {
+					if (stepCode.startsWith("!")) {
+						int index = stepCode.indexOf("!");
+						String stepCodePunc = stepCode.substring(index + 1);
+						lstUser.addAll(processRoleAsStepDonedListUser(dossier, stepCodePunc, ps.getServiceProcessId(), ps));
+					}
+					else {
+						lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, ps.getServiceProcessId(), ps));								
+					}
+				}
+			}
+			else {
+				if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+					List<ProcessStepRole> lstStepRoles = new ArrayList<>();
+					for (ProcessStepRole psr : processStepRoleList) {
+						if (Validator.isNotNull(psr.getCondition())) {
+							String[] conditions = StringUtil.split(psr.getCondition());
+							
+							if (DossierMgtUtils.checkPreCondition(conditions, dossier)) {
+								lstStepRoles.add(psr);
+							}
+						}
+						else {
+							lstStepRoles.add(psr);
+						}
+					}
+					lstUser.addAll(processRoleListUser(lstStepRoles, ps.getServiceProcessId()));
+				}						
+			}
+		}
+		
+		return lstUser;
 	}
 }
