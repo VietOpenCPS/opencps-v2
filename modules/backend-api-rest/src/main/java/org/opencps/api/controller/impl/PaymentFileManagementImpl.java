@@ -888,9 +888,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		        
 		        map.put("address", address.toString());
 		        
-		        String numberToSymbo = PaymentFileUtils.chuyenSangChu(Long.toString(paymentFile.getPaymentAmount()));
 		        String num = PaymentFileUtils.readNum(Long.toString(paymentFile.getPaymentAmount()));
-		        map.put("numberToSymbo", numberToSymbo);
 		        map.put("numToWord", num);
 		        map.put("invoiceTemplateNo", paymentConfig.getInvoiceTemplateNo());
 		        map.put("invoiceIssueNo", paymentConfig.getInvoiceIssueNo());

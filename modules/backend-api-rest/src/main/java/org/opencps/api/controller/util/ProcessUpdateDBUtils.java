@@ -117,7 +117,10 @@ public class ProcessUpdateDBUtils {
 						String notificationType = actConfig.getNotificationType();
 						String documentType = actConfig.getDocumentType();
 						String mappingAction = actConfig.getMappingAction();
-						int dateOption = actConfig.getDateOption();
+						Integer dateOption = actConfig.getDateOption();
+						if (dateOption == null) {
+							dateOption = 0;
+						}
 
 						if (Validator.isNotNull(actionCode)) {
 							// Check record exits DB

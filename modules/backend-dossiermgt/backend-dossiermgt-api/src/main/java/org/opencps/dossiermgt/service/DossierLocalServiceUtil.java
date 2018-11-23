@@ -755,6 +755,12 @@ public class DossierLocalServiceUtil {
 			postalTelNo, dossierActionId, paymentFee, paymentFeeNote, context);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier updateDossierSpecial(
+		long dossierId, com.liferay.portal.kernel.json.JSONObject obj)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getService().updateDossierSpecial(dossierId, obj);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier updateDueDate(
 		long groupId, long id, String refId, java.util.Date date,
 		com.liferay.portal.kernel.service.ServiceContext context)

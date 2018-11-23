@@ -497,7 +497,7 @@ public class DossierActionUtils {
 					dActionReturnFile.setSignInfo(dossierFile.getSignInfo());
 					dActionReturnFile.setSignCheck(dossierFile.getSignCheck());
 					//
-					long fileEntryId = dActionReturnFile.getFileEntryId();
+					long fileEntryId = dossierFile.getFileEntryId();
 					if (fileEntryId > 0) {
 						FileEntry file = DLAppServiceUtil.getFileEntry(fileEntryId);
 						if (file != null) {
