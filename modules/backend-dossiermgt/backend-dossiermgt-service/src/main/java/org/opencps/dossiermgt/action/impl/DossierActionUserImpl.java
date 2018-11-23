@@ -306,6 +306,26 @@ public class DossierActionUserImpl implements DossierActionUser {
 								StringPool.BLANK, dossier.getDossierId());
 					}
 				}
+				else {
+					dau.setModerator(1);
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+				}
+			}
+			else if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
+					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.NOT_ASSIGNED) {
+				//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
+				DossierActionUserPK pk = new DossierActionUserPK();
+				
+				pk.setDossierActionId(dossierAction.getDossierActionId());
+				pk.setUserId(subUser.getLong("userId"));
+	
+				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+				if (Validator.isNull(dau)) {
+				}				
+				else {
+					dau.setModerator(0);
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+				}
 			}
 		}
 	}

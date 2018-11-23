@@ -3761,7 +3761,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 		if (obj.has(DossierTerm.DOSSIER_STATUS)) {
-			if (!obj.getString(DossierTerm.DOSSIER_STATUS).equals(dossier.getDossierStatus())) {
+			if (!obj.getString(DossierTerm.DOSSIER_STATUS).equals(dossier.getDossierStatus())
+					&& Validator.isNotNull(obj.getString(DossierTerm.DOSSIER_STATUS))) {
 				dossier.setDossierStatus(obj.getString(DossierTerm.DOSSIER_STATUS));
 			}
 		}

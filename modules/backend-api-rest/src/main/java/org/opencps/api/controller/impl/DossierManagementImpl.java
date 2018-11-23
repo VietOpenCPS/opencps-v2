@@ -3719,6 +3719,7 @@ public class DossierManagementImpl implements DossierManagement {
 					JSONObject userObj = JSONFactoryUtil.createJSONObject();
 					userObj.put("userId", u.getUserId());
 					userObj.put("userName", u.getFullName());
+					userObj.put("assigned", 0);
 					
 					userArr.put(userObj);
 				}
