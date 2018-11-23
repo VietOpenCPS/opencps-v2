@@ -609,9 +609,8 @@ public class UserManagementImpl implements UserManagement {
 		try {
 			List<Role> roles = user.getRoles();
 
-			String roleName = StringPool.BLANK;
-
 			for (Role role : roles) {
+				String roleName = StringPool.BLANK;
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -621,12 +620,10 @@ public class UserManagementImpl implements UserManagement {
 
 				if (role.getName().equals("Administrator")) {
 					roleName = "Administrator";
-					break;
 				}
 
 				if (role.getName().equals("Administrator_data")) {
 					roleName = "Administrator_data";
-					break;
 				}
 
 				result.put("email", user.getEmailAddress());
