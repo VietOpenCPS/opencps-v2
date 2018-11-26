@@ -6,11 +6,11 @@ schema {
 type Query {
 	getDeliverableTypes(start: Int = 0, end: Int = 10): [OpenCPSDeliverableType]
 	getDeliverableType(typeCode: String): OpenCPSDeliverableType
-    createDeliverable(body: String): OpenCPSDeliverable
 }
 
 type Mutation {
     createDeliverableType(input: OpenCPSDeliverableTypeInput): OpenCPSDeliverableType
+    createDeliverable(body: String): OpenCPSDeliverable
 }
 
 type OpenCPSDeliverable {

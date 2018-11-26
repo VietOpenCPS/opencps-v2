@@ -53,10 +53,9 @@ public class DeliverableService {
 		return RuntimeWiring.newRuntimeWiring()
 				.type("Query",
 						typeWiring -> typeWiring.dataFetcher("getDeliverableTypes", getDeliverableTypes)
-								.dataFetcher("getDeliverableType", getDeliverableType)
-								.dataFetcher("createDeliverable", createDeliverable))
-//				.type("Mutation", typeWiring -> typeWiring.dataFetcher("createDeliverableType", createDeliverableType)
-//						.dataFetcher("createDeliverable", createDeliverable))
+								.dataFetcher("getDeliverableType", getDeliverableType))
+				.type("Mutation", typeWiring -> typeWiring.dataFetcher("createDeliverableType", createDeliverableType)
+						.dataFetcher("createDeliverable", createDeliverable))
 				.build();
 	}
 

@@ -37,27 +37,10 @@ public interface MenuRole extends MenuRoleModel, PersistedModel {
 	 *
 	 * Never modify this interface directly. Add methods to {@link org.opencps.dossiermgt.model.impl.MenuRoleImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public static final Accessor<MenuRole, Long> MENU_CONFIG_ID_ACCESSOR = new Accessor<MenuRole, Long>() {
+	public static final Accessor<MenuRole, Long> MENU_ROLE_ID_ACCESSOR = new Accessor<MenuRole, Long>() {
 			@Override
 			public Long get(MenuRole menuRole) {
-				return menuRole.getMenuConfigId();
-			}
-
-			@Override
-			public Class<Long> getAttributeClass() {
-				return Long.class;
-			}
-
-			@Override
-			public Class<MenuRole> getTypeClass() {
-				return MenuRole.class;
-			}
-		};
-
-	public static final Accessor<MenuRole, Long> ROLE_ID_ACCESSOR = new Accessor<MenuRole, Long>() {
-			@Override
-			public Long get(MenuRole menuRole) {
-				return menuRole.getRoleId();
+				return menuRole.getMenuRoleId();
 			}
 
 			@Override

@@ -948,6 +948,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response uploadFileEntry(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file) {
+		_log.info("uploadFileEntry");
 		BackendAuth auth = new BackendAuthImpl();
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 

@@ -11,7 +11,7 @@ type Query {
 }
 
 type Mutation {
-    createDictCollection(input: DictCollectionInput): DictCollection
+    createDictCollection(input: DictCollectionInput): DictCollection!
     createDictItem(input: DictItemInput): DictItem
     deleteDictCollection(dictCollectionId: Long): DictCollection
  	deleteDictItem(dictItemId: Long): DictItem
@@ -38,10 +38,6 @@ type DictCollection {
 input DictCollectionInput {
  	collectionCode: String
  	collectionName: String
- 	collectionNameEN: String
- 	description: String
- 	dataForm: String
- 	status: String
 }
 
 type DictItem {

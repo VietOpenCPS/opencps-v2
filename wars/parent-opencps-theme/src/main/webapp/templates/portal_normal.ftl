@@ -16,6 +16,8 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet" />
 	
+	<link href="${themeDisplay.getPathThemeRoot()}/css/main.css?t=123123123" rel="stylesheet" type="text/css">
+	<link href="/o/parent-opencps-theme/css/clay.css?t=123" rel="stylesheet" type="text/css">
 	<!-- Mainly scripts -->
 	<script>
         window.__define = window.define;

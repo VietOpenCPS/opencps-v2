@@ -16,8 +16,6 @@ package org.opencps.dossiermgt.model;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.dossiermgt.service.persistence.MenuRolePK;
-
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -82,13 +80,12 @@ public class MenuRoleSoap implements Serializable {
 	public MenuRoleSoap() {
 	}
 
-	public MenuRolePK getPrimaryKey() {
-		return new MenuRolePK(_menuConfigId, _roleId);
+	public long getPrimaryKey() {
+		return _menuRoleId;
 	}
 
-	public void setPrimaryKey(MenuRolePK pk) {
-		setMenuConfigId(pk.menuConfigId);
-		setRoleId(pk.roleId);
+	public void setPrimaryKey(long pk) {
+		setMenuRoleId(pk);
 	}
 
 	public String getUuid() {

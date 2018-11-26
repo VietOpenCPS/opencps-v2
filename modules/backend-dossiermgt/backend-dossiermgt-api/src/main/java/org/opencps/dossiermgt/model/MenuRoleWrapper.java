@@ -132,7 +132,7 @@ public class MenuRoleWrapper implements MenuRole, ModelWrapper<MenuRole> {
 	* @return the primary key of this menu role
 	*/
 	@Override
-	public org.opencps.dossiermgt.service.persistence.MenuRolePK getPrimaryKey() {
+	public long getPrimaryKey() {
 		return _menuRole.getPrimaryKey();
 	}
 
@@ -238,8 +238,7 @@ public class MenuRoleWrapper implements MenuRole, ModelWrapper<MenuRole> {
 	* @param primaryKey the primary key of this menu role
 	*/
 	@Override
-	public void setPrimaryKey(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK primaryKey) {
+	public void setPrimaryKey(long primaryKey) {
 		_menuRole.setPrimaryKey(primaryKey);
 	}
 

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.dossiermgt.model.MenuRole;
-import org.opencps.dossiermgt.service.persistence.MenuRolePK;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -49,7 +48,7 @@ public class MenuRoleCacheModel implements CacheModel<MenuRole>, Externalizable 
 
 		MenuRoleCacheModel menuRoleCacheModel = (MenuRoleCacheModel)obj;
 
-		if (menuRolePK.equals(menuRoleCacheModel.menuRolePK)) {
+		if (menuRoleId == menuRoleCacheModel.menuRoleId) {
 			return true;
 		}
 
@@ -58,7 +57,7 @@ public class MenuRoleCacheModel implements CacheModel<MenuRole>, Externalizable 
 
 	@Override
 	public int hashCode() {
-		return HashUtil.hash(0, menuRolePK);
+		return HashUtil.hash(0, menuRoleId);
 	}
 
 	@Override
@@ -107,8 +106,6 @@ public class MenuRoleCacheModel implements CacheModel<MenuRole>, Externalizable 
 		menuConfigId = objectInput.readLong();
 
 		roleId = objectInput.readLong();
-
-		menuRolePK = new MenuRolePK(menuConfigId, roleId);
 	}
 
 	@Override
@@ -132,5 +129,4 @@ public class MenuRoleCacheModel implements CacheModel<MenuRole>, Externalizable 
 	public long menuRoleId;
 	public long menuConfigId;
 	public long roleId;
-	public transient MenuRolePK menuRolePK;
 }

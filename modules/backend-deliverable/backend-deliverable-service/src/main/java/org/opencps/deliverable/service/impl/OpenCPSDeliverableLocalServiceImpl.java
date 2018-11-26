@@ -31,6 +31,8 @@ import org.opencps.deliverable.service.base.OpenCPSDeliverableLocalServiceBaseIm
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
+import backend.deliverable.service.util.ModelKeysDeliverable;
+
 /**
  * The implementation of the open cps deliverable local service.
  *
@@ -75,101 +77,78 @@ public class OpenCPSDeliverableLocalServiceImpl extends OpenCPSDeliverableLocalS
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-		public OpenCPSDeliverable adminProcessData(JSONObject objectData) {
+	public OpenCPSDeliverable adminProcessData(JSONObject objectData) {
 
-			OpenCPSDeliverable object = null;
+		OpenCPSDeliverable object = null;
 
-			if (objectData.getLong(ModelKeys.DELIVERABLEID) > 0) {
+		if (objectData.getLong(ModelKeysDeliverable.DELIVERABLEID) > 0) {
 
-				object = openCPSDeliverablePersistence.fetchByPrimaryKey(objectData.getLong(ModelKeys.DELIVERABLEID));
+			object = openCPSDeliverablePersistence
+					.fetchByPrimaryKey(objectData.getLong(ModelKeysDeliverable.DELIVERABLEID));
 
-				object.setModifiedDate(new Date());
+			object.setModifiedDate(new Date());
 
-			} else {
+		} else {
 
-				long id = CounterLocalServiceUtil.increment(OpenCPSDeliverable.class.getName());
+			long id = CounterLocalServiceUtil.increment(OpenCPSDeliverable.class.getName());
 
-				object = openCPSDeliverablePersistence.create(id);
+			object = openCPSDeliverablePersistence.create(id);
 
-				object.setGroupId(objectData.getLong(ModelKeys.GROUPID));
-				object.setCompanyId(objectData.getLong(ModelKeys.COMPANYID));
-				object.setCreateDate(new Date());
+			object.setGroupId(objectData.getLong(ModelKeysDeliverable.GROUPID));
+			object.setCompanyId(objectData.getLong(ModelKeysDeliverable.COMPANYID));
+			object.setCreateDate(new Date());
 
-			}
-
-			object.setUserId(objectData.getLong(ModelKeys.USERID));
-
-			object.setDeliverableCode(objectData.getString(ModelKeys.DELIVERABLECODE));
-			object.setDeliverableName(objectData.getString(ModelKeys.DELIVERABLENAME));
-			object.setDeliverableType(objectData.getString(ModelKeys.DELIVERABLETYPE));
-			object.setGovAgencyCode(objectData.getString(ModelKeys.GOVAGENCYCODE));
-			
-			DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
-					objectData.getString(ModelKeys.GOVAGENCYCODE), objectData.getLong(ModelKeys.GROUPID));
-
-			if (Validator.isNotNull(govAgencyName)) {
-				object.setGovAgencyName(govAgencyName.getItemName());
-			}
-			
-			object.setApplicantIdNo(objectData.getString(ModelKeys.APPLICANTIDNO));
-			
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(objectData.getLong(ModelKeys.GROUPID), objectData.getString(ModelKeys.APPLICANTIDNO));
-			
-			if (Validator.isNotNull(applicant)) {
-				object.setApplicantName(applicant.getApplicantName());
-			} else {
-				object.setApplicantName(StringPool.BLANK);
-			}
-			
-			object.setSubject(objectData.getString(ModelKeys.SUBJECT));
-			object.setFormData(objectData.getString(ModelKeys.FORMDATA));
-			object.setFormScriptFileId(objectData.getLong(ModelKeys.FORMSCRIPTFILEID));
-			object.setFormReportFileId(objectData.getLong(ModelKeys.FORMREPORTFILEID));
-			if (Validator.isNotNull(objectData.getString(ModelKeys.ISSUEDATE))) {
-				object.setIssueDate(new Date(objectData.getLong(ModelKeys.ISSUEDATE)));
-			}
-			if (Validator.isNotNull(objectData.getString(ModelKeys.EXPIREDATE))) {
-				object.setExpireDate(new Date(objectData.getLong(ModelKeys.EXPIREDATE)));
-			}
-			if (Validator.isNotNull(objectData.getString(ModelKeys.REVALIDATE))) {
-				object.setRevalidate(new Date(objectData.getLong(ModelKeys.REVALIDATE)));
-			}
-			
-			object.setDeliverableState(objectData.getInt(ModelKeys.DELIVERABLESTATE));
-			object.setFileEntryId(objectData.getLong(ModelKeys.FILEENTRYID));
-			object.setDocSync(objectData.getInt(ModelKeys.DOCSYNC));
-			object.setDossierId(objectData.getLong(ModelKeys.DOSSIERID));
-			
-			openCPSDeliverablePersistence.update(object);
-
-			return object;
 		}
 
-	class ModelKeys {
-		public static final String DELIVERABLEID = "deliverableId";
-		public static final String GROUPID = "groupId";
-		public static final String COMPANYID = "companyId";
-		public static final String USERID = "userId";
-		public static final String USERNAME = "userName";
-		public static final String CREATEDATE = "createDate";
-		public static final String MODIFIEDDATE = "modifiedDate";
-		public static final String DELIVERABLECODE = "deliverableCode";
-		public static final String DELIVERABLENAME = "deliverableName";
-		public static final String DELIVERABLETYPE = "deliverableType";
-		public static final String GOVAGENCYCODE = "govAgencyCode";
-		public static final String GOVAGENCYNAME = "govAgencyName";
-		public static final String APPLICANTIDNO = "applicantIdNo";
-		public static final String APPLICANTNAME = "applicantName";
-		public static final String SUBJECT = "subject";
-		public static final String FORMDATA = "formData";
-		public static final String FORMSCRIPTFILEID = "formScriptFileId";
-		public static final String FORMREPORTFILEID = "formReportFileId";
-		public static final String ISSUEDATE = "issueDate";
-		public static final String EXPIREDATE = "expireDate";
-		public static final String REVALIDATE = "revalidate";
-		public static final String DELIVERABLESTATE = "deliverableState";
-		public static final String FILEENTRYID = "fileEntryId";
-		public static final String DOCSYNC = "docSync";
-		public static final String DOSSIERID = "dossierId";
+		object.setUserId(objectData.getLong(ModelKeysDeliverable.USERID));
+
+		object.setDeliverableCode(objectData.getString(ModelKeysDeliverable.DELIVERABLECODE));
+		object.setDeliverableName(objectData.getString(ModelKeysDeliverable.DELIVERABLENAME));
+		object.setDeliverableType(objectData.getString(ModelKeysDeliverable.DELIVERABLETYPE));
+		object.setGovAgencyCode(objectData.getString(ModelKeysDeliverable.GOVAGENCYCODE));
+
+		DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
+				objectData.getString(ModelKeysDeliverable.GOVAGENCYCODE),
+				objectData.getLong(ModelKeysDeliverable.GROUPID));
+
+		if (Validator.isNotNull(govAgencyName)) {
+			object.setGovAgencyName(govAgencyName.getItemName());
+		}
+
+		object.setApplicantIdNo(objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
+
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(
+				objectData.getLong(ModelKeysDeliverable.GROUPID),
+				objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
+
+		if (Validator.isNotNull(applicant)) {
+			object.setApplicantName(applicant.getApplicantName());
+		} else {
+			object.setApplicantName(StringPool.BLANK);
+		}
+
+		object.setSubject(objectData.getString(ModelKeysDeliverable.SUBJECT));
+		object.setFormData(objectData.getString(ModelKeysDeliverable.FORMDATA));
+		object.setFormScriptFileId(objectData.getLong(ModelKeysDeliverable.FORMSCRIPTFILEID));
+		object.setFormReportFileId(objectData.getLong(ModelKeysDeliverable.FORMREPORTFILEID));
+		if (Validator.isNotNull(objectData.getString(ModelKeysDeliverable.ISSUEDATE))) {
+			object.setIssueDate(new Date(objectData.getLong(ModelKeysDeliverable.ISSUEDATE)));
+		}
+		if (Validator.isNotNull(objectData.getString(ModelKeysDeliverable.EXPIREDATE))) {
+			object.setExpireDate(new Date(objectData.getLong(ModelKeysDeliverable.EXPIREDATE)));
+		}
+		if (Validator.isNotNull(objectData.getString(ModelKeysDeliverable.REVALIDATE))) {
+			object.setRevalidate(new Date(objectData.getLong(ModelKeysDeliverable.REVALIDATE)));
+		}
+
+		object.setDeliverableState(objectData.getInt(ModelKeysDeliverable.DELIVERABLESTATE));
+		object.setFileEntryId(objectData.getLong(ModelKeysDeliverable.FILEENTRYID));
+		object.setDocSync(objectData.getInt(ModelKeysDeliverable.DOCSYNC));
+		object.setDossierId(objectData.getLong(ModelKeysDeliverable.DOSSIERID));
+
+		openCPSDeliverablePersistence.update(object);
+
+		return object;
 	}
+
 }

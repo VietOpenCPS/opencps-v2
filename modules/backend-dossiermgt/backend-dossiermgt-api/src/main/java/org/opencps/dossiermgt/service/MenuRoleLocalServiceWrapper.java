@@ -59,18 +59,30 @@ public class MenuRoleLocalServiceWrapper implements MenuRoleLocalService,
 	/**
 	* Creates a new menu role with the primary key. Does not add the menu role to the database.
 	*
-	* @param menuRolePK the primary key for the new menu role
+	* @param menuRoleId the primary key for the new menu role
 	* @return the new menu role
 	*/
 	@Override
-	public org.opencps.dossiermgt.model.MenuRole createMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK) {
-		return _menuRoleLocalService.createMenuRole(menuRolePK);
+	public org.opencps.dossiermgt.model.MenuRole createMenuRole(long menuRoleId) {
+		return _menuRoleLocalService.createMenuRole(menuRoleId);
 	}
 
 	@Override
 	public void deleteAll() {
 		_menuRoleLocalService.deleteAll();
+	}
+
+	/**
+	* Deletes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
+	*
+	* @param menuRoleId the primary key of the menu role
+	* @return the menu role that was removed
+	* @throws PortalException if a menu role with the primary key could not be found
+	*/
+	@Override
+	public org.opencps.dossiermgt.model.MenuRole deleteMenuRole(long menuRoleId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _menuRoleLocalService.deleteMenuRole(menuRoleId);
 	}
 
 	/**
@@ -83,20 +95,6 @@ public class MenuRoleLocalServiceWrapper implements MenuRoleLocalService,
 	public org.opencps.dossiermgt.model.MenuRole deleteMenuRole(
 		org.opencps.dossiermgt.model.MenuRole menuRole) {
 		return _menuRoleLocalService.deleteMenuRole(menuRole);
-	}
-
-	/**
-	* Deletes the menu role with the primary key from the database. Also notifies the appropriate model listeners.
-	*
-	* @param menuRolePK the primary key of the menu role
-	* @return the menu role that was removed
-	* @throws PortalException if a menu role with the primary key could not be found
-	*/
-	@Override
-	public org.opencps.dossiermgt.model.MenuRole deleteMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _menuRoleLocalService.deleteMenuRole(menuRolePK);
 	}
 
 	/**
@@ -194,9 +192,8 @@ public class MenuRoleLocalServiceWrapper implements MenuRoleLocalService,
 	}
 
 	@Override
-	public org.opencps.dossiermgt.model.MenuRole fetchMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK) {
-		return _menuRoleLocalService.fetchMenuRole(menuRolePK);
+	public org.opencps.dossiermgt.model.MenuRole fetchMenuRole(long menuRoleId) {
+		return _menuRoleLocalService.fetchMenuRole(menuRoleId);
 	}
 
 	@Override
@@ -218,15 +215,14 @@ public class MenuRoleLocalServiceWrapper implements MenuRoleLocalService,
 	/**
 	* Returns the menu role with the primary key.
 	*
-	* @param menuRolePK the primary key of the menu role
+	* @param menuRoleId the primary key of the menu role
 	* @return the menu role
 	* @throws PortalException if a menu role with the primary key could not be found
 	*/
 	@Override
-	public org.opencps.dossiermgt.model.MenuRole getMenuRole(
-		org.opencps.dossiermgt.service.persistence.MenuRolePK menuRolePK)
+	public org.opencps.dossiermgt.model.MenuRole getMenuRole(long menuRoleId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _menuRoleLocalService.getMenuRole(menuRolePK);
+		return _menuRoleLocalService.getMenuRole(menuRoleId);
 	}
 
 	/**

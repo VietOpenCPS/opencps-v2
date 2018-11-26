@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -42,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.graphql.api.controller.utils.ElasticQueryWrapUtil;
 import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
@@ -53,10 +55,14 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.deliverable.model.OpenCPSDeliverableType;
 import org.opencps.deliverable.service.OpenCPSDeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.action.DeliverableActions;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -389,6 +395,20 @@ public class RestfulController {
 					}
 
 					OpenCPSDeliverableTypeLocalServiceUtil.updateOpenCPSDeliverableType(openCPSDeliverableType);
+
+				} else if (code.equals("opencps_applicant")) {
+
+					System.out.println("RestfulController.uploadAttachment()" + Long.valueOf(pk));
+					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
+					System.out.println("RestfulController.uploadAttachment(className)" + className);
+
+					if (className.equals("org.opencps.usermgt.model.ApplicantEsign")) {
+						employee.setFileSignId(fileAttach.getFileEntryId());
+					} else {
+						employee.setFileCertId(fileAttach.getFileEntryId());
+					}
+
+					EmployeeLocalServiceUtil.updateEmployee(employee);
 
 				}
 
@@ -724,7 +744,8 @@ public class RestfulController {
 
 	}
 
-	@RequestMapping(value = "/fileattach/{id}/text", produces = { "text/plain; charset=utf-8" }, method = RequestMethod.GET)
+	@RequestMapping(value = "/fileattach/{id}/text", produces = {
+			"text/plain; charset=utf-8" }, method = RequestMethod.GET)
 	public String getTextFromFileEntryId(
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") Long id) {
 
@@ -753,5 +774,85 @@ public class RestfulController {
 
 		return result;
 
+	}
+
+	@RequestMapping(value = "/deliverable/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getDeliverable(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("type") String type) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			long userId = 0;
+			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+
+				long groupId = 0;
+
+				if (Validator.isNotNull(request.getHeader("groupId"))) {
+					groupId = Long.valueOf(request.getHeader("groupId"));
+				}
+				
+				try {
+
+					JSONObject query = JSONFactoryUtil.createJSONObject(
+							" { \"from\" : " + request.getParameter("start") + ", \"size\" : " + request.getParameter("end") + ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
+									+ groupId + ")\" }}}");
+
+					result = ElasticQueryWrapUtil.query(query.toJSONString());
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result.toJSONString();
+	}
+	
+	@RequestMapping(value = "/deliverable/{id}/detail", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getDeliverableById(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("id") Long id) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			long userId = 0;
+			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+
+				long groupId = 0;
+
+				if (Validator.isNotNull(request.getHeader("groupId"))) {
+					groupId = Long.valueOf(request.getHeader("groupId"));
+				}
+				
+				try {
+
+					JSONObject query = JSONFactoryUtil.createJSONObject(
+							" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
+									+ groupId + " AND entryClassPK: " + id +" )\" }}}");
+
+					result = ElasticQueryWrapUtil.query(query.toJSONString());
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result.toJSONString();
 	}
 }
