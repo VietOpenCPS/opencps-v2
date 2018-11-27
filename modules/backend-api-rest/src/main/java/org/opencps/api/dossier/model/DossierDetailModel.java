@@ -191,7 +191,9 @@ import javax.xml.bind.annotation.XmlType;
     "lastActionUserId",
     "extendDate",
     "dossierName",
-    "originality"
+    "originality",
+    "originDossierId",
+    "originDossierNo"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -290,6 +292,8 @@ public class DossierDetailModel {
     protected String extendDate;
     protected String dossierName;
     protected int originality;
+	protected Long originDossierId;
+	protected String originDossierNo;
 
     public String getPaymentFee() {
 		return paymentFee;
@@ -2072,6 +2076,22 @@ public class DossierDetailModel {
 
 	public void setOriginality(int originality) {
 		this.originality = originality;
+	}
+
+	public Long getOriginDossierId() {
+		return originDossierId;
+	}
+
+	public void setOriginDossierId(Long originDossierId) {
+		this.originDossierId = originDossierId;
+	}
+
+	public String getOriginDossierNo() {
+		return originDossierNo;
+	}
+
+	public void setOriginDossierNo(String originDossierNo) {
+		this.originDossierNo = originDossierNo;
 	}
 
 }
