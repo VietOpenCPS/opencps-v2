@@ -13,4 +13,8 @@ Export-Package: \
 	org.opencps.deliverable.service.persistence,\
 	org.opencps.deliverable.service.persistence.impl,\
 	backend.deliverable.action,\
-	backend.deliverable.action.impl
+	backend.deliverable.action.impl,\
+	org.apache.commons.io,\
+	org.apache.commons.io.filefilter,\
+	org.apache.commons.io.output,\
+	org.apache.commons.io.input

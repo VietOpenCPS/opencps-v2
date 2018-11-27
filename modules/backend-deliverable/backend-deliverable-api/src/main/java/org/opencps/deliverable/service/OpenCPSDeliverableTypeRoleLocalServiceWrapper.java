@@ -335,6 +335,11 @@ public class OpenCPSDeliverableTypeRoleLocalServiceWrapper
 		return _openCPSDeliverableTypeRoleLocalService.getPersistedModel(primaryKeyObj);
 	}
 
+	@Override
+	public java.util.List<Long> getRoleIdByTypes(long deliverableTypeId) {
+		return _openCPSDeliverableTypeRoleLocalService.getRoleIdByTypes(deliverableTypeId);
+	}
+
 	/**
 	* Updates the open cps deliverable type role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

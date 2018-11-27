@@ -193,6 +193,9 @@ public interface OpenCPSDeliverableLogLocalService extends BaseLocalService,
 	public OpenCPSDeliverableLog fetchOpenCPSDeliverableLogByUuidAndGroupId(
 		String uuid, long groupId);
 
+	public List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

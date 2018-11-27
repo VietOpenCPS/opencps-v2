@@ -20,7 +20,9 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.deliverable.model.OpenCPSDeliverableTypeRole;
 import org.opencps.deliverable.service.base.OpenCPSDeliverableTypeRoleLocalServiceBaseImpl;
@@ -54,6 +56,17 @@ public class OpenCPSDeliverableTypeRoleLocalServiceImpl extends OpenCPSDeliverab
 	 * deliverable type role local service.
 	 */
 
+	public List<Long> getRoleIdByTypes(long deliverableTypeId) {
+		List<Long> result = new ArrayList<>();
+		List<OpenCPSDeliverableTypeRole> results = openCPSDeliverableTypeRolePersistence.findByF_deliverableTypeId(deliverableTypeId);
+		
+		for (OpenCPSDeliverableTypeRole openCPSDeliverableTypeRole : results) {
+			result.add(openCPSDeliverableTypeRole.getRoleId());
+		}
+		
+		return result;
+	}
+	
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public OpenCPSDeliverableTypeRole adminProcessDelete(Long id) {

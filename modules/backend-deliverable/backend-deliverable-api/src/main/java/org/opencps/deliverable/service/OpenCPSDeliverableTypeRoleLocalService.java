@@ -287,6 +287,9 @@ public interface OpenCPSDeliverableTypeRoleLocalService extends BaseLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Long> getRoleIdByTypes(long deliverableTypeId);
+
 	/**
 	* Updates the open cps deliverable type role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

@@ -56,8 +56,8 @@ public class OpenCPSDeliverableTypeLocalServiceImpl extends OpenCPSDeliverableTy
 	 */
 	
 	// business
-	public OpenCPSDeliverableType getByTypeCode(String typeCode) {
-		return openCPSDeliverableTypePersistence.fetchByF_typeCode(typeCode);
+	public OpenCPSDeliverableType getByTypeCode(String typeCode, long groupId) {
+		return openCPSDeliverableTypePersistence.fetchByF_typeCode(typeCode, groupId);
 	}
 	
 	public List<OpenCPSDeliverableType> getDeliverableTypes(long groupId, int start, int end) {

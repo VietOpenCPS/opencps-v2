@@ -114,9 +114,10 @@ public class OpenCPSDeliverableTypeRoleModelImpl extends BaseModelImpl<OpenCPSDe
 				"value.object.column.bitmask.enabled.org.opencps.deliverable.model.OpenCPSDeliverableTypeRole"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 8L;
+	public static final long DELIVERABLETYPEID_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.deliverable.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.deliverable.model.OpenCPSDeliverableTypeRole"));
 
@@ -398,7 +399,19 @@ public class OpenCPSDeliverableTypeRoleModelImpl extends BaseModelImpl<OpenCPSDe
 
 	@Override
 	public void setDeliverableTypeId(long deliverableTypeId) {
+		_columnBitmask |= DELIVERABLETYPEID_COLUMN_BITMASK;
+
+		if (!_setOriginalDeliverableTypeId) {
+			_setOriginalDeliverableTypeId = true;
+
+			_originalDeliverableTypeId = _deliverableTypeId;
+		}
+
 		_deliverableTypeId = deliverableTypeId;
+	}
+
+	public long getOriginalDeliverableTypeId() {
+		return _originalDeliverableTypeId;
 	}
 
 	@Override
@@ -546,6 +559,10 @@ public class OpenCPSDeliverableTypeRoleModelImpl extends BaseModelImpl<OpenCPSDe
 		openCPSDeliverableTypeRoleModelImpl._setOriginalCompanyId = false;
 
 		openCPSDeliverableTypeRoleModelImpl._setModifiedDate = false;
+
+		openCPSDeliverableTypeRoleModelImpl._originalDeliverableTypeId = openCPSDeliverableTypeRoleModelImpl._deliverableTypeId;
+
+		openCPSDeliverableTypeRoleModelImpl._setOriginalDeliverableTypeId = false;
 
 		openCPSDeliverableTypeRoleModelImpl._columnBitmask = 0;
 	}
@@ -714,6 +731,8 @@ public class OpenCPSDeliverableTypeRoleModelImpl extends BaseModelImpl<OpenCPSDe
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _deliverableTypeId;
+	private long _originalDeliverableTypeId;
+	private boolean _setOriginalDeliverableTypeId;
 	private long _roleId;
 	private boolean _moderator;
 	private long _columnBitmask;

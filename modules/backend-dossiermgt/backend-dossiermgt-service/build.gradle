@@ -17,6 +17,9 @@ dependencies {
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
 	compileOnly project(":modules:backend-auth")
 
+	compileOnly project(":modules:backend-deliverable:backend-deliverable-api")
+	compileOnly project(":modules:backend-deliverable:backend-deliverable-service")
+
 	testCompile group: "junit", name: "junit", version: "4.12"
 }	
 

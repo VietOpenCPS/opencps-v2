@@ -58,6 +58,7 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 		document.addNumberSortable(Field.USER_ID, object.getUserId());
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
+		document.addNumberSortable(ModelKeysDeliverable.DELIVERABLEID, object.getDeliverableId());
 
 		// Indexer of custom fields
 		document.addTextSortable(ModelKeysDeliverable.DELIVERABLECODE, object.getDeliverableCode());
@@ -68,13 +69,20 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 		document.addTextSortable(ModelKeysDeliverable.APPLICANTIDNO, object.getApplicantIdNo());
 		document.addTextSortable(ModelKeysDeliverable.APPLICANTNAME, object.getApplicantName());
 		document.addTextSortable(ModelKeysDeliverable.SUBJECT, object.getSubject());
-		document.addDateSortable(ModelKeysDeliverable.ISSUEDATE, object.getIssueDate());
-		document.addDateSortable(ModelKeysDeliverable.EXPIREDATE, object.getExpireDate());
-		document.addDateSortable(ModelKeysDeliverable.REVALIDATE, object.getRevalidate());
+		
+		document.addNumberSortable(ModelKeysDeliverable.ISSUEDATE, object.getIssueDate().getTime());
+		document.addNumberSortable(ModelKeysDeliverable.EXPIREDATE, object.getExpireDate().getTime());
+		document.addNumberSortable(ModelKeysDeliverable.REVALIDATE, object.getRevalidate().getTime());
+		
+		document.addDateSortable(ModelKeysDeliverable.ISSUEDATE + "_date", object.getIssueDate());
+		document.addDateSortable(ModelKeysDeliverable.EXPIREDATE + "_date", object.getExpireDate());
+		document.addDateSortable(ModelKeysDeliverable.REVALIDATE + "_date", object.getRevalidate());
+		
 		document.addNumberSortable(ModelKeysDeliverable.DELIVERABLESTATE, object.getDeliverableState());
 		document.addNumberSortable(ModelKeysDeliverable.FILEENTRYID, object.getFileEntryId());
 		document.addNumberSortable(ModelKeysDeliverable.DOCSYNC, object.getDocSync());
 		document.addNumberSortable(ModelKeysDeliverable.DOSSIERID, object.getDossierId());
+		document.addText(ModelKeysDeliverable.FORMDATA, object.getFormData());
 		
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getFormData());
 

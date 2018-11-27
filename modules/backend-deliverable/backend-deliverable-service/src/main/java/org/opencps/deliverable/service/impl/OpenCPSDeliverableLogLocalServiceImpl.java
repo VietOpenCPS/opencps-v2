@@ -21,9 +21,13 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.deliverable.model.OpenCPSDeliverableLog;
 import org.opencps.deliverable.service.base.OpenCPSDeliverableLogLocalServiceBaseImpl;
+import org.opencps.deliverable.service.persistence.OpenCPSDeliverableLogPersistence;
+
+import backend.deliverable.service.util.ModelKeysDeliverableLog;
 
 /**
  * The implementation of the open cps deliverable log local service.
@@ -53,6 +57,10 @@ public class OpenCPSDeliverableLogLocalServiceImpl extends OpenCPSDeliverableLog
 	 * access the open cps deliverable log local service.
 	 */
 
+	public List<OpenCPSDeliverableLog> findByF_deliverableId(long deliverableId, int start, int end) {
+		return openCPSDeliverableLogPersistence.findByF_deliverableId(deliverableId, start, end);
+	}
+	
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public OpenCPSDeliverableLog adminProcessDelete(Long id) {
@@ -73,9 +81,9 @@ public class OpenCPSDeliverableLogLocalServiceImpl extends OpenCPSDeliverableLog
 
 		OpenCPSDeliverableLog object = null;
 
-		if (objectData.getLong(ModelKeys.DELIVERABLELOGID) > 0) {
+		if (objectData.getLong(ModelKeysDeliverableLog.DELIVERABLELOGID) > 0) {
 
-			object = openCPSDeliverableLogPersistence.fetchByPrimaryKey(objectData.getLong(ModelKeys.DELIVERABLELOGID));
+			object = openCPSDeliverableLogPersistence.fetchByPrimaryKey(objectData.getLong(ModelKeysDeliverableLog.DELIVERABLELOGID));
 
 			object.setModifiedDate(new Date());
 
@@ -85,43 +93,27 @@ public class OpenCPSDeliverableLogLocalServiceImpl extends OpenCPSDeliverableLog
 
 			object = openCPSDeliverableLogPersistence.create(id);
 
-			object.setGroupId(objectData.getLong(ModelKeys.GROUPID));
-			object.setCompanyId(objectData.getLong(ModelKeys.COMPANYID));
+			object.setGroupId(objectData.getLong(ModelKeysDeliverableLog.GROUPID));
+			object.setCompanyId(objectData.getLong(ModelKeysDeliverableLog.COMPANYID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong(ModelKeys.USERID));
+		object.setUserId(objectData.getLong(ModelKeysDeliverableLog.USERID));
 
-		object.setDeliverableId(objectData.getLong(ModelKeys.DELIVERABLEID));
-		object.setDossierUid(objectData.getString(ModelKeys.DOSSIERUID));
-		object.setAuthor(objectData.getString(ModelKeys.AUTHOR));
-		object.setContent(objectData.getString(ModelKeys.CONTENT));
-		object.setDeliverableAction(objectData.getInt(ModelKeys.DELIVERABLEACTION));
-		if (Validator.isNotNull(objectData.getString(ModelKeys.ACTIONDATE))) {
-			object.setActionDate(new Date(objectData.getLong(ModelKeys.ACTIONDATE)));
+		object.setDeliverableId(objectData.getLong(ModelKeysDeliverableLog.DELIVERABLEID));
+		object.setDossierUid(objectData.getString(ModelKeysDeliverableLog.DOSSIERUID));
+		object.setAuthor(objectData.getString(ModelKeysDeliverableLog.AUTHOR));
+		object.setContent(objectData.getString(ModelKeysDeliverableLog.CONTENT));
+		object.setDeliverableAction(objectData.getInt(ModelKeysDeliverableLog.DELIVERABLEACTION));
+		if (Validator.isNotNull(objectData.getString(ModelKeysDeliverableLog.ACTIONDATE))) {
+			object.setActionDate(new Date(objectData.getLong(ModelKeysDeliverableLog.ACTIONDATE)));
 		}
-		object.setPayload(objectData.getString(ModelKeys.PAYLOAD));
+		object.setPayload(objectData.getString(ModelKeysDeliverableLog.PAYLOAD));
 
 		openCPSDeliverableLogPersistence.update(object);
 
 		return object;
 	}
 
-	class ModelKeys {
-		public static final String DELIVERABLELOGID = "deliverableLogId";
-		public static final String GROUPID = "groupId";
-		public static final String COMPANYID = "companyId";
-		public static final String USERID = "userId";
-		public static final String USERNAME = "userName";
-		public static final String CREATEDATE = "createDate";
-		public static final String MODIFIEDDATE = "modifiedDate";
-		public static final String DELIVERABLEID = "deliverableId";
-		public static final String DOSSIERUID = "dossierUid";
-		public static final String AUTHOR = "author";
-		public static final String CONTENT = "content";
-		public static final String DELIVERABLEACTION = "deliverableAction";
-		public static final String ACTIONDATE = "actionDate";
-		public static final String PAYLOAD = "payload";
-	}
 }
