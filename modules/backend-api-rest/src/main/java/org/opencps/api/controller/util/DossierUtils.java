@@ -412,6 +412,8 @@ public class DossierUtils {
 			}
 
 			model.setOrigin(doc.get(DossierTerm.ORIGIN));
+			model.setOriginDossierId(GetterUtil.getInteger(doc.get(DossierTerm.ORIGIN_DOSSIER_ID)));
+			model.setOriginDossierNo(doc.get(DossierTerm.ORIGIN_DOSSIER_NO));
 			
 			ouputs.add(model);
 		}
@@ -878,6 +880,8 @@ public class DossierUtils {
 		model.setDurationUnit(input.getDurationUnit());
 		model.setSampleCount(input.getSampleCount());
 		model.setOriginality(input.getOriginality());
+		model.setOriginDossierId(input.getOriginDossierId());
+		model.setOriginDossierNo(input.getOriginDossierNo());
 
 		return model;
 	}
