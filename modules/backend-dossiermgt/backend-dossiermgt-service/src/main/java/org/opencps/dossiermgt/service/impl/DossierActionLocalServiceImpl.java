@@ -581,5 +581,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public List<DossierAction> getByDID_U_FSC(long dossierId, long userId, String stepCode) {
 		return dossierActionPersistence.findByDID_U_FSC(dossierId, userId, stepCode);
 	}	
+	
+	public List<DossierAction> findByG_DID(long groupId, long dossierId) {
+		return dossierActionPersistence.findByG_DID(groupId, dossierId);
+	}
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }

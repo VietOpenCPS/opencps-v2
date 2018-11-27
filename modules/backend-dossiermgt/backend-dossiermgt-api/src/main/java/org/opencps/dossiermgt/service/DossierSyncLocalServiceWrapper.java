@@ -252,6 +252,12 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID_ST(
+		long groupId, long dossierId, int state) {
+		return _dossierSyncLocalService.findByG_DID_ST(groupId, dossierId, state);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierSync> findByState(
 		Integer state, Integer start, Integer end) {
 		return _dossierSyncLocalService.findByState(state, start, end);
@@ -267,6 +273,13 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierSyncLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierSync getByDID_DAD_AC(
+		long groupId, long dossierId, long dossierActionId, String actionCode) {
+		return _dossierSyncLocalService.getByDID_DAD_AC(groupId, dossierId,
+			dossierActionId, actionCode);
 	}
 
 	/**

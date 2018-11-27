@@ -200,6 +200,8 @@ public interface DossierActionLocalService extends BaseLocalService,
 	public DossierAction fetchDossierActionByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<DossierAction> findByG_DID(long groupId, long dossierId);
+
 	public List<DossierAction> findDossierActionByDID_FSN(long dossierId,
 		String fromSequenceNo);
 

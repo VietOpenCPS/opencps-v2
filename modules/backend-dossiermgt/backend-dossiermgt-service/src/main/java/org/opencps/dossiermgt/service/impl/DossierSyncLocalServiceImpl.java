@@ -133,4 +133,12 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	public long countForApplicantAndActionCode(long groupId, String actionCode) {
 		return dossierSyncPersistence.countByG_AC_ST_IT(groupId, actionCode, DossierSyncTerm.SYNCTYPE_INFORM, new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY });
 	}
+	
+	public DossierSync getByDID_DAD_AC(long groupId, long dossierId, long dossierActionId, String actionCode) {
+		return dossierSyncPersistence.fetchByG_DID_DAD_AC(groupId, dossierId, dossierActionId, actionCode);
+	}
+	
+	public List<DossierSync> findByG_DID_ST(long groupId, long dossierId, int state) {
+		return dossierSyncPersistence.findByG_DID_ST(groupId, dossierId, state);
+	}
 }
