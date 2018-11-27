@@ -898,7 +898,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		        map.put("govAgencyTaxNo", paymentConfig.getGovAgencyTaxNo());
 		        
 		        WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(groupId, dossier.getGovAgencyCode());
-		        map.put("govAddress", workingUnit.getAddress());
+		        if(Validator.isNotNull(workingUnit)) {
+		        	map.put("govAddress", workingUnit.getAddress());
+		        }else {
+		        	map.put("govAddress", "");
+		        }
 		        
 		        formData = mapper.writeValueAsString(map);
 		        _log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);
