@@ -2,6 +2,7 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -24,7 +25,9 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -100,11 +103,16 @@ import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
@@ -137,6 +145,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
@@ -3810,5 +3819,176 @@ public class DossierManagementImpl implements DossierManagement {
 		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
 		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
+	}
+
+	@Override
+	public Response fixDossierSync(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (dossier != null && dossier.getDossierActionId() != 0) {
+				List<DossierAction> lstActions = DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+				ServiceProcess serviceProcess = null;
+				
+				for (DossierAction da : lstActions) {
+					ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, da.getActionCode());
+					if (serviceProcess == null) {
+						serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(da.getServiceProcessId());
+					}
+					ProcessAction proAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcess != null ? serviceProcess.getServiceProcessId() : 0l, da.getActionCode());
+					
+					if (ac != null) {
+						if (ac.getSyncType() > 0) {
+							String dossierRefUid = dossier.getReferenceUid();
+							String syncRefUid = UUID.randomUUID().toString();
+
+							int state = DossierActionUtils.getSyncState(ac.getSyncType(), dossier);
+							
+							JSONObject payloadObject = JSONFactoryUtil.createJSONObject(da.getPayload());
+							
+							//Update payload
+							
+							JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
+							if (ac.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST) {
+								if (dossier.getOriginDossierId() == 0) {
+									List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
+									if (lstFiles.size() > 0) {
+										for (DossierFile df : lstFiles) {
+											JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+											dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+											dossierFilesArr.put(dossierFileObj);
+										}
+									}					
+								}
+								else {
+									ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
+									List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+									
+									if (serviceConfig != null) {
+										if (lstOptions.size() > 0) {
+											ProcessOption processOption = lstOptions.get(0);
+											
+											DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
+											List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
+											
+											List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getOriginDossierId());
+											if (lstFiles.size() > 0) {
+												for (DossierFile df : lstFiles) {
+													boolean flagHslt = false;
+													for (DossierPart dp : lstParts) {
+														if (dp.getPartNo().equals(df.getDossierPartNo())) {
+															flagHslt = true;
+															break;
+														}
+													}
+													if (flagHslt) {
+														JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+														dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+														dossierFilesArr.put(dossierFileObj);										
+													}
+												}
+											}										
+										}
+									}
+									
+								}
+							}
+							else {
+								//Sync result files
+								
+							}
+							
+							payloadObject.put("dossierFiles", dossierFilesArr);
+							
+							if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+								List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
+								dossierFilesArr = JSONFactoryUtil.createJSONArray();
+
+								// check return file
+								List<String> returnDossierFileTemplateNos = ListUtil
+										.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+
+								for (DossierFile dossierFile : lsDossierFile) {
+									if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+										JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+										dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+										dossierFilesArr.put(dossierFileObj);
+
+									}
+
+								}
+								payloadObject.put("dossierFiles", dossierFilesArr);				
+							}
+							
+							List<DossierDocument> lstDossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+							JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
+
+							for (DossierDocument dossierDocument : lstDossierDocuments) {
+								JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
+								dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
+								dossierDocumentArr.put(dossierDocumentObj);
+							}
+							payloadObject.put("dossierFiles", dossierFilesArr);				
+							payloadObject.put("dossierDocuments", dossierDocumentArr);
+							
+							//Put dossier note
+							payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+							
+							DossierSyncLocalServiceUtil.updateDossierSync(groupId, da.getUserId(), dossier.getDossierId(), dossierRefUid, syncRefUid,
+									da.getDossierActionId(), da.getActionCode(), da.getActionName(), da.getActionUser(), da.getActionNote(),
+									ac.getSyncType(), ac.getInfoType(), payloadObject.toJSONString(), serviceProcess.getServerNo(), state);
+							
+							if (state == DossierSyncTerm.STATE_NOT_SYNC
+									&& ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+								publishEvent(dossier);
+							}
+							
+						}
+					}
+				}
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+			else {
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}							
+	}
+
+	@Override
+	public Response resyncDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (dossier != null && dossier.getDossierActionId() != 0) {	
+				List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByG_DID_ST(groupId, dossier.getDossierId(), DossierSyncTerm.STATE_ACK_ERROR);
+				for (DossierSync ds : lstSyncs) {
+					ds.setState(DossierSyncTerm.STATE_WAITING_SYNC);
+					
+					DossierSyncLocalServiceUtil.updateDossierSync(ds);
+				}
+			}
+			
+			return Response.status(200).entity(StringPool.BLANK).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}				
 	}	
 }

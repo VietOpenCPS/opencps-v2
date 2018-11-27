@@ -133,13 +133,15 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.DossierSync"),
 			true);
 	public static final long ACTIONCODE_COLUMN_BITMASK = 1L;
-	public static final long DOSSIERREFUID_COLUMN_BITMASK = 2L;
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long INFOTYPE_COLUMN_BITMASK = 8L;
-	public static final long STATE_COLUMN_BITMASK = 16L;
-	public static final long SYNCTYPE_COLUMN_BITMASK = 32L;
-	public static final long UUID_COLUMN_BITMASK = 64L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 128L;
+	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 2L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 4L;
+	public static final long DOSSIERREFUID_COLUMN_BITMASK = 8L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
+	public static final long INFOTYPE_COLUMN_BITMASK = 32L;
+	public static final long STATE_COLUMN_BITMASK = 64L;
+	public static final long SYNCTYPE_COLUMN_BITMASK = 128L;
+	public static final long UUID_COLUMN_BITMASK = 256L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 512L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierSync"));
 
@@ -460,7 +462,19 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 
 	@Override
 	public void setDossierId(long dossierId) {
+		_columnBitmask |= DOSSIERID_COLUMN_BITMASK;
+
+		if (!_setOriginalDossierId) {
+			_setOriginalDossierId = true;
+
+			_originalDossierId = _dossierId;
+		}
+
 		_dossierId = dossierId;
+	}
+
+	public long getOriginalDossierId() {
+		return _originalDossierId;
 	}
 
 	@Override
@@ -510,7 +524,19 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 
 	@Override
 	public void setDossierActionId(long dossierActionId) {
+		_columnBitmask |= DOSSIERACTIONID_COLUMN_BITMASK;
+
+		if (!_setOriginalDossierActionId) {
+			_setOriginalDossierActionId = true;
+
+			_originalDossierActionId = _dossierActionId;
+		}
+
 		_dossierActionId = dossierActionId;
+	}
+
+	public long getOriginalDossierActionId() {
+		return _originalDossierActionId;
 	}
 
 	@Override
@@ -843,7 +869,15 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 
 		dossierSyncModelImpl._setModifiedDate = false;
 
+		dossierSyncModelImpl._originalDossierId = dossierSyncModelImpl._dossierId;
+
+		dossierSyncModelImpl._setOriginalDossierId = false;
+
 		dossierSyncModelImpl._originalDossierRefUid = dossierSyncModelImpl._dossierRefUid;
+
+		dossierSyncModelImpl._originalDossierActionId = dossierSyncModelImpl._dossierActionId;
+
+		dossierSyncModelImpl._setOriginalDossierActionId = false;
 
 		dossierSyncModelImpl._originalActionCode = dossierSyncModelImpl._actionCode;
 
@@ -1163,10 +1197,14 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _dossierId;
+	private long _originalDossierId;
+	private boolean _setOriginalDossierId;
 	private String _dossierRefUid;
 	private String _originalDossierRefUid;
 	private String _syncRefUid;
 	private long _dossierActionId;
+	private long _originalDossierActionId;
+	private boolean _setOriginalDossierActionId;
 	private String _actionCode;
 	private String _originalActionCode;
 	private String _actionName;

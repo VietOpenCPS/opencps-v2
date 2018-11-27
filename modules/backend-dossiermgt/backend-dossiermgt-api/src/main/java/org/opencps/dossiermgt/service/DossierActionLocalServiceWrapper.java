@@ -220,6 +220,12 @@ public class DossierActionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierAction> findByG_DID(
+		long groupId, long dossierId) {
+		return _dossierActionLocalService.findByG_DID(groupId, dossierId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierAction> findDossierActionByDID_FSN(
 		long dossierId, String fromSequenceNo) {
 		return _dossierActionLocalService.findDossierActionByDID_FSN(dossierId,
