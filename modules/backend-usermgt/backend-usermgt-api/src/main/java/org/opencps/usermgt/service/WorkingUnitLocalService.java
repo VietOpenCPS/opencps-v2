@@ -208,6 +208,9 @@ public interface WorkingUnitLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public WorkingUnit fetchByF_govAgencyCode(long groupId, String govAgencyCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public WorkingUnit fetchWorkingUnit(long workingUnitId);
 
 	/**
