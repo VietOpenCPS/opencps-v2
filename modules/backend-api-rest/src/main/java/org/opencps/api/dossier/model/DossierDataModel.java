@@ -184,7 +184,9 @@ import javax.xml.bind.annotation.XmlType;
     "dossierName",
     "dueDateComing",
     "originality",
-    "origin"
+    "origin",
+    "originDossierId",
+    "originDossierNo"
 })
 public class DossierDataModel {
 
@@ -275,6 +277,8 @@ public class DossierDataModel {
 	protected String dueDateComing;
 	protected Integer originality;
 	protected String origin;
+	protected Integer originDossierId;
+	protected String originDossierNo;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -1981,4 +1985,21 @@ public class DossierDataModel {
 	public void setOrigin(String origin) {
 		this.origin = origin;
 	}
+
+	public Integer getOriginDossierId() {
+		return originDossierId;
+	}
+
+	public void setOriginDossierId(Integer originDossierId) {
+		this.originDossierId = originDossierId;
+	}
+
+	public String getOriginDossierNo() {
+		return originDossierNo;
+	}
+
+	public void setOriginDossierNo(String originDossierNo) {
+		this.originDossierNo = originDossierNo;
+	}
+
 }
