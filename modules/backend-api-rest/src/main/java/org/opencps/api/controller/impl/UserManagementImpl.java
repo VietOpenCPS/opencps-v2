@@ -605,38 +605,36 @@ public class UserManagementImpl implements UserManagement {
 			User user, ServiceContext serviceContext) {
 		JSONArray dataUser = JSONFactoryUtil.createJSONArray();
 
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		result.put("email", StringPool.BLANK);
-		result.put("role", StringPool.BLANK);
-		result.put("deactiveAccountFlag", 0);
 
 		try {
 			List<Role> roles = user.getRoles();
 
-			String roleName = StringPool.BLANK;
-
 			for (Role role : roles) {
+				String roleName = StringPool.BLANK;
+
+				JSONObject result = JSONFactoryUtil.createJSONObject();
+
+				result.put("email", StringPool.BLANK);
+				result.put("role", StringPool.BLANK);
+				result.put("deactiveAccountFlag", 0);
 
 				if (role.getName().equals("Administrator")) {
 					roleName = "Administrator";
-					break;
 				}
 
 				if (role.getName().equals("Administrator_data")) {
 					roleName = "Administrator_data";
-					break;
 				}
 
+				result.put("email", user.getEmailAddress());
+				result.put("role", roleName);
+				result.put("deactiveAccountFlag", user.getStatus());
+
+				dataUser.put(result);
 			}
 
-			result.put("email", user.getEmailAddress());
-			result.put("role", roleName);
-			result.put("deactiveAccountFlag", user.getStatus());
 		} catch (Exception e) {
 		}
-
-		dataUser.put(result);
 
 		return Response.status(200).entity(dataUser.toJSONString()).build();
 	}

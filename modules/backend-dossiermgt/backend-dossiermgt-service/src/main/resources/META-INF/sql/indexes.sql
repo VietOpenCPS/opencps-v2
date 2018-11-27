@@ -107,6 +107,8 @@ create index IX_97D829E2 on opencps_dossierstatistic (uuid_[$COLUMN_LENGTH:75$],
 create unique index IX_ABC5C0E4 on opencps_dossierstatistic (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_C5F16ADD on opencps_dossiersync (groupId, actionCode[$COLUMN_LENGTH:75$], syncType, infoType);
+create index IX_78FE34CE on opencps_dossiersync (groupId, dossierId, dossierActionId, actionCode[$COLUMN_LENGTH:75$]);
+create index IX_A9312537 on opencps_dossiersync (groupId, dossierId, state_);
 create index IX_3CD8A2B3 on opencps_dossiersync (groupId, dossierRefUid[$COLUMN_LENGTH:75$], infoType);
 create index IX_886CA32B on opencps_dossiersync (state_);
 create unique index IX_27D791BF on opencps_dossiersync (uuid_[$COLUMN_LENGTH:75$], groupId);
