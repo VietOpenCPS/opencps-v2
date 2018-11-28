@@ -2062,6 +2062,10 @@
             <finder-column name="dossierId"></finder-column>
             <finder-column name="state"></finder-column>
         </finder>
+        <finder name="G_DID" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+        </finder>
 	</entity>
 	
 	<entity local-service="true" name="DossierDocument" remote-service="false"
