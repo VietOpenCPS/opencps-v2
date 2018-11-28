@@ -572,5 +572,10 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		return object;
 	}
 
-	private final Log _log = LogFactoryUtil.getLog(WorkingUnitLocalServiceImpl.class);
+	public WorkingUnit fetchByF_govAgencyCode(long groupId, String govAgencyCode) {
+		return workingUnitPersistence.fetchByF_govAgencyCode(groupId, govAgencyCode);
+	}
+	
+	private final Log _log =
+			LogFactoryUtil.getLog(WorkingUnitLocalServiceImpl.class);	
 }
