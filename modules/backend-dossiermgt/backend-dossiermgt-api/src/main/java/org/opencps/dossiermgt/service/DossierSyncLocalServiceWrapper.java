@@ -252,6 +252,12 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID(
+		long groupId, long dossierId) {
+		return _dossierSyncLocalService.findByG_DID(groupId, dossierId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID_ST(
 		long groupId, long dossierId, int state) {
 		return _dossierSyncLocalService.findByG_DID_ST(groupId, dossierId, state);

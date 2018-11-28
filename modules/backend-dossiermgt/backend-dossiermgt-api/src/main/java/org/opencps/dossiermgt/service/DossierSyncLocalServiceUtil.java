@@ -240,6 +240,11 @@ public class DossierSyncLocalServiceUtil {
 			infoType, start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID(
+		long groupId, long dossierId) {
+		return getService().findByG_DID(groupId, dossierId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID_ST(
 		long groupId, long dossierId, int state) {
 		return getService().findByG_DID_ST(groupId, dossierId, state);

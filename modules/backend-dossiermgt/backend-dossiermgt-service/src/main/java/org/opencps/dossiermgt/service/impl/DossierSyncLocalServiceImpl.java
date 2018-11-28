@@ -141,4 +141,8 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	public List<DossierSync> findByG_DID_ST(long groupId, long dossierId, int state) {
 		return dossierSyncPersistence.findByG_DID_ST(groupId, dossierId, state);
 	}
+
+	public List<DossierSync> findByG_DID(long groupId, long dossierId) {
+		return dossierSyncPersistence.findByG_DID(groupId, dossierId);
+	}
 }

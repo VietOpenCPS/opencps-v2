@@ -128,6 +128,9 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}
 				else {
+					oldDau.setModerator(1);
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(oldDau);
+					
 					indexer.reindex(dossier);
 					
 					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("Dossier action user already exists!").build();									
