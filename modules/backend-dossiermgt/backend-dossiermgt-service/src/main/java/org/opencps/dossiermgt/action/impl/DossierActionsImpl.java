@@ -3053,10 +3053,13 @@ public class DossierActionsImpl implements DossierActions {
 						ServiceProcess ltProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(foundOption.getServiceProcessId());
 						
 						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(foundOption.getDossierTemplateId());
-						String delegateName = dossier.getDelegateName();
+//						String delegateName = dossier.getDelegateName();
+						String delegateName = dossier.getGovAgencyName();
 						String delegateAddress = dossier.getDelegateAddress();
 						String delegateTelNo = dossier.getDelegateTelNo();
 						String delegateEmail = dossier.getDelegateEmail();
+						String delegateIdNo = dossier.getGovAgencyCode();
+						
 						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
 								dossier.getCounter(), dossier.getServiceCode(),
 								dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
@@ -3079,6 +3082,8 @@ public class DossierActionsImpl implements DossierActions {
 									hsltDossier.setDelegateAddress(delegateAddress);
 									hsltDossier.setDelegateTelNo(delegateTelNo);
 									hsltDossier.setDelegateEmail(delegateEmail);
+									hsltDossier.setDelegateIdNo(delegateIdNo);
+									hsltDossier.setDelegateIdNo(delegateIdNo);
 									hsltDossier = DossierLocalServiceUtil.updateDossier(hsltDossier);
 								}
 							}
