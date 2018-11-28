@@ -3990,5 +3990,34 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}				
+	}
+
+	@Override
+	public Response forceResyncDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (dossier != null && dossier.getDossierActionId() != 0) {	
+				List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				
+				for (DossierSync ds : lstSyncs) {
+					ds.setState(DossierSyncTerm.STATE_WAITING_SYNC);
+					
+					DossierSyncLocalServiceUtil.updateDossierSync(ds);
+				}
+			}
+			
+			return Response.status(200).entity(StringPool.BLANK).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}				
 	}	
 }
