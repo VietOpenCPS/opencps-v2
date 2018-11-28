@@ -12,13 +12,17 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.opencps.datamgt.model.FileAttach;
+import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.deliverable.model.OpenCPSDeliverable;
 import org.opencps.deliverable.model.OpenCPSDeliverableType;
 import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
@@ -88,7 +92,15 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 
 		OpenCPSDeliverableLogLocalServiceUtil.adminProcessData(objectData);
 
-		if (!modelBeforeUpdate.getFormData().equals(model.getFormData())) {
+		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(model.getGroupId(), OpenCPSDeliverable.class.getName() + "FileEntryId", String.valueOf(model.getDeliverableId()));
+		
+		boolean isAttact = false;
+		
+		if (Validator.isNotNull(fileAttachs) && fileAttachs.size() == 0 || Validator.isNull(fileAttachs)) {
+			isAttact = true;
+		}
+		
+		if (!modelBeforeUpdate.getFormData().equals(model.getFormData()) && isAttact) {
 			_log.info("IN DOSSIER FILE UPDATE FORM DATA");
 			Message message = new Message();
 
