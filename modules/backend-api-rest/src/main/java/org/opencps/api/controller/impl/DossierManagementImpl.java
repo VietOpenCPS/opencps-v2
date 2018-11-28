@@ -4005,7 +4005,7 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 			if (dossier != null && dossier.getDossierActionId() != 0) {	
-				List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
 				
 				for (DossierSync ds : lstSyncs) {
 					ds.setState(DossierSyncTerm.STATE_WAITING_SYNC);
