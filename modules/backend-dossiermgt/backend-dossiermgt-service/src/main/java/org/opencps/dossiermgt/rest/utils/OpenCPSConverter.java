@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -26,6 +27,8 @@ import org.opencps.dossiermgt.lgsp.model.MSyncDocument;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
@@ -35,6 +38,8 @@ import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import backend.utils.APIDateTimeUtils;
 
@@ -367,6 +372,9 @@ public class OpenCPSConverter {
 	public static DossierPublishModel convertDossierPublish(JSONObject jsonObj) {
 		DossierPublishModel model = new DossierPublishModel();
 	
+		if (jsonObj.has(DossierTerm.DOSSIER_ID)) {
+			model.setDossierId(jsonObj.getLong(DossierTerm.DOSSIER_ID));
+		}
 		if (jsonObj.has(DossierTerm.REFERENCE_UID)) {
 			model.setReferenceUid(jsonObj.getString(DossierTerm.REFERENCE_UID));
 		}
@@ -913,7 +921,64 @@ public class OpenCPSConverter {
 			result.put("DateAppointed", new Date(model.getDueDate()));
 		}		
 		result.put("IsSuccess", isSuccess(model));
+		if (Validator.isNotNull(model.getFinishDate())) {
+			result.put("SuccessDate", convertToUTCDate(new Date(model.getFinishDate())));
+		}
+		result.put("ApproverName", StringPool.BLANK);
+		result.put("ApproverPosition", StringPool.BLANK);
+		result.put("SuccessNote", StringPool.BLANK);
+		if (DossierTerm.DOSSIER_STATUS_DONE.equals(model.getDossierStatus())) {
+			result.put("IsReturned", true);
+			result.put("ReturnedDate", convertToUTCDate(new Date(model.getFinishDate())));
+		}
+		else {
+			result.put("IsReturned", false);
+		}
+		result.put("ReturnNote", StringPool.BLANK);
+		if (model.getViaPostal().equals("0")) {
+			result.put("ReturnedType", 0);
+		}
+		else {
+			result.put("ReturnedType", 1);
+		}
+		if (DossierTerm.DOSSIER_STATUS_DONE.equals(model.getDossierStatus())
+				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(model.getDossierStatus())
+				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(model.getDossierStatus())) {
+			result.put("FinishedDate", convertToUTCDate(new Date(model.getFinishDate())));
+		}
+		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(model.getDossierStatus())) {
+			result.put("Status", 2);
+		}
+		else {
+			result.put("Status", 1);			
+		}
+		result.put("ProcessingOrganName", model.getGovAgencyName());
+		result.put("HasSupplementary", false);
+		result.put("Note", StringPool.BLANK);
+		List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(model.getDossierId());
+		JSONArray attachmentsArr = JSONFactoryUtil.createJSONArray();
 		
+		for (DossierFile df : lstFiles) {
+			JSONObject attachmentObj = JSONFactoryUtil.createJSONObject();
+			attachmentObj.put("Attachmentld", df.getDossierFileId());
+			attachmentObj.put("AttachmentName", df.getDisplayName());
+			attachmentObj.put("IsDeleted", df.getRemoved());
+			attachmentObj.put("IsVerified", true);
+		}
+		
+		result.put("Attachments", attachmentsArr);
+		
+		JSONArray docFeesArr = JSONFactoryUtil.createJSONArray();
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(model.getGroupId(), model.getDossierId());
+		
+		if (paymentFile != null) {
+			JSONObject docFeeObj = JSONFactoryUtil.createJSONObject();
+			docFeeObj.put("FeeName", paymentFile.getPaymentFee());
+			docFeeObj.put("FeeType", 4);
+			docFeeObj.put("Price", paymentFile.getPaymentAmount());
+		}
+		
+		result.put("DocFees", docFeesArr);
 		return result;
 	}
 	
