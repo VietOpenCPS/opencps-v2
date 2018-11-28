@@ -135,10 +135,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException();
+//			}
 
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			String processNo = HtmlUtil.escape(input.getProcessNo());
 			String processName = HtmlUtil.escape(input.getProcessName());
 			String description = HtmlUtil.escape(input.getDescription());
@@ -258,9 +271,22 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException();
+//			}
 
 			ServiceProcess serviceProcess = actions.removeServiceProcess(userId, groupId, id, serviceContext);
 
@@ -698,10 +724,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException("UnauthenticationException");
 			}
 
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
 			long processStepId = 0;
@@ -973,10 +1012,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			ProcessActionReturnModel results;
 
 			ProcessAction processAction = actions.deleteProcessAction(actionid);
@@ -1006,10 +1058,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			String results = "Init Done";
 
 			ServiceProcessLocalServiceUtil.initServiceProcess(groupId, serviceContext);
@@ -1034,10 +1099,23 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException("UnauthorizationException");
-			}
+//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException("UnauthorizationException");
+//			}
 
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			String results = "Clone done";
 
 			ServiceProcessLocalServiceUtil.cloneServiceProcess(id, groupId, processNo, serviceContext);
