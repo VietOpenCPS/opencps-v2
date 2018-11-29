@@ -41,6 +41,7 @@ import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
 import org.opencps.api.controller.impl.DataTempManagementImpl;
+import org.opencps.api.controller.impl.DefaultSignatureManagementImpl;
 import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesLogManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesManagementImpl;
@@ -189,6 +190,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DossierActionUserManagementImpl());
 		
 		singletons.add(new MenuRoleManagementImpl());
+		singletons.add(new DefaultSignatureManagementImpl());
 		
 		singletons.add(this);
 		
