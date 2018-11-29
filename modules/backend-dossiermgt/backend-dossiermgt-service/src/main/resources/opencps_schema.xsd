@@ -56,6 +56,8 @@
 	<xsd:element name="DossierPublishModel">
 		<xsd:complexType>
 			<xsd:sequence>
+				<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="groupId" type="xsd:long" minOccurs="0" />
 				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
 				<xsd:element name="serviceCode" type="xsd:string" minOccurs="0" />
 				<xsd:element name="serviceName" type="xsd:string" minOccurs="0" />

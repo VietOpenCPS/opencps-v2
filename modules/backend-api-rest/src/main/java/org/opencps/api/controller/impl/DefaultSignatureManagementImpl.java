@@ -1,19 +1,23 @@
+
 package org.opencps.api.controller.impl;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -21,31 +25,45 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.opencps.api.controller.SignatureManagement;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.comment.model.CommentInputModel;
+import org.opencps.api.comment.model.CommentListModel;
+import org.opencps.api.comment.model.CommentModel;
+import org.opencps.api.comment.model.CommentSearchModel;
+import org.opencps.api.comment.model.CommentTopList;
+import org.opencps.api.controller.CommentManagement;
+import org.opencps.api.controller.DefaultSignatureManagement;
+import org.opencps.api.controller.util.CommentUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
+import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.datamgt.constants.CommentTerm;
+import org.opencps.datamgt.model.Comment;
+import org.opencps.datamgt.service.CommentLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -57,13 +75,14 @@ import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
 
-public class SignatureManagementImpl implements SignatureManagement{
+/**
+ * @author trungnt
+ */
+public class DefaultSignatureManagementImpl implements DefaultSignatureManagement {
 
 	Log _log = LogFactoryUtil.getLog(SignatureManagementImpl.class.getName());
 //	private static final String TYPE_KYSO = "1135, 1158, 1160, 1032";
@@ -623,6 +642,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 								serviceContext);
 
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
@@ -676,6 +698,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 			long fileEntryId = Long.valueOf(fileEntryIdArr[i]);
 			if (fileEntryId > 0) {
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
@@ -781,6 +806,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 								serviceContext);
 
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
@@ -834,6 +862,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 			long fileEntryId = Long.valueOf(fileEntryIdArr[i]);
 			if (fileEntryId > 0) {
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
@@ -908,4 +939,5 @@ public class SignatureManagementImpl implements SignatureManagement{
 		}
 		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 	}
+
 }
