@@ -3,6 +3,7 @@ package org.opencps.deliverable.model.listener;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -23,6 +24,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
+import org.opencps.datamgt.util.DateTimeUtils;
 import org.opencps.deliverable.model.OpenCPSDeliverable;
 import org.opencps.deliverable.model.OpenCPSDeliverableType;
 import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
@@ -92,14 +94,115 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 
 		OpenCPSDeliverableLogLocalServiceUtil.adminProcessData(objectData);
 
-		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(model.getGroupId(), OpenCPSDeliverable.class.getName() + "FileEntryId", String.valueOf(model.getDeliverableId()));
-		
+		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(model.getGroupId(),
+				OpenCPSDeliverable.class.getName() + "FileEntryId", String.valueOf(model.getDeliverableId()));
+
 		boolean isAttact = false;
-		
+
 		if (Validator.isNotNull(fileAttachs) && fileAttachs.size() == 0 || Validator.isNull(fileAttachs)) {
 			isAttact = true;
 		}
-		
+
+		OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil
+				.getByTypeCode(model.getDeliverableType(), model.getGroupId());
+
+		try {
+			JSONObject mappingData = JSONFactoryUtil.createJSONObject(openCPSDeliverableType.getMappingData());
+
+			if (Validator.isNotNull(mappingData.getString("deliverableCode"))) {
+
+				if (Validator.isNull(model.getDeliverableCode())) {
+
+					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
+
+					model.setDeliverableCode(formDataObject.getString(mappingData.getString("deliverableCode")));
+
+					OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(model);
+				}
+
+			}
+
+			if (Validator.isNotNull(mappingData.getString("subject"))) {
+
+				if (Validator.isNull(model.getSubject())) {
+
+					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
+
+					model.setSubject(formDataObject.getString(mappingData.getString("subject")));
+
+					OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(model);
+				}
+
+			}
+
+			if (Validator.isNotNull(mappingData.getString("issueDate"))) {
+
+				if (Validator.isNull(model.getIssueDate())) {
+
+					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
+
+					String issueDateStr = formDataObject.getString(mappingData.getString("issueDate"));
+
+					try {
+						Date issueDate = DateTimeUtils.convertStringToDate(issueDateStr);
+						model.setIssueDate(issueDate);
+
+						OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(model);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
+				}
+
+			}
+
+			if (Validator.isNotNull(mappingData.getString("expireDate"))) {
+
+				if (Validator.isNull(model.getExpireDate())) {
+
+					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
+
+					String expireDateStr = formDataObject.getString(mappingData.getString("expireDate"));
+
+					try {
+						Date expireDate = DateTimeUtils.convertStringToDate(expireDateStr);
+						model.setExpireDate(expireDate);
+
+						OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(model);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
+				}
+
+			}
+
+			if (Validator.isNotNull(mappingData.getString("revalidate"))) {
+
+				if (Validator.isNull(model.getRevalidate())) {
+
+					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
+
+					String revalidateStr = formDataObject.getString(mappingData.getString("revalidate"));
+
+					try {
+						Date revalidate = DateTimeUtils.convertStringToDate(revalidateStr);
+						model.setRevalidate(revalidate);
+
+						OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(model);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
+				}
+
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		if (!modelBeforeUpdate.getFormData().equals(model.getFormData()) && isAttact) {
 			_log.info("IN DOSSIER FILE UPDATE FORM DATA");
 			Message message = new Message();
