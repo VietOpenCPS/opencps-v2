@@ -1,31 +1,19 @@
 package org.opencps.dossiermgt.rest.utils;
 
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
-import java.io.File;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
-import javax.xml.bind.JAXBContext;
 
+import org.opencps.dossiermgt.lgsp.model.MDocumentTraces;
 import org.opencps.dossiermgt.lgsp.model.MSyncDocument;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 
@@ -131,5 +119,24 @@ public class LGSPRestClient {
 		}
 		
 		return result;
-	}		
+	}
+	
+	public MDocumentTraces postDocumentTrace(String token, long dossierId) {
+		MDocumentTraces result = null;
+		InvokeREST callRest = new InvokeREST();
+
+		JSONObject lgspObj = OpenCPSConverter.convertToDocumentTraces(dossierId);
+		JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",
+			consumerAdapter, DOSSIERS_BASE_PATH + "/UpdateDocumentTraces", lgspObj.toJSONString());
+		if (resultObj != null && resultObj.has("status")
+				&& resultObj.getInt("status") == 200) {
+			try {
+				result = OpenCPSConverter.convertJSONToDocumentTraces(JSONFactoryUtil.createJSONObject(resultObj.getString("message")));
+			} catch (JSONException e) {
+				_log.debug(e);
+			}
+		}
+		
+		return result;		
+	}
 }

@@ -39,6 +39,7 @@ public class LGSPEvent implements MessageListener {
 				LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 				Mtoken token = client.getToken();
 				client.publishDossier(token.getAccessToken(), OpenCPSConverter.convertDossierPublish(dossierObj));
+				client.postDocumentTrace(token.getAccessToken(), dossierObj.getLong(DossierTerm.DOSSIER_ID));
 			} catch (JSONException e) {
 				_log.error(e);
 			}			
