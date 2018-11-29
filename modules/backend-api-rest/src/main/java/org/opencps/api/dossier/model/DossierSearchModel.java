@@ -1008,5 +1008,4 @@ public class DossierSearchModel {
 	public void setOriginDossierId(Integer originDossierId) {
 		this.originDossierId = originDossierId;
 	}
-
 }

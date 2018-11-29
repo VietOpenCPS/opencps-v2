@@ -188,6 +188,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new VotingManagementImpl());
 		
 		singletons.add(new DossierActionUserManagementImpl());
+		singletons.add(new DefaultSignatureManagementImpl());
 		
 		singletons.add(new MenuRoleManagementImpl());
 		singletons.add(new DefaultSignatureManagementImpl());
