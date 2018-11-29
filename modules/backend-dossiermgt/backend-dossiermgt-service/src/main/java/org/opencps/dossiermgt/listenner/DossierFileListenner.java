@@ -492,6 +492,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							deliverableCode, dossier.getGovAgencyCode(), dossier.getGovAgencyName(),
 							dossier.getApplicantIdNo(), dossier.getApplicantName(), subject, issueDate, expireDate,
 							revalidate, deliverableState, serviceContext);
+					if (dlv != null) {
+						dlv.setDossierId(model.getDossierId());
+						dlv.setFileEntryId(model.getFileEntryId());
+						DeliverableLocalServiceUtil.updateDeliverable(dlv);
+					}
 
 				}
 				// update deliverable

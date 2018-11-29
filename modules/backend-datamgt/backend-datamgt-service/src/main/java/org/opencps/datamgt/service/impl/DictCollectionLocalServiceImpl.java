@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
@@ -380,11 +381,18 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 		
-		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
-			_log.info("START CollectionCode");
-			GroupBy group = new GroupBy(DictCollectionTerm.COLLECTION_CODE);
-			searchContext.setGroupBy(group);
-		}
+//		_log.info("START: "+start);
+//		_log.info("END: "+end);
+//		QueryConfig queryConfig = new QueryConfig();
+//        queryConfig.setHighlightEnabled(false);
+//        queryConfig.setHitsProcessingEnabled(true);
+//        queryConfig.setScoreEnabled(false);
+//        searchContext.setQueryConfig(queryConfig);
+//		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
+//			_log.info("START CollectionCode");
+//			GroupBy group = new GroupBy(DictCollectionTerm.COLLECTION_CODE);
+//			searchContext.setGroupBy(group);
+//		}
 
 		BooleanQuery booleanQuery = null;
 
@@ -471,7 +479,14 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictCollection.class.getName());
+		
+		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
+			_log.info("START CollectionCode");
+			GroupBy group = new GroupBy(Field.GROUP_ID);
+			searchContext.setGroupBy(group);
+		}
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 
@@ -495,7 +510,11 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 		
-		
+		QueryConfig queryConfig = new QueryConfig();
+        queryConfig.setHighlightEnabled(false);
+        queryConfig.setHitsProcessingEnabled(true);
+        queryConfig.setScoreEnabled(false);
+        searchContext.setQueryConfig(queryConfig);
 		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
 			_log.info("START CollectionCode");
 			GroupBy group = new GroupBy(DictCollectionTerm.COLLECTION_CODE);

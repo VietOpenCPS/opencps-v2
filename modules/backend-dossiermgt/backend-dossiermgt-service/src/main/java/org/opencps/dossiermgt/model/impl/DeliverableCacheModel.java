@@ -65,7 +65,7 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(47);
+		StringBundler sb = new StringBundler(51);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -113,6 +113,10 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		sb.append(revalidate);
 		sb.append(", deliverableState=");
 		sb.append(deliverableState);
+		sb.append(", fileEntryId=");
+		sb.append(fileEntryId);
+		sb.append(", dossierId=");
+		sb.append(dossierId);
 		sb.append("}");
 
 		return sb.toString();
@@ -260,6 +264,9 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 			deliverableImpl.setDeliverableState(deliverableState);
 		}
 
+		deliverableImpl.setFileEntryId(fileEntryId);
+		deliverableImpl.setDossierId(dossierId);
+
 		deliverableImpl.resetOriginalValues();
 
 		return deliverableImpl;
@@ -294,6 +301,10 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		issueDate = objectInput.readLong();
 		revalidate = objectInput.readLong();
 		deliverableState = objectInput.readUTF();
+
+		fileEntryId = objectInput.readLong();
+
+		dossierId = objectInput.readLong();
 	}
 
 	@Override
@@ -411,6 +422,10 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		else {
 			objectOutput.writeUTF(deliverableState);
 		}
+
+		objectOutput.writeLong(fileEntryId);
+
+		objectOutput.writeLong(dossierId);
 	}
 
 	public String uuid;
@@ -436,4 +451,6 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 	public long issueDate;
 	public long revalidate;
 	public String deliverableState;
+	public long fileEntryId;
+	public long dossierId;
 }

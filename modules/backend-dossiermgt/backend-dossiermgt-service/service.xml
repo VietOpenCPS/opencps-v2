@@ -1658,6 +1658,8 @@
 		<column name="issueDate" type="Date" />
 		<column name="revalidate" type="Date" />
 		<column name="deliverableState" type="String" />
+		<column name="fileEntryId" type="long" />
+		<column name="dossierId" type="long" />
 
 		<finder return-type="Deliverable" name="DID">
 			<finder-column name="deliverableId" />
