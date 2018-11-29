@@ -33,6 +33,9 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+import org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -888,13 +891,18 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		        
 		        map.put("address", address.toString());
 		        
-		        String numberToSymbo = PaymentFileUtils.chuyenSangChu(Long.toString(paymentFile.getPaymentAmount()));
 		        String num = PaymentFileUtils.readNum(Long.toString(paymentFile.getPaymentAmount()));
-		        map.put("numberToSymbo", numberToSymbo);
 		        map.put("numToWord", num);
 		        map.put("invoiceTemplateNo", paymentConfig.getInvoiceTemplateNo());
 		        map.put("invoiceIssueNo", paymentConfig.getInvoiceIssueNo());
 		        map.put("govAgencyTaxNo", paymentConfig.getGovAgencyTaxNo());
+		        
+		        WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(groupId, dossier.getGovAgencyCode());
+		        if(Validator.isNotNull(workingUnit)) {
+		        	map.put("govAddress", workingUnit.getAddress());
+		        }else {
+		        	map.put("govAddress", "");
+		        }
 		        
 		        formData = mapper.writeValueAsString(map);
 		        _log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);

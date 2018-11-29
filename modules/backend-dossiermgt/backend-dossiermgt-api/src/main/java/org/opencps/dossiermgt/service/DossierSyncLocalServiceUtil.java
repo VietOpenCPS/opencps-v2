@@ -240,6 +240,16 @@ public class DossierSyncLocalServiceUtil {
 			infoType, start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID(
+		long groupId, long dossierId) {
+		return getService().findByG_DID(groupId, dossierId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID_ST(
+		long groupId, long dossierId, int state) {
+		return getService().findByG_DID_ST(groupId, dossierId, state);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByState(
 		Integer state, Integer start, Integer end) {
 		return getService().findByState(state, start, end);
@@ -254,6 +264,13 @@ public class DossierSyncLocalServiceUtil {
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static org.opencps.dossiermgt.model.DossierSync getByDID_DAD_AC(
+		long groupId, long dossierId, long dossierActionId, String actionCode) {
+		return getService()
+				   .getByDID_DAD_AC(groupId, dossierId, dossierActionId,
+			actionCode);
 	}
 
 	/**

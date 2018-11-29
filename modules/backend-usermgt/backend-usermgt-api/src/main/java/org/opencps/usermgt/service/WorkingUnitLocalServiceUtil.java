@@ -228,6 +228,11 @@ public class WorkingUnitLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.usermgt.model.WorkingUnit fetchByF_govAgencyCode(
+		long groupId, String govAgencyCode) {
+		return getService().fetchByF_govAgencyCode(groupId, govAgencyCode);
+	}
+
 	public static org.opencps.usermgt.model.WorkingUnit fetchWorkingUnit(
 		long workingUnitId) {
 		return getService().fetchWorkingUnit(workingUnitId);

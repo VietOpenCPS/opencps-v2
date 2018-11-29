@@ -200,6 +200,11 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	public List<DossierSync> findByDossierAndInfoTypeArr(long groupId,
 		String dossierRefUid, int[] infoType, int start, int end);
 
+	public List<DossierSync> findByG_DID(long groupId, long dossierId);
+
+	public List<DossierSync> findByG_DID_ST(long groupId, long dossierId,
+		int state);
+
 	public List<DossierSync> findByState(Integer state, Integer start,
 		Integer end);
 
@@ -208,6 +213,10 @@ public interface DossierSyncLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierSync getByDID_DAD_AC(long groupId, long dossierId,
+		long dossierActionId, String actionCode);
 
 	/**
 	* Returns the dossier sync with the primary key.

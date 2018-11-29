@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -74,7 +75,15 @@ public class OneGateControllerImpl implements OneGateController {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = ServiceInfoLocalServiceUtil.findByGroup(groupId);
@@ -144,6 +153,9 @@ public class OneGateControllerImpl implements OneGateController {
 										}
 										if (hasPermission) break;
 									}
+								}
+								if (isAdmin) {
+									hasPermission = true;
 								}
 								if (hasPermission) {
 									JSONObject elmOption = JSONFactoryUtil.createJSONObject();

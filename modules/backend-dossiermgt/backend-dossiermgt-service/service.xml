@@ -1301,6 +1301,11 @@
 			<finder-column name="userId" />
 			<finder-column name="fromStepCode" />
 		</finder>
+
+		<finder name="G_DID" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dossierId"></finder-column>
+		</finder>		
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
@@ -2033,6 +2038,21 @@
             <finder-column name="actionCode"></finder-column>
             <finder-column name="syncType"></finder-column>
             <finder-column name="infoType" arrayable-operator="OR" comparator="="></finder-column>
+        </finder>
+        <finder name="G_DID_DAD_AC" return-type="DossierSync">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="dossierActionId"></finder-column>
+            <finder-column name="actionCode"></finder-column>
+        </finder>
+        <finder name="G_DID_ST" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="state"></finder-column>
+        </finder>
+        <finder name="G_DID" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
         </finder>
 	</entity>
 	

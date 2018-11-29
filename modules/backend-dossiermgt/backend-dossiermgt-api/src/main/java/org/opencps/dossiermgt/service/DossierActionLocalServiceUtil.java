@@ -201,6 +201,11 @@ public class DossierActionLocalServiceUtil {
 		return getService().fetchDossierActionByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> findByG_DID(
+		long groupId, long dossierId) {
+		return getService().findByG_DID(groupId, dossierId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> findDossierActionByDID_FSN(
 		long dossierId, String fromSequenceNo) {
 		return getService().findDossierActionByDID_FSN(dossierId, fromSequenceNo);

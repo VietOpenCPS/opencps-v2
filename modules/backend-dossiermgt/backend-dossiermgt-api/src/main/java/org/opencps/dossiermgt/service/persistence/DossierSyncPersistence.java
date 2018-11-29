@@ -854,6 +854,372 @@ public interface DossierSyncPersistence extends BasePersistence<DossierSync> {
 		int[] infoTypes);
 
 	/**
+	* Returns the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; and actionCode = &#63; or throws a {@link NoSuchDossierSyncException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param actionCode the action code
+	* @return the matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public DossierSync findByG_DID_DAD_AC(long groupId, long dossierId,
+		long dossierActionId, String actionCode)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Returns the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; and actionCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param actionCode the action code
+	* @return the matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public DossierSync fetchByG_DID_DAD_AC(long groupId, long dossierId,
+		long dossierActionId, String actionCode);
+
+	/**
+	* Returns the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; and actionCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param actionCode the action code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public DossierSync fetchByG_DID_DAD_AC(long groupId, long dossierId,
+		long dossierActionId, String actionCode, boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; and actionCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param actionCode the action code
+	* @return the dossier sync that was removed
+	*/
+	public DossierSync removeByG_DID_DAD_AC(long groupId, long dossierId,
+		long dossierActionId, String actionCode)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Returns the number of dossier syncs where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; and actionCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param actionCode the action code
+	* @return the number of matching dossier syncs
+	*/
+	public int countByG_DID_DAD_AC(long groupId, long dossierId,
+		long dossierActionId, String actionCode);
+
+	/**
+	* Returns all the dossier syncs where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @return the matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID_ST(long groupId,
+		long dossierId, int state);
+
+	/**
+	* Returns a range of all the dossier syncs where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @return the range of matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID_ST(long groupId,
+		long dossierId, int state, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossier syncs where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID_ST(long groupId,
+		long dossierId, int state, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossier syncs where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID_ST(long groupId,
+		long dossierId, int state, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier sync in the ordered set where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public DossierSync findByG_DID_ST_First(long groupId, long dossierId,
+		int state,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Returns the first dossier sync in the ordered set where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public DossierSync fetchByG_DID_ST_First(long groupId, long dossierId,
+		int state,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator);
+
+	/**
+	* Returns the last dossier sync in the ordered set where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public DossierSync findByG_DID_ST_Last(long groupId, long dossierId,
+		int state,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Returns the last dossier sync in the ordered set where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public DossierSync fetchByG_DID_ST_Last(long groupId, long dossierId,
+		int state,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator);
+
+	/**
+	* Returns the dossier syncs before and after the current dossier sync in the ordered set where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* @param DossierSyncId the primary key of the current dossier sync
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier sync
+	* @throws NoSuchDossierSyncException if a dossier sync with the primary key could not be found
+	*/
+	public DossierSync[] findByG_DID_ST_PrevAndNext(long DossierSyncId,
+		long groupId, long dossierId, int state,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Removes all the dossier syncs where groupId = &#63; and dossierId = &#63; and state = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	*/
+	public void removeByG_DID_ST(long groupId, long dossierId, int state);
+
+	/**
+	* Returns the number of dossier syncs where groupId = &#63; and dossierId = &#63; and state = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param state the state
+	* @return the number of matching dossier syncs
+	*/
+	public int countByG_DID_ST(long groupId, long dossierId, int state);
+
+	/**
+	* Returns all the dossier syncs where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID(long groupId, long dossierId);
+
+	/**
+	* Returns a range of all the dossier syncs where groupId = &#63; and dossierId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @return the range of matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID(long groupId,
+		long dossierId, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossier syncs where groupId = &#63; and dossierId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID(long groupId,
+		long dossierId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossier syncs where groupId = &#63; and dossierId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier syncs
+	*/
+	public java.util.List<DossierSync> findByG_DID(long groupId,
+		long dossierId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier sync in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public DossierSync findByG_DID_First(long groupId, long dossierId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Returns the first dossier sync in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public DossierSync fetchByG_DID_First(long groupId, long dossierId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator);
+
+	/**
+	* Returns the last dossier sync in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public DossierSync findByG_DID_Last(long groupId, long dossierId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Returns the last dossier sync in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public DossierSync fetchByG_DID_Last(long groupId, long dossierId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator);
+
+	/**
+	* Returns the dossier syncs before and after the current dossier sync in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param DossierSyncId the primary key of the current dossier sync
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier sync
+	* @throws NoSuchDossierSyncException if a dossier sync with the primary key could not be found
+	*/
+	public DossierSync[] findByG_DID_PrevAndNext(long DossierSyncId,
+		long groupId, long dossierId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierSync> orderByComparator)
+		throws NoSuchDossierSyncException;
+
+	/**
+	* Removes all the dossier syncs where groupId = &#63; and dossierId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	*/
+	public void removeByG_DID(long groupId, long dossierId);
+
+	/**
+	* Returns the number of dossier syncs where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the number of matching dossier syncs
+	*/
+	public int countByG_DID(long groupId, long dossierId);
+
+	/**
 	* Caches the dossier sync in the entity cache if it is enabled.
 	*
 	* @param dossierSync the dossier sync

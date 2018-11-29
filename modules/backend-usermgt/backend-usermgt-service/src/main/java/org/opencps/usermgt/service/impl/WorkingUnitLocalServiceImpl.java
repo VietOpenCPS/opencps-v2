@@ -580,6 +580,10 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		return workingUnitPersistence.fetchByF_WID(groupId, workingUnitId);
 	}
 	
+	public WorkingUnit fetchByF_govAgencyCode(long groupId, String govAgencyCode) {
+		return workingUnitPersistence.fetchByF_govAgencyCode(groupId, govAgencyCode);
+	}
+	
 	private final Log _log =
 			LogFactoryUtil.getLog(WorkingUnitLocalServiceImpl.class);	
 }
