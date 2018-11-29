@@ -642,6 +642,9 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 								serviceContext);
 
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
@@ -695,6 +698,9 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 			long fileEntryId = Long.valueOf(fileEntryIdArr[i]);
 			if (fileEntryId > 0) {
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
@@ -800,6 +806,9 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 								serviceContext);
 
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
@@ -853,6 +862,9 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 			long fileEntryId = Long.valueOf(fileEntryIdArr[i]);
 			if (fileEntryId > 0) {
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile == null) {
+						dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(fileEntryId);
+					}
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
