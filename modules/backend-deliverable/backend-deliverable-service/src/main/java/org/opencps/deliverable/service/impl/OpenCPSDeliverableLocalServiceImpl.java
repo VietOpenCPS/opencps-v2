@@ -125,16 +125,17 @@ public class OpenCPSDeliverableLocalServiceImpl extends OpenCPSDeliverableLocalS
 		}
 
 		object.setApplicantIdNo(objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
+		object.setApplicantName(objectData.getString(ModelKeysDeliverable.APPLICANTNAME));
 
-		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(
-				objectData.getLong(ModelKeysDeliverable.GROUPID),
-				objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
-
-		if (Validator.isNotNull(applicant)) {
-			object.setApplicantName(applicant.getApplicantName());
-		} else {
-			object.setApplicantName(StringPool.BLANK);
-		}
+//		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(
+//				objectData.getLong(ModelKeysDeliverable.GROUPID),
+//				objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
+//
+//		if (Validator.isNotNull(applicant)) {
+//			object.setApplicantName(applicant.getApplicantName());
+//		} else {
+//			object.setApplicantName(StringPool.BLANK);
+//		}
 
 		object.setSubject(objectData.getString(ModelKeysDeliverable.SUBJECT));
 		object.setFormData(objectData.getString(ModelKeysDeliverable.FORMDATA));

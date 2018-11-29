@@ -832,7 +832,8 @@ public class UserActions implements UserInterface {
 
 					result.put("applicantName", applicant.getApplicantName());
 					result.put("applicantType", applicant.getApplicantIdType());
-					result.put("applicantNo", applicant.getApplicantIdNo());
+					result.put("applicantIdNo", applicant.getApplicantIdNo());
+					result.put("applicantIdDate", applicant.getApplicantIdDate());
 					result.put("applicantAddress", applicant.getAddress());
 					result.put("applicantCityCode", applicant.getCityCode());
 					result.put("applicantCityName", applicant.getCityName());

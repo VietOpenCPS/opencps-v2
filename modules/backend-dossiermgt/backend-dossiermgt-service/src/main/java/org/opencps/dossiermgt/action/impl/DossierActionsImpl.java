@@ -1670,6 +1670,7 @@ public class DossierActionsImpl implements DossierActions {
 					result.put("returnFiles", returnFiles);
 				}
 			
+				// TODO DELI
 				JSONArray createFiles = JSONFactoryUtil.createJSONArray();
 				if (createFileTempNoList != null && !createFileTempNoList.isEmpty()) {
 					DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
