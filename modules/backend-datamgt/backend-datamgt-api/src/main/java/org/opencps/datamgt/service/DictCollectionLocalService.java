@@ -411,4 +411,10 @@ public interface DictCollectionLocalService extends BaseLocalService,
 	public DictCollection updateDictCollectionDB(long userId, long groupId,
 		String collectionCode, String collectionName, String collectionNameEN,
 		String description, Integer status) throws NoSuchUserException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection updateDictCollectionPublish(long companyId,
+		long userId, long groupId, String userName, String collectionCode,
+		String collectionName, String collectionNameEN, String description,
+		int status);
 }

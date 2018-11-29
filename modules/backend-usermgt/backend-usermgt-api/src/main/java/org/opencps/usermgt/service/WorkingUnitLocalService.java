@@ -96,6 +96,16 @@ public interface WorkingUnitLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public WorkingUnit addWorkingUnit(WorkingUnit workingUnit);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public WorkingUnit addWorkingUnitPublish(long userId, long groupId,
+		long companyId, String userName, String name, String enName,
+		String govAgencyCode, long parentWorkingUnitId, String sibling,
+		String treeIndex, int level, String address, String telNo,
+		String faxNo, String email, String website, Date ceremonyDate,
+		ServiceContext serviceContext)
+		throws UnauthenticationException, UnauthorizationException,
+			NoSuchUserException, NotFoundException, DuplicateCategoryException;
+
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
 

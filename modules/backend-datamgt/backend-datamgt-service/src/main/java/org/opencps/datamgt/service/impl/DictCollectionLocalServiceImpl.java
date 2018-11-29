@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.GroupBy;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
 import com.liferay.portal.kernel.search.Indexable;
@@ -378,6 +379,12 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
+		
+		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
+			_log.info("START CollectionCode");
+			GroupBy group = new GroupBy(DictCollectionTerm.COLLECTION_CODE);
+			searchContext.setGroupBy(group);
+		}
 
 		BooleanQuery booleanQuery = null;
 
@@ -420,7 +427,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
-		if (Validator.isNotNull(groupId)) {
+		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+			_log.info("EEEEEE"+groupId);
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
@@ -486,6 +494,13 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
+		
+		
+		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
+			_log.info("START CollectionCode");
+			GroupBy group = new GroupBy(DictCollectionTerm.COLLECTION_CODE);
+			searchContext.setGroupBy(group);
+		}
 
 		BooleanQuery booleanQuery = null;
 
@@ -528,7 +543,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
-		if (Validator.isNotNull(groupId)) {
+		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+			_log.info("EEEEEE"+groupId);
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
@@ -685,4 +701,36 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			return dc;
 		}
 	}
+
+	//Add DictCollection Publish
+	@Indexable(type = IndexableType.REINDEX)
+	public DictCollection updateDictCollectionPublish(long companyId, long userId, long groupId, String userName,
+			String collectionCode, String collectionName, String collectionNameEN, String description, int status) {
+
+		long dictCollectionId = counterLocalService.increment(DictCollection.class.getName());
+
+		DictCollection dictCollection = dictCollectionPersistence.create(dictCollectionId);
+
+		// Group instance
+		dictCollection.setGroupId(groupId);
+
+		// Audit fields
+		dictCollection.setCompanyId(companyId);
+		dictCollection.setUserId(userId);
+		dictCollection.setUserName(userName);
+		
+		Date now = new Date();
+		dictCollection.setCreateDate(now);
+		dictCollection.setModifiedDate(now);
+
+		// Other fields
+		dictCollection.setCollectionCode(collectionCode);
+		dictCollection.setCollectionName(collectionName);
+		dictCollection.setCollectionNameEN(collectionNameEN);
+		dictCollection.setDescription(description);
+		dictCollection.setStatus(status);
+
+		return dictCollectionPersistence.update(dictCollection);
+	}
+
 }

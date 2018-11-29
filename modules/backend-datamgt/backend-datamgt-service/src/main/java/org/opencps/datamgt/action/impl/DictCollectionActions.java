@@ -75,6 +75,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			hits = DictCollectionLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
+			_log.info("data: "+hits);
+			_log.info("hits.toList(): "+hits.toList());
 
 			result.put("data", hits.toList());
 
