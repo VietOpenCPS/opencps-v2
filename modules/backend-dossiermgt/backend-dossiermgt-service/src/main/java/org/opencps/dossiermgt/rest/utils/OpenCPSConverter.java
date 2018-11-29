@@ -23,9 +23,11 @@ import org.opencps.dossiermgt.constants.DossierMarkTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.lgsp.model.MDocumentTraces;
 import org.opencps.dossiermgt.lgsp.model.MSyncDocument;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -38,7 +40,9 @@ import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import backend.utils.APIDateTimeUtils;
@@ -1070,4 +1074,39 @@ public class OpenCPSConverter {
 		return result;
 	}
 	
+	public static JSONObject convertToDocumentTraces(long dossierId) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		if (dossier != null) {
+			obj.put("DocumentId", dossier.getDossierId());
+			obj.put("DocCode", dossier.getDossierNo());
+			DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			if (da != null) {
+				obj.put("UserName", da.getUserName());
+				obj.put("UserPosition", StringPool.BLANK);
+				obj.put("DateCreated", convertToUTCDate(da.getCreateDate()));
+				obj.put("Comment", da.getActionNote());
+				obj.put("Status", 0);
+				obj.put("OrganizationInchargeIdLevel1", dossier.getGovAgencyCode());
+				obj.put("OrganizationInchargeName", dossier.getGovAgencyName());
+			}
+		}
+		
+		return obj;
+	}
+	
+	public static MDocumentTraces convertJSONToDocumentTraces(JSONObject obj) {
+		MDocumentTraces result = new MDocumentTraces();
+		result.setDocumentId(obj.getString("DocumentId"));
+		result.setDocCode(obj.getString("DocCode"));
+		result.setUserName(obj.getString("UserName"));
+		result.setUserPosition(obj.getString("UserPosition"));
+		result.setDateCreated(obj.getString("DateCreated"));
+		result.setComment(obj.getString("Comment"));
+		result.setStatus(0);
+		result.setOrganizationInchargeIdLevel1(obj.getString("OrganizationInchargeIdLevel1"));
+		result.setOrganizationInchargeName(obj.getString("OrganizationInchargeName"));
+		return result;
+	}	
 }
