@@ -4019,5 +4019,38 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}				
+	}
+
+	@Override
+	public Response restoreDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (dossier != null) {
+				int originality = dossier.getOriginality();
+				Dossier removeDossier = null;
+				if (originality < 0) {
+					dossier.setOriginality(-originality);
+					removeDossier = DossierLocalServiceUtil.updateDossier(dossier);
+				}
+
+				DossierDetailModel result = null;
+				if (removeDossier != null) {
+					result = DossierUtils.mappingForGetDetail(removeDossier, user.getUserId());
+				}
+				return Response.status(200).entity(result).build();
+			} else {
+				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier to restore").build();
+			}
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}	
 }
