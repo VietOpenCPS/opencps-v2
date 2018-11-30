@@ -221,16 +221,16 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
 				ActionKeys.UPDATE_EMPLOYEE);
 
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
-
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		Employee employee = employeePersistence.fetchByPrimaryKey(employeeId);
 
+		if (!hasPermission && userId != employee.getMappingUserId()) {
+			throw new UnauthorizationException();
+		}
+		
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(employee.getGroupId(), employeeNo);
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
