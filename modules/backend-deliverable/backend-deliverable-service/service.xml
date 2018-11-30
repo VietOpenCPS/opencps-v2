@@ -46,6 +46,7 @@
 		
 		<finder return-type="OpenCPSDeliverableType" name="F_typeCode">
 			<finder-column name="typeCode"></finder-column>
+			<finder-column name="groupId"></finder-column>
 		</finder>
 		
 		<finder return-type="Collection" name="F_groupId">
@@ -78,11 +79,15 @@
 		<column name="deliverableTypeId" type="long" />
 		<column name="roleId" type="long" />
 		<column name="moderator" type="boolean" />
-
+		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate"></order-column>
 		</order>
+		
+		<finder return-type="Collection" name="F_deliverableTypeId">
+			<finder-column name="deliverableTypeId"></finder-column>
+		</finder>
 		
 	</entity>
 	
@@ -119,6 +124,10 @@
 		<order by="asc">
 			<order-column name="createDate"></order-column>
 		</order>
+		
+		<finder return-type="Collection" name="F_deliverableId">
+			<finder-column name="deliverableId"></finder-column>
+		</finder>
 		
 	</entity>
 	

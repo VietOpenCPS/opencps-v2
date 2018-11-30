@@ -372,49 +372,55 @@ public interface OpenCPSDeliverableTypePersistence extends BasePersistence<OpenC
 	public int countByUuid_C(String uuid, long companyId);
 
 	/**
-	* Returns the open cps deliverable type where typeCode = &#63; or throws a {@link NoSuchOpenCPSDeliverableTypeException} if it could not be found.
+	* Returns the open cps deliverable type where typeCode = &#63; and groupId = &#63; or throws a {@link NoSuchOpenCPSDeliverableTypeException} if it could not be found.
 	*
 	* @param typeCode the type code
+	* @param groupId the group ID
 	* @return the matching open cps deliverable type
 	* @throws NoSuchOpenCPSDeliverableTypeException if a matching open cps deliverable type could not be found
 	*/
-	public OpenCPSDeliverableType findByF_typeCode(String typeCode)
+	public OpenCPSDeliverableType findByF_typeCode(String typeCode, long groupId)
 		throws NoSuchOpenCPSDeliverableTypeException;
 
 	/**
-	* Returns the open cps deliverable type where typeCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	* Returns the open cps deliverable type where typeCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	*
 	* @param typeCode the type code
+	* @param groupId the group ID
 	* @return the matching open cps deliverable type, or <code>null</code> if a matching open cps deliverable type could not be found
 	*/
-	public OpenCPSDeliverableType fetchByF_typeCode(String typeCode);
+	public OpenCPSDeliverableType fetchByF_typeCode(String typeCode,
+		long groupId);
 
 	/**
-	* Returns the open cps deliverable type where typeCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	* Returns the open cps deliverable type where typeCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param typeCode the type code
+	* @param groupId the group ID
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching open cps deliverable type, or <code>null</code> if a matching open cps deliverable type could not be found
 	*/
 	public OpenCPSDeliverableType fetchByF_typeCode(String typeCode,
-		boolean retrieveFromCache);
+		long groupId, boolean retrieveFromCache);
 
 	/**
-	* Removes the open cps deliverable type where typeCode = &#63; from the database.
+	* Removes the open cps deliverable type where typeCode = &#63; and groupId = &#63; from the database.
 	*
 	* @param typeCode the type code
+	* @param groupId the group ID
 	* @return the open cps deliverable type that was removed
 	*/
-	public OpenCPSDeliverableType removeByF_typeCode(String typeCode)
-		throws NoSuchOpenCPSDeliverableTypeException;
+	public OpenCPSDeliverableType removeByF_typeCode(String typeCode,
+		long groupId) throws NoSuchOpenCPSDeliverableTypeException;
 
 	/**
-	* Returns the number of open cps deliverable types where typeCode = &#63;.
+	* Returns the number of open cps deliverable types where typeCode = &#63; and groupId = &#63;.
 	*
 	* @param typeCode the type code
+	* @param groupId the group ID
 	* @return the number of matching open cps deliverable types
 	*/
-	public int countByF_typeCode(String typeCode);
+	public int countByF_typeCode(String typeCode, long groupId);
 
 	/**
 	* Returns all the open cps deliverable types where groupId = &#63;.

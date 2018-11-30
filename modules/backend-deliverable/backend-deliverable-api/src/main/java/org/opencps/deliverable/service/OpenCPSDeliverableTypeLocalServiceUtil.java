@@ -209,8 +209,8 @@ public class OpenCPSDeliverableTypeLocalServiceUtil {
 	}
 
 	public static org.opencps.deliverable.model.OpenCPSDeliverableType getByTypeCode(
-		String typeCode) {
-		return getService().getByTypeCode(typeCode);
+		String typeCode, long groupId) {
+		return getService().getByTypeCode(typeCode, groupId);
 	}
 
 	public static java.util.List<org.opencps.deliverable.model.OpenCPSDeliverableType> getDeliverableTypes(

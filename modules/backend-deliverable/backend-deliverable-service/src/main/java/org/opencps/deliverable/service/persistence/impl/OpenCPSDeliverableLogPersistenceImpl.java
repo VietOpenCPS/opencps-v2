@@ -1492,6 +1492,531 @@ public class OpenCPSDeliverableLogPersistenceImpl extends BasePersistenceImpl<Op
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "openCPSDeliverableLog.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(openCPSDeliverableLog.uuid IS NULL OR openCPSDeliverableLog.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "openCPSDeliverableLog.companyId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_DELIVERABLEID =
+		new FinderPath(OpenCPSDeliverableLogModelImpl.ENTITY_CACHE_ENABLED,
+			OpenCPSDeliverableLogModelImpl.FINDER_CACHE_ENABLED,
+			OpenCPSDeliverableLogImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_deliverableId",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DELIVERABLEID =
+		new FinderPath(OpenCPSDeliverableLogModelImpl.ENTITY_CACHE_ENABLED,
+			OpenCPSDeliverableLogModelImpl.FINDER_CACHE_ENABLED,
+			OpenCPSDeliverableLogImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_deliverableId",
+			new String[] { Long.class.getName() },
+			OpenCPSDeliverableLogModelImpl.DELIVERABLEID_COLUMN_BITMASK |
+			OpenCPSDeliverableLogModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_DELIVERABLEID = new FinderPath(OpenCPSDeliverableLogModelImpl.ENTITY_CACHE_ENABLED,
+			OpenCPSDeliverableLogModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_deliverableId", new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the open cps deliverable logs where deliverableId = &#63;.
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @return the matching open cps deliverable logs
+	 */
+	@Override
+	public List<OpenCPSDeliverableLog> findByF_deliverableId(long deliverableId) {
+		return findByF_deliverableId(deliverableId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the open cps deliverable logs where deliverableId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @param start the lower bound of the range of open cps deliverable logs
+	 * @param end the upper bound of the range of open cps deliverable logs (not inclusive)
+	 * @return the range of matching open cps deliverable logs
+	 */
+	@Override
+	public List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end) {
+		return findByF_deliverableId(deliverableId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the open cps deliverable logs where deliverableId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @param start the lower bound of the range of open cps deliverable logs
+	 * @param end the upper bound of the range of open cps deliverable logs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching open cps deliverable logs
+	 */
+	@Override
+	public List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator) {
+		return findByF_deliverableId(deliverableId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the open cps deliverable logs where deliverableId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @param start the lower bound of the range of open cps deliverable logs
+	 * @param end the upper bound of the range of open cps deliverable logs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching open cps deliverable logs
+	 */
+	@Override
+	public List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DELIVERABLEID;
+			finderArgs = new Object[] { deliverableId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_DELIVERABLEID;
+			finderArgs = new Object[] {
+					deliverableId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpenCPSDeliverableLog> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpenCPSDeliverableLog>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpenCPSDeliverableLog openCPSDeliverableLog : list) {
+					if ((deliverableId != openCPSDeliverableLog.getDeliverableId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSDELIVERABLELOG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_DELIVERABLEID_DELIVERABLEID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpenCPSDeliverableLogModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(deliverableId);
+
+				if (!pagination) {
+					list = (List<OpenCPSDeliverableLog>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpenCPSDeliverableLog>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first open cps deliverable log in the ordered set where deliverableId = &#63;.
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching open cps deliverable log
+	 * @throws NoSuchOpenCPSDeliverableLogException if a matching open cps deliverable log could not be found
+	 */
+	@Override
+	public OpenCPSDeliverableLog findByF_deliverableId_First(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator)
+		throws NoSuchOpenCPSDeliverableLogException {
+		OpenCPSDeliverableLog openCPSDeliverableLog = fetchByF_deliverableId_First(deliverableId,
+				orderByComparator);
+
+		if (openCPSDeliverableLog != null) {
+			return openCPSDeliverableLog;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("deliverableId=");
+		msg.append(deliverableId);
+
+		msg.append("}");
+
+		throw new NoSuchOpenCPSDeliverableLogException(msg.toString());
+	}
+
+	/**
+	 * Returns the first open cps deliverable log in the ordered set where deliverableId = &#63;.
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching open cps deliverable log, or <code>null</code> if a matching open cps deliverable log could not be found
+	 */
+	@Override
+	public OpenCPSDeliverableLog fetchByF_deliverableId_First(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator) {
+		List<OpenCPSDeliverableLog> list = findByF_deliverableId(deliverableId,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last open cps deliverable log in the ordered set where deliverableId = &#63;.
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching open cps deliverable log
+	 * @throws NoSuchOpenCPSDeliverableLogException if a matching open cps deliverable log could not be found
+	 */
+	@Override
+	public OpenCPSDeliverableLog findByF_deliverableId_Last(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator)
+		throws NoSuchOpenCPSDeliverableLogException {
+		OpenCPSDeliverableLog openCPSDeliverableLog = fetchByF_deliverableId_Last(deliverableId,
+				orderByComparator);
+
+		if (openCPSDeliverableLog != null) {
+			return openCPSDeliverableLog;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("deliverableId=");
+		msg.append(deliverableId);
+
+		msg.append("}");
+
+		throw new NoSuchOpenCPSDeliverableLogException(msg.toString());
+	}
+
+	/**
+	 * Returns the last open cps deliverable log in the ordered set where deliverableId = &#63;.
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching open cps deliverable log, or <code>null</code> if a matching open cps deliverable log could not be found
+	 */
+	@Override
+	public OpenCPSDeliverableLog fetchByF_deliverableId_Last(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator) {
+		int count = countByF_deliverableId(deliverableId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpenCPSDeliverableLog> list = findByF_deliverableId(deliverableId,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the open cps deliverable logs before and after the current open cps deliverable log in the ordered set where deliverableId = &#63;.
+	 *
+	 * @param deliverableLogId the primary key of the current open cps deliverable log
+	 * @param deliverableId the deliverable ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next open cps deliverable log
+	 * @throws NoSuchOpenCPSDeliverableLogException if a open cps deliverable log with the primary key could not be found
+	 */
+	@Override
+	public OpenCPSDeliverableLog[] findByF_deliverableId_PrevAndNext(
+		long deliverableLogId, long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator)
+		throws NoSuchOpenCPSDeliverableLogException {
+		OpenCPSDeliverableLog openCPSDeliverableLog = findByPrimaryKey(deliverableLogId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpenCPSDeliverableLog[] array = new OpenCPSDeliverableLogImpl[3];
+
+			array[0] = getByF_deliverableId_PrevAndNext(session,
+					openCPSDeliverableLog, deliverableId, orderByComparator,
+					true);
+
+			array[1] = openCPSDeliverableLog;
+
+			array[2] = getByF_deliverableId_PrevAndNext(session,
+					openCPSDeliverableLog, deliverableId, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpenCPSDeliverableLog getByF_deliverableId_PrevAndNext(
+		Session session, OpenCPSDeliverableLog openCPSDeliverableLog,
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSDELIVERABLELOG_WHERE);
+
+		query.append(_FINDER_COLUMN_F_DELIVERABLEID_DELIVERABLEID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpenCPSDeliverableLogModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(deliverableId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(openCPSDeliverableLog);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpenCPSDeliverableLog> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the open cps deliverable logs where deliverableId = &#63; from the database.
+	 *
+	 * @param deliverableId the deliverable ID
+	 */
+	@Override
+	public void removeByF_deliverableId(long deliverableId) {
+		for (OpenCPSDeliverableLog openCPSDeliverableLog : findByF_deliverableId(
+				deliverableId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(openCPSDeliverableLog);
+		}
+	}
+
+	/**
+	 * Returns the number of open cps deliverable logs where deliverableId = &#63;.
+	 *
+	 * @param deliverableId the deliverable ID
+	 * @return the number of matching open cps deliverable logs
+	 */
+	@Override
+	public int countByF_deliverableId(long deliverableId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_DELIVERABLEID;
+
+		Object[] finderArgs = new Object[] { deliverableId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_OPENCPSDELIVERABLELOG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_DELIVERABLEID_DELIVERABLEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(deliverableId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_DELIVERABLEID_DELIVERABLEID_2 = "openCPSDeliverableLog.deliverableId = ?";
 
 	public OpenCPSDeliverableLogPersistenceImpl() {
 		setModelClass(OpenCPSDeliverableLog.class);
@@ -1848,6 +2373,14 @@ public class OpenCPSDeliverableLogPersistenceImpl extends BasePersistenceImpl<Op
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 				args);
 
+			args = new Object[] {
+					openCPSDeliverableLogModelImpl.getDeliverableId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DELIVERABLEID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DELIVERABLEID,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -1889,6 +2422,27 @@ public class OpenCPSDeliverableLogPersistenceImpl extends BasePersistenceImpl<Op
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((openCPSDeliverableLogModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DELIVERABLEID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						openCPSDeliverableLogModelImpl.getOriginalDeliverableId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DELIVERABLEID,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DELIVERABLEID,
+					args);
+
+				args = new Object[] {
+						openCPSDeliverableLogModelImpl.getDeliverableId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_DELIVERABLEID,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_DELIVERABLEID,
 					args);
 			}
 		}

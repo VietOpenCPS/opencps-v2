@@ -191,7 +191,6 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DefaultSignatureManagementImpl());
 		
 		singletons.add(new MenuRoleManagementImpl());
-		singletons.add(new DefaultSignatureManagementImpl());
 		
 		singletons.add(this);
 		

@@ -512,6 +512,176 @@ public class OpenCPSDeliverableLogUtil {
 	}
 
 	/**
+	* Returns all the open cps deliverable logs where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @return the matching open cps deliverable logs
+	*/
+	public static List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId) {
+		return getPersistence().findByF_deliverableId(deliverableId);
+	}
+
+	/**
+	* Returns a range of all the open cps deliverable logs where deliverableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableId the deliverable ID
+	* @param start the lower bound of the range of open cps deliverable logs
+	* @param end the upper bound of the range of open cps deliverable logs (not inclusive)
+	* @return the range of matching open cps deliverable logs
+	*/
+	public static List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end) {
+		return getPersistence().findByF_deliverableId(deliverableId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the open cps deliverable logs where deliverableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableId the deliverable ID
+	* @param start the lower bound of the range of open cps deliverable logs
+	* @param end the upper bound of the range of open cps deliverable logs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching open cps deliverable logs
+	*/
+	public static List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator) {
+		return getPersistence()
+				   .findByF_deliverableId(deliverableId, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the open cps deliverable logs where deliverableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableId the deliverable ID
+	* @param start the lower bound of the range of open cps deliverable logs
+	* @param end the upper bound of the range of open cps deliverable logs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching open cps deliverable logs
+	*/
+	public static List<OpenCPSDeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_deliverableId(deliverableId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first open cps deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching open cps deliverable log
+	* @throws NoSuchOpenCPSDeliverableLogException if a matching open cps deliverable log could not be found
+	*/
+	public static OpenCPSDeliverableLog findByF_deliverableId_First(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator)
+		throws org.opencps.deliverable.exception.NoSuchOpenCPSDeliverableLogException {
+		return getPersistence()
+				   .findByF_deliverableId_First(deliverableId, orderByComparator);
+	}
+
+	/**
+	* Returns the first open cps deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching open cps deliverable log, or <code>null</code> if a matching open cps deliverable log could not be found
+	*/
+	public static OpenCPSDeliverableLog fetchByF_deliverableId_First(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_deliverableId_First(deliverableId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last open cps deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching open cps deliverable log
+	* @throws NoSuchOpenCPSDeliverableLogException if a matching open cps deliverable log could not be found
+	*/
+	public static OpenCPSDeliverableLog findByF_deliverableId_Last(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator)
+		throws org.opencps.deliverable.exception.NoSuchOpenCPSDeliverableLogException {
+		return getPersistence()
+				   .findByF_deliverableId_Last(deliverableId, orderByComparator);
+	}
+
+	/**
+	* Returns the last open cps deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching open cps deliverable log, or <code>null</code> if a matching open cps deliverable log could not be found
+	*/
+	public static OpenCPSDeliverableLog fetchByF_deliverableId_Last(
+		long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_deliverableId_Last(deliverableId, orderByComparator);
+	}
+
+	/**
+	* Returns the open cps deliverable logs before and after the current open cps deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableLogId the primary key of the current open cps deliverable log
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next open cps deliverable log
+	* @throws NoSuchOpenCPSDeliverableLogException if a open cps deliverable log with the primary key could not be found
+	*/
+	public static OpenCPSDeliverableLog[] findByF_deliverableId_PrevAndNext(
+		long deliverableLogId, long deliverableId,
+		OrderByComparator<OpenCPSDeliverableLog> orderByComparator)
+		throws org.opencps.deliverable.exception.NoSuchOpenCPSDeliverableLogException {
+		return getPersistence()
+				   .findByF_deliverableId_PrevAndNext(deliverableLogId,
+			deliverableId, orderByComparator);
+	}
+
+	/**
+	* Removes all the open cps deliverable logs where deliverableId = &#63; from the database.
+	*
+	* @param deliverableId the deliverable ID
+	*/
+	public static void removeByF_deliverableId(long deliverableId) {
+		getPersistence().removeByF_deliverableId(deliverableId);
+	}
+
+	/**
+	* Returns the number of open cps deliverable logs where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @return the number of matching open cps deliverable logs
+	*/
+	public static int countByF_deliverableId(long deliverableId) {
+		return getPersistence().countByF_deliverableId(deliverableId);
+	}
+
+	/**
 	* Caches the open cps deliverable log in the entity cache if it is enabled.
 	*
 	* @param openCPSDeliverableLog the open cps deliverable log

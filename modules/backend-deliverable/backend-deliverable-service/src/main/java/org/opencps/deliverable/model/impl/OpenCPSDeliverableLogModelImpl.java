@@ -122,9 +122,10 @@ public class OpenCPSDeliverableLogModelImpl extends BaseModelImpl<OpenCPSDeliver
 				"value.object.column.bitmask.enabled.org.opencps.deliverable.model.OpenCPSDeliverableLog"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 8L;
+	public static final long DELIVERABLEID_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.deliverable.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.deliverable.model.OpenCPSDeliverableLog"));
 
@@ -433,7 +434,19 @@ public class OpenCPSDeliverableLogModelImpl extends BaseModelImpl<OpenCPSDeliver
 
 	@Override
 	public void setDeliverableId(long deliverableId) {
+		_columnBitmask |= DELIVERABLEID_COLUMN_BITMASK;
+
+		if (!_setOriginalDeliverableId) {
+			_setOriginalDeliverableId = true;
+
+			_originalDeliverableId = _deliverableId;
+		}
+
 		_deliverableId = deliverableId;
+	}
+
+	public long getOriginalDeliverableId() {
+		return _originalDeliverableId;
 	}
 
 	@Override
@@ -640,6 +653,10 @@ public class OpenCPSDeliverableLogModelImpl extends BaseModelImpl<OpenCPSDeliver
 		openCPSDeliverableLogModelImpl._setOriginalCompanyId = false;
 
 		openCPSDeliverableLogModelImpl._setModifiedDate = false;
+
+		openCPSDeliverableLogModelImpl._originalDeliverableId = openCPSDeliverableLogModelImpl._deliverableId;
+
+		openCPSDeliverableLogModelImpl._setOriginalDeliverableId = false;
 
 		openCPSDeliverableLogModelImpl._columnBitmask = 0;
 	}
@@ -870,6 +887,8 @@ public class OpenCPSDeliverableLogModelImpl extends BaseModelImpl<OpenCPSDeliver
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _deliverableId;
+	private long _originalDeliverableId;
+	private boolean _setOriginalDeliverableId;
 	private String _dossierUid;
 	private String _author;
 	private String _content;

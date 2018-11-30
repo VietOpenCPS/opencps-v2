@@ -517,6 +517,180 @@ public class OpenCPSDeliverableTypeRoleUtil {
 	}
 
 	/**
+	* Returns all the open cps deliverable type roles where deliverableTypeId = &#63;.
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @return the matching open cps deliverable type roles
+	*/
+	public static List<OpenCPSDeliverableTypeRole> findByF_deliverableTypeId(
+		long deliverableTypeId) {
+		return getPersistence().findByF_deliverableTypeId(deliverableTypeId);
+	}
+
+	/**
+	* Returns a range of all the open cps deliverable type roles where deliverableTypeId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableTypeRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @param start the lower bound of the range of open cps deliverable type roles
+	* @param end the upper bound of the range of open cps deliverable type roles (not inclusive)
+	* @return the range of matching open cps deliverable type roles
+	*/
+	public static List<OpenCPSDeliverableTypeRole> findByF_deliverableTypeId(
+		long deliverableTypeId, int start, int end) {
+		return getPersistence()
+				   .findByF_deliverableTypeId(deliverableTypeId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the open cps deliverable type roles where deliverableTypeId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableTypeRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @param start the lower bound of the range of open cps deliverable type roles
+	* @param end the upper bound of the range of open cps deliverable type roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching open cps deliverable type roles
+	*/
+	public static List<OpenCPSDeliverableTypeRole> findByF_deliverableTypeId(
+		long deliverableTypeId, int start, int end,
+		OrderByComparator<OpenCPSDeliverableTypeRole> orderByComparator) {
+		return getPersistence()
+				   .findByF_deliverableTypeId(deliverableTypeId, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the open cps deliverable type roles where deliverableTypeId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpenCPSDeliverableTypeRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @param start the lower bound of the range of open cps deliverable type roles
+	* @param end the upper bound of the range of open cps deliverable type roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching open cps deliverable type roles
+	*/
+	public static List<OpenCPSDeliverableTypeRole> findByF_deliverableTypeId(
+		long deliverableTypeId, int start, int end,
+		OrderByComparator<OpenCPSDeliverableTypeRole> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_deliverableTypeId(deliverableTypeId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first open cps deliverable type role in the ordered set where deliverableTypeId = &#63;.
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching open cps deliverable type role
+	* @throws NoSuchOpenCPSDeliverableTypeRoleException if a matching open cps deliverable type role could not be found
+	*/
+	public static OpenCPSDeliverableTypeRole findByF_deliverableTypeId_First(
+		long deliverableTypeId,
+		OrderByComparator<OpenCPSDeliverableTypeRole> orderByComparator)
+		throws org.opencps.deliverable.exception.NoSuchOpenCPSDeliverableTypeRoleException {
+		return getPersistence()
+				   .findByF_deliverableTypeId_First(deliverableTypeId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first open cps deliverable type role in the ordered set where deliverableTypeId = &#63;.
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching open cps deliverable type role, or <code>null</code> if a matching open cps deliverable type role could not be found
+	*/
+	public static OpenCPSDeliverableTypeRole fetchByF_deliverableTypeId_First(
+		long deliverableTypeId,
+		OrderByComparator<OpenCPSDeliverableTypeRole> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_deliverableTypeId_First(deliverableTypeId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last open cps deliverable type role in the ordered set where deliverableTypeId = &#63;.
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching open cps deliverable type role
+	* @throws NoSuchOpenCPSDeliverableTypeRoleException if a matching open cps deliverable type role could not be found
+	*/
+	public static OpenCPSDeliverableTypeRole findByF_deliverableTypeId_Last(
+		long deliverableTypeId,
+		OrderByComparator<OpenCPSDeliverableTypeRole> orderByComparator)
+		throws org.opencps.deliverable.exception.NoSuchOpenCPSDeliverableTypeRoleException {
+		return getPersistence()
+				   .findByF_deliverableTypeId_Last(deliverableTypeId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last open cps deliverable type role in the ordered set where deliverableTypeId = &#63;.
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching open cps deliverable type role, or <code>null</code> if a matching open cps deliverable type role could not be found
+	*/
+	public static OpenCPSDeliverableTypeRole fetchByF_deliverableTypeId_Last(
+		long deliverableTypeId,
+		OrderByComparator<OpenCPSDeliverableTypeRole> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_deliverableTypeId_Last(deliverableTypeId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the open cps deliverable type roles before and after the current open cps deliverable type role in the ordered set where deliverableTypeId = &#63;.
+	*
+	* @param deliverableTypeRoleId the primary key of the current open cps deliverable type role
+	* @param deliverableTypeId the deliverable type ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next open cps deliverable type role
+	* @throws NoSuchOpenCPSDeliverableTypeRoleException if a open cps deliverable type role with the primary key could not be found
+	*/
+	public static OpenCPSDeliverableTypeRole[] findByF_deliverableTypeId_PrevAndNext(
+		long deliverableTypeRoleId, long deliverableTypeId,
+		OrderByComparator<OpenCPSDeliverableTypeRole> orderByComparator)
+		throws org.opencps.deliverable.exception.NoSuchOpenCPSDeliverableTypeRoleException {
+		return getPersistence()
+				   .findByF_deliverableTypeId_PrevAndNext(deliverableTypeRoleId,
+			deliverableTypeId, orderByComparator);
+	}
+
+	/**
+	* Removes all the open cps deliverable type roles where deliverableTypeId = &#63; from the database.
+	*
+	* @param deliverableTypeId the deliverable type ID
+	*/
+	public static void removeByF_deliverableTypeId(long deliverableTypeId) {
+		getPersistence().removeByF_deliverableTypeId(deliverableTypeId);
+	}
+
+	/**
+	* Returns the number of open cps deliverable type roles where deliverableTypeId = &#63;.
+	*
+	* @param deliverableTypeId the deliverable type ID
+	* @return the number of matching open cps deliverable type roles
+	*/
+	public static int countByF_deliverableTypeId(long deliverableTypeId) {
+		return getPersistence().countByF_deliverableTypeId(deliverableTypeId);
+	}
+
+	/**
 	* Caches the open cps deliverable type role in the entity cache if it is enabled.
 	*
 	* @param openCPSDeliverableTypeRole the open cps deliverable type role

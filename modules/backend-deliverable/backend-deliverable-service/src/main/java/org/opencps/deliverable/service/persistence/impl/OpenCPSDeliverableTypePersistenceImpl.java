@@ -1498,32 +1498,39 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 	public static final FinderPath FINDER_PATH_FETCH_BY_F_TYPECODE = new FinderPath(OpenCPSDeliverableTypeModelImpl.ENTITY_CACHE_ENABLED,
 			OpenCPSDeliverableTypeModelImpl.FINDER_CACHE_ENABLED,
 			OpenCPSDeliverableTypeImpl.class, FINDER_CLASS_NAME_ENTITY,
-			"fetchByF_typeCode", new String[] { String.class.getName() },
-			OpenCPSDeliverableTypeModelImpl.TYPECODE_COLUMN_BITMASK);
+			"fetchByF_typeCode",
+			new String[] { String.class.getName(), Long.class.getName() },
+			OpenCPSDeliverableTypeModelImpl.TYPECODE_COLUMN_BITMASK |
+			OpenCPSDeliverableTypeModelImpl.GROUPID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_TYPECODE = new FinderPath(OpenCPSDeliverableTypeModelImpl.ENTITY_CACHE_ENABLED,
 			OpenCPSDeliverableTypeModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_typeCode",
-			new String[] { String.class.getName() });
+			new String[] { String.class.getName(), Long.class.getName() });
 
 	/**
-	 * Returns the open cps deliverable type where typeCode = &#63; or throws a {@link NoSuchOpenCPSDeliverableTypeException} if it could not be found.
+	 * Returns the open cps deliverable type where typeCode = &#63; and groupId = &#63; or throws a {@link NoSuchOpenCPSDeliverableTypeException} if it could not be found.
 	 *
 	 * @param typeCode the type code
+	 * @param groupId the group ID
 	 * @return the matching open cps deliverable type
 	 * @throws NoSuchOpenCPSDeliverableTypeException if a matching open cps deliverable type could not be found
 	 */
 	@Override
-	public OpenCPSDeliverableType findByF_typeCode(String typeCode)
+	public OpenCPSDeliverableType findByF_typeCode(String typeCode, long groupId)
 		throws NoSuchOpenCPSDeliverableTypeException {
-		OpenCPSDeliverableType openCPSDeliverableType = fetchByF_typeCode(typeCode);
+		OpenCPSDeliverableType openCPSDeliverableType = fetchByF_typeCode(typeCode,
+				groupId);
 
 		if (openCPSDeliverableType == null) {
-			StringBundler msg = new StringBundler(4);
+			StringBundler msg = new StringBundler(6);
 
 			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
 			msg.append("typeCode=");
 			msg.append(typeCode);
+
+			msg.append(", groupId=");
+			msg.append(groupId);
 
 			msg.append("}");
 
@@ -1538,27 +1545,30 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 	}
 
 	/**
-	 * Returns the open cps deliverable type where typeCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the open cps deliverable type where typeCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param typeCode the type code
+	 * @param groupId the group ID
 	 * @return the matching open cps deliverable type, or <code>null</code> if a matching open cps deliverable type could not be found
 	 */
 	@Override
-	public OpenCPSDeliverableType fetchByF_typeCode(String typeCode) {
-		return fetchByF_typeCode(typeCode, true);
+	public OpenCPSDeliverableType fetchByF_typeCode(String typeCode,
+		long groupId) {
+		return fetchByF_typeCode(typeCode, groupId, true);
 	}
 
 	/**
-	 * Returns the open cps deliverable type where typeCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the open cps deliverable type where typeCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param typeCode the type code
+	 * @param groupId the group ID
 	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching open cps deliverable type, or <code>null</code> if a matching open cps deliverable type could not be found
 	 */
 	@Override
 	public OpenCPSDeliverableType fetchByF_typeCode(String typeCode,
-		boolean retrieveFromCache) {
-		Object[] finderArgs = new Object[] { typeCode };
+		long groupId, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { typeCode, groupId };
 
 		Object result = null;
 
@@ -1570,13 +1580,14 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 		if (result instanceof OpenCPSDeliverableType) {
 			OpenCPSDeliverableType openCPSDeliverableType = (OpenCPSDeliverableType)result;
 
-			if (!Objects.equals(typeCode, openCPSDeliverableType.getTypeCode())) {
+			if (!Objects.equals(typeCode, openCPSDeliverableType.getTypeCode()) ||
+					(groupId != openCPSDeliverableType.getGroupId())) {
 				result = null;
 			}
 		}
 
 		if (result == null) {
-			StringBundler query = new StringBundler(3);
+			StringBundler query = new StringBundler(4);
 
 			query.append(_SQL_SELECT_OPENCPSDELIVERABLETYPE_WHERE);
 
@@ -1594,6 +1605,8 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 				query.append(_FINDER_COLUMN_F_TYPECODE_TYPECODE_2);
 			}
 
+			query.append(_FINDER_COLUMN_F_TYPECODE_GROUPID_2);
+
 			String sql = query.toString();
 
 			Session session = null;
@@ -1609,6 +1622,8 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 					qPos.add(typeCode);
 				}
 
+				qPos.add(groupId);
+
 				List<OpenCPSDeliverableType> list = q.list();
 
 				if (list.isEmpty()) {
@@ -1621,7 +1636,7 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 
 						if (_log.isWarnEnabled()) {
 							_log.warn(
-								"OpenCPSDeliverableTypePersistenceImpl.fetchByF_typeCode(String, boolean) with parameters (" +
+								"OpenCPSDeliverableTypePersistenceImpl.fetchByF_typeCode(String, long, boolean) with parameters (" +
 								StringUtil.merge(finderArgs) +
 								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
 						}
@@ -1654,35 +1669,38 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 	}
 
 	/**
-	 * Removes the open cps deliverable type where typeCode = &#63; from the database.
+	 * Removes the open cps deliverable type where typeCode = &#63; and groupId = &#63; from the database.
 	 *
 	 * @param typeCode the type code
+	 * @param groupId the group ID
 	 * @return the open cps deliverable type that was removed
 	 */
 	@Override
-	public OpenCPSDeliverableType removeByF_typeCode(String typeCode)
-		throws NoSuchOpenCPSDeliverableTypeException {
-		OpenCPSDeliverableType openCPSDeliverableType = findByF_typeCode(typeCode);
+	public OpenCPSDeliverableType removeByF_typeCode(String typeCode,
+		long groupId) throws NoSuchOpenCPSDeliverableTypeException {
+		OpenCPSDeliverableType openCPSDeliverableType = findByF_typeCode(typeCode,
+				groupId);
 
 		return remove(openCPSDeliverableType);
 	}
 
 	/**
-	 * Returns the number of open cps deliverable types where typeCode = &#63;.
+	 * Returns the number of open cps deliverable types where typeCode = &#63; and groupId = &#63;.
 	 *
 	 * @param typeCode the type code
+	 * @param groupId the group ID
 	 * @return the number of matching open cps deliverable types
 	 */
 	@Override
-	public int countByF_typeCode(String typeCode) {
+	public int countByF_typeCode(String typeCode, long groupId) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_TYPECODE;
 
-		Object[] finderArgs = new Object[] { typeCode };
+		Object[] finderArgs = new Object[] { typeCode, groupId };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
-			StringBundler query = new StringBundler(2);
+			StringBundler query = new StringBundler(3);
 
 			query.append(_SQL_COUNT_OPENCPSDELIVERABLETYPE_WHERE);
 
@@ -1700,6 +1718,8 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 				query.append(_FINDER_COLUMN_F_TYPECODE_TYPECODE_2);
 			}
 
+			query.append(_FINDER_COLUMN_F_TYPECODE_GROUPID_2);
+
 			String sql = query.toString();
 
 			Session session = null;
@@ -1714,6 +1734,8 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 				if (bindTypeCode) {
 					qPos.add(typeCode);
 				}
+
+				qPos.add(groupId);
 
 				count = (Long)q.uniqueResult();
 
@@ -1732,9 +1754,10 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_F_TYPECODE_TYPECODE_1 = "openCPSDeliverableType.typeCode IS NULL";
-	private static final String _FINDER_COLUMN_F_TYPECODE_TYPECODE_2 = "openCPSDeliverableType.typeCode = ?";
-	private static final String _FINDER_COLUMN_F_TYPECODE_TYPECODE_3 = "(openCPSDeliverableType.typeCode IS NULL OR openCPSDeliverableType.typeCode = '')";
+	private static final String _FINDER_COLUMN_F_TYPECODE_TYPECODE_1 = "openCPSDeliverableType.typeCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_TYPECODE_TYPECODE_2 = "openCPSDeliverableType.typeCode = ? AND ";
+	private static final String _FINDER_COLUMN_F_TYPECODE_TYPECODE_3 = "(openCPSDeliverableType.typeCode IS NULL OR openCPSDeliverableType.typeCode = '') AND ";
+	private static final String _FINDER_COLUMN_F_TYPECODE_GROUPID_2 = "openCPSDeliverableType.groupId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GROUPID =
 		new FinderPath(OpenCPSDeliverableTypeModelImpl.ENTITY_CACHE_ENABLED,
 			OpenCPSDeliverableTypeModelImpl.FINDER_CACHE_ENABLED,
@@ -2290,8 +2313,10 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 			}, openCPSDeliverableType);
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_TYPECODE,
-			new Object[] { openCPSDeliverableType.getTypeCode() },
-			openCPSDeliverableType);
+			new Object[] {
+				openCPSDeliverableType.getTypeCode(),
+				openCPSDeliverableType.getGroupId()
+			}, openCPSDeliverableType);
 
 		openCPSDeliverableType.resetOriginalValues();
 	}
@@ -2380,7 +2405,10 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			openCPSDeliverableTypeModelImpl, false);
 
-		args = new Object[] { openCPSDeliverableTypeModelImpl.getTypeCode() };
+		args = new Object[] {
+				openCPSDeliverableTypeModelImpl.getTypeCode(),
+				openCPSDeliverableTypeModelImpl.getGroupId()
+			};
 
 		finderCache.putResult(FINDER_PATH_COUNT_BY_F_TYPECODE, args,
 			Long.valueOf(1), false);
@@ -2414,7 +2442,8 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 
 		if (clearCurrent) {
 			Object[] args = new Object[] {
-					openCPSDeliverableTypeModelImpl.getTypeCode()
+					openCPSDeliverableTypeModelImpl.getTypeCode(),
+					openCPSDeliverableTypeModelImpl.getGroupId()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_TYPECODE, args);
@@ -2424,7 +2453,8 @@ public class OpenCPSDeliverableTypePersistenceImpl extends BasePersistenceImpl<O
 		if ((openCPSDeliverableTypeModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_F_TYPECODE.getColumnBitmask()) != 0) {
 			Object[] args = new Object[] {
-					openCPSDeliverableTypeModelImpl.getOriginalTypeCode()
+					openCPSDeliverableTypeModelImpl.getOriginalTypeCode(),
+					openCPSDeliverableTypeModelImpl.getOriginalGroupId()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_TYPECODE, args);

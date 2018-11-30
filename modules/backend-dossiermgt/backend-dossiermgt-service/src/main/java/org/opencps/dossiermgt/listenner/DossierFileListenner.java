@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.deliverable.model.OpenCPSDeliverable;
+import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -492,7 +494,23 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							deliverableCode, dossier.getGovAgencyCode(), dossier.getGovAgencyName(),
 							dossier.getApplicantIdNo(), dossier.getApplicantName(), subject, issueDate, expireDate,
 							revalidate, deliverableState, serviceContext);
+					
+					_log.info("DossierFileListenner.onAfterUpdate(dlv)" + dlv);
+					
+					OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(dlv.getDeliverableId());
 
+					_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
+					openCPSDeliverable.setDossierId(model.getDossierId());
+					openCPSDeliverable.setFileEntryId(model.getFileEntryId());
+					openCPSDeliverable.setDeliverableState(1);
+					
+
+					System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
+					
+					OpenCPSDeliverableLocalServiceUtil.adminProcessData(JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(openCPSDeliverable)));
+					
+
+					System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable22)" + openCPSDeliverable);
 				}
 				// update deliverable
 

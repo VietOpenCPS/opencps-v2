@@ -3,6 +3,8 @@ package org.opencps.jasper.message;
 import java.io.File;
 import java.util.Date;
 
+import org.opencps.deliverable.model.OpenCPSDeliverable;
+import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DossierDocument;
@@ -159,6 +161,23 @@ public class Engine implements MessageListener {
     
     			indexer.reindex(dossierDocument);
 				
+			} else if (engineClass.isAssignableFrom(OpenCPSDeliverable.class)) {
+				OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(classPK);
+				
+    			ServiceContext serviceContext = new ServiceContext();
+    			serviceContext.setUserId(openCPSDeliverable.getUserId());
+    
+    			long fileEntryId = 0;
+    
+    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, openCPSDeliverable.getGroupId(), file, filePath,
+    					serviceContext);
+    
+    			fileEntryId = fileEntry.getFileEntryId();
+    
+    			openCPSDeliverable.setFileEntryId(fileEntryId);
+    
+    			OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(openCPSDeliverable);
+    
 			}
 
 		} catch (Exception e) {

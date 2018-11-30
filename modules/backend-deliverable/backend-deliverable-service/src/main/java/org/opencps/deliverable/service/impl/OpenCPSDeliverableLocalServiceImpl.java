@@ -16,8 +16,10 @@ package org.opencps.deliverable.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -100,8 +102,15 @@ public class OpenCPSDeliverableLocalServiceImpl extends OpenCPSDeliverableLocalS
 
 		}
 
+		long userId = objectData.getLong(ModelKeysDeliverable.USERID);
+		
 		object.setUserId(objectData.getLong(ModelKeysDeliverable.USERID));
 
+		if (userId > 0) {
+			User user = UserLocalServiceUtil.fetchUser(userId);
+			object.setUserName(user.getFullName());
+		}
+		
 		object.setDeliverableCode(objectData.getString(ModelKeysDeliverable.DELIVERABLECODE));
 		object.setDeliverableName(objectData.getString(ModelKeysDeliverable.DELIVERABLENAME));
 		object.setDeliverableType(objectData.getString(ModelKeysDeliverable.DELIVERABLETYPE));
@@ -116,16 +125,17 @@ public class OpenCPSDeliverableLocalServiceImpl extends OpenCPSDeliverableLocalS
 		}
 
 		object.setApplicantIdNo(objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
+		object.setApplicantName(objectData.getString(ModelKeysDeliverable.APPLICANTNAME));
 
-		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(
-				objectData.getLong(ModelKeysDeliverable.GROUPID),
-				objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
-
-		if (Validator.isNotNull(applicant)) {
-			object.setApplicantName(applicant.getApplicantName());
-		} else {
-			object.setApplicantName(StringPool.BLANK);
-		}
+//		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(
+//				objectData.getLong(ModelKeysDeliverable.GROUPID),
+//				objectData.getString(ModelKeysDeliverable.APPLICANTIDNO));
+//
+//		if (Validator.isNotNull(applicant)) {
+//			object.setApplicantName(applicant.getApplicantName());
+//		} else {
+//			object.setApplicantName(StringPool.BLANK);
+//		}
 
 		object.setSubject(objectData.getString(ModelKeysDeliverable.SUBJECT));
 		object.setFormData(objectData.getString(ModelKeysDeliverable.FORMDATA));

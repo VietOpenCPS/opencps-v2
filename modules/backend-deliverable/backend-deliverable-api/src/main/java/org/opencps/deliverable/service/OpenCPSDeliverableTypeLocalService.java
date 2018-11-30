@@ -197,7 +197,7 @@ public interface OpenCPSDeliverableTypeLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OpenCPSDeliverableType getByTypeCode(String typeCode);
+	public OpenCPSDeliverableType getByTypeCode(String typeCode, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpenCPSDeliverableType> getDeliverableTypes(long groupId,

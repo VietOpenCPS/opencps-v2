@@ -219,8 +219,9 @@ public class OpenCPSDeliverableTypeLocalServiceWrapper
 
 	@Override
 	public org.opencps.deliverable.model.OpenCPSDeliverableType getByTypeCode(
-		String typeCode) {
-		return _openCPSDeliverableTypeLocalService.getByTypeCode(typeCode);
+		String typeCode, long groupId) {
+		return _openCPSDeliverableTypeLocalService.getByTypeCode(typeCode,
+			groupId);
 	}
 
 	@Override
