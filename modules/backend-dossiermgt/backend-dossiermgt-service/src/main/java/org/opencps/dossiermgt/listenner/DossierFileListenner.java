@@ -495,22 +495,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							dossier.getApplicantIdNo(), dossier.getApplicantName(), subject, issueDate, expireDate,
 							revalidate, deliverableState, serviceContext);
 					
-					_log.info("DossierFileListenner.onAfterUpdate(dlv)" + dlv);
-					
-					OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(dlv.getDeliverableId());
-
-					_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
-					openCPSDeliverable.setDossierId(model.getDossierId());
-					openCPSDeliverable.setFileEntryId(model.getFileEntryId());
-					openCPSDeliverable.setDeliverableState(1);
-					
-
-					System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
-					
-					OpenCPSDeliverableLocalServiceUtil.adminProcessData(JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(openCPSDeliverable)));
-					
-
-					System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable22)" + openCPSDeliverable);
+					DeliverableLocalServiceUtil.updateDeliverable(dlv);
 				}
 				// update deliverable
 

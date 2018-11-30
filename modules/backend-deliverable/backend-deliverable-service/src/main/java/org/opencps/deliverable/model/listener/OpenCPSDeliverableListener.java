@@ -77,6 +77,7 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 	@Override
 	public void onAfterUpdate(OpenCPSDeliverable model) throws ModelListenerException {
 
+		_log.info("onAfterUpdate OPENCPS" + model);
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
 		objectData.put(ModelKeysDeliverableLog.GROUPID, model.getGroupId());
