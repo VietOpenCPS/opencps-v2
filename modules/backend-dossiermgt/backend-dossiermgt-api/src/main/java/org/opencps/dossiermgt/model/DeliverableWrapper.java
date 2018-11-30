@@ -83,6 +83,8 @@ public class DeliverableWrapper implements Deliverable,
 		attributes.put("issueDate", getIssueDate());
 		attributes.put("revalidate", getRevalidate());
 		attributes.put("deliverableState", getDeliverableState());
+		attributes.put("fileEntryId", getFileEntryId());
+		attributes.put("dossierId", getDossierId());
 
 		return attributes;
 	}
@@ -226,6 +228,18 @@ public class DeliverableWrapper implements Deliverable,
 		if (deliverableState != null) {
 			setDeliverableState(deliverableState);
 		}
+
+		Long fileEntryId = (Long)attributes.get("fileEntryId");
+
+		if (fileEntryId != null) {
+			setFileEntryId(fileEntryId);
+		}
+
+		Long dossierId = (Long)attributes.get("dossierId");
+
+		if (dossierId != null) {
+			setDossierId(dossierId);
+		}
 	}
 
 	@Override
@@ -328,6 +342,16 @@ public class DeliverableWrapper implements Deliverable,
 		return _deliverable.getDeliverableType();
 	}
 
+	/**
+	* Returns the dossier ID of this deliverable.
+	*
+	* @return the dossier ID of this deliverable
+	*/
+	@Override
+	public long getDossierId() {
+		return _deliverable.getDossierId();
+	}
+
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _deliverable.getExpandoBridge();
@@ -341,6 +365,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public Date getExpireDate() {
 		return _deliverable.getExpireDate();
+	}
+
+	/**
+	* Returns the file entry ID of this deliverable.
+	*
+	* @return the file entry ID of this deliverable
+	*/
+	@Override
+	public long getFileEntryId() {
+		return _deliverable.getFileEntryId();
 	}
 
 	/**
@@ -618,6 +652,16 @@ public class DeliverableWrapper implements Deliverable,
 		_deliverable.setDeliverableType(deliverableType);
 	}
 
+	/**
+	* Sets the dossier ID of this deliverable.
+	*
+	* @param dossierId the dossier ID of this deliverable
+	*/
+	@Override
+	public void setDossierId(long dossierId) {
+		_deliverable.setDossierId(dossierId);
+	}
+
 	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
@@ -642,6 +686,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public void setExpireDate(Date expireDate) {
 		_deliverable.setExpireDate(expireDate);
+	}
+
+	/**
+	* Sets the file entry ID of this deliverable.
+	*
+	* @param fileEntryId the file entry ID of this deliverable
+	*/
+	@Override
+	public void setFileEntryId(long fileEntryId) {
+		_deliverable.setFileEntryId(fileEntryId);
 	}
 
 	/**

@@ -64,6 +64,8 @@
 		<field name="issueDate" type="Date" />
 		<field name="revalidate" type="Date" />
 		<field name="deliverableState" type="String" />
+		<field name="fileEntryId" type="long" />
+		<field name="dossierId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableLog">
 		<field name="uuid" type="String" />

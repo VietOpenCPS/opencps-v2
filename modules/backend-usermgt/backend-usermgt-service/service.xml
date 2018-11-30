@@ -540,7 +540,16 @@
 			<finder-column name="contactTelNo"/>
 		</finder>
 
+		<finder return-type="Applicant" name="F_GID_CTN" unique="true">
+			<finder-column name="groupId"/>
+			<finder-column name="contactTelNo"/>
+		</finder>
+
 		<finder return-type="Applicant" name="F_CTE_ID" unique="true">
+			<finder-column name="contactEmail"/>
+		</finder>
+		<finder return-type="Applicant" name="F_GID_CTEM" unique="true">
+			<finder-column name="groupId"/>
 			<finder-column name="contactEmail"/>
 		</finder>
 		

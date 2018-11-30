@@ -5,8 +5,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import java.util.Date;
+
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -17,6 +19,32 @@ public class WorkingUnitTempListener extends BaseModelListener<WorkingUnit> {
 
 	@Override
 	public void onAfterCreate(WorkingUnit model) throws ModelListenerException {
+
+		try {
+			long companyId = model.getCompanyId();
+			long userId = model.getUserId();
+			String userName = model.getUserName();
+			String name = model.getName();
+			String enName = model.getEnName();
+			String govAgencyCode = model.getGovAgencyCode();
+			long parentWorkingUnitId = model.getParentWorkingUnitId();
+			String sibling = model.getSibling();
+			String treeIndex = model.getTreeIndex();
+			int level = model.getLevel();
+			String address = model.getAddress();
+			String telNo = model.getTelNo();
+			String faxNo = model.getFaxNo();
+			String email = model.getEmail();
+			String website = model.getWebsite();
+			Date ceremonyDate = model.getCeremonyDate();
+			ServiceContext serviceContext = new ServiceContext();
+
+			WorkingUnitLocalServiceUtil.addWorkingUnitPublish(userId, 0l, companyId, userName, name, enName, govAgencyCode,
+					parentWorkingUnitId, sibling, treeIndex, level, address, telNo, faxNo, email, website, ceremonyDate,
+					serviceContext);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

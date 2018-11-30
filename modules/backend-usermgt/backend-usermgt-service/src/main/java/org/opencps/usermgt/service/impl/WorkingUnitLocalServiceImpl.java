@@ -162,6 +162,87 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		return workingUnit;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public WorkingUnit addWorkingUnitPublish(long userId, long groupId, long companyId, String userName, String name,
+			String enName, String govAgencyCode, long parentWorkingUnitId, String sibling, String treeIndex,
+			int level, String address, String telNo, String faxNo, String email, String website, Date ceremonyDate,
+			ServiceContext serviceContext) throws UnauthenticationException, UnauthorizationException,
+			NoSuchUserException, NotFoundException, DuplicateCategoryException {
+
+		WorkingUnit workingUnitCheck = workingUnitPersistence.fetchByF_govAgencyCode(groupId, govAgencyCode);
+		if (workingUnitCheck == null) {
+			long workingUnitId = counterLocalService.increment(WorkingUnit.class.getName());
+			WorkingUnit workingUnit = workingUnitPersistence.create(workingUnitId);
+
+			// Group instance
+			Date now = new Date();
+			workingUnit.setGroupId(groupId);
+
+			// Audit fields
+			workingUnit.setCompanyId(companyId);
+			workingUnit.setUserId(userId);
+			workingUnit.setUserName(userName);
+			workingUnit.setCreateDate(now);
+			workingUnit.setModifiedDate(now);
+
+			// Other fields
+			workingUnit.setName(name);
+			workingUnit.setEnName(enName);
+			workingUnit.setGovAgencyCode(govAgencyCode);
+			workingUnit.setParentWorkingUnitId(parentWorkingUnitId);
+			workingUnit.setSibling(sibling);
+
+			workingUnit.setTreeIndex(treeIndex);
+			workingUnit.setLevel(level);
+			workingUnit.setAddress(address);
+			workingUnit.setTelNo(telNo);
+			workingUnit.setFaxNo(faxNo);
+			workingUnit.setEmail(email);
+			workingUnit.setWebsite(website);
+			workingUnit.setCeremonyDate(ceremonyDate);
+
+			return workingUnitPersistence.update(workingUnit);
+		} else {
+			// Audit fields
+			workingUnitCheck.setModifiedDate(new Date());
+			if(userId > 0)
+				workingUnitCheck.setUserId(userId);
+			if(Validator.isNotNull(userName))
+				workingUnitCheck.setUserName(userName);
+
+			// Other fields
+			if(Validator.isNotNull(name))
+				workingUnitCheck.setName(name);
+			if(Validator.isNotNull(enName))
+				workingUnitCheck.setEnName(enName);
+			if(Validator.isNotNull(govAgencyCode))
+				workingUnitCheck.setGovAgencyCode(govAgencyCode);
+			if(Validator.isNotNull(parentWorkingUnitId))
+				workingUnitCheck.setParentWorkingUnitId(parentWorkingUnitId);
+			if(Validator.isNotNull(sibling))
+				workingUnitCheck.setSibling(sibling);
+			if(Validator.isNotNull(treeIndex))
+				workingUnitCheck.setTreeIndex(treeIndex);
+			if(Validator.isNotNull(level))
+				workingUnitCheck.setLevel(level);
+			if(Validator.isNotNull(address))
+				workingUnitCheck.setAddress(address);
+			if(Validator.isNotNull(telNo))
+				workingUnitCheck.setTelNo(telNo);
+			if(Validator.isNotNull(faxNo))
+				workingUnitCheck.setFaxNo(faxNo);
+			if(Validator.isNotNull(email))
+				workingUnitCheck.setEmail(email);
+			if(Validator.isNotNull(website))
+				workingUnitCheck.setWebsite(website);
+			if(Validator.isNotNull(ceremonyDate))
+				workingUnitCheck.setCeremonyDate(ceremonyDate);
+
+			return workingUnitPersistence.update(workingUnitCheck);
+		}
+
+	}
+
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public WorkingUnit deleteWorkingUnit(long workingUnitId, ServiceContext serviceContext)

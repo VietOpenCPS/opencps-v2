@@ -2618,7 +2618,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		//_log.info("originality: "+originality);
+		_log.info("originality: "+originality);
 		if (Validator.isNotNull(originality)) {
 			if (originality.contains(StringPool.COMMA)) {
 				String[] originalArr = StringUtil.split(originality);
@@ -2650,6 +2650,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 				} else if (originalityInt >= 0) {
+					_log.info("originalityxxxx: "+originality);
 					MultiMatchQuery query = new MultiMatchQuery(originality);
 					query.addFields(DossierTerm.ORIGINALLITY);
 					booleanQuery.add(query, BooleanClauseOccur.MUST);

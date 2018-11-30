@@ -3,7 +3,6 @@ package org.opencps.usermgt.listener;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
@@ -150,65 +149,32 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 				long userId = model.getMappingUserId();
 				
 				GroupLocalServiceUtil.addUserGroup(userId, model.getGroupId());
+				//Add applicant to search
+				long companyId = model.getCompanyId();
+				String applicantIdNo = model.getApplicantIdNo();
+				String applicantName = model.getApplicantName();
+				String applicantIdType = model.getApplicantIdType();
+				Date applicantIdDate = model.getApplicantIdDate();
+				String address = model.getAddress();
+				String cityCode = model.getCityCode();
+				String cityName = model.getCityName();
+				String districtCode = model.getDistrictCode();
+				String districtName = model.getDistrictName();
+				String wardCode = model.getWardCode();
+				String wardName = model.getWardName();
+				String contactName = model.getContactName();
+				String contactTelNo = model.getContactTelNo();
+				String contactEmail = model.getContactEmail();
+				
+				ApplicantLocalServiceUtil.updateApplicant(0l, userId, companyId, applicantName, applicantIdType, applicantIdNo,
+						applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+						contactName, contactTelNo, contactEmail);
 			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
 	}
 
-	@Override
-	public void onBeforeCreate(Applicant model) throws ModelListenerException {
-//		try {
-//
-//			model.setApplicantName(HtmlUtil.escape(model.getApplicantName()));
-//			model.setApplicantIdType(HtmlUtil.escape(model.getApplicantIdType()));
-//			model.setApplicantIdNo(HtmlUtil.escape(model.getApplicantIdNo()));
-//			model.setAddress(HtmlUtil.escape(model.getAddress()));
-//			model.setCityCode(HtmlUtil.escape(model.getCityCode()));
-//			model.setCityName(HtmlUtil.escape(model.getCityName()));
-//			model.setDistrictCode(HtmlUtil.escape(model.getDistrictCode()));
-//			model.setDistrictName(HtmlUtil.escape(model.getDistrictName()));
-//			model.setWardCode(HtmlUtil.escape(model.getWardCode()));
-//			model.setWardName(HtmlUtil.escape(model.getWardName()));
-//			model.setContactName(HtmlUtil.escape(model.getContactName()));
-//			model.setContactTelNo(HtmlUtil.escape(model.getContactTelNo()));
-//			model.setContactEmail(HtmlUtil.escape(model.getContactEmail()));
-//			model.setProfile(HtmlUtil.escape(model.getProfile()));
-//			model.setActivationCode(HtmlUtil.escape(model.getActivationCode()));
-////			model.setTmpPass(HtmlUtil.escape(model.getTmpPass()));
-//
-//		} catch (Exception e) {
-//			_log.error(e);
-//		}
-	}
-
-	@Override
-	public void onBeforeUpdate(Applicant model) throws ModelListenerException {
-//		try {
-//
-//			model.setApplicantName(HtmlUtil.escape(model.getApplicantName()));
-//			model.setApplicantIdType(HtmlUtil.escape(model.getApplicantIdType()));
-//			model.setApplicantIdNo(HtmlUtil.escape(model.getApplicantIdNo()));
-//			model.setAddress(HtmlUtil.escape(model.getAddress()));
-//			model.setCityCode(HtmlUtil.escape(model.getCityCode()));
-//			model.setCityName(HtmlUtil.escape(model.getCityName()));
-//			model.setDistrictCode(HtmlUtil.escape(model.getDistrictCode()));
-//			model.setDistrictName(HtmlUtil.escape(model.getDistrictName()));
-//			model.setWardCode(HtmlUtil.escape(model.getWardCode()));
-//			model.setWardName(HtmlUtil.escape(model.getWardName()));
-//			model.setContactName(HtmlUtil.escape(model.getContactName()));
-//			model.setContactTelNo(HtmlUtil.escape(model.getContactTelNo()));
-//			model.setContactEmail(HtmlUtil.escape(model.getContactEmail()));
-//			model.setProfile(HtmlUtil.escape(model.getProfile()));
-//			model.setActivationCode(HtmlUtil.escape(model.getActivationCode()));
-////			model.setTmpPass(HtmlUtil.escape(model.getTmpPass()));
-//
-//		} catch (Exception e) {
-//			_log.error(e);
-//		}
-	}
-
-	
 //	private static Applicant modelBefore;
 
 	

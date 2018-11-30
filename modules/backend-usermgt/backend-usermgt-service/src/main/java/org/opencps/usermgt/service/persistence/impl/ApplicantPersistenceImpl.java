@@ -2188,6 +2188,254 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 	private static final String _FINDER_COLUMN_F_CTT_ID_CONTACTTELNO_1 = "applicant.contactTelNo IS NULL";
 	private static final String _FINDER_COLUMN_F_CTT_ID_CONTACTTELNO_2 = "applicant.contactTelNo = ?";
 	private static final String _FINDER_COLUMN_F_CTT_ID_CONTACTTELNO_3 = "(applicant.contactTelNo IS NULL OR applicant.contactTelNo = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_CTN = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_CTN",
+			new String[] { Long.class.getName(), String.class.getName() },
+			ApplicantModelImpl.GROUPID_COLUMN_BITMASK |
+			ApplicantModelImpl.CONTACTTELNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_CTN = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_CTN",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the applicant where groupId = &#63; and contactTelNo = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param contactTelNo the contact tel no
+	 * @return the matching applicant
+	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant findByF_GID_CTN(long groupId, String contactTelNo)
+		throws NoSuchApplicantException {
+		Applicant applicant = fetchByF_GID_CTN(groupId, contactTelNo);
+
+		if (applicant == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", contactTelNo=");
+			msg.append(contactTelNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchApplicantException(msg.toString());
+		}
+
+		return applicant;
+	}
+
+	/**
+	 * Returns the applicant where groupId = &#63; and contactTelNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param contactTelNo the contact tel no
+	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_CTN(long groupId, String contactTelNo) {
+		return fetchByF_GID_CTN(groupId, contactTelNo, true);
+	}
+
+	/**
+	 * Returns the applicant where groupId = &#63; and contactTelNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param contactTelNo the contact tel no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_CTN(long groupId, String contactTelNo,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, contactTelNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_CTN,
+					finderArgs, this);
+		}
+
+		if (result instanceof Applicant) {
+			Applicant applicant = (Applicant)result;
+
+			if ((groupId != applicant.getGroupId()) ||
+					!Objects.equals(contactTelNo, applicant.getContactTelNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_CTN_GROUPID_2);
+
+			boolean bindContactTelNo = false;
+
+			if (contactTelNo == null) {
+				query.append(_FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_1);
+			}
+			else if (contactTelNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_3);
+			}
+			else {
+				bindContactTelNo = true;
+
+				query.append(_FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindContactTelNo) {
+					qPos.add(contactTelNo);
+				}
+
+				List<Applicant> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CTN,
+						finderArgs, list);
+				}
+				else {
+					Applicant applicant = list.get(0);
+
+					result = applicant;
+
+					cacheResult(applicant);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CTN,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Applicant)result;
+		}
+	}
+
+	/**
+	 * Removes the applicant where groupId = &#63; and contactTelNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param contactTelNo the contact tel no
+	 * @return the applicant that was removed
+	 */
+	@Override
+	public Applicant removeByF_GID_CTN(long groupId, String contactTelNo)
+		throws NoSuchApplicantException {
+		Applicant applicant = findByF_GID_CTN(groupId, contactTelNo);
+
+		return remove(applicant);
+	}
+
+	/**
+	 * Returns the number of applicants where groupId = &#63; and contactTelNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param contactTelNo the contact tel no
+	 * @return the number of matching applicants
+	 */
+	@Override
+	public int countByF_GID_CTN(long groupId, String contactTelNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_CTN;
+
+		Object[] finderArgs = new Object[] { groupId, contactTelNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_CTN_GROUPID_2);
+
+			boolean bindContactTelNo = false;
+
+			if (contactTelNo == null) {
+				query.append(_FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_1);
+			}
+			else if (contactTelNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_3);
+			}
+			else {
+				bindContactTelNo = true;
+
+				query.append(_FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindContactTelNo) {
+					qPos.add(contactTelNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_CTN_GROUPID_2 = "applicant.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_1 = "applicant.contactTelNo IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_2 = "applicant.contactTelNo = ?";
+	private static final String _FINDER_COLUMN_F_GID_CTN_CONTACTTELNO_3 = "(applicant.contactTelNo IS NULL OR applicant.contactTelNo = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_F_CTE_ID = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
 			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByF_CTE_ID",
@@ -2417,6 +2665,254 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 	private static final String _FINDER_COLUMN_F_CTE_ID_CONTACTEMAIL_1 = "applicant.contactEmail IS NULL";
 	private static final String _FINDER_COLUMN_F_CTE_ID_CONTACTEMAIL_2 = "applicant.contactEmail = ?";
 	private static final String _FINDER_COLUMN_F_CTE_ID_CONTACTEMAIL_3 = "(applicant.contactEmail IS NULL OR applicant.contactEmail = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_CTEM = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_CTEM",
+			new String[] { Long.class.getName(), String.class.getName() },
+			ApplicantModelImpl.GROUPID_COLUMN_BITMASK |
+			ApplicantModelImpl.CONTACTEMAIL_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_CTEM = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_CTEM",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the applicant where groupId = &#63; and contactEmail = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param contactEmail the contact email
+	 * @return the matching applicant
+	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant findByF_GID_CTEM(long groupId, String contactEmail)
+		throws NoSuchApplicantException {
+		Applicant applicant = fetchByF_GID_CTEM(groupId, contactEmail);
+
+		if (applicant == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", contactEmail=");
+			msg.append(contactEmail);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchApplicantException(msg.toString());
+		}
+
+		return applicant;
+	}
+
+	/**
+	 * Returns the applicant where groupId = &#63; and contactEmail = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param contactEmail the contact email
+	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_CTEM(long groupId, String contactEmail) {
+		return fetchByF_GID_CTEM(groupId, contactEmail, true);
+	}
+
+	/**
+	 * Returns the applicant where groupId = &#63; and contactEmail = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param contactEmail the contact email
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_CTEM(long groupId, String contactEmail,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, contactEmail };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_CTEM,
+					finderArgs, this);
+		}
+
+		if (result instanceof Applicant) {
+			Applicant applicant = (Applicant)result;
+
+			if ((groupId != applicant.getGroupId()) ||
+					!Objects.equals(contactEmail, applicant.getContactEmail())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_CTEM_GROUPID_2);
+
+			boolean bindContactEmail = false;
+
+			if (contactEmail == null) {
+				query.append(_FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_1);
+			}
+			else if (contactEmail.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_3);
+			}
+			else {
+				bindContactEmail = true;
+
+				query.append(_FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindContactEmail) {
+					qPos.add(contactEmail);
+				}
+
+				List<Applicant> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CTEM,
+						finderArgs, list);
+				}
+				else {
+					Applicant applicant = list.get(0);
+
+					result = applicant;
+
+					cacheResult(applicant);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CTEM,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Applicant)result;
+		}
+	}
+
+	/**
+	 * Removes the applicant where groupId = &#63; and contactEmail = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param contactEmail the contact email
+	 * @return the applicant that was removed
+	 */
+	@Override
+	public Applicant removeByF_GID_CTEM(long groupId, String contactEmail)
+		throws NoSuchApplicantException {
+		Applicant applicant = findByF_GID_CTEM(groupId, contactEmail);
+
+		return remove(applicant);
+	}
+
+	/**
+	 * Returns the number of applicants where groupId = &#63; and contactEmail = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param contactEmail the contact email
+	 * @return the number of matching applicants
+	 */
+	@Override
+	public int countByF_GID_CTEM(long groupId, String contactEmail) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_CTEM;
+
+		Object[] finderArgs = new Object[] { groupId, contactEmail };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_CTEM_GROUPID_2);
+
+			boolean bindContactEmail = false;
+
+			if (contactEmail == null) {
+				query.append(_FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_1);
+			}
+			else if (contactEmail.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_3);
+			}
+			else {
+				bindContactEmail = true;
+
+				query.append(_FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindContactEmail) {
+					qPos.add(contactEmail);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_CTEM_GROUPID_2 = "applicant.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_1 = "applicant.contactEmail IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_2 = "applicant.contactEmail = ?";
+	private static final String _FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_3 = "(applicant.contactEmail IS NULL OR applicant.contactEmail = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_F_MAPPING_ID = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
 			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByF_MAPPING_ID",
@@ -2663,8 +3159,16 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CTT_ID,
 			new Object[] { applicant.getContactTelNo() }, applicant);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CTN,
+			new Object[] { applicant.getGroupId(), applicant.getContactTelNo() },
+			applicant);
+
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CTE_ID,
 			new Object[] { applicant.getContactEmail() }, applicant);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CTEM,
+			new Object[] { applicant.getGroupId(), applicant.getContactEmail() },
+			applicant);
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID,
 			new Object[] { applicant.getMappingUserId() }, applicant);
@@ -2772,11 +3276,31 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CTT_ID, args,
 			applicantModelImpl, false);
 
+		args = new Object[] {
+				applicantModelImpl.getGroupId(),
+				applicantModelImpl.getContactTelNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_CTN, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CTN, args,
+			applicantModelImpl, false);
+
 		args = new Object[] { applicantModelImpl.getContactEmail() };
 
 		finderCache.putResult(FINDER_PATH_COUNT_BY_F_CTE_ID, args,
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CTE_ID, args,
+			applicantModelImpl, false);
+
+		args = new Object[] {
+				applicantModelImpl.getGroupId(),
+				applicantModelImpl.getContactEmail()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_CTEM, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CTEM, args,
 			applicantModelImpl, false);
 
 		args = new Object[] { applicantModelImpl.getMappingUserId() };
@@ -2866,6 +3390,27 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 		}
 
 		if (clearCurrent) {
+			Object[] args = new Object[] {
+					applicantModelImpl.getGroupId(),
+					applicantModelImpl.getContactTelNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_CTN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CTN, args);
+		}
+
+		if ((applicantModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_CTN.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					applicantModelImpl.getOriginalGroupId(),
+					applicantModelImpl.getOriginalContactTelNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_CTN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CTN, args);
+		}
+
+		if (clearCurrent) {
 			Object[] args = new Object[] { applicantModelImpl.getContactEmail() };
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CTE_ID, args);
@@ -2880,6 +3425,27 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CTE_ID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CTE_ID, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					applicantModelImpl.getGroupId(),
+					applicantModelImpl.getContactEmail()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_CTEM, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CTEM, args);
+		}
+
+		if ((applicantModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_CTEM.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					applicantModelImpl.getOriginalGroupId(),
+					applicantModelImpl.getOriginalContactEmail()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_CTEM, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CTEM, args);
 		}
 
 		if (clearCurrent) {

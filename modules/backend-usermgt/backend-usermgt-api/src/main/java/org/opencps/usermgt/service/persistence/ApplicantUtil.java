@@ -671,6 +671,67 @@ public class ApplicantUtil {
 	}
 
 	/**
+	* Returns the applicant where groupId = &#63; and contactTelNo = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public static Applicant findByF_GID_CTN(long groupId, String contactTelNo)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return getPersistence().findByF_GID_CTN(groupId, contactTelNo);
+	}
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactTelNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public static Applicant fetchByF_GID_CTN(long groupId, String contactTelNo) {
+		return getPersistence().fetchByF_GID_CTN(groupId, contactTelNo);
+	}
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactTelNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public static Applicant fetchByF_GID_CTN(long groupId, String contactTelNo,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_CTN(groupId, contactTelNo, retrieveFromCache);
+	}
+
+	/**
+	* Removes the applicant where groupId = &#63; and contactTelNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the applicant that was removed
+	*/
+	public static Applicant removeByF_GID_CTN(long groupId, String contactTelNo)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return getPersistence().removeByF_GID_CTN(groupId, contactTelNo);
+	}
+
+	/**
+	* Returns the number of applicants where groupId = &#63; and contactTelNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the number of matching applicants
+	*/
+	public static int countByF_GID_CTN(long groupId, String contactTelNo) {
+		return getPersistence().countByF_GID_CTN(groupId, contactTelNo);
+	}
+
+	/**
 	* Returns the applicant where contactEmail = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
 	*
 	* @param contactEmail the contact email
@@ -723,6 +784,67 @@ public class ApplicantUtil {
 	*/
 	public static int countByF_CTE_ID(String contactEmail) {
 		return getPersistence().countByF_CTE_ID(contactEmail);
+	}
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactEmail = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public static Applicant findByF_GID_CTEM(long groupId, String contactEmail)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return getPersistence().findByF_GID_CTEM(groupId, contactEmail);
+	}
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactEmail = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public static Applicant fetchByF_GID_CTEM(long groupId, String contactEmail) {
+		return getPersistence().fetchByF_GID_CTEM(groupId, contactEmail);
+	}
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactEmail = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public static Applicant fetchByF_GID_CTEM(long groupId,
+		String contactEmail, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_CTEM(groupId, contactEmail, retrieveFromCache);
+	}
+
+	/**
+	* Removes the applicant where groupId = &#63; and contactEmail = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the applicant that was removed
+	*/
+	public static Applicant removeByF_GID_CTEM(long groupId, String contactEmail)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return getPersistence().removeByF_GID_CTEM(groupId, contactEmail);
+	}
+
+	/**
+	* Returns the number of applicants where groupId = &#63; and contactEmail = &#63;.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the number of matching applicants
+	*/
+	public static int countByF_GID_CTEM(long groupId, String contactEmail) {
+		return getPersistence().countByF_GID_CTEM(groupId, contactEmail);
 	}
 
 	/**

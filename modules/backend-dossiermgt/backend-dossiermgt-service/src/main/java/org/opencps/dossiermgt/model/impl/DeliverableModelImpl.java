@@ -90,7 +90,9 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			{ "expireDate", Types.TIMESTAMP },
 			{ "issueDate", Types.TIMESTAMP },
 			{ "revalidate", Types.TIMESTAMP },
-			{ "deliverableState", Types.VARCHAR }
+			{ "deliverableState", Types.VARCHAR },
+			{ "fileEntryId", Types.BIGINT },
+			{ "dossierId", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -118,9 +120,11 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		TABLE_COLUMNS_MAP.put("issueDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("revalidate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("deliverableState", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("dossierId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(255) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData TEXT null,formScript TEXT null,formReport TEXT null,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(255) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData TEXT null,formScript TEXT null,formReport TEXT null,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState VARCHAR(75) null,fileEntryId LONG,dossierId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverable";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverable.deliverableId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverable.deliverableId ASC";
@@ -208,6 +212,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		attributes.put("issueDate", getIssueDate());
 		attributes.put("revalidate", getRevalidate());
 		attributes.put("deliverableState", getDeliverableState());
+		attributes.put("fileEntryId", getFileEntryId());
+		attributes.put("dossierId", getDossierId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -353,6 +359,18 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 		if (deliverableState != null) {
 			setDeliverableState(deliverableState);
+		}
+
+		Long fileEntryId = (Long)attributes.get("fileEntryId");
+
+		if (fileEntryId != null) {
+			setFileEntryId(fileEntryId);
+		}
+
+		Long dossierId = (Long)attributes.get("dossierId");
+
+		if (dossierId != null) {
+			setDossierId(dossierId);
 		}
 	}
 
@@ -773,6 +791,26 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	}
 
 	@Override
+	public long getFileEntryId() {
+		return _fileEntryId;
+	}
+
+	@Override
+	public void setFileEntryId(long fileEntryId) {
+		_fileEntryId = fileEntryId;
+	}
+
+	@Override
+	public long getDossierId() {
+		return _dossierId;
+	}
+
+	@Override
+	public void setDossierId(long dossierId) {
+		_dossierId = dossierId;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Deliverable.class.getName()));
@@ -832,6 +870,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		deliverableImpl.setIssueDate(getIssueDate());
 		deliverableImpl.setRevalidate(getRevalidate());
 		deliverableImpl.setDeliverableState(getDeliverableState());
+		deliverableImpl.setFileEntryId(getFileEntryId());
+		deliverableImpl.setDossierId(getDossierId());
 
 		deliverableImpl.resetOriginalValues();
 
@@ -1092,12 +1132,16 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			deliverableCacheModel.deliverableState = null;
 		}
 
+		deliverableCacheModel.fileEntryId = getFileEntryId();
+
+		deliverableCacheModel.dossierId = getDossierId();
+
 		return deliverableCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(47);
+		StringBundler sb = new StringBundler(51);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1145,6 +1189,10 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		sb.append(getRevalidate());
 		sb.append(", deliverableState=");
 		sb.append(getDeliverableState());
+		sb.append(", fileEntryId=");
+		sb.append(getFileEntryId());
+		sb.append(", dossierId=");
+		sb.append(getDossierId());
 		sb.append("}");
 
 		return sb.toString();
@@ -1152,7 +1200,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(73);
+		StringBundler sb = new StringBundler(79);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Deliverable");
@@ -1250,6 +1298,14 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			"<column><column-name>deliverableState</column-name><column-value><![CDATA[");
 		sb.append(getDeliverableState());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>fileEntryId</column-name><column-value><![CDATA[");
+		sb.append(getFileEntryId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dossierId</column-name><column-value><![CDATA[");
+		sb.append(getDossierId());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1296,6 +1352,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	private Date _revalidate;
 	private String _deliverableState;
 	private String _originalDeliverableState;
+	private long _fileEntryId;
+	private long _dossierId;
 	private long _columnBitmask;
 	private Deliverable _escapedModel;
 }
