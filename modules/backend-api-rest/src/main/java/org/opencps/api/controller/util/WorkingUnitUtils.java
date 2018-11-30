@@ -41,7 +41,7 @@ public class WorkingUnitUtils {
 
 				ett.setName(document.get(WorkingUnitTerm.NAME));
 				ett.setEnName(document.get(WorkingUnitTerm.NAME));
-				ett.setGovAgencyCode(document.get(WorkingUnitTerm.NAME));
+				ett.setGovAgencyCode(document.get(WorkingUnitTerm.GOV_AGENCY_CODE));
 				ett.setParentWorkingUnitId(Long.valueOf(document.get(WorkingUnitTerm.PARENT_WORKING_UNIT_ID)));
 				ett.setAddress(document.get(WorkingUnitTerm.ADDRESS));
 				ett.setTelNo(document.get(WorkingUnitTerm.TEL_NO));

@@ -95,6 +95,8 @@
 		<property name="issueDate" type="org.hibernate.type.TimestampType" />
 		<property name="revalidate" type="org.hibernate.type.TimestampType" />
 		<property name="deliverableState" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableLogImpl" table="opencps_deliverablelog">
 		<id name="deliverableLogId" type="long">

@@ -484,6 +484,16 @@ public class DictCollectionLocalServiceUtil {
 			collectionName, collectionNameEN, description, status);
 	}
 
+	public static org.opencps.datamgt.model.DictCollection updateDictCollectionPublish(
+		long companyId, long userId, long groupId, String userName,
+		String collectionCode, String collectionName, String collectionNameEN,
+		String description, int status) {
+		return getService()
+				   .updateDictCollectionPublish(companyId, userId, groupId,
+			userName, collectionCode, collectionName, collectionNameEN,
+			description, status);
+	}
+
 	public static DictCollectionLocalService getService() {
 		return _serviceTracker.getService();
 	}

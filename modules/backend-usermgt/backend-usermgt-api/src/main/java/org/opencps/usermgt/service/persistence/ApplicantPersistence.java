@@ -505,6 +505,56 @@ public interface ApplicantPersistence extends BasePersistence<Applicant> {
 	public int countByF_CTT_ID(String contactTelNo);
 
 	/**
+	* Returns the applicant where groupId = &#63; and contactTelNo = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public Applicant findByF_GID_CTN(long groupId, String contactTelNo)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactTelNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_CTN(long groupId, String contactTelNo);
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactTelNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_CTN(long groupId, String contactTelNo,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the applicant where groupId = &#63; and contactTelNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the applicant that was removed
+	*/
+	public Applicant removeByF_GID_CTN(long groupId, String contactTelNo)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the number of applicants where groupId = &#63; and contactTelNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param contactTelNo the contact tel no
+	* @return the number of matching applicants
+	*/
+	public int countByF_GID_CTN(long groupId, String contactTelNo);
+
+	/**
 	* Returns the applicant where contactEmail = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
 	*
 	* @param contactEmail the contact email
@@ -548,6 +598,56 @@ public interface ApplicantPersistence extends BasePersistence<Applicant> {
 	* @return the number of matching applicants
 	*/
 	public int countByF_CTE_ID(String contactEmail);
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactEmail = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public Applicant findByF_GID_CTEM(long groupId, String contactEmail)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactEmail = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_CTEM(long groupId, String contactEmail);
+
+	/**
+	* Returns the applicant where groupId = &#63; and contactEmail = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_CTEM(long groupId, String contactEmail,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the applicant where groupId = &#63; and contactEmail = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the applicant that was removed
+	*/
+	public Applicant removeByF_GID_CTEM(long groupId, String contactEmail)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the number of applicants where groupId = &#63; and contactEmail = &#63;.
+	*
+	* @param groupId the group ID
+	* @param contactEmail the contact email
+	* @return the number of matching applicants
+	*/
+	public int countByF_GID_CTEM(long groupId, String contactEmail);
 
 	/**
 	* Returns the applicant where mappingUserId = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.

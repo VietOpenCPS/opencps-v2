@@ -2634,7 +2634,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 							query.addField(DossierTerm.ORIGINALLITY);
 							subQuery.add(query, BooleanClauseOccur.SHOULD);
 						} else {
-							String originalSearch = String.valueOf(DossierTerm.CONSTANT_INDEX_ORIGINALITY - orginalInt);
+							String originalSearch = String.valueOf(DossierTerm.CONSTANT_INDEX_ORIGINALITY + orginalInt);
 							MultiMatchQuery query = new MultiMatchQuery(originalSearch);
 							query.addField(DossierTerm.ORIGINALLITY);
 							subQuery.add(query, BooleanClauseOccur.SHOULD);
@@ -2652,6 +2652,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 				} else if (originalityInt >= 0) {
+					//_log.info("originalityxxxx: "+originality);
 					MultiMatchQuery query = new MultiMatchQuery(originality);
 					query.addFields(DossierTerm.ORIGINALLITY);
 					booleanQuery.add(query, BooleanClauseOccur.MUST);
@@ -2672,16 +2673,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(queryOrigin, BooleanClauseOccur.MUST);
 		} else {
 			if (Validator.isNotNull(originality)) {
-				Integer originalityInt = GetterUtil.getInteger(originality);
-				if (originalityInt >= 0) {
-					MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
-					queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
-					booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
-					//
-					MultiMatchQuery queryOrigin = new MultiMatchQuery(String.valueOf(0));
-					queryOrigin.addField(DossierTerm.ORIGIN_DOSSIER_ID);
-					booleanQuery.add(queryOrigin, BooleanClauseOccur.MUST);
-				}
+//				Integer originalityInt = GetterUtil.getInteger(originality);
+//				if (originalityInt >= 0) {
+				MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
+				queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
+				booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
+				//
+//				MultiMatchQuery queryOrigin = new MultiMatchQuery(String.valueOf(0));
+//				queryOrigin.addField(DossierTerm.ORIGIN_DOSSIER_ID);
+//				booleanQuery.add(queryOrigin, BooleanClauseOccur.MUST);
+//				}
 			} else {
 				MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
 				queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
