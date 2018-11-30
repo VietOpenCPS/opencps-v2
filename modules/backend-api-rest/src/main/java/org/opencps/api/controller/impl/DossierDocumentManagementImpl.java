@@ -75,11 +75,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
-
 			if (Validator.isNotNull(dossier)) {
-
 				long dossierActionId = dossier.getDossierActionId();
 
 				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
@@ -87,7 +84,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				if (docType != null) {
 					documentScript = docType.getDocumentScript();
 				}
-
 				if (dossierActionId != 0) {
 					JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
@@ -99,11 +95,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						}
 						jsonData = processMergeDossierProcessRole(dossier, 1, jsonData, dAction);
 					}
-					
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
-					jsonData.put("userName", user.getFullName());
 					//
-					_log.info("jsonData: "+jsonData);
+					//_log.info("jsonData: "+jsonData);
 					jsonData.put("url", serviceContext.getPortalURL());
 					Message message = new Message();
 					message.put("formReport", documentScript);
