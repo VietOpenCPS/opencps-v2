@@ -98,12 +98,6 @@ public interface WorkingUnitLocalService extends BaseLocalService,
 	public WorkingUnit addWorkingUnit(WorkingUnit workingUnit);
 
 	@Indexable(type = IndexableType.REINDEX)
-<<<<<<< HEAD
-	public WorkingUnit adminProcessData(JSONObject objectData);
-
-	@Indexable(type = IndexableType.DELETE)
-	public WorkingUnit adminProcessDelete(Long id);
-=======
 	public WorkingUnit addWorkingUnitPublish(long userId, long groupId,
 		long companyId, String userName, String name, String enName,
 		String govAgencyCode, long parentWorkingUnitId, String sibling,
@@ -112,7 +106,12 @@ public interface WorkingUnitLocalService extends BaseLocalService,
 		ServiceContext serviceContext)
 		throws UnauthenticationException, UnauthorizationException,
 			NoSuchUserException, NotFoundException, DuplicateCategoryException;
->>>>>>> refs/remotes/OpenCPS/release-candidate-2.1-lf7.1
+
+	@Indexable(type = IndexableType.REINDEX)
+	public WorkingUnit adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public WorkingUnit adminProcessDelete(Long id);
 
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

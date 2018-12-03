@@ -63,16 +63,6 @@ public class WorkingUnitLocalServiceWrapper implements WorkingUnitLocalService,
 	}
 
 	@Override
-<<<<<<< HEAD
-	public org.opencps.usermgt.model.WorkingUnit adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
-		return _workingUnitLocalService.adminProcessData(objectData);
-	}
-
-	@Override
-	public org.opencps.usermgt.model.WorkingUnit adminProcessDelete(Long id) {
-		return _workingUnitLocalService.adminProcessDelete(id);
-=======
 	public org.opencps.usermgt.model.WorkingUnit addWorkingUnitPublish(
 		long userId, long groupId, long companyId, String userName,
 		String name, String enName, String govAgencyCode,
@@ -89,7 +79,17 @@ public class WorkingUnitLocalServiceWrapper implements WorkingUnitLocalService,
 			companyId, userName, name, enName, govAgencyCode,
 			parentWorkingUnitId, sibling, treeIndex, level, address, telNo,
 			faxNo, email, website, ceremonyDate, serviceContext);
->>>>>>> refs/remotes/OpenCPS/release-candidate-2.1-lf7.1
+	}
+
+	@Override
+	public org.opencps.usermgt.model.WorkingUnit adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _workingUnitLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.WorkingUnit adminProcessDelete(Long id) {
+		return _workingUnitLocalService.adminProcessDelete(id);
 	}
 
 	@Override

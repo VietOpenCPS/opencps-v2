@@ -70,16 +70,6 @@ public class WorkingUnitLocalServiceUtil {
 		return getService().addWorkingUnit(workingUnit);
 	}
 
-<<<<<<< HEAD
-	public static org.opencps.usermgt.model.WorkingUnit adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
-		return getService().adminProcessData(objectData);
-	}
-
-	public static org.opencps.usermgt.model.WorkingUnit adminProcessDelete(
-		Long id) {
-		return getService().adminProcessDelete(id);
-=======
 	public static org.opencps.usermgt.model.WorkingUnit addWorkingUnitPublish(
 		long userId, long groupId, long companyId, String userName,
 		String name, String enName, String govAgencyCode,
@@ -97,7 +87,16 @@ public class WorkingUnitLocalServiceUtil {
 			name, enName, govAgencyCode, parentWorkingUnitId, sibling,
 			treeIndex, level, address, telNo, faxNo, email, website,
 			ceremonyDate, serviceContext);
->>>>>>> refs/remotes/OpenCPS/release-candidate-2.1-lf7.1
+	}
+
+	public static org.opencps.usermgt.model.WorkingUnit adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.usermgt.model.WorkingUnit adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
 	}
 
 	public static long countLuceneSearchEngine(
