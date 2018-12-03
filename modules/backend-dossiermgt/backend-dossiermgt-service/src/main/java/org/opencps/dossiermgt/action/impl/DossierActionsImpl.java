@@ -144,7 +144,9 @@ import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import backend.auth.api.exception.ErrorMsgModel;
@@ -3070,7 +3072,25 @@ public class DossierActionsImpl implements DossierActions {
 								dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
 								dossier.getPostalCityName(), dossier.getPostalTelNo(), 
 								dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
-						if (user != null) {
+						WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
+
+						if (wu != null) {
+							delegateName = wu.getName();
+							delegateAddress = wu.getAddress();
+							delegateTelNo = wu.getTelNo();
+							delegateEmail = wu.getEmail();
+							delegateIdNo = wu.getGovAgencyCode();
+							
+							if (hsltDossier != null) {
+								hsltDossier.setDelegateName(delegateName);
+								hsltDossier.setDelegateAddress(delegateAddress);
+								hsltDossier.setDelegateTelNo(delegateTelNo);
+								hsltDossier.setDelegateEmail(delegateEmail);
+								hsltDossier.setDelegateIdNo(delegateIdNo);
+								hsltDossier = DossierLocalServiceUtil.updateDossier(hsltDossier);
+							}							
+						}
+						else if (user != null) {
 							if (employee != null) {
 								delegateName = employee.getFullName();
 								delegateAddress = dossier.getGovAgencyName();
@@ -3082,7 +3102,6 @@ public class DossierActionsImpl implements DossierActions {
 									hsltDossier.setDelegateAddress(delegateAddress);
 									hsltDossier.setDelegateTelNo(delegateTelNo);
 									hsltDossier.setDelegateEmail(delegateEmail);
-									hsltDossier.setDelegateIdNo(delegateIdNo);
 									hsltDossier.setDelegateIdNo(delegateIdNo);
 									hsltDossier = DossierLocalServiceUtil.updateDossier(hsltDossier);
 								}
