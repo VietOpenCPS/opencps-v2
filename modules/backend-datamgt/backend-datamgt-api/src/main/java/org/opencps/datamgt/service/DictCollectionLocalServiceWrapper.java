@@ -521,6 +521,16 @@ public class DictCollectionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.datamgt.model.DictCollection updateDictCollectionPublish(
+		long companyId, long userId, long groupId, String userName,
+		String collectionCode, String collectionName, String collectionNameEN,
+		String description, int status) {
+		return _dictCollectionLocalService.updateDictCollectionPublish(companyId,
+			userId, groupId, userName, collectionCode, collectionName,
+			collectionNameEN, description, status);
+	}
+
+	@Override
 	public DictCollectionLocalService getWrappedService() {
 		return _dictCollectionLocalService;
 	}

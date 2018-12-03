@@ -432,6 +432,34 @@ public interface DeliverableModel extends BaseModel<Deliverable>, GroupedModel,
 	 */
 	public void setDeliverableState(String deliverableState);
 
+	/**
+	 * Returns the file entry ID of this deliverable.
+	 *
+	 * @return the file entry ID of this deliverable
+	 */
+	public long getFileEntryId();
+
+	/**
+	 * Sets the file entry ID of this deliverable.
+	 *
+	 * @param fileEntryId the file entry ID of this deliverable
+	 */
+	public void setFileEntryId(long fileEntryId);
+
+	/**
+	 * Returns the dossier ID of this deliverable.
+	 *
+	 * @return the dossier ID of this deliverable
+	 */
+	public long getDossierId();
+
+	/**
+	 * Sets the dossier ID of this deliverable.
+	 *
+	 * @param dossierId the dossier ID of this deliverable
+	 */
+	public void setDossierId(long dossierId);
+
 	@Override
 	public boolean isNew();
 

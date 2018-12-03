@@ -98,6 +98,16 @@ public interface WorkingUnitLocalService extends BaseLocalService,
 	public WorkingUnit addWorkingUnit(WorkingUnit workingUnit);
 
 	@Indexable(type = IndexableType.REINDEX)
+	public WorkingUnit addWorkingUnitPublish(long userId, long groupId,
+		long companyId, String userName, String name, String enName,
+		String govAgencyCode, long parentWorkingUnitId, String sibling,
+		String treeIndex, int level, String address, String telNo,
+		String faxNo, String email, String website, Date ceremonyDate,
+		ServiceContext serviceContext)
+		throws UnauthenticationException, UnauthorizationException,
+			NoSuchUserException, NotFoundException, DuplicateCategoryException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public WorkingUnit adminProcessData(JSONObject objectData);
 
 	@Indexable(type = IndexableType.DELETE)

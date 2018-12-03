@@ -32,6 +32,7 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, month);
+			dataType1 = processOnTimePercent(dataType1);
 
 			statisticData.put(type1, dataType1);
 			
@@ -50,6 +51,7 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, month);
+			dataType2 = processOnTimePercent(dataType2);
 
 			statisticData.put(type2, dataType2);
 
@@ -68,6 +70,7 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, month);
+			dataType3 = processOnTimePercent(dataType3);
 
 			statisticData.put(type3, dataType3);
 
@@ -87,10 +90,26 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, month);
+			dataType4 = processOnTimePercent(dataType4);
 
 			statisticData.put(type4, dataType4);
 		}
+	}
 
+	private DossierStatisticData processOnTimePercent(DossierStatisticData dataType) {
+		int ontimePercent = 0;
+		int releaseCount = dataType.getReleaseCount();
+		//_log.info("releaseCount: "+releaseCount);
+		
+		if (releaseCount > 0) {
+			int betimesCount = dataType.getBetimesCount();
+			int ontimeCount = dataType.getOntimeCount();
+			ontimePercent = (betimesCount + ontimeCount) * 100 / releaseCount;
+			//_log.info("ontimePercent: "+ontimePercent);
+		}
+		dataType.setOntimePercentage(ontimePercent);
+
+		return dataType;
 	}
 
 }

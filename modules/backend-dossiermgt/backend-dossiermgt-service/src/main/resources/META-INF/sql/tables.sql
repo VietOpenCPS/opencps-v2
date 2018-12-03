@@ -47,7 +47,9 @@ create table opencps_deliverable (
 	expireDate DATE null,
 	issueDate DATE null,
 	revalidate DATE null,
-	deliverableState VARCHAR(75) null
+	deliverableState VARCHAR(75) null,
+	fileEntryId LONG,
+	dossierId LONG
 );
 
 create table opencps_deliverablelog (

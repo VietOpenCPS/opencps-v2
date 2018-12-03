@@ -75,6 +75,7 @@ public class AutoFillFormData {
 			String _applicantIdDate = StringPool.BLANK;
 			String _curDate;
 			String _representative = StringPool.BLANK;
+			String _govAgencyName = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
@@ -170,6 +171,8 @@ public class AutoFillFormData {
 					_log.debug(e);
 					//_log.error(e);
 				}
+				
+				_govAgencyName = dossier.getGovAgencyName();
 			}
 			// process sampleData
 //			if (Validator.isNull(sampleData)) {
@@ -230,6 +233,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _curDate);
 					} else if ("_representative".equals(value)) {
 						jsonMap.put(entry.getKey(), _representative);
+					} else if ("_govAgencyName".equals(value)) {
+						jsonMap.put(entry.getKey(), _govAgencyName);
 					}
 
 				} else if (value.startsWith("_") && value.contains(":")) {
@@ -282,6 +287,8 @@ public class AutoFillFormData {
 							resultBinding += ", " + _curDate;
 						} else if ("_representative".equals(value)) {
 							resultBinding += ", " + _representative;
+						} else if ("_govAgencyName".equals(value)) {
+							jsonMap.put(entry.getKey(), _govAgencyName);
 						}
 					}
 

@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Iterator;
 import java.util.Locale;
@@ -48,7 +49,7 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 	protected Document doGetDocument(OpenCPSDeliverable object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 		
-		System.out.println("OpenCPSDeliverableIndexer.doGetDocument()");
+		System.out.println("OpenCPSDeliverableIndexer.doGetDocument(abc)" + object);
 		
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
@@ -70,9 +71,9 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 		document.addTextSortable(ModelKeysDeliverable.APPLICANTNAME, object.getApplicantName());
 		document.addTextSortable(ModelKeysDeliverable.SUBJECT, object.getSubject());
 		
-		document.addNumberSortable(ModelKeysDeliverable.ISSUEDATE, object.getIssueDate().getTime());
-		document.addNumberSortable(ModelKeysDeliverable.EXPIREDATE, object.getExpireDate().getTime());
-		document.addNumberSortable(ModelKeysDeliverable.REVALIDATE, object.getRevalidate().getTime());
+		document.addNumberSortable(ModelKeysDeliverable.ISSUEDATE, Validator.isNotNull(object.getIssueDate()) ? object.getIssueDate().getTime() : null);
+		document.addNumberSortable(ModelKeysDeliverable.EXPIREDATE, Validator.isNotNull(object.getExpireDate()) ? object.getExpireDate().getTime(): null);
+		document.addNumberSortable(ModelKeysDeliverable.REVALIDATE, Validator.isNotNull(object.getRevalidate()) ? object.getRevalidate().getTime() : null);
 		
 		document.addDateSortable(ModelKeysDeliverable.ISSUEDATE + "_date", object.getIssueDate());
 		document.addDateSortable(ModelKeysDeliverable.EXPIREDATE + "_date", object.getExpireDate());
@@ -84,14 +85,19 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 		document.addNumberSortable(ModelKeysDeliverable.DOSSIERID, object.getDossierId());
 		document.addText(ModelKeysDeliverable.FORMDATA, object.getFormData());
 		
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getFormData());
+		try {
 
-		System.out.println("OpenCPSDeliverableIndexer.doGetDocument(jsonObject)" + jsonObject);
-		Iterator<String> keys = jsonObject.keys();
+			System.out.println("OpenCPSDeliverableIndexer.doGetDocument(object.getFormData())" + object.getFormData());
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getFormData());
 
-		while(keys.hasNext()) {
-		    String key = keys.next();
-		    document.addTextSortable(key, jsonObject.getString(key));
+			Iterator<String> keys = jsonObject.keys();
+
+			while(keys.hasNext()) {
+			    String key = keys.next();
+			    document.addTextSortable(key, jsonObject.getString(key));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return document;

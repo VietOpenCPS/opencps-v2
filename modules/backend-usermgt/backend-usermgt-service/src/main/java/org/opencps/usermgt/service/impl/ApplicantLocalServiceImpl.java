@@ -158,7 +158,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
-			validateDuplicate(context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
+			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 
@@ -333,8 +333,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throw new NoApplicantIdDateException("NoApplicantIdDateException");
 	}
 
-	private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo, String email)
-			throws PortalException {
+	private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo,
+			String email) throws PortalException {
 
 		Applicant applicant = null;
 
@@ -344,6 +344,34 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throw new DuplicateApplicantIdException("DuplicateApplicantIdException");
 
 		applicant = fetchByEmail(email);
+
+		if (Validator.isNotNull(applicant))
+			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+
+		User user = userLocalService.fetchUserByEmailAddress(companyId, email);
+
+		if (Validator.isNotNull(user))
+			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+
+/*		if (Validator.isNotNull(contactTelNo)) {
+
+			applicant = fetchByTelNo(contactTelNo);
+
+			if (Validator.isNotNull(applicant))
+				throw new DuplicateContactTelNoException("DuplicateContactTelNoException");
+		}*/
+	}
+
+	//Process validate applicant register
+	private void validateApplicantDuplicate(long groupId, long companyId, String contactTelNo, String applicantIdNo,
+			String email) throws PortalException {
+
+		Applicant applicant = applicantPersistence.fetchByF_APLC_GID(groupId, applicantIdNo);
+
+		if (Validator.isNotNull(applicant))
+			throw new DuplicateApplicantIdException("DuplicateApplicantIdException");
+
+		applicant = applicantPersistence.fetchByF_GID_CTEM(groupId, email);
 
 		if (Validator.isNotNull(applicant))
 			throw new DuplicateContactEmailException("DuplicateContactEmailException");

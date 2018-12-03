@@ -28,7 +28,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		DossierListennerUltils.createDossierLog(model, false, false);
 		//Add Applicant
 		if (ORIGINAL_TODO.contains(String.valueOf(model.getOriginality()))) {
-			long groupId = model.getGroupId();
+			//long groupId = model.getGroupId();
 			long userId = model.getUserId();
 			long companyId = model.getCompanyId();
 			String applicantIdNo = model.getApplicantIdNo();
@@ -46,7 +46,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 			String contactTelNo = model.getContactTelNo();
 			String contactEmail = model.getContactEmail();
 			
-			ApplicantLocalServiceUtil.updateApplicant(groupId, userId, companyId, applicantName, applicantIdType, applicantIdNo,
+			ApplicantLocalServiceUtil.updateApplicant(0l, userId, companyId, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail);
 		}
