@@ -96,7 +96,7 @@ public class DictItemGroupModelImpl extends BaseModelImpl<DictItemGroup>
 		TABLE_COLUMNS_MAP.put("dictGroupName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dictitemgroup (uuid_ VARCHAR(75) null,dictItemGroupId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dictGroupId LONG,dictItemId LONG,dictGroupName VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dictitemgroup (uuid_ VARCHAR(75) null,dictItemGroupId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dictGroupId LONG,dictItemId LONG,dictGroupName VARCHAR(255) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dictitemgroup";
 	public static final String ORDER_BY_JPQL = " ORDER BY dictItemGroup.dictGroupId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dictitemgroup.dictGroupId ASC";

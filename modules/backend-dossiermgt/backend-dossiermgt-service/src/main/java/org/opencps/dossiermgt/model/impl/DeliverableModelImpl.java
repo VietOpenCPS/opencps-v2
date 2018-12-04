@@ -84,9 +84,9 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			{ "applicantIdNo", Types.VARCHAR },
 			{ "applicantName", Types.VARCHAR },
 			{ "subject", Types.VARCHAR },
-			{ "formData", Types.CLOB },
-			{ "formScript", Types.CLOB },
-			{ "formReport", Types.CLOB },
+			{ "formData", Types.VARCHAR },
+			{ "formScript", Types.VARCHAR },
+			{ "formReport", Types.VARCHAR },
 			{ "expireDate", Types.TIMESTAMP },
 			{ "issueDate", Types.TIMESTAMP },
 			{ "revalidate", Types.TIMESTAMP },
@@ -113,9 +113,9 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		TABLE_COLUMNS_MAP.put("applicantIdNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("applicantName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("subject", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("formData", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formScript", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("formReport", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("formData", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("expireDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("issueDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("revalidate", Types.TIMESTAMP);
