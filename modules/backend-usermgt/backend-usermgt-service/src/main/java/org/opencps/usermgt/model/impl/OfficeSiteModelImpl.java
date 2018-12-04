@@ -117,7 +117,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 		TABLE_COLUMNS_MAP.put("ceremonyDate", Types.TIMESTAMP);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_officesite (uuid_ VARCHAR(75) null,officeSiteId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,enName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,address VARCHAR(75) null,telNo VARCHAR(75) null,faxNo VARCHAR(75) null,email VARCHAR(75) null,website VARCHAR(75) null,logoFileEntryId LONG,siteGroupId LONG,adminUserId LONG,preferences VARCHAR(75) null,ceremonyDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_officesite (uuid_ VARCHAR(75) null,officeSiteId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(500) null,enName VARCHAR(500) null,govAgencyCode VARCHAR(100) null,address STRING null,telNo VARCHAR(75) null,faxNo VARCHAR(75) null,email VARCHAR(500) null,website VARCHAR(255) null,logoFileEntryId LONG,siteGroupId LONG,adminUserId LONG,preferences STRING null,ceremonyDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_officesite";
 	public static final String ORDER_BY_JPQL = " ORDER BY officeSite.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_officesite.createDate ASC";

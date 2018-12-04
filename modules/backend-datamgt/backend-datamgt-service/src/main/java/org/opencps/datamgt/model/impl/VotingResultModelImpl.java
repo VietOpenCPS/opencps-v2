@@ -101,7 +101,7 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 		TABLE_COLUMNS_MAP.put("selected", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_votingresult (uuid_ VARCHAR(75) null,votingResultId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,votingId LONG,fullname VARCHAR(75) null,email VARCHAR(75) null,comment_ VARCHAR(75) null,selected VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_votingresult (uuid_ VARCHAR(75) null,votingResultId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,votingId LONG,fullname VARCHAR(500) null,email VARCHAR(500) null,comment_ STRING null,selected VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_votingresult";
 	public static final String ORDER_BY_JPQL = " ORDER BY votingResult.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_votingresult.createDate ASC";

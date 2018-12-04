@@ -95,7 +95,7 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 		TABLE_COLUMNS_MAP.put("hours", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_workTime (uuid_ VARCHAR(75) null,workTimeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,day INTEGER,hours VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_workTime (uuid_ VARCHAR(75) null,workTimeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,day INTEGER,hours VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_workTime";
 	public static final String ORDER_BY_JPQL = " ORDER BY workTime.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_workTime.createDate ASC";
