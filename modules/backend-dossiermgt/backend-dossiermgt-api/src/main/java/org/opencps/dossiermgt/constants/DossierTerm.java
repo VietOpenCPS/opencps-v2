@@ -213,7 +213,7 @@ public class DossierTerm {
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
 	public static final String ORIGIN = "origin";
 	//
-	public static final int CONSTANT_INDEX_ORIGINALITY = 100;
+	public static final int CONSTANT_INDEX_ORIGINALITY = 99;
 	public static final String DATE_OPTION = "dateOption";
 	//Constant dateOption
 	public static final int DATE_OPTION_CHANGE_DUE_DATE = 1;
