@@ -1401,6 +1401,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

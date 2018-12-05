@@ -388,9 +388,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	private String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
-
+		_log.info("COLLECTION UPDATE DOSSIER: " + dc + "," + collectionCode);
+		_log.info("COLLECTION UPDATE DOSSIER: " + dc.getCollectionCode() + "," + dc.getDictCollectionId() + "," + dc.getPrimaryKey());
 		DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-
+		_log.info("ITEM: " + itemCode + "," + it);
 		return it.getItemName();
 
 	}
