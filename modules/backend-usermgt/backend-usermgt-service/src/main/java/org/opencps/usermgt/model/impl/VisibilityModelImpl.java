@@ -99,7 +99,7 @@ public class VisibilityModelImpl extends BaseModelImpl<Visibility>
 		TABLE_COLUMNS_MAP.put("security", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_visibility (uuid_ VARCHAR(75) null,visibilityId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,visibility INTEGER,security VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_visibility (uuid_ VARCHAR(75) null,visibilityId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(500) null,classPK VARCHAR(75) null,visibility INTEGER,security VARCHAR(500) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_visibility";
 	public static final String ORDER_BY_JPQL = " ORDER BY visibility.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_visibility.createDate ASC";

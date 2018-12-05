@@ -93,7 +93,7 @@ public class PreferencesModelImpl extends BaseModelImpl<Preferences>
 		TABLE_COLUMNS_MAP.put("preferences", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_preferences (uuid_ VARCHAR(75) null,preferencesId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,preferences VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_preferences (uuid_ VARCHAR(75) null,preferencesId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,preferences TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_preferences";
 	public static final String ORDER_BY_JPQL = " ORDER BY preferences.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_preferences.createDate ASC";

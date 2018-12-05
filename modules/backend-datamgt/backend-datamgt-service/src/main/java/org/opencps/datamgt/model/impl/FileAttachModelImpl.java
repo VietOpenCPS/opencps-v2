@@ -104,7 +104,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 		TABLE_COLUMNS_MAP.put("fileName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table m_fileattach (fileAttachId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,fullName VARCHAR(75) null,email VARCHAR(75) null,fileEntryId LONG,source VARCHAR(75) null,sourceUrl VARCHAR(75) null,docFileId LONG,fileName VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table m_fileattach (fileAttachId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(500) null,classPK VARCHAR(75) null,fullName VARCHAR(500) null,email VARCHAR(500) null,fileEntryId LONG,source VARCHAR(500) null,sourceUrl VARCHAR(500) null,docFileId LONG,fileName VARCHAR(500) null)";
 	public static final String TABLE_SQL_DROP = "drop table m_fileattach";
 	public static final String ORDER_BY_JPQL = " ORDER BY fileAttach.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY m_fileattach.createDate ASC";
