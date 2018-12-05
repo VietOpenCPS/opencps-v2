@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -478,5 +479,235 @@ public class DataManagementUtils {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
+
+//	public static void main(String []args) {
+//		List<String> collectionList = new ArrayList<>();
+//		collectionList.add("abc");
+//		collectionList.add("def");
+//		collectionList.add("ghi");
+//		collectionList.add("xyz");
+//		
+//		if (collectionList.contains("abc")) {
+//			System.out.println("abc");
+//		}
+//		if (collectionList.contains("abcc")) {
+//			System.out.println("ABc");
+//		}
+//		if (collectionList.contains("def")) {
+//			System.out.println("def");
+//		}
+//		
+//	}
+	
+	/** LGSP - START */
+	public static List<DictCollectionShortModel> mapperDictCollectionLGSPModelList(List<Document> listDocument) {
+
+		List<DictCollectionShortModel> results = new ArrayList<>();
+
+		try {
+
+			DictCollectionShortModel ett = null;
+
+			StringBuilder sbCollect = new StringBuilder();
+			for (Document doc : listDocument) {
+				String collectionCode = doc.get(DictCollectionTerm.COLLECTION_CODE);
+				String strCollect = sbCollect.toString();
+				if (Validator.isNotNull(strCollect)) {
+					if (!strCollect.contains(collectionCode)) {
+						sbCollect.append(StringPool.COMMA);
+						sbCollect.append(collectionCode);
+					}
+				} else {
+					sbCollect.append(collectionCode);
+				}
+			}
+			String[] splitCollect = StringUtil.split(sbCollect.toString(), StringPool.COMMA);
+			for (String collect : splitCollect) {
+				ett = new DictCollectionShortModel();
+
+				for (Document doc : listDocument) {
+					if (Validator.isNotNull(collect)
+							&& collect.equals(doc.get(DictCollectionTerm.COLLECTION_CODE))) {
+						ett.setCollectionCode(doc.get(DictCollectionTerm.COLLECTION_CODE));
+						ett.setCollectionName(doc.get(DictCollectionTerm.COLLECTION_NAME));
+						ett.setCollectionNameEN(doc.get(DictCollectionTerm.COLLECTION_NAME_EN));
+						ett.setDescription(doc.get(DictCollectionTerm.DESCRIPTION));
+
+						results.add(ett);
+						break;
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			//_log.error(e);
+			_log.debug(e);
+			_log.info("kkkk@@: "+ (11+ 1));
+		}
+
+		return results;
+	}
+
+	public static List<Groups> mapperGroupsListLGSP(List<Document> listDocument) {
+
+		List<Groups> results = new ArrayList<>();
+
+		try {
+
+			Groups ett = null;
+
+			StringBuilder sbGroup = new StringBuilder();
+			for (Document doc : listDocument) {
+				String groupCode = doc.get(DictGroupTerm.GROUP_CODE);
+				String strGroup = sbGroup.toString();
+				if (Validator.isNotNull(strGroup)) {
+					if (!strGroup.contains(groupCode)) {
+						sbGroup.append(StringPool.COMMA);
+						sbGroup.append(groupCode);
+					}
+				} else {
+					sbGroup.append(groupCode);
+				}
+			}
+			String[] splitGroup = StringUtil.split(sbGroup.toString(), StringPool.COMMA);
+			for (String group : splitGroup) {
+				ett = new Groups();
+
+				for (Document doc : listDocument) {
+					if (Validator.isNotNull(group)
+							&& group.equals(doc.get(DictGroupTerm.GROUP_CODE))) {
+						ett.setDictGroupId(Long.valueOf(doc.get("entryClassPK")));
+						ett.setGroupCode(doc.get(DictGroupTerm.GROUP_CODE));
+						ett.setGroupName(doc.get(DictGroupTerm.GROUP_NAME));
+						ett.setGroupNameEN(doc.get(DictGroupTerm.GROUP_NAME_EN));
+						ett.setGroupDescription(doc.get(DictGroupTerm.GROUP_DESCRIPTION));
+
+						results.add(ett);
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			//_log.error(e);
+			_log.debug(e);
+		}
+
+		return results;
+	}
+
+	public static List<DictItemModel> mapperDictItemModelListLGSP(List<Document> listDocument, String collectionCode) {
+
+		List<DictItemModel> results = new ArrayList<>();
+
+		try {
+
+			DictItemModel ett = null;
+
+			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(collectionCode)) {
+				for (Document document : listDocument) {
+					ett = new DictItemModel();
+
+					ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
+					ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
+					ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
+					ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
+					ett.setItemDescription(document.get(DictItemTerm.ITEM_DESCRIPTION));
+					ett.setLevel(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+					ett.setSibling(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+					ett.setTreeIndex(document.get(DictItemTerm.TREE_INDEX));
+
+					ett.setCreateDate(Validator.isNotNull(document.get(DictItemTerm.CREATE_DATE)) ? APIDateTimeUtils
+							.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
+							: StringPool.BLANK);
+					ett.setModifiedDate(
+							Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
+									document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+
+					DictItem parentItem = DictItemLocalServiceUtil
+							.fetchDictItem(Long.valueOf(document.get(DictItemTerm.PARENT_ITEM_ID)));
+
+					ParentItem parentItemModel = new ParentItem();
+
+					if (Validator.isNotNull(parentItem)) {
+
+						parentItemModel.setItemCode(parentItem.getItemCode());
+						parentItemModel.setItemName(parentItem.getItemName());
+						parentItemModel.setItemNameEN(parentItem.getItemNameEN());
+
+					}
+
+					ett.getParentItem().add(parentItemModel);
+
+					results.add(ett);
+				}
+			} else {
+				StringBuilder sbItem = new StringBuilder();
+				for (Document doc : listDocument) {
+					String itemCode = doc.get(DictItemTerm.ITEM_CODE);
+					String strItem = sbItem.toString();
+					if (Validator.isNotNull(strItem)) {
+						if (!strItem.contains(itemCode)) {
+							sbItem.append(StringPool.COMMA);
+							sbItem.append(itemCode);
+						}
+					} else {
+						sbItem.append(collectionCode);
+					}
+				}
+				_log.info("sbItem: "+sbItem.toString());
+				String[] splitItem = StringUtil.split(sbItem.toString(), StringPool.COMMA);
+				for (String item : splitItem) {
+					ett = new DictItemModel();
+					_log.info("item: "+item);
+
+					for (Document doc : listDocument) {
+						_log.info("flagEqual 11111: "+doc.get(DictItemTerm.ITEM_CODE));
+						if (Validator.isNotNull(item)
+								&& item.equals(doc.get(DictItemTerm.ITEM_CODE))) {
+							ett.setDictItemId(Long.valueOf(doc.get("entryClassPK")));
+							ett.setItemCode(doc.get(DictItemTerm.ITEM_CODE));
+							ett.setItemName(doc.get(DictItemTerm.ITEM_NAME));
+							ett.setItemNameEN(doc.get(DictItemTerm.ITEM_NAME_EN));
+							ett.setItemDescription(doc.get(DictItemTerm.ITEM_DESCRIPTION));
+							ett.setLevel(Integer.valueOf(doc.get(DictItemTerm.LEVEL)));
+							ett.setSibling(Integer.valueOf(doc.get(DictItemTerm.LEVEL)));
+							ett.setTreeIndex(doc.get(DictItemTerm.TREE_INDEX));
+
+							ett.setCreateDate(Validator.isNotNull(doc.get(DictItemTerm.CREATE_DATE)) ? APIDateTimeUtils
+									.convertDateToString(doc.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
+									: StringPool.BLANK);
+							ett.setModifiedDate(
+									Validator.isNotNull(doc.get("modified")) ? APIDateTimeUtils.convertDateToString(
+											doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+
+							DictItem parentItem = DictItemLocalServiceUtil
+									.fetchDictItem(Long.valueOf(doc.get(DictItemTerm.PARENT_ITEM_ID)));
+
+							ParentItem parentItemModel = new ParentItem();
+
+							if (Validator.isNotNull(parentItem)) {
+
+								parentItemModel.setItemCode(parentItem.getItemCode());
+								parentItemModel.setItemName(parentItem.getItemName());
+								parentItemModel.setItemNameEN(parentItem.getItemNameEN());
+
+							}
+
+							ett.getParentItem().add(parentItemModel);
+
+							results.add(ett);
+							break;
+						}
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			//_log.error(e);
+			_log.debug(e);
+		}
+
+		return results;
+	}
 
 }

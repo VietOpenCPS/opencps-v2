@@ -380,19 +380,6 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
-		
-//		_log.info("START: "+start);
-//		_log.info("END: "+end);
-//		QueryConfig queryConfig = new QueryConfig();
-//        queryConfig.setHighlightEnabled(false);
-//        queryConfig.setHitsProcessingEnabled(true);
-//        queryConfig.setScoreEnabled(false);
-//        searchContext.setQueryConfig(queryConfig);
-//		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
-//			_log.info("START CollectionCode");
-//			GroupBy group = new GroupBy(DictCollectionTerm.COLLECTION_CODE);
-//			searchContext.setGroupBy(group);
-//		}
 
 		BooleanQuery booleanQuery = null;
 
@@ -436,7 +423,6 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		}
 
 		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
-			_log.info("EEEEEE"+groupId);
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
@@ -479,14 +465,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
-		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictCollection.class.getName());
-		
-		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
-			_log.info("START CollectionCode");
-			GroupBy group = new GroupBy(Field.GROUP_ID);
-			searchContext.setGroupBy(group);
-		}
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 
@@ -509,17 +488,6 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
-		
-		QueryConfig queryConfig = new QueryConfig();
-        queryConfig.setHighlightEnabled(false);
-        queryConfig.setHitsProcessingEnabled(true);
-        queryConfig.setScoreEnabled(false);
-        searchContext.setQueryConfig(queryConfig);
-		if (Validator.isNotNull(groupId) && groupId.equals("0")) {
-			_log.info("START CollectionCode");
-			GroupBy group = new GroupBy(DictCollectionTerm.COLLECTION_CODE);
-			searchContext.setGroupBy(group);
-		}
 
 		BooleanQuery booleanQuery = null;
 
@@ -563,7 +531,6 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		}
 
 		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
-			_log.info("EEEEEE"+groupId);
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
