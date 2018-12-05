@@ -103,7 +103,7 @@ public class DictCollectionModelImpl extends BaseModelImpl<DictCollection>
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dictcollection (uuid_ VARCHAR(75) null,dictCollectionId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(75) null,collectionName VARCHAR(75) null,collectionNameEN VARCHAR(75) null,description VARCHAR(75) null,dataForm VARCHAR(75) null,status INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dictcollection (uuid_ VARCHAR(75) null,dictCollectionId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,collectionCode VARCHAR(100) null,collectionName STRING null,collectionNameEN STRING null,description TEXT null,dataForm TEXT null,status INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dictcollection";
 	public static final String ORDER_BY_JPQL = " ORDER BY dictCollection.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dictcollection.createDate ASC";

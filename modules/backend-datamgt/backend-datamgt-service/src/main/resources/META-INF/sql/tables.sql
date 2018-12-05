@@ -3,18 +3,18 @@ create table m_fileattach (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	className VARCHAR(75) null,
+	className VARCHAR(500) null,
 	classPK VARCHAR(75) null,
-	fullName VARCHAR(75) null,
-	email VARCHAR(75) null,
+	fullName VARCHAR(500) null,
+	email VARCHAR(500) null,
 	fileEntryId LONG,
-	source VARCHAR(75) null,
-	sourceUrl VARCHAR(75) null,
+	source VARCHAR(500) null,
+	sourceUrl VARCHAR(500) null,
 	docFileId LONG,
-	fileName VARCHAR(75) null
+	fileName VARCHAR(500) null
 );
 
 create table opencps_comment (
@@ -26,14 +26,14 @@ create table opencps_comment (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	className VARCHAR(75) null,
+	className VARCHAR(500) null,
 	classPK VARCHAR(75) null,
 	fullname VARCHAR(75) null,
-	email VARCHAR(75) null,
+	email VARCHAR(500) null,
 	parent LONG,
-	content VARCHAR(75) null,
+	content STRING null,
 	fileEntryId LONG,
-	pings VARCHAR(75) null,
+	pings VARCHAR(1000) null,
 	upvoteCount INTEGER,
 	userHasUpvoted VARCHAR(75) null,
 	upvotedUsers VARCHAR(75) null,
@@ -46,14 +46,14 @@ create table opencps_dictcollection (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	collectionCode VARCHAR(75) null,
-	collectionName VARCHAR(75) null,
-	collectionNameEN VARCHAR(75) null,
-	description VARCHAR(75) null,
-	dataForm VARCHAR(75) null,
+	collectionCode VARCHAR(100) null,
+	collectionName STRING null,
+	collectionNameEN STRING null,
+	description TEXT null,
+	dataForm TEXT null,
 	status INTEGER
 );
 
@@ -63,14 +63,14 @@ create table opencps_dictgroup (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	dictCollectionId LONG,
-	groupCode VARCHAR(75) null,
-	groupName VARCHAR(75) null,
-	groupNameEN VARCHAR(75) null,
-	groupDescription VARCHAR(75) null
+	groupCode VARCHAR(100) null,
+	groupName STRING null,
+	groupNameEN STRING null,
+	groupDescription TEXT null
 );
 
 create table opencps_dictitem (
@@ -79,19 +79,19 @@ create table opencps_dictitem (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	dictCollectionId LONG,
-	itemCode VARCHAR(75) null,
-	itemName VARCHAR(75) null,
-	itemNameEN VARCHAR(75) null,
-	itemDescription VARCHAR(75) null,
+	itemCode VARCHAR(100) null,
+	itemName STRING null,
+	itemNameEN STRING null,
+	itemDescription TEXT null,
 	parentItemId LONG,
 	level INTEGER,
 	sibling VARCHAR(75) null,
 	treeIndex VARCHAR(75) null,
-	metaData VARCHAR(75) null
+	metaData TEXT null
 );
 
 create table opencps_dictitemgroup (
@@ -100,12 +100,12 @@ create table opencps_dictitemgroup (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	dictGroupId LONG,
 	dictItemId LONG,
-	dictGroupName VARCHAR(75) null
+	dictGroupName VARCHAR(255) null
 );
 
 create table opencps_holiday (
@@ -114,11 +114,11 @@ create table opencps_holiday (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	holidayDate DATE null,
-	description VARCHAR(75) null
+	description TEXT null
 );
 
 create table opencps_voting (
@@ -127,14 +127,14 @@ create table opencps_voting (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	className VARCHAR(75) null,
+	className VARCHAR(500) null,
 	classPK VARCHAR(75) null,
-	subject VARCHAR(75) null,
-	choices VARCHAR(75) null,
-	templateNo VARCHAR(75) null,
+	subject VARCHAR(500) null,
+	choices TEXT null,
+	templateNo VARCHAR(255) null,
 	commentable BOOLEAN
 );
 
@@ -144,13 +144,13 @@ create table opencps_votingresult (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	votingId LONG,
-	fullname VARCHAR(75) null,
-	email VARCHAR(75) null,
-	comment_ VARCHAR(75) null,
+	fullname VARCHAR(500) null,
+	email VARCHAR(500) null,
+	comment_ STRING null,
 	selected VARCHAR(75) null
 );
 
@@ -160,7 +160,7 @@ create table opencps_workTime (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	day INTEGER,

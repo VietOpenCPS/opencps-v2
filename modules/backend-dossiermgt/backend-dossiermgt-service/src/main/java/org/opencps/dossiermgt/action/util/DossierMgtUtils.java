@@ -162,7 +162,7 @@ public class DossierMgtUtils {
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
 			List<Long> lstUsers = new ArrayList<>();
 			
-			if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
 				for (DossierActionUser dau : lstDus) {
 					User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
 					

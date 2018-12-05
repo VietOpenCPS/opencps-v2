@@ -95,7 +95,7 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_holiday (uuid_ VARCHAR(75) null,holidayId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,holidayDate DATE null,description VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_holiday (uuid_ VARCHAR(75) null,holidayId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,holidayDate DATE null,description TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_holiday";
 	public static final String ORDER_BY_JPQL = " ORDER BY holiday.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_holiday.createDate ASC";
