@@ -133,4 +133,14 @@ public interface DictcollectionInterface {
 
 	public void updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
 			String groupNameEN, String groupDescription, ServiceContext serviceContext) throws NoSuchUserException;
+
+	/**LGSP - START */
+	public JSONObject getDictCollectionLGSP(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+
+	public JSONObject getDictgroupsLGSP(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+
+	public JSONObject getDictItemsLGSP(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 }
