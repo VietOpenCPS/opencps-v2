@@ -57,7 +57,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, ApplicantInputModel input) {
 
-		_log.info("START");
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
@@ -67,7 +66,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 
 		try {
-			_log.info("START");
 			String cityName = StringPool.BLANK;
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
@@ -75,7 +73,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
-			_log.info("START");
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
 			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
@@ -99,13 +96,12 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 				
 			}
-			_log.info("START");
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
 					wardCode, wardName, contactName, contactTelNo,
 					input.getPassword());
-			_log.info("applicant: "+applicant);
+			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 			return Response.status(200).entity(result).build();
@@ -142,7 +138,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantResultsModel results = new ApplicantResultsModel();
 		BackendAuth auth = new BackendAuthImpl();
-		_log.info("START APP");
 		try {
 
 			if (!auth.isAuth(serviceContext)) {

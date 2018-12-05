@@ -399,7 +399,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		}
 
-		if (Validator.isNotNull(groupId)) {
+		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
@@ -484,7 +484,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		}
 
-		if (Validator.isNotNull(groupId)) {
+		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 

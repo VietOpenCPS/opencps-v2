@@ -56,8 +56,11 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 
 		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(dictCollection.getCompanyId()));
 		document.addDateSortable(Field.MODIFIED_DATE, dictCollection.getModifiedDate());
+		document.addKeywordSortable(Field.NAME, String.valueOf(dictCollection.getCollectionCode()));
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(dictCollection.getUserId()));
-		document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictCollection.getUserName()));
+		//document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictCollection.getUserName()));
+		//document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictCollection.getCollectionCode()));
+		
 
 		document.addNumberSortable(DictCollectionTerm.GROUP_ID, dictCollection.getGroupId());
 		document.addNumberSortable(DictCollectionTerm.DICT_COLLECTION_ID, dictCollection.getDictCollectionId());
