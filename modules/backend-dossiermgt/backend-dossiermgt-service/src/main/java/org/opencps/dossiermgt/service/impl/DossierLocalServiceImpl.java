@@ -2646,7 +2646,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				if (originalityInt == -1) {
 					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.ORIGINALLITY,
 							String.valueOf(DossierTerm.ORIGINALITY_MOTCUA),
-							String.valueOf(DossierTerm.CONSTANT_INDEX_ORIGINALITY), false, false);
+							String.valueOf(DossierTerm.CONSTANT_INDEX_ORIGINALITY), false, true);
 
 					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 				} else if (originalityInt >= 0) {
