@@ -58,6 +58,11 @@ public class DossierActionUtils {
 				bResult != null && bResult.containsKey(DossierTerm.SUBMIT_DATE)
 				&& bResult.get(DossierTerm.SUBMIT_DATE))
 			payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate().getTime());
+		if (dossier.getReleaseDate() != null &&
+				bResult != null && bResult.containsKey(DossierTerm.RELEASE_DATE)
+				&& bResult.get(DossierTerm.RELEASE_DATE)) {
+			payloadObject.put(DossierTerm.RELEASE_DATE, dossier.getReleaseDate().getTime());
+		}
 		
 		return payloadObject;
 	}
