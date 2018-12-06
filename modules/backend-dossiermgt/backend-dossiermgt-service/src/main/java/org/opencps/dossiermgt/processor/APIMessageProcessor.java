@@ -170,6 +170,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									dfModel.setFormData(df.getFormData());
 									dfModel.setFileType(fileEntry.getMimeType());
 									dfModel.setRemoved(df.getRemoved());
+									dfModel.setEForm(df.getEForm());
 									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 									if (dfResult == null) {
 										return false;
@@ -452,6 +453,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setRemoved(df.getRemoved());
+										dfModel.setEForm(df.getEForm());
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
 											return false;
@@ -477,6 +479,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								dfModel.setFileTemplateNo(df.getFileTemplateNo());
 								dfModel.setFormData(df.getFormData());
 								dfModel.setRemoved(df.getRemoved());
+								dfModel.setEForm(df.getEForm());
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
