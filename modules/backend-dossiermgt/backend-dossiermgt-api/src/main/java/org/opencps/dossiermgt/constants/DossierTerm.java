@@ -227,4 +227,9 @@ public class DossierTerm {
 
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";
+	//STATISTIC
+	public static final String BE_TIME = "betime";
+	public static final String OVER_TIME = "overtime";
+	public static final String ON_TIME = "onetime";
+	public static final String TIME = "time";
 }

@@ -1658,11 +1658,11 @@ public class DossierManagementImpl implements DossierManagement {
 																.getHolidayByGroupId(groupId);
 
 														Date dueDateExtend = HolidayUtils.getEndDate(groupId,
-																dossier.getExtendDate(), hoursCount, holidayList);
+																dossier.getCorrecttingDate(), hoursCount, holidayList);
 														_log.info("dueDateExtend: "+dueDateExtend);
 														if (dueDateExtend != null) {
 															dossier.setDueDate(dueDateExtend);
-															dossier.setExtendDate(null);
+															dossier.setCorrecttingDate(null);
 															DossierLocalServiceUtil.updateDossier(dossier);
 														}
 													}
@@ -1672,7 +1672,7 @@ public class DossierManagementImpl implements DossierManagement {
 									} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 										if (dossier.getDueDate() != null) {
-											dossier.setExtendDate(dossier.getDueDate());
+											dossier.setCorrecttingDate(dossier.getDueDate());
 											dossier.setDueDate(null);
 											DossierLocalServiceUtil.updateDossier(dossier);
 										}
