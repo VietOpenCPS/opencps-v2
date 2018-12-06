@@ -436,5 +436,39 @@ public interface DataManagement {
 	public Response inActiveDictCollection(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code that need to be updated", required = true) @PathParam("code") String code
-			);	
+			);
+
+	//API using lgsp
+	@GET
+	@Path("/lgsp")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDictCollectionLGSP(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@BeanParam DataSearchModel query,
+			@QueryParam("status") String status);
+
+	@GET
+	@Path("/{code}/dictgroups/lgsp")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDictgroupsLGSP(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("code") String code, @BeanParam DataSearchModel query);
+
+	@GET
+	@Path("/{code}/dictitems/lgsp")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get DictItem list of DictCollectin", response = DictItemResults.class, notes = "Get DictItem list of DictCollection")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Get DictItem list of DictCollectin", response = DictItemResults.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
+	public Response getDictItemsLGSP(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "code of DictCollection of DictItem that need to be gotten list", required = true) @PathParam("code") String code,
+			@BeanParam DataSearchModel query);
+
 }

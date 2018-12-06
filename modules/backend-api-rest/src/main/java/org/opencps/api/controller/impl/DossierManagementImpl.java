@@ -1657,11 +1657,11 @@ public class DossierManagementImpl implements DossierManagement {
 																.getHolidayByGroupId(groupId);
 
 														Date dueDateExtend = HolidayUtils.getEndDate(groupId,
-																dossier.getExtendDate(), hoursCount, holidayList);
+																dossier.getCorrecttingDate(), hoursCount, holidayList);
 														_log.info("dueDateExtend: "+dueDateExtend);
 														if (dueDateExtend != null) {
 															dossier.setDueDate(dueDateExtend);
-															dossier.setExtendDate(null);
+															dossier.setCorrecttingDate(null);
 															DossierLocalServiceUtil.updateDossier(dossier);
 														}
 													}
@@ -1671,7 +1671,7 @@ public class DossierManagementImpl implements DossierManagement {
 									} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 										if (dossier.getDueDate() != null) {
-											dossier.setExtendDate(dossier.getDueDate());
+											dossier.setCorrecttingDate(dossier.getDueDate());
 											dossier.setDueDate(null);
 											DossierLocalServiceUtil.updateDossier(dossier);
 										}
@@ -3032,7 +3032,8 @@ public class DossierManagementImpl implements DossierManagement {
 	
 	@Override
 	public Response addDossierFileByEForm(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String partNo, String formData) {
+			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String partNo,
+			String formData, String removed, String eForm) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -3080,6 +3081,12 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			if(Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
+			}
+			if(Validator.isNotNull(removed)) {
+				dossierFile.setRemoved(Boolean.parseBoolean(removed));
+			}
+			if(Validator.isNotNull(eForm)) {
+				dossierFile.setEForm(Boolean.parseBoolean(eForm));
 			}
 					
 			_log.info("__Start update dossier file at:" + new Date());

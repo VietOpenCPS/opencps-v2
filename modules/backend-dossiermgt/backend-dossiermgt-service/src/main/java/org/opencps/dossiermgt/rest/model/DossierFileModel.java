@@ -97,7 +97,23 @@ public class DossierFileModel {
     protected String formScript;
     protected String formReport;
 
-    /**
+    public Boolean geteForm() {
+		return eForm;
+	}
+
+	public void seteForm(Boolean eForm) {
+		this.eForm = eForm;
+	}
+
+	public Boolean getIsNew() {
+		return isNew;
+	}
+
+	public Boolean getRemoved() {
+		return removed;
+	}
+
+	/**
      * Gets the value of the dossierFileId property.
      * 
      * @return

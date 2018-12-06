@@ -75,8 +75,8 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			hits = DictCollectionLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
-			_log.info("data: "+hits);
-			_log.info("hits.toList(): "+hits.toList());
+			//_log.info("data: "+hits);
+			//_log.info("hits.toList(): "+hits.toList());
 
 			result.put("data", hits.toList());
 
@@ -1288,5 +1288,93 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		DictGroupLocalServiceUtil.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName,
 				groupNameEN, groupDescription, serviceContext);
+	}
+
+	//LGSP
+	public JSONObject getDictCollectionLGSP(long userId, long companyId, long groupId,
+			LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		try {
+
+			Hits hits = DictCollectionLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
+			// _log.info("data: "+hits);
+			// _log.info("hits.toList(): "+hits.toList());
+			result.put("data", hits.toList());
+
+			long total = DictCollectionLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
+			result.put("total", total);
+
+		} catch (Exception e) {
+			_log.debug(e);
+			// _log.error(e);
+		}
+
+		return result;
+	}
+
+	public JSONObject getDictgroupsLGSP(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			Hits hits = null;
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(companyId);
+
+			try {
+
+				hits = DictGroupLocalServiceUtil.luceneSearchEngine(
+					params, sorts, start, end, searchContext);
+
+				result.put("data", hits.toList());
+
+				long total = DictGroupLocalServiceUtil.countLuceneSearchEngine(
+					params, searchContext);
+
+				result.put("total", total);
+
+			}
+			catch (ParseException e) {
+				_log.debug(e);
+				//_log.error(e);
+			}
+			catch (SearchException e) {
+				_log.debug(e);
+				//_log.error(e);
+			}
+
+			return result;
+		}
+
+	public JSONObject getDictItemsLGSP(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		Hits hits = null;
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		try {
+
+			hits = DictItemLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
+
+			result.put("data", hits.toList());
+
+			long total = DictItemLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
+
+			result.put("total", total);
+
+		} catch (ParseException e) {
+			_log.debug(e);
+			// _log.error(e);
+		} catch (SearchException e) {
+			_log.debug(e);
+			// _log.error(e);
+		}
+
+		return result;
 	}
 }

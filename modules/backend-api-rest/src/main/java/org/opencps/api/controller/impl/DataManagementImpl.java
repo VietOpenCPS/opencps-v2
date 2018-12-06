@@ -37,6 +37,7 @@ import org.opencps.api.datamgt.model.DataSearchModel;
 import org.opencps.api.datamgt.model.DictCollectionInputModel;
 import org.opencps.api.datamgt.model.DictCollectionModel;
 import org.opencps.api.datamgt.model.DictCollectionResults;
+import org.opencps.api.datamgt.model.DictCollectionShortModel;
 import org.opencps.api.datamgt.model.DictGroupInputModel;
 import org.opencps.api.datamgt.model.DictGroupItemModel;
 import org.opencps.api.datamgt.model.DictGroupItemResults;
@@ -1702,6 +1703,134 @@ public class DataManagementImpl implements DataManagement {
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
 			return Response.status(200).entity(dictCollectionModel).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	/** LGSP - START */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response getDictCollectionLGSP(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DataSearchModel query, String status) {
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictCollectionResults result = new DictCollectionResults();
+
+		try {
+
+			if (query.getEnd() == 0) {
+				query.setStart(-1);
+				query.setEnd(-1);
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			//params.put("groupId", String.valueOf(groupId));
+			params.put("keywords", query.getKeywords());
+			params.put("status", status);
+
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+
+			JSONObject jsonData = dictItemDataUtil.getDictCollectionLGSP(user.getUserId(), company.getCompanyId(), groupId,
+					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+
+			List<DictCollectionShortModel> dictCollectionList = DataManagementUtils
+					.mapperDictCollectionLGSPModelList((List<Document>) jsonData.get("data"));
+			if (dictCollectionList != null && dictCollectionList.size() > 0) {
+				result.getDictCollectionShortModel().addAll(dictCollectionList);
+				result.setTotal(dictCollectionList.size());
+			}
+			
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response getDictgroupsLGSP(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictGroupResults result = new DictGroupResults();
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(company.getCompanyId());
+
+		try {
+
+			if (query.getEnd() == 0) {
+				query.setStart(-1);
+				query.setEnd(-1);
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put("groupId", String.valueOf(groupId));
+			params.put("keywords", query.getKeywords());
+			params.put(DictGroupTerm.DICT_COLLECTION_CODE, code);
+
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+
+			JSONObject jsonData = dictItemDataUtil.getDictgroupsLGSP(user.getUserId(), company.getCompanyId(), groupId,
+					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+
+			result.setTotal(jsonData.getLong("total"));
+			result.getGroups().addAll(DataManagementUtils.mapperGroupsList((List<Document>) jsonData.get("data")));
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response getDictItemsLGSP(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictItemResults result = new DictItemResults();
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(company.getCompanyId());
+
+		try {
+
+			if (query.getEnd() == 0) {
+				query.setStart(-1);
+				query.setEnd(-1);
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(code)) groupId = 0;
+
+			params.put("groupId", groupId);
+			params.put("keywords", query.getKeywords());
+			params.put("itemLv", query.getLevel());
+			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
+			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
+
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+
+			JSONObject jsonData = dictItemDataUtil.getDictItemsLGSP(user.getUserId(), company.getCompanyId(), groupId,
+					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+
+			List<DictItemModel> dictItemList = DataManagementUtils
+					.mapperDictItemModelListLGSP((List<Document>) jsonData.get("data"), code);
+			if (dictItemList != null && dictItemList.size() > 0) {
+				result.getDictItemModel().addAll(dictItemList);
+				result.setTotal(dictItemList.size());
+			}
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
