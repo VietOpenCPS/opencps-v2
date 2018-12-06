@@ -762,12 +762,17 @@ public class OpenCPSConverter {
 		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
 		params.put(DossierFileTerm.FILE_TYPE, model.getFileType());
 		params.put(DossierFileTerm.IS_SYNC, "true");
+		params.put(DossierFileTerm.REMOVED, Boolean.toString(model.getRemoved()));
+		params.put(DossierFileTerm.E_FORM, Boolean.toString(model.geteForm()));
+		
 		return params;
 	}
 	
 	public static HashMap<String, String> convertDossierFileEFormHttpParams(DossierFileModel model) {
 		HashMap<String, String> params = new HashMap<>();
 		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
+		params.put(DossierFileTerm.REMOVED, Boolean.toString(model.getRemoved()));
+		params.put(DossierFileTerm.E_FORM, Boolean.toString(model.geteForm()));
 		return params;
 	}
 
@@ -885,6 +890,9 @@ public class OpenCPSConverter {
 		obj.put(DossierFileTerm.DOSSIER_PART_TYPE, model.getDossierPartType());
 		obj.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());
 		obj.put(DossierFileTerm.FILE_TEMPLATE_NO, model.getFileTemplateNo());
+		obj.put(DossierFileTerm.REMOVED, model.getRemoved());
+		obj.put(DossierFileTerm.E_FORM, model.geteForm());
+		
 		return obj;
 	}
 	

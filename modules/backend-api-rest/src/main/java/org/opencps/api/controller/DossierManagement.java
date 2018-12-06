@@ -492,7 +492,9 @@ public interface DossierManagement {
 			@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "partno of dossier part", required = true) @PathParam("partNo") String partNo,
-			@ApiParam(value = "Metadata of DossierFile") @Multipart("formData") @Nullable String formData);	
+			@ApiParam(value = "Metadata of DossierFile") @Multipart("formData") @Nullable String formData,
+			@ApiParam(value = "removed", required = false) @Multipart(value ="removed", required = false) @Nullable String removed,
+			@ApiParam(value = "eFrom", required = false) @Multipart(value = "eForm", required = false) @Nullable String eForm);	
 	
 	@GET
 	@Path("/{id}/eforms/{partNo}/formdata")
