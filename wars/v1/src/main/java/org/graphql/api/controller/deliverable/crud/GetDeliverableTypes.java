@@ -1,14 +1,22 @@
 package org.graphql.api.controller.deliverable.crud;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.graphql.api.controller.utils.WebKeys;
 import org.opencps.deliverable.model.OpenCPSDeliverableType;
+import org.opencps.deliverable.model.OpenCPSDeliverableTypeRole;
+import org.opencps.deliverable.service.OpenCPSDeliverableTypeRoleLocalServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,14 +51,51 @@ public class GetDeliverableTypes implements DataFetcher<List<OpenCPSDeliverableT
 		if (Validator.isNotNull(request.getHeader(WebKeys.GROUPID))) {
 			groupId = Long.valueOf(request.getHeader(WebKeys.GROUPID));
 		}
-
-		System.out.println("GetDeliverableTypes.get(start)" + start);
-		System.out.println("GetDeliverableTypes.get(end)" + end);
-		System.out.println("GetDeliverableTypes.get(start)" + start);
+		long userId = 0;
 		
-		List<OpenCPSDeliverableType> results = actions.getDeliverableTypes(groupId, start, end);
-
-		System.out.println("GetDeliverableTypes.get(results)" + results);
+		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+			userId = (long) request.getAttribute(WebKeys.USER_ID);
+		}
+		
+		List<OpenCPSDeliverableType> results = new ArrayList<>();
+		
+		if (userId > 0) {
+			
+			List<OpenCPSDeliverableType> resultsTemp = actions.getDeliverableTypes(groupId, start, end);
+			
+			try {
+				
+				User user = UserLocalServiceUtil.getUser(userId);
+				
+				Long[] longObjects = ArrayUtils.toObject(user.getRoleIds());
+				List<Long> roleIds = Arrays.asList(longObjects);
+				
+				List<Long> rIds = new ArrayList<>();
+				
+				for (OpenCPSDeliverableType openCPSDeliverableType : resultsTemp) {
+					
+					rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
+					
+					for (Long rId : rIds) {
+						if (roleIds.contains(rId)) {
+							results.add(openCPSDeliverableType);
+							break;
+						}
+					}
+					
+				}
+				
+//				results = resultsTemp;
+				
+			} catch (PortalException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
+		}
+		
 		return results;
 
 	}

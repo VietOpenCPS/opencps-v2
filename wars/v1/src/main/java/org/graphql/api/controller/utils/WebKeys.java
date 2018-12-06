@@ -2,6 +2,7 @@ package org.graphql.api.controller.utils;
 
 public class WebKeys implements com.liferay.portal.kernel.util.WebKeys {
 
+	public static final String FK = "fk";
 	public static final String GROUPID = "groupId";
 	public static final String START = "start";
 	public static final String END = "end";

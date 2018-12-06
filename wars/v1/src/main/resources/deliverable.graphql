@@ -6,6 +6,7 @@ schema {
 type Query {
 	getDeliverableTypes(start: Int = 0, end: Int = 10): [OpenCPSDeliverableType]
 	getDeliverableType(typeCode: String): OpenCPSDeliverableType
+	getDeliverableLogs(fk: Long, start: Int = 0, end: Int = 10): [OpenCPSDeliverableLog]
 }
 
 type Mutation {
@@ -61,7 +62,22 @@ type OpenCPSDeliverableType {
  	docSync: Int
  	govAgencies: String
 }
-
+type OpenCPSDeliverableLog {
+	uuid_: String
+ 	deliverableLogId : Long
+ 	companyId: Long
+ 	groupId: Long
+ 	userId: Long
+ 	userName: String
+ 	createDate: String
+ 	modifiedDate: String
+ 	dossierUid: String
+ 	author: String
+ 	content: String
+ 	deliverableAction: Int
+ 	actionDate: String
+ 	payload: String
+}
 input OpenCPSDeliverableTypeInput {
 	deliverableTypeId : Long
 	groupId: Long

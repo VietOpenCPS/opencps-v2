@@ -201,9 +201,9 @@ public class DocumentTypeLocalServiceImpl extends DocumentTypeLocalServiceBaseIm
 
 		DocumentType object = null;
 
-		if (objectData.getLong("DocumentTypeId") > 0) {
+		if (objectData.getLong("documentTypeId") > 0) {
 
-			object = documentTypePersistence.fetchByPrimaryKey(objectData.getLong("DocumentTypeId"));
+			object = documentTypePersistence.fetchByPrimaryKey(objectData.getLong("documentTypeId"));
 
 			object.setModifiedDate(new Date());
 
