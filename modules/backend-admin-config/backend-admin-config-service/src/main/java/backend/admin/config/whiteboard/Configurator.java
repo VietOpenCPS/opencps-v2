@@ -1,4 +1,4 @@
-package org.graphql.api.whiteboard;
+package backend.admin.config.whiteboard;
 
 import java.util.Hashtable;
 

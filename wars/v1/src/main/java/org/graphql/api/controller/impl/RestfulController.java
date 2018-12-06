@@ -51,7 +51,6 @@ import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
 import org.graphql.api.model.UsersUserItem;
-import org.graphql.api.whiteboard.BundleLoader;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -82,6 +81,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import backend.admin.config.whiteboard.BundleLoader;
 import backend.deliverable.action.impl.DeliverableTypeActions;
 import backend.utils.FileUploadUtils;
 import io.swagger.annotations.ApiParam;

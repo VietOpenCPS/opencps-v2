@@ -1,4 +1,4 @@
-package org.graphql.api.whiteboard;
+package backend.admin.config.whiteboard;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 
-import org.graphql.api.controller.utils.WebKeys;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -346,8 +344,8 @@ public class AdminEndpoind extends Endpoint {
 					headers.set(key, value);
 
 				}
-				headers.set("localaccess", headerObject.getString(WebKeys.P_AUTH));
-				headers.set("userid", headerObject.getString(WebKeys.USER_ID));
+				headers.set("localaccess", headerObject.getString("Token"));
+				headers.set("userid", headerObject.getString("USER_ID"));
 				
 				HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 				
