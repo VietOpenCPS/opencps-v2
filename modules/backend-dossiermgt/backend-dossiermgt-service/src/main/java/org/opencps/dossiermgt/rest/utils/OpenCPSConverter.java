@@ -763,7 +763,7 @@ public class OpenCPSConverter {
 		params.put(DossierFileTerm.FILE_TYPE, model.getFileType());
 		params.put(DossierFileTerm.IS_SYNC, "true");
 		params.put(DossierFileTerm.REMOVED, Boolean.toString(model.getRemoved()));
-		params.put(DossierFileTerm.E_FORM,Boolean.toString(model.geteForm()));
+		params.put(DossierFileTerm.E_FORM, Boolean.toString(model.geteForm()));
 		
 		return params;
 	}
@@ -772,7 +772,7 @@ public class OpenCPSConverter {
 		HashMap<String, String> params = new HashMap<>();
 		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
 		params.put(DossierFileTerm.REMOVED, Boolean.toString(model.getRemoved()));
-		params.put(DossierFileTerm.E_FORM,Boolean.toString(model.geteForm()));
+		params.put(DossierFileTerm.E_FORM, Boolean.toString(model.geteForm()));
 		return params;
 	}
 
