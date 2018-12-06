@@ -113,19 +113,29 @@ public class SystemManagementImpl implements SystemManagement {
 			}
 			
 			Role oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "APPLICANT");
+			Map<Locale, String> titleMap = new HashMap<>();
+			titleMap.put(Locale.getDefault(), "APPLICANT");
+			
+			Map<Locale, String> titleDesc = new HashMap<>();
+			titleDesc.put(Locale.getDefault(), "APPLICANT");
+
 			if (oldApplicantRole == null) {
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"APPLICANT", null, null, RoleConstants.TYPE_REGULAR, "", serviceContext);				
+						"APPLICANT", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "", serviceContext);				
 			}
 			Role oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "EMPLOYEE");
 			if (oldEmployeeRole == null) {
+				titleMap.put(Locale.getDefault(), "EMPLOYEE");
+				titleDesc.put(Locale.getDefault(), "EMPLOYEE");				
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"EMPLOYEE", null, null, RoleConstants.TYPE_REGULAR, "", serviceContext);				
+						"EMPLOYEE", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "", serviceContext);				
 			}
 			Role oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "CITIZEN");
 			if (oldCitizenRole == null) {
+				titleMap.put(Locale.getDefault(), "CITIZEN");
+				titleDesc.put(Locale.getDefault(), "CITIZEN");
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"CITIZEN", null, null, RoleConstants.TYPE_REGULAR, "", serviceContext);				
+						"CITIZEN", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "", serviceContext);				
 			}
 			
 			return Response.status(200).entity(StringPool.BLANK).build();
