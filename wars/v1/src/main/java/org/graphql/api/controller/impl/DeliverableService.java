@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 
 import org.graphql.api.controller.deliverable.crud.CreateDeliverable;
 import org.graphql.api.controller.deliverable.crud.CreateDeliverableType;
+import org.graphql.api.controller.deliverable.crud.GetDeliverableLogs;
 import org.graphql.api.controller.deliverable.crud.GetDeliverableType;
 import org.graphql.api.controller.deliverable.crud.GetDeliverableTypes;
 import org.graphql.api.controller.utils.GraphQLUtils;
@@ -53,7 +54,8 @@ public class DeliverableService {
 		return RuntimeWiring.newRuntimeWiring()
 				.type("Query",
 						typeWiring -> typeWiring.dataFetcher("getDeliverableTypes", getDeliverableTypes)
-								.dataFetcher("getDeliverableType", getDeliverableType))
+								.dataFetcher("getDeliverableType", getDeliverableType)
+								.dataFetcher("getDeliverableLogs", getDeliverableLogs))
 				.type("Mutation", typeWiring -> typeWiring.dataFetcher("createDeliverableType", createDeliverableType)
 						.dataFetcher("createDeliverable", createDeliverable))
 				.build();
@@ -70,4 +72,8 @@ public class DeliverableService {
 	// createDeliverable
 	@Autowired
 	private CreateDeliverable createDeliverable;
+	
+	//log
+	@Autowired
+	private GetDeliverableLogs getDeliverableLogs;
 }

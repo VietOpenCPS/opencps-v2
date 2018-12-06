@@ -18,8 +18,54 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 public class ElasticQueryWrapUtil {
 	private static final String ELASTIC_SERVER_API_URL = "http://localhost:9200/_all/_search";
+	private static final String ELASTIC_SERVER_API_URL_COUNT = "http://localhost:9200/_all/_count";
 	private static final String MULTIPLE_ELASTIC_SERVER_API_URL = "http://localhost:9200/liferay-20116/LiferayDocumentType/_msearch";
 	private static Log _log = LogFactoryUtil.getLog(ElasticQueryWrapUtil.class);
+	
+	public static JSONObject count(String q) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			URL url = new URL(ELASTIC_SERVER_API_URL_COUNT);
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "Content-Type: application/json");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+	        OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
+	        osw.write(q);
+	        osw.flush();
+	        osw.close();
+	        
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+			
+			result = JSONFactoryUtil.createJSONObject(sb.toString());
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+			_log.error(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+			_log.error(e);
+		}
+
+		return result;
+	}
 	
 	public static JSONObject query(String q) {
 

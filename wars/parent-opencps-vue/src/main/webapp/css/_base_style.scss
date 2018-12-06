@@ -3,6 +3,9 @@
   src: url('../fonts/glyphicons-halflings-regular.eot');
   src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+.v_data_table_check_all {
+    width: 32px !important;
+}
 .mWrapper > section#main-content {
     margin: 10px 0 0 0;
 }
@@ -813,3 +816,689 @@
     border: 1px solid #ddd;
     background-color: white;
 }
+
+#react-root .navigation-drawer--right>.navigation-drawer__border {
+		position: absolute;
+		top: 0;
+		height: 100%;
+		width: 100%;
+		background-image: url(http://hanhchinhcong.phutho.gov.vn/o/parent-opencps-vue/images/bg-home.jpg);
+		background-size: cover;
+		-webkit-filter: blur(200px);
+		z-index: -1;
+		filter: blur(200px);
+	}
+	#react-root .navigation-drawer .list {
+		background: transparent;
+	}
+	#react-root .navigation-drawer>.list .list__tile:hover {
+		background: transparent !important;
+	}
+	#react-root .btn-toggle--selected {
+		box-shadow: none !important;
+	}
+	#react-root .theme--light .v-divider {
+		border-color: #eee;
+	}
+	#react-root .theme--light .v-list__tile__content {
+		height: 30px;
+	}
+	#react-root .navigation-drawer>.list .list__tile {
+			height: 42px;
+			padding: 0 16px !important;
+	}
+	#react-root .theme--light .btn-toggle {
+			width: 100%;
+		background: #fff;
+		border-radius: 4px;
+		height: 20px;
+	}
+	#react-root .theme--light .btn-toggle .btn {
+			height: 20px;
+			opacity: 1;
+		font-size: 10px;
+	}
+	#react-root .theme--light .v-list__tile__title {
+			font-size: 24px;
+		padding-left: 10px;
+		color: #383838;
+	}
+	#react-root .theme--light .btn--small {
+		height: 18px !important;
+		width: 18px !important;
+	}
+	body #react-root  .v-navigation-drawer--is-mobile:not(.v-navigation-drawer--close), 
+	body #react-root .v-navigation-drawer--temporary:not(.v-navigation-drawer--close) {
+		-webkit-box-shadow: 0 1px 3px -1px rgba(0,0,0,.2), 1px 1px 5px -5px rgba(0,0,0,.14), 0 6px 30px 5px rgba(0,0,0,.12);
+		box-shadow: 0 1px 3px -1px rgba(0,0,0,.2), 1px 1px 5px -5px rgba(0,0,0,.14), 0 6px 30px 5px rgba(0,0,0,.12);
+	}
+	#react-root .overlay--absolute {
+		opacity: 0;
+	}
+	
+	.login-wrapper {
+		float: right;
+	}
+	.forgetten-password-input {
+		width: 100%;
+		line-height: 31px;
+		font-size: 13px;
+		padding-left: 10px;
+		text-decoration: underline;
+		color: #fff;
+	}
+	.action-btn-login-input {
+		width: 100%;
+		text-align: right;
+	}
+	.login-wrapper .login-input {
+		display: -webkit-box;
+		display: flex;
+	}
+	.login-wrapper .login-input .ico {
+		position: relative;
+		margin-left: 10px;
+	}
+	.login-wrapper .login-input .ico:first-child {
+		margin-left: 0;
+	}
+	.login-wrapper .login-input .ico:before {
+		content: "";
+		font-family: FontAwesome;
+		position: absolute;
+		color: #005792;
+		width: 30px;
+		height: 100%;
+		display: -webkit-box;
+		display: flex;
+		-webkit-align-items: center;
+		align-items: center;
+		-webkit-justify-content: center;
+		justify-content: center;
+	}
+	.login-wrapper .login-input .ico-user:before {
+		content: "\f007";
+	}
+	.login-wrapper .login-input .ico-pass:before {
+		content: "\f023";
+	}
+	.login-wrapper .login-input .ico:after {
+		content: "";
+		position: absolute;
+		top: 20%;
+		left: 30px;
+		width: 1px;
+		height: 60%;
+		background-color: #005792;
+	}
+	.login-wrapper .login-input input {
+		height: 26px;
+		width: 200px;
+		border: 1px solid #005792;
+		border-radius: 30px;
+		padding-left: 35px;
+		font-size: 12px;
+		background: #fff;
+	}
+	.login-wrapper .login-input input:focus {
+		outline: none;
+	}
+	.login-wrapper .btn-action {
+		text-align: right;
+	}
+	.login-wrapper button {
+		margin: 5px 0 0 5px;
+		height: 26px;
+		line-height: 26px;
+		padding: 0 12px;
+		color: white;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		border: 0;
+		border-radius: 30px;
+		background-color: #005792;
+		font-size: 12px;
+		font-weight: bold;
+		will-change: box-shadow;
+		box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+	}
+	.login-wrapper .btn-register {
+		background-color: #fdb44b;
+	}
+	.login-wrapper button:hover {
+		background-color: #00204a;
+		cursor: pointer;
+	}
+	.login-wrapper .btn-register:hover {
+		background-color: #0072bc;
+		cursor: pointer;
+	}
+	#react-root .application--wrap {
+		min-height: unset;
+	}
+	#react-root .application.theme--light {
+		background: transparent !important;
+		width: 100%;
+	}
+	#react-root .application--wrap {
+		border-top: none !important;
+	}
+	#react-root .login-wrapper input {
+		background-color: #fff;
+	}
+	#react-root .navigation-drawer{
+		height: 100vh !important;
+		z-index: 11;
+	}
+	#react-root .badge__badge {
+		font-size: 10px;
+		border-radius: 4px;
+		height: 16px;
+		width: auto;
+		padding: 0 4px;
+		right: -6px;
+		top: -2px;
+		min-width: 18px;
+		z-index: 10;
+	}
+	#react-root {
+		min-width: 300px;
+		width: 100%;
+	}
+	body #banner__content {
+		padding: 0!important;
+		height: 66px !important;
+	}
+	#banner #banner__content .logo {
+		position: absolute;
+	}
+	body #banner .navigation-drawer--fixed {
+		position: fixed !important;
+	}
+	#react-root .btn-toggle .btn__content {
+		text-transform: none;
+		background: #929292;
+		color: #fff;
+		font-size: 10px !important;
+	}
+	#react-root span {
+		color: #121212 !important;
+		font-size: 13px;
+	}
+	#react-root .btn-toggle .btn--active .btn__content {
+		background: #fff;
+		color: inherit;
+	}
+	#react-root .btn-toggle .btn--active .btn__content::before {
+		opacity: 0;
+	}
+	#react-root .theme--light.chip,
+	#react-root .theme--light .chip {
+		background: transparent !important;
+	}
+	#react-root .menu__content {
+		margin-top: 0;
+	}
+	#react-root .menu__content .list {
+		margin-bottom: 0;
+		padding: 0;
+	}
+	#react-root .menu__content .list>div > .list__tile {
+		height: 32px;
+		font-size: 13px;
+		cursor: pointer;
+	}
+	#react-root .menu__content .list>div:hover {
+		background-color: #eee !important;
+	}
+	#react-root .menu__content .list>div {
+		border-bottom: 1px dashed #ddd;
+		display: block;
+		padding: 0;
+		font-size: 13px;
+		height: auto;
+		color: rgba(0,0,0,.87);
+		position: relative;
+	}
+	#react-root .chip .avatar {
+		margin-right: 2px;
+	}
+	#react-root .chip .avatar img {
+		width: 24px;
+		height: 24px;
+		margin-right: 0px !important;
+	}
+	#react-root .list__tile__action {
+		min-width: 25px;
+	}
+    body #react-root .forgetten-password-input {
+        color: #005797 !important;
+        text-decoration: none !important;
+    }
+    body #react-root .forgetten-password-input a {
+        font-size: 11px;
+        text-transform: unset;
+    }
+    .user-profile-menu-react > div[class*='MuiPopover-paper'] {
+top: 5px !important;
+right: 0 !important;
+left: unset !important;
+position: absolute !important; }
+
+.user-profile-menu-react > div > ul {
+padding: 0 !important; }
+
+.user-profile-menu-react > div > ul > li {
+border-bottom: 1px dashed #adabab !important;
+padding: 5px 10px !important;
+font-size: 13px !important; }
+
+.user-profile-menu-react > div > ul > li:last-child {
+border: none !important; }
+
+.Toastify__toast-container {
+    z-index: 9999;
+    position: fixed;
+    padding: 4px;
+    width: 320px;
+    box-sizing: border-box;
+    color: #fff; }
+    .Toastify__toast-container--top-left {
+      top: 1em;
+      left: 1em; }
+    .Toastify__toast-container--top-center {
+      top: 1em;
+      left: 50%;
+      margin-left: -160px; }
+    .Toastify__toast-container--top-right {
+      top: 1em;
+      right: 1em; }
+    .Toastify__toast-container--bottom-left {
+      bottom: 1em;
+      left: 1em; }
+    .Toastify__toast-container--bottom-center {
+      bottom: 1em;
+      left: 50%;
+      margin-left: -160px; }
+    .Toastify__toast-container--bottom-right {
+      bottom: 1em;
+      right: 1em; }
+  
+  @media only screen and (max-width: 480px) {
+    .Toastify__toast-container {
+      width: 100vw;
+      padding: 0;
+      left: 0;
+      margin: 0; }
+      .Toastify__toast-container--top-left, .Toastify__toast-container--top-center, .Toastify__toast-container--top-right {
+        top: 0; }
+      .Toastify__toast-container--bottom-left, .Toastify__toast-container--bottom-center, .Toastify__toast-container--bottom-right {
+        bottom: 0; }
+      .Toastify__toast-container--rtl {
+        right: 0;
+        left: initial; } }
+  
+  .Toastify__toast {
+    position: relative;
+    min-height: 64px;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    padding: 8px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+        justify-content: space-between;
+    max-height: 800px;
+    overflow: hidden;
+    font-family: sans-serif;
+    cursor: pointer;
+    direction: ltr; }
+    .Toastify__toast--rtl {
+      direction: rtl; }
+    .Toastify__toast--default {
+      background: #fff;
+      color: #aaa; }
+    .Toastify__toast--info {
+      background: #3498db; }
+    .Toastify__toast--success {
+      background: #07bc0c; }
+    .Toastify__toast--warning {
+      background: #f1c40f; }
+    .Toastify__toast--error {
+      background: #B71C1C; }
+    .Toastify__toast-body {
+      margin: auto 0;
+      -ms-flex: 1;
+          flex: 1; }
+  
+  @media only screen and (max-width: 480px) {
+    .Toastify__toast {
+      margin-bottom: 0; } }
+  
+  .Toastify__close-button {
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    background: transparent;
+    outline: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: 0.3s ease;
+    -ms-flex-item-align: start;
+        align-self: flex-start; }
+    .Toastify__close-button--default {
+      color: #000;
+      opacity: 0.3; }
+    .Toastify__close-button:hover, .Toastify__close-button:focus {
+      opacity: 1; }
+  
+  @keyframes Toastify__trackProgress {
+    0% {
+      width: 100%; }
+    100% {
+      width: 0; } }
+  
+  .Toastify__progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 5px;
+    z-index: 9999;
+    opacity: 0.7;
+    animation: Toastify__trackProgress linear 1;
+    background-color: rgba(255, 255, 255, 0.7); }
+    .Toastify__progress-bar--rtl {
+      right: 0;
+      left: initial; }
+    .Toastify__progress-bar--default {
+      background: linear-gradient(to right, #4cd964, #5ac8fa, #007aff, #34aadc, #5856d6, #ff2d55); }
+  
+  @keyframes Toastify__bounceInRight {
+    from,
+    60%,
+    75%,
+    90%,
+    to {
+      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+    from {
+      opacity: 0;
+      transform: translate3d(3000px, 0, 0); }
+    60% {
+      opacity: 1;
+      transform: translate3d(-25px, 0, 0); }
+    75% {
+      transform: translate3d(10px, 0, 0); }
+    90% {
+      transform: translate3d(-5px, 0, 0); }
+    to {
+      transform: none; } }
+  
+  @keyframes Toastify__bounceOutRight {
+    20% {
+      opacity: 1;
+      transform: translate3d(-20px, 0, 0); }
+    to {
+      opacity: 0;
+      transform: translate3d(2000px, 0, 0); } }
+  
+  @keyframes Toastify__bounceInLeft {
+    from,
+    60%,
+    75%,
+    90%,
+    to {
+      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+    0% {
+      opacity: 0;
+      transform: translate3d(-3000px, 0, 0); }
+    60% {
+      opacity: 1;
+      transform: translate3d(25px, 0, 0); }
+    75% {
+      transform: translate3d(-10px, 0, 0); }
+    90% {
+      transform: translate3d(5px, 0, 0); }
+    to {
+      transform: none; } }
+  
+  @keyframes Toastify__bounceOutLeft {
+    20% {
+      opacity: 1;
+      transform: translate3d(20px, 0, 0); }
+    to {
+      opacity: 0;
+      transform: translate3d(-2000px, 0, 0); } }
+  
+  @keyframes Toastify__bounceInUp {
+    from,
+    60%,
+    75%,
+    90%,
+    to {
+      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+    from {
+      opacity: 0;
+      transform: translate3d(0, 3000px, 0); }
+    60% {
+      opacity: 1;
+      transform: translate3d(0, -20px, 0); }
+    75% {
+      transform: translate3d(0, 10px, 0); }
+    90% {
+      transform: translate3d(0, -5px, 0); }
+    to {
+      transform: translate3d(0, 0, 0); } }
+  
+  @keyframes Toastify__bounceOutUp {
+    20% {
+      transform: translate3d(0, -10px, 0); }
+    40%,
+    45% {
+      opacity: 1;
+      transform: translate3d(0, 20px, 0); }
+    to {
+      opacity: 0;
+      transform: translate3d(0, -2000px, 0); } }
+  
+  @keyframes Toastify__bounceInDown {
+    from,
+    60%,
+    75%,
+    90%,
+    to {
+      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+    0% {
+      opacity: 0;
+      transform: translate3d(0, -3000px, 0); }
+    60% {
+      opacity: 1;
+      transform: translate3d(0, 25px, 0); }
+    75% {
+      transform: translate3d(0, -10px, 0); }
+    90% {
+      transform: translate3d(0, 5px, 0); }
+    to {
+      transform: none; } }
+  
+  @keyframes Toastify__bounceOutDown {
+    20% {
+      transform: translate3d(0, 10px, 0); }
+    40%,
+    45% {
+      opacity: 1;
+      transform: translate3d(0, -20px, 0); }
+    to {
+      opacity: 0;
+      transform: translate3d(0, 2000px, 0); } }
+  
+  .Toastify__bounce-enter--top-left, .Toastify__bounce-enter--bottom-left {
+    animation-name: Toastify__bounceInLeft; }
+  
+  .Toastify__bounce-enter--top-right, .Toastify__bounce-enter--bottom-right {
+    animation-name: Toastify__bounceInRight; }
+  
+  .Toastify__bounce-enter--top-center {
+    animation-name: Toastify__bounceInDown; }
+  
+  .Toastify__bounce-enter--bottom-center {
+    animation-name: Toastify__bounceInUp; }
+  
+  .Toastify__bounce-exit--top-left, .Toastify__bounce-exit--bottom-left {
+    animation-name: Toastify__bounceOutLeft; }
+  
+  .Toastify__bounce-exit--top-right, .Toastify__bounce-exit--bottom-right {
+    animation-name: Toastify__bounceOutRight; }
+  
+  .Toastify__bounce-exit--top-center {
+    animation-name: Toastify__bounceOutUp; }
+  
+  .Toastify__bounce-exit--bottom-center {
+    animation-name: Toastify__bounceOutDown; }
+  
+  @keyframes Toastify__zoomIn {
+    from {
+      opacity: 0;
+      transform: scale3d(0.3, 0.3, 0.3); }
+    50% {
+      opacity: 1; } }
+  
+  @keyframes Toastify__zoomOut {
+    from {
+      opacity: 1; }
+    50% {
+      opacity: 0;
+      transform: scale3d(0.3, 0.3, 0.3); }
+    to {
+      opacity: 0; } }
+  
+  .Toastify__zoom-enter {
+    animation-name: Toastify__zoomIn; }
+  
+  .Toastify__zoom-exit {
+    animation-name: Toastify__zoomOut; }
+  
+  @keyframes Toastify__flipIn {
+    from {
+      transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+      animation-timing-function: ease-in;
+      opacity: 0; }
+    40% {
+      transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+      animation-timing-function: ease-in; }
+    60% {
+      transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+      opacity: 1; }
+    80% {
+      transform: perspective(400px) rotate3d(1, 0, 0, -5deg); }
+    to {
+      transform: perspective(400px); } }
+  
+  @keyframes Toastify__flipOut {
+    from {
+      transform: perspective(400px); }
+    30% {
+      transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+      opacity: 1; }
+    to {
+      transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+      opacity: 0; } }
+  
+  .Toastify__flip-enter {
+    animation-name: Toastify__flipIn; }
+  
+  .Toastify__flip-exit {
+    animation-name: Toastify__flipOut; }
+  
+  @keyframes Toastify__slideInRight {
+    from {
+      transform: translate3d(110%, 0, 0);
+      visibility: visible; }
+    to {
+      transform: translate3d(0, 0, 0); } }
+  
+  @keyframes Toastify__slideInLeft {
+    from {
+      transform: translate3d(-110%, 0, 0);
+      visibility: visible; }
+    to {
+      transform: translate3d(0, 0, 0); } }
+  
+  @keyframes Toastify__slideInUp {
+    from {
+      transform: translate3d(0, 110%, 0);
+      visibility: visible; }
+    to {
+      transform: translate3d(0, 0, 0); } }
+  
+  @keyframes Toastify__slideInDown {
+    from {
+      transform: translate3d(0, -110%, 0);
+      visibility: visible; }
+    to {
+      transform: translate3d(0, 0, 0); } }
+  
+  @keyframes Toastify__slideOutRight {
+    from {
+      transform: translate3d(0, 0, 0); }
+    to {
+      visibility: hidden;
+      transform: translate3d(110%, 0, 0); } }
+  
+  @keyframes Toastify__slideOutLeft {
+    from {
+      transform: translate3d(0, 0, 0); }
+    to {
+      visibility: hidden;
+      transform: translate3d(-110%, 0, 0); } }
+  
+  @keyframes Toastify__slideOutDown {
+    from {
+      transform: translate3d(0, 0, 0); }
+    to {
+      visibility: hidden;
+      transform: translate3d(0, 500px, 0); } }
+  
+  @keyframes Toastify__slideOutUp {
+    from {
+      transform: translate3d(0, 0, 0); }
+    to {
+      visibility: hidden;
+      transform: translate3d(0, -500px, 0); } }
+  
+  .Toastify__slide-enter--top-left, .Toastify__slide-enter--bottom-left {
+    animation-name: Toastify__slideInLeft; }
+  
+  .Toastify__slide-enter--top-right, .Toastify__slide-enter--bottom-right {
+    animation-name: Toastify__slideInRight; }
+  
+  .Toastify__slide-enter--top-center {
+    animation-name: Toastify__slideInDown; }
+  
+  .Toastify__slide-enter--bottom-center {
+    animation-name: Toastify__slideInUp; }
+  
+  .Toastify__slide-exit--top-left, .Toastify__slide-exit--bottom-left {
+    animation-name: Toastify__slideOutLeft; }
+  
+  .Toastify__slide-exit--top-right, .Toastify__slide-exit--bottom-right {
+    animation-name: Toastify__slideOutRight; }
+  
+  .Toastify__slide-exit--top-center {
+    animation-name: Toastify__slideOutUp; }
+  
+  .Toastify__slide-exit--bottom-center {
+    animation-name: Toastify__slideOutDown; }
+    
+   #react-root > div {
+   	    float: right;
+   }
+   #react-root img {
+   	margin: 0;
+   }
+  
