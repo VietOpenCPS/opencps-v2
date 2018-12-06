@@ -1,5 +1,5 @@
 
-package org.graphql.api.whiteboard;
+package backend.admin.config.whiteboard;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
