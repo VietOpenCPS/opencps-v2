@@ -3,7 +3,9 @@ Bundle-SymbolicName: backend.admin.config.service
 Bundle-Version: 1.0.0
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
-Export-Package: org.opencps.adminconfig.exception,\
+Export-Package: \
+	org.opencps.adminconfig.exception,\
 	org.opencps.adminconfig.model,\
 	org.opencps.adminconfig.service,\
-	org.opencps.adminconfig.service.persistence
+	org.opencps.adminconfig.service.persistence,\
+	backend.admin.config.whiteboard
