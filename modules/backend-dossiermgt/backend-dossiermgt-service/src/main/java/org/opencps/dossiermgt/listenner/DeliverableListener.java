@@ -32,7 +32,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 		OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(model.getDeliverableId());
 
 		_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
-		openCPSDeliverable.setDeliverableState(1);
+//		openCPSDeliverable.setDeliverableState(1);
 
 		System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
 		
