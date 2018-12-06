@@ -108,7 +108,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response addDossierFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String referenceUid,
 			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName, String fileType,
-			String isSync, String formData, Long modifiedDate) {
+			String isSync, String formData, String removed, String eForm, Long modifiedDate) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -242,7 +242,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						if(Validator.isNotNull(formData)) {
 							dossierFile.setFormData(formData);
 						}
-						
+						if(Validator.isNotNull(removed)) {
+							dossierFile.setRemoved(Boolean.parseBoolean(removed));
+						}
+						if(Validator.isNotNull(eForm)) {
+							dossierFile.setEForm(Boolean.parseBoolean(eForm));
+						}
 						_log.info("__Start update dossier file at:" + new Date());
 			
 						DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
@@ -281,7 +286,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if(Validator.isNotNull(formData)) {
 						dossierFile.setFormData(formData);
 					}
-					
+					if(Validator.isNotNull(removed)) {
+						dossierFile.setRemoved(Boolean.parseBoolean(removed));
+					}
+					if(Validator.isNotNull(eForm)) {
+						dossierFile.setEForm(Boolean.parseBoolean(eForm));
+					}
 					_log.info("__Start update dossier file at:" + new Date());
 		
 					DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
@@ -325,7 +335,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						if(Validator.isNotNull(formData)) {
 							dossierFile.setFormData(formData);
 						}
-						
+						if(Validator.isNotNull(removed)) {
+							dossierFile.setRemoved(Boolean.parseBoolean(removed));
+						}
+						if(Validator.isNotNull(eForm)) {
+							dossierFile.setEForm(Boolean.parseBoolean(eForm));
+						}
 						_log.info("__Start update dossier file at:" + new Date());
 
 						DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
@@ -366,7 +381,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if(Validator.isNotNull(formData)) {
 						dossierFile.setFormData(formData);
 					}
-					
+					if(Validator.isNotNull(removed)) {
+						dossierFile.setRemoved(Boolean.parseBoolean(removed));
+					}
+					if(Validator.isNotNull(eForm)) {
+						dossierFile.setEForm(Boolean.parseBoolean(eForm));
+					}
 					_log.info("__Start update dossier file at:" + new Date());
 		
 					DossierFileLocalServiceUtil.updateDossierFile(dossierFile);

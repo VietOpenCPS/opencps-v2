@@ -137,6 +137,31 @@ public class OpenCPSRestClient {
 		
 	}
 	
+	public DossierFileModel postDossierFileEForm(File file, String dossierUnique, DossierFileModel model) {
+		DossierFileModel result = null;
+
+		try {
+
+			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierUnique + "/eforms/" + model.getDossierPartNo();
+			InvokeREST callRest = new InvokeREST();
+			HashMap<String, String> properties = OpenCPSConverter.convertDossierFileEFormHttpParams(model);
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostFileAPIWithFileName(groupId, HttpMethod.POST, "application/json", 
+					 baseUrl, requestURL, username,
+					password, properties, file, model.getDisplayName(), context);
+//			_log.info("Post dossier file eform: " + jsonObj);
+			result = OpenCPSConverter.convertDossierFile(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+		
+	}
+	
 	public ExecuteOneAction postDossierAction(String dossierId, ExecuteOneAction model) {
 		ExecuteOneAction result = new ExecuteOneAction();
 
@@ -242,30 +267,6 @@ public class OpenCPSRestClient {
 		return result;
 	}
 	
-	public DossierFileModel postDossierFileEForm(File file, String dossierUnique, DossierFileModel model) {
-		DossierFileModel result = null;
-
-		try {
-
-			String requestURL = DOSSIERS_BASE_PATH + "/" + dossierUnique + "/eforms/" + model.getDossierPartNo();
-			InvokeREST callRest = new InvokeREST();
-			HashMap<String, String> properties = OpenCPSConverter.convertDossierFileEFormHttpParams(model);
-			ServiceContext context = new ServiceContext();
-			
-			JSONObject jsonObj = callRest.callPostFileAPIWithFileName(groupId, HttpMethod.POST, "application/json", 
-					 baseUrl, requestURL, username,
-					password, properties, file, model.getDisplayName(), context);
-//			_log.info("Post dossier file eform: " + jsonObj);
-			result = OpenCPSConverter.convertDossierFile(jsonObj);
-			
-			return result;
-		} catch (Exception e) {
-			_log.error(e);
-		}
-
-		return result;
-		
-	}	
 	
 	public DossierDocumentModel postDossierDocument(File file, String dossierUnique, DossierDocumentModel model) {
 		DossierDocumentModel result = null;
