@@ -169,7 +169,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									dfModel.setFileTemplateNo(df.getFileTemplateNo());
 									dfModel.setFormData(df.getFormData());
 									dfModel.setFileType(fileEntry.getMimeType());
-									
+									dfModel.setRemoved(df.getRemoved());
 									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 									if (dfResult == null) {
 										return false;
@@ -253,7 +253,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 			//_log.info("SONDT SYNC PAYMENT FILE dossierAction =========== " + JSONFactoryUtil.looseSerialize(dossierAction));
 			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
-			_log.info("SONDT SYNC PAYMENT FILE processAction =========== " + JSONFactoryUtil.looseSerialize(processAction));
+			//_log.info("SONDT SYNC PAYMENT FILE processAction =========== " + JSONFactoryUtil.looseSerialize(processAction));
 			if (processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG)) {
 				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
@@ -451,6 +451,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileTemplateNo(df.getFileTemplateNo());
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
+										dfModel.setRemoved(df.getRemoved());
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
 											return false;
@@ -475,6 +476,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								dfModel.setDossierTemplateNo(df.getDossierTemplateNo());
 								dfModel.setFileTemplateNo(df.getFileTemplateNo());
 								dfModel.setFormData(df.getFormData());
+								dfModel.setRemoved(df.getRemoved());
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
@@ -607,7 +609,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileTemplateNo(fileTemplateNo);
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
-
+										dfModel.setRemoved(df.getRemoved());
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult == null) {
 											return false;
@@ -632,6 +634,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								dfModel.setDossierTemplateNo(dossierTemplateNo);
 								dfModel.setFileTemplateNo(fileTemplateNo);
 								dfModel.setFormData(df.getFormData());
+								dfModel.setRemoved(df.getRemoved());
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
