@@ -81,7 +81,7 @@ public interface DossierFileManagement {
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("fileType") String fileType,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("isSync") String isSync,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("formData") @Nullable String formData,
-			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("removed") @Nullable String removed,
+			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart(value = "removed", required = false) @Nullable String removed,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("eForm") @Nullable String eForm,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart(value = "modifiedDate", required = false) @Nullable Long modifiedDate);
 

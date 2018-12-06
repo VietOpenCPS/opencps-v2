@@ -3234,6 +3234,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setSubmissionNote(obj.getString(DossierTerm.SUBMISSION_NOTE));
 			}
 		}
+		if (obj.has(DossierTerm.RELEASE_DATE) && Validator.isNotNull(obj.get(DossierTerm.RELEASE_DATE))
+				&& GetterUtil.getLong(obj.get(DossierTerm.RELEASE_DATE)) > 0) {
+			if (dossier.getReleaseDate() == null || obj.getLong(DossierTerm.RELEASE_DATE) != dossier.getReleaseDate().getTime()) {
+				dossier.setReleaseDate(new Date(obj.getLong(DossierTerm.RELEASE_DATE)));	
+			}
+		}
 		
 		return dossierPersistence.update(dossier);
 	}
