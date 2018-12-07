@@ -109,4 +109,8 @@ public class DossierActionUserLocalServiceImpl
 				
 		return dossierActionUserPersistence.update(dau);
 	}
+	
+	public List<DossierActionUser> getByDID_DAI_SC_AS(long dossierId, long dossierActionId, String stepCode, int[] asArr) {
+		return dossierActionUserPersistence.findByDID__DAI_SC_AS(dossierId, dossierActionId, stepCode, asArr);
+	}
 }

@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SubscriptionLocalService;
+import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -3344,6 +3346,10 @@ public class DossierActionsImpl implements DossierActions {
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
+		
+		//Create subcription
+		createSubcription(userId, groupId, dossier, actionConfig, context);
+		
 		if (syncType > 0) {
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
 			
@@ -3849,6 +3855,43 @@ public class DossierActionsImpl implements DossierActions {
 							_log.debug(e);
 							//_log.error(e);
 //							e.printStackTrace();
+						}
+					}					
+				}
+				else if (actionConfig.getDocumentType().startsWith("USER")) {
+					
+				}
+			}
+		}		
+	}
+
+	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			User u = UserLocalServiceUtil.fetchUser(userId);
+			
+			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			if (notiTemplate != null) {
+				if (actionConfig.getDocumentType().startsWith("APLC")) {
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+					}
+				}
+				else if (actionConfig.getDocumentType().startsWith("EMPL")) {
+					if ((dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+							&& dossierAction != null) {
+						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
+						List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDID_DAI_SC_AS(dossier.getDossierId(), dossierAction.getDossierActionId(), dossierAction.getStepCode(), new int[] { 1, 2 });
+						if ("EMPL-01".equals(actionConfig.getDocumentType())
+								&& stepConfig != null && "1".equals(stepConfig.getStepType())) {
+							for (DossierActionUser dau : lstDaus) {
+								try {
+									SubscriptionLocalServiceUtil.addSubscription(dau.getUserId(), groupId, "EMPL-01", 0);
+								} catch (PortalException e) {
+									_log.debug(e);
+								}
+							}
 						}
 					}					
 				}
@@ -6166,5 +6209,5 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		}
 		
 		return lstUser;
-	}
+	}	
 }
