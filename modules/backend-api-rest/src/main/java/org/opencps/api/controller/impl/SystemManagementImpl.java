@@ -121,21 +121,33 @@ public class SystemManagementImpl implements SystemManagement {
 
 			if (oldApplicantRole == null) {
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"APPLICANT", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "", serviceContext);				
+						"APPLICANT", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "APPLICANT", serviceContext);				
+				oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "APPLICANT");
+				oldApplicantRole.setTitle("APPLICANT");
+				oldApplicantRole.setDescription("APPLICANT");
+				RoleLocalServiceUtil.updateRole(oldApplicantRole);
 			}
 			Role oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "EMPLOYEE");
 			if (oldEmployeeRole == null) {
 				titleMap.put(Locale.getDefault(), "EMPLOYEE");
 				titleDesc.put(Locale.getDefault(), "EMPLOYEE");				
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"EMPLOYEE", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "", serviceContext);				
+						"EMPLOYEE", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "EMPLOYEE", serviceContext);				
+				oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "CITIZEN");
+				oldEmployeeRole.setTitle("EMPLOYEE");
+				oldEmployeeRole.setDescription("EMPLOYEE");
+				RoleLocalServiceUtil.updateRole(oldEmployeeRole);
 			}
 			Role oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "CITIZEN");
 			if (oldCitizenRole == null) {
 				titleMap.put(Locale.getDefault(), "CITIZEN");
 				titleDesc.put(Locale.getDefault(), "CITIZEN");
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"CITIZEN", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "", serviceContext);				
+						"CITIZEN", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "CITIZEN", serviceContext);
+				oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "CITIZEN");
+				oldCitizenRole.setTitle("CITIZEN");
+				oldCitizenRole.setDescription("CITIZEN");
+				RoleLocalServiceUtil.updateRole(oldCitizenRole);
 			}
 			
 			return Response.status(200).entity(StringPool.BLANK).build();

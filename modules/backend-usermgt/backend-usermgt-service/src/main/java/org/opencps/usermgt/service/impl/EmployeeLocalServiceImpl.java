@@ -103,12 +103,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new UnauthenticationException();
 		}
 
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.UPDATE_EMPLOYEE);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.UPDATE_EMPLOYEE);
+//
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
 
@@ -177,12 +177,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new UnauthenticationException();
 		}
 
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.UPDATE_EMPLOYEE);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.UPDATE_EMPLOYEE);
+//
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		Employee employee = null;
 		try {
@@ -215,12 +215,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new UnauthenticationException();
 		}
 
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.UPDATE_EMPLOYEE);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.UPDATE_EMPLOYEE);
+//
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		Date now = new Date();
 

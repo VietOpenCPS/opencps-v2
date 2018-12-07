@@ -99,11 +99,12 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.DossierActionUser"),
 			true);
-	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 1L;
-	public static final long DOSSIERID_COLUMN_BITMASK = 2L;
-	public static final long STEPCODE_COLUMN_BITMASK = 4L;
-	public static final long USERID_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long ASSIGNED_COLUMN_BITMASK = 1L;
+	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 2L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 4L;
+	public static final long STEPCODE_COLUMN_BITMASK = 8L;
+	public static final long USERID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierActionUser"));
 
@@ -358,7 +359,19 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public void setAssigned(int assigned) {
+		_columnBitmask |= ASSIGNED_COLUMN_BITMASK;
+
+		if (!_setOriginalAssigned) {
+			_setOriginalAssigned = true;
+
+			_originalAssigned = _assigned;
+		}
+
 		_assigned = assigned;
+	}
+
+	public int getOriginalAssigned() {
+		return _originalAssigned;
 	}
 
 	@Override
@@ -471,6 +484,10 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		dossierActionUserModelImpl._setOriginalDossierId = false;
 
 		dossierActionUserModelImpl._originalStepCode = dossierActionUserModelImpl._stepCode;
+
+		dossierActionUserModelImpl._originalAssigned = dossierActionUserModelImpl._assigned;
+
+		dossierActionUserModelImpl._setOriginalAssigned = false;
 
 		dossierActionUserModelImpl._columnBitmask = 0;
 	}
@@ -602,6 +619,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	private String _originalStepCode;
 	private int _moderator;
 	private int _assigned;
+	private int _originalAssigned;
+	private boolean _setOriginalAssigned;
 	private boolean _visited;
 	private long _columnBitmask;
 	private DossierActionUser _escapedModel;
