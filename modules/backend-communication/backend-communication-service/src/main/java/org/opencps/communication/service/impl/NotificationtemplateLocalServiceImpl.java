@@ -417,34 +417,52 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 			Integer expireDuration, String interval, ServiceContext serviceContext) throws NoSuchUserException {
 
 		Date now = new Date();
-
 		User user = userPersistence.findByPrimaryKey(userId);
+		
+		Notificationtemplate notificationTemplate = notificationtemplatePersistence
+				.fetchByF_NotificationtemplateByType(groupId, notificationType);
 
-		long notificationTemplateId = counterLocalService.increment(Notificationtemplate.class.getName());
+		if (notificationTemplate == null) {
+			long notificationTemplateId = counterLocalService.increment(Notificationtemplate.class.getName());
 
-		Notificationtemplate notificationTemplate = notificationtemplatePersistence.create(notificationTemplateId);
+			notificationTemplate = notificationtemplatePersistence.create(notificationTemplateId);
 
-		// Group instance
-		notificationTemplate.setGroupId(groupId);
+			// Group instance
+			notificationTemplate.setGroupId(groupId);
+			// Audit fields
+			notificationTemplate.setCompanyId(user.getCompanyId());
+			notificationTemplate.setUserId(user.getUserId());
+			notificationTemplate.setUserName(user.getFullName());
+			notificationTemplate.setCreateDate(serviceContext.getCreateDate(now));
+			notificationTemplate.setModifiedDate(serviceContext.getCreateDate(now));
 
-		// Audit fields
-		notificationTemplate.setCompanyId(user.getCompanyId());
-		notificationTemplate.setUserId(user.getUserId());
-		notificationTemplate.setUserName(user.getFullName());
-		notificationTemplate.setCreateDate(serviceContext.getCreateDate(now));
-		notificationTemplate.setModifiedDate(serviceContext.getCreateDate(now));
-
-		notificationTemplate.setSendEmail(sendEmail);
-		notificationTemplate.setNotificationType(notificationType);
-		notificationTemplate.setEmailSubject(emailSubject);
-		notificationTemplate.setEmailBody(emailBody);
-		notificationTemplate.setTextMessage(textMessage);
-		notificationTemplate.setSendSMS(sendSMS);
-		notificationTemplate.setExpireDuration(expireDuration);
-		notificationTemplate.setInterval(interval);
+			notificationTemplate.setSendEmail(sendEmail);
+			notificationTemplate.setNotificationType(notificationType);
+			notificationTemplate.setEmailSubject(emailSubject);
+			notificationTemplate.setEmailBody(emailBody);
+			notificationTemplate.setTextMessage(textMessage);
+			notificationTemplate.setSendSMS(sendSMS);
+			notificationTemplate.setExpireDuration(expireDuration);
+			notificationTemplate.setInterval(interval);
+		} else {
+			notificationTemplate.setModifiedDate(serviceContext.getCreateDate(now));
+			if (Validator.isNotNull(sendEmail))
+				notificationTemplate.setSendEmail(sendEmail);
+			if (Validator.isNotNull(emailSubject))
+				notificationTemplate.setEmailSubject(emailSubject);
+			if (Validator.isNotNull(emailBody))
+				notificationTemplate.setEmailBody(emailBody);
+			if (Validator.isNotNull(textMessage))
+				notificationTemplate.setTextMessage(textMessage);
+			if (Validator.isNotNull(sendSMS))
+				notificationTemplate.setSendSMS(sendSMS);
+			if (Validator.isNotNull(expireDuration))
+				notificationTemplate.setExpireDuration(expireDuration);
+			if (Validator.isNotNull(interval))
+				notificationTemplate.setInterval(interval);
+		}
 
 		return notificationtemplatePersistence.update(notificationTemplate);
-
 	}
 
 	public long countNotificationTemplateByGroupId(long groupId) {

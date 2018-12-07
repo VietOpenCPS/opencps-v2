@@ -3912,8 +3912,10 @@ public class DossierActionsImpl implements DossierActions {
 				&& DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus)) {
 //			try {
 //				DossierLocalServiceUtil.updateSubmittingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
-				dossier.setSubmitDate(now);
-				bResult.put(DossierTerm.SUBMIT_DATE, true);
+				if (Validator.isNotNull(dossier.getSubmitDate())) {
+					dossier.setSubmitDate(now);
+					bResult.put(DossierTerm.SUBMIT_DATE, true);					
+				}
 //			} catch (PortalException e) {
 //				_log.error(e);
 //				e.printStackTrace();

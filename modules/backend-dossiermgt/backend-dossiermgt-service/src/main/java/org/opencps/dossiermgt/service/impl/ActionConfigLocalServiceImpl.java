@@ -204,31 +204,79 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
-		long actionConfigId = counterLocalService.increment(ActionConfig.class.getName());
-		ActionConfig actionConfig = actionConfigPersistence.create(actionConfigId);
 
-		actionConfig.setGroupId(groupId);
-		actionConfig.setCompanyId(user.getCompanyId());
-		actionConfig.setUserId(user.getUserId());
-		actionConfig.setCreateDate(now);
-		actionConfig.setModifiedDate(now);
+		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
 
-		actionConfig.setActionCode(actionCode);
-		actionConfig.setActionName(actionName);
-		actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
-		actionConfig.setFormConfig(formConfig);
-		actionConfig.setSampleData(sampleData);
-		actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? insideProcess : Boolean.FALSE);
-		actionConfig.setUserNote(Validator.isNotNull(userNote) ? userNote : 0);
-		actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);
-		actionConfig.setEventType(Validator.isNotNull(eventType) ? eventType : 0);
-		actionConfig.setInfoType(Validator.isNotNull(infoType) ? infoType : 0);
-		actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
-		actionConfig.setNotificationType(notificationType);
-		actionConfig.setDocumentType(documentType);
-		actionConfig.setMappingAction(mappingAction);
-		actionConfig.setDateOption(dateOption);
-		
+		if (actionConfig == null) {
+			long actionConfigId = counterLocalService.increment(ActionConfig.class.getName());
+			actionConfig = actionConfigPersistence.create(actionConfigId);
+
+			actionConfig.setGroupId(groupId);
+			actionConfig.setCompanyId(user.getCompanyId());
+			actionConfig.setUserId(user.getUserId());
+			actionConfig.setCreateDate(now);
+			actionConfig.setModifiedDate(now);
+
+			actionConfig.setActionCode(actionCode);
+			actionConfig.setActionName(actionName);
+			actionConfig.setExtraForm(Validator.isNotNull(extraForm) ? extraForm : Boolean.FALSE);
+			actionConfig.setFormConfig(formConfig);
+			actionConfig.setSampleData(sampleData);
+			actionConfig.setInsideProcess(Validator.isNotNull(insideProcess) ? insideProcess : Boolean.FALSE);
+			actionConfig.setUserNote(Validator.isNotNull(userNote) ? userNote : 0);
+			actionConfig.setSyncType(Validator.isNotNull(syncType) ? syncType : 0);
+			actionConfig.setEventType(Validator.isNotNull(eventType) ? eventType : 0);
+			actionConfig.setInfoType(Validator.isNotNull(infoType) ? infoType : 0);
+			actionConfig.setRollbackable(Validator.isNotNull(rollbackable) ? rollbackable : Boolean.FALSE);
+			actionConfig.setNotificationType(notificationType);
+			actionConfig.setDocumentType(documentType);
+			actionConfig.setMappingAction(mappingAction);
+			actionConfig.setDateOption(dateOption);
+		} else {
+			actionConfig.setUserId(user.getUserId());
+			actionConfig.setModifiedDate(new Date());
+			if (actionName != null) {
+				actionConfig.setActionName(actionName);
+			}
+			if (extraForm != null) {
+				actionConfig.setExtraForm(extraForm);
+			}
+			if (formConfig != null) {
+				actionConfig.setFormConfig(formConfig);
+			}
+			if (sampleData != null) {
+				actionConfig.setSampleData(sampleData);
+			}
+			if (insideProcess != null) {
+				actionConfig.setInsideProcess(insideProcess);
+			}
+			if (syncType != null) {
+				actionConfig.setSyncType(syncType);
+			}
+			if (userNote != null) {
+				actionConfig.setUserNote(userNote);
+			}
+			if (eventType != null) {
+				actionConfig.setEventType(eventType);
+			}
+			if (infoType != null) {
+				actionConfig.setInfoType(infoType);
+			}
+			if (rollbackable != null) {
+				actionConfig.setRollbackable(rollbackable);
+			}
+			if (notificationType != null) {
+				actionConfig.setNotificationType(notificationType);
+			}
+			if (documentType != null) {
+				actionConfig.setDocumentType(documentType);
+			}
+			if (mappingAction != null) {
+				actionConfig.setMappingAction(mappingAction);
+			}
+			actionConfig.setDateOption(dateOption);
+		}
+
 		return actionConfigPersistence.update(actionConfig);
 
 	}

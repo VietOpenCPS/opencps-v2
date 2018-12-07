@@ -242,6 +242,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						if(Validator.isNotNull(formData)) {
 							dossierFile.setFormData(formData);
 						}
+						_log.info("REMOVED:" + removed);
 						if(Validator.isNotNull(removed)) {
 							dossierFile.setRemoved(Boolean.parseBoolean(removed));
 						}
