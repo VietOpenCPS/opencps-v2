@@ -1358,6 +1358,12 @@
             <finder-column name="dossierId"></finder-column>
             <finder-column name="stepCode"></finder-column>
         </finder>
+        <finder name="DID__DAI_SC_AS" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="dossierActionId"></finder-column>
+            <finder-column name="stepCode"></finder-column>
+            <finder-column name="assigned" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
