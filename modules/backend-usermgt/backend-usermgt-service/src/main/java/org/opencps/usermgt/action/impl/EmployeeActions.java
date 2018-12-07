@@ -595,6 +595,7 @@ public class EmployeeActions implements EmployeeInterface {
 				}
 				catch (Exception e) {
 					_log.error(e);
+					e.printStackTrace();
 					jsonObject.put(CommonTerm.SCREEN_NAME, user.getScreenName());
 					jsonObject.put(CommonTerm.EMAIL, user.getEmailAddress());
 					jsonObject.put(CommonTerm.EXITS, Boolean.TRUE);
