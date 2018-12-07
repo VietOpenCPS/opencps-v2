@@ -170,11 +170,14 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
 			Integer menuType, String queryParams, String tableConfig, String buttonConfig) throws PortalException {
 
-			User user = userLocalService.getUser(userId);
-			Date now = new Date();
+		User user = userLocalService.getUser(userId);
+		Date now = new Date();
 
+		MenuConfig object = menuConfigPersistence.fetchByF_BY_G_MENU(groupId, menuGroup);
+
+		if (object == null) {
 			long menuConfigId = counterLocalService.increment(MenuConfig.class.getName());
-			MenuConfig object = menuConfigPersistence.create(menuConfigId);
+			object = menuConfigPersistence.create(menuConfigId);
 
 			object.setGroupId(groupId);
 			object.setCompanyId(user.getCompanyId());
@@ -190,8 +193,30 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			object.setMenuGroup(menuGroup);
 			object.setTableConfig(tableConfig);
 			object.setButtonConfig(buttonConfig);
+		} else {
+			object.setUserId(user.getUserId());
+			object.setModifiedDate(new Date());
+			if (menuName != null) {
+				object.setMenuName(menuName);
+			}
+			if (order != null) {
+				object.setOrder(order);
+			}
+			if (menuType != null) {
+				object.setMenuType(menuType);
+			}
+			if (queryParams != null) {
+				object.setQueryParams(queryParams);
+			}
+			if (tableConfig != null) {
+				object.setTableConfig(tableConfig);
+			}
+			if (buttonConfig != null) {
+				object.setButtonConfig(buttonConfig);
+			}
+		}
 
-			return menuConfigPersistence.update(object);
+		return menuConfigPersistence.update(object);
 	}
 
 	public List<MenuConfig> getByGroupId(long groupId) {

@@ -2216,6 +2216,265 @@ public class MenuConfigPersistenceImpl extends BasePersistenceImpl<MenuConfig>
 	private static final String _FINDER_COLUMN_F_BY_MENUGROUP_MENUGROUP_1 = "menuConfig.menuGroup IS NULL";
 	private static final String _FINDER_COLUMN_F_BY_MENUGROUP_MENUGROUP_2 = "menuConfig.menuGroup = ?";
 	private static final String _FINDER_COLUMN_F_BY_MENUGROUP_MENUGROUP_3 = "(menuConfig.menuGroup IS NULL OR menuConfig.menuGroup = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_BY_G_MENU = new FinderPath(MenuConfigModelImpl.ENTITY_CACHE_ENABLED,
+			MenuConfigModelImpl.FINDER_CACHE_ENABLED, MenuConfigImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_BY_G_MENU",
+			new String[] { Long.class.getName(), String.class.getName() },
+			MenuConfigModelImpl.GROUPID_COLUMN_BITMASK |
+			MenuConfigModelImpl.MENUGROUP_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_BY_G_MENU = new FinderPath(MenuConfigModelImpl.ENTITY_CACHE_ENABLED,
+			MenuConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_BY_G_MENU",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the menu config where groupId = &#63; and menuGroup = &#63; or throws a {@link NoSuchMenuConfigException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param menuGroup the menu group
+	 * @return the matching menu config
+	 * @throws NoSuchMenuConfigException if a matching menu config could not be found
+	 */
+	@Override
+	public MenuConfig findByF_BY_G_MENU(long groupId, String menuGroup)
+		throws NoSuchMenuConfigException {
+		MenuConfig menuConfig = fetchByF_BY_G_MENU(groupId, menuGroup);
+
+		if (menuConfig == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", menuGroup=");
+			msg.append(menuGroup);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchMenuConfigException(msg.toString());
+		}
+
+		return menuConfig;
+	}
+
+	/**
+	 * Returns the menu config where groupId = &#63; and menuGroup = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param menuGroup the menu group
+	 * @return the matching menu config, or <code>null</code> if a matching menu config could not be found
+	 */
+	@Override
+	public MenuConfig fetchByF_BY_G_MENU(long groupId, String menuGroup) {
+		return fetchByF_BY_G_MENU(groupId, menuGroup, true);
+	}
+
+	/**
+	 * Returns the menu config where groupId = &#63; and menuGroup = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param menuGroup the menu group
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching menu config, or <code>null</code> if a matching menu config could not be found
+	 */
+	@Override
+	public MenuConfig fetchByF_BY_G_MENU(long groupId, String menuGroup,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, menuGroup };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_BY_G_MENU,
+					finderArgs, this);
+		}
+
+		if (result instanceof MenuConfig) {
+			MenuConfig menuConfig = (MenuConfig)result;
+
+			if ((groupId != menuConfig.getGroupId()) ||
+					!Objects.equals(menuGroup, menuConfig.getMenuGroup())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_MENUCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_BY_G_MENU_GROUPID_2);
+
+			boolean bindMenuGroup = false;
+
+			if (menuGroup == null) {
+				query.append(_FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_1);
+			}
+			else if (menuGroup.equals("")) {
+				query.append(_FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_3);
+			}
+			else {
+				bindMenuGroup = true;
+
+				query.append(_FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindMenuGroup) {
+					qPos.add(menuGroup);
+				}
+
+				List<MenuConfig> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_BY_G_MENU,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"MenuConfigPersistenceImpl.fetchByF_BY_G_MENU(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					MenuConfig menuConfig = list.get(0);
+
+					result = menuConfig;
+
+					cacheResult(menuConfig);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_BY_G_MENU,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (MenuConfig)result;
+		}
+	}
+
+	/**
+	 * Removes the menu config where groupId = &#63; and menuGroup = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param menuGroup the menu group
+	 * @return the menu config that was removed
+	 */
+	@Override
+	public MenuConfig removeByF_BY_G_MENU(long groupId, String menuGroup)
+		throws NoSuchMenuConfigException {
+		MenuConfig menuConfig = findByF_BY_G_MENU(groupId, menuGroup);
+
+		return remove(menuConfig);
+	}
+
+	/**
+	 * Returns the number of menu configs where groupId = &#63; and menuGroup = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param menuGroup the menu group
+	 * @return the number of matching menu configs
+	 */
+	@Override
+	public int countByF_BY_G_MENU(long groupId, String menuGroup) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_BY_G_MENU;
+
+		Object[] finderArgs = new Object[] { groupId, menuGroup };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_MENUCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_BY_G_MENU_GROUPID_2);
+
+			boolean bindMenuGroup = false;
+
+			if (menuGroup == null) {
+				query.append(_FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_1);
+			}
+			else if (menuGroup.equals("")) {
+				query.append(_FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_3);
+			}
+			else {
+				bindMenuGroup = true;
+
+				query.append(_FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindMenuGroup) {
+					qPos.add(menuGroup);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_BY_G_MENU_GROUPID_2 = "menuConfig.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_1 = "menuConfig.menuGroup IS NULL";
+	private static final String _FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_2 = "menuConfig.menuGroup = ?";
+	private static final String _FINDER_COLUMN_F_BY_G_MENU_MENUGROUP_3 = "(menuConfig.menuGroup IS NULL OR menuConfig.menuGroup = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_A_MID = new FinderPath(MenuConfigModelImpl.ENTITY_CACHE_ENABLED,
 			MenuConfigModelImpl.FINDER_CACHE_ENABLED, MenuConfigImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_A_MID",
@@ -2883,6 +3142,10 @@ public class MenuConfigPersistenceImpl extends BasePersistenceImpl<MenuConfig>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_BY_MENUGROUP,
 			new Object[] { menuConfig.getMenuGroup() }, menuConfig);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_BY_G_MENU,
+			new Object[] { menuConfig.getGroupId(), menuConfig.getMenuGroup() },
+			menuConfig);
+
 		menuConfig.resetOriginalValues();
 	}
 
@@ -2969,6 +3232,16 @@ public class MenuConfigPersistenceImpl extends BasePersistenceImpl<MenuConfig>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_BY_MENUGROUP, args,
 			menuConfigModelImpl, false);
+
+		args = new Object[] {
+				menuConfigModelImpl.getGroupId(),
+				menuConfigModelImpl.getMenuGroup()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_BY_G_MENU, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_BY_G_MENU, args,
+			menuConfigModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -3009,6 +3282,27 @@ public class MenuConfigPersistenceImpl extends BasePersistenceImpl<MenuConfig>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_BY_MENUGROUP, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_BY_MENUGROUP, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					menuConfigModelImpl.getGroupId(),
+					menuConfigModelImpl.getMenuGroup()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_BY_G_MENU, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_BY_G_MENU, args);
+		}
+
+		if ((menuConfigModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_BY_G_MENU.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					menuConfigModelImpl.getOriginalGroupId(),
+					menuConfigModelImpl.getOriginalMenuGroup()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_BY_G_MENU, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_BY_G_MENU, args);
 		}
 	}
 
