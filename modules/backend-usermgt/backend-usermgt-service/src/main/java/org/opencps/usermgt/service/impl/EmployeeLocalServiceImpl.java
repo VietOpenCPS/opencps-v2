@@ -97,20 +97,20 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, PortalException {
 		// authen
-		BackendAuthImpl authImpl = new BackendAuthImpl();
+//		BackendAuthImpl authImpl = new BackendAuthImpl();
+//
+//		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
+//
+//		if (!isAuth) {
+//			throw new UnauthenticationException();
+//		}
 
-		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
-
-		if (!isAuth) {
-			throw new UnauthenticationException();
-		}
-
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.UPDATE_EMPLOYEE);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.UPDATE_EMPLOYEE);
+//
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
 
@@ -171,20 +171,20 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throws UnauthenticationException, UnauthorizationException, NotFoundException {
 
 		// authen
-		BackendAuthImpl authImpl = new BackendAuthImpl();
+//		BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
+//		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
+//
+//		if (!isAuth) {
+//			throw new UnauthenticationException();
+//		}
 
-		if (!isAuth) {
-			throw new UnauthenticationException();
-		}
-
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.UPDATE_EMPLOYEE);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.UPDATE_EMPLOYEE);
+//
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		Employee employee = null;
 		try {
@@ -210,16 +210,20 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException {
 
 		// authen
-		BackendAuthImpl authImpl = new BackendAuthImpl();
+//		BackendAuthImpl authImpl = new BackendAuthImpl();
+//
+//		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
+//
+//		if (!isAuth) {
+//			throw new UnauthenticationException();
+//		}
 
-		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
-
-		if (!isAuth) {
-			throw new UnauthenticationException();
-		}
-
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.UPDATE_EMPLOYEE);
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.UPDATE_EMPLOYEE);
+//
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		Date now = new Date();
 
@@ -227,9 +231,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		Employee employee = employeePersistence.fetchByPrimaryKey(employeeId);
 
-		if (!hasPermission && userId != employee.getMappingUserId()) {
-			throw new UnauthorizationException();
-		}
+//		if (!hasPermission && userId != employee.getMappingUserId()) {
+//			throw new UnauthorizationException();
+//		}
 		
 		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(employee.getGroupId(), employeeNo);
 
