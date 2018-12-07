@@ -3032,7 +3032,7 @@ public class DossierManagementImpl implements DossierManagement {
 	
 	@Override
 	public Response addDossierFileByEForm(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String partNo,
+			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String partNo, String removed, String eForm,
 			String formData) {
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -3081,6 +3081,12 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			if(Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
+			}
+			if(Validator.isNotNull(removed)) {
+				dossierFile.setRemoved(Boolean.parseBoolean(removed));
+			}
+			if(Validator.isNotNull(eForm)) {
+				dossierFile.setEForm(Boolean.parseBoolean(eForm));
 			}
 					
 			_log.info("__Start update dossier file at:" + new Date());
