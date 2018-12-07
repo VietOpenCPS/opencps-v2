@@ -542,6 +542,56 @@ public interface MenuConfigPersistence extends BasePersistence<MenuConfig> {
 	public int countByF_BY_menuGroup(String menuGroup);
 
 	/**
+	* Returns the menu config where groupId = &#63; and menuGroup = &#63; or throws a {@link NoSuchMenuConfigException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param menuGroup the menu group
+	* @return the matching menu config
+	* @throws NoSuchMenuConfigException if a matching menu config could not be found
+	*/
+	public MenuConfig findByF_BY_G_MENU(long groupId, String menuGroup)
+		throws NoSuchMenuConfigException;
+
+	/**
+	* Returns the menu config where groupId = &#63; and menuGroup = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param menuGroup the menu group
+	* @return the matching menu config, or <code>null</code> if a matching menu config could not be found
+	*/
+	public MenuConfig fetchByF_BY_G_MENU(long groupId, String menuGroup);
+
+	/**
+	* Returns the menu config where groupId = &#63; and menuGroup = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param menuGroup the menu group
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching menu config, or <code>null</code> if a matching menu config could not be found
+	*/
+	public MenuConfig fetchByF_BY_G_MENU(long groupId, String menuGroup,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the menu config where groupId = &#63; and menuGroup = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param menuGroup the menu group
+	* @return the menu config that was removed
+	*/
+	public MenuConfig removeByF_BY_G_MENU(long groupId, String menuGroup)
+		throws NoSuchMenuConfigException;
+
+	/**
+	* Returns the number of menu configs where groupId = &#63; and menuGroup = &#63;.
+	*
+	* @param groupId the group ID
+	* @param menuGroup the menu group
+	* @return the number of matching menu configs
+	*/
+	public int countByF_BY_G_MENU(long groupId, String menuGroup);
+
+	/**
 	* Returns all the menu configs where menuConfigId = &#63;.
 	*
 	* @param menuConfigId the menu config ID
