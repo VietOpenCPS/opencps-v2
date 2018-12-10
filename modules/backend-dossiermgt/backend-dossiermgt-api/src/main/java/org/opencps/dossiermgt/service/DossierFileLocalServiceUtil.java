@@ -346,6 +346,13 @@ public class DossierFileLocalServiceUtil {
 		return getService().getByFileTemplateNo(id, fileTemplateNo);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByG_DID_FTN_R(
+		long groupId, long[] dossierIds, String fileTemplateNo, boolean removed) {
+		return getService()
+				   .getByG_DID_FTN_R(groupId, dossierIds, fileTemplateNo,
+			removed);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierFile getByRefAndGroupId(
 		long groupId, String referenceUid)
 		throws com.liferay.portal.kernel.exception.PortalException {

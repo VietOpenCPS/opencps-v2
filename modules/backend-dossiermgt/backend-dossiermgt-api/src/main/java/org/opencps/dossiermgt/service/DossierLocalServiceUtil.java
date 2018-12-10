@@ -286,6 +286,11 @@ public class DossierLocalServiceUtil {
 		return getService().getByDossierNo(groupId, dossierNo);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByG_AN(
+		long groupId, String applicantIdNo) {
+		return getService().getByG_AN(groupId, applicantIdNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier getByIdAndGovService(
 		long groupId, String serviceCode, String govAgencyCode, long dossierId) {
 		return getService()
