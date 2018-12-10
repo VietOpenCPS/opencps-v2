@@ -1083,4 +1083,39 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
+	@Override
+	public Response getAlreadyHasFileTemplateNo(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String applicantIdNo, String fileTemplateNo) {
+		DossierFileResultsModel results = new DossierFileResultsModel();
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				List<Dossier> lstDossiers = DossierLocalServiceUtil.getByG_AN(groupId, applicantIdNo);
+				long[] dossierIds = new long[lstDossiers.size()];
+				int i = 0;
+				for (Dossier d : lstDossiers) {
+					dossierIds[i++] = d.getDossierId();
+				}
+				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getByG_DID_FTN_R(groupId, dossierIds, fileTemplateNo, false);
+				
+				results.setTotal(dossierFiles.size());
+				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			}
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }
