@@ -10,8 +10,10 @@ Include-Resource: \
 	@jcommander-1.48.jar,\
 	@jjwt-api-0.10.2.jar,\
 	@jjwt-impl-0.10.2.jar,\
-	@jjwt-jackson-0.10.2.jar	
-	
+	@jjwt-jackson-0.10.2.jar
+-includeresource: 
+	@DKDN.GTVT.1.0.jar;lib:=true		
+Import-Package: *;resolution:=optional
 Export-Package: \
 	org.opencps.usermgt.action,\
 	com.fasterxml.jackson.annotation,\
@@ -22,4 +24,6 @@ Export-Package: \
 	org.opencps.dossiermgt.service.comparator,\
 	com.fasterxml.jackson.core,\
 	com.fasterxml.jackson.databind,\
-	javax.validation.constraints
+	javax.validation.constraints,\
+	vn.gov.ngsp.DKDN.GTVT.*,\
+	com.google.gson.*
