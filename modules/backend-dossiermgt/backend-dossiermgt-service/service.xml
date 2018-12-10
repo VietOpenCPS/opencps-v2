@@ -516,6 +516,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierNo" />
 		</finder>
+
+		<finder return-type="Collection" name="G_AN">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -648,6 +653,12 @@
 			<finder-column name="dossierId" />
 			<finder-column name="fileTemplateNo" />
 			<finder-column name="dossierTemplateNo" />
+		</finder>        
+		<finder return-type="Collection" name="G_DID_FTN_R">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+			<finder-column name="fileTemplateNo" />
+			<finder-column name="removed" />
 		</finder>        
 	</entity>
 

@@ -1415,11 +1415,16 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
-							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
-								data.put(ProcessActionTerm.ENABLE, enable);
-							else
-								data.put(ProcessActionTerm.ENABLE, 0);
-
+							if (!isAdministratorData) {
+								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
+									data.put(ProcessActionTerm.ENABLE, enable);
+								else
+									data.put(ProcessActionTerm.ENABLE, 0);
+							}
+							else {
+								data.put(ProcessActionTerm.ENABLE, enable);								
+							}
+						
 							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
 							data.put(ProcessActionTerm.ACTION_NAME, actionName);
