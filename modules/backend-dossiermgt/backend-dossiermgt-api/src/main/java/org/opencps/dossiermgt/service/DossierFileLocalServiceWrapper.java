@@ -376,6 +376,13 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getByG_DID_FTN_R(
+		long groupId, long[] dossierIds, String fileTemplateNo, boolean removed) {
+		return _dossierFileLocalService.getByG_DID_FTN_R(groupId, dossierIds,
+			fileTemplateNo, removed);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierFile getByRefAndGroupId(
 		long groupId, String referenceUid)
 		throws com.liferay.portal.kernel.exception.PortalException {

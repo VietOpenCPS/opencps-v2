@@ -331,4 +331,19 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file);
+	
+	@GET
+	@Path("/{id}/applicant/{applicantIdNo}/files/{fileTemplateNo}/search")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getAlreadyHasFileTemplateNo(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
+			@ApiParam(value = "id no of applicant", required = true) @PathParam("applicantIdNo") String applicantIdNo,			
+			@ApiParam(value = "", required = false) @PathParam("fileTemplateNo") String fileTemplateNo);	
 }
