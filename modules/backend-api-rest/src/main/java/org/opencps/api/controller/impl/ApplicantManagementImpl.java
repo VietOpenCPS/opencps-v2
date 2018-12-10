@@ -25,9 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
+import org.opencps.api.controller.util.NGSPRestClient;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
 import org.opencps.api.usermgt.model.ApplicantModel;
@@ -39,10 +39,13 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -50,6 +53,9 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import vn.gov.ngsp.DKDN.GTVT.IDoanhNghiep;
+import vn.gov.ngsp.DKDN.GTVT.IToken;
+import vn.gov.ngsp.DKDN.GTVT.Models.MToken;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
 
@@ -560,6 +566,110 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	private MToken getToken(NGSPRestClient client) throws Exception {
+		String tokenUrl = "https://api.ngsp.gov.vn/token";
+		String consumer_key = "vDQ9b6f0LEpNeIDAAeZ4ler4mesa";
+		String secret_key = "WVN8QUVA15guZdZyuuxhh_Pw1cUa";
+
+		if (client != null) {
+			tokenUrl = client.getBaseUrl();
+			consumer_key = client.getConsumerKey();
+			secret_key = client.getConsumerSecret();
+		}
+		MToken token = IToken.getToken(tokenUrl, consumer_key, secret_key);
+		
+		return token;
+	}
+	   
+	@Override
+	public Response ngspGetApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String applicantIdNo) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
+		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
+		
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
+		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
+		try {
+			if (sc != null) {
+				MToken token = getToken(NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
+				access_token = token.getAccessToken();				
+			}
+			else {
+				MToken token = getToken(null);
+				access_token = token.getAccessToken();				
+			}
+		} catch (Exception e) {
+		}
+		
+//		String msdn = "0100109106";
+		String msdn = applicantIdNo;
+
+		try {
+			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, msdn);
+			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
+			
+			return Response.status(200).entity(result.toJSONString()).build();			
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response verifyApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName,
+			String contactName) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
+		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
+		
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
+		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
+		try {
+			if (sc != null) {
+				MToken token = getToken(NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
+				access_token = token.getAccessToken();				
+			}
+			else {
+				MToken token = getToken(null);
+				access_token = token.getAccessToken();				
+			}
+		} catch (Exception e) {
+		}
+		
+		try {
+			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, applicantIdNo);
+			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
+			JSONObject data = result.getJSONObject("Data");
+			JSONObject returnObj = JSONFactoryUtil.createJSONObject();
+			
+			if (Validator.isNull(data.getJSONObject("MainInformation"))) {
+				returnObj.put("error", true);
+				returnObj.put("message", "Không tìm thấy thông tin doanh nghiệp");
+				return Response.status(200).entity(returnObj.toJSONString()).build();							
+			}
+			else {
+				JSONObject mainInfoObj = data.getJSONObject("MainInformation");
+				if (Validator.isNotNull(mainInfoObj.getString("NAME"))) {
+					if (Validator.isNotNull(applicantName) && !applicantName.equals(mainInfoObj.getString("NAME"))) {
+						returnObj.put("warning", true);
+						returnObj.put("message", "Thông tin tên doanh nghiệp có thể chưa đúng!");
+					}
+				}
+				JSONObject representativesObj = data.getJSONObject("Representatives");
+				if (representativesObj != null) {
+					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString("FULL_NAME"))) {
+						returnObj.put("warning", true);
+						returnObj.put("message", (Validator.isNotNull(returnObj.getString("message")) ? returnObj.getString("message") + "," : "") + "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
+					}					
+				}
+				return Response.status(200).entity(returnObj.toJSONString()).build();							
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
