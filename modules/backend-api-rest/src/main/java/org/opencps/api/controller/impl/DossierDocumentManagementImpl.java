@@ -96,6 +96,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						jsonData = processMergeDossierProcessRole(dossier, 1, jsonData, dAction);
 					}
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
+					jsonData.put("userName", user.getFullName());
 					//
 					//_log.info("jsonData: "+jsonData);
 					jsonData.put("url", serviceContext.getPortalURL());
