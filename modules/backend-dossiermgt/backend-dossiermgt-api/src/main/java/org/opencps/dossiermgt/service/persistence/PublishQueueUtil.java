@@ -481,6 +481,77 @@ public class PublishQueueUtil {
 	}
 
 	/**
+	* Returns the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; or throws a {@link NoSuchPublishQueueException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @return the matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public static PublishQueue findByG_DID_SN(long groupId, long dossierId,
+		String serverNo)
+		throws org.opencps.dossiermgt.exception.NoSuchPublishQueueException {
+		return getPersistence().findByG_DID_SN(groupId, dossierId, serverNo);
+	}
+
+	/**
+	* Returns the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @return the matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public static PublishQueue fetchByG_DID_SN(long groupId, long dossierId,
+		String serverNo) {
+		return getPersistence().fetchByG_DID_SN(groupId, dossierId, serverNo);
+	}
+
+	/**
+	* Returns the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public static PublishQueue fetchByG_DID_SN(long groupId, long dossierId,
+		String serverNo, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByG_DID_SN(groupId, dossierId, serverNo,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @return the publish queue that was removed
+	*/
+	public static PublishQueue removeByG_DID_SN(long groupId, long dossierId,
+		String serverNo)
+		throws org.opencps.dossiermgt.exception.NoSuchPublishQueueException {
+		return getPersistence().removeByG_DID_SN(groupId, dossierId, serverNo);
+	}
+
+	/**
+	* Returns the number of publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @return the number of matching publish queues
+	*/
+	public static int countByG_DID_SN(long groupId, long dossierId,
+		String serverNo) {
+		return getPersistence().countByG_DID_SN(groupId, dossierId, serverNo);
+	}
+
+	/**
 	* Caches the publish queue in the entity cache if it is enabled.
 	*
 	* @param publishQueue the publish queue

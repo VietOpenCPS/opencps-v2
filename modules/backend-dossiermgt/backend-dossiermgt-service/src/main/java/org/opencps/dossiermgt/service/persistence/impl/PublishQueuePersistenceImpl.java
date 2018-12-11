@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -1382,6 +1383,291 @@ public class PublishQueuePersistenceImpl extends BasePersistenceImpl<PublishQueu
 	}
 
 	private static final String _FINDER_COLUMN_ST_STATUS_2 = "publishQueue.status = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_DID_SN = new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, PublishQueueImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByG_DID_SN",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			},
+			PublishQueueModelImpl.GROUPID_COLUMN_BITMASK |
+			PublishQueueModelImpl.DOSSIERID_COLUMN_BITMASK |
+			PublishQueueModelImpl.SERVERNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_DID_SN = new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DID_SN",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; or throws a {@link NoSuchPublishQueueException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param serverNo the server no
+	 * @return the matching publish queue
+	 * @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue findByG_DID_SN(long groupId, long dossierId,
+		String serverNo) throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = fetchByG_DID_SN(groupId, dossierId, serverNo);
+
+		if (publishQueue == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierId=");
+			msg.append(dossierId);
+
+			msg.append(", serverNo=");
+			msg.append(serverNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchPublishQueueException(msg.toString());
+		}
+
+		return publishQueue;
+	}
+
+	/**
+	 * Returns the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param serverNo the server no
+	 * @return the matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue fetchByG_DID_SN(long groupId, long dossierId,
+		String serverNo) {
+		return fetchByG_DID_SN(groupId, dossierId, serverNo, true);
+	}
+
+	/**
+	 * Returns the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param serverNo the server no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue fetchByG_DID_SN(long groupId, long dossierId,
+		String serverNo, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, dossierId, serverNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_DID_SN,
+					finderArgs, this);
+		}
+
+		if (result instanceof PublishQueue) {
+			PublishQueue publishQueue = (PublishQueue)result;
+
+			if ((groupId != publishQueue.getGroupId()) ||
+					(dossierId != publishQueue.getDossierId()) ||
+					!Objects.equals(serverNo, publishQueue.getServerNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_PUBLISHQUEUE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_DID_SN_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_DID_SN_DOSSIERID_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_G_DID_SN_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DID_SN_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_G_DID_SN_SERVERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				List<PublishQueue> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_DID_SN,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"PublishQueuePersistenceImpl.fetchByG_DID_SN(long, long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					PublishQueue publishQueue = list.get(0);
+
+					result = publishQueue;
+
+					cacheResult(publishQueue);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DID_SN,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (PublishQueue)result;
+		}
+	}
+
+	/**
+	 * Removes the publish queue where groupId = &#63; and dossierId = &#63; and serverNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param serverNo the server no
+	 * @return the publish queue that was removed
+	 */
+	@Override
+	public PublishQueue removeByG_DID_SN(long groupId, long dossierId,
+		String serverNo) throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = findByG_DID_SN(groupId, dossierId, serverNo);
+
+		return remove(publishQueue);
+	}
+
+	/**
+	 * Returns the number of publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param serverNo the server no
+	 * @return the number of matching publish queues
+	 */
+	@Override
+	public int countByG_DID_SN(long groupId, long dossierId, String serverNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_DID_SN;
+
+		Object[] finderArgs = new Object[] { groupId, dossierId, serverNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_PUBLISHQUEUE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_DID_SN_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_DID_SN_DOSSIERID_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_G_DID_SN_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DID_SN_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_G_DID_SN_SERVERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_DID_SN_GROUPID_2 = "publishQueue.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_DID_SN_DOSSIERID_2 = "publishQueue.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_G_DID_SN_SERVERNO_1 = "publishQueue.serverNo IS NULL";
+	private static final String _FINDER_COLUMN_G_DID_SN_SERVERNO_2 = "publishQueue.serverNo = ?";
+	private static final String _FINDER_COLUMN_G_DID_SN_SERVERNO_3 = "(publishQueue.serverNo IS NULL OR publishQueue.serverNo = '')";
 
 	public PublishQueuePersistenceImpl() {
 		setModelClass(PublishQueue.class);
@@ -1418,6 +1704,12 @@ public class PublishQueuePersistenceImpl extends BasePersistenceImpl<PublishQueu
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { publishQueue.getUuid(), publishQueue.getGroupId() },
 			publishQueue);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DID_SN,
+			new Object[] {
+				publishQueue.getGroupId(), publishQueue.getDossierId(),
+				publishQueue.getServerNo()
+			}, publishQueue);
 
 		publishQueue.resetOriginalValues();
 	}
@@ -1499,6 +1791,17 @@ public class PublishQueuePersistenceImpl extends BasePersistenceImpl<PublishQueu
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			publishQueueModelImpl, false);
+
+		args = new Object[] {
+				publishQueueModelImpl.getGroupId(),
+				publishQueueModelImpl.getDossierId(),
+				publishQueueModelImpl.getServerNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_DID_SN, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DID_SN, args,
+			publishQueueModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1522,6 +1825,29 @@ public class PublishQueuePersistenceImpl extends BasePersistenceImpl<PublishQueu
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					publishQueueModelImpl.getGroupId(),
+					publishQueueModelImpl.getDossierId(),
+					publishQueueModelImpl.getServerNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DID_SN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DID_SN, args);
+		}
+
+		if ((publishQueueModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_DID_SN.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					publishQueueModelImpl.getOriginalGroupId(),
+					publishQueueModelImpl.getOriginalDossierId(),
+					publishQueueModelImpl.getOriginalServerNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DID_SN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DID_SN, args);
 		}
 	}
 

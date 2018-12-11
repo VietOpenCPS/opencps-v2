@@ -204,6 +204,19 @@ public class PublishQueueLocalServiceWrapper implements PublishQueueLocalService
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.PublishQueue getByG_DID_SN(
+		long groupId, long dossierId, String serverNo) {
+		return _publishQueueLocalService.getByG_DID_SN(groupId, dossierId,
+			serverNo);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatus(
+		int status, int start, int end) {
+		return _publishQueueLocalService.getByStatus(status, start, end);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _publishQueueLocalService.getIndexableActionableDynamicQuery();
 	}

@@ -197,6 +197,16 @@ public class PublishQueueLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.PublishQueue getByG_DID_SN(
+		long groupId, long dossierId, String serverNo) {
+		return getService().getByG_DID_SN(groupId, dossierId, serverNo);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatus(
+		int status, int start, int end) {
+		return getService().getByStatus(status, start, end);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return getService().getIndexableActionableDynamicQuery();
 	}

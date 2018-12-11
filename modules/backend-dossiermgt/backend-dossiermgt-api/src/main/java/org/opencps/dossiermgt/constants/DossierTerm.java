@@ -28,6 +28,7 @@ public class DossierTerm {
 	public static final String CONTACT_TEL_NO = "contactTelNo";
 	public static final String CONTACT_EMAIL = "contactEmail";
 	public static final String DOSSIER_TEMPLATE_NO = "dossierTemplateNo";
+	public static final String DOSSIER_TEMPLATE_NAME = "dossierTemplateName";
 	public static final String DOSSIER_NOTE = "dossierNote";
 	public static final String SUBMISSION_NOTE = "submissionNote";
 	public static final String APPLICANT_NOTE = "applicantNote";
@@ -158,6 +159,7 @@ public class DossierTerm {
 	public static final String DELEGATE_NAME = "delegateName";
 	public static final String DELEGATE_EMAIL = "delegateEmail";
 	public static final String DELEGATE_TELNO = "delegateTelNo";
+	public static final String DELEGATE_ID_NO = "delegateIdNo";
 	public static final String DELEGATE_CITYCODE = "delegateCityCode";
 	public static final String DELEGATE_CITYNAME = "delegateCityName";
 	public static final String DELEGATE_DISTRICTCODE = "delegateDistrictCode";
@@ -234,4 +236,6 @@ public class DossierTerm {
 	public static final String TIME = "time";
 	public static final String PAUSE_STATE = "PAUSE";
 	public static final String OVERTIME_STATE = "OVERTIME";
+
+	public static final String PROCESS_NO = "processNo";
 }

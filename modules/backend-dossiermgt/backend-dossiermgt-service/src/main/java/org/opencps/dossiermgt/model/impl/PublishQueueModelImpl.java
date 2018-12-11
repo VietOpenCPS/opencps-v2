@@ -108,10 +108,12 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.PublishQueue"),
 			true);
-	public static final long GROUPID_COLUMN_BITMASK = 1L;
-	public static final long STATUS_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 1L;
+	public static final long GROUPID_COLUMN_BITMASK = 2L;
+	public static final long SERVERNO_COLUMN_BITMASK = 4L;
+	public static final long STATUS_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.PublishQueue"));
 
@@ -348,7 +350,19 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 
 	@Override
 	public void setDossierId(long dossierId) {
+		_columnBitmask |= DOSSIERID_COLUMN_BITMASK;
+
+		if (!_setOriginalDossierId) {
+			_setOriginalDossierId = true;
+
+			_originalDossierId = _dossierId;
+		}
+
 		_dossierId = dossierId;
+	}
+
+	public long getOriginalDossierId() {
+		return _originalDossierId;
 	}
 
 	@Override
@@ -363,7 +377,17 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 
 	@Override
 	public void setServerNo(String serverNo) {
+		_columnBitmask |= SERVERNO_COLUMN_BITMASK;
+
+		if (_originalServerNo == null) {
+			_originalServerNo = _serverNo;
+		}
+
 		_serverNo = serverNo;
+	}
+
+	public String getOriginalServerNo() {
+		return GetterUtil.getString(_originalServerNo);
 	}
 
 	@Override
@@ -507,6 +531,12 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 		publishQueueModelImpl._setOriginalGroupId = false;
 
 		publishQueueModelImpl._setModifiedDate = false;
+
+		publishQueueModelImpl._originalDossierId = publishQueueModelImpl._dossierId;
+
+		publishQueueModelImpl._setOriginalDossierId = false;
+
+		publishQueueModelImpl._originalServerNo = publishQueueModelImpl._serverNo;
 
 		publishQueueModelImpl._originalStatus = publishQueueModelImpl._status;
 
@@ -666,7 +696,10 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _dossierId;
+	private long _originalDossierId;
+	private boolean _setOriginalDossierId;
 	private String _serverNo;
+	private String _originalServerNo;
 	private int _status;
 	private int _originalStatus;
 	private boolean _setOriginalStatus;

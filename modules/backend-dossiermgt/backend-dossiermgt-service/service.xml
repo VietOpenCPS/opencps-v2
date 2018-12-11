@@ -2141,6 +2141,12 @@
 		<finder return-type="Collection" name="ST">
 			<finder-column name="status" />		
 		</finder>
+
+		<finder return-type="PublishQueue" name="G_DID_SN">
+			<finder-column name="groupId" />	
+			<finder-column name="dossierId" />	
+			<finder-column name="serverNo" />					
+		</finder>
 	</entity>
 	
 	<exceptions>

@@ -99,4 +99,12 @@ public class PublishQueueLocalServiceImpl
 
 		return publishQueuePersistence.remove(publishQueue);
 	}	
+	
+	public List<PublishQueue> getByStatus(int status, int start, int end) {
+		return publishQueuePersistence.findByST(status, start, end);
+	}
+	
+	public PublishQueue getByG_DID_SN(long groupId, long dossierId, String serverNo) {
+		return publishQueuePersistence.fetchByG_DID_SN(groupId, dossierId, serverNo);
+	}
 }
