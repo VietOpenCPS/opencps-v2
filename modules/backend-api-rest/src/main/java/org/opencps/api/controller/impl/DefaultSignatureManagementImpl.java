@@ -189,8 +189,8 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -527,8 +527,8 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -651,8 +651,8 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -815,8 +815,8 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
