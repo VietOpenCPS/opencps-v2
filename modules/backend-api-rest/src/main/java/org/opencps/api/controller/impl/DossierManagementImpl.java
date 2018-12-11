@@ -115,6 +115,7 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
@@ -131,6 +132,7 @@ import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -152,6 +154,7 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -3989,6 +3992,7 @@ public class DossierManagementImpl implements DossierManagement {
 				List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByG_DID_ST(groupId, dossier.getDossierId(), DossierSyncTerm.STATE_ACK_ERROR);
 				for (DossierSync ds : lstSyncs) {
 					ds.setState(DossierSyncTerm.STATE_WAITING_SYNC);
+					ds.setRetry(0);
 					
 					DossierSyncLocalServiceUtil.updateDossierSync(ds);
 				}
@@ -4018,6 +4022,7 @@ public class DossierManagementImpl implements DossierManagement {
 				
 				for (DossierSync ds : lstSyncs) {
 					ds.setState(DossierSyncTerm.STATE_WAITING_SYNC);
+					ds.setRetry(0);
 					
 					DossierSyncLocalServiceUtil.updateDossierSync(ds);
 				}
@@ -4058,6 +4063,37 @@ public class DossierManagementImpl implements DossierManagement {
 			} else {
 				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier to restore").build();
 			}
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response republishPublishQueue(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatus(PublishQueueTerm.STATE_ACK_ERROR, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			for (PublishQueue pq : lstPqs) {
+				if (groupId == 0) {
+					pq.setStatus(PublishQueueTerm.STATE_WAITING_SYNC);
+					pq.setRetry(0);
+					PublishQueueLocalServiceUtil.updatePublishQueue(pq);					
+				}
+				else if (pq.getGroupId() == groupId) {
+					pq.setStatus(PublishQueueTerm.STATE_WAITING_SYNC);
+					pq.setRetry(0);
+					PublishQueueLocalServiceUtil.updatePublishQueue(pq);					
+				}
+			}
+			
+			return Response.status(200).entity(StringPool.BLANK).build();			
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

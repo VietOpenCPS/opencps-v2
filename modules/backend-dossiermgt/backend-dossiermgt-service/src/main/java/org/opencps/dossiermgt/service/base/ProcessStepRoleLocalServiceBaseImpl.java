@@ -76,6 +76,7 @@ import org.opencps.dossiermgt.service.persistence.ProcessSequencePersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessStepPersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePersistence;
+import org.opencps.dossiermgt.service.persistence.PublishQueuePersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationFormPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationLogPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationPersistence;
@@ -1502,6 +1503,44 @@ public abstract class ProcessStepRoleLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the publish queue local service.
+	 *
+	 * @return the publish queue local service
+	 */
+	public org.opencps.dossiermgt.service.PublishQueueLocalService getPublishQueueLocalService() {
+		return publishQueueLocalService;
+	}
+
+	/**
+	 * Sets the publish queue local service.
+	 *
+	 * @param publishQueueLocalService the publish queue local service
+	 */
+	public void setPublishQueueLocalService(
+		org.opencps.dossiermgt.service.PublishQueueLocalService publishQueueLocalService) {
+		this.publishQueueLocalService = publishQueueLocalService;
+	}
+
+	/**
+	 * Returns the publish queue persistence.
+	 *
+	 * @return the publish queue persistence
+	 */
+	public PublishQueuePersistence getPublishQueuePersistence() {
+		return publishQueuePersistence;
+	}
+
+	/**
+	 * Sets the publish queue persistence.
+	 *
+	 * @param publishQueuePersistence the publish queue persistence
+	 */
+	public void setPublishQueuePersistence(
+		PublishQueuePersistence publishQueuePersistence) {
+		this.publishQueuePersistence = publishQueuePersistence;
+	}
+
+	/**
 	 * Returns the registration local service.
 	 *
 	 * @return the registration local service
@@ -2222,6 +2261,10 @@ public abstract class ProcessStepRoleLocalServiceBaseImpl
 	protected ProcessStepRoleLocalService processStepRoleLocalService;
 	@BeanReference(type = ProcessStepRolePersistence.class)
 	protected ProcessStepRolePersistence processStepRolePersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.PublishQueueLocalService.class)
+	protected org.opencps.dossiermgt.service.PublishQueueLocalService publishQueueLocalService;
+	@BeanReference(type = PublishQueuePersistence.class)
+	protected PublishQueuePersistence publishQueuePersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.RegistrationLocalService.class)
 	protected org.opencps.dossiermgt.service.RegistrationLocalService registrationLocalService;
 	@BeanReference(type = RegistrationPersistence.class)
