@@ -59,8 +59,10 @@ import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -91,6 +93,8 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -111,6 +115,7 @@ import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
+import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
@@ -140,6 +145,7 @@ import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
@@ -3470,11 +3476,14 @@ public class DossierActionsImpl implements DossierActions {
 			
 			if (state == DossierSyncTerm.STATE_NOT_SYNC
 					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-				publishEvent(dossier);
+				publishEvent(dossier, context);
 			}
+//			if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+//				publishEvent(dossier, context);
+//			}
 		}
 		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-			publishEvent(dossier);			
+			publishEvent(dossier, context);			
 		}
 		//Do action hslt
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
@@ -3598,7 +3607,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-			publishEvent(dossier);			
+			publishEvent(dossier, context);			
 		}
 		
 		return dossierAction;
@@ -3627,7 +3636,7 @@ public class DossierActionsImpl implements DossierActions {
 		return dossierAction;
 	}
 	
-	private void publishEvent(Dossier dossier) {
+	private void publishEvent(Dossier dossier, ServiceContext context) {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
@@ -3643,6 +3652,24 @@ public class DossierActionsImpl implements DossierActions {
 		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
 		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
+		
+		//Add publish queue
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.PUBLISH_PROTOCOL);
+		for (ServerConfig sc : lstScs) {
+			try {
+				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
+				if (pq == null) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+				}
+				else {
+					if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
+						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
+					}
+				}
+			} catch (PortalException e) {
+				_log.debug(e);
+			}
+		}
 	}
 	
 	private void vnpostEvent(Dossier dossier) {

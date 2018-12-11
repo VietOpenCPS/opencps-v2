@@ -2118,6 +2118,37 @@
 		</finder>
 	</entity>
 
+	<entity name="PublishQueue" table="opencps_publish_queue"
+		local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="publishQueueId" primary="true" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="dossierId" type="long" />
+		<column name="serverNo" type="String" />
+		<column name="status" type="int" />
+		<column name="retry" type="int" />
+
+		<order>
+			<order-column name="modifiedDate" />
+		</order>
+
+		<finder return-type="Collection" name="ST">
+			<finder-column name="status" />		
+		</finder>
+
+		<finder return-type="PublishQueue" name="G_DID_SN">
+			<finder-column name="groupId" />	
+			<finder-column name="dossierId" />	
+			<finder-column name="serverNo" />					
+		</finder>
+	</entity>
+	
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

@@ -679,6 +679,19 @@ create table opencps_processsteprole (
 	primary key (processStepId, roleId)
 );
 
+create table opencps_publish_queue (
+	uuid_ VARCHAR(75) null,
+	publishQueueId LONG not null primary key,
+	groupId LONG,
+	userId LONG,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierId LONG,
+	serverNo VARCHAR(255) null,
+	status INTEGER,
+	retry INTEGER
+);
+
 create table opencps_registration (
 	uuid_ VARCHAR(75) null,
 	registrationId LONG not null primary key,
@@ -857,6 +870,20 @@ create table opencps_services_filetemplates (
 	templateName VARCHAR(1000) null,
 	fileEntryId LONG,
 	primary key (serviceInfoId, fileTemplateNo)
+);
+
+create table opencps_services_publish_queue (
+	uuid_ VARCHAR(75) null,
+	publishQueueId LONG not null,
+	groupId LONG not null,
+	userId LONG not null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierId LONG,
+	serverNo VARCHAR(255) null,
+	status INTEGER,
+	retry INTEGER,
+	primary key (publishQueueId, groupId, userId)
 );
 
 create table opencps_stepconfig (
