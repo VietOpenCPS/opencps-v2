@@ -13,7 +13,7 @@ import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 	@Override
@@ -26,25 +26,25 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 	@Override
 	public void onAfterUpdate(Deliverable model) throws ModelListenerException {
-		_log.info("IN DeliverableListener onAfterUpdate" + model.getPrimaryKey());
-		_log.info("IN DeliverableListener onAfterUpdate" + model.getDeliverableId());
-		_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + OpenCPSDeliverableLocalServiceUtil.getOpenCPSDeliverables(-1, -1));
-		OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(model.getDeliverableId());
+//		_log.info("IN DeliverableListener onAfterUpdate" + model.getPrimaryKey());
+//		_log.info("IN DeliverableListener onAfterUpdate" + model.getDeliverableId());
+//		_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + OpenCPSDeliverableLocalServiceUtil.getOpenCPSDeliverables(-1, -1));
+//		OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(model.getDeliverableId());
 
-		_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverableId)" + model.getDeliverableId());
-		_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
+//		_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverableId)" + model.getDeliverableId());
+//		_log.info("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
 //		openCPSDeliverable.setDeliverableState(1);
 
-		System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
+//		System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable)" + openCPSDeliverable);
 		
-		try {
-			OpenCPSDeliverableLocalServiceUtil.adminProcessData(JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(openCPSDeliverable)));
-		} catch (JSONException e) {
+//		try {
+//			OpenCPSDeliverableLocalServiceUtil.adminProcessData(JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(openCPSDeliverable)));
+//		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//			e.printStackTrace();
+//		}
 
-		System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable22)" + openCPSDeliverable);
+//		System.out.println("DossierFileListenner.onAfterUpdate(openCPSDeliverable22)" + openCPSDeliverable);
 	}
 
 	@Override
