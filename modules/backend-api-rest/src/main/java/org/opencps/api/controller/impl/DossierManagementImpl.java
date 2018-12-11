@@ -1653,16 +1653,16 @@ public class DossierManagementImpl implements DossierManagement {
 														dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 														long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
 														_log.info("hoursCount: "+hoursCount);
-														_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
+														//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
 														List<Holiday> holidayList = HolidayLocalServiceUtil
 																.getHolidayByGroupId(groupId);
 
 														Date dueDateExtend = HolidayUtils.getEndDate(groupId,
-																dossier.getCorrecttingDate(), hoursCount, holidayList);
+																dossier.getDueDate(), hoursCount, holidayList);
 														_log.info("dueDateExtend: "+dueDateExtend);
 														if (dueDateExtend != null) {
 															dossier.setDueDate(dueDateExtend);
-															dossier.setCorrecttingDate(null);
+															//dossier.setCorrecttingDate(null);
 															DossierLocalServiceUtil.updateDossier(dossier);
 														}
 													}
@@ -1672,8 +1672,9 @@ public class DossierManagementImpl implements DossierManagement {
 									} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
 										if (dossier.getDueDate() != null) {
-											dossier.setCorrecttingDate(dossier.getDueDate());
-											dossier.setDueDate(null);
+											//dossier.setCorrecttingDate(dossier.getDueDate());
+											//dossier.setDueDate(null);
+											dossier.setLockState(DossierTerm.PAUSE_STATE);
 											DossierLocalServiceUtil.updateDossier(dossier);
 										}
 									} 
