@@ -1100,22 +1100,24 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 			if (dossier != null) {
 				List<Dossier> lstDossiers = DossierLocalServiceUtil.getByG_AN(groupId, applicantIdNo);
-				long[] dossierIds = new long[lstDossiers.size()];
-				int i = 0;
-				for (Dossier d : lstDossiers) {
-					dossierIds[i++] = d.getDossierId();
-				}
-				
 				List<DossierFile> resultFiles = new ArrayList<>();
-				String[] ftns = StringUtil.split(fileTemplateNo);
-				
-				for (String ftn : ftns) {
-					List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getByG_DID_FTN_R(groupId, dossierIds, ftn, false);
-					resultFiles.addAll(dossierFiles);
+				if (lstDossiers.size() > 0) {
+					long[] dossierIds = new long[lstDossiers.size()];
+					int i = 0;
+					for (Dossier d : lstDossiers) {
+						dossierIds[i++] = d.getDossierId();
+					}
+					
+					String[] ftns = StringUtil.split(fileTemplateNo);
+					
+					for (String ftn : ftns) {
+						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getByG_DID_FTN_R(groupId, dossierIds, ftn, false);
+						resultFiles.addAll(dossierFiles);
+					}
 				}
-				
 				results.setTotal(resultFiles.size());
-				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(resultFiles));			}
+				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(resultFiles));			
+			}
 
 			return Response.status(200).entity(results).build();
 
