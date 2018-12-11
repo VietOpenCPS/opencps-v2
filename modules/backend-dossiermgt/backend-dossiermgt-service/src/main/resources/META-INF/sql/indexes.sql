@@ -180,6 +180,10 @@ create index IX_85322B32 on opencps_processsteprole (processStepId);
 create index IX_30CABA8B on opencps_processsteprole (roleCode[$COLUMN_LENGTH:255$]);
 create index IX_134D7D60 on opencps_processsteprole (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_F5FF8328 on opencps_publish_queue (groupId, dossierId, serverNo[$COLUMN_LENGTH:255$]);
+create index IX_E385792A on opencps_publish_queue (status);
+create unique index IX_6E7DABBA on opencps_publish_queue (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_E4E0E58C on opencps_registration (applicantIdNo[$COLUMN_LENGTH:75$]);
 create index IX_521D957E on opencps_registration (groupId, applicantIdNo[$COLUMN_LENGTH:75$], govAgencyCode[$COLUMN_LENGTH:75$], registrationState);
 create index IX_B5AC1550 on opencps_registration (groupId, registrationId);
@@ -232,6 +236,8 @@ create index IX_645000FB on opencps_serviceprocessrole (uuid_[$COLUMN_LENGTH:75$
 
 create index IX_6C3BEC69 on opencps_services_filetemplates (serviceInfoId);
 create index IX_71CB1E6F on opencps_services_filetemplates (uuid_[$COLUMN_LENGTH:75$]);
+
+create unique index IX_23975ABF on opencps_services_publish_queue (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_5E562335 on opencps_stepconfig (groupId, dossierStatus[$COLUMN_LENGTH:75$], dossierSubStatus[$COLUMN_LENGTH:75$]);
 create index IX_9154D4C0 on opencps_stepconfig (groupId, stepCode[$COLUMN_LENGTH:75$]);
