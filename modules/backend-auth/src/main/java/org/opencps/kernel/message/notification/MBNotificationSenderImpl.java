@@ -34,6 +34,9 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 		payloadJSON.put("notificationText", messageEntry.getTextMessage());
 		payloadJSON.put("userUrl", messageEntry.getUserUrl());
 		payloadJSON.put("guestUrl", messageEntry.getGuestUrl());
+		payloadJSON.put("data", messageEntry.getData());
+		payloadJSON.put("notifyMessage", messageEntry.getNotifyMessage());
+		
 		if (messageEntry.getToUserIds() != null) {
 			for (Long toUserId : messageEntry.getToUserIds()) {
 				

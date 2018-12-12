@@ -271,6 +271,34 @@ public interface DeliverableTypeModel extends BaseModel<DeliverableType>,
 	public void setFormReport(String formReport);
 
 	/**
+	 * Returns the form script file ID of this deliverable type.
+	 *
+	 * @return the form script file ID of this deliverable type
+	 */
+	public long getFormScriptFileId();
+
+	/**
+	 * Sets the form script file ID of this deliverable type.
+	 *
+	 * @param formScriptFileId the form script file ID of this deliverable type
+	 */
+	public void setFormScriptFileId(long formScriptFileId);
+
+	/**
+	 * Returns the form report file ID of this deliverable type.
+	 *
+	 * @return the form report file ID of this deliverable type
+	 */
+	public long getFormReportFileId();
+
+	/**
+	 * Sets the form report file ID of this deliverable type.
+	 *
+	 * @param formReportFileId the form report file ID of this deliverable type
+	 */
+	public void setFormReportFileId(long formReportFileId);
+
+	/**
 	 * Returns the code pattern of this deliverable type.
 	 *
 	 * @return the code pattern of this deliverable type
@@ -286,19 +314,48 @@ public interface DeliverableTypeModel extends BaseModel<DeliverableType>,
 	public void setCodePattern(String codePattern);
 
 	/**
+	 * Returns the data config of this deliverable type.
+	 *
+	 * @return the data config of this deliverable type
+	 */
+	@AutoEscape
+	public String getDataConfig();
+
+	/**
+	 * Sets the data config of this deliverable type.
+	 *
+	 * @param dataConfig the data config of this deliverable type
+	 */
+	public void setDataConfig(String dataConfig);
+
+	/**
+	 * Returns the table config of this deliverable type.
+	 *
+	 * @return the table config of this deliverable type
+	 */
+	@AutoEscape
+	public String getTableConfig();
+
+	/**
+	 * Sets the table config of this deliverable type.
+	 *
+	 * @param tableConfig the table config of this deliverable type
+	 */
+	public void setTableConfig(String tableConfig);
+
+	/**
 	 * Returns the counter of this deliverable type.
 	 *
 	 * @return the counter of this deliverable type
 	 */
-	@AutoEscape
-	public String getCounter();
+	public long getCounter();
 
 	/**
 	 * Sets the counter of this deliverable type.
 	 *
 	 * @param counter the counter of this deliverable type
 	 */
-	public void setCounter(String counter);
+	public void setCounter(long counter);
 
 	/**
 	 * Returns the mapping data of this deliverable type.

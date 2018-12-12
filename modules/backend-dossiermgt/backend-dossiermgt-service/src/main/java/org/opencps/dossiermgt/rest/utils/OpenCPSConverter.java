@@ -137,6 +137,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getOriginality())) {
 	    	params.put(DossierTerm.ORIGINALLITY, model.getOriginality().toString());
 	    }
+	    if (Validator.isNotNull(model.getOnline())) {
+	    	params.put(DossierTerm.ONLINE, model.getOnline());	    	
+	    }
 	    
 	    return params;
 	}
@@ -840,6 +843,7 @@ public class OpenCPSConverter {
 		if (Validator.isNotNull(dossier.getPassword())) {
 			model.setPassword(dossier.getPassword());
 		}
+		model.setOnline(String.valueOf(dossier.getOnline()));
 		
 		return model;
 	}

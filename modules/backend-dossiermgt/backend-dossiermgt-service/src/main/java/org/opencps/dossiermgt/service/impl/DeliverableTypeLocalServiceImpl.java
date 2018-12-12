@@ -54,7 +54,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 
 	public DeliverableType addDeliverableType(long groupId, String deliverableName, String deliverableType_,
-			String codePattern, String counter, String formScript, String formReport, String mappingData,
+			String codePattern, long counter, String formScript, String formReport, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		// TODO Add DeliverableType
 		long userId = serviceContext.getUserId();
@@ -89,7 +89,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 
 	public DeliverableType updateDeliverableType(long groupId, long deliverableTypeId, String deliverableName,
-			String deliverableType_, String codePattern, String counter, String formScript, String formReport,
+			String deliverableType_, String codePattern, long counter, String formScript, String formReport,
 			String mappingData, ServiceContext serviceContext) throws PortalException {
 		// TODO Update DeliverableType
 		Date now = new Date();

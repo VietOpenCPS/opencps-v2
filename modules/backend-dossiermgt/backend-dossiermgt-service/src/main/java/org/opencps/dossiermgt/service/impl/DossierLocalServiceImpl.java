@@ -3615,6 +3615,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public List<Dossier> getByG_AN(long groupId, String applicantIdNo) {
 		return dossierPersistence.findByG_AN(groupId, applicantIdNo);
 	}
+	
+	public Dossier getByG_AN_SC_GAC_DTNO(long groupId, String applicantIdNo, String serviceCode, String govAgencyCode, String dossierTemplateNo) {
+		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO(groupId, applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo);
+	}
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

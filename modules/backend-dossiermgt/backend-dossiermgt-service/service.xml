@@ -521,6 +521,13 @@
 			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo" />
 		</finder>
+		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+			<finder-column name="serviceCode" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="dossierTemplateNo" />
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -1634,8 +1641,12 @@
 		<column name="typeName" type="String" />
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
+		<column name="formScriptFileId" type="long" />
+		<column name="formReportFileId" type="long" />
 		<column name="codePattern" type="String" />
-		<column name="counter" type="String" />
+		<column name="dataConfig" type="String" />
+		<column name="tableConfig" type="String" />
+		<column name="counter" type="long" />
 		<column name="mappingData" type="String" />
 		<column name="docSync" type="int" />
 		<column name="govAgencies" type="String" />
