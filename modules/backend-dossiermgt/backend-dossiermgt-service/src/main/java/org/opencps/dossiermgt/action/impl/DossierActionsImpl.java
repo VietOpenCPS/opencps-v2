@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SubscriptionLocalService;
+import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -57,8 +59,10 @@ import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -89,6 +93,8 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -109,6 +115,7 @@ import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
+import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
@@ -138,6 +145,7 @@ import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
@@ -1413,11 +1421,16 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
-							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
-								data.put(ProcessActionTerm.ENABLE, enable);
-							else
-								data.put(ProcessActionTerm.ENABLE, 0);
-
+							if (!isAdministratorData) {
+								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
+									data.put(ProcessActionTerm.ENABLE, enable);
+								else
+									data.put(ProcessActionTerm.ENABLE, 0);
+							}
+							else {
+								data.put(ProcessActionTerm.ENABLE, enable);								
+							}
+						
 							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
 							data.put(ProcessActionTerm.ACTION_NAME, actionName);
@@ -3346,6 +3359,10 @@ public class DossierActionsImpl implements DossierActions {
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
+		
+		//Create subcription
+		createSubcription(userId, groupId, dossier, actionConfig, context);
+		
 		if (syncType > 0) {
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
 			
@@ -3461,11 +3478,14 @@ public class DossierActionsImpl implements DossierActions {
 			
 			if (state == DossierSyncTerm.STATE_NOT_SYNC
 					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-				publishEvent(dossier);
+				publishEvent(dossier, context);
 			}
+//			if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+//				publishEvent(dossier, context);
+//			}
 		}
 		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-			publishEvent(dossier);			
+			publishEvent(dossier, context);			
 		}
 		//Do action hslt
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
@@ -3589,7 +3609,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-			publishEvent(dossier);			
+			publishEvent(dossier, context);			
 		}
 		
 		return dossierAction;
@@ -3618,7 +3638,7 @@ public class DossierActionsImpl implements DossierActions {
 		return dossierAction;
 	}
 	
-	private void publishEvent(Dossier dossier) {
+	private void publishEvent(Dossier dossier, ServiceContext context) {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
@@ -3634,6 +3654,24 @@ public class DossierActionsImpl implements DossierActions {
 		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
 		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
+		
+		//Add publish queue
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.PUBLISH_PROTOCOL);
+		for (ServerConfig sc : lstScs) {
+			try {
+				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
+				if (pq == null) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+				}
+				else {
+					if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
+						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
+					}
+				}
+			} catch (PortalException e) {
+				_log.debug(e);
+			}
+		}
 	}
 	
 	private void vnpostEvent(Dossier dossier) {
@@ -3851,6 +3889,43 @@ public class DossierActionsImpl implements DossierActions {
 							_log.debug(e);
 							//_log.error(e);
 //							e.printStackTrace();
+						}
+					}					
+				}
+				else if (actionConfig.getDocumentType().startsWith("USER")) {
+					
+				}
+			}
+		}		
+	}
+
+	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+			User u = UserLocalServiceUtil.fetchUser(userId);
+			
+			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			if (notiTemplate != null) {
+				if (actionConfig.getDocumentType().startsWith("APLC")) {
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+					}
+				}
+				else if (actionConfig.getDocumentType().startsWith("EMPL")) {
+					if ((dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+							&& dossierAction != null) {
+						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
+						List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDID_DAI_SC_AS(dossier.getDossierId(), dossierAction.getDossierActionId(), dossierAction.getStepCode(), new int[] { 1, 2 });
+						if ("EMPL-01".equals(actionConfig.getDocumentType())
+								&& stepConfig != null && "1".equals(stepConfig.getStepType())) {
+							for (DossierActionUser dau : lstDaus) {
+								try {
+									SubscriptionLocalServiceUtil.addSubscription(dau.getUserId(), groupId, "EMPL-01", 0);
+								} catch (PortalException e) {
+									_log.debug(e);
+								}
+							}
 						}
 					}					
 				}
@@ -6168,5 +6243,5 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		}
 		
 		return lstUser;
-	}
+	}	
 }
