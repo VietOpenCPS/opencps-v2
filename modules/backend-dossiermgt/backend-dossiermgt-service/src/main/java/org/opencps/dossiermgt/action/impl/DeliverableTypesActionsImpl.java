@@ -45,7 +45,7 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 
 	@Override
 	public DeliverableType addDeliverableType(long groupId, String deliverableName, String deliverableType_,
-			String codePattern, String counter, String formScript, String formReport, String mappingData,
+			String codePattern, long counter, String formScript, String formReport, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
 		return DeliverableTypeLocalServiceUtil.addDeliverableType(groupId, deliverableName, deliverableType_,
@@ -54,7 +54,7 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 
 	@Override
 	public DeliverableType updateDeliverableType(long groupId, long deliverableTypeId, String deliverableName,
-			String deliverableType_, String codePattern, String counter, String formScript, String formReport,
+			String deliverableType_, String codePattern, long counter, String formScript, String formReport,
 			String mappingData, ServiceContext serviceContext) throws SystemException, PortalException {
 
 		return DeliverableTypeLocalServiceUtil.updateDeliverableType(groupId, deliverableTypeId, deliverableName,

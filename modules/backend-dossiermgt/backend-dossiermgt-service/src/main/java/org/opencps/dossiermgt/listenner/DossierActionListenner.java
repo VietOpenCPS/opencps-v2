@@ -173,9 +173,9 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					}
 				}
 
-				if (processAction.getPreCondition().contains("reject_cancelling")
+				if (Validator.isNotNull(processAction) && (processAction.getPreCondition().contains("reject_cancelling")
 						|| processAction.getPreCondition().contains("reject_correcting")
-						|| processAction.getPreCondition().contains("reject_submitting")) {
+						|| processAction.getPreCondition().contains("reject_submitting"))) {
 					ok = false;
 				}
 

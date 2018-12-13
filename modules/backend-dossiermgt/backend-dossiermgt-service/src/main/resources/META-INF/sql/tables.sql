@@ -83,8 +83,12 @@ create table opencps_deliverabletype (
 	typeName VARCHAR(575) null,
 	formScript TEXT null,
 	formReport TEXT null,
+	formScriptFileId LONG,
+	formReportFileId LONG,
 	codePattern VARCHAR(275) null,
-	counter VARCHAR(75) null,
+	dataConfig TEXT null,
+	tableConfig TEXT null,
+	counter LONG,
 	mappingData TEXT null,
 	docSync INTEGER,
 	govAgencies VARCHAR(255) null
@@ -870,20 +874,6 @@ create table opencps_services_filetemplates (
 	templateName VARCHAR(1000) null,
 	fileEntryId LONG,
 	primary key (serviceInfoId, fileTemplateNo)
-);
-
-create table opencps_services_publish_queue (
-	uuid_ VARCHAR(75) null,
-	publishQueueId LONG not null,
-	groupId LONG not null,
-	userId LONG not null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	dossierId LONG,
-	serverNo VARCHAR(255) null,
-	status INTEGER,
-	retry INTEGER,
-	primary key (publishQueueId, groupId, userId)
 );
 
 create table opencps_stepconfig (

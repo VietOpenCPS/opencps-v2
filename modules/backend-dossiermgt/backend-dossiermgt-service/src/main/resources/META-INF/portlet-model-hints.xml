@@ -107,10 +107,24 @@
 		<field name="formReport" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="formScriptFileId" type="long">
+			<hint name="default-value">0</hint>
+		</field>
+		<field name="formReportFileId" type="long">
+			<hint name="default-value">0</hint>
+		</field>
 		<field name="codePattern" type="String">
 			<hint name="max-length">275</hint>
 		</field>
-		<field name="counter" type="String" />
+		<field name="dataConfig" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="tableConfig" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="counter" type="long">
+			<hint name="default-value">0</hint>
+		</field>
 		<field name="mappingData" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
