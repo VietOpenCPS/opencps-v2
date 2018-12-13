@@ -151,8 +151,10 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
@@ -2742,9 +2744,9 @@ public class DossierActionsImpl implements DossierActions {
 //		_log.info("SONDT DOSSIER ACTION payment ========= "+ payment);
 		
 		
-		if (option != null && proAction != null) {
+		if ((option != null || previousAction != null) && proAction != null) {
 //			_log.info("In do action process action");
-			long serviceProcessId = option.getServiceProcessId();
+			long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
 //			String paymentFee = proAction.getPaymentFee();
@@ -3075,7 +3077,10 @@ public class DossierActionsImpl implements DossierActions {
 						String delegateEmail = dossier.getDelegateEmail();
 						String delegateIdNo = dossier.getGovAgencyCode();
 						
-						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
+						Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo());
+						long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
+						
+						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, hsltDossierId, UUID.randomUUID().toString(), 
 								dossier.getCounter(), dossier.getServiceCode(),
 								dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
 								dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
@@ -3825,23 +3830,48 @@ public class DossierActionsImpl implements DossierActions {
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(now);
-	        cal.add(Calendar.DATE, 5);
+	        	  
+	        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+	        try {		
+	        	payloadObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
+	        	if (dossierAction != null) {
+	        		payloadObj.put("actionCode", dossierAction.getActionCode());
+	        		payloadObj.put("actionUser", dossierAction.getActionUser());
+	        		payloadObj.put("actionName", dossierAction.getActionName());
+	        		payloadObj.put("actionNote", dossierAction.getActionNote());
+	        	}
+	        }
+	        catch (Exception e) {
+	        	_log.debug(e);
+	        }
 	        
-			Date expired = cal.getTime();
 			if (notiTemplate != null) {
-				if (actionConfig.getDocumentType().startsWith("APLC")) {
+				if ("minutely".equals(notiTemplate.getInterval())) {
+			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
+				}
+				else if ("hourly".equals(notiTemplate.getInterval())) {
+			        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
+				}
+				else {
+			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
+				}
+				Date expired = cal.getTime();
+
+				if (actionConfig.getNotificationType().startsWith("APLC")) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
+							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
+							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
 									Dossier.class.getName(), 
 									String.valueOf(dossier.getDossierId()), 
-									dossierAction.getPayload(), 
+									payloadObj.toJSONString(), 
 									u.getFullName(), 
 									dossier.getApplicantName(), 
-									0L, 
+									toUserId, 
 									dossier.getContactEmail(), 
 									dossier.getContactTelNo(), 
 									now, 
@@ -3854,7 +3884,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 				}
-				else if (actionConfig.getDocumentType().startsWith("EMPL")) {
+				else if (actionConfig.getNotificationType().startsWith("EMPL")) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -3871,10 +3901,10 @@ public class DossierActionsImpl implements DossierActions {
 												actionConfig.getNotificationType(), 
 												Dossier.class.getName(), 
 												String.valueOf(dossier.getDossierId()), 
-												dossierAction.getPayload(), 
+												payloadObj.toJSONString(), 
 												fullName, 
 												fullName, 
-												0L, 
+												dau.getUserId(), 
 												u.getEmailAddress(), 
 												telNo, 
 												now, 
@@ -3890,7 +3920,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}					
 				}
-				else if (actionConfig.getDocumentType().startsWith("USER")) {
+				else if (actionConfig.getNotificationType().startsWith("USER")) {
 					
 				}
 			}
@@ -3950,7 +3980,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		try {
 			option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, dossier.getGroupId());
-			long serviceProcessId = option.getServiceProcessId();
+			long serviceProcessId = (option != null ? option.getServiceProcessId() : prevAction.getServiceProcessId());
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			
 		} catch (PortalException e) {

@@ -76,9 +76,8 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 
 	public DeliverableType addDeliverableType(long groupId,
 		String deliverableName, String deliverableType_, String codePattern,
-		String counter, String formScript, String formReport,
-		String mappingData, ServiceContext serviceContext)
-		throws PortalException, SystemException;
+		long counter, String formScript, String formReport, String mappingData,
+		ServiceContext serviceContext) throws PortalException, SystemException;
 
 	/**
 	* Creates a new deliverable type with the primary key. Does not add the deliverable type to the database.
@@ -305,7 +304,7 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 
 	public DeliverableType updateDeliverableType(long groupId,
 		long deliverableTypeId, String deliverableName,
-		String deliverableType_, String codePattern, String counter,
+		String deliverableType_, String codePattern, long counter,
 		String formScript, String formReport, String mappingData,
 		ServiceContext serviceContext) throws PortalException;
 
