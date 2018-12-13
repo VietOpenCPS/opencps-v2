@@ -12,3 +12,19 @@ create table opencps_adminconfig (
 	groupFilter BOOLEAN,
 	publicManager BOOLEAN
 );
+
+create table opencps_dynamicreport (
+	dynamicReportId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	sharing INTEGER,
+	reportName VARCHAR(75) null,
+	reportCode VARCHAR(75) null,
+	filterConfig VARCHAR(75) null,
+	tableConfig VARCHAR(75) null,
+	userConfig VARCHAR(75) null
+);

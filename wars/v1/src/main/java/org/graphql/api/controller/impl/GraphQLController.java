@@ -40,7 +40,6 @@ public class GraphQLController {
 
 	@RequestMapping(value = "/deliverable", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> deliverable(@RequestBody String query) {
-		System.out.println("GraphQLController.deliverable()" + query);
 		ExecutionResult result = deliverableService.getGraphQL().execute(query);
 
 		Gson gson = new Gson();
@@ -57,9 +56,7 @@ public class GraphQLController {
 		ExecutionResult result = dataItemService.getGraphQL().execute(query);
 
 		Gson gson = new Gson();
-		
-		
-System.out.println("GraphQLController.dataitem()" + result.getErrors());
+
 		String json = gson.toJson(result.getData(), LinkedHashMap.class);
 
 		return new ResponseEntity<>(json, HttpStatus.OK);
