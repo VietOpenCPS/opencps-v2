@@ -3243,6 +3243,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setReleaseDate(new Date(obj.getLong(DossierTerm.RELEASE_DATE)));	
 			}
 		}
+		if (obj.has(DossierTerm.LOCK_STATE)) {
+			if (!obj.getString(DossierTerm.LOCK_STATE).equals(dossier.getLockState())) {
+				dossier.setLockState(obj.getString(DossierTerm.LOCK_STATE));
+			}
+		}
+		if (obj.has(DossierTerm.BRIEF_NOTE)) {
+			if (!obj.getString(DossierTerm.BRIEF_NOTE).equals(dossier.getBriefNote())) {
+				dossier.setBriefNote(obj.getString(DossierTerm.BRIEF_NOTE));
+			}
+		}
 		
 		return dossierPersistence.update(dossier);
 	}
@@ -3808,6 +3818,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.update(dossier);
 	}
 	
+	public List<Dossier> getByG_AN(long groupId, String applicantIdNo) {
+		return dossierPersistence.findByG_AN(groupId, applicantIdNo);
+	}
+	
+	public Dossier getByG_AN_SC_GAC_DTNO(long groupId, String applicantIdNo, String serviceCode, String govAgencyCode, String dossierTemplateNo) {
+		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO(groupId, applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo);
+	}
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

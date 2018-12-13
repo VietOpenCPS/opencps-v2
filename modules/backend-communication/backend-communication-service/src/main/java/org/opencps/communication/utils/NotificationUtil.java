@@ -90,7 +90,7 @@ public class NotificationUtil {
 				baseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPrivateGroup() +
 					group.getFriendlyURL();
-				_log.info("baseUrl: "+baseUrl);
+//				_log.info("baseUrl: "+baseUrl);
 
 			}
 			catch (Exception e) {
@@ -106,7 +106,7 @@ public class NotificationUtil {
 				guestBaseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPublic() +
 					group.getFriendlyURL();
-				_log.info("guestBaseUrl: "+guestBaseUrl);
+//				_log.info("guestBaseUrl: "+guestBaseUrl);
 
 			}
 			catch (Exception e) {
@@ -167,7 +167,7 @@ public class NotificationUtil {
 
 				String emailBody =
 					emailBodyTemplateProcessor.process(dataModel);
-				_log.info("emailBody: "+emailBody);
+//				_log.info("emailBody: "+emailBody);
 
 				TemplateProcessor emailSubjectTemplateProcessor =
 					new TemplateProcessor(emailSubjectTemplate);
@@ -180,7 +180,7 @@ public class NotificationUtil {
 
 				String textMessage =
 					textMessageTemplateProcessor.process(dataModel);
-				_log.info("textMessage: "+textMessage);
+//				_log.info("textMessage: "+textMessage);
 
 				String userUrl = StringPool.BLANK;
 
@@ -189,7 +189,7 @@ public class NotificationUtil {
 						new TemplateProcessor(userUrlPatternTemplate);
 					userUrl =
 						userUrlPatternTemplateProcessor.process(dataModel);
-					_log.info("userUrl: "+userUrl);
+//					_log.info("userUrl: "+userUrl);
 				}
 
 				String guestUrl = StringPool.BLANK;
@@ -200,7 +200,7 @@ public class NotificationUtil {
 
 					guestUrl =
 						guestUrlPatternTemplateProcessor.process(dataModel);
-					_log.info("guestUrl: "+guestUrl);
+//					_log.info("guestUrl: "+guestUrl);
 				}
 
 				messageEntry = new MBMessageEntry(
@@ -215,7 +215,9 @@ public class NotificationUtil {
 				messageEntry.setUserUrl(userUrl);
 				messageEntry.setGuestUrl(guestUrl);
 				messageEntry.setToTelNo(queue.getToTelNo());
-
+				messageEntry.setNotifyMessage(template.getNotifyMessage());
+				messageEntry.setData(queue.getPayload());
+				
 				// _log.info(emailBody);
 
 				// _log.info(userUrl);
@@ -227,32 +229,37 @@ public class NotificationUtil {
 				boolean sendSMS = true;
 
 				if (queue.getToUserId() > 0) {
-					Preferences preferences =
-						PreferencesLocalServiceUtil.fetchByF_userId(
-							serviceContext.getScopeGroupId(),
-							queue.getToUserId());
-					if (preferences != null &&
-						Validator.isNotNull(preferences.getPreferences())) {
-						try {
-							JSONObject pref = JSONFactoryUtil.createJSONObject(
-								preferences.getPreferences());
-							if (pref.has(queue.getNotificationType())) {
-								JSONObject object = pref.getJSONObject(
-									queue.getNotificationType());
-								if (object != null &&
-									object.has(queue.getClassName())) {
-									JSONObject conf = object.getJSONObject(
-										queue.getClassName());
-									sendEmail = conf.getBoolean("email");
-									sendNotify = conf.getBoolean("notify");
+//					Preferences preferences =
+//						PreferencesLocalServiceUtil.fetchByF_userId(
+//							serviceContext.getScopeGroupId(),
+//							queue.getToUserId());
+//					if (preferences != null &&
+//						Validator.isNotNull(preferences.getPreferences())) {
+//						try {
+//							JSONObject pref = JSONFactoryUtil.createJSONObject(
+//								preferences.getPreferences());
+//							if (pref.has(queue.getNotificationType())) {
+//								JSONObject object = pref.getJSONObject(
+//									queue.getNotificationType());
+//								if (object != null &&
+//									object.has(queue.getClassName())) {
+//									JSONObject conf = object.getJSONObject(
+//										queue.getClassName());
+//									sendEmail = conf.getBoolean("email");
+//									sendNotify = conf.getBoolean("notify");
 //									sendSMS = conf.getBoolean("sms");
-								}
-							}
-						}
-						catch (Exception e) {
-							_log.debug(e);
-							//_log.error(e);
-						}
+//								}
+//							}
+//						}
+//						catch (Exception e) {
+//							_log.debug(e);
+//							//_log.error(e);
+//						}
+//					}
+					if (template != null) {
+						sendEmail = template.getSendEmail();
+						sendNotify = template.getSendNotification();
+						sendSMS = template.getSendSMS();
 					}
 				}
 				else {
@@ -263,7 +270,7 @@ public class NotificationUtil {
 				messageEntry.setSendNotify(sendNotify);
 				messageEntry.setSendSMS(false);
 
-				_log.info("create mail message: " + messageEntry);
+//				_log.info("create mail message: " + messageEntry);
 
 			}
 			catch (Exception e) {

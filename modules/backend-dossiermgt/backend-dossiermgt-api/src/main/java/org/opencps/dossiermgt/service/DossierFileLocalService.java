@@ -293,6 +293,10 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public DossierFile getByFileTemplateNo(long id, String fileTemplateNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getByG_DID_FTN_R(long groupId, long[] dossierIds,
+		String fileTemplateNo, boolean removed);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getByRefAndGroupId(long groupId, String referenceUid)
 		throws PortalException;
 

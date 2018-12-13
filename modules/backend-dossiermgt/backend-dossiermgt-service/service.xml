@@ -521,6 +521,18 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierNo" />
 		</finder>
+
+		<finder return-type="Collection" name="G_AN">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+		</finder>
+		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+			<finder-column name="serviceCode" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="dossierTemplateNo" />
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -653,6 +665,12 @@
 			<finder-column name="dossierId" />
 			<finder-column name="fileTemplateNo" />
 			<finder-column name="dossierTemplateNo" />
+		</finder>        
+		<finder return-type="Collection" name="G_DID_FTN_R">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+			<finder-column name="fileTemplateNo" />
+			<finder-column name="removed" />
 		</finder>        
 	</entity>
 
@@ -1628,8 +1646,12 @@
 		<column name="typeName" type="String" />
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
+		<column name="formScriptFileId" type="long" />
+		<column name="formReportFileId" type="long" />
 		<column name="codePattern" type="String" />
-		<column name="counter" type="String" />
+		<column name="dataConfig" type="String" />
+		<column name="tableConfig" type="String" />
+		<column name="counter" type="long" />
 		<column name="mappingData" type="String" />
 		<column name="docSync" type="int" />
 		<column name="govAgencies" type="String" />
@@ -2119,6 +2141,37 @@
 		</finder>
 	</entity>
 
+	<entity name="PublishQueue" table="opencps_publish_queue"
+		local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="publishQueueId" primary="true" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="dossierId" type="long" />
+		<column name="serverNo" type="String" />
+		<column name="status" type="int" />
+		<column name="retry" type="int" />
+
+		<order>
+			<order-column name="modifiedDate" />
+		</order>
+
+		<finder return-type="Collection" name="ST">
+			<finder-column name="status" />		
+		</finder>
+
+		<finder return-type="PublishQueue" name="G_DID_SN">
+			<finder-column name="groupId" />	
+			<finder-column name="dossierId" />	
+			<finder-column name="serverNo" />					
+		</finder>
+	</entity>
+	
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

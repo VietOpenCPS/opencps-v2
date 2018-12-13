@@ -65,7 +65,7 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -91,8 +91,16 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 		sb.append(formScript);
 		sb.append(", formReport=");
 		sb.append(formReport);
+		sb.append(", formScriptFileId=");
+		sb.append(formScriptFileId);
+		sb.append(", formReportFileId=");
+		sb.append(formReportFileId);
 		sb.append(", codePattern=");
 		sb.append(codePattern);
+		sb.append(", dataConfig=");
+		sb.append(dataConfig);
+		sb.append(", tableConfig=");
+		sb.append(tableConfig);
 		sb.append(", counter=");
 		sb.append(counter);
 		sb.append(", mappingData=");
@@ -171,6 +179,9 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 			deliverableTypeImpl.setFormReport(formReport);
 		}
 
+		deliverableTypeImpl.setFormScriptFileId(formScriptFileId);
+		deliverableTypeImpl.setFormReportFileId(formReportFileId);
+
 		if (codePattern == null) {
 			deliverableTypeImpl.setCodePattern("");
 		}
@@ -178,12 +189,21 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 			deliverableTypeImpl.setCodePattern(codePattern);
 		}
 
-		if (counter == null) {
-			deliverableTypeImpl.setCounter("");
+		if (dataConfig == null) {
+			deliverableTypeImpl.setDataConfig("");
 		}
 		else {
-			deliverableTypeImpl.setCounter(counter);
+			deliverableTypeImpl.setDataConfig(dataConfig);
 		}
+
+		if (tableConfig == null) {
+			deliverableTypeImpl.setTableConfig("");
+		}
+		else {
+			deliverableTypeImpl.setTableConfig(tableConfig);
+		}
+
+		deliverableTypeImpl.setCounter(counter);
 
 		if (mappingData == null) {
 			deliverableTypeImpl.setMappingData("");
@@ -224,8 +244,15 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 		typeName = objectInput.readUTF();
 		formScript = objectInput.readUTF();
 		formReport = objectInput.readUTF();
+
+		formScriptFileId = objectInput.readLong();
+
+		formReportFileId = objectInput.readLong();
 		codePattern = objectInput.readUTF();
-		counter = objectInput.readUTF();
+		dataConfig = objectInput.readUTF();
+		tableConfig = objectInput.readUTF();
+
+		counter = objectInput.readLong();
 		mappingData = objectInput.readUTF();
 
 		docSync = objectInput.readInt();
@@ -288,6 +315,10 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 			objectOutput.writeUTF(formReport);
 		}
 
+		objectOutput.writeLong(formScriptFileId);
+
+		objectOutput.writeLong(formReportFileId);
+
 		if (codePattern == null) {
 			objectOutput.writeUTF("");
 		}
@@ -295,12 +326,21 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 			objectOutput.writeUTF(codePattern);
 		}
 
-		if (counter == null) {
+		if (dataConfig == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(counter);
+			objectOutput.writeUTF(dataConfig);
 		}
+
+		if (tableConfig == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(tableConfig);
+		}
+
+		objectOutput.writeLong(counter);
 
 		if (mappingData == null) {
 			objectOutput.writeUTF("");
@@ -331,8 +371,12 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 	public String typeName;
 	public String formScript;
 	public String formReport;
+	public long formScriptFileId;
+	public long formReportFileId;
 	public String codePattern;
-	public String counter;
+	public String dataConfig;
+	public String tableConfig;
+	public long counter;
 	public String mappingData;
 	public int docSync;
 	public String govAgencies;

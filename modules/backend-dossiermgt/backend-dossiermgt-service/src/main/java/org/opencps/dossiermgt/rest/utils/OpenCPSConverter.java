@@ -137,6 +137,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getOriginality())) {
 	    	params.put(DossierTerm.ORIGINALLITY, model.getOriginality().toString());
 	    }
+	    if (Validator.isNotNull(model.getOnline())) {
+	    	params.put(DossierTerm.ONLINE, model.getOnline());	    	
+	    }
 	    
 	    return params;
 	}
@@ -214,6 +217,123 @@ public class OpenCPSConverter {
 	    }
 	    if (Validator.isNotNull(model.getOriginality())) {
 	    	params.put(DossierTerm.ORIGINALLITY, model.getOriginality().toString());
+	    }
+	    if (Validator.isNotNull(model.getCreateDate())) {
+	    	params.put(DossierTerm.CREATE_DATE, model.getCreateDate());
+	    }
+	    if (Validator.isNotNull(model.getModifiedDate())) {
+	    	params.put(DossierTerm.MODIFIED_DATE, model.getModifiedDate());
+	    }
+	    if (Validator.isNotNull(model.getSubmitDate())) {
+	    	params.put(DossierTerm.SUBMIT_DATE, model.getSubmitDate());
+	    }
+	    if (Validator.isNotNull(model.getReceiveDate())) {
+	    	params.put(DossierTerm.RECEIVE_DATE, model.getReceiveDate());
+	    }
+	    if (Validator.isNotNull(model.getDueDate())) {
+	    	params.put(DossierTerm.DUE_DATE, model.getDueDate());
+	    }
+	    if (Validator.isNotNull(model.getReleaseDate())) {
+	    	params.put(DossierTerm.RELEASE_DATE, model.getReleaseDate());
+	    }
+	    if (Validator.isNotNull(model.getFinishDate())) {
+	    	params.put(DossierTerm.FINISH_DATE, model.getFinishDate());
+	    }
+	    if (Validator.isNotNull(model.getCancellingDate())) {
+	    	params.put(DossierTerm.CANCELLING_DATE, model.getCancellingDate());
+	    }
+	    if (Validator.isNotNull(model.getCorrecttingDate())) {
+	    	params.put(DossierTerm.CORRECTING_DATE, model.getCorrecttingDate());
+	    }
+	    if (Validator.isNotNull(model.getEndorsementDate())) {
+	    	params.put(DossierTerm.ENDORSEMENT_DATE, model.getEndorsementDate());
+	    }
+	    if (Validator.isNotNull(model.getExtendDate())) {
+	    	params.put(DossierTerm.EXTEND_DATE, model.getExtendDate());
+	    }
+	    if (Validator.isNotNull(model.getProcessDate())) {
+	    	params.put(DossierTerm.PROCESS_DATE, model.getProcessDate());
+	    }
+	    if (Validator.isNotNull(model.getSubmissionNote())) {
+	    	params.put(DossierTerm.SUBMISSION_NOTE, model.getSubmissionNote());
+	    }
+	    
+	    return params;
+	}	
+	
+	public static Map<String, Object> convertPublishHttpParams(Dossier model) {
+	    Map<String, Object> params = new HashMap<>();
+	    
+	    if (Validator.isNotNull(model.getReferenceUid())) {
+		    params.put(DossierTerm.REFERENCE_UID, model.getReferenceUid());	    	
+	    }
+	    if (Validator.isNotNull(model.getServiceCode())) {
+		    params.put(DossierTerm.SERVICE_CODE, model.getServiceCode());	    	
+	    }
+	    if (Validator.isNotNull(model.getGovAgencyCode())) {
+		    params.put(DossierTerm.GOV_AGENCY_CODE, model.getGovAgencyCode());	    	
+	    }
+	    if (Validator.isNotNull(model.getGovAgencyName())) {
+		    params.put(DossierTerm.GOV_AGENCY_NAME, model.getGovAgencyName());	    	
+	    }
+	    if (Validator.isNotNull(model.getDossierTemplateNo())) {
+		    params.put(DossierTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());	    	
+	    }
+	    if (Validator.isNotNull(model.getDossierNo())) {
+	    	params.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
+	    }
+	    params.put(DossierTerm.SERVICE_NAME, model.getServiceName());
+	    params.put(DossierTerm.GOV_AGENCY_NAME, model.getGovAgencyName());
+	    params.put(DossierTerm.APPLICANT_NAME, model.getApplicantName());
+	    params.put(DossierTerm.APPLICANT_ID_TYPE, model.getApplicantIdType());
+	    params.put(DossierTerm.APPLICANT_ID_NO, model.getApplicantIdNo());
+	    params.put(DossierTerm.APPLICANT_ID_DATE, model.getApplicantIdDate());
+	    params.put(DossierTerm.ADDRESS, model.getAddress());
+	    params.put(DossierTerm.CITY_CODE, model.getCityCode());
+	    params.put(DossierTerm.CITY_NAME, model.getCityName());
+	    params.put(DossierTerm.DISTRICT_CODE, model.getDistrictCode());
+	    params.put(DossierTerm.DISTRICT_NAME, model.getDistrictName());
+	    params.put(DossierTerm.WARD_CODE, model.getWardCode());
+	    params.put(DossierTerm.WARD_NAME, model.getWardName());
+	    params.put(DossierTerm.CONTACT_NAME, model.getContactName());
+	    params.put(DossierTerm.CONTACT_TEL_NO, model.getContactTelNo());
+	    params.put(DossierTerm.CONTACT_EMAIL, model.getContactEmail());
+	    params.put(DossierTerm.DOSSIER_STATUS, model.getDossierStatus());
+	    params.put(DossierTerm.DOSSIER_STATUS_TEXT, model.getDossierStatusText());
+	    params.put(DossierTerm.DOSSIER_SUB_STATUS, model.getDossierSubStatus());
+	    params.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT, model.getDossierSubStatusText());
+	    params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
+	    params.put(DossierTerm.DOSSIER_ACTION_ID, model.getDossierActionId());
+
+	    if (Validator.isNotNull(model.getPassword())) {
+		    params.put(DossierTerm.SECRET, model.getPassword());	    	
+	    }
+	    if (Validator.isNotNull(model.getOnline())) {
+		    params.put(DossierTerm.ONLINE, model.getOnline());	    	
+	    }
+	    if (Validator.isNotNull(model.getViaPostal())) {
+	    	params.put(DossierTerm.VIA_POSTAL, model.getViaPostal());
+	    }
+	    if (Validator.isNotNull(model.getPostalServiceCode())) {
+	    	params.put(DossierTerm.POSTAL_SERVICE_CODE, model.getPostalServiceCode());	    	
+	    }
+	    if (Validator.isNotNull(model.getPostalCityCode())) {
+	    	params.put(DossierTerm.POSTAL_CITY_CODE, model.getPostalCityCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalDistrictCode())) {
+	    	params.put(DossierTerm.POSTAL_DISTRICT_CODE, model.getPostalDistrictCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalWardCode())) {
+	    	params.put(DossierTerm.POSTAL_WARD_CODE, model.getPostalWardCode());	    		    	
+	    }
+	    if (Validator.isNotNull(model.getPostalTelNo())) {
+	    	params.put(DossierTerm.POSTAL_TEL_NO, model.getPostalTelNo());	    		    		    	
+	    }
+	    if (Validator.isNotNull(model.getApplicantNote())) {
+	    	params.put(DossierTerm.APPLICANT_NOTE, model.getApplicantNote());	    		    		    		    	
+	    }
+	    if (Validator.isNotNull(model.getOriginality())) {
+	    	params.put(DossierTerm.ORIGINALLITY, String.valueOf(model.getOriginality()));
 	    }
 	    if (Validator.isNotNull(model.getCreateDate())) {
 	    	params.put(DossierTerm.CREATE_DATE, model.getCreateDate());
@@ -723,6 +843,7 @@ public class OpenCPSConverter {
 		if (Validator.isNotNull(dossier.getPassword())) {
 			model.setPassword(dossier.getPassword());
 		}
+		model.setOnline(String.valueOf(dossier.getOnline()));
 		
 		return model;
 	}

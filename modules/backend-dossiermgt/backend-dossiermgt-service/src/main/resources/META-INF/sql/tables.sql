@@ -83,8 +83,12 @@ create table opencps_deliverabletype (
 	typeName VARCHAR(575) null,
 	formScript TEXT null,
 	formReport TEXT null,
+	formScriptFileId LONG,
+	formReportFileId LONG,
 	codePattern VARCHAR(275) null,
-	counter VARCHAR(75) null,
+	dataConfig TEXT null,
+	tableConfig TEXT null,
+	counter LONG,
 	mappingData TEXT null,
 	docSync INTEGER,
 	govAgencies VARCHAR(255) null
@@ -677,6 +681,19 @@ create table opencps_processsteprole (
 	moderator BOOLEAN,
 	condition_ TEXT null,
 	primary key (processStepId, roleId)
+);
+
+create table opencps_publish_queue (
+	uuid_ VARCHAR(75) null,
+	publishQueueId LONG not null primary key,
+	groupId LONG,
+	userId LONG,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierId LONG,
+	serverNo VARCHAR(255) null,
+	status INTEGER,
+	retry INTEGER
 );
 
 create table opencps_registration (

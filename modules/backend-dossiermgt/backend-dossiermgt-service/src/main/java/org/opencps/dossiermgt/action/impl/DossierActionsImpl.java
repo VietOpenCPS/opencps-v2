@@ -59,8 +59,10 @@ import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -91,6 +93,8 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -111,6 +115,7 @@ import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
+import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
@@ -141,13 +146,16 @@ import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
@@ -1416,11 +1424,16 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
-							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
-								data.put(ProcessActionTerm.ENABLE, enable);
-							else
-								data.put(ProcessActionTerm.ENABLE, 0);
-
+							if (!isAdministratorData) {
+								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
+									data.put(ProcessActionTerm.ENABLE, enable);
+								else
+									data.put(ProcessActionTerm.ENABLE, 0);
+							}
+							else {
+								data.put(ProcessActionTerm.ENABLE, enable);								
+							}
+						
 							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
 							data.put(ProcessActionTerm.ACTION_NAME, actionName);
@@ -2733,9 +2746,9 @@ public class DossierActionsImpl implements DossierActions {
 //		_log.info("SONDT DOSSIER ACTION payment ========= "+ payment);
 		
 		
-		if (option != null && proAction != null) {
+		if ((option != null || previousAction != null) && proAction != null) {
 //			_log.info("In do action process action");
-			long serviceProcessId = option.getServiceProcessId();
+			long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
 //			String paymentFee = proAction.getPaymentFee();
@@ -3066,7 +3079,10 @@ public class DossierActionsImpl implements DossierActions {
 						String delegateEmail = dossier.getDelegateEmail();
 						String delegateIdNo = dossier.getGovAgencyCode();
 						
-						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
+						Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo());
+						long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
+						
+						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, hsltDossierId, UUID.randomUUID().toString(), 
 								dossier.getCounter(), dossier.getServiceCode(),
 								dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
 								dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
@@ -3467,11 +3483,14 @@ public class DossierActionsImpl implements DossierActions {
 			
 			if (state == DossierSyncTerm.STATE_NOT_SYNC
 					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-				publishEvent(dossier);
+				publishEvent(dossier, context);
 			}
+//			if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+//				publishEvent(dossier, context);
+//			}
 		}
 		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-			publishEvent(dossier);			
+			publishEvent(dossier, context);			
 		}
 		//Do action hslt
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
@@ -3595,7 +3614,7 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-			publishEvent(dossier);			
+			publishEvent(dossier, context);			
 		}
 		
 		return dossierAction;
@@ -3624,7 +3643,7 @@ public class DossierActionsImpl implements DossierActions {
 		return dossierAction;
 	}
 	
-	private void publishEvent(Dossier dossier) {
+	private void publishEvent(Dossier dossier, ServiceContext context) {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
@@ -3640,6 +3659,24 @@ public class DossierActionsImpl implements DossierActions {
 		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
 		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
+		
+		//Add publish queue
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.PUBLISH_PROTOCOL);
+		for (ServerConfig sc : lstScs) {
+			try {
+				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
+				if (pq == null) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+				}
+				else {
+					if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
+						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
+					}
+				}
+			} catch (PortalException e) {
+				_log.debug(e);
+			}
+		}
 	}
 	
 	private void vnpostEvent(Dossier dossier) {
@@ -3795,23 +3832,48 @@ public class DossierActionsImpl implements DossierActions {
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(now);
-	        cal.add(Calendar.DATE, 5);
+	        	  
+	        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+	        try {		
+	        	payloadObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
+	        	if (dossierAction != null) {
+	        		payloadObj.put("actionCode", dossierAction.getActionCode());
+	        		payloadObj.put("actionUser", dossierAction.getActionUser());
+	        		payloadObj.put("actionName", dossierAction.getActionName());
+	        		payloadObj.put("actionNote", dossierAction.getActionNote());
+	        	}
+	        }
+	        catch (Exception e) {
+	        	_log.debug(e);
+	        }
 	        
-			Date expired = cal.getTime();
 			if (notiTemplate != null) {
-				if (actionConfig.getDocumentType().startsWith("APLC")) {
+				if ("minutely".equals(notiTemplate.getInterval())) {
+			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
+				}
+				else if ("hourly".equals(notiTemplate.getInterval())) {
+			        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
+				}
+				else {
+			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
+				}
+				Date expired = cal.getTime();
+
+				if (actionConfig.getNotificationType().startsWith("APLC")) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
+							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
+							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
 									Dossier.class.getName(), 
 									String.valueOf(dossier.getDossierId()), 
-									dossierAction.getPayload(), 
+									payloadObj.toJSONString(), 
 									u.getFullName(), 
 									dossier.getApplicantName(), 
-									0L, 
+									toUserId, 
 									dossier.getContactEmail(), 
 									dossier.getContactTelNo(), 
 									now, 
@@ -3824,7 +3886,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 				}
-				else if (actionConfig.getDocumentType().startsWith("EMPL")) {
+				else if (actionConfig.getNotificationType().startsWith("EMPL")) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -3841,10 +3903,10 @@ public class DossierActionsImpl implements DossierActions {
 												actionConfig.getNotificationType(), 
 												Dossier.class.getName(), 
 												String.valueOf(dossier.getDossierId()), 
-												dossierAction.getPayload(), 
+												payloadObj.toJSONString(), 
 												fullName, 
 												fullName, 
-												0L, 
+												dau.getUserId(), 
 												u.getEmailAddress(), 
 												telNo, 
 												now, 
@@ -3860,7 +3922,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}					
 				}
-				else if (actionConfig.getDocumentType().startsWith("USER")) {
+				else if (actionConfig.getNotificationType().startsWith("USER")) {
 					
 				}
 			}
@@ -3920,7 +3982,7 @@ public class DossierActionsImpl implements DossierActions {
 		
 		try {
 			option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, dossier.getGroupId());
-			long serviceProcessId = option.getServiceProcessId();
+			long serviceProcessId = (option != null ? option.getServiceProcessId() : prevAction.getServiceProcessId());
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			
 		} catch (PortalException e) {
