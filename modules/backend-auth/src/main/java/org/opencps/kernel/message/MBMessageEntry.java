@@ -96,6 +96,24 @@ public class MBMessageEntry {
 	private String emailSubject;
 	private String emailBody;
 	private String textMessage;
+	public String getNotifyMessage() {
+		return notifyMessage;
+	}
+
+	public void setNotifyMessage(String notifyMessage) {
+		this.notifyMessage = notifyMessage;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	private String notifyMessage;
+	private String data;
 	private String userUrl;
 	private String guestUrl;
 

@@ -64,7 +64,7 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
 			}
 		}
-		_log.info("OpenCPS PUBlISh DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+		_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	
 	private boolean processPublish(PublishQueue pq) {

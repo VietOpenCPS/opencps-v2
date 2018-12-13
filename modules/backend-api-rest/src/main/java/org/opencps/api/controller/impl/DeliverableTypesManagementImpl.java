@@ -85,7 +85,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
 
 			DeliverableType deliverableType = action.addDeliverableType(groupId, input.getDeliverableName(),
-					input.getDeliverableType(), input.getCodePattern(), counter, input.getFormScript(),
+					input.getDeliverableType(), input.getCodePattern(), GetterUtil.getInteger(counter), input.getFormScript(),
 					input.getFormReport(), input.getMappingData(), serviceContext);
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
@@ -116,7 +116,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			DeliverableTypesActions action = new DeliverableTypesActionsImpl();
 
 			DeliverableType deliverableType = action.updateDeliverableType(groupId, deliverableTypeId,
-					model.getDeliverableName(), model.getDeliverableType(), model.getCodePattern(), counter,
+					model.getDeliverableName(), model.getDeliverableType(), model.getCodePattern(), GetterUtil.getInteger(counter),
 					model.getFormScript(), model.getFormReport(), model.getMappingData(), serviceContext);
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);

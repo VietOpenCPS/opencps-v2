@@ -60,7 +60,7 @@ public class DeliverableNumberGenerator {
 					String tmp = m.group(1);
 
 					if (r.toString().equals(codePattern)) {
-						String number = countByInit(pattern, Integer.valueOf(deliverableType.getCounter()));
+						String number = countByInit(pattern, deliverableType.getCounter());
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 						if (number.length() < tmp.length()) {

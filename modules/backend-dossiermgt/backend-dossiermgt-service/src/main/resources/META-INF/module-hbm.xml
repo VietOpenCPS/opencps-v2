@@ -133,8 +133,12 @@
 		<property name="typeName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScriptFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="formReportFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="codePattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dataConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="mappingData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="govAgencies" type="com.liferay.portal.dao.orm.hibernate.StringType" />
