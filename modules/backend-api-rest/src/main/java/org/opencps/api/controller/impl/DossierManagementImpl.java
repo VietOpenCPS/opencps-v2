@@ -4340,4 +4340,108 @@ public class DossierManagementImpl implements DossierManagement {
 
 		return jsonData;
 	}
+
+	@Override
+	public Response gotoStep(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, String id, String stepCode) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (dossier != null) {
+				Date now = new Date();
+				if (dossier.getDossierActionId() != 0) {
+					DossierAction lastda = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+					if (lastda != null) {
+						long serviceProcessId = lastda.getServiceProcessId();
+						ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+						if (step != null) {
+							JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), "DOSSIER_STATUS", step.getDossierStatus(), step.getDossierSubStatus());
+
+							dossier.setDossierStatus(step.getDossierStatus());
+							dossier.setDossierStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(step.getDossierStatus()) : StringPool.BLANK);
+							dossier.setDossierSubStatus(step.getDossierSubStatus());
+							dossier.setDossierSubStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(step.getDossierSubStatus()) : StringPool.BLANK);
+							
+							String curStatus = step.getDossierStatus();
+							boolean stateProcessed = false;
+							
+							if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
+									|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
+									|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+									|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
+									|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+								if (Validator.isNull(dossier.getReleaseDate())) {
+									dossier.setReleaseDate(now);
+									stateProcessed = true;
+								}
+							}
+							if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
+									|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+									|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
+									|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+								if (Validator.isNull(dossier.getFinishDate())) {
+									if (Validator.isNull(dossier.getReleaseDate())) {
+										dossier.setReleaseDate(now);
+									}
+									dossier.setFinishDate(now);			
+								}
+							}
+
+							DossierLocalServiceUtil.updateDossier(dossier);							
+							
+							DossierAction dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossier.getDossierId(),
+									serviceProcessId, dossier.getDossierActionId(), 
+									lastda.getStepCode(), lastda.getStepName(), lastda.getSequenceNo(),
+									"9999", user.getFullName(), "Chuyển dịch đặc biệt", StringPool.BLANK, 0,
+									stepCode, step.getStepName(), 
+									step.getSequenceNo(),
+									null, 0l, StringPool.BLANK, step.getStepInstruction(), 
+									DossierActionTerm.STATE_WAITING_PROCESSING, DossierActionTerm.EVENT_STATUS_NOT_CREATED,
+									serviceContext);
+							
+							lastda.setNextActionId(dossierAction.getDossierActionId());
+							DossierActionLocalServiceUtil.updateDossierAction(lastda);
+							DossierActionLocalServiceUtil.updateState(lastda.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+							
+							if (stateProcessed) {
+								DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);													
+							}
+							DossierDetailModel model = new DossierDetailModel();
+							model.setDossierId((int)dossier.getDossierId());
+							model.setReferenceUid(dossier.getReferenceUid());
+							
+							return Response.status(HttpServletResponse.SC_OK).entity(model).build();
+						}
+						else {
+							return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Not found step!").build();							
+						}
+					}
+				}
+				return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Dossier is not in process!").build();
+			} else {
+				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier to check step").build();
+			}		
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}			
+	}
 }

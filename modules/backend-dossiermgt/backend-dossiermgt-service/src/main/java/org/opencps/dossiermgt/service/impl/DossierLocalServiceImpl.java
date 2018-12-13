@@ -3240,6 +3240,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setReleaseDate(new Date(obj.getLong(DossierTerm.RELEASE_DATE)));	
 			}
 		}
+		if (obj.has(DossierTerm.LOCK_STATE)) {
+			if (!obj.getString(DossierTerm.LOCK_STATE).equals(dossier.getLockState())) {
+				dossier.setLockState(obj.getString(DossierTerm.LOCK_STATE));
+			}
+		}
+		if (obj.has(DossierTerm.BRIEF_NOTE)) {
+			if (!obj.getString(DossierTerm.BRIEF_NOTE).equals(dossier.getBriefNote())) {
+				dossier.setBriefNote(obj.getString(DossierTerm.BRIEF_NOTE));
+			}
+		}
 		
 		return dossierPersistence.update(dossier);
 	}
