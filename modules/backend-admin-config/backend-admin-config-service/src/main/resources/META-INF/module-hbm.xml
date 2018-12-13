@@ -3,6 +3,7 @@
 
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="org.opencps.adminconfig.model.AdminConfig" />
+	<import class="org.opencps.adminconfig.model.DynamicReport" />
 	<class name="org.opencps.adminconfig.model.impl.AdminConfigImpl" table="opencps_adminconfig">
 		<id column="id_" name="id" type="long">
 			<generator class="assigned" />
@@ -18,5 +19,22 @@
 		<property name="extForm" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="groupFilter" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="publicManager" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+	</class>
+	<class name="org.opencps.adminconfig.model.impl.DynamicReportImpl" table="opencps_dynamicreport">
+		<id name="dynamicReportId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="sharing" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="reportName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="reportCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="filterConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="userConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 </hibernate-mapping>

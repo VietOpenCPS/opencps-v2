@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.util.Validator;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.base.AdminConfigLocalServiceBaseImpl;
 
+import backend.admin.config.service.util.ModelKeysAdminConfig;
+
 /**
  * The implementation of the admin config local service.
  *
@@ -80,9 +82,9 @@ public class AdminConfigLocalServiceImpl extends AdminConfigLocalServiceBaseImpl
 
 		AdminConfig adminConfig = null;
 
-		if (adminConfigData.getLong("id") > 0) {
+		if (adminConfigData.getLong(ModelKeysAdminConfig.ID) > 0) {
 
-			adminConfig = adminConfigPersistence.fetchByPrimaryKey(adminConfigData.getLong("id"));
+			adminConfig = adminConfigPersistence.fetchByPrimaryKey(adminConfigData.getLong(ModelKeysAdminConfig.ID));
 
 		} else {
 
@@ -92,27 +94,27 @@ public class AdminConfigLocalServiceImpl extends AdminConfigLocalServiceBaseImpl
 
 		}
 
-		adminConfig.setCode(adminConfigData.getString("code"));
+		adminConfig.setCode(adminConfigData.getString(ModelKeysAdminConfig.CODE));
 
-		adminConfig.setName(adminConfigData.getString("name"));
+		adminConfig.setName(adminConfigData.getString(ModelKeysAdminConfig.NAME));
 
-		adminConfig.setBundleName(adminConfigData.getString("bundleName"));
+		adminConfig.setBundleName(adminConfigData.getString(ModelKeysAdminConfig.BUNDLENAME));
 
-		adminConfig.setModelName(adminConfigData.getString("modelName"));
+		adminConfig.setModelName(adminConfigData.getString(ModelKeysAdminConfig.MODELNAME));
 
-		adminConfig.setServiceUtilName(adminConfigData.getString("serviceUtilName"));
+		adminConfig.setServiceUtilName(adminConfigData.getString(ModelKeysAdminConfig.SERVICEUTILNAME));
 
-		adminConfig.setHeadersName(adminConfigData.getString("headersName"));
+		adminConfig.setHeadersName(adminConfigData.getString(ModelKeysAdminConfig.HEADERSNAME));
 
-		adminConfig.setColumns(adminConfigData.getString("columns"));
+		adminConfig.setColumns(adminConfigData.getString(ModelKeysAdminConfig.COLUMNS));
 
-		adminConfig.setDetailColumns(adminConfigData.getString("detailColumns"));
+		adminConfig.setDetailColumns(adminConfigData.getString(ModelKeysAdminConfig.DETAILCOLUMNS));
 
-		adminConfig.setExtForm(adminConfigData.getBoolean("extForm"));
+		adminConfig.setExtForm(adminConfigData.getBoolean(ModelKeysAdminConfig.EXTFORM));
 
-		adminConfig.setGroupFilter(adminConfigData.getBoolean("groupFilter"));
+		adminConfig.setGroupFilter(adminConfigData.getBoolean(ModelKeysAdminConfig.GROUPFILTER));
 		
-		adminConfig.setPublicManager(adminConfigData.getBoolean("publicManager"));
+		adminConfig.setPublicManager(adminConfigData.getBoolean(ModelKeysAdminConfig.PUBLICMANAGER));
 
 		adminConfigPersistence.update(adminConfig);
 
