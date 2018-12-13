@@ -1,9 +1,16 @@
 schema {
     query: Query
+    mutation: Mutation
 }
 
 type Query {
 	getAdminConfig(code: String): AdminConfig
+	getDynamicReports(start: Int = 0, end: Int = 10): [DynamicReport]
+	getDynamicReport(reportCode: String): DynamicReport
+}
+
+type Mutation {
+    updateDynamicReport(body: String): DynamicReport
 }
 
 type AdminConfig {
@@ -23,3 +30,18 @@ type AdminConfig {
  	foreignTable: Boolean
 }
 
+type DynamicReport {
+ 	dynamicReportId : Long
+ 	companyId: Long
+ 	groupId: Long
+ 	userId: Long
+ 	userName: String
+ 	createDate: String
+ 	modifiedDate: String
+ 	reportCode: String
+ 	reportName: String
+ 	sharing: Int
+ 	filterConfig: String
+ 	tableConfig: String
+ 	userConfig: String
+}

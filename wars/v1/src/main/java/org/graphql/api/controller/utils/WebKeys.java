@@ -15,4 +15,6 @@ public class WebKeys implements com.liferay.portal.kernel.util.WebKeys {
 	public final static String P_AUTH = "Token";
 	public final static String AUTHORIZATION = "Authorization";
 	
+	public final static String REPORTCODE = "reportCode";
+	
 }
