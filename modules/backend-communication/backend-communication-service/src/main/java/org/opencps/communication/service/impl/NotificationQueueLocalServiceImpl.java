@@ -95,9 +95,7 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 
 		notificationQueue.setExpandoBridgeAttributes(serviceContext);
 
-		notificationQueuePersistence.update(notificationQueue);
-
-		return notificationQueue;
+		return notificationQueuePersistence.update(notificationQueue);
 	}
 
 	/**
