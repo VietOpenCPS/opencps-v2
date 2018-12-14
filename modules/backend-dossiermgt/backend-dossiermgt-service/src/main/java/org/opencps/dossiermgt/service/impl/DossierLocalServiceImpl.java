@@ -3822,8 +3822,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByG_AN(groupId, applicantIdNo);
 	}
 	
-	public Dossier getByG_AN_SC_GAC_DTNO(long groupId, String applicantIdNo, String serviceCode, String govAgencyCode, String dossierTemplateNo) {
-		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO(groupId, applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo);
+	public Dossier getByG_AN_SC_GAC_DTNO_ODID(long groupId, String applicantIdNo, String serviceCode, String govAgencyCode, String dossierTemplateNo, long originDossierId) {
+		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
 	}
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 

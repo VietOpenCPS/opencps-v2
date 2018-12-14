@@ -780,7 +780,7 @@ public class DossierUtils {
 			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
 					dossierAction.getGroupId(), dossierAction.getServiceProcessId());
 
-			model.setStepInstruction(step.getStepInstruction());
+			model.setStepInstruction(step!= null ? step.getStepInstruction() : StringPool.BLANK);
 
 			// Check permission process dossier
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",

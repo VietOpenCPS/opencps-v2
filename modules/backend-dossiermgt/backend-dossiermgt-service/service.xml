@@ -526,12 +526,13 @@
 			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo" />
 		</finder>
-		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO">
+		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO_ODID">
 			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo" />
 			<finder-column name="serviceCode" />
 			<finder-column name="govAgencyCode" />
 			<finder-column name="dossierTemplateNo" />
+			<finder-column name="originDossierId"/>
 		</finder>
 	</entity>
 
