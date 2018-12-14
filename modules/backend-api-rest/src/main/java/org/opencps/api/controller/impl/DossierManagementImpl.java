@@ -607,7 +607,7 @@ public class DossierManagementImpl implements DossierManagement {
 						} else {
 //							_log.info("669999");
 							results.getData().addAll(
-									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd()));
+									DossierUtils.mappingForGetListPaging(docs, query.getStart(), query.getEnd(), userId));
 						}
 					}
 				}
