@@ -3342,6 +3342,7 @@ public class DossierManagementImpl implements DossierManagement {
 			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
 			String submissionNote = input.getSubmissionNote();
+			String lockState = input.getLockState();
 			
 			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType,
@@ -3372,6 +3373,8 @@ public class DossierManagementImpl implements DossierManagement {
 			dossier.setDossierSubStatusText(input.getDossierSubStatusText());
 			dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
 			dossier.setSubmissionNote(submissionNote);
+			dossier.setLockState(lockState);
+			
 			//Update dossier
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			

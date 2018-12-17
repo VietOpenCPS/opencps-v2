@@ -207,6 +207,8 @@ public interface DossierActionLocalService extends BaseLocalService,
 	public List<DossierAction> findDossierActionByG_DID_SN(long groupId,
 		long dossierId, String sequenceNo);
 
+	public List<DossierAction> findOverdue(Date now);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

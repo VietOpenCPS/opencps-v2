@@ -1325,6 +1325,10 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dossierId"></finder-column>
 		</finder>		
+
+		<finder name="DD" return-type="Collection">
+			<finder-column name="dueDate" comparator="&lt;"></finder-column>
+		</finder>		
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
