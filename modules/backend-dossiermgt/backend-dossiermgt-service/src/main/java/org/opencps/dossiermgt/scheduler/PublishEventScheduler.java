@@ -20,6 +20,7 @@ import java.util.List;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
@@ -77,7 +78,7 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 		if (ServerConfigTerm.PUBLISH_PROTOCOL.equals(sc.getProtocol())) {
 			try {
 				OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-				DossierDetailModel result = client.publishDossier(dossier);
+				DossierDetailModel result = client.publishDossier(OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
 				if (result.getDossierId() != null) {
 					return true;
 				}

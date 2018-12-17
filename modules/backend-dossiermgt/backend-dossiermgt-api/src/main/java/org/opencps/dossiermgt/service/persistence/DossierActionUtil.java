@@ -27,6 +27,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -3133,6 +3134,160 @@ public class DossierActionUtil {
 	*/
 	public static int countByG_DID(long groupId, long dossierId) {
 		return getPersistence().countByG_DID(groupId, dossierId);
+	}
+
+	/**
+	* Returns all the dossier actions where dueDate &lt; &#63;.
+	*
+	* @param dueDate the due date
+	* @return the matching dossier actions
+	*/
+	public static List<DossierAction> findByDD(Date dueDate) {
+		return getPersistence().findByDD(dueDate);
+	}
+
+	/**
+	* Returns a range of all the dossier actions where dueDate &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dueDate the due date
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @return the range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDD(Date dueDate, int start, int end) {
+		return getPersistence().findByDD(dueDate, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier actions where dueDate &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dueDate the due date
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDD(Date dueDate, int start,
+		int end, OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence().findByDD(dueDate, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier actions where dueDate &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dueDate the due date
+	* @param start the lower bound of the range of dossier actions
+	* @param end the upper bound of the range of dossier actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier actions
+	*/
+	public static List<DossierAction> findByDD(Date dueDate, int start,
+		int end, OrderByComparator<DossierAction> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDD(dueDate, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier action in the ordered set where dueDate &lt; &#63;.
+	*
+	* @param dueDate the due date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public static DossierAction findByDD_First(Date dueDate,
+		OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence().findByDD_First(dueDate, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier action in the ordered set where dueDate &lt; &#63;.
+	*
+	* @param dueDate the due date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public static DossierAction fetchByDD_First(Date dueDate,
+		OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence().fetchByDD_First(dueDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action in the ordered set where dueDate &lt; &#63;.
+	*
+	* @param dueDate the due date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action
+	* @throws NoSuchDossierActionException if a matching dossier action could not be found
+	*/
+	public static DossierAction findByDD_Last(Date dueDate,
+		OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence().findByDD_Last(dueDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action in the ordered set where dueDate &lt; &#63;.
+	*
+	* @param dueDate the due date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action, or <code>null</code> if a matching dossier action could not be found
+	*/
+	public static DossierAction fetchByDD_Last(Date dueDate,
+		OrderByComparator<DossierAction> orderByComparator) {
+		return getPersistence().fetchByDD_Last(dueDate, orderByComparator);
+	}
+
+	/**
+	* Returns the dossier actions before and after the current dossier action in the ordered set where dueDate &lt; &#63;.
+	*
+	* @param dossierActionId the primary key of the current dossier action
+	* @param dueDate the due date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier action
+	* @throws NoSuchDossierActionException if a dossier action with the primary key could not be found
+	*/
+	public static DossierAction[] findByDD_PrevAndNext(long dossierActionId,
+		Date dueDate, OrderByComparator<DossierAction> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionException {
+		return getPersistence()
+				   .findByDD_PrevAndNext(dossierActionId, dueDate,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the dossier actions where dueDate &lt; &#63; from the database.
+	*
+	* @param dueDate the due date
+	*/
+	public static void removeByDD(Date dueDate) {
+		getPersistence().removeByDD(dueDate);
+	}
+
+	/**
+	* Returns the number of dossier actions where dueDate &lt; &#63;.
+	*
+	* @param dueDate the due date
+	* @return the number of matching dossier actions
+	*/
+	public static int countByDD(Date dueDate) {
+		return getPersistence().countByDD(dueDate);
 	}
 
 	/**

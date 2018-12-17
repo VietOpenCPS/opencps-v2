@@ -119,6 +119,7 @@
 				<xsd:element name="submissionNote" type="xsd:string" minOccurs="0" />
 				<xsd:element name="dossierActionId" type="xsd:long" minOccurs="0" />
 				<xsd:element name="briefNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lockState" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
