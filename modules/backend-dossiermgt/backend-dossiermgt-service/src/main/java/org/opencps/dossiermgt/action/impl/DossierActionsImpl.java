@@ -58,6 +58,7 @@ import java.util.regex.Pattern;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
@@ -3865,7 +3866,6 @@ public class DossierActionsImpl implements DossierActions {
 						try {
 							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
 							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
-							_log.info("Notification payload: " + payloadObj.toJSONString());
 							
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
