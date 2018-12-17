@@ -138,6 +138,7 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());		
 		obj.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
 		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+		obj.put(DossierTerm.LOCK_STATE, dossier.getLockState());
 		
 		return obj;
 	}
