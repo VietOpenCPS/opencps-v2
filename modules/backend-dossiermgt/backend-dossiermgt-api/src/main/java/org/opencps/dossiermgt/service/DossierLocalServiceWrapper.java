@@ -302,6 +302,15 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier getByG_AN_SC_GAC_DTNO_ODID(
+		long groupId, String applicantIdNo, String serviceCode,
+		String govAgencyCode, String dossierTemplateNo, long originDossierId) {
+		return _dossierLocalService.getByG_AN_SC_GAC_DTNO_ODID(groupId,
+			applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo,
+			originDossierId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier getByIdAndGovService(
 		long groupId, String serviceCode, String govAgencyCode, long dossierId) {
 		return _dossierLocalService.getByIdAndGovService(groupId, serviceCode,
