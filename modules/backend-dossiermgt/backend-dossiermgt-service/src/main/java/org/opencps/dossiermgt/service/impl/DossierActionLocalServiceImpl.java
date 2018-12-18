@@ -587,7 +587,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	}
 	
 	public List<DossierAction> findOverdue(Date now) {
-		return dossierActionPersistence.findByDD(now);
+		return dossierActionPersistence.findByDD(now, 0l);
 	}
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }
