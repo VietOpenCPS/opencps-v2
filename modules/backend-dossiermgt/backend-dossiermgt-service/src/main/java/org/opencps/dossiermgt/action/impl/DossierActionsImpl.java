@@ -1317,7 +1317,7 @@ public class DossierActionsImpl implements DossierActions {
 		List<Role> userRolesAdminCheck = user.getRoles();
 		boolean isAdministratorData = false;
 		for (Role r : userRolesAdminCheck) {
-			if (r.getName().startsWith("Administrator")) {
+			if (r.getName().equals("Administrator")) {
 				isAdministratorData = true;
 				break;
 			}
