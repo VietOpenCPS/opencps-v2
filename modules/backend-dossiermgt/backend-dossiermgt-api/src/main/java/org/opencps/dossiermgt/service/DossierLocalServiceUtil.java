@@ -301,12 +301,12 @@ public class DossierLocalServiceUtil {
 		return getService().getByG_AN(groupId, applicantIdNo);
 	}
 
-	public static org.opencps.dossiermgt.model.Dossier getByG_AN_SC_GAC_DTNO(
+	public static org.opencps.dossiermgt.model.Dossier getByG_AN_SC_GAC_DTNO_ODID(
 		long groupId, String applicantIdNo, String serviceCode,
-		String govAgencyCode, String dossierTemplateNo) {
+		String govAgencyCode, String dossierTemplateNo, long originDossierId) {
 		return getService()
-				   .getByG_AN_SC_GAC_DTNO(groupId, applicantIdNo, serviceCode,
-			govAgencyCode, dossierTemplateNo);
+				   .getByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo,
+			serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier getByIdAndGovService(

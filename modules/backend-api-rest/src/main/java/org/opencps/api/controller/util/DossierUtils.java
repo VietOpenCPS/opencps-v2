@@ -10,6 +10,9 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -489,7 +492,7 @@ public class DossierUtils {
 	}
 	
 	//TODO: Process get list Paging
-	public static List<DossierDataModel> mappingForGetListPaging(List<Document> docs, int start, int end) {
+	public static List<DossierDataModel> mappingForGetListPaging(List<Document> docs, int start, int end, long userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 		int lengthDossier = docs.size();
 		int endPage = 0;
@@ -582,7 +585,7 @@ public class DossierUtils {
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
 //			model.setDossierOverdue(doc.get(DossierTerm.DOSSIER_OVER_DUE));
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
-			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
+			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)), userId));
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
 			model.setLastActionCode(doc.get(DossierTerm.LAST_ACTION_CODE));
 			model.setLastActionName(doc.get(DossierTerm.LAST_ACTION_NAME));
@@ -748,7 +751,7 @@ public class DossierUtils {
 		model.setPostalCityCode(input.getPostalCityCode());
 		model.setPostalCityName(input.getPostalCityName());
 		model.setPostalTelNo(input.getPostalTelNo());
-		model.setPermission(getPermission(input.getPrimaryKey()));
+		model.setPermission(getPermission(input.getPrimaryKey(), userId));
 
 		if (input.getDossierActionId() != 0) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(input.getDossierActionId());
@@ -777,7 +780,7 @@ public class DossierUtils {
 			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
 					dossierAction.getGroupId(), dossierAction.getServiceProcessId());
 
-			model.setStepInstruction(step.getStepInstruction());
+			model.setStepInstruction(step!= null ? step.getStepInstruction() : StringPool.BLANK);
 
 			// Check permission process dossier
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
@@ -875,10 +878,65 @@ public class DossierUtils {
 		return model;
 	}
 
-	private static String getPermission(long dossierId) {
+	private static String getPermission(long dossierId, long userId) {
 		// TODO add logic here
 		// return list of permission, separate by the comma
-		return StringPool.BLANK;
+		Indexer<Dossier> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Dossier.class);
+
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
+		if (dossier != null) {
+			Document doc = null;
+			try {
+				doc = indexer.getDocument(dossier);
+			} catch (SearchException e) {
+			}
+			
+			if (doc == null) return StringPool.BLANK;
+			
+			String strPermission = GetterUtil.getString(doc.get(DossierTerm.MAPPING_PERMISSION));
+			if (Validator.isNotNull(strPermission)) {
+				String[] permissionArr = strPermission.split(StringPool.SPACE);
+				if (permissionArr != null) {
+					for (String permission: permissionArr) {
+						if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
+							return permission;
+						} else {
+							boolean isAdmin = false;
+							List<Role> roles =
+									RoleLocalServiceUtil.getUserRoles(userId);
+							try {
+								for (Role role : roles) {
+									if ("Administrator".equals(role.getName())) {
+	
+										isAdmin = true;
+										break;
+	
+									}
+								}
+	
+							}
+							catch (Exception e) {
+								_log.error(e);
+							}			
+							if (isAdmin) {
+								return "read";
+							}
+						}
+					}
+					
+					return StringPool.BLANK;
+				} else {
+					return StringPool.BLANK;
+				}
+			} else {
+				return StringPool.BLANK;
+			}
+		}
+		else {
+			return StringPool.BLANK;
+		}
 	}
 
 	private static String getVisisted(long dossierId) {

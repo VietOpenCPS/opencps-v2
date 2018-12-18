@@ -239,6 +239,11 @@ public class DossierActionLocalServiceUtil {
 				   .findDossierActionByG_DID_SN(groupId, dossierId, sequenceNo);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> findOverdue(
+		java.util.Date now) {
+		return getService().findOverdue(now);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}
