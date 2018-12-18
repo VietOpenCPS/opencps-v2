@@ -1328,6 +1328,7 @@
 
 		<finder name="DD" return-type="Collection">
 			<finder-column name="dueDate" comparator="&lt;"></finder-column>
+            <finder-column name="nextActionId"></finder-column>
 		</finder>		
 	</entity>
 
