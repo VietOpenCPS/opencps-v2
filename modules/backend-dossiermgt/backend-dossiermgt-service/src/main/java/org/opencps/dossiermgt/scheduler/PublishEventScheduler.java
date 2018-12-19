@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.scheduler;
 
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
@@ -21,7 +20,6 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -62,7 +60,9 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 				}				
 			}
 			else {
-				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
+				pq.setStatus(PublishQueueTerm.STATE_RECEIVED_ACK);
+				PublishQueueLocalServiceUtil.updatePublishQueue(pq);				
+//				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
 			}
 		}
 		_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
