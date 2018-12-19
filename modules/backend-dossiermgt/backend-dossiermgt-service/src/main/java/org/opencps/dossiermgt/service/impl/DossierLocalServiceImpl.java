@@ -40,7 +40,13 @@ import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.search.filter.FilterTranslator;
+import com.liferay.portal.kernel.search.filter.RangeTermFilter;
+import com.liferay.portal.kernel.search.filter.TermFilter;
+import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
@@ -1889,7 +1895,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		
 		String fromStatisticDate = GetterUtil.getString(params.get(DossierTerm.FROM_STATISTIC_DATE));
 		String toStatisticDate = GetterUtil.getString(params.get(DossierTerm.TO_STATISTIC_DATE));
-		Integer originDossierId = (params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null) ? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID)) : null;
+		Integer originDossierId = (params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null)
+				? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID))
+				: null;
+		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
+
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -1919,7 +1929,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, booleanCommon);
+				originDossierId, time, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -1989,8 +1999,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String fromStatisticDate = GetterUtil.getString(params.get(DossierTerm.FROM_STATISTIC_DATE));
 		String toStatisticDate = GetterUtil.getString(params.get(DossierTerm.TO_STATISTIC_DATE));
 		String origin = GetterUtil.getString(params.get(DossierTerm.ORIGIN));
-		Integer originDossierId = (params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null ? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID)) : null);
-		
+		Integer originDossierId = (params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null
+				? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID))
+				: null);
+		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
+
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -2017,7 +2030,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, booleanCommon);
+				originDossierId, time, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2122,7 +2135,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
-			String toStatisticDate, Integer originDossierId, BooleanQuery booleanQuery) throws ParseException {
+			String toStatisticDate, Integer originDossierId, String time, BooleanQuery booleanQuery)
+			throws ParseException {
 
 
 		if (Validator.isNotNull(status)) {
@@ -2898,7 +2912,181 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
+		if (DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+			if (month > 0 && year > 0) {
+				int minDayOfMonth = DossierMgtUtils.minDay(month, year);
+				//_log.info("minDayOfMonth: "+minDayOfMonth);
+				if (minDayOfMonth > 0) {
+					String strMonth;
+					String strMonthEnd;
+					String strMinDay;
+					int monthEnd = month + 1;
+					if (month < 10) {
+						strMonth = "0" + month;
+					} else {
+						strMonth = String.valueOf(month);
+					}
+					if (monthEnd < 10) {
+						strMonthEnd = "0" + monthEnd;
+					} else {
+						strMonthEnd = String.valueOf(monthEnd);
+					}
+					if (minDayOfMonth < 10) {
+						strMinDay = "0" + minDayOfMonth;
+					} else {
+						strMinDay = String.valueOf(minDayOfMonth);
+					}
+
+					BooleanQuery subQueryOne = new BooleanQueryImpl();
+					BooleanQuery subQueryTwo = new BooleanQueryImpl();
+					BooleanQuery subQueryThree = new BooleanQueryImpl();
+
+					String fromStatisDateFilter = year + strMonth + strMinDay + ConstantsTerm.HOUR_START;
+					String toStatisDateFilter = year + strMonthEnd + strMinDay + ConstantsTerm.HOUR_START;
+
+					//Check startDate <= receiveDate < endDate
+					TermRangeQueryImpl termRangeQueryOne = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
+							fromStatisDateFilter, toStatisDateFilter, true, false);
+
+					subQueryOne.add(termRangeQueryOne, BooleanClauseOccur.SHOULD);
+					/** Check receiveDate < startDate and (startDate <= releaseDate or releaseDate = null) - START **/
+					// Check receiveDate < startDate
+					TermRangeQueryImpl termRangeQueryTwo = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
+							null, fromStatisDateFilter, false, false);
+					subQueryTwo.add(termRangeQueryTwo, BooleanClauseOccur.MUST);
+					// Check startDate <= releaseDate
+					TermRangeQueryImpl termRangeQueryThree = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+							fromStatisDateFilter, null, true, true);
+					subQueryThree.add(termRangeQueryThree, BooleanClauseOccur.SHOULD);
+					// Check releaseDate = null
+					MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+					queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQueryThree.add(queryRelease, BooleanClauseOccur.SHOULD);
+					//
+					subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
+					/** Check receiveDate < startDate and (startDate <= releaseDate or releaseDate = null) - END **/
+					subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+					//
+					booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+				}
+			} else if (Validator.isNotNull(fromStatisticDate) && Validator.isNotNull(toStatisticDate)) {
+
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+				BooleanQuery subQueryThree = new BooleanQueryImpl();
+
+				String fromStatisDateFilter = fromStatisticDate + ConstantsTerm.HOUR_START;
+				String toStatisDateFilter = toStatisticDate + ConstantsTerm.HOUR_END;
+				_log.info("fromStatisDateFilter: "+fromStatisDateFilter);
+				_log.info("toStatisDateFilter: "+toStatisDateFilter);
+
+				//Check startDate <= receiveDate < endDate
+				TermRangeQueryImpl termRangeQueryOne = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
+						fromStatisDateFilter, toStatisDateFilter, true, true);
+
+				subQueryOne.add(termRangeQueryOne, BooleanClauseOccur.SHOULD);
+				/** Check receiveDate < startDate and (startDate <= releaseDate or releaseDate = null) - START **/
+				// Check receiveDate < startDate
+				TermRangeQueryImpl termRangeQueryTwo = new TermRangeQueryImpl(DossierTerm.RECEIVE_DATE,
+						null, fromStatisDateFilter, false, false);
+				subQueryTwo.add(termRangeQueryTwo, BooleanClauseOccur.MUST);
+				// Check startDate <= releaseDate
+				TermRangeQueryImpl termRangeQueryThree = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromStatisDateFilter, null, true, true);
+				subQueryThree.add(termRangeQueryThree, BooleanClauseOccur.SHOULD);
+				// Check releaseDate = null
+				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+				queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+				subQueryThree.add(queryRelease, BooleanClauseOccur.SHOULD);
+				//
+				subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
+				/** Check receiveDate < startDate and (startDate <= releaseDate or releaseDate = null) - END **/
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+				//
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+			}
+		}
+
+		// Check statistic with key "time"
+		if (Validator.isNotNull(time)) {
+			// Check list dossier is betimes
+			if (time.equals(DossierTerm.BE_TIME)) {
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+				BooleanQuery subQueryThree = new BooleanQueryImpl();
+
+				/** Check condition dueDate != null **/
+				MultiMatchQuery queryDueDate = new MultiMatchQuery(String.valueOf(0));
+				queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryOne.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
+				/** Check condition extendDate != null and releaseDate < dueDate **/
+				//Check extendDate != null
+				MultiMatchQuery queryExtend = new MultiMatchQuery(String.valueOf(0));
+				queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
+				subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST_NOT);
+				// Check releaseDate < dueDate
+				TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
+						null, String.valueOf(0), true, false);
+				subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
+				/** Check condition finishDate < dueDate **/
+				TermRangeQueryImpl termRangeFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
+						null, String.valueOf(0), true, false);
+				subQueryThree.add(termRangeFinish, BooleanClauseOccur.MUST);
+				/** Check condition (extendDate != null && releaseDate < dueDate) || (finishDate < dueDate) **/
+				subQueryTwo.add(subQueryThree, BooleanClauseOccur.SHOULD);
+				/** Check condition dueDate != null &&  subQueryTwo **/
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
+				/** Add search all **/
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+			} else if (time.equals(DossierTerm.OVER_TIME)) { // Check list dossier is overtime
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+
+				/** Check condition dueDate != null **/
+				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryOne.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+				/** Check condition releaseDate > dueDate **/
+				TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
+						String.valueOf(0), null, false, false);
+				subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
+				/** Check condition dueDate != null &&  subQueryTwo **/
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
+				/** Add search all **/
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+			} else if (time.equals(DossierTerm.ON_TIME)) { // Check list dossier is ontime
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+
+				/** Check condition dueDate == null **/
+				MultiMatchQuery queryDueDateEmpty = new MultiMatchQuery(String.valueOf(0));
+				queryDueDateEmpty.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryOne.add(queryDueDateEmpty, BooleanClauseOccur.MUST);
+				/** Check condition extendDate != null and releaseDate < dueDate **/
+				//Check extendDate != null
+				MultiMatchQuery queryExtend = new MultiMatchQuery(String.valueOf(0));
+				queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
+				subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST);
+				//Check releaseDate != null
+				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+				queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+				subQueryTwo.add(queryRelease, BooleanClauseOccur.MUST_NOT);
+				//Check dueDate != null
+				MultiMatchQuery queryDueDate = new MultiMatchQuery(String.valueOf(0));
+				queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryTwo.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
+				// Check releaseDate = dueDate
+				MultiMatchQuery queryCompareRelease = new MultiMatchQuery(String.valueOf(0));
+				queryCompareRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
+				subQueryTwo.add(queryCompareRelease, BooleanClauseOccur.MUST);
+				/** Check condition (dueDate==null) || (extendDate!=null && releaseDate <= dueDate) **/
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
+				/** Add search all **/
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+			}
+		}
+
 		return booleanQuery;
 	}
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {

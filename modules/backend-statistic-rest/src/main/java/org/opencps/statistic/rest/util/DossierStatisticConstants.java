@@ -6,6 +6,7 @@ public interface DossierStatisticConstants {
 	String DOMAIN_TOTAL = "total";
 	String AGENCY_TOTAL = "total";
 	String DOMAIN_AGENCY = "total";
+	String TOTAL = "total";
 	int REPORTING_TYPE_0 = 0;
 	int REPORTING_TYPE_1 = 1;
 	
@@ -21,6 +22,8 @@ public interface DossierStatisticConstants {
 	String OPENCPS_AUTHENCATION = "opencps.rest.authentication";
 	
 	String OPENCPS_GROUP_CONFIG = "opencps.group.id.config";
+	
+	String VOTING_ENDPOINT = "opencps.rest.enpoint.voting.result";
 	
 	String GROUP_ID = "groupId";
 	

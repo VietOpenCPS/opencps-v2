@@ -49,6 +49,7 @@
 		<field name="choices" type="String" />
 		<field name="templateNo" type="String" />
 		<field name="commentable" type="boolean" />
+		<field name="votingCode" type="String" />
 	</model>
 	<model name="backend.feedback.model.VotingResult">
 		<field name="uuid" type="String" />

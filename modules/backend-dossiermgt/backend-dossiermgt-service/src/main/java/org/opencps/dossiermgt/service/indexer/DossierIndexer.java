@@ -200,12 +200,30 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			// Index calculator statistic
 			long extendateTime = Validator.isNotNull(object.getExtendDate()) ? object.getExtendDate().getTime() : 0;
 			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
+			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
+			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
 			
 			if (extendateTime > dueDateTime) {
 				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
 			} else {
 				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 0);
 			}
+			//
+			if (dueDateTime > 0) {
+				if (releaseTime > 0) {
+					long valueCompareRelease = releaseTime - dueDateTime;
+					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, valueCompareRelease);
+				} else {
+					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
+				}
+				if (finishTime > 0) {
+					long valueCompareFinish = finishTime - dueDateTime;
+					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
+				} else {
+					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 0);
+				}
+			}
+
 			double durationCount = object.getDurationCount();
 			double durationUnit = object.getDurationUnit();
 			long durationComing = 0;

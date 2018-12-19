@@ -5,6 +5,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -437,47 +438,39 @@ public class VotingUtils {
 	public static List<VotingStatisticsModel> mappingVotingStatisticsModelList(List<Document> list,
 			ServiceContext serviceContext) {
 
-//		List<VotingStatisticsModel> results = new ArrayList<>();
+		List<VotingStatisticsModel> results = new ArrayList<>();
+		VotingStatisticsModel ett = null;
 
-//		VotingStatisticsModel ett = null;
+		for (Document doc : list) {
+			ett = new VotingStatisticsModel();
 
-//		for (Document doc : list) {
-//			ett = new VotingStatisticsModel();
+			ett.setVotingResultId(Long.valueOf(doc.get(VotingResultTerm.VOTING_RESULT_ID)));
+			ett.setUserId(Long.valueOf(doc.get(VotingResultTerm.USER_ID)));
+			ett.setGroupId(Long.valueOf(doc.get(Field.GROUP_ID)));
+			try {
+				ett.setCreateDate(APIDateTimeUtils.convertDateToString(doc.getDate(VotingResultTerm.CREATE_DATE),
+						APIDateTimeUtils._NORMAL_PARTTERN));
+				ett.setModifiedDate(APIDateTimeUtils.convertDateToString(doc.getDate(Field.MODIFIED_DATE),
+						APIDateTimeUtils._NORMAL_PARTTERN));
+			} catch (Exception e) {
+				_log.error(e);
+			}
+			ett.setFullName(doc.get(VotingResultTerm.FULLNAME));
+			ett.setEmail(doc.get(VotingResultTerm.EMAIL));
+			ett.setComment(doc.get(VotingResultTerm.COMMENT));
+			ett.setSelected(GetterUtil.get(doc.get(VotingResultTerm.SELECTED), 0));
+			ett.setClassName(doc.get(VotingTerm.CLASS_NAME));
+			ett.setClassPK(doc.get(VotingTerm.CLASS_PK));
+			ett.setGovAgencyCode(doc.get("govAgencyCode"));
+			ett.setGovAgencyName(doc.get("govAgencyName"));
+			ett.setServiceCode(doc.get("serviceCode"));
+			ett.setServiceName(doc.get("serviceName"));
 
-			// ett.setTotal(value);
-			// ett.setUserId(Long.valueOf(doc.get(VotingResultTerm.USER_ID)));
-			// try {
-			//
-			// ett.setCreateDate(APIDateTimeUtilss.convertDateToString(doc.getDate(VotingResultTerm.CREATE_DATE),
-			// APIDateTimeUtilss._TIMESTAMP));
-			//
-			// ett.setModifiedDate(
-			// APIDateTimeUtilss.convertDateToString(doc.getDate("modified"),
-			// APIDateTimeUtilss._TIMESTAMP));
-			//
-			// } catch (ParseException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			//
-			// ett.setFullName(doc.get(VotingResultTerm.FULLNAME));
-			// ett.setEmail(doc.get(VotingResultTerm.EMAIL));
-			// ett.setComment(doc.get(VotingResultTerm.COMMENT));
-			//
-			// ett.setSelected(GetterUtil.get(doc.get(VotingResultTerm.SELECTED),
-			// 0));
-			//
-			// boolean isCurrentUser = false;
-			//
-			// if (ett.getUserId() == serviceContext.getUserId()) {
-			// isCurrentUser = true;
-			// }
-			//
-			// ett.setCurrentUser(isCurrentUser);
 
-//			results.add(ett);
-//		}
+			results.add(ett);
+		}
 
-		return null;
+		return results;
 	}
+
 }

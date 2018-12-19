@@ -73,6 +73,7 @@ public class VotingWrapper implements Voting, ModelWrapper<Voting> {
 		attributes.put("choices", getChoices());
 		attributes.put("templateNo", getTemplateNo());
 		attributes.put("commentable", isCommentable());
+		attributes.put("votingCode", getVotingCode());
 
 		return attributes;
 	}
@@ -161,6 +162,12 @@ public class VotingWrapper implements Voting, ModelWrapper<Voting> {
 
 		if (commentable != null) {
 			setCommentable(commentable);
+		}
+
+		String votingCode = (String)attributes.get("votingCode");
+
+		if (votingCode != null) {
+			setVotingCode(votingCode);
 		}
 	}
 
@@ -332,6 +339,16 @@ public class VotingWrapper implements Voting, ModelWrapper<Voting> {
 	@Override
 	public String getUuid() {
 		return _voting.getUuid();
+	}
+
+	/**
+	* Returns the voting code of this voting.
+	*
+	* @return the voting code of this voting
+	*/
+	@Override
+	public String getVotingCode() {
+		return _voting.getVotingCode();
 	}
 
 	/**
@@ -558,6 +575,16 @@ public class VotingWrapper implements Voting, ModelWrapper<Voting> {
 	@Override
 	public void setUuid(String uuid) {
 		_voting.setUuid(uuid);
+	}
+
+	/**
+	* Sets the voting code of this voting.
+	*
+	* @param votingCode the voting code of this voting
+	*/
+	@Override
+	public void setVotingCode(String votingCode) {
+		_voting.setVotingCode(votingCode);
 	}
 
 	/**

@@ -53,6 +53,8 @@ import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalService;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticPersistence;
+import org.opencps.statistic.service.persistence.OpencpsVotingStatisticFinder;
+import org.opencps.statistic.service.persistence.OpencpsVotingStatisticPersistence;
 
 import java.io.Serializable;
 
@@ -499,6 +501,63 @@ public abstract class OpencpsDossierStatisticLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the opencps voting statistic local service.
+	 *
+	 * @return the opencps voting statistic local service
+	 */
+	public org.opencps.statistic.service.OpencpsVotingStatisticLocalService getOpencpsVotingStatisticLocalService() {
+		return opencpsVotingStatisticLocalService;
+	}
+
+	/**
+	 * Sets the opencps voting statistic local service.
+	 *
+	 * @param opencpsVotingStatisticLocalService the opencps voting statistic local service
+	 */
+	public void setOpencpsVotingStatisticLocalService(
+		org.opencps.statistic.service.OpencpsVotingStatisticLocalService opencpsVotingStatisticLocalService) {
+		this.opencpsVotingStatisticLocalService = opencpsVotingStatisticLocalService;
+	}
+
+	/**
+	 * Returns the opencps voting statistic persistence.
+	 *
+	 * @return the opencps voting statistic persistence
+	 */
+	public OpencpsVotingStatisticPersistence getOpencpsVotingStatisticPersistence() {
+		return opencpsVotingStatisticPersistence;
+	}
+
+	/**
+	 * Sets the opencps voting statistic persistence.
+	 *
+	 * @param opencpsVotingStatisticPersistence the opencps voting statistic persistence
+	 */
+	public void setOpencpsVotingStatisticPersistence(
+		OpencpsVotingStatisticPersistence opencpsVotingStatisticPersistence) {
+		this.opencpsVotingStatisticPersistence = opencpsVotingStatisticPersistence;
+	}
+
+	/**
+	 * Returns the opencps voting statistic finder.
+	 *
+	 * @return the opencps voting statistic finder
+	 */
+	public OpencpsVotingStatisticFinder getOpencpsVotingStatisticFinder() {
+		return opencpsVotingStatisticFinder;
+	}
+
+	/**
+	 * Sets the opencps voting statistic finder.
+	 *
+	 * @param opencpsVotingStatisticFinder the opencps voting statistic finder
+	 */
+	public void setOpencpsVotingStatisticFinder(
+		OpencpsVotingStatisticFinder opencpsVotingStatisticFinder) {
+		this.opencpsVotingStatisticFinder = opencpsVotingStatisticFinder;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -669,6 +728,12 @@ public abstract class OpencpsDossierStatisticLocalServiceBaseImpl
 	protected OpencpsDossierStatisticPersistence opencpsDossierStatisticPersistence;
 	@BeanReference(type = OpencpsDossierStatisticFinder.class)
 	protected OpencpsDossierStatisticFinder opencpsDossierStatisticFinder;
+	@BeanReference(type = org.opencps.statistic.service.OpencpsVotingStatisticLocalService.class)
+	protected org.opencps.statistic.service.OpencpsVotingStatisticLocalService opencpsVotingStatisticLocalService;
+	@BeanReference(type = OpencpsVotingStatisticPersistence.class)
+	protected OpencpsVotingStatisticPersistence opencpsVotingStatisticPersistence;
+	@BeanReference(type = OpencpsVotingStatisticFinder.class)
+	protected OpencpsVotingStatisticFinder opencpsVotingStatisticFinder;
 	@ServiceReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
 	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
 	@ServiceReference(type = com.liferay.portal.kernel.service.ClassNameLocalService.class)

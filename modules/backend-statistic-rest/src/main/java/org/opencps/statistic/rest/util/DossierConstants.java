@@ -29,4 +29,10 @@ public interface DossierConstants {
 	String ONTIME = "ontime";
 	String UNDUE = "undue";
 	String ONLINE_VALUE = "onlineValue";
+	String DOSSIER_STATUS = "status";
+	String DOSSIER_SUB_STATUS = "substatus";
+	String TEMPLATE = "template";
+	String STEP = "step";
+	String TOP = "top";
+	String DOSSIER_NO = "dossierNo";
 }

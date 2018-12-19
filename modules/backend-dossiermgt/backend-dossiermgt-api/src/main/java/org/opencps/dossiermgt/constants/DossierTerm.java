@@ -237,5 +237,8 @@ public class DossierTerm {
 	public static final String PAUSE_STATE = "PAUSE";
 	public static final String OVERTIME_STATE = "OVERTIME";
 
+	public static final String VALUE_COMPARE_RELEASE = "compareRelease";
+	public static final String VALUE_COMPARE_FINISH = "compareFinish";
+
 	public static final String PROCESS_NO = "processNo";
 }
