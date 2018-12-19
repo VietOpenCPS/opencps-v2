@@ -10,7 +10,6 @@ import org.opencps.statistic.rest.dto.GetDossierResponse;
 import org.opencps.statistic.rest.util.DossierConstants;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -113,7 +112,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		urlQueryParams.add(DossierConstants.DOSSIER_SUB_STATUS, dossierRequest.getSubstatus());
 		urlQueryParams.add(DossierConstants.SERVICECODE, dossierRequest.getServiceCode());
 		urlQueryParams.add(DossierConstants.ONLINE, Boolean.toString(dossierRequest.isOnline()));
-		urlQueryParams.add(DossierConstants.ORIGINALITY, Integer.toString(dossierRequest.getOriginality()));
+		urlQueryParams.add(DossierConstants.ORIGINALITY, dossierRequest.getOriginality());
 		urlQueryParams.add(DossierConstants.TEMPLATE, dossierRequest.getTemplate());
 		urlQueryParams.add(DossierConstants.STEP, dossierRequest.getStep());
 		urlQueryParams.add(DossierConstants.TOP, dossierRequest.getTop());
