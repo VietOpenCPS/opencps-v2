@@ -49,8 +49,8 @@ public class DeliverableTypeLocalServiceWrapper
 	@Override
 	public org.opencps.dossiermgt.model.DeliverableType addDeliverableType(
 		long groupId, String deliverableName, String deliverableType_,
-		String codePattern, String counter, String formScript,
-		String formReport, String mappingData,
+		String codePattern, long counter, String formScript, String formReport,
+		String mappingData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
@@ -372,7 +372,7 @@ public class DeliverableTypeLocalServiceWrapper
 	@Override
 	public org.opencps.dossiermgt.model.DeliverableType updateDeliverableType(
 		long groupId, long deliverableTypeId, String deliverableName,
-		String deliverableType_, String codePattern, String counter,
+		String deliverableType_, String codePattern, long counter,
 		String formScript, String formReport, String mappingData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {

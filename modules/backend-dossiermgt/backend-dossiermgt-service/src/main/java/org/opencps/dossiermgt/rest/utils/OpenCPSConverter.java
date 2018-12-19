@@ -137,6 +137,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getOriginality())) {
 	    	params.put(DossierTerm.ORIGINALLITY, model.getOriginality().toString());
 	    }
+	    if (Validator.isNotNull(model.getOnline())) {
+	    	params.put(DossierTerm.ONLINE, model.getOnline());	    	
+	    }
 	    
 	    return params;
 	}
@@ -333,43 +336,46 @@ public class OpenCPSConverter {
 	    	params.put(DossierTerm.ORIGINALLITY, String.valueOf(model.getOriginality()));
 	    }
 	    if (Validator.isNotNull(model.getCreateDate())) {
-	    	params.put(DossierTerm.CREATE_DATE, model.getCreateDate());
+	    	params.put(DossierTerm.CREATE_DATE, (model.getCreateDate() != null ? model.getCreateDate().getTime() : 0l));
 	    }
 	    if (Validator.isNotNull(model.getModifiedDate())) {
-	    	params.put(DossierTerm.MODIFIED_DATE, model.getModifiedDate());
+	    	params.put(DossierTerm.MODIFIED_DATE, model.getModifiedDate() != null ? model.getModifiedDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getSubmitDate())) {
-	    	params.put(DossierTerm.SUBMIT_DATE, model.getSubmitDate());
+	    	params.put(DossierTerm.SUBMIT_DATE, model.getSubmitDate() != null ? model.getSubmitDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getReceiveDate())) {
-	    	params.put(DossierTerm.RECEIVE_DATE, model.getReceiveDate());
+	    	params.put(DossierTerm.RECEIVE_DATE, model.getReceiveDate() != null ? model.getReceiveDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getDueDate())) {
-	    	params.put(DossierTerm.DUE_DATE, model.getDueDate());
+	    	params.put(DossierTerm.DUE_DATE, model.getDueDate() != null ? model.getDueDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getReleaseDate())) {
-	    	params.put(DossierTerm.RELEASE_DATE, model.getReleaseDate());
+	    	params.put(DossierTerm.RELEASE_DATE, model.getReleaseDate() != null ? model.getReleaseDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getFinishDate())) {
-	    	params.put(DossierTerm.FINISH_DATE, model.getFinishDate());
+	    	params.put(DossierTerm.FINISH_DATE, model.getFinishDate() != null ?  model.getFinishDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getCancellingDate())) {
-	    	params.put(DossierTerm.CANCELLING_DATE, model.getCancellingDate());
+	    	params.put(DossierTerm.CANCELLING_DATE, model.getCancellingDate() != null ? model.getCancellingDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getCorrecttingDate())) {
-	    	params.put(DossierTerm.CORRECTING_DATE, model.getCorrecttingDate());
+	    	params.put(DossierTerm.CORRECTING_DATE, model.getCorrecttingDate() != null ? model.getCorrecttingDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getEndorsementDate())) {
-	    	params.put(DossierTerm.ENDORSEMENT_DATE, model.getEndorsementDate());
+	    	params.put(DossierTerm.ENDORSEMENT_DATE, model.getEndorsementDate() != null ? model.getEndorsementDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getExtendDate())) {
-	    	params.put(DossierTerm.EXTEND_DATE, model.getExtendDate());
+	    	params.put(DossierTerm.EXTEND_DATE, model.getExtendDate() != null ? model.getExtendDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getProcessDate())) {
-	    	params.put(DossierTerm.PROCESS_DATE, model.getProcessDate());
+	    	params.put(DossierTerm.PROCESS_DATE, model.getProcessDate() != null ? model.getProcessDate().getTime() : 0l);
 	    }
 	    if (Validator.isNotNull(model.getSubmissionNote())) {
 	    	params.put(DossierTerm.SUBMISSION_NOTE, model.getSubmissionNote());
+	    }
+	    if (Validator.isNotNull(model.getLockState())) {
+	    	params.put(DossierTerm.LOCK_STATE, model.getLockState());
 	    }
 	    
 	    return params;
@@ -652,6 +658,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.BRIEF_NOTE)) {
 			model.setBriefNote(jsonObj.getString(DossierTerm.BRIEF_NOTE));
 		}
+		if (jsonObj.has(DossierTerm.LOCK_STATE)) {
+			model.setLockState(jsonObj.getString(DossierTerm.LOCK_STATE));
+		}
 
 		return model;
 	}	
@@ -840,6 +849,7 @@ public class OpenCPSConverter {
 		if (Validator.isNotNull(dossier.getPassword())) {
 			model.setPassword(dossier.getPassword());
 		}
+		model.setOnline(String.valueOf(dossier.getOnline()));
 		
 		return model;
 	}
@@ -879,11 +889,11 @@ public class OpenCPSConverter {
 		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
 		params.put(DossierFileTerm.FILE_TYPE, model.getFileType());
 		params.put(DossierFileTerm.IS_SYNC, "true");
-		if(Validator.isNotNull(model.getRemoved())) {
-			params.put(DossierFileTerm.REMOVED, Boolean.toString(model.getRemoved()));	
+		if(Validator.isNotNull(model.isRemoved())) {
+			params.put(DossierFileTerm.REMOVED, Boolean.toString(model.isRemoved()));	
 		}
-		if(Validator.isNotNull(model.geteForm())) {
-			params.put(DossierFileTerm.E_FORM, Boolean.toString(model.geteForm()));	
+		if(Validator.isNotNull(model.isEForm())) {
+			params.put(DossierFileTerm.E_FORM, Boolean.toString(model.isEForm()));	
 		}
 		
 		return params;
@@ -892,11 +902,11 @@ public class OpenCPSConverter {
 	public static HashMap<String, String> convertDossierFileEFormHttpParams(DossierFileModel model) {
 		HashMap<String, String> params = new HashMap<>();
 		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
-		if(Validator.isNotNull(model.getRemoved())) {
-			params.put(DossierFileTerm.REMOVED, Boolean.toString(model.getRemoved()));	
+		if(Validator.isNotNull(model.isRemoved())) {
+			params.put(DossierFileTerm.REMOVED, Boolean.toString(model.isRemoved()));	
 		}
-		if(Validator.isNotNull(model.geteForm())) {
-			params.put(DossierFileTerm.E_FORM, Boolean.toString(model.geteForm()));	
+		if(Validator.isNotNull(model.isEForm())) {
+			params.put(DossierFileTerm.E_FORM, Boolean.toString(model.isEForm()));	
 		}
 		return params;
 	}
@@ -1015,8 +1025,8 @@ public class OpenCPSConverter {
 		obj.put(DossierFileTerm.DOSSIER_PART_TYPE, model.getDossierPartType());
 		obj.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, model.getDossierTemplateNo());
 		obj.put(DossierFileTerm.FILE_TEMPLATE_NO, model.getFileTemplateNo());
-		obj.put(DossierFileTerm.REMOVED, model.getRemoved());
-		obj.put(DossierFileTerm.E_FORM, model.geteForm());
+		obj.put(DossierFileTerm.REMOVED, model.isRemoved());
+		obj.put(DossierFileTerm.E_FORM, model.isEForm());
 		
 		return obj;
 	}

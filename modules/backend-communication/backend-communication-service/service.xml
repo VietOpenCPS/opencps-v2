@@ -30,8 +30,10 @@
 		<column name="emailSubject" type="String" />
 		<column name="emailBody" type="String" />
 		<column name="textMessage" type="String" />
+		<column name="notifyMessage" type="String" />
 		<column name="sendSMS" type="boolean" />
 		<column name="sendEmail" type="boolean" />
+		<column name="sendNotification" type="boolean" />
 		<column name="expireDuration" type="int" />
 		<column name="userUrlPattern" type="String" />
 		<column name="guestUrlPattern" type="String" />

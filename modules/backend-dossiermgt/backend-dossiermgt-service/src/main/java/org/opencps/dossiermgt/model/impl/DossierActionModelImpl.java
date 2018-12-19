@@ -157,16 +157,17 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 	public static final long COMPANYID_COLUMN_BITMASK = 2L;
 	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 4L;
 	public static final long DOSSIERID_COLUMN_BITMASK = 8L;
-	public static final long FROMSEQUENCENO_COLUMN_BITMASK = 16L;
-	public static final long FROMSTEPCODE_COLUMN_BITMASK = 32L;
-	public static final long GROUPID_COLUMN_BITMASK = 64L;
-	public static final long NEXTACTIONID_COLUMN_BITMASK = 128L;
-	public static final long PENDING_COLUMN_BITMASK = 256L;
-	public static final long SEQUENCENO_COLUMN_BITMASK = 512L;
-	public static final long STEPCODE_COLUMN_BITMASK = 1024L;
-	public static final long USERID_COLUMN_BITMASK = 2048L;
-	public static final long UUID_COLUMN_BITMASK = 4096L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 8192L;
+	public static final long DUEDATE_COLUMN_BITMASK = 16L;
+	public static final long FROMSEQUENCENO_COLUMN_BITMASK = 32L;
+	public static final long FROMSTEPCODE_COLUMN_BITMASK = 64L;
+	public static final long GROUPID_COLUMN_BITMASK = 128L;
+	public static final long NEXTACTIONID_COLUMN_BITMASK = 256L;
+	public static final long PENDING_COLUMN_BITMASK = 512L;
+	public static final long SEQUENCENO_COLUMN_BITMASK = 1024L;
+	public static final long STEPCODE_COLUMN_BITMASK = 2048L;
+	public static final long USERID_COLUMN_BITMASK = 4096L;
+	public static final long UUID_COLUMN_BITMASK = 8192L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 16384L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierAction"));
 
@@ -920,7 +921,17 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 
 	@Override
 	public void setDueDate(Date dueDate) {
+		_columnBitmask |= DUEDATE_COLUMN_BITMASK;
+
+		if (_originalDueDate == null) {
+			_originalDueDate = _dueDate;
+		}
+
 		_dueDate = dueDate;
+	}
+
+	public Date getOriginalDueDate() {
+		return _originalDueDate;
 	}
 
 	@Override
@@ -1161,6 +1172,8 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 		dossierActionModelImpl._originalStepCode = dossierActionModelImpl._stepCode;
 
 		dossierActionModelImpl._originalSequenceNo = dossierActionModelImpl._sequenceNo;
+
+		dossierActionModelImpl._originalDueDate = dossierActionModelImpl._dueDate;
 
 		dossierActionModelImpl._originalNextActionId = dossierActionModelImpl._nextActionId;
 
@@ -1607,6 +1620,7 @@ public class DossierActionModelImpl extends BaseModelImpl<DossierAction>
 	private String _sequenceNo;
 	private String _originalSequenceNo;
 	private Date _dueDate;
+	private Date _originalDueDate;
 	private long _nextActionId;
 	private long _originalNextActionId;
 	private boolean _setOriginalNextActionId;

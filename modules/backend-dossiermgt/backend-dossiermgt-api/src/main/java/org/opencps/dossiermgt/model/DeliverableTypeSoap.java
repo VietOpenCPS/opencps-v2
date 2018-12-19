@@ -45,7 +45,11 @@ public class DeliverableTypeSoap implements Serializable {
 		soapModel.setTypeName(model.getTypeName());
 		soapModel.setFormScript(model.getFormScript());
 		soapModel.setFormReport(model.getFormReport());
+		soapModel.setFormScriptFileId(model.getFormScriptFileId());
+		soapModel.setFormReportFileId(model.getFormReportFileId());
 		soapModel.setCodePattern(model.getCodePattern());
+		soapModel.setDataConfig(model.getDataConfig());
+		soapModel.setTableConfig(model.getTableConfig());
 		soapModel.setCounter(model.getCounter());
 		soapModel.setMappingData(model.getMappingData());
 		soapModel.setDocSync(model.getDocSync());
@@ -200,6 +204,22 @@ public class DeliverableTypeSoap implements Serializable {
 		_formReport = formReport;
 	}
 
+	public long getFormScriptFileId() {
+		return _formScriptFileId;
+	}
+
+	public void setFormScriptFileId(long formScriptFileId) {
+		_formScriptFileId = formScriptFileId;
+	}
+
+	public long getFormReportFileId() {
+		return _formReportFileId;
+	}
+
+	public void setFormReportFileId(long formReportFileId) {
+		_formReportFileId = formReportFileId;
+	}
+
 	public String getCodePattern() {
 		return _codePattern;
 	}
@@ -208,11 +228,27 @@ public class DeliverableTypeSoap implements Serializable {
 		_codePattern = codePattern;
 	}
 
-	public String getCounter() {
+	public String getDataConfig() {
+		return _dataConfig;
+	}
+
+	public void setDataConfig(String dataConfig) {
+		_dataConfig = dataConfig;
+	}
+
+	public String getTableConfig() {
+		return _tableConfig;
+	}
+
+	public void setTableConfig(String tableConfig) {
+		_tableConfig = tableConfig;
+	}
+
+	public long getCounter() {
 		return _counter;
 	}
 
-	public void setCounter(String counter) {
+	public void setCounter(long counter) {
 		_counter = counter;
 	}
 
@@ -252,8 +288,12 @@ public class DeliverableTypeSoap implements Serializable {
 	private String _typeName;
 	private String _formScript;
 	private String _formReport;
+	private long _formScriptFileId;
+	private long _formReportFileId;
 	private String _codePattern;
-	private String _counter;
+	private String _dataConfig;
+	private String _tableConfig;
+	private long _counter;
 	private String _mappingData;
 	private int _docSync;
 	private String _govAgencies;

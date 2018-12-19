@@ -72,7 +72,11 @@ public class DeliverableTypeWrapper implements DeliverableType,
 		attributes.put("typeName", getTypeName());
 		attributes.put("formScript", getFormScript());
 		attributes.put("formReport", getFormReport());
+		attributes.put("formScriptFileId", getFormScriptFileId());
+		attributes.put("formReportFileId", getFormReportFileId());
 		attributes.put("codePattern", getCodePattern());
+		attributes.put("dataConfig", getDataConfig());
+		attributes.put("tableConfig", getTableConfig());
 		attributes.put("counter", getCounter());
 		attributes.put("mappingData", getMappingData());
 		attributes.put("docSync", getDocSync());
@@ -155,13 +159,37 @@ public class DeliverableTypeWrapper implements DeliverableType,
 			setFormReport(formReport);
 		}
 
+		Long formScriptFileId = (Long)attributes.get("formScriptFileId");
+
+		if (formScriptFileId != null) {
+			setFormScriptFileId(formScriptFileId);
+		}
+
+		Long formReportFileId = (Long)attributes.get("formReportFileId");
+
+		if (formReportFileId != null) {
+			setFormReportFileId(formReportFileId);
+		}
+
 		String codePattern = (String)attributes.get("codePattern");
 
 		if (codePattern != null) {
 			setCodePattern(codePattern);
 		}
 
-		String counter = (String)attributes.get("counter");
+		String dataConfig = (String)attributes.get("dataConfig");
+
+		if (dataConfig != null) {
+			setDataConfig(dataConfig);
+		}
+
+		String tableConfig = (String)attributes.get("tableConfig");
+
+		if (tableConfig != null) {
+			setTableConfig(tableConfig);
+		}
+
+		Long counter = (Long)attributes.get("counter");
 
 		if (counter != null) {
 			setCounter(counter);
@@ -222,7 +250,7 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	* @return the counter of this deliverable type
 	*/
 	@Override
-	public String getCounter() {
+	public long getCounter() {
 		return _deliverableType.getCounter();
 	}
 
@@ -234,6 +262,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public Date getCreateDate() {
 		return _deliverableType.getCreateDate();
+	}
+
+	/**
+	* Returns the data config of this deliverable type.
+	*
+	* @return the data config of this deliverable type
+	*/
+	@Override
+	public String getDataConfig() {
+		return _deliverableType.getDataConfig();
 	}
 
 	/**
@@ -272,6 +310,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	}
 
 	/**
+	* Returns the form report file ID of this deliverable type.
+	*
+	* @return the form report file ID of this deliverable type
+	*/
+	@Override
+	public long getFormReportFileId() {
+		return _deliverableType.getFormReportFileId();
+	}
+
+	/**
 	* Returns the form script of this deliverable type.
 	*
 	* @return the form script of this deliverable type
@@ -279,6 +327,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public String getFormScript() {
 		return _deliverableType.getFormScript();
+	}
+
+	/**
+	* Returns the form script file ID of this deliverable type.
+	*
+	* @return the form script file ID of this deliverable type
+	*/
+	@Override
+	public long getFormScriptFileId() {
+		return _deliverableType.getFormScriptFileId();
 	}
 
 	/**
@@ -334,6 +392,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _deliverableType.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the table config of this deliverable type.
+	*
+	* @return the table config of this deliverable type
+	*/
+	@Override
+	public String getTableConfig() {
+		return _deliverableType.getTableConfig();
 	}
 
 	/**
@@ -452,7 +520,7 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	* @param counter the counter of this deliverable type
 	*/
 	@Override
-	public void setCounter(String counter) {
+	public void setCounter(long counter) {
 		_deliverableType.setCounter(counter);
 	}
 
@@ -464,6 +532,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public void setCreateDate(Date createDate) {
 		_deliverableType.setCreateDate(createDate);
+	}
+
+	/**
+	* Sets the data config of this deliverable type.
+	*
+	* @param dataConfig the data config of this deliverable type
+	*/
+	@Override
+	public void setDataConfig(String dataConfig) {
+		_deliverableType.setDataConfig(dataConfig);
 	}
 
 	/**
@@ -513,6 +591,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	}
 
 	/**
+	* Sets the form report file ID of this deliverable type.
+	*
+	* @param formReportFileId the form report file ID of this deliverable type
+	*/
+	@Override
+	public void setFormReportFileId(long formReportFileId) {
+		_deliverableType.setFormReportFileId(formReportFileId);
+	}
+
+	/**
 	* Sets the form script of this deliverable type.
 	*
 	* @param formScript the form script of this deliverable type
@@ -520,6 +608,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public void setFormScript(String formScript) {
 		_deliverableType.setFormScript(formScript);
+	}
+
+	/**
+	* Sets the form script file ID of this deliverable type.
+	*
+	* @param formScriptFileId the form script file ID of this deliverable type
+	*/
+	@Override
+	public void setFormScriptFileId(long formScriptFileId) {
+		_deliverableType.setFormScriptFileId(formScriptFileId);
 	}
 
 	/**
@@ -580,6 +678,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_deliverableType.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the table config of this deliverable type.
+	*
+	* @param tableConfig the table config of this deliverable type
+	*/
+	@Override
+	public void setTableConfig(String tableConfig) {
+		_deliverableType.setTableConfig(tableConfig);
 	}
 
 	/**

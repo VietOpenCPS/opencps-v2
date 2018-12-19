@@ -159,7 +159,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 							Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 	
 							engineFetch.fecthStatisticData(site.getGroupId(), statisticData, dossierData, month);
-							
 							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 							
 							statisticEngineUpdate.updateStatisticData(statisticData);														

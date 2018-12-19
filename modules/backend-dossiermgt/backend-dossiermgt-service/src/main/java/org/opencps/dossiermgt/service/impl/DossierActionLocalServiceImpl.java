@@ -519,5 +519,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	public List<DossierAction> findByG_DID(long groupId, long dossierId) {
 		return dossierActionPersistence.findByG_DID(groupId, dossierId);
 	}
+	
+	public List<DossierAction> findOverdue(Date now) {
+		return dossierActionPersistence.findByDD(now, 0l);
+	}
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }
