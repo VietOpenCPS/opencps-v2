@@ -363,6 +363,13 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		getService().removeDossierStatisticByMonthYear(groupId, month, year);
 	}
 
+	public static void removeDossierStatisticByYear(long companyId,
+		long groupId, int month, int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		getService()
+			.removeDossierStatisticByYear(companyId, groupId, month, year);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, boolean reporting, int start, int end)

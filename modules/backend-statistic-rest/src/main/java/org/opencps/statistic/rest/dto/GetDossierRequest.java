@@ -201,6 +201,61 @@ public class GetDossierRequest extends CommonRequest {
 		this.calculate = calculate;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getSubstatus() {
+		return substatus;
+	}
+	public void setSubstatus(String substatus) {
+		this.substatus = substatus;
+	}
+	public String getAgency() {
+		return agency;
+	}
+	public void setAgency(String agency) {
+		this.agency = agency;
+	}
+	public String getTemplate() {
+		return template;
+	}
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+	public String getOwner() {
+		return owner;
+	}
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	public String getStep() {
+		return step;
+	}
+	public void setStep(String step) {
+		this.step = step;
+	}
+	public String getTop() {
+		return top;
+	}
+	public void setTop(String top) {
+		this.top = top;
+	}
+	public String getDossierNo() {
+		return dossierNo;
+	}
+	public void setDossierNo(String dossierNo) {
+		this.dossierNo = dossierNo;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
 	private String month;
 	private String year;
 	private String registerBookCode;
@@ -233,4 +288,15 @@ public class GetDossierRequest extends CommonRequest {
 	private String fromStatisticDate;
 	private String toStatisticDate;
 	private boolean calculate;
+	//Search statistic dossier
+	private String status;
+	private String substatus;
+	private String agency;
+	private String template;
+	private String owner;
+	private String step;
+	private String top;
+	private String dossierNo;
+	private String domain;
+
 }
