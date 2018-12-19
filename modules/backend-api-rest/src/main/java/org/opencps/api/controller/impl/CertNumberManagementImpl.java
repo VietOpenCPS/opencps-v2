@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.CertNumberManagement;
+import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -126,14 +128,27 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 		
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
-			}
+//			if (!auth.isAdmin(serviceContext, "admin")) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity("User not permission process action!!!").build();
+//			}
 
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			
 			if (Validator.isNotNull(pattern)) {
 				String[] patternArr = StringUtil.split(pattern);
 				_log.info("pattern: "+pattern);
@@ -203,12 +218,24 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
+//			if (!auth.isAdmin(serviceContext, "admin")) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity("User not permission process action!!!").build();
+//			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
 			}
 			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
 
@@ -346,17 +373,28 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		// long groupId =
 		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
-		_log.info("certId: "+certId);
+//		_log.info("certId: "+certId);
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
-			}
+//			if (!auth.isAdmin(serviceContext, "admin")) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity("User not permission process action!!!").build();
+//			}
 //			String nameCounter = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
-
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
 			CounterLocalServiceUtil.deleteCounter(certId);
 
 			jsObj.put("status", "done");
@@ -375,12 +413,24 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
+//			if (!auth.isAdmin(serviceContext, "admin")) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity("User not permission process action!!!").build();
+//			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
 			}
 			List<Counter> counters = CounterLocalServiceUtil.getCounters(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
