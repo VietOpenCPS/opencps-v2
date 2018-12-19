@@ -40,14 +40,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "total",
-    "votingStatisticsModel"
+    "data"
 })
-@XmlRootElement(name = "VotingStatisticsResults")
+@XmlRootElement(name = "data")
 public class VotingStatisticsResults {
 
     protected Long total;
-    @XmlElement(name = "VotingStatisticsModel")
-    protected List<VotingStatisticsModel> votingStatisticsModel;
+    //@XmlElement(name = "VotingStatisticsModel")
+    protected List<VotingStatisticsModel> data;
 
     /**
      * Gets the value of the total property.
@@ -95,11 +95,11 @@ public class VotingStatisticsResults {
      * 
      * 
      */
-    public List<VotingStatisticsModel> getVotingStatisticsModel() {
-        if (votingStatisticsModel == null) {
-            votingStatisticsModel = new ArrayList<VotingStatisticsModel>();
+    public List<VotingStatisticsModel> getData() {
+        if (data == null) {
+        	data = new ArrayList<VotingStatisticsModel>();
         }
-        return this.votingStatisticsModel;
+        return this.data;
     }
 
 }

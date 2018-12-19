@@ -10,4 +10,7 @@
 	<bean class="org.opencps.statistic.service.impl.OpencpsDossierStatisticLocalServiceImpl" id="org.opencps.statistic.service.OpencpsDossierStatisticLocalService" />
 	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsDossierStatisticPersistenceImpl" id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticPersistence" parent="basePersistence" />
 	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsDossierStatisticFinderImpl" id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder" parent="basePersistence" />
+	<bean class="org.opencps.statistic.service.impl.OpencpsVotingStatisticLocalServiceImpl" id="org.opencps.statistic.service.OpencpsVotingStatisticLocalService" />
+	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsVotingStatisticPersistenceImpl" id="org.opencps.statistic.service.persistence.OpencpsVotingStatisticPersistence" parent="basePersistence" />
+	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsVotingStatisticFinderImpl" id="org.opencps.statistic.service.persistence.OpencpsVotingStatisticFinder" parent="basePersistence" />
 </beans>

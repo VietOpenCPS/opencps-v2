@@ -47,6 +47,7 @@ public class VotingSoap implements Serializable {
 		soapModel.setChoices(model.getChoices());
 		soapModel.setTemplateNo(model.getTemplateNo());
 		soapModel.setCommentable(model.isCommentable());
+		soapModel.setVotingCode(model.getVotingCode());
 
 		return soapModel;
 	}
@@ -215,6 +216,14 @@ public class VotingSoap implements Serializable {
 		_commentable = commentable;
 	}
 
+	public String getVotingCode() {
+		return _votingCode;
+	}
+
+	public void setVotingCode(String votingCode) {
+		_votingCode = votingCode;
+	}
+
 	private String _uuid;
 	private long _votingId;
 	private long _companyId;
@@ -229,4 +238,5 @@ public class VotingSoap implements Serializable {
 	private String _choices;
 	private String _templateNo;
 	private boolean _commentable;
+	private String _votingCode;
 }

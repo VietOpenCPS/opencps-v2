@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -185,6 +186,8 @@ public class VotingResultLocalServiceImpl
 		String groupId = (String) params.get("groupId");
 		String userId = (String) params.get("userId");
 		String votingId = (String) params.get(VotingResultTerm.VOTING_ID);
+		int month = GetterUtil.getInteger(params.get(VotingResultTerm.MONTH_VOTING));
+		int year = GetterUtil.getInteger(params.get(VotingResultTerm.YEAR_VOTING));
 
 		BooleanQuery booleanQuery = null;
 
@@ -227,6 +230,22 @@ public class VotingResultLocalServiceImpl
 			MultiMatchQuery query = new MultiMatchQuery(votingId);
 
 			query.addFields(VotingResultTerm.VOTING_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(month) && month > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
+
+			query.addFields(VotingResultTerm.MONTH_VOTING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(year) && year > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
+
+			query.addFields(VotingResultTerm.YEAR_VOTING);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -256,6 +275,8 @@ public class VotingResultLocalServiceImpl
 		String groupId = (String) params.get("groupId");
 		String userId = (String) params.get("userId");
 		String votingId = (String) params.get(VotingResultTerm.VOTING_ID);
+		int month = GetterUtil.getInteger(params.get(VotingResultTerm.MONTH_VOTING));
+		int year = GetterUtil.getInteger(params.get(VotingResultTerm.YEAR_VOTING));
 
 		BooleanQuery booleanQuery = null;
 
@@ -298,6 +319,22 @@ public class VotingResultLocalServiceImpl
 			MultiMatchQuery query = new MultiMatchQuery(votingId);
 
 			query.addFields(VotingResultTerm.VOTING_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(month) && month > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
+
+			query.addFields(VotingResultTerm.MONTH_VOTING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(year) && year > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
+
+			query.addFields(VotingResultTerm.YEAR_VOTING);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

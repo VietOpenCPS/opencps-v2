@@ -45,4 +45,30 @@
 		<field name="outsideCount" type="int" />
 		<field name="insideCount" type="int" />
 	</model>
+	<model name="org.opencps.statistic.model.OpencpsVotingStatistic">
+		<field name="uuid" type="String" />
+		<field name="votingStatisticId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="month" type="int" />
+		<field name="year" type="int" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="serviceCode" type="String" />
+		<field name="serviceName" type="String" />
+		<field name="votingCode" type="String" />
+		<field name="votingSubject" type="String" />
+		<field name="totalVoted" type="int" />
+		<field name="veryGoodCount" type="int" />
+		<field name="goodCount" type="int" />
+		<field name="badCount" type="int" />
+		<field name="percentVeryGood" type="int" />
+		<field name="percentGood" type="int" />
+		<field name="percentBad" type="int" />
+		<field name="totalCount" type="int" />
+	</model>
 </model-hints>
