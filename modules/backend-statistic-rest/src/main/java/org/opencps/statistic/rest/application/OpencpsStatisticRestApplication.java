@@ -195,7 +195,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				payload.setSubstatus(substatus);
 				payload.setServiceCode(service);
 				payload.setTemplate(template);
-				payload.setOriginality(Integer.valueOf(originality));
+				payload.setOriginality(originality);
 				payload.setOwner(owner);
 				payload.setStep(step);
 				payload.setTop(top);

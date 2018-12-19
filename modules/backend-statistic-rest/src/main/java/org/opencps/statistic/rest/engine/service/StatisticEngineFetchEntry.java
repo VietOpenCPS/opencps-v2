@@ -116,7 +116,7 @@ public class StatisticEngineFetchEntry {
 
 				if (overdue==0) {
 					statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
-				} else if (overdue==1) {
+				} else if (overdue==2) {
 					statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
 					boolean isOvertimeInside = true;
 					if (isOvertimeInside) {
