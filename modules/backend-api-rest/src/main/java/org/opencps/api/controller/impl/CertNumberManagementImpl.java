@@ -49,13 +49,26 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			User user, ServiceContext serviceContext) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
+//			if (!auth.isAdmin(serviceContext, "admin")) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity("User not permission process action!!!").build();
+//			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
 			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+
 			List<Counter> counters = CounterLocalServiceUtil.getCounters(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			JSONObject jsObj = JSONFactoryUtil.createJSONObject();
@@ -96,12 +109,24 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		// long groupId =
 		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
+//			if (!auth.isAdmin(serviceContext, "admin")) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity("User not permission process action!!!").build();
+//			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
 			}
 			Counter counter = CounterLocalServiceUtil.getCounter(certid);
 			String[] splitPattern = StringUtil.split(counter.getName(), StringPool.AT);
