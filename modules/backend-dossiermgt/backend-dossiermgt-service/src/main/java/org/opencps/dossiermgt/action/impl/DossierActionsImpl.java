@@ -1756,11 +1756,11 @@ public class DossierActionsImpl implements DossierActions {
 											.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false,
 													QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 													new DossierFileComparator(false, "createDate", Date.class));
-//									_log.info("dossierFilesResult: "+dossierFilesResult.size());
+									_log.info("dossierFilesResult: "+dossierFilesResult.size());
 									if (dossierFilesResult != null && !dossierFilesResult.isEmpty()) {
 										createFile = processFileResult(dossierFilesResult, createFile,
 												dossierPart.getPartNo());
-//										_log.info("createFile: "+createFile.toJSONString());
+										_log.info("createFile: "+createFile.toJSONString());
 
 									} else {
 										createFile = processEFormByCreateFile(dossierPart, groupId, dossierId,
@@ -1769,7 +1769,7 @@ public class DossierActionsImpl implements DossierActions {
 									dossierFilesResult = DossierFileLocalServiceUtil
 											.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(dossierId, fileTemplateNo, 2, 0,
 													false);
-//									_log.info("dossierFilesResult1: "+dossierFilesResult.size());
+									_log.info("dossierFilesResult1: "+dossierFilesResult.size());
 
 									counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
 											? dossierFilesResult.size() : 0;
