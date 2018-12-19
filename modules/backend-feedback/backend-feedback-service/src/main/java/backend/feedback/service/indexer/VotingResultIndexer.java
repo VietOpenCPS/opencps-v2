@@ -1,13 +1,5 @@
 package backend.feedback.service.indexer;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.usermgt.constants.CommonTerm;
-
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -25,8 +17,23 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.usermgt.constants.CommonTerm;
+
 import backend.feedback.constants.VotingResultTerm;
+import backend.feedback.constants.VotingTerm;
+import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
+import backend.feedback.service.VotingLocalServiceUtil;
 import backend.feedback.service.VotingResultLocalServiceUtil;
 
 public class VotingResultIndexer extends BaseIndexer<VotingResult> {
@@ -64,6 +71,7 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 
 		document.addNumberSortable(VotingResultTerm.VOTING_RESULT_ID, VotingResult.getVotingResultId());
 		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(VotingResult.getCompanyId()));
+		document.addDateSortable(Field.CREATE_DATE, VotingResult.getCreateDate());
 		document.addDateSortable(Field.MODIFIED_DATE, VotingResult.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(VotingResult.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(VotingResult.getUserName()));
@@ -75,9 +83,38 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 		document.addTextSortable(VotingResultTerm.EMAIL, VotingResult.getEmail());
 		document.addTextSortable(VotingResultTerm.COMMENT, VotingResult.getComment());
 		document.addTextSortable(VotingResultTerm.SELECTED, VotingResult.getSelected());
+		//Index month, year using search statistic
+		int yearVoting = 0;
+		int monthVoting = 0;
+		if (Validator.isNotNull(VotingResult.getCreateDate())) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(VotingResult.getCreateDate());
+			yearVoting = cal.get(Calendar.YEAR);
+			monthVoting = cal.get(Calendar.MONTH) + 1;
+		}
+		document.addNumberSortable(VotingResultTerm.YEAR_VOTING, yearVoting);
+		document.addNumberSortable(VotingResultTerm.MONTH_VOTING, monthVoting);
+		//_log.info("yearDossier: "+yearDossier);
+		//_log.info("monthDossier: "+monthDossier);
+		long votingId = VotingResult.getVotingId();
+		if (votingId > 0) {
+			Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
+			if (voting != null) {
+				document.addTextSortable(VotingTerm.CLASS_NAME, voting.getClassName());
+				document.addTextSortable(VotingTerm.CLASS_PK, voting.getClassPK());
+				document.addTextSortable(VotingTerm.VOTING_CODE, voting.getVotingCode());
+				//Process index dossier
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(voting.getClassPK()));
+				if (dossier != null) {
+					document.addTextSortable(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+					document.addTextSortable(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+					document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+					document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+				}
+			}
+		}
 		
-		document.setSortableTextFields(
-				new String[] { VotingResultTerm.CREATE_DATE});
+		document.setSortableTextFields(new String[] { VotingResultTerm.CREATE_DATE});
 
 		return document;
 	}

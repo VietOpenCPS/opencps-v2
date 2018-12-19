@@ -64,7 +64,7 @@ public class VotingCacheModel implements CacheModel<Voting>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -94,6 +94,8 @@ public class VotingCacheModel implements CacheModel<Voting>, Externalizable {
 		sb.append(templateNo);
 		sb.append(", commentable=");
 		sb.append(commentable);
+		sb.append(", votingCode=");
+		sb.append(votingCode);
 		sb.append("}");
 
 		return sb.toString();
@@ -173,6 +175,13 @@ public class VotingCacheModel implements CacheModel<Voting>, Externalizable {
 
 		votingImpl.setCommentable(commentable);
 
+		if (votingCode == null) {
+			votingImpl.setVotingCode("");
+		}
+		else {
+			votingImpl.setVotingCode(votingCode);
+		}
+
 		votingImpl.resetOriginalValues();
 
 		return votingImpl;
@@ -199,6 +208,7 @@ public class VotingCacheModel implements CacheModel<Voting>, Externalizable {
 		templateNo = objectInput.readUTF();
 
 		commentable = objectInput.readBoolean();
+		votingCode = objectInput.readUTF();
 	}
 
 	@Override
@@ -265,6 +275,13 @@ public class VotingCacheModel implements CacheModel<Voting>, Externalizable {
 		}
 
 		objectOutput.writeBoolean(commentable);
+
+		if (votingCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(votingCode);
+		}
 	}
 
 	public String uuid;
@@ -281,4 +298,5 @@ public class VotingCacheModel implements CacheModel<Voting>, Externalizable {
 	public String choices;
 	public String templateNo;
 	public boolean commentable;
+	public String votingCode;
 }

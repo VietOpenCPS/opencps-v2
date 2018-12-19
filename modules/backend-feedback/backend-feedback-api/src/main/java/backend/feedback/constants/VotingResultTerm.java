@@ -11,4 +11,6 @@ public class VotingResultTerm {
 	public static final String COMMENT = "comment";
 	public static final String SELECTED = "selected";
 	public static final String CREATE_DATE = "createDate";
+	public static final String YEAR_VOTING = "year";
+	public static final String MONTH_VOTING = "month";
 }
