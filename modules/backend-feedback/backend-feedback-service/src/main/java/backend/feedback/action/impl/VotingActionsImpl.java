@@ -266,32 +266,30 @@ public class VotingActionsImpl implements VotingActions {
 		return votingResult;
 	}
 
-//	@Override
-//	public JSONObject getVotingStatics(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
-//			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
-//
-//		JSONObject result = JSONFactoryUtil.createJSONObject();
-//		Hits hits = null;
-//		SearchContext searchContext = new SearchContext();
-//		searchContext.setCompanyId(companyId);
-//
-//		try {
-//
-//			hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-//
-//			result.put("data", hits.toList());
-//
-//			long total = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
-//
-//			result.put("total", total);
-//
-//		} catch (ParseException e) {
-//			_log.error(e);
-//		} catch (SearchException e) {
-//			_log.error(e);
-//		}
-//
-//		return result;
-//	}
+	@Override
+	public JSONObject getVotingResultStatistic(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		Hits hits = null;
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		try {
+
+			hits = VotingResultLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
+			result.put("data", hits.toList());
+
+			long total = VotingResultLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
+			result.put("total", total);
+
+		} catch (ParseException e) {
+			_log.error(e);
+		} catch (SearchException e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
 
 }

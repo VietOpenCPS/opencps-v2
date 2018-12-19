@@ -41,191 +41,154 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "templateNo",
-    "subject",
-    "choices",
-    "votingsCount",
-    "answersCount",
-    "usersCount",
-    "answers"
+    "votingResultId",
+    "userId",
+    "userName",
+    "groupId",
+    "createDate",
+    "modifiedDate",
+    "fullName",
+    "email",
+    "comment",
+    "selected",
+    "votingId",
+    "className",
+    "classPK",
+    "votingCode",
+    "serviceCode",
+    "serviceName",
+    "govAgencyCode",
+    "govAgencyName"
 })
 @XmlRootElement(name = "VotingStatisticsModel")
 public class VotingStatisticsModel {
 
-    protected String templateNo;
-    protected String subject;
-    protected String choices;
-    protected Long votingsCount;
-    protected Long answersCount;
-    protected Long usersCount;
-    protected String answers;
+    protected Long votingResultId;
+    protected Long userId;
+    protected String userName;
+    protected Long groupId;
+    protected String createDate;
+    protected String modifiedDate;
+    protected String fullName;
+    protected String email;
+    protected String comment;
+    protected Integer selected;
+    protected Long votingId;
+    protected String className;
+    protected String classPK;
+    protected String votingCode;
+    protected String serviceCode;
+    protected String serviceName;
+    protected String govAgencyCode;
+    protected String govAgencyName;
 
-    /**
-     * Gets the value of the templateNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTemplateNo() {
-        return templateNo;
-    }
-
-    /**
-     * Sets the value of the templateNo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTemplateNo(String value) {
-        this.templateNo = value;
-    }
-
-    /**
-     * Gets the value of the subject property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSubject() {
-        return subject;
-    }
-
-    /**
-     * Sets the value of the subject property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSubject(String value) {
-        this.subject = value;
-    }
-
-    /**
-     * Gets the value of the choices property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getChoices() {
-        return choices;
-    }
-
-    /**
-     * Sets the value of the choices property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setChoices(String value) {
-        this.choices = value;
-    }
-
-    /**
-     * Gets the value of the votingsCount property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    public Long getVotingsCount() {
-        return votingsCount;
-    }
-
-    /**
-     * Sets the value of the votingsCount property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setVotingsCount(Long value) {
-        this.votingsCount = value;
-    }
-
-    /**
-     * Gets the value of the answersCount property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    public Long getAnswersCount() {
-        return answersCount;
-    }
-
-    /**
-     * Sets the value of the answersCount property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setAnswersCount(Long value) {
-        this.answersCount = value;
-    }
-
-    /**
-     * Gets the value of the usersCount property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    public Long getUsersCount() {
-        return usersCount;
-    }
-
-    /**
-     * Sets the value of the usersCount property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setUsersCount(Long value) {
-        this.usersCount = value;
-    }
-
-    /**
-     * Gets the value of the answers property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAnswers() {
-        return answers;
-    }
-
-    /**
-     * Sets the value of the answers property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAnswers(String value) {
-        this.answers = value;
-    }
+	public Long getVotingResultId() {
+		return votingResultId;
+	}
+	public void setVotingResultId(Long votingResultId) {
+		this.votingResultId = votingResultId;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+	public String getModifiedDate() {
+		return modifiedDate;
+	}
+	public void setModifiedDate(String modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	public Integer getSelected() {
+		return selected;
+	}
+	public void setSelected(Integer selected) {
+		this.selected = selected;
+	}
+	public Long getVotingId() {
+		return votingId;
+	}
+	public void setVotingId(Long votingId) {
+		this.votingId = votingId;
+	}
+	public String getClassName() {
+		return className;
+	}
+	public void setClassName(String className) {
+		this.className = className;
+	}
+	public String getClassPK() {
+		return classPK;
+	}
+	public void setClassPK(String classPK) {
+		this.classPK = classPK;
+	}
+	public String getVotingCode() {
+		return votingCode;
+	}
+	public void setVotingCode(String votingCode) {
+		this.votingCode = votingCode;
+	}
+	public String getServiceCode() {
+		return serviceCode;
+	}
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+	public String getServiceName() {
+		return serviceName;
+	}
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+	public Long getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
 
 }

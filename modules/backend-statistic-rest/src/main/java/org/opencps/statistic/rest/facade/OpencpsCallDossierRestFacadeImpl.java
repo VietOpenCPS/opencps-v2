@@ -10,7 +10,6 @@ import org.opencps.statistic.rest.dto.GetDossierResponse;
 import org.opencps.statistic.rest.util.DossierConstants;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -88,8 +87,9 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 			if (Validator.isNotNull(payload.getToStatisticDate())) {
 				urlQueryParams.add("toStatisticDate", payload.getToStatisticDate());
 			}
+			//Process tranfer params using search dossier
+			buildUrlQueryParams(urlQueryParams, payload);
 		}
-		
 		urlQueryParams.add("top", "statistic");
 		
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
@@ -106,34 +106,38 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 	}
 
 	private void buildUrlQueryParams(MultiValueMap<String, String> urlQueryParams, GetDossierRequest dossierRequest) {
-		urlQueryParams.add(DossierConstants.REGISTERBOOKCODE, dossierRequest.getRegisterBookCode());
-		urlQueryParams.add(DossierConstants.PROCESSNO, dossierRequest.getProcessNo());
+		//urlQueryParams.add(DossierConstants.REGISTERBOOKCODE, dossierRequest.getRegisterBookCode());
+		//urlQueryParams.add(DossierConstants.PROCESSNO, dossierRequest.getProcessNo());
+		urlQueryParams.add(DossierConstants.DOSSIER_STATUS, dossierRequest.getStatus());
+		urlQueryParams.add(DossierConstants.DOSSIER_SUB_STATUS, dossierRequest.getSubstatus());
 		urlQueryParams.add(DossierConstants.SERVICECODE, dossierRequest.getServiceCode());
-		urlQueryParams.add(DossierConstants.GOVAGENCYCODE, dossierRequest.getGovAgencyCode());
-		urlQueryParams.add(DossierConstants.APPLICANTIDTYPE, dossierRequest.getApplicantIdType());
-		urlQueryParams.add(DossierConstants.APPLICANTIDNO, dossierRequest.getApplicantIdNo());
-		urlQueryParams.add(DossierConstants.CITYCODE, dossierRequest.getCityCode());
-		urlQueryParams.add(DossierConstants.DISTRICTCODE, dossierRequest.getDistrictCode());
-		urlQueryParams.add(DossierConstants.WARDCODE, dossierRequest.getWardCode());
-		urlQueryParams.add(DossierConstants.CONTACTTELNO, dossierRequest.getContactTelNo());
-		urlQueryParams.add(DossierConstants.CONTACTEMAIL, dossierRequest.getContactEmail());
-		urlQueryParams.add(DossierConstants.DELEGATEIDNO, dossierRequest.getDelegateIdNo());
-		urlQueryParams.add(DossierConstants.DELEGATETELNO, dossierRequest.getDelegateTelNo());
-		urlQueryParams.add(DossierConstants.DOSSIERSTATUS, dossierRequest.getDossierStatus());
-		urlQueryParams.add(DossierConstants.DOSSIERSUBSTATUS, dossierRequest.getDossierSubStatus());
-		urlQueryParams.add(DossierConstants.DOSSIERACTIONID, Long.toString(dossierRequest.getDossierActionId()));
-		urlQueryParams.add(DossierConstants.VIAPOSTAL, Integer.toString(dossierRequest.getViaPostal()));
 		urlQueryParams.add(DossierConstants.ONLINE, Boolean.toString(dossierRequest.isOnline()));
-		urlQueryParams.add(DossierConstants.ORIGINALITY, Integer.toString(dossierRequest.getOriginality()));
-		urlQueryParams.add(DossierConstants.SERVERNO, dossierRequest.getServerNo());
-		urlQueryParams.add(DossierConstants.ORIGINDOSSIERID, Long.toString(dossierRequest.getOriginDossierId()));
-		
-		urlQueryParams.add(DossierConstants.ONLINE_VALUE, Boolean.toString(dossierRequest.isOnline()));
-		urlQueryParams.add(DossierConstants.UNDUE, Boolean.toString(dossierRequest.isUndue()));
-		urlQueryParams.add(DossierConstants.BETIME, Boolean.toString(dossierRequest.isBetime()));
-		urlQueryParams.add(DossierConstants.ONTIME, Boolean.toString(dossierRequest.isOntime()));
-		urlQueryParams.add(DossierConstants.RECEIVED, Boolean.toString(dossierRequest.isReceived()));
-		urlQueryParams.add(DossierConstants.RELEASED, Boolean.toString(dossierRequest.isReleased()));
+		urlQueryParams.add(DossierConstants.ORIGINALITY, dossierRequest.getOriginality());
+		urlQueryParams.add(DossierConstants.TEMPLATE, dossierRequest.getTemplate());
+		urlQueryParams.add(DossierConstants.STEP, dossierRequest.getStep());
+		urlQueryParams.add(DossierConstants.TOP, dossierRequest.getTop());
+		urlQueryParams.add(DossierConstants.DOSSIER_NO, dossierRequest.getDossierNo());
+		//urlQueryParams.add(DossierConstants.GOVAGENCYCODE, dossierRequest.getGovAgencyCode());
+		//urlQueryParams.add(DossierConstants.APPLICANTIDTYPE, dossierRequest.getApplicantIdType());
+		//urlQueryParams.add(DossierConstants.APPLICANTIDNO, dossierRequest.getApplicantIdNo());
+		//urlQueryParams.add(DossierConstants.CITYCODE, dossierRequest.getCityCode());
+		//urlQueryParams.add(DossierConstants.DISTRICTCODE, dossierRequest.getDistrictCode());
+		//urlQueryParams.add(DossierConstants.WARDCODE, dossierRequest.getWardCode());
+		//urlQueryParams.add(DossierConstants.CONTACTTELNO, dossierRequest.getContactTelNo());
+		//urlQueryParams.add(DossierConstants.CONTACTEMAIL, dossierRequest.getContactEmail());
+		//urlQueryParams.add(DossierConstants.DELEGATEIDNO, dossierRequest.getDelegateIdNo());
+		//urlQueryParams.add(DossierConstants.DELEGATETELNO, dossierRequest.getDelegateTelNo());
+		//urlQueryParams.add(DossierConstants.DOSSIERSTATUS, dossierRequest.getDossierStatus());
+		//urlQueryParams.add(DossierConstants.DOSSIERSUBSTATUS, dossierRequest.getDossierSubStatus());
+		//urlQueryParams.add(DossierConstants.DOSSIERACTIONID, Long.toString(dossierRequest.getDossierActionId()));
+		//urlQueryParams.add(DossierConstants.VIAPOSTAL, Integer.toString(dossierRequest.getViaPostal()));
+		//urlQueryParams.add(DossierConstants.SERVERNO, dossierRequest.getServerNo());
+		//urlQueryParams.add(DossierConstants.ORIGINDOSSIERID, Long.toString(dossierRequest.getOriginDossierId()));
+		//urlQueryParams.add(DossierConstants.UNDUE, Boolean.toString(dossierRequest.isUndue()));
+		//urlQueryParams.add(DossierConstants.BETIME, Boolean.toString(dossierRequest.isBetime()));
+		//urlQueryParams.add(DossierConstants.ONTIME, Boolean.toString(dossierRequest.isOntime()));
+		//urlQueryParams.add(DossierConstants.RECEIVED, Boolean.toString(dossierRequest.isReceived()));
+		//urlQueryParams.add(DossierConstants.RELEASED, Boolean.toString(dossierRequest.isReleased()));
 	}
 
 }

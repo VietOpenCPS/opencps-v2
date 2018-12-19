@@ -306,6 +306,21 @@ public interface VotingModel extends BaseModel<Voting>, GroupedModel,
 	 */
 	public void setCommentable(boolean commentable);
 
+	/**
+	 * Returns the voting code of this voting.
+	 *
+	 * @return the voting code of this voting
+	 */
+	@AutoEscape
+	public String getVotingCode();
+
+	/**
+	 * Sets the voting code of this voting.
+	 *
+	 * @param votingCode the voting code of this voting
+	 */
+	public void setVotingCode(String votingCode);
+
 	@Override
 	public boolean isNew();
 

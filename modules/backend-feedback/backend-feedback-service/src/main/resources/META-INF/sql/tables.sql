@@ -47,7 +47,8 @@ create table opencps_voting (
 	subject VARCHAR(75) null,
 	choices VARCHAR(75) null,
 	templateNo VARCHAR(75) null,
-	commentable BOOLEAN
+	commentable BOOLEAN,
+	votingCode VARCHAR(75) null
 );
 
 create table opencps_votingresult (

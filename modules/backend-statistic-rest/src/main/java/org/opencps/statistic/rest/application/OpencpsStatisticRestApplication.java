@@ -4,14 +4,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,18 +15,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
+import org.opencps.statistic.rest.dto.DossierSearchModel;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
@@ -42,6 +37,7 @@ import org.opencps.statistic.rest.dto.GetDossierResponse;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
+import org.opencps.statistic.rest.dto.VotingResultResponse;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
@@ -88,16 +84,20 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
-			@QueryParam("month") @DefaultValue(ALL_MONTH) int month, @QueryParam("year") int year,
-			@QueryParam("domain") @DefaultValue(StringPool.BLANK) String domain,
-			@QueryParam("agency") @DefaultValue(StringPool.BLANK) String govAgencyCode,
-			@QueryParam("group") String groupAgencyCode, @QueryParam("reporting") boolean reporting,
-			@QueryParam("start") int start, @QueryParam("end") int end, 
-			@QueryParam("fromStatisticDate") @DefaultValue(StringPool.BLANK) String fromStatisticDate,
-			@QueryParam("toStatisticDate") @DefaultValue(StringPool.BLANK) String toStatisticDate) {
+			@BeanParam DossierSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
-		_log.info("START DossierStatisticResponse: "+govAgencyCode);
+		_log.info("START DossierStatisticResponse: "+query.getAgency());
+
+		int start = query.getStart();
+		int end = query.getEnd();
+		int month = query.getMonth();
+		int year = query.getYear();
+		String govAgencyCode = query.getAgency();
+		String domain = query.getDomain();
+		String groupAgencyCode = query.getGroupAgencyCode();
+		boolean reporting = query.getReporting();
+		boolean reCalculate = query.isReCalculate();
 
 		if (start == 0)
 			start = QueryUtil.ALL_POS;
@@ -112,8 +112,10 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		if (calculate) {
 			try {
-				//processUpdateDB(groupId, month, year);
-				//
+				if (reCalculate) {
+					processUpdateDB(groupId, month, year);
+				}
+
 				validInput(month, year, start, end);
 				//
 				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
@@ -149,6 +151,33 @@ public class OpencpsStatisticRestApplication extends Application {
 			}
 			
 		} else {
+
+			String status = query.getStatus();
+			String substatus = query.getSubstatus();
+			String service = query.getService();
+			String template = query.getTemplate();
+			String originality = query.getOriginality();
+			String owner = query.getOwner();
+			//String follow = query.getFollow();
+			String step = query.getStep();
+			String fromStatisticDate = query.getFromStatisticDate();
+			String toStatisticDate = query.getToStatisticDate();
+			String top = query.getTop();
+			String dossierIdNo = query.getDossierNo();
+			//String fromReceiveDate = query.getFromReceiveDate();
+			//String toReceiveDate = query.getToReceiveDate();
+			//String fromReleaseDate = query.getFromReleaseDate();
+			//String toReleaseDate = query.getToReleaseDate();
+			//String fromFinishDate = query.getFromFinishDate();
+			//String toFinishDate = query.getToFinishDate();
+			//_log.info("fromFinishDate: "+fromFinishDate);
+			//_log.info("toFinishDate: "+toFinishDate);
+
+			//String fromReceiveNotDoneDate = query.getFromReceiveNotDoneDate();
+			//String toReceiveNotDoneDate = query.getToReceiveNotDoneDate();
+			boolean online = Boolean.valueOf(query.getOnline());
+			//String applicantIdNo = query.getApplicantIdNo();
+			//Integer originDossierId = query.getOriginDossierId();
 			try {
 				GetDossierRequest payload = new GetDossierRequest();
 				if ("all".equals(govAgencyCode)) {
@@ -162,6 +191,16 @@ public class OpencpsStatisticRestApplication extends Application {
 				payload.setFromStatisticDate(fromStatisticDate);
 				payload.setToStatisticDate(toStatisticDate);
 				payload.setCalculate(calculate);
+				payload.setStatus(status);
+				payload.setSubstatus(substatus);
+				payload.setServiceCode(service);
+				payload.setTemplate(template);
+				payload.setOriginality(originality);
+				payload.setOwner(owner);
+				payload.setStep(step);
+				payload.setTop(top);
+				payload.setDossierNo(dossierIdNo);
+				payload.setOnline(online);
 				
 				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 				if (dossierResponse != null) {
@@ -189,7 +228,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 
 			} catch (Exception e) {
-				
+				System.out.println(e);
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
@@ -202,6 +241,167 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		return null;
 	}
+
+//	@GET
+//	@Path("/votings")
+//	public VotingResultResponse searchVotingStatistic(@HeaderParam("groupId") long groupId,
+//			@BeanParam DossierSearchModel query) {
+//
+//		//LOG.info("GET DossierStatisticResponse");
+//		_log.info("START DossierStatisticResponse: "+query.getGovAgencyCode());
+//
+//		int start = query.getStart();
+//		int end = query.getEnd();
+//		int month = query.getMonth();
+//		int year = query.getYear();
+//		String govAgencyCode = query.getGovAgencyCode();
+//		String service = query.getService();
+//		String votingCode = query.getGroupAgencyCode();
+//		boolean reporting = query.getReporting();
+//		boolean reCalculate = query.isReCalculate();
+//
+//		if (start == 0)
+//			start = QueryUtil.ALL_POS;
+//
+//		if (end == 0)
+//			end = QueryUtil.ALL_POS;
+//		
+//		boolean calculate = false;
+//		if (month > 0 || year > 0) {
+//			calculate = true;
+//		}
+//
+//		if (calculate) {
+//			try {
+//				if (reCalculate) {
+//					processUpdateDB(groupId, month, year);
+//				}
+//
+//				validInput(month, year, start, end);
+//				//
+//				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
+//				dossierStatisticRequest.setDomain(domain);
+//				if ("all".equals(govAgencyCode)) {
+//					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
+//				} else {
+//					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+//				}
+//				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
+//				dossierStatisticRequest.setReporting(reporting);
+//				dossierStatisticRequest.setGroupId(groupId);
+//				dossierStatisticRequest.setStart(start);
+//				dossierStatisticRequest.setEnd(end);
+//				dossierStatisticRequest.setMonth(month);
+//				dossierStatisticRequest.setYear(year);
+//				//
+//				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
+//						.finderDossierStatistic(dossierStatisticRequest);
+//				if (statisticResponse != null) {
+//					statisticResponse.setAgency(govAgencyCode);
+//				}
+//
+//				return statisticResponse;
+//			} catch (Exception e) {
+//				LOG.error("error", e);
+//				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+//
+//				serviceExceptionDetails.setFaultCode("500");
+//				serviceExceptionDetails.setFaultMessage(e.getMessage());
+//
+//				throwException(new OpencpsServiceException(serviceExceptionDetails));
+//			}
+//			
+//		} else {
+//
+//			String status = query.getStatus();
+//			String substatus = query.getSubstatus();
+//			String service = query.getService();
+//			String template = query.getTemplate();
+//			String originality = query.getOriginality();
+//			String owner = query.getOwner();
+//			//String follow = query.getFollow();
+//			String step = query.getStep();
+//			String fromStatisticDate = query.getFromStatisticDate();
+//			String toStatisticDate = query.getToStatisticDate();
+//			String top = query.getTop();
+//			String dossierIdNo = query.getDossierNo();
+//			//String fromReceiveDate = query.getFromReceiveDate();
+//			//String toReceiveDate = query.getToReceiveDate();
+//			//String fromReleaseDate = query.getFromReleaseDate();
+//			//String toReleaseDate = query.getToReleaseDate();
+//			//String fromFinishDate = query.getFromFinishDate();
+//			//String toFinishDate = query.getToFinishDate();
+//			//_log.info("fromFinishDate: "+fromFinishDate);
+//			//_log.info("toFinishDate: "+toFinishDate);
+//
+//			//String fromReceiveNotDoneDate = query.getFromReceiveNotDoneDate();
+//			//String toReceiveNotDoneDate = query.getToReceiveNotDoneDate();
+//			boolean online = Boolean.valueOf(query.getOnline());
+//			//String applicantIdNo = query.getApplicantIdNo();
+//			//Integer originDossierId = query.getOriginDossierId();
+//			try {
+//				GetDossierRequest payload = new GetDossierRequest();
+//				if ("all".equals(govAgencyCode)) {
+//					payload.setGovAgencyCode(StringPool.BLANK);
+//				} else {
+//					payload.setGovAgencyCode(govAgencyCode);
+//				}
+//				payload.setGroupId(groupId);
+//				payload.setStart(start);
+//				payload.setEnd(end);
+//				payload.setFromStatisticDate(fromStatisticDate);
+//				payload.setToStatisticDate(toStatisticDate);
+//				payload.setCalculate(calculate);
+//				payload.setStatus(status);
+//				payload.setSubstatus(substatus);
+//				payload.setServiceCode(service);
+//				payload.setTemplate(template);
+//				payload.setOriginality(Integer.valueOf(originality));
+//				payload.setOwner(owner);
+//				payload.setStep(step);
+//				payload.setTop(top);
+//				payload.setDossierNo(dossierIdNo);
+//				payload.setOnline(online);
+//				
+//				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
+//				if (dossierResponse != null) {
+//					List<GetDossierData> dossierDataList = dossierResponse.getData();
+//					List<DossierStatisticData> statisticDataList = new ArrayList<>();
+//					if (dossierDataList != null && dossierDataList.size() > 0) {
+//						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+//						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+//						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, month);
+//						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+//						//statisticEngineUpdate.updateStatisticData(statisticData);
+//						//
+//						statisticData.forEach((k, v) -> 
+//						statisticDataList.add(v));
+//					}
+//					//
+//					DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+//					statisticResponse.setTotal(statisticDataList.size());
+//					statisticResponse.setDossierStatisticData(statisticDataList);
+//					if (statisticResponse != null) {
+//						statisticResponse.setAgency(govAgencyCode);
+//					}
+//
+//					return statisticResponse;
+//				}
+//
+//			} catch (Exception e) {
+//				
+//				LOG.error("error", e);
+//				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+//
+//				serviceExceptionDetails.setFaultCode("500");
+//				serviceExceptionDetails.setFaultMessage(e.getMessage());
+//
+//				throwException(new OpencpsServiceException(serviceExceptionDetails));
+//			}
+//		}
+//
+//		return null;
+//	}
 
 
 	private void validInput(int month, int year, int start, int end) {
