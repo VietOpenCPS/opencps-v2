@@ -2719,8 +2719,8 @@ public class DossierActionsImpl implements DossierActions {
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus)) {
 			if(!"new".equals(dossierStatus)) {
-				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-				dossier.setApplicantNote(applicantNote);
+//				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+//				dossier.setApplicantNote(applicantNote);
 			} else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
 				dossier.setSubmitDate(new Date());
 			}
@@ -3543,14 +3543,14 @@ public class DossierActionsImpl implements DossierActions {
 
 		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
-		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
-			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+//		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
+//			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
 //			_log.info("applicantNote: "+applicantNote);
 
-			dossier.setApplicantNote(applicantNote);
-
-			dossier = DossierLocalServiceUtil.updateDossier(dossier);
-		}
+//			dossier.setApplicantNote(applicantNote);
+//
+//			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//		}
 
 		ServiceProcess serviceProcess = null;
 		if (option != null) {
@@ -3653,7 +3653,7 @@ public class DossierActionsImpl implements DossierActions {
 		message.put("msgToEngine", msgData);
 		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
-		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);	
+//		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);	
 		
 		Message lgspMessage = new Message();
 		JSONObject lgspMsgData = msgData;
@@ -3661,21 +3661,22 @@ public class DossierActionsImpl implements DossierActions {
 		lgspMessage.put("msgToEngine", lgspMsgData);
 		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
 		
-		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
+//		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
 		
 		//Add publish queue
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.PUBLISH_PROTOCOL);
 		for (ServerConfig sc : lstScs) {
 			try {
-				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
-				if (pq == null) {
-					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
-				}
-				else {
-					if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
-						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
-					}
-				}
+				PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+//				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
+//				if (pq == null) {
+//					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+//				}
+//				else {
+//					if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
+//						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
+//					}
+//				}
 			} catch (PortalException e) {
 				_log.debug(e);
 			}
@@ -3998,7 +3999,8 @@ public class DossierActionsImpl implements DossierActions {
 		
 		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
 				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
-				|| (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
+				|| ((DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) || DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
+						|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
 			
 			try {
 				if (Validator.isNotNull(option)) {
