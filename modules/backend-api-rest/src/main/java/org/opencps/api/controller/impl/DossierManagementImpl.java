@@ -371,6 +371,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.FROM_STATISTIC_DATE, fromStatisticDate);
 			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
+			params.put(DossierTerm.TIME, query.getTime());
 			//Search theo tu tuong moi
 			//params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
 			if (Validator.isNotNull(originDossierId))
