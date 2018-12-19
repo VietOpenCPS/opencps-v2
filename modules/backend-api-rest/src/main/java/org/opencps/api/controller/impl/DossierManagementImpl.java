@@ -3376,6 +3376,27 @@ public class DossierManagementImpl implements DossierManagement {
 			dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
 			dossier.setSubmissionNote(submissionNote);
 			dossier.setLockState(lockState);
+			dossier.setCounter(input.getCounter() != null ? input.getCounter() : 0);
+			dossier.setPostalAddress(input.getPostalAddress());
+			dossier.setPostalCityCode(input.getPostalCityCode());
+			dossier.setPostalCityName(input.getPostalCityName());
+			dossier.setDelegateName(input.getDelegateName());
+			dossier.setDelegateAddress(input.getDelegateAddress());
+			dossier.setDelegateIdNo(input.getDelegateIdNo());
+			dossier.setDelegateTelNo(input.getDelegateTelNo());
+			dossier.setDelegateEmail(input.getDelegateEmail());
+			dossier.setDelegateAddress(input.getDelegateAddress());
+			dossier.setDelegateCityCode(input.getDelegateCityCode());
+			dossier.setDelegateDistrictCode(input.getDelegateDistrictCode());
+			dossier.setDelegateWardCode(input.getDelegateWardCode());
+			dossier.setDelegateCityName(input.getDelegateCityName());
+			dossier.setDelegateDistrictName(input.getDelegateDistrictName());
+			dossier.setDelegateWardName(input.getDelegateWardName());
+			dossier.setDurationCount(input.getDurationCount());
+			dossier.setDurationUnit(input.getDurationUnit());
+			dossier.setSampleCount(input.getSampleCount());
+			dossier.setDossierName(input.getDossierName());
+			dossier.setProcessNo(input.getProcessNo());
 			
 			//Update dossier
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);

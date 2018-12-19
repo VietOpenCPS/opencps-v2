@@ -110,10 +110,10 @@ public class GetDossierRequest extends CommonRequest {
 	public void setOnline(boolean online) {
 		this.online = online;
 	}
-	public int getOriginality() {
+	public String getOriginality() {
 		return originality;
 	}
-	public void setOriginality(int originality) {
+	public void setOriginality(String originality) {
 		this.originality = originality;
 	}
 	public String getServerNo() {
@@ -277,7 +277,7 @@ public class GetDossierRequest extends CommonRequest {
 	private int viaPostal;
 	private boolean online;
 	private boolean onlineValue;
-	private int originality;
+	private String originality;
 	private String serverNo;
 	private long originDossierId;
 	private boolean received;
