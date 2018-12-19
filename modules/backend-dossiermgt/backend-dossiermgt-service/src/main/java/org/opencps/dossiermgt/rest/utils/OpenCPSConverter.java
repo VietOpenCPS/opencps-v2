@@ -257,6 +257,69 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getSubmissionNote())) {
 	    	params.put(DossierTerm.SUBMISSION_NOTE, model.getSubmissionNote());
 	    }
+	    if (Validator.isNotNull(model.getLockState())) {
+	    	params.put(DossierTerm.LOCK_STATE, model.getLockState());
+	    }
+	    if (Validator.isNotNull(model.getCounter())) {
+	    	params.put(DossierTerm.COUNTER, model.getCounter());
+	    }
+	    if (Validator.isNotNull(model.getPostalAddress())) {
+	    	params.put(DossierTerm.POSTAL_ADDRESS, model.getPostalAddress());
+	    }
+	    if (Validator.isNotNull(model.getPostalCityCode())) {
+	    	params.put(DossierTerm.POSTAL_CITY_CODE, model.getPostalCityCode());
+	    }
+	    if (Validator.isNotNull(model.getPostalCityName())) {
+	    	params.put(DossierTerm.POSTAL_CITY_NAME, model.getPostalCityName());
+	    }
+	    if (Validator.isNotNull(model.getDelegateName())) {
+	    	params.put(DossierTerm.DELEGATE_NAME, model.getDelegateName());
+	    }
+	    if (Validator.isNotNull(model.getDelegateIdNo())) {
+	    	params.put(DossierTerm.DELEGATE_ID_NO, model.getDelegateIdNo());
+	    }
+	    if (Validator.isNotNull(model.getDelegateTelNo())) {
+	    	params.put(DossierTerm.DELEGATE_TELNO, model.getDelegateTelNo());
+	    }
+	    if (Validator.isNotNull(model.getDelegateEmail())) {
+	    	params.put(DossierTerm.DELEGATE_EMAIL, model.getDelegateEmail());
+	    }
+	    if (Validator.isNotNull(model.getDelegateAddress())) {
+	    	params.put(DossierTerm.DELEGATE_ADDRESS, model.getDelegateAddress());
+	    }
+	    if (Validator.isNotNull(model.getDelegateCityCode())) {
+	    	params.put(DossierTerm.DELEGATE_CITYCODE, model.getDelegateCityCode());
+	    }
+	    if (Validator.isNotNull(model.getDelegateCityName())) {
+	    	params.put(DossierTerm.DELEGATE_CITYNAME, model.getDelegateCityName());
+	    }
+	    if (Validator.isNotNull(model.getDelegateDistrictCode())) {
+	    	params.put(DossierTerm.DELEGATE_DISTRICTCODE, model.getDelegateDistrictCode());
+	    }
+	    if (Validator.isNotNull(model.getDelegateDistrictName())) {
+	    	params.put(DossierTerm.DELEGATE_DISTRICTNAME, model.getDelegateDistrictName());
+	    }
+	    if (Validator.isNotNull(model.getDelegateWardCode())) {
+	    	params.put(DossierTerm.DELEGATE_WARDCODE, model.getDelegateWardCode());
+	    }
+	    if (Validator.isNotNull(model.getDelegateWardName())) {
+	    	params.put(DossierTerm.DELEGATE_WARDNAME, model.getDelegateWardName());
+	    }
+	    if (Validator.isNotNull(model.getProcessNo())) {
+	    	params.put(DossierTerm.PROCESS_NO, model.getProcessNo());
+	    }
+	    if (Validator.isNotNull(model.getDurationCount())) {
+	    	params.put(DossierTerm.DURATION_COUNT, model.getDurationCount());
+	    }
+	    if (Validator.isNotNull(model.getDurationUnit())) {
+	    	params.put(DossierTerm.DURATION_UNIT, model.getDurationUnit());
+	    }
+	    if (Validator.isNotNull(model.getSampleCount())) {
+	    	params.put(DossierTerm.SAMPLE_COUNT, model.getSampleCount());
+	    }
+	    if (Validator.isNotNull(model.getDossierName())) {
+	    	params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
+	    }
 	    
 	    return params;
 	}	
@@ -661,7 +724,88 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.LOCK_STATE)) {
 			model.setLockState(jsonObj.getString(DossierTerm.LOCK_STATE));
 		}
-
+		if (jsonObj.has(DossierTerm.COUNTER)) {
+			model.setCounter(jsonObj.getInt(DossierTerm.COUNTER));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_ADDRESS)) {
+			model.setPostalAddress(jsonObj.getString(DossierTerm.POSTAL_ADDRESS));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_CITY_CODE)) {
+			model.setPostalCityCode(jsonObj.getString(DossierTerm.POSTAL_CITY_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_CITY_NAME)) {
+			model.setPostalCityName(jsonObj.getString(DossierTerm.POSTAL_CITY_NAME));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_DISTRICT_CODE)) {
+			model.setPostalDistrictCode(jsonObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_DISTRICT_NAME)) {
+			model.setPostalDistrictName(jsonObj.getString(DossierTerm.POSTAL_DISTRICT_NAME));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_WARD_CODE)) {
+			model.setPostalWardCode(jsonObj.getString(DossierTerm.POSTAL_WARD_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_WARD_NAME)) {
+			model.setPostalWardName(jsonObj.getString(DossierTerm.POSTAL_WARD_NAME));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_TEL_NO)) {
+			model.setPostalTelNo(jsonObj.getString(DossierTerm.POSTAL_TEL_NO));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_SERVICE_CODE)) {
+			model.setPostalServiceCode(jsonObj.getString(DossierTerm.POSTAL_SERVICE_CODE));
+		}
+		if (jsonObj.has(DossierTerm.POSTAL_SERVICE_NAME)) {
+			model.setPostalServiceName(jsonObj.getString(DossierTerm.POSTAL_SERVICE_NAME));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_NAME)) {
+			model.setDelegateName(jsonObj.getString(DossierTerm.DELEGATE_NAME));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_ADDRESS)) {
+			model.setDelegateAddress(jsonObj.getString(DossierTerm.DELEGATE_ADDRESS));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_ID_NO)) {
+			model.setDelegateIdNo(jsonObj.getString(DossierTerm.DELEGATE_ID_NO));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_TELNO)) {
+			model.setDelegateTelNo(jsonObj.getString(DossierTerm.DELEGATE_TELNO));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_EMAIL)) {
+			model.setDelegateEmail(jsonObj.getString(DossierTerm.DELEGATE_EMAIL));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_CITYCODE)) {
+			model.setDelegateCityCode(jsonObj.getString(DossierTerm.DELEGATE_CITYCODE));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_CITYNAME)) {
+			model.setDelegateCityName(jsonObj.getString(DossierTerm.DELEGATE_CITYNAME));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_DISTRICTCODE)) {
+			model.setDelegateDistrictCode(jsonObj.getString(DossierTerm.DELEGATE_DISTRICTCODE));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_DISTRICTNAME)) {
+			model.setDelegateDistrictName(jsonObj.getString(DossierTerm.DELEGATE_DISTRICTNAME));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_WARDCODE)) {
+			model.setDelegateWardCode(jsonObj.getString(DossierTerm.DELEGATE_WARDCODE));
+		}
+		if (jsonObj.has(DossierTerm.DELEGATE_WARDNAME)) {
+			model.setDelegateWardName(jsonObj.getString(DossierTerm.DELEGATE_WARDNAME));
+		}
+		if (jsonObj.has(DossierTerm.PROCESS_NO)) {
+			model.setProcessNo(jsonObj.getString(DossierTerm.PROCESS_NO));
+		}
+		if (jsonObj.has(DossierTerm.DURATION_COUNT)) {
+			model.setDurationCount(jsonObj.getDouble(DossierTerm.DURATION_COUNT));
+		}
+		if (jsonObj.has(DossierTerm.DURATION_UNIT)) {
+			model.setDurationUnit(jsonObj.getInt(DossierTerm.DURATION_UNIT));
+		}
+		if (jsonObj.has(DossierTerm.SAMPLE_COUNT)) {
+			model.setSampleCount(jsonObj.getLong(DossierTerm.SAMPLE_COUNT));
+		}
+		if (jsonObj.has(DossierTerm.DOSSIER_NAME)) {
+			model.setDossierName(jsonObj.getString(DossierTerm.DOSSIER_NAME));
+		}
+		
 		return model;
 	}	
 	
