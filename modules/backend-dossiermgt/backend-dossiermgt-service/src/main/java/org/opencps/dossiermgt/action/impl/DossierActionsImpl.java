@@ -2715,14 +2715,14 @@ public class DossierActionsImpl implements DossierActions {
 		}		
 		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
-		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
-			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+//		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
+//			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
 //			_log.info("applicantNote: "+applicantNote);
 
-			dossier.setApplicantNote(applicantNote);
-
-			dossier = DossierLocalServiceUtil.updateDossier(dossier);
-		}
+//			dossier.setApplicantNote(applicantNote);
+//
+//			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//		}
 
 		long dossierId = dossier.getDossierId();
 		ServiceProcess serviceProcess = null;
@@ -3539,14 +3539,14 @@ public class DossierActionsImpl implements DossierActions {
 
 		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
-		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
-			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+//		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
+//			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
 //			_log.info("applicantNote: "+applicantNote);
 
-			dossier.setApplicantNote(applicantNote);
-
-			dossier = DossierLocalServiceUtil.updateDossier(dossier);
-		}
+//			dossier.setApplicantNote(applicantNote);
+//
+//			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//		}
 
 		ServiceProcess serviceProcess = null;
 		if (option != null) {
