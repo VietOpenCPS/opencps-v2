@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -162,8 +163,20 @@ public class OpencpsStatisticRestApplication extends Application {
 			String step = query.getStep();
 			String fromStatisticDate = query.getFromStatisticDate();
 			String toStatisticDate = query.getToStatisticDate();
-			String top = query.getTop();
+			//String top = query.getTop();
 			String dossierIdNo = query.getDossierNo();
+			int monthStatistic = 0;
+			//Get month statistic
+			if (Validator.isNotNull(fromStatisticDate)) {
+				String[] splitD = fromStatisticDate.split("/");
+				if (splitD.length == 3 ||
+						splitD[1].length() <= 2 ||
+						splitD[0].length() <= 2) {
+					monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
+				}
+			}
+			//System.out.println("fromStatisticDate: "+fromStatisticDate);
+			//System.out.println("toStatisticDate: "+toStatisticDate);
 			//String fromReceiveDate = query.getFromReceiveDate();
 			//String toReceiveDate = query.getToReceiveDate();
 			//String fromReleaseDate = query.getFromReleaseDate();
@@ -175,7 +188,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			//String fromReceiveNotDoneDate = query.getFromReceiveNotDoneDate();
 			//String toReceiveNotDoneDate = query.getToReceiveNotDoneDate();
-			boolean online = Boolean.valueOf(query.getOnline());
+			//boolean online = Boolean.valueOf(query.getOnline());
 			//String applicantIdNo = query.getApplicantIdNo();
 			//Integer originDossierId = query.getOriginDossierId();
 			try {
@@ -198,18 +211,19 @@ public class OpencpsStatisticRestApplication extends Application {
 				payload.setOriginality(originality);
 				payload.setOwner(owner);
 				payload.setStep(step);
-				payload.setTop(top);
+				//payload.setTop(top);
 				payload.setDossierNo(dossierIdNo);
-				payload.setOnline(online);
+				payload.setOnlineStatistic(query.getOnline());
 				
 				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
+
 				if (dossierResponse != null) {
 					List<GetDossierData> dossierDataList = dossierResponse.getData();
 					List<DossierStatisticData> statisticDataList = new ArrayList<>();
 					if (dossierDataList != null && dossierDataList.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, month);
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, monthStatistic);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//
