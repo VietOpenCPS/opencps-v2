@@ -1801,7 +1801,8 @@ public class DossierActionsImpl implements DossierActions {
 															dossierPart.getPartNo());
 												} else {
 													formScript = dossierPart.getFormScript();
-													eForm = Validator.isNotNull(formScript) ? true : false;
+//													eForm = Validator.isNotNull(formScript) ? true : false;
+													eForm = dossierPart.getEForm();
 													formData = AutoFillFormData.sampleDataBinding(
 															dossierPart.getSampleData(), dossierId, serviceContext);
 //													_log.info("Dossier part: " + dossierPart.getPartNo());
@@ -2198,9 +2199,14 @@ public class DossierActionsImpl implements DossierActions {
 		// create Dossier File
 		DossierFile dossierFile = null;
 		try {
-			dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo,
-					2, false, new DossierFileComparator(false, "createDate", Date.class));
-
+			try {
+				dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo,
+						2, false, new DossierFileComparator(false, "createDate", Date.class));
+			}
+			catch (Exception e) {
+				
+			}
+			_log.info("dossierFile create:" + dossierFile);
 			if (Validator.isNull(dossierFile)) {
 				DossierFileActions actions = new DossierFileActionsImpl();
 				dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
@@ -2209,7 +2215,7 @@ public class DossierActionsImpl implements DossierActions {
 				dossierFile.setFormScript(dossierPart.getFormScript());
 				dossierFile.setEForm(dossierPart.getEForm());
 				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);				
-//				_log.info("dossierFile create:" + dossierFile.getDossierPartNo() + "Timer create :" + new Date());
+				_log.info("dossierFile create:" + dossierFile.getDossierPartNo() + "Timer create :" + new Date());
 			}
 
 			docFileReferenceUid = dossierFile.getReferenceUid();
