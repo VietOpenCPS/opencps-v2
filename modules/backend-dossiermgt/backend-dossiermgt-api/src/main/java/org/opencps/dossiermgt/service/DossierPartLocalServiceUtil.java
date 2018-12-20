@@ -232,6 +232,12 @@ public class DossierPartLocalServiceUtil {
 				   .getByPartTypeEsign(templateNo, partNo, partType, eSign);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierPart getByTempAndFileTempNo(
+		long groupId, String templateNo, String fileTemplateNo) {
+		return getService()
+				   .getByTempAndFileTempNo(groupId, templateNo, fileTemplateNo);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierPart getByTempAndPartNo(
 		long groupId, String templateNo, String partNo) {
 		return getService().getByTempAndPartNo(groupId, templateNo, partNo);

@@ -214,6 +214,10 @@ public interface DossierPartLocalService extends BaseLocalService,
 		int partType, boolean eSign);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierPart getByTempAndFileTempNo(long groupId, String templateNo,
+		String fileTemplateNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierPart getByTempAndPartNo(long groupId, String templateNo,
 		String partNo);
 
