@@ -47,6 +47,9 @@ public class StatisticEngineFetchEntry {
 			statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
 		} else {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
+			//System.out.println("getFirstDay(month, year): "+getFirstDay(month, year));
+			//System.out.println("receviedDate: "+receviedDate);
+			//System.out.println("receviedDate.after(getFirstDay(month, year): "+receviedDate.after(getFirstDay(month, year)));
 			if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {

@@ -87,10 +87,17 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 			if (Validator.isNotNull(payload.getToStatisticDate())) {
 				urlQueryParams.add("toStatisticDate", payload.getToStatisticDate());
 			}
+			//System.out.println("fromStatisticDate: "+urlQueryParams.get("fromStatisticDate"));
+			//System.out.println("toStatisticDate: "+urlQueryParams.get("toStatisticDate"));
 			//Process tranfer params using search dossier
 			buildUrlQueryParams(urlQueryParams, payload);
 		}
 		urlQueryParams.add("top", "statistic");
+		//System.out.println("fromStatisticDate: "+urlQueryParams.get("fromStatisticDate"));
+		//System.out.println("toStatisticDate: "+urlQueryParams.get("toStatisticDate"));
+		//System.out.println("month: "+urlQueryParams.get("month"));
+		//System.out.println("year: "+urlQueryParams.get("year"));
+		//System.out.println("top: "+urlQueryParams.get("top"));
 		
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
 		HashMap<String, String> urlPathSegments = new HashMap<>();
@@ -115,7 +122,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		urlQueryParams.add(DossierConstants.ORIGINALITY, dossierRequest.getOriginality());
 		urlQueryParams.add(DossierConstants.TEMPLATE, dossierRequest.getTemplate());
 		urlQueryParams.add(DossierConstants.STEP, dossierRequest.getStep());
-		urlQueryParams.add(DossierConstants.TOP, dossierRequest.getTop());
+		//urlQueryParams.add(DossierConstants.TOP, dossierRequest.getTop());
 		urlQueryParams.add(DossierConstants.DOSSIER_NO, dossierRequest.getDossierNo());
 		//urlQueryParams.add(DossierConstants.GOVAGENCYCODE, dossierRequest.getGovAgencyCode());
 		//urlQueryParams.add(DossierConstants.APPLICANTIDTYPE, dossierRequest.getApplicantIdType());
