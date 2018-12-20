@@ -2971,6 +2971,325 @@ public class DossierPartPersistenceImpl extends BasePersistenceImpl<DossierPart>
 	private static final String _FINDER_COLUMN_TP_NO_PART_ESIGN_PARTNO_3 = "(dossierPart.partNo IS NULL OR dossierPart.partNo = '') AND ";
 	private static final String _FINDER_COLUMN_TP_NO_PART_ESIGN_PARTTYPE_2 = "dossierPart.partType = ? AND ";
 	private static final String _FINDER_COLUMN_TP_NO_PART_ESIGN_ESIGN_2 = "dossierPart.eSign = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_GID_TN_FTN = new FinderPath(DossierPartModelImpl.ENTITY_CACHE_ENABLED,
+			DossierPartModelImpl.FINDER_CACHE_ENABLED, DossierPartImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByGID_TN_FTN",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			DossierPartModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierPartModelImpl.TEMPLATENO_COLUMN_BITMASK |
+			DossierPartModelImpl.FILETEMPLATENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GID_TN_FTN = new FinderPath(DossierPartModelImpl.ENTITY_CACHE_ENABLED,
+			DossierPartModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGID_TN_FTN",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; or throws a {@link NoSuchDossierPartException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param templateNo the template no
+	 * @param fileTemplateNo the file template no
+	 * @return the matching dossier part
+	 * @throws NoSuchDossierPartException if a matching dossier part could not be found
+	 */
+	@Override
+	public DossierPart findByGID_TN_FTN(long groupId, String templateNo,
+		String fileTemplateNo) throws NoSuchDossierPartException {
+		DossierPart dossierPart = fetchByGID_TN_FTN(groupId, templateNo,
+				fileTemplateNo);
+
+		if (dossierPart == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", templateNo=");
+			msg.append(templateNo);
+
+			msg.append(", fileTemplateNo=");
+			msg.append(fileTemplateNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDossierPartException(msg.toString());
+		}
+
+		return dossierPart;
+	}
+
+	/**
+	 * Returns the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param templateNo the template no
+	 * @param fileTemplateNo the file template no
+	 * @return the matching dossier part, or <code>null</code> if a matching dossier part could not be found
+	 */
+	@Override
+	public DossierPart fetchByGID_TN_FTN(long groupId, String templateNo,
+		String fileTemplateNo) {
+		return fetchByGID_TN_FTN(groupId, templateNo, fileTemplateNo, true);
+	}
+
+	/**
+	 * Returns the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param templateNo the template no
+	 * @param fileTemplateNo the file template no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dossier part, or <code>null</code> if a matching dossier part could not be found
+	 */
+	@Override
+	public DossierPart fetchByGID_TN_FTN(long groupId, String templateNo,
+		String fileTemplateNo, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, templateNo, fileTemplateNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_GID_TN_FTN,
+					finderArgs, this);
+		}
+
+		if (result instanceof DossierPart) {
+			DossierPart dossierPart = (DossierPart)result;
+
+			if ((groupId != dossierPart.getGroupId()) ||
+					!Objects.equals(templateNo, dossierPart.getTemplateNo()) ||
+					!Objects.equals(fileTemplateNo,
+						dossierPart.getFileTemplateNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_DOSSIERPART_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_TN_FTN_GROUPID_2);
+
+			boolean bindTemplateNo = false;
+
+			if (templateNo == null) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_1);
+			}
+			else if (templateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_3);
+			}
+			else {
+				bindTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_2);
+			}
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindTemplateNo) {
+					qPos.add(templateNo);
+				}
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				List<DossierPart> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_GID_TN_FTN,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DossierPartPersistenceImpl.fetchByGID_TN_FTN(long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DossierPart dossierPart = list.get(0);
+
+					result = dossierPart;
+
+					cacheResult(dossierPart);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_TN_FTN,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DossierPart)result;
+		}
+	}
+
+	/**
+	 * Removes the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param templateNo the template no
+	 * @param fileTemplateNo the file template no
+	 * @return the dossier part that was removed
+	 */
+	@Override
+	public DossierPart removeByGID_TN_FTN(long groupId, String templateNo,
+		String fileTemplateNo) throws NoSuchDossierPartException {
+		DossierPart dossierPart = findByGID_TN_FTN(groupId, templateNo,
+				fileTemplateNo);
+
+		return remove(dossierPart);
+	}
+
+	/**
+	 * Returns the number of dossier parts where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param templateNo the template no
+	 * @param fileTemplateNo the file template no
+	 * @return the number of matching dossier parts
+	 */
+	@Override
+	public int countByGID_TN_FTN(long groupId, String templateNo,
+		String fileTemplateNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_TN_FTN;
+
+		Object[] finderArgs = new Object[] { groupId, templateNo, fileTemplateNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_DOSSIERPART_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_TN_FTN_GROUPID_2);
+
+			boolean bindTemplateNo = false;
+
+			if (templateNo == null) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_1);
+			}
+			else if (templateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_3);
+			}
+			else {
+				bindTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_2);
+			}
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindTemplateNo) {
+					qPos.add(templateNo);
+				}
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_TN_FTN_GROUPID_2 = "dossierPart.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_1 = "dossierPart.templateNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_2 = "dossierPart.templateNo = ? AND ";
+	private static final String _FINDER_COLUMN_GID_TN_FTN_TEMPLATENO_3 = "(dossierPart.templateNo IS NULL OR dossierPart.templateNo = '') AND ";
+	private static final String _FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_1 = "dossierPart.fileTemplateNo IS NULL";
+	private static final String _FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_2 = "dossierPart.fileTemplateNo = ?";
+	private static final String _FINDER_COLUMN_GID_TN_FTN_FILETEMPLATENO_3 = "(dossierPart.fileTemplateNo IS NULL OR dossierPart.fileTemplateNo = '')";
 
 	public DossierPartPersistenceImpl() {
 		setModelClass(DossierPart.class);
@@ -3023,6 +3342,12 @@ public class DossierPartPersistenceImpl extends BasePersistenceImpl<DossierPart>
 			new Object[] {
 				dossierPart.getTemplateNo(), dossierPart.getPartNo(),
 				dossierPart.getPartType(), dossierPart.isESign()
+			}, dossierPart);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_TN_FTN,
+			new Object[] {
+				dossierPart.getGroupId(), dossierPart.getTemplateNo(),
+				dossierPart.getFileTemplateNo()
 			}, dossierPart);
 
 		dossierPart.resetOriginalValues();
@@ -3138,6 +3463,17 @@ public class DossierPartPersistenceImpl extends BasePersistenceImpl<DossierPart>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_TP_NO_PART_ESIGN, args,
 			dossierPartModelImpl, false);
+
+		args = new Object[] {
+				dossierPartModelImpl.getGroupId(),
+				dossierPartModelImpl.getTemplateNo(),
+				dossierPartModelImpl.getFileTemplateNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_GID_TN_FTN, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_TN_FTN, args,
+			dossierPartModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -3230,6 +3566,29 @@ public class DossierPartPersistenceImpl extends BasePersistenceImpl<DossierPart>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_TP_NO_PART_ESIGN, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_TP_NO_PART_ESIGN, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dossierPartModelImpl.getGroupId(),
+					dossierPartModelImpl.getTemplateNo(),
+					dossierPartModelImpl.getFileTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_TN_FTN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_TN_FTN, args);
+		}
+
+		if ((dossierPartModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_GID_TN_FTN.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dossierPartModelImpl.getOriginalGroupId(),
+					dossierPartModelImpl.getOriginalTemplateNo(),
+					dossierPartModelImpl.getOriginalFileTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_TN_FTN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_TN_FTN, args);
 		}
 	}
 
