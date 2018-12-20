@@ -234,6 +234,13 @@ public class DossierPartLocalServiceWrapper implements DossierPartLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierPart getByTempAndFileTempNo(
+		long groupId, String templateNo, String fileTemplateNo) {
+		return _dossierPartLocalService.getByTempAndFileTempNo(groupId,
+			templateNo, fileTemplateNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierPart getByTempAndPartNo(
 		long groupId, String templateNo, String partNo) {
 		return _dossierPartLocalService.getByTempAndPartNo(groupId, templateNo,

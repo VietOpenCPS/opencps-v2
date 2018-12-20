@@ -479,7 +479,8 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
-			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
+//			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
+			DossierPart part = DossierPartLocalServiceUtil.getByTempAndFileTempNo(dossier.getGroupId(), dossier.getDossierTemplateNo(), fileTemplateNo);
 
 			formData = part.getFormReport();
 
