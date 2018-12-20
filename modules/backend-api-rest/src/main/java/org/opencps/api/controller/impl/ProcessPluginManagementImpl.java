@@ -359,9 +359,12 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 //			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 			DossierPart dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId, dossier != null ? dossier.getDossierTemplateNo() : StringPool.BLANK,  fileTemplateNo);
-
-			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, context);
-			
+			if (!original) {
+				formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, context);
+			}
+			else {
+				formData = dossierFile.getFormData();
+			}
 			_log.info(formData);
 			_log.info("ORIGINAL PLUGIN: " + original);
 			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
