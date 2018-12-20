@@ -2253,9 +2253,13 @@ public class DossierActionsImpl implements DossierActions {
 			DossierFile dossierFile = null;
 
 			try {
-				dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo,
-						2, false, new DossierFileComparator(false, "createDate", Date.class));
-
+				try {
+					dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(dossierId, fileTemplateNo,
+							2, false, new DossierFileComparator(false, "createDate", Date.class));
+				}
+				catch (Exception e) {
+					
+				}
 				if (Validator.isNull(dossierFile)) {
 					DossierFileActions actions = new DossierFileActionsImpl();
 					dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
