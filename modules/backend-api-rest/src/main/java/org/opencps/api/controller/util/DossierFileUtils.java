@@ -92,6 +92,7 @@ public class DossierFileUtils {
         model.setFormScript(dossierFile.getFormScript());
         model.setFormData(dossierFile.getFormData());
         model.setDossierFileId(dossierFile.getDossierFileId());
+        model.setDossierId(dossierFile.getDossierId());
         return model;
     }
 
