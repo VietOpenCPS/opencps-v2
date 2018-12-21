@@ -3345,42 +3345,69 @@ public class DossierManagementImpl implements DossierManagement {
 			String submissionNote = input.getSubmissionNote();
 			String lockState = input.getLockState();
 			
-			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
-					govAgencyCode, govAgencyName, applicantName, applicantType,
-					applicantIdNo, applicantIdDate, address, cityCode,
-						cityName, districtCode, districtName, wardCode, wardName,
-						contactName, contactTelNo, contactEmail,
-						dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-						StringPool.BLANK, Boolean.valueOf(online), false, applicantNote,
-						originality, 
-						createDateLong != 0 ? new Date(createDateLong) : null,
-						modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
-						submitDateLong != 0 ? new Date(submitDateLong) : null,
-						receiveDateLong != 0 ? new Date(receiveDateLong) : null,
-						dueDateLong != 0 ? new Date(dueDateLong) : null,
-						releaseDateLong != 0 ? new Date(releaseDateLong) : null,
-						finishDateLong != 0 ? new Date(finishDateLong) : null,
-						cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
-						correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
-						endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
-						extendDateLong != 0 ? new Date(extendDateLong) : null,
-						processDateLong != 0 ? new Date(processDateLong) : null,
-						serviceContext);
-
-			dossier.setDossierNo(input.getDossierNo());
-			dossier.setDossierStatus(input.getDossierStatus());
-			dossier.setDossierStatusText(input.getDossierStatusText());
-			dossier.setDossierSubStatus(input.getDossierSubStatus());
-			dossier.setDossierSubStatusText(input.getDossierSubStatusText());
-			dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
-			dossier.setSubmissionNote(submissionNote);
-			dossier.setLockState(lockState);
+			Dossier oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
 			
-			//Update dossier
-			dossier = DossierLocalServiceUtil.updateDossier(dossier);
-			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();
-
+			if (oldDossier == null || oldDossier.getOriginality() == 0) {
+				Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+						govAgencyCode, govAgencyName, applicantName, applicantType,
+						applicantIdNo, applicantIdDate, address, cityCode,
+							cityName, districtCode, districtName, wardCode, wardName,
+							contactName, contactTelNo, contactEmail,
+							dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+							StringPool.BLANK, Boolean.valueOf(online), false, applicantNote,
+							originality, 
+							createDateLong != 0 ? new Date(createDateLong) : null,
+							modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
+							submitDateLong != 0 ? new Date(submitDateLong) : null,
+							receiveDateLong != 0 ? new Date(receiveDateLong) : null,
+							dueDateLong != 0 ? new Date(dueDateLong) : null,
+							releaseDateLong != 0 ? new Date(releaseDateLong) : null,
+							finishDateLong != 0 ? new Date(finishDateLong) : null,
+							cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
+							correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
+							endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
+							extendDateLong != 0 ? new Date(extendDateLong) : null,
+							processDateLong != 0 ? new Date(processDateLong) : null,
+							serviceContext);
+	
+				dossier.setDossierNo(input.getDossierNo());
+				dossier.setDossierStatus(input.getDossierStatus());
+				dossier.setDossierStatusText(input.getDossierStatusText());
+				dossier.setDossierSubStatus(input.getDossierSubStatus());
+				dossier.setDossierSubStatusText(input.getDossierSubStatusText());
+				dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
+				dossier.setSubmissionNote(submissionNote);
+				dossier.setLockState(lockState);
+				dossier.setCounter(input.getCounter() != null ? input.getCounter() : 0);
+				dossier.setPostalAddress(input.getPostalAddress());
+				dossier.setPostalCityCode(input.getPostalCityCode());
+				dossier.setPostalCityName(input.getPostalCityName());
+				dossier.setDelegateName(input.getDelegateName());
+				dossier.setDelegateAddress(input.getDelegateAddress());
+				dossier.setDelegateIdNo(input.getDelegateIdNo());
+				dossier.setDelegateTelNo(input.getDelegateTelNo());
+				dossier.setDelegateEmail(input.getDelegateEmail());
+				dossier.setDelegateAddress(input.getDelegateAddress());
+				dossier.setDelegateCityCode(input.getDelegateCityCode());
+				dossier.setDelegateDistrictCode(input.getDelegateDistrictCode());
+				dossier.setDelegateWardCode(input.getDelegateWardCode());
+				dossier.setDelegateCityName(input.getDelegateCityName());
+				dossier.setDelegateDistrictName(input.getDelegateDistrictName());
+				dossier.setDelegateWardName(input.getDelegateWardName());
+				dossier.setDurationCount(input.getDurationCount());
+				dossier.setDurationUnit(input.getDurationUnit());
+				dossier.setSampleCount(input.getSampleCount());
+				dossier.setDossierName(input.getDossierName());
+				dossier.setProcessNo(input.getProcessNo());
+				
+				//Update dossier
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
+				
+				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();
+			}
+			else {
+				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(oldDossier)).build();				
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -4432,6 +4459,10 @@ public class DossierManagementImpl implements DossierManagement {
 							DossierDetailModel model = new DossierDetailModel();
 							model.setDossierId((int)dossier.getDossierId());
 							model.setReferenceUid(dossier.getReferenceUid());
+							
+							if (dossier.getDossierActionId() != 0) {
+								publishEvent(dossier);
+							}
 							
 							return Response.status(HttpServletResponse.SC_OK).entity(model).build();
 						}

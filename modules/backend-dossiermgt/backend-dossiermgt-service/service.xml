@@ -210,6 +210,11 @@
 			<finder-column name="eSign" />
 		</finder>
 
+		<finder return-type="DossierPart" name="GID_TN_FTN">
+			<finder-column name="groupId" />
+			<finder-column name="templateNo" />
+			<finder-column name="fileTemplateNo" />
+		</finder>
 		<!-- References -->
 
 	</entity>

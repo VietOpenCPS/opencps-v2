@@ -887,6 +887,81 @@ public class DossierPartUtil {
 	}
 
 	/**
+	* Returns the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; or throws a {@link NoSuchDossierPartException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param templateNo the template no
+	* @param fileTemplateNo the file template no
+	* @return the matching dossier part
+	* @throws NoSuchDossierPartException if a matching dossier part could not be found
+	*/
+	public static DossierPart findByGID_TN_FTN(long groupId, String templateNo,
+		String fileTemplateNo)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierPartException {
+		return getPersistence()
+				   .findByGID_TN_FTN(groupId, templateNo, fileTemplateNo);
+	}
+
+	/**
+	* Returns the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param templateNo the template no
+	* @param fileTemplateNo the file template no
+	* @return the matching dossier part, or <code>null</code> if a matching dossier part could not be found
+	*/
+	public static DossierPart fetchByGID_TN_FTN(long groupId,
+		String templateNo, String fileTemplateNo) {
+		return getPersistence()
+				   .fetchByGID_TN_FTN(groupId, templateNo, fileTemplateNo);
+	}
+
+	/**
+	* Returns the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param templateNo the template no
+	* @param fileTemplateNo the file template no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier part, or <code>null</code> if a matching dossier part could not be found
+	*/
+	public static DossierPart fetchByGID_TN_FTN(long groupId,
+		String templateNo, String fileTemplateNo, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByGID_TN_FTN(groupId, templateNo, fileTemplateNo,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the dossier part where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param templateNo the template no
+	* @param fileTemplateNo the file template no
+	* @return the dossier part that was removed
+	*/
+	public static DossierPart removeByGID_TN_FTN(long groupId,
+		String templateNo, String fileTemplateNo)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierPartException {
+		return getPersistence()
+				   .removeByGID_TN_FTN(groupId, templateNo, fileTemplateNo);
+	}
+
+	/**
+	* Returns the number of dossier parts where groupId = &#63; and templateNo = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param templateNo the template no
+	* @param fileTemplateNo the file template no
+	* @return the number of matching dossier parts
+	*/
+	public static int countByGID_TN_FTN(long groupId, String templateNo,
+		String fileTemplateNo) {
+		return getPersistence()
+				   .countByGID_TN_FTN(groupId, templateNo, fileTemplateNo);
+	}
+
+	/**
 	* Caches the dossier part in the entity cache if it is enabled.
 	*
 	* @param dossierPart the dossier part

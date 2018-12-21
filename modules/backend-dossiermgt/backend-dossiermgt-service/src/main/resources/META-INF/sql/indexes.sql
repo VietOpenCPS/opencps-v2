@@ -94,6 +94,7 @@ create index IX_F8E80F2F on opencps_dossiermark (uuid_[$COLUMN_LENGTH:75$], comp
 create unique index IX_DE389571 on opencps_dossiermark (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_B54EC54 on opencps_dossierpart (groupId, fileTemplateNo[$COLUMN_LENGTH:500$]);
+create index IX_7715C063 on opencps_dossierpart (groupId, templateNo[$COLUMN_LENGTH:75$], fileTemplateNo[$COLUMN_LENGTH:500$]);
 create index IX_991D1DC0 on opencps_dossierpart (groupId, templateNo[$COLUMN_LENGTH:75$], partNo[$COLUMN_LENGTH:500$]);
 create index IX_72E94D19 on opencps_dossierpart (templateNo[$COLUMN_LENGTH:75$], partNo[$COLUMN_LENGTH:500$], partType, eSign);
 create index IX_5E4D5D55 on opencps_dossierpart (uuid_[$COLUMN_LENGTH:75$], companyId);

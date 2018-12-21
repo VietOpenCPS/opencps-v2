@@ -627,6 +627,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		return dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
 	}
 
+	public DossierPart getByTempAndFileTempNo(long groupId, String templateNo, String fileTemplateNo) {
+		return dossierPartPersistence.fetchByGID_TN_FTN(groupId, templateNo, fileTemplateNo);
+	}
+
 	public static final String CLASS_NAME = DossierPart.class.getName();
 
 }

@@ -349,17 +349,22 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 		String formData = StringPool.BLANK;
 
 		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
-
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		
 		try {
 			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 					fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
 
-			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
-
-			formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, context);
-
+//			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
+			DossierPart dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId, dossier != null ? dossier.getDossierTemplateNo() : StringPool.BLANK,  fileTemplateNo);
+			if (!original) {
+				formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossierId, context);
+			}
+			else {
+				formData = dossierFile.getFormData();
+			}
 			_log.info(formData);
 			_log.info("ORIGINAL PLUGIN: " + original);
 			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
@@ -479,7 +484,8 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
-			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
+//			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(dossier.getGroupId(), fileTemplateNo);
+			DossierPart part = DossierPartLocalServiceUtil.getByTempAndFileTempNo(dossier.getGroupId(), dossier.getDossierTemplateNo(), fileTemplateNo);
 
 			formData = part.getFormReport();
 
