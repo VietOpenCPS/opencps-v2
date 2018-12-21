@@ -47,7 +47,8 @@ import javax.xml.bind.annotation.XmlType;
 "fieldName",
 "fieldLabel",
 "fieldType",
-"value"
+"value",
+"required"
 })
 public class DossierPayLoadModel {
 
@@ -55,6 +56,7 @@ public class DossierPayLoadModel {
 	protected String fieldLabel;
 	protected String fieldType;
 	protected String value;
+	protected Boolean required;
 
 	public String getFieldName() {
 		return fieldName;
@@ -80,5 +82,10 @@ public class DossierPayLoadModel {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
+	public Boolean getRequired() {
+		return required;
+	}
+	public void setRequired(Boolean value) {
+		this.required = value;
+	}
 }
