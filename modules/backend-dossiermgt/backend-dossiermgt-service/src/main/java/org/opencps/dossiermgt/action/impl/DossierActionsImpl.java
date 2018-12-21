@@ -3514,6 +3514,19 @@ public class DossierActionsImpl implements DossierActions {
 				if (employee != null) {
 					actionUserHslt = actionUser;
 				}
+				if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
+					Date now = new Date();
+					hslt.setSubmitDate(now);
+					hslt = DossierLocalServiceUtil.updateDossier(hslt);
+					try {
+						JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
+						payloadObj.put(DossierTerm.SUBMIT_DATE, now.getTime());
+						payload = payloadObj.toJSONString();
+					}
+					catch (JSONException e) {
+						_log.debug(e);
+					}
+				}
 				doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context, errorModel);
 			}
 			else {
