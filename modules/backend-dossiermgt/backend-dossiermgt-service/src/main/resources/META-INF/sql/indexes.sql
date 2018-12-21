@@ -125,6 +125,10 @@ create index IX_AD6C265D on opencps_dossieruser (dossierId);
 create index IX_CAC462B3 on opencps_dossieruser (userId);
 create index IX_86056C1B on opencps_dossieruser (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_D64CC8C9 on opencps_dynamicreport (groupId, reportCode[$COLUMN_LENGTH:75$]);
+create index IX_ED0DD28A on opencps_dynamicreport (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_B81D738C on opencps_dynamicreport (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_4CA0C550 on opencps_menuconfig (groupId, menuGroup[$COLUMN_LENGTH:75$]);
 create index IX_6A14E8A6 on opencps_menuconfig (menuGroup[$COLUMN_LENGTH:75$]);
 create index IX_EE2AE89E on opencps_menuconfig (uuid_[$COLUMN_LENGTH:75$], companyId);

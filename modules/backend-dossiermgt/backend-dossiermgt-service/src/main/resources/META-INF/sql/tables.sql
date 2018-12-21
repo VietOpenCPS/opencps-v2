@@ -474,6 +474,23 @@ create table opencps_dossieruser (
 	primary key (dossierId, userId)
 );
 
+create table opencps_dynamicreport (
+	uuid_ VARCHAR(75) null,
+	dynamicReportId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	reportCode VARCHAR(75) null,
+	reportName VARCHAR(75) null,
+	sharing INTEGER,
+	filterConfig VARCHAR(75) null,
+	tableConfig VARCHAR(75) null,
+	userConfig VARCHAR(75) null
+);
+
 create table opencps_menuconfig (
 	uuid_ VARCHAR(75) null,
 	menuConfigId LONG not null primary key,

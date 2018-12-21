@@ -28,6 +28,7 @@ import org.opencps.api.v21.model.DeliverableTypeList;
 import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DossierTemplate;
+import org.opencps.api.v21.model.DynamicReportList;
 import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.NotificationTemplateList;
 import org.opencps.api.v21.model.ObjectFactory;
@@ -260,6 +261,16 @@ public class ReadXMLFileUtils {
 					strError = ConstantUtils.XML_USERS;
 				}
 				break;
+			case ConstantUtils.XML_DYNAMIC_REPORT:
+				DynamicReportList reportList = convertXMLToDynamicReport(xmlString);
+				flag = ProcessUpdateDBUtils.processUpdateDynamicReport(reportList, folderPath, groupId, userId, serviceContext);
+				if (flag) {
+					sbParentFile.append(fileName);
+					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
+				} else {
+					strError = ConstantUtils.XML_DYNAMIC_REPORT;
+				}
+				break;
 			default:
 				break;
 			}
@@ -488,6 +499,18 @@ public class ReadXMLFileUtils {
 		StringReader reader = new StringReader(xmlString);
 		UserManagement objectElement = (UserManagement) jaxbUnmarshaller.unmarshal(reader);
 		return objectElement;
+	}
+
+	// LamTV_ Process convert xml to Object DynamicReport
+	private static DynamicReportList convertXMLToDynamicReport(String xmlString) throws JAXBException {
+
+			JAXBContext jaxbContext = null;
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			DynamicReportList objectElement = (DynamicReportList) jaxbUnmarshaller.unmarshal(reader);
+
+			return objectElement;
 	}
 
 	// LamTV_ Process convert xml to Object ServiceInfo

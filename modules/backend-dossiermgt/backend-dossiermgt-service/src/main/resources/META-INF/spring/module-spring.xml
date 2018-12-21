@@ -47,6 +47,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierTemplatePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierUserLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierUserLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierUserPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DynamicReportLocalServiceImpl" id="org.opencps.dossiermgt.service.DynamicReportLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DynamicReportPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DynamicReportPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.MenuConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.MenuConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.MenuRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.MenuRoleLocalService" />
