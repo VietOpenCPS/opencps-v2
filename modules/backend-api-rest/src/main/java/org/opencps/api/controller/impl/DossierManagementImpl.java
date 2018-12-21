@@ -4460,6 +4460,10 @@ public class DossierManagementImpl implements DossierManagement {
 							model.setDossierId((int)dossier.getDossierId());
 							model.setReferenceUid(dossier.getReferenceUid());
 							
+							if (dossier.getDossierActionId() != 0) {
+								publishEvent(dossier);
+							}
+							
 							return Response.status(HttpServletResponse.SC_OK).entity(model).build();
 						}
 						else {
