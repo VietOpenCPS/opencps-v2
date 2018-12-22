@@ -5328,7 +5328,7 @@ public class DossierActionsImpl implements DossierActions {
 
 		Dossier desDossier = DossierLocalServiceUtil.cloneDossier(srcDossier);
 
-		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, srcDossier.getPrimaryKey(), dossierId, 1,
+		DossierFileLocalServiceUtil.cloneDossierFilesByDossierId(groupId, desDossier.getPrimaryKey(), dossierId, 1,
 				context);
 
 		return desDossier;
