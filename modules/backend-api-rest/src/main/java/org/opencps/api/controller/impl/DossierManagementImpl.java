@@ -1038,7 +1038,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalWardName(input.getPostalWardName());
 				
 				dossier.setPostalTelNo(input.getPostalTelNo());
-				dossier.setViaPostal(input.getViaPostal());
+				dossier.setViaPostal(viaPostal);
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
 				
 				updateDelegateApplicant(dossier, input);
