@@ -680,6 +680,22 @@
 		<field name="moderator" type="int" />
 		<field name="visited" type="boolean" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.DynamicReport">
+		<field name="uuid" type="String" />
+		<field name="dynamicReportId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="reportCode" type="String" />
+		<field name="reportName" type="String" />
+		<field name="sharing" type="int" />
+		<field name="filterConfig" type="String" />
+		<field name="tableConfig" type="String" />
+		<field name="userConfig" type="String" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.MenuConfig">
 		<field name="uuid" type="String" />
 		<field name="menuConfigId" type="long" />

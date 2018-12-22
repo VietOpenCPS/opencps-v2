@@ -25,6 +25,8 @@ import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DocumentTypeList.DocumentType;
 import org.opencps.api.v21.model.DossierTemplate;
+import org.opencps.api.v21.model.DynamicReportList;
+import org.opencps.api.v21.model.DynamicReportList.DynamicReport;
 import org.opencps.api.v21.model.FileTemplates;
 import org.opencps.api.v21.model.FileTemplates.FileTemplate;
 import org.opencps.api.v21.model.Groups;
@@ -66,6 +68,7 @@ import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
+import org.opencps.dossiermgt.action.DynamicReportActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.MenuConfigActions;
 import org.opencps.dossiermgt.action.PaymentConfigActions;
@@ -77,6 +80,7 @@ import org.opencps.dossiermgt.action.impl.ActionConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
+import org.opencps.dossiermgt.action.impl.DynamicReportActionsImpl;
 import org.opencps.dossiermgt.action.impl.MenuConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.PaymentConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
@@ -510,6 +514,39 @@ public class ProcessUpdateDBUtils {
 		}
 		return true;
 
+	}
+
+	//LamTV_Update DynamicReport to DB
+	public static boolean processUpdateDynamicReport(DynamicReportList reportList, String folderPath, long groupId,
+			long userId, ServiceContext serviceContext) {
+		try {
+			DynamicReportActions actions = new DynamicReportActionsImpl();
+			//Create table ActionConfig
+			List<DynamicReport> dynamicReportList = reportList.getDynamicReport();
+			if (dynamicReportList != null && dynamicReportList.size() > 0) {
+				for (DynamicReport report : dynamicReportList) {
+					String reportCode = report.getReportCode();
+					String reportName = report.getReportName();
+					Integer sharing = report.getSharing();
+					if (sharing == null) {
+						sharing = 1;
+					}
+					String filterConfig = report.getFilterConfig();
+					String tableConfig = report.getTableConfig();
+					String userConfig = report.getUserConfig();
+
+					if (Validator.isNotNull(reportCode)) {
+						// Check record exits DB
+						actions.updateDynamicReportDB(userId, groupId, reportCode, reportName, sharing, filterConfig,
+								tableConfig, userConfig);
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return true;
 	}
 
 	//LamTV_Update Dictcollection to DB

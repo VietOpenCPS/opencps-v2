@@ -70,6 +70,7 @@ import org.opencps.api.controller.impl.RegistrationFormManagementImpl;
 import org.opencps.api.controller.impl.RegistrationLogManagementImpl;
 import org.opencps.api.controller.impl.RegistrationManagementImpl;
 import org.opencps.api.controller.impl.RegistrationTemplatesManagementImpl;
+import org.opencps.api.controller.impl.SMSManagementImpl;
 import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
@@ -191,6 +192,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DefaultSignatureManagementImpl());
 		
 		singletons.add(new MenuRoleManagementImpl());
+		singletons.add(new SMSManagementImpl());
 		
 		singletons.add(this);
 		

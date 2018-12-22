@@ -5,4 +5,6 @@ Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 Export-Package: \
 	org.opencps.communication.action,\
-	org.opencps.communication.action.impl
+	org.opencps.communication.action.impl,\
+	org.opencps.communication.sms.utils,\
+	ws.bulkSms.impl

@@ -2182,6 +2182,34 @@
 			<finder-column name="serverNo" />					
 		</finder>
 	</entity>
+
+	<entity name="DynamicReport" table="opencps_dynamicreport"
+		local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+		<column name="dynamicReportId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="reportCode" type="String" />
+		<column name="reportName" type="String" />
+		<column name="sharing" type="int" />
+		<column name="filterConfig" type="String" />
+		<column name="tableConfig" type="String" />
+		<column name="userConfig" type="String" />
+
+		<finder return-type="DynamicReport" name="F_GID_CODE">
+			<finder-column name="groupId" />
+			<finder-column name="reportCode" />
+		</finder>
+	</entity>
 	
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
