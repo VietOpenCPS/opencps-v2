@@ -988,6 +988,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
 			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 //			_log.info("Service code: " + input.getServiceCode());
+			_log.info("===ADD DOSSIER CITY NAME:" + cityName);
 			String password = StringPool.BLANK;
 			if (Validator.isNotNull(input.getPassword())) {
 				password = input.getPassword();

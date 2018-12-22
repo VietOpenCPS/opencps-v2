@@ -15,6 +15,7 @@ import org.opencps.api.controller.SMSManagement;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import ws.bulkSms.impl.Result;
 
 public class SMSManagementImpl implements SMSManagement {
 
@@ -22,9 +23,9 @@ public class SMSManagementImpl implements SMSManagement {
 	public Response sendSMS(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, String body, String toTelNo) {
 		try {
-			ViettelSMSUtils.sendSMS(body, StringPool.BLANK, "84916676884");
+			Result result = ViettelSMSUtils.sendSMS(body, StringPool.BLANK, toTelNo);
 			
-			return Response.status(200).entity(StringPool.BLANK).build();
+			return Response.status(200).entity(result.getMessage()).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
