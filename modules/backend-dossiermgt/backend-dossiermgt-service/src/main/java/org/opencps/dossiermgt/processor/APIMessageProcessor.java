@@ -745,6 +745,37 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			
 			_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
+		else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI)){
+			_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: "
+					+ APIDateTimeUtils.convertDateToString(new Date()));
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+			
+			//_log.info("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
+			//_log.info("SONDT DOSSIERSYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
+			
+			//_log.info("SONDT PAYMENTFILE SYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
+			
+			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+			pfiModel.setApplicantName(dossier.getApplicantName());
+			pfiModel.setBankInfo(paymentFile.getBankInfo());
+			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
+			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
+			pfiModel.setPaymentFee(paymentFile.getPaymentFee());
+			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+			pfiModel.setReferenceUid(dossier.getReferenceUid());
+			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
+			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
+			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
+			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
+			
+			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			
+			_log.info("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: " + APIDateTimeUtils.convertDateToString(new Date()));
+		}
 		if (processAction.getPreCondition().contains("payok")
 				|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1")) {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
