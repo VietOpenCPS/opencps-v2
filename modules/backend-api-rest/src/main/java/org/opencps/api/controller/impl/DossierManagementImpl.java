@@ -956,7 +956,9 @@ public class DossierManagementImpl implements DossierManagement {
 			if (config != null && Validator.isNotNull(viaPostal)) {
 				viaPostal = config.getPostService() ? (viaPostal == 0 ? 1 : viaPostal) : 0;
 			}
-			_log.info("====VIA POSTAL====" + viaPostal);
+			else if (config != null) {
+				viaPostal = config.getPostService() ? 1 : 0;
+			}
 			if (option != null) {
 //				long serviceProcessId = option.getServiceProcessId();
 				process = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
