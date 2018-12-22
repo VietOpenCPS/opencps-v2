@@ -148,7 +148,7 @@ public class DossierInputModel {
 	@FormParam(value = "applicantNote")
     protected String applicantNote;
 	@FormParam(value = "viaPostal")
-	protected int viaPostal;
+	protected Integer viaPostal;
 	@FormParam(value = "postalAddress")
 	protected String postalAddress;
 	@FormParam(value = "postalCityCode")
@@ -222,11 +222,11 @@ public class DossierInputModel {
 	@FormParam(value = "originDossierNo")
 	private String originDossierNo;
 
-	public int getViaPostal() {
+	public Integer getViaPostal() {
 		return viaPostal;
 	}
 
-	public void setViaPostal(int viaPostal) {
+	public void setViaPostal(Integer viaPostal) {
 		this.viaPostal = viaPostal;
 	}
 
