@@ -276,11 +276,27 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
+			String cityName = HtmlUtil.escape(input.getCityName());
+			String districtName = HtmlUtil.escape(input.getDistrictName());
+			String wardName = HtmlUtil.escape(input.getWardName());
+			
+			if (Validator.isNotNull(input.getCityCode()) && Validator.isNull(cityName)) {
+				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+				
+			}
+			if (Validator.isNotNull(input.getDistrictCode()) && Validator.isNull(districtName)) {
+				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+				
+			}
+			if (Validator.isNotNull(input.getWardCode()) && Validator.isNull(wardName)) {
+				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+				
+			}
 			
 			if (isAllowed) {
 				applicant = actions.updateApplicant(serviceContext,groupId, id, applicantName, address, cityCode,
-						input.getCityName(), districtCode, input.getDistrictName(), wardCode,
-						input.getWardName(), contactName, contactTelNo, contactEmail);
+						cityName, districtCode, districtName, wardCode,
+						wardName, contactName, contactTelNo, contactEmail);
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
