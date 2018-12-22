@@ -1023,9 +1023,13 @@ public class DossierUtils {
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
 							action = act;
 							break;							
+						}
+						else if (Validator.isNull(act.getPreCondition())) {
+							action = act;
+							break;
 						}
 					}
 				}
