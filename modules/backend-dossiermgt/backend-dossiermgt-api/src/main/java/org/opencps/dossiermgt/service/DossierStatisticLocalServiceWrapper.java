@@ -189,6 +189,12 @@ public class DossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierStatistic fetchByG_M_Y(
+		long groupId, int month, int year) {
+		return _dossierStatisticLocalService.fetchByG_M_Y(groupId, month, year);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierStatistic fetchDossierStatistic(
 		long dossierStatisticId) {
 		return _dossierStatisticLocalService.fetchDossierStatistic(dossierStatisticId);

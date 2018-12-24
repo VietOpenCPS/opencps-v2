@@ -262,6 +262,10 @@ public class DossierLocalServiceUtil {
 		return getService().fetchDossierByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier fetchOnePublicService() {
+		return getService().fetchOnePublicService();
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByDN_AN(
 		String dossierNo, String applicantIdNo) {
 		return getService().findByDN_AN(dossierNo, applicantIdNo);

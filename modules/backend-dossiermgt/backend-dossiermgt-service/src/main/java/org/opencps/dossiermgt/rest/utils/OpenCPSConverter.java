@@ -23,13 +23,13 @@ import org.opencps.dossiermgt.constants.DossierMarkTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.lgsp.model.MDocumentTraces;
 import org.opencps.dossiermgt.lgsp.model.MSyncDocument;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierStatistic;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
@@ -1200,16 +1200,27 @@ public class OpenCPSConverter {
 		result.put("CitizenName", model.getApplicantName());
 		result.put("CitizenInfo", model.getApplicantNote());
 		result.put("ApplicantsId", model.getApplicantIdNo());
-		result.put("ApplicantsType", model.getApplicantIdType());
+		if ("citizen".equals(model.getApplicantIdType())) {
+			result.put("ApplicantsType", 1);			
+		}
+		else if ("business".equals(model.getApplicantIdType())) {
+			result.put("ApplicantsType", 2);
+		}
+		else if ("organization".equals(model.getApplicantIdType())) {
+			result.put("ApplicantsType", 3);
+		}
+		else {
+			result.put("ApplicantsType", 4);
+		}
 		result.put("Address", model.getAddress());
 		result.put("Email", model.getContactEmail());
 		result.put("Phone", model.getContactTelNo());
 		result.put("Compendium", model.getBriefNote());
 		if (model.getReceiveDate() != 0) {
-			result.put("DateReceived", new Date(model.getReceiveDate()));
+			result.put("DateReceived", convertToUTCDate(new Date(model.getReceiveDate())));
 		}
 		if (model.getDueDate() != 0) {
-			result.put("DateAppointed", new Date(model.getDueDate()));
+			result.put("DateAppointed", convertToUTCDate(new Date(model.getDueDate())));
 		}		
 		result.put("IsSuccess", isSuccess(model));
 		if (Validator.isNotNull(model.getFinishDate())) {
@@ -1260,15 +1271,22 @@ public class OpenCPSConverter {
 		result.put("Attachments", attachmentsArr);
 		
 		JSONArray docFeesArr = JSONFactoryUtil.createJSONArray();
-		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(model.getGroupId(), model.getDossierId());
-		
-		if (paymentFile != null) {
-			JSONObject docFeeObj = JSONFactoryUtil.createJSONObject();
-			docFeeObj.put("FeeName", paymentFile.getPaymentFee());
-			docFeeObj.put("FeeType", 4);
-			docFeeObj.put("Price", paymentFile.getPaymentAmount());
+		try {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(model.getGroupId(), model.getDossierId());
+			
+			if (paymentFile != null) {
+				JSONObject docFeeObj = JSONFactoryUtil.createJSONObject();
+				if (Validator.isNotNull(paymentFile.getPaymentFee())) {
+					docFeeObj.put("FeeName", paymentFile.getPaymentFee());				
+				}
+				docFeeObj.put("FeeType", 4);
+				if (Validator.isNotNull(paymentFile.getPaymentAmount())) {
+					docFeeObj.put("Price", paymentFile.getPaymentAmount());				
+				}
+			}
 		}
-		
+		catch (Exception e) {
+		}
 		result.put("DocFees", docFeesArr);
 		return result;
 	}
@@ -1383,17 +1401,31 @@ public class OpenCPSConverter {
 		return obj;
 	}
 	
-	public static MDocumentTraces convertJSONToDocumentTraces(JSONObject obj) {
-		MDocumentTraces result = new MDocumentTraces();
-		result.setDocumentId(obj.getString("DocumentId"));
-		result.setDocCode(obj.getString("DocCode"));
-		result.setUserName(obj.getString("UserName"));
-		result.setUserPosition(obj.getString("UserPosition"));
-		result.setDateCreated(obj.getString("DateCreated"));
-		result.setComment(obj.getString("Comment"));
-		result.setStatus(0);
-		result.setOrganizationInchargeIdLevel1(obj.getString("OrganizationInchargeIdLevel1"));
-		result.setOrganizationInchargeName(obj.getString("OrganizationInchargeName"));
-		return result;
-	}	
+	public static JSONObject convertStatisticsToLGSPJSON(DossierStatistic statistic) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put("Month", statistic.getMonth());
+		obj.put("Year", statistic.getYear());
+		if (statistic.getMonth() == 0) {
+			obj.put("IsMonthStatistic", false);
+		}
+		else {
+			obj.put("IsMonthStatistic", true);
+		}
+		obj.put("NewReception", statistic.getReceivedCount());
+		obj.put("PreExtisting", statistic.getRemainingCount());
+		obj.put("Total", statistic.getTotalCount());
+		obj.put("TotalSolved", statistic.getDoneCount());
+		obj.put("SolvedInTime", statistic.getOntimeCount());
+		obj.put("SolvedInTimePercent", statistic.getOntimePercentage());
+		obj.put("SolvedLate", statistic.getOverdueCount());
+		obj.put("Pending", statistic.getProcessCount());
+		obj.put("PendingLate", statistic.getOverdueCount());
+		obj.put("PendingLatePercent", 0.0);
+		obj.put("PendingPercent", 0.0);
+		obj.put("Note", StringPool.BLANK);
+		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
+		obj.put("OrganizationInchargeName", StringPool.BLANK);
+		
+		return obj;
+	}
 }

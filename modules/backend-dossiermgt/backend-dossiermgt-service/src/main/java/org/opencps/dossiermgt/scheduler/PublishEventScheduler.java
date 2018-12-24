@@ -2,6 +2,7 @@ package org.opencps.dossiermgt.scheduler;
 
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
@@ -12,6 +13,7 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -20,11 +22,15 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.lgsp.model.MResult;
+import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
+import org.opencps.dossiermgt.rest.utils.LGSPRestClient;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -99,8 +105,37 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 				_log.error(e);
 			}			
 		}
-		else {
-			
+		else if (ServerConfigTerm.LGSP_PROTOCOL.equals(sc.getProtocol())) {
+			try {
+				if (dossier != null && dossier.getOriginality() > 0) {
+					LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
+					Mtoken token = client.getToken();
+					if (Validator.isNotNull(token.getAccessToken())) {
+						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier);
+						MResult result = client.publishDossier(token.getAccessToken(), OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
+						if (result.getStatus() != 200) {
+							return false;
+						}
+						else {
+							MResult result2 = client.postDocumentTrace(token.getAccessToken(), dossierObj.getLong(DossierTerm.DOSSIER_ID));	
+							if (result2.getStatus() != 200) {
+								return false;
+							}
+							else {
+								return true;
+							}
+						}
+					}
+					else {
+						return false;
+					}
+				}
+				else {
+					return true;
+				}
+			} catch (JSONException e) {
+				_log.error(e);
+			}					
 		}
 		return true;
 	}

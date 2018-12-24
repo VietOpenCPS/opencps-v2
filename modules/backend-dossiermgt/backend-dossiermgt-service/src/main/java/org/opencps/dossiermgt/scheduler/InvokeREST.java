@@ -509,7 +509,6 @@ public class InvokeREST {
 	}
 	
 	public JSONObject callPostAPIRaw(String token, String httpMethod, String accept, String pathBase, String endPoint, String raw) {
-
 		JSONObject response = JSONFactoryUtil.createJSONObject();
 
 		HttpURLConnection conn = null;
@@ -542,10 +541,9 @@ public class InvokeREST {
 			conn.setRequestProperty("Authorization", "Bearer " + token);
 			conn.setRequestProperty("Content-Type", "application/json");
 			
-			byte[] postDataBytes = raw.toString().getBytes("UTF-8");
+			byte[] postDataBytes = raw.getBytes("UTF-8");
 
 			conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-
 			conn.getOutputStream().write(postDataBytes);
 
 			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
@@ -557,7 +555,6 @@ public class InvokeREST {
 			while ((output = br.readLine()) != null) {
 				sb.append(output);
 			}
-
 			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
 
