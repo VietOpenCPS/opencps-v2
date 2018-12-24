@@ -184,6 +184,11 @@ public class DossierStatisticLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierStatistic fetchByG_M_Y(
+		long groupId, int month, int year) {
+		return getService().fetchByG_M_Y(groupId, month, year);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierStatistic fetchDossierStatistic(
 		long dossierStatisticId) {
 		return getService().fetchDossierStatistic(dossierStatisticId);

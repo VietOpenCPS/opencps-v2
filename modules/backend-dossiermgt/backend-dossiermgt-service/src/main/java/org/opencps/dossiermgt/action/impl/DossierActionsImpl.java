@@ -3697,6 +3697,24 @@ public class DossierActionsImpl implements DossierActions {
 				_log.debug(e);
 			}
 		}
+
+		lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.LGSP_PROTOCOL);
+		for (ServerConfig sc : lstScs) {
+			try {
+				PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+//				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
+//				if (pq == null) {
+//					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+//				}
+//				else {
+//					if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
+//						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
+//					}
+//				}
+			} catch (PortalException e) {
+				_log.debug(e);
+			}
+		}	
 	}
 	
 	private void vnpostEvent(Dossier dossier) {
