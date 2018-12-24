@@ -3704,6 +3704,24 @@ public class DossierActionsImpl implements DossierActions {
 				_log.debug(e);
 			}
 		}
+
+		lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.LGSP_PROTOCOL);
+		for (ServerConfig sc : lstScs) {
+			try {
+				PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+//				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
+//				if (pq == null) {
+//					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+//				}
+//				else {
+//					if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
+//						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
+//					}
+//				}
+			} catch (PortalException e) {
+				_log.debug(e);
+			}
+		}	
 	}
 	
 	private void vnpostEvent(Dossier dossier) {
@@ -3915,45 +3933,44 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 				}
-				else if (actionConfig.getNotificationType().startsWith("EMPL")) {
-					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
-							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
-						try {
-							StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getFromStepCode());
-							if (stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED) {
-								List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getFromStepCode());
-								for (DossierActionUser dau : lstDaus) {
-									if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
-										Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
-										String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
-										String fullName = employee != null ? employee.getFullName() : u.getFullName();
-										NotificationQueueLocalServiceUtil.addNotificationQueue(
-												userId, groupId, 
-												actionConfig.getNotificationType(), 
-												Dossier.class.getName(), 
-												String.valueOf(dossier.getDossierId()), 
-												payloadObj.toJSONString(), 
-												fullName, 
-												fullName, 
-												dau.getUserId(), 
-												u.getEmailAddress(), 
-												telNo, 
-												now, 
-												expired, 
-												context);																		
-									}
-								}
-							}
-						} catch (NoSuchUserException e) {
-							_log.debug(e);
-							//_log.error(e);
-//							e.printStackTrace();
-						}
-					}					
-				}
 				else if (actionConfig.getNotificationType().startsWith("USER")) {
 					
 				}
+				
+				if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+						|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+					try {
+						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getFromStepCode());
+						if (stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED) {
+							List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getFromStepCode());
+							for (DossierActionUser dau : lstDaus) {
+								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
+									Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
+									String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+									String fullName = employee != null ? employee.getFullName() : u.getFullName();
+									NotificationQueueLocalServiceUtil.addNotificationQueue(
+											userId, groupId, 
+											actionConfig.getNotificationType(), 
+											Dossier.class.getName(), 
+											String.valueOf(dossier.getDossierId()), 
+											payloadObj.toJSONString(), 
+											fullName, 
+											fullName, 
+											dau.getUserId(), 
+											u.getEmailAddress(), 
+											telNo, 
+											now, 
+											expired, 
+											context);																		
+								}
+							}
+						}
+					} catch (NoSuchUserException e) {
+						_log.debug(e);
+						//_log.error(e);
+//						e.printStackTrace();
+					}
+				}									
 			}
 		}		
 	}

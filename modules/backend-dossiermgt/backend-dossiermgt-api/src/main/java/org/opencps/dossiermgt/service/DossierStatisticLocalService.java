@@ -181,6 +181,9 @@ public interface DossierStatisticLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierStatistic fetchByG_M_Y(long groupId, int month, int year);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierStatistic fetchDossierStatistic(long dossierStatisticId);
 
 	/**

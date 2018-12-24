@@ -1019,7 +1019,7 @@ public class DossierUtils {
 					else {
 						flagCheck = true;
 					}
-					
+					_log.info("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
