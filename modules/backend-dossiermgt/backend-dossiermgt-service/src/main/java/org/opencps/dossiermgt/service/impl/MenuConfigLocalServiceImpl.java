@@ -175,8 +175,11 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
 
-		long menuConfigId = counterLocalService.increment(MenuConfig.class.getName());
-		MenuConfig object = menuConfigPersistence.create(menuConfigId);
+		MenuConfig object = menuConfigPersistence.fetchByF_BY_G_MENU(groupId, menuGroup);
+
+		if (object == null) {
+			long menuConfigId = counterLocalService.increment(MenuConfig.class.getName());
+			object = menuConfigPersistence.create(menuConfigId);
 
 		object.setGroupId(groupId);
 		object.setCompanyId(user.getCompanyId());
@@ -184,14 +187,36 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		object.setCreateDate(now);
 		object.setModifiedDate(now);
 
-		object.setMenuGroup(menuGroup);
-		object.setMenuName(menuName);
-		object.setOrder(Validator.isNotNull(order) ? order : 0);
-		object.setMenuType(Validator.isNotNull(menuType) ? menuType : 0);
-		object.setQueryParams(queryParams);
-		object.setMenuGroup(menuGroup);
-		object.setTableConfig(tableConfig);
-		object.setButtonConfig(buttonConfig);
+			object.setMenuGroup(menuGroup);
+			object.setMenuName(menuName);
+			object.setOrder(Validator.isNotNull(order) ? order : 0);
+			object.setMenuType(Validator.isNotNull(menuType) ? menuType : 0);
+			object.setQueryParams(queryParams);
+			object.setMenuGroup(menuGroup);
+			object.setTableConfig(tableConfig);
+			object.setButtonConfig(buttonConfig);
+		} else {
+			object.setUserId(user.getUserId());
+			object.setModifiedDate(new Date());
+			if (menuName != null) {
+				object.setMenuName(menuName);
+			}
+			if (order != null) {
+				object.setOrder(order);
+			}
+			if (menuType != null) {
+				object.setMenuType(menuType);
+			}
+			if (queryParams != null) {
+				object.setQueryParams(queryParams);
+			}
+			if (tableConfig != null) {
+				object.setTableConfig(tableConfig);
+			}
+			if (buttonConfig != null) {
+				object.setButtonConfig(buttonConfig);
+			}
+		}
 
 		return menuConfigPersistence.update(object);
 	}

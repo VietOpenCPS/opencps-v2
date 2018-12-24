@@ -309,6 +309,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public void removeDossierStatisticByMonthYear(long groupId, int month,
 		int year) throws NoSuchOpencpsDossierStatisticException;
 
+	public void removeDossierStatisticByYear(long companyId, long groupId,
+		int month, int year) throws NoSuchOpencpsDossierStatisticException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId,
 		int month, int year, String domain, String govAgencyCode,

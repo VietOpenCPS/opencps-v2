@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.graphql.api.filter;
+package backend.admin.config.whiteboard;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -36,8 +36,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.graphql.api.controller.utils.WebKeys;
-import org.graphql.api.errors.OpenCPSErrorDetails;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -49,11 +47,15 @@ import org.osgi.service.component.annotations.Component;
 		"servlet-context-name=",
 		"servlet-filter-name=Rest Auth Filter",
 		"url-pattern=/o/v1/socket/*",
-		"url-pattern=/o/v1/opencps/*"
+		"url-pattern=/o/v1/opencps/users/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
 
+	public final static String P_AUTH = "Token";
+	public final static String USER_ID = "USER_ID";
+	public final static String AUTHORIZATION = "Authorization";
+	
 	@Override
 	public void destroy() {
 	}
@@ -61,23 +63,23 @@ public class RestAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
-
+		System.out.println("RestAuthFilter.doFilter()");
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
-		String pAuth = httpRequest.getHeader(WebKeys.P_AUTH);
+		String pAuth = httpRequest.getHeader(P_AUTH);
 		
 		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
 			pAuth = httpRequest.getParameter("Token");
 		}
 		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
-			Object userObj = httpRequest.getSession(true).getAttribute(WebKeys.USER_ID);
+			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
 			System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj)) {
-				httpRequest.setAttribute(WebKeys.USER_ID, userObj);
+				httpRequest.setAttribute(USER_ID, userObj);
 				authOK(servletRequest, servletResponse, filterChain, (Long) userObj);
 			} else {
 				long sockId = Validator.isNotNull(httpRequest.getHeader("userid")) ? Long.valueOf(httpRequest.getHeader("userid")) : 0;
-				httpRequest.setAttribute(WebKeys.USER_ID, sockId);
+				httpRequest.setAttribute(USER_ID, sockId);
 				authOK(servletRequest, servletResponse, filterChain, sockId);
 			}
 		
@@ -92,7 +94,7 @@ public class RestAuthFilter implements Filter {
 				while (headerNames.hasMoreElements()) {
 		            String key = (String) headerNames.nextElement();
 		            String value = httpRequest.getHeader(key);
-		            if (key.trim().equalsIgnoreCase(WebKeys.AUTHORIZATION)) {
+		            if (key.trim().equalsIgnoreCase(AUTHORIZATION)) {
 		            	strBasic = value;
 		            	isBasic = true;
 		            	break;
@@ -130,7 +132,7 @@ public class RestAuthFilter implements Filter {
 
 	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
 			throws IOException, ServletException {
-		servletRequest.setAttribute(WebKeys.USER_ID, userId);
+		servletRequest.setAttribute(USER_ID, userId);
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		response.addHeader("Access-Control-Allow-Headers", "*");

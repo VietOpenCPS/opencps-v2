@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -242,6 +243,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						if(Validator.isNotNull(formData)) {
 							dossierFile.setFormData(formData);
 						}
+						_log.info("REMOVED:" + removed);
 						if(Validator.isNotNull(removed)) {
 							dossierFile.setRemoved(Boolean.parseBoolean(removed));
 						}
@@ -1076,6 +1078,49 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getAlreadyHasFileTemplateNo(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String applicantIdNo, String fileTemplateNo) {
+		DossierFileResultsModel results = new DossierFileResultsModel();
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (dossier != null) {
+				List<Dossier> lstDossiers = DossierLocalServiceUtil.getByG_AN(groupId, applicantIdNo);
+				List<DossierFile> resultFiles = new ArrayList<>();
+				if (lstDossiers.size() > 0) {
+					long[] dossierIds = new long[lstDossiers.size()];
+					int i = 0;
+					for (Dossier d : lstDossiers) {
+						dossierIds[i++] = d.getDossierId();
+					}
+					
+					String[] ftns = StringUtil.split(fileTemplateNo);
+					
+					for (String ftn : ftns) {
+						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getByG_DID_FTN_R(groupId, dossierIds, ftn, false);
+						resultFiles.addAll(dossierFiles);
+					}
+				}
+				results.setTotal(resultFiles.size());
+				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(resultFiles));			
+			}
+
+			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

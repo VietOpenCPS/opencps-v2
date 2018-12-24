@@ -272,5 +272,49 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 		return object;
 	}
+	//Update DB
+	public ServerConfig updateServerConfigDB(long groupId, String govAgencyCode, String serverNo, String serverName,
+			String protocol, String configs, Date lastSync, ServiceContext context) throws PortalException {
+
+		Date now = new Date();
+		long userId = context.getUserId();
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+
+		ServerConfig serverConfig = serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
+
+		if (serverConfig == null) {
+
+			long serverConfigId = counterLocalService.increment(ServerConfig.class.getName());
+			serverConfig = serverConfigPersistence.create(serverConfigId);
+
+			serverConfig.setCreateDate(now);
+			serverConfig.setModifiedDate(now);
+			serverConfig.setCompanyId(context.getCompanyId());
+			serverConfig.setGroupId(groupId);
+			serverConfig.setUserId(userId);
+			serverConfig.setUserName(auditUser.getFullName());
+
+			serverConfig.setGovAgencyCode(govAgencyCode);
+			serverConfig.setServerNo(serverNo);
+			serverConfig.setServerName(serverName);
+			serverConfig.setProtocol(protocol);
+			serverConfig.setConfigs(configs);
+			// serverConfig.setLastSync(lastSync);
+
+		} else {
+
+			serverConfig.setUserId(userId);
+			serverConfig.setUserName(auditUser.getFullName());
+			serverConfig.setModifiedDate(now);
+
+			serverConfig.setServerNo(serverNo);
+			serverConfig.setServerName(serverName);
+			serverConfig.setProtocol(protocol);
+			serverConfig.setConfigs(configs);
+		}
+		
+		return serverConfigPersistence.update(serverConfig);
+
+	}
 
 }

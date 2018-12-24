@@ -95,6 +95,7 @@
 		<!-- extend -->
 		<column name="templateNo" type="String" />
 		<column name="commentable" type="boolean" />
+		<column name="votingCode" type="String" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />

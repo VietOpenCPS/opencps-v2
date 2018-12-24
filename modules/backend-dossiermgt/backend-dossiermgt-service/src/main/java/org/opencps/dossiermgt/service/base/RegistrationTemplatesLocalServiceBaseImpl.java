@@ -65,6 +65,7 @@ import org.opencps.dossiermgt.service.persistence.DossierSyncFinder;
 import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
+import org.opencps.dossiermgt.service.persistence.DynamicReportPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
@@ -75,6 +76,7 @@ import org.opencps.dossiermgt.service.persistence.ProcessPluginPersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessSequencePersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessStepPersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePersistence;
+import org.opencps.dossiermgt.service.persistence.PublishQueuePersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationFormPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationLogPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationPersistence;
@@ -1151,6 +1153,44 @@ public abstract class RegistrationTemplatesLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the dynamic report local service.
+	 *
+	 * @return the dynamic report local service
+	 */
+	public org.opencps.dossiermgt.service.DynamicReportLocalService getDynamicReportLocalService() {
+		return dynamicReportLocalService;
+	}
+
+	/**
+	 * Sets the dynamic report local service.
+	 *
+	 * @param dynamicReportLocalService the dynamic report local service
+	 */
+	public void setDynamicReportLocalService(
+		org.opencps.dossiermgt.service.DynamicReportLocalService dynamicReportLocalService) {
+		this.dynamicReportLocalService = dynamicReportLocalService;
+	}
+
+	/**
+	 * Returns the dynamic report persistence.
+	 *
+	 * @return the dynamic report persistence
+	 */
+	public DynamicReportPersistence getDynamicReportPersistence() {
+		return dynamicReportPersistence;
+	}
+
+	/**
+	 * Sets the dynamic report persistence.
+	 *
+	 * @param dynamicReportPersistence the dynamic report persistence
+	 */
+	public void setDynamicReportPersistence(
+		DynamicReportPersistence dynamicReportPersistence) {
+		this.dynamicReportPersistence = dynamicReportPersistence;
+	}
+
+	/**
 	 * Returns the menu config local service.
 	 *
 	 * @return the menu config local service
@@ -1527,6 +1567,44 @@ public abstract class RegistrationTemplatesLocalServiceBaseImpl
 	public void setProcessStepRolePersistence(
 		ProcessStepRolePersistence processStepRolePersistence) {
 		this.processStepRolePersistence = processStepRolePersistence;
+	}
+
+	/**
+	 * Returns the publish queue local service.
+	 *
+	 * @return the publish queue local service
+	 */
+	public org.opencps.dossiermgt.service.PublishQueueLocalService getPublishQueueLocalService() {
+		return publishQueueLocalService;
+	}
+
+	/**
+	 * Sets the publish queue local service.
+	 *
+	 * @param publishQueueLocalService the publish queue local service
+	 */
+	public void setPublishQueueLocalService(
+		org.opencps.dossiermgt.service.PublishQueueLocalService publishQueueLocalService) {
+		this.publishQueueLocalService = publishQueueLocalService;
+	}
+
+	/**
+	 * Returns the publish queue persistence.
+	 *
+	 * @return the publish queue persistence
+	 */
+	public PublishQueuePersistence getPublishQueuePersistence() {
+		return publishQueuePersistence;
+	}
+
+	/**
+	 * Sets the publish queue persistence.
+	 *
+	 * @param publishQueuePersistence the publish queue persistence
+	 */
+	public void setPublishQueuePersistence(
+		PublishQueuePersistence publishQueuePersistence) {
+		this.publishQueuePersistence = publishQueuePersistence;
 	}
 
 	/**
@@ -2210,6 +2288,10 @@ public abstract class RegistrationTemplatesLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DossierUserLocalService dossierUserLocalService;
 	@BeanReference(type = DossierUserPersistence.class)
 	protected DossierUserPersistence dossierUserPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.DynamicReportLocalService.class)
+	protected org.opencps.dossiermgt.service.DynamicReportLocalService dynamicReportLocalService;
+	@BeanReference(type = DynamicReportPersistence.class)
+	protected DynamicReportPersistence dynamicReportPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.MenuConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.MenuConfigLocalService menuConfigLocalService;
 	@BeanReference(type = MenuConfigPersistence.class)
@@ -2250,6 +2332,10 @@ public abstract class RegistrationTemplatesLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.ProcessStepRoleLocalService processStepRoleLocalService;
 	@BeanReference(type = ProcessStepRolePersistence.class)
 	protected ProcessStepRolePersistence processStepRolePersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.PublishQueueLocalService.class)
+	protected org.opencps.dossiermgt.service.PublishQueueLocalService publishQueueLocalService;
+	@BeanReference(type = PublishQueuePersistence.class)
+	protected PublishQueuePersistence publishQueuePersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.RegistrationLocalService.class)
 	protected org.opencps.dossiermgt.service.RegistrationLocalService registrationLocalService;
 	@BeanReference(type = RegistrationPersistence.class)

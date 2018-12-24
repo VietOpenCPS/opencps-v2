@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.constants.PaymentConfigTerm;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.service.base.PaymentConfigLocalServiceBaseImpl;
 
@@ -311,10 +312,13 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 			String bankInfo, String epaymentConfig, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
-		User userAction = userLocalService.getUser(userId);
+		User userAction = userPersistence.fetchByPrimaryKey(userId);
 
-		long paymentConfigId = counterLocalService.increment(PaymentConfig.class.getName());
-		PaymentConfig object = paymentConfigPersistence.create(paymentConfigId);
+		PaymentConfig object = paymentConfigPersistence.fetchByFB_GID_govAgencyCode(groupId, govAgencyCode);
+
+		if (object == null) {
+			long paymentConfigId = counterLocalService.increment(PaymentConfig.class.getName());
+			object = paymentConfigPersistence.create(paymentConfigId);
 
 		// Add audit fields
 		object.setCompanyId(serviceContext.getCompanyId());
@@ -324,17 +328,45 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 		object.setUserId(userAction.getUserId());
 		object.setUserName(userAction.getFullName());
 
-		object.setGovAgencyCode(govAgencyCode);
-		object.setGovAgencyName(govAgencyName);
-		object.setGovAgencyTaxNo(govAgencyTaxNo);
-		object.setInvoiceTemplateNo(invoiceTemplateNo);
-		object.setInvoiceIssueNo(invoiceIssueNo);
-		object.setInvoiceLastNo(invoiceLastNo);
-		object.setBankInfo(bankInfo);
-		object.setEpaymentConfig(epaymentConfig);
+			object.setGovAgencyCode(govAgencyCode);
+			object.setGovAgencyName(govAgencyName);
+			object.setGovAgencyTaxNo(govAgencyTaxNo);
+			object.setInvoiceTemplateNo(invoiceTemplateNo);
+			object.setInvoiceIssueNo(invoiceIssueNo);
+			object.setInvoiceLastNo(invoiceLastNo);
+			object.setBankInfo(bankInfo);
+			object.setEpaymentConfig(epaymentConfig);
+		} else {
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(userAction.getUserId());
+			object.setUserName(userAction.getFullName());
+
+			if (Validator.isNotNull(govAgencyName)) {
+				object.setGovAgencyName(govAgencyName);
+			}
+			
+			if (Validator.isNotNull(govAgencyTaxNo)) {
+				object.setGovAgencyTaxNo(govAgencyTaxNo);
+			}
+			if (Validator.isNotNull(invoiceTemplateNo)) {
+				object.setInvoiceTemplateNo(invoiceTemplateNo);
+			}
+			if (Validator.isNotNull(invoiceIssueNo)) {
+				object.setInvoiceIssueNo(invoiceIssueNo);
+			}
+			if (Validator.isNotNull(invoiceLastNo)) {
+				object.setInvoiceLastNo(invoiceLastNo);
+			}
+			if (Validator.isNotNull(bankInfo)) {
+				object.setBankInfo(bankInfo);
+			}
+			if (Validator.isNotNull(epaymentConfig)) {
+				object.setEpaymentConfig(epaymentConfig);
+			}
+		}
 
 		return paymentConfigPersistence.update(object);
-
 	}
 
 	private void validateDelete(long paymentConfigId) throws PortalException {

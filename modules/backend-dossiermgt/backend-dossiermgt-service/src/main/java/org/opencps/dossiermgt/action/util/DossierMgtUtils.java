@@ -119,6 +119,53 @@ public class DossierMgtUtils {
 			_log.debug(e);
 		}
 		
+		obj.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+		obj.put(DossierTerm.DOSSIER_TEMPLATE_NAME, dossier.getDossierTemplateName());
+		obj.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
+		obj.put(DossierTerm.SERVER_NO, dossier.getServerNo());
+		obj.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
+		obj.put(DossierTerm.DELEGATE_ID_NO, dossier.getDelegateIdNo());
+		obj.put(DossierTerm.DELEGATE_TELNO, dossier.getDelegateTelNo());
+		obj.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());		
+		obj.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
+		obj.put(DossierTerm.DELEGATE_CITYCODE, dossier.getDelegateCityCode());
+		obj.put(DossierTerm.DELEGATE_CITYNAME, dossier.getDelegateCityName());
+		obj.put(DossierTerm.DELEGATE_DISTRICTCODE, dossier.getDelegateDistrictCode());
+		obj.put(DossierTerm.DELEGATE_DISTRICTNAME, dossier.getDelegateDistrictName());
+		obj.put(DossierTerm.DELEGATE_WARDCODE, dossier.getDelegateWardCode());
+		obj.put(DossierTerm.DELEGATE_WARDNAME, dossier.getDelegateWardName());
+		obj.put(DossierTerm.PROCESS_NO, dossier.getProcessNo());
+		obj.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());		
+		obj.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+		obj.put(DossierTerm.LOCK_STATE, dossier.getLockState());
+		obj.put(DossierTerm.COUNTER, dossier.getCounter());
+		obj.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+		obj.put(DossierTerm.POSTAL_CITY_CODE, dossier.getPostalCityCode());
+		obj.put(DossierTerm.POSTAL_CITY_NAME, dossier.getPostalCityName());
+		obj.put(DossierTerm.POSTAL_DISTRICT_CODE, dossier.getPostalDistrictCode());
+		obj.put(DossierTerm.POSTAL_DISTRICT_NAME, dossier.getPostalDistrictName());
+		obj.put(DossierTerm.POSTAL_WARD_CODE, dossier.getPostalWardCode());
+		obj.put(DossierTerm.POSTAL_WARD_NAME, dossier.getPostalWardName());
+		obj.put(DossierTerm.POSTAL_TEL_NO, dossier.getPostalTelNo());
+		obj.put(DossierTerm.POSTAL_SERVICE_CODE, dossier.getPostalServiceCode());
+		obj.put(DossierTerm.POSTAL_SERVICE_NAME, dossier.getPostalServiceName());
+		obj.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
+		obj.put(DossierTerm.DELEGATE_ID_NO, dossier.getDelegateIdNo());
+		obj.put(DossierTerm.DELEGATE_TELNO, dossier.getDelegateTelNo());
+		obj.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+		obj.put(DossierTerm.DELEGATE_CITYCODE, dossier.getDelegateCityCode());
+		obj.put(DossierTerm.DELEGATE_CITYNAME, dossier.getDelegateCityName());
+		obj.put(DossierTerm.DELEGATE_DISTRICTCODE, dossier.getDelegateDistrictCode());
+		obj.put(DossierTerm.DELEGATE_DISTRICTNAME, dossier.getDelegateDistrictName());
+		obj.put(DossierTerm.DELEGATE_WARDCODE, dossier.getDelegateWardCode());
+		obj.put(DossierTerm.DELEGATE_WARDNAME, dossier.getDelegateWardName());
+		obj.put(DossierTerm.PROCESS_NO, dossier.getProcessNo());
+		obj.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
+		obj.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+		obj.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
+		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+		
 		return obj;
 	}
 	

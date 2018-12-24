@@ -10,6 +10,7 @@ import org.opencps.sms.service.application.SMSGateway;
 import org.opencps.sms.service.dto.DossierRequest;
 import org.opencps.sms.service.dto.DossierResponse;
 import org.opencps.sms.service.util.Constants;
+import org.opencps.sms.service.util.DossierServiceProps;
 import org.opencps.sms.service.util.ServiceProps;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,17 +44,18 @@ public class DossierLookUpFacadeImpl extends OpencpsRestFacade<DossierRequest, D
         urlQueryParams.add("dossierNo", payload.getDossierNo());
         urlQueryParams.add("applicantIdNo", payload.getApplicantIdNo());
 
-        String endPoint = ServiceProps.get(Constants.OPENCPS_REST_ENDPOINT_DOSSIER);
+        String endPoint = DossierServiceProps.get(Constants.OPENCPS_REST_ENDPOINT_DOSSIER);
+        _log.info("=======SMS DOSSIER ENDPOINT=====" + endPoint);
         HashMap<String, String> urlPathSegments = new HashMap<>();
         String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
 
         HttpHeaders httpHeaders = new HttpHeaders();
 
         httpHeaders = setHttpHeadersAuthorization(
-            httpHeaders, ServiceProps.get(Constants.OPENCPS_BACKEND_USERNAME),
-            ServiceProps.get(Constants.OPENCPS_BACKEND_PASSWORD));
+            httpHeaders, DossierServiceProps.get(Constants.OPENCPS_BACKEND_USERNAME),
+            DossierServiceProps.get(Constants.OPENCPS_BACKEND_PASSWORD));
 
-        httpHeaders.add(Constants.GROUP_ID, ServiceProps.get(Constants.OPENCPS_GROUP_ID_CONFIG));
+        httpHeaders.add(Constants.GROUP_ID, DossierServiceProps.get(Constants.OPENCPS_GROUP_ID_CONFIG));
         
         return (DossierResponse) this.executeGenericRestCall(
             url, HttpMethod.GET, httpHeaders, payload, DossierResponse.class).getBody();

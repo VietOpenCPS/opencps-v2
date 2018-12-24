@@ -13,12 +13,19 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +52,7 @@ import org.springframework.web.client.RestTemplate;
 		"org.osgi.http.websocket.endpoint.path=/o/v1/socket/web" }, service = Endpoint.class)
 public class AdminEndpoind extends Endpoint {
 
+	public static final String _TIMESTAMP = "dd/MM/yyyy HH:mm";
 	private static final Log _log = LogFactoryUtil.getLog(AdminEndpoind.class);
 
 	private static final String TYPE = "type";
@@ -84,7 +92,7 @@ public class AdminEndpoind extends Endpoint {
 	 */
 	@Override
 	public void onOpen(Session session, EndpointConfig config) {
-		
+
 		session.setMaxBinaryMessageBufferSize(8388608);
 		session.setMaxTextMessageBufferSize(8388608);
 		
@@ -147,6 +155,8 @@ public class AdminEndpoind extends Endpoint {
 
 				Method method = null;
 
+				int lengColumns = 0;
+				
 				if (message.getString(CMD).equals(GET)) {
 
 					method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQuery");
@@ -158,9 +168,11 @@ public class AdminEndpoind extends Endpoint {
 						String columns = adminConfig.getColumns();
 
 						JSONArray arraysColumn = JSONFactoryUtil.createJSONArray(columns);
-
+						
 						if (arraysColumn.length() > 0) {
-
+							
+							lengColumns = arraysColumn.length();
+							
 							ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
 
 							for (int i = 0; i < arraysColumn.length(); i++) {
@@ -260,6 +272,9 @@ public class AdminEndpoind extends Endpoint {
 
 					JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 
+					System.out.println("code: " + code.equals("opencps_employee"));
+					_log.info("code: " + code.equals("opencps_employee"));
+					
 					if (message.getBoolean(CONFIG)) {
 
 						JSONObject config = JSONFactoryUtil.createJSONObject();
@@ -285,8 +300,33 @@ public class AdminEndpoind extends Endpoint {
 
 						int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
+						
+						System.out.println("code: " + code.equals("opencps_employee"));
+						_log.info("code: " + code.equals("opencps_employee"));
+						_log.info("lengColumns: " + lengColumns);
+						if (code.equals("opencps_employee")) {
+							
+							List<Object[]> employees = (List<Object[]>) method.invoke(model, dynamicQuery, start, end);
 
-						messageData.put(message.getString(RESPONE), method.invoke(model, dynamicQuery, start, end));
+							_log.info("employees: " + employees);
+							if (lengColumns > 0) {
+								for (Object[] obj: employees) {
+
+									_log.info("obj[lengColumns - 1]: " + obj[lengColumns - 1]);
+									if (Validator.isNotNull(obj[lengColumns - 1])) {
+										long userIdMapping = (long) obj[lengColumns - 1];
+										User user = UserLocalServiceUtil.fetchUser(userIdMapping);
+										obj[lengColumns - 1] = convertDateToString(user.getLoginDate());
+									}
+									
+								}
+							}
+							System.out.println("employees.employees()" + employees);
+							messageData.put(message.getString(RESPONE), employees);
+							
+						} else {
+							messageData.put(message.getString(RESPONE), method.invoke(model, dynamicQuery, start, end));
+						}
 						
 					}
 
@@ -393,5 +433,21 @@ public class AdminEndpoind extends Endpoint {
 		} catch (IOException ioe) {
 			throw new RuntimeException(ioe);
 		}
+	}
+	
+	private static String convertDateToString(Date date) {
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(_TIMESTAMP);
+
+		if (Validator.isNull(date) || Validator.isNull(_TIMESTAMP)) {
+			return StringPool.BLANK;
+		}
+
+		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone("Asia/Ho_Chi_Minh"));
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(date);
+
+		return dateFormat.format(calendar.getTime());
 	}
 }

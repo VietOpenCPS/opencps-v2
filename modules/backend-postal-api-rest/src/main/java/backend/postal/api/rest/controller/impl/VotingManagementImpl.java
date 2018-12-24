@@ -28,8 +28,10 @@ import org.opencps.api.voting.model.VotingModel;
 import org.opencps.api.voting.model.VotingResultInputModel;
 import org.opencps.api.voting.model.VotingResultModel;
 import org.opencps.api.voting.model.VotingResultResults;
+import org.opencps.api.voting.model.VotingResultSearchModel;
 import org.opencps.api.voting.model.VotingResults;
 import org.opencps.api.voting.model.VotingSearchModel;
+import org.opencps.api.voting.model.VotingStatisticsResults;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.feedback.action.VotingActions;
@@ -249,4 +251,37 @@ public class VotingManagementImpl implements VotingManagement {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response getVotingResultStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, VotingResultSearchModel search) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		VotingActions actions = new VotingActionsImpl();
+		VotingStatisticsResults result = new VotingStatisticsResults();
+
+		try {
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put("groupId", String.valueOf(groupId));
+			params.put("month", String.valueOf(search.getMonth()));
+			params.put("year", String.valueOf(search.getYear()));
+			
+			//params.put("votingId", String.valueOf(votingId));
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
+
+			JSONObject jsonData = actions.getVotingResultStatistic(user.getUserId(), company.getCompanyId(), groupId, params,
+					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+
+			result.setTotal(jsonData.getLong("total"));
+			result.getData().addAll(
+					VotingUtils.mappingVotingStatisticsModelList((List<Document>) jsonData.get("data"), serviceContext));
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }

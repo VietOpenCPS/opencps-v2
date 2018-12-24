@@ -59,6 +59,8 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.datamgt.constants.CommentTerm;
 import org.opencps.datamgt.model.Comment;
 import org.opencps.datamgt.service.CommentLocalServiceUtil;
+import org.opencps.deliverable.model.OpenCPSDeliverable;
+import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -189,8 +191,8 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -527,9 +529,12 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+									OpenCPSDeliverable newDB = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(deliverable.getDeliverableId());
+									newDB.setDeliverableState(1);
+									OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(newDB);
 								}
 							}
 						}
@@ -651,9 +656,12 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+									OpenCPSDeliverable newDB = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(deliverable.getDeliverableId());
+									newDB.setDeliverableState(1);
+									OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(newDB);
 								}
 							}
 						}
@@ -707,9 +715,12 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+									OpenCPSDeliverable newDB = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(deliverable.getDeliverableId());
+									newDB.setDeliverableState(1);
+									OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(newDB);
 								}
 							}
 						}
@@ -815,8 +826,8 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -871,9 +882,12 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = deliverable.getDeliverableState();
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState("1");
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+									OpenCPSDeliverable newDB = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(deliverable.getDeliverableId());
+									newDB.setDeliverableState(1);
+									OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(newDB);
 								}
 							}
 						}

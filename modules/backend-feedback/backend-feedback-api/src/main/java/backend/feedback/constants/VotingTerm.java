@@ -14,4 +14,5 @@ public class VotingTerm {
 	public static final String CHOICES = "choices";
 	public static final String TEMPLATE_NO = "templateNo";
 	public static final String COMMENTABLE = "commentable";
+	public static final String VOTING_CODE = "votingCode";
 }

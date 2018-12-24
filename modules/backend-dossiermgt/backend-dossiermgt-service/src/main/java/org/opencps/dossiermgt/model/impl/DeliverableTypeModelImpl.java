@@ -80,8 +80,12 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			{ "typeName", Types.VARCHAR },
 			{ "formScript", Types.VARCHAR },
 			{ "formReport", Types.VARCHAR },
+			{ "formScriptFileId", Types.BIGINT },
+			{ "formReportFileId", Types.BIGINT },
 			{ "codePattern", Types.VARCHAR },
-			{ "counter", Types.VARCHAR },
+			{ "dataConfig", Types.VARCHAR },
+			{ "tableConfig", Types.VARCHAR },
+			{ "counter", Types.BIGINT },
 			{ "mappingData", Types.VARCHAR },
 			{ "docSync", Types.INTEGER },
 			{ "govAgencies", Types.VARCHAR }
@@ -101,14 +105,18 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		TABLE_COLUMNS_MAP.put("typeName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formScriptFileId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("formReportFileId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("codePattern", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("counter", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("dataConfig", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("tableConfig", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("counter", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("mappingData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("docSync", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("govAgencies", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,typeName VARCHAR(575) null,formScript TEXT null,formReport TEXT null,codePattern VARCHAR(275) null,counter VARCHAR(75) null,mappingData TEXT null,docSync INTEGER,govAgencies VARCHAR(255) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,typeName VARCHAR(575) null,formScript TEXT null,formReport TEXT null,formScriptFileId LONG,formReportFileId LONG,codePattern VARCHAR(275) null,dataConfig TEXT null,tableConfig TEXT null,counter LONG,mappingData TEXT null,docSync INTEGER,govAgencies VARCHAR(255) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverabletype";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableType.deliverableTypeId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverabletype.deliverableTypeId ASC";
@@ -181,7 +189,11 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		attributes.put("typeName", getTypeName());
 		attributes.put("formScript", getFormScript());
 		attributes.put("formReport", getFormReport());
+		attributes.put("formScriptFileId", getFormScriptFileId());
+		attributes.put("formReportFileId", getFormReportFileId());
 		attributes.put("codePattern", getCodePattern());
+		attributes.put("dataConfig", getDataConfig());
+		attributes.put("tableConfig", getTableConfig());
 		attributes.put("counter", getCounter());
 		attributes.put("mappingData", getMappingData());
 		attributes.put("docSync", getDocSync());
@@ -267,13 +279,37 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			setFormReport(formReport);
 		}
 
+		Long formScriptFileId = (Long)attributes.get("formScriptFileId");
+
+		if (formScriptFileId != null) {
+			setFormScriptFileId(formScriptFileId);
+		}
+
+		Long formReportFileId = (Long)attributes.get("formReportFileId");
+
+		if (formReportFileId != null) {
+			setFormReportFileId(formReportFileId);
+		}
+
 		String codePattern = (String)attributes.get("codePattern");
 
 		if (codePattern != null) {
 			setCodePattern(codePattern);
 		}
 
-		String counter = (String)attributes.get("counter");
+		String dataConfig = (String)attributes.get("dataConfig");
+
+		if (dataConfig != null) {
+			setDataConfig(dataConfig);
+		}
+
+		String tableConfig = (String)attributes.get("tableConfig");
+
+		if (tableConfig != null) {
+			setTableConfig(tableConfig);
+		}
+
+		Long counter = (Long)attributes.get("counter");
 
 		if (counter != null) {
 			setCounter(counter);
@@ -513,6 +549,26 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 	}
 
 	@Override
+	public long getFormScriptFileId() {
+		return _formScriptFileId;
+	}
+
+	@Override
+	public void setFormScriptFileId(long formScriptFileId) {
+		_formScriptFileId = formScriptFileId;
+	}
+
+	@Override
+	public long getFormReportFileId() {
+		return _formReportFileId;
+	}
+
+	@Override
+	public void setFormReportFileId(long formReportFileId) {
+		_formReportFileId = formReportFileId;
+	}
+
+	@Override
 	public String getCodePattern() {
 		if (_codePattern == null) {
 			return "";
@@ -528,17 +584,42 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 	}
 
 	@Override
-	public String getCounter() {
-		if (_counter == null) {
+	public String getDataConfig() {
+		if (_dataConfig == null) {
 			return "";
 		}
 		else {
-			return _counter;
+			return _dataConfig;
 		}
 	}
 
 	@Override
-	public void setCounter(String counter) {
+	public void setDataConfig(String dataConfig) {
+		_dataConfig = dataConfig;
+	}
+
+	@Override
+	public String getTableConfig() {
+		if (_tableConfig == null) {
+			return "";
+		}
+		else {
+			return _tableConfig;
+		}
+	}
+
+	@Override
+	public void setTableConfig(String tableConfig) {
+		_tableConfig = tableConfig;
+	}
+
+	@Override
+	public long getCounter() {
+		return _counter;
+	}
+
+	@Override
+	public void setCounter(long counter) {
 		_counter = counter;
 	}
 
@@ -631,7 +712,11 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		deliverableTypeImpl.setTypeName(getTypeName());
 		deliverableTypeImpl.setFormScript(getFormScript());
 		deliverableTypeImpl.setFormReport(getFormReport());
+		deliverableTypeImpl.setFormScriptFileId(getFormScriptFileId());
+		deliverableTypeImpl.setFormReportFileId(getFormReportFileId());
 		deliverableTypeImpl.setCodePattern(getCodePattern());
+		deliverableTypeImpl.setDataConfig(getDataConfig());
+		deliverableTypeImpl.setTableConfig(getTableConfig());
 		deliverableTypeImpl.setCounter(getCounter());
 		deliverableTypeImpl.setMappingData(getMappingData());
 		deliverableTypeImpl.setDocSync(getDocSync());
@@ -793,6 +878,10 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			deliverableTypeCacheModel.formReport = null;
 		}
 
+		deliverableTypeCacheModel.formScriptFileId = getFormScriptFileId();
+
+		deliverableTypeCacheModel.formReportFileId = getFormReportFileId();
+
 		deliverableTypeCacheModel.codePattern = getCodePattern();
 
 		String codePattern = deliverableTypeCacheModel.codePattern;
@@ -801,13 +890,23 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			deliverableTypeCacheModel.codePattern = null;
 		}
 
-		deliverableTypeCacheModel.counter = getCounter();
+		deliverableTypeCacheModel.dataConfig = getDataConfig();
 
-		String counter = deliverableTypeCacheModel.counter;
+		String dataConfig = deliverableTypeCacheModel.dataConfig;
 
-		if ((counter != null) && (counter.length() == 0)) {
-			deliverableTypeCacheModel.counter = null;
+		if ((dataConfig != null) && (dataConfig.length() == 0)) {
+			deliverableTypeCacheModel.dataConfig = null;
 		}
+
+		deliverableTypeCacheModel.tableConfig = getTableConfig();
+
+		String tableConfig = deliverableTypeCacheModel.tableConfig;
+
+		if ((tableConfig != null) && (tableConfig.length() == 0)) {
+			deliverableTypeCacheModel.tableConfig = null;
+		}
+
+		deliverableTypeCacheModel.counter = getCounter();
 
 		deliverableTypeCacheModel.mappingData = getMappingData();
 
@@ -832,7 +931,7 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -858,8 +957,16 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		sb.append(getFormScript());
 		sb.append(", formReport=");
 		sb.append(getFormReport());
+		sb.append(", formScriptFileId=");
+		sb.append(getFormScriptFileId());
+		sb.append(", formReportFileId=");
+		sb.append(getFormReportFileId());
 		sb.append(", codePattern=");
 		sb.append(getCodePattern());
+		sb.append(", dataConfig=");
+		sb.append(getDataConfig());
+		sb.append(", tableConfig=");
+		sb.append(getTableConfig());
 		sb.append(", counter=");
 		sb.append(getCounter());
 		sb.append(", mappingData=");
@@ -875,7 +982,7 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(67);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DeliverableType");
@@ -930,8 +1037,24 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		sb.append(getFormReport());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>formScriptFileId</column-name><column-value><![CDATA[");
+		sb.append(getFormScriptFileId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>formReportFileId</column-name><column-value><![CDATA[");
+		sb.append(getFormReportFileId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>codePattern</column-name><column-value><![CDATA[");
 		sb.append(getCodePattern());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dataConfig</column-name><column-value><![CDATA[");
+		sb.append(getDataConfig());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>tableConfig</column-name><column-value><![CDATA[");
+		sb.append(getTableConfig());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>counter</column-name><column-value><![CDATA[");
@@ -978,8 +1101,12 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 	private String _typeName;
 	private String _formScript;
 	private String _formReport;
+	private long _formScriptFileId;
+	private long _formReportFileId;
 	private String _codePattern;
-	private String _counter;
+	private String _dataConfig;
+	private String _tableConfig;
+	private long _counter;
 	private String _mappingData;
 	private int _docSync;
 	private String _govAgencies;

@@ -45,6 +45,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalService;
 import org.opencps.adminconfig.service.persistence.AdminConfigPersistence;
+import org.opencps.adminconfig.service.persistence.DynamicReportPersistence;
 
 import java.io.Serializable;
 
@@ -352,6 +353,44 @@ public abstract class AdminConfigLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the dynamic report local service.
+	 *
+	 * @return the dynamic report local service
+	 */
+	public org.opencps.adminconfig.service.DynamicReportLocalService getDynamicReportLocalService() {
+		return dynamicReportLocalService;
+	}
+
+	/**
+	 * Sets the dynamic report local service.
+	 *
+	 * @param dynamicReportLocalService the dynamic report local service
+	 */
+	public void setDynamicReportLocalService(
+		org.opencps.adminconfig.service.DynamicReportLocalService dynamicReportLocalService) {
+		this.dynamicReportLocalService = dynamicReportLocalService;
+	}
+
+	/**
+	 * Returns the dynamic report persistence.
+	 *
+	 * @return the dynamic report persistence
+	 */
+	public DynamicReportPersistence getDynamicReportPersistence() {
+		return dynamicReportPersistence;
+	}
+
+	/**
+	 * Sets the dynamic report persistence.
+	 *
+	 * @param dynamicReportPersistence the dynamic report persistence
+	 */
+	public void setDynamicReportPersistence(
+		DynamicReportPersistence dynamicReportPersistence) {
+		this.dynamicReportPersistence = dynamicReportPersistence;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -520,6 +559,10 @@ public abstract class AdminConfigLocalServiceBaseImpl
 	protected AdminConfigLocalService adminConfigLocalService;
 	@BeanReference(type = AdminConfigPersistence.class)
 	protected AdminConfigPersistence adminConfigPersistence;
+	@BeanReference(type = org.opencps.adminconfig.service.DynamicReportLocalService.class)
+	protected org.opencps.adminconfig.service.DynamicReportLocalService dynamicReportLocalService;
+	@BeanReference(type = DynamicReportPersistence.class)
+	protected DynamicReportPersistence dynamicReportPersistence;
 	@ServiceReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
 	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
 	@ServiceReference(type = com.liferay.portal.kernel.service.ClassNameLocalService.class)

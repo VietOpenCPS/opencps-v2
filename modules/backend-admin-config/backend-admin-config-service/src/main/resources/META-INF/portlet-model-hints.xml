@@ -15,4 +15,19 @@
 		<field name="groupFilter" type="boolean" />
 		<field name="publicManager" type="boolean" />
 	</model>
+	<model name="org.opencps.adminconfig.model.DynamicReport">
+		<field name="dynamicReportId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="sharing" type="int" />
+		<field name="reportName" type="String" />
+		<field name="reportCode" type="String" />
+		<field name="filterConfig" type="String" />
+		<field name="tableConfig" type="String" />
+		<field name="userConfig" type="String" />
+	</model>
 </model-hints>

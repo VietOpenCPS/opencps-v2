@@ -85,18 +85,25 @@
 				<xsd:element name="delegateEmail" type="xsd:string" minOccurs="0" />
 				<xsd:element name="delegateAddress" type="xsd:string" minOccurs="0" />
 				<xsd:element name="delegateCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateCityName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="delegateDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateDistrictName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="delegateWardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateWardName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="password" type="xsd:string" minOccurs="0" />
 				<xsd:element name="online" type="xsd:string" minOccurs="0" />
 				<xsd:element name="notification" type="xsd:string" minOccurs="0" />
 				<xsd:element name="applicantNote" type="xsd:string" minOccurs="0" />
 				<xsd:element name="viaPostal" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalServiceCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalServiceName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalAddress" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalCityCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalCityName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalDistrictCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalDistrictName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalWardCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="postalWardName" type="xsd:string" minOccurs="0" />
 				<xsd:element name="postalTelNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="originality" type="xsd:int" minOccurs="0" />
 				<xsd:element name="createDate" type="xsd:long" minOccurs="0"/>
@@ -119,6 +126,12 @@
 				<xsd:element name="submissionNote" type="xsd:string" minOccurs="0" />
 				<xsd:element name="dossierActionId" type="xsd:long" minOccurs="0" />
 				<xsd:element name="briefNote" type="xsd:string" minOccurs="0" />
+				<xsd:element name="lockState" type="xsd:string" minOccurs="0" />
+				<xsd:element name="counter" type="xsd:int" minOccurs="0" />
+				<xsd:element name="processNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
+				<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sampleCount" type="xsd:long" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

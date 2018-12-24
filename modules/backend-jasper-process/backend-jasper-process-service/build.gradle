@@ -5,49 +5,49 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
 	compileOnly project(":modules:backend-jasper-process:backend-jasper-process-api")
 	
-	compile name : "bcmail-jdk14"
-	compile name : "bcprov-jdk14"
-	compile name : "bctsp-jdk14"
-	compile name : "castor-core"
-	compile name : "castor-xml"
-	compile name : "commons-beanutils"
-	compile name : "commons-collections"
-	compile name : "commons-digester"
-	compile name : "commons-lang"
-	compile name : "commons-logging"
-	compile name : "core"
-	compile name : "ecj"
-	compile name : "icu4j"
-	compile name : "itext"
-	compile name : "jackson-annotations"
-	compile name : "jackson-core"
-	compile name : "jackson-databind"
-	compile name : "jakarta-regexp"
-	compile name : "javax.inject"
-	compile name : "jcommon"
-	compile name : "jfreechart"
-	compile name : "olap4j"
-	compile name : "stax-api"
-	compile name : "stax"
-	compile name : "lucene-analyzers-common"
-	compile name : "lucene-core"
-	compile name : "lucene-queries"
-	compile name : "lucene-queryparser"
-	compile name : "lucene-sandbox"
-	compile name : "spring-asm"
-	compile name : "spring-beans"
-	compile name : "spring-context"
-	compile name : "spring-core"
-	compile name : "spring-expression"
-	compile name : "jasperreports"
-	compile name : "jasperreports-functions"
-	compile name : "jasperreports-javaflow"
-	compile name : "commons-javaflow"
-	compile name : "jasperreports-fonts-6.2.2"
-	compile name : "joda-time-2.4"
-	compile name : "poi-3.10.1"
-	compile name : "poi-ooxml-3.10.1"
-	compile name : "poi-ooxml-schemas-3.10.1"
+	compileInclude name : "bcmail-jdk14", transitive:false
+	compileInclude name : "bcprov-jdk14", transitive:false
+	compileInclude name : "bctsp-jdk14", transitive:false
+	compileInclude name : "castor-core", transitive:false
+	compileInclude name : "castor-xml", transitive:false
+	compileInclude name : "commons-beanutils", transitive:false
+	compileInclude name : "commons-collections", transitive:false
+	compileInclude name : "commons-digester", transitive:false
+	compileInclude name : "commons-lang", transitive:false
+	compileInclude name : "commons-logging", transitive:false
+	compileInclude name : "core", transitive:false
+	compileInclude name : "ecj", transitive:false
+	compileInclude name : "icu4j", transitive:false
+	compileInclude name : "itext", transitive:false
+	compileInclude name : "jackson-annotations", transitive:false
+	compileInclude name : "jackson-core", transitive:false
+	compileInclude name : "jackson-databind", transitive:false
+	compileInclude name : "jakarta-regexp", transitive:false
+	compileInclude name : "javax.inject", transitive:false
+	compileInclude name : "jcommon", transitive:false
+	compileInclude name : "jfreechart", transitive:false
+	compileInclude name : "olap4j", transitive:false
+	compileInclude name : "stax-api", transitive:false
+	compileInclude name : "stax", transitive:false
+	compileInclude name : "lucene-analyzers-common", transitive:false
+	compileInclude name : "lucene-core", transitive:false
+	compileInclude name : "lucene-queries", transitive:false
+	compileInclude name : "lucene-queryparser", transitive:false
+	compileInclude name : "lucene-sandbox", transitive:false
+	compileInclude name : "spring-asm", transitive:false
+	compileInclude name : "spring-beans", transitive:false
+	compileInclude name : "spring-context", transitive:false
+	compileInclude name : "spring-core", transitive:false
+	compileInclude name : "spring-expression", transitive:false
+	compileInclude name : "jasperreports", transitive:false
+	compileInclude name : "jasperreports-functions", transitive:false
+	compileInclude name : "jasperreports-javaflow", transitive:false
+	compileInclude name : "commons-javaflow", transitive:false
+	compileInclude name : "jasperreports-fonts-6.2.2", transitive:false
+	compileInclude name : "joda-time-2.4", transitive:false
+	compileInclude name : "poi-3.10.1", transitive:false
+	compileInclude name : "poi-ooxml-3.10.1", transitive:false
+	compileInclude name : "poi-ooxml-schemas-3.10.1", transitive:false
 }	
 
 repositories {

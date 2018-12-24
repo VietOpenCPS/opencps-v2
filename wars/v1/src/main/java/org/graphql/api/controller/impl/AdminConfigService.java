@@ -7,6 +7,9 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 
 import org.graphql.api.controller.adminconfig.crud.GetAdminConfig;
+import org.graphql.api.controller.adminconfig.crud.GetDynamicReport;
+import org.graphql.api.controller.adminconfig.crud.GetDynamicReports;
+import org.graphql.api.controller.adminconfig.crud.UpdateDynamicReport;
 import org.graphql.api.controller.utils.GraphQLUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,12 @@ public class AdminConfigService {
 
 	@Autowired
 	private GetAdminConfig getAdminConfig;
+	@Autowired
+	private GetDynamicReports getDynamicReports;
+	@Autowired
+	private GetDynamicReport getDynamicReport;
+	@Autowired
+	private UpdateDynamicReport updateDynamicReport;
 	
 	private GraphQL graphQL;
 
@@ -50,6 +59,10 @@ public class AdminConfigService {
 		return RuntimeWiring.newRuntimeWiring()
 				.type("Query",
 						typeWiring -> typeWiring.dataFetcher("getAdminConfig", getAdminConfig)
+						.dataFetcher("getDynamicReports", getDynamicReports)
+						.dataFetcher("getDynamicReport", getDynamicReport)
+				)
+				.type("Mutation", typeWiring -> typeWiring.dataFetcher("updateDynamicReport", updateDynamicReport)
 				)
 				.build();
 	}

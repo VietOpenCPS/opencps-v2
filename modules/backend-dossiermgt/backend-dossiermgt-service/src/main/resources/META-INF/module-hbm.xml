@@ -21,6 +21,7 @@
 	<import class="org.opencps.dossiermgt.model.DossierSync" />
 	<import class="org.opencps.dossiermgt.model.DossierTemplate" />
 	<import class="org.opencps.dossiermgt.model.DossierUser" />
+	<import class="org.opencps.dossiermgt.model.DynamicReport" />
 	<import class="org.opencps.dossiermgt.model.MenuConfig" />
 	<import class="org.opencps.dossiermgt.model.MenuRole" />
 	<import class="org.opencps.dossiermgt.model.PaymentConfig" />
@@ -31,6 +32,7 @@
 	<import class="org.opencps.dossiermgt.model.ProcessSequence" />
 	<import class="org.opencps.dossiermgt.model.ProcessStep" />
 	<import class="org.opencps.dossiermgt.model.ProcessStepRole" />
+	<import class="org.opencps.dossiermgt.model.PublishQueue" />
 	<import class="org.opencps.dossiermgt.model.Registration" />
 	<import class="org.opencps.dossiermgt.model.RegistrationForm" />
 	<import class="org.opencps.dossiermgt.model.RegistrationLog" />
@@ -132,8 +134,12 @@
 		<property name="typeName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScriptFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="formReportFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="codePattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dataConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="counter" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="mappingData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="govAgencies" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -531,6 +537,24 @@
 		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="visited" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
+	<class name="org.opencps.dossiermgt.model.impl.DynamicReportImpl" table="opencps_dynamicreport">
+		<id name="dynamicReportId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="reportCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="reportName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="sharing" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="filterConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="userConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuConfigImpl" table="opencps_menuconfig">
 		<id name="menuConfigId" type="long">
 			<generator class="assigned" />
@@ -748,6 +772,20 @@
 		<property name="roleName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property column="condition_" name="condition" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.PublishQueueImpl" table="opencps_publish_queue">
+		<id name="publishQueueId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="status" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="retry" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.RegistrationImpl" table="opencps_registration">
 		<id name="registrationId" type="long">

@@ -25,6 +25,8 @@ import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DocumentTypeList.DocumentType;
 import org.opencps.api.v21.model.DossierTemplate;
+import org.opencps.api.v21.model.DynamicReportList;
+import org.opencps.api.v21.model.DynamicReportList.DynamicReport;
 import org.opencps.api.v21.model.FileTemplates;
 import org.opencps.api.v21.model.FileTemplates.FileTemplate;
 import org.opencps.api.v21.model.Groups;
@@ -66,6 +68,7 @@ import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
+import org.opencps.dossiermgt.action.DynamicReportActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.MenuConfigActions;
 import org.opencps.dossiermgt.action.PaymentConfigActions;
@@ -77,6 +80,7 @@ import org.opencps.dossiermgt.action.impl.ActionConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
+import org.opencps.dossiermgt.action.impl.DynamicReportActionsImpl;
 import org.opencps.dossiermgt.action.impl.MenuConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.PaymentConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
@@ -96,46 +100,42 @@ public class ProcessUpdateDBUtils {
 			long userId, ServiceContext serviceContext) {
 		try {
 			ActionConfigActions actions = new ActionConfigActionsImpl();
-			//Delete all table ActionConfig
-			boolean flagAct = actions.deleteAllActionConfig(groupId, userId, serviceContext);
-			//Update table ActionConfig
-			if (actList != null && flagAct) {
-				List<ActionConfig> actConfigList = actList.getActionConfig();
-				if (actConfigList != null && actConfigList.size() > 0) {
-					for (ActionConfig actConfig : actConfigList) {
-						String actionCode = actConfig.getActionCode();
-						String actionName = actConfig.getActionName();
-						Boolean extraForm = actConfig.isExtraForm();
-						String formConfig = actConfig.getFormConfig();
-						String sampleData = actConfig.getSampleData();
-						Boolean insideProcess = actConfig.isInsideProcess();
-						Integer userNote = actConfig.getUserNote();
-						Integer syncType = actConfig.getSyncType();
-						Integer eventType = actConfig.getEventType();
-						Integer infoType = actConfig.getInfoType();
-						Boolean rollbackable = actConfig.isRollbackable();
-						String notificationType = actConfig.getNotificationType();
-						String documentType = actConfig.getDocumentType();
-						String mappingAction = actConfig.getMappingAction();
-						Integer dateOption = actConfig.getDateOption();
-						if (dateOption == null) {
-							dateOption = 0;
-						}
+			//Create table ActionConfig
+			List<ActionConfig> actConfigList = actList.getActionConfig();
+			if (actConfigList != null && actConfigList.size() > 0) {
+				for (ActionConfig actConfig : actConfigList) {
+					String actionCode = actConfig.getActionCode();
+					String actionName = actConfig.getActionName();
+					Boolean extraForm = actConfig.isExtraForm();
+					String formConfig = actConfig.getFormConfig();
+					String sampleData = actConfig.getSampleData();
+					Boolean insideProcess = actConfig.isInsideProcess();
+					Integer userNote = actConfig.getUserNote();
+					Integer syncType = actConfig.getSyncType();
+					Integer eventType = actConfig.getEventType();
+					Integer infoType = actConfig.getInfoType();
+					Boolean rollbackable = actConfig.isRollbackable();
+					String notificationType = actConfig.getNotificationType();
+					String documentType = actConfig.getDocumentType();
+					String mappingAction = actConfig.getMappingAction();
+					Integer dateOption = actConfig.getDateOption();
+					if (dateOption == null) {
+						dateOption = 0;
+					}
 
-						if (Validator.isNotNull(actionCode)) {
-							// Check record exits DB
-							actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
-									insideProcess, userNote, syncType, eventType, infoType, rollbackable,
-									notificationType, documentType, formConfig, mappingAction, dateOption);
-						}
+					if (Validator.isNotNull(actionCode)) {
+						// Check record exits DB
+						actions.updateActionConfigDB(userId, groupId, actionCode, actionName, extraForm, sampleData,
+								insideProcess, userNote, syncType, eventType, infoType, rollbackable,
+								notificationType, documentType, formConfig, mappingAction, dateOption);
 					}
 				}
 			}
-			return true;
 		} catch (Exception e) {
 			_log.error(e);
 			return false;
 		}
+		return true;
 	}
 
 	//LamTV_Update StepConfig to DB
@@ -144,26 +144,21 @@ public class ProcessUpdateDBUtils {
 
 		try {
 			StepConfigActions actions = new StepConfigActionsImpl();
-			//Delete all record StepConfig
-			boolean flagStep = actions.deleteAllStepConfig(groupId, userId, serviceContext);
-			//Insert StepConfig
-			if (stepList != null && flagStep) {
-				List<StepConfig> stepConfigList = stepList.getStepConfig();
-				if (stepConfigList != null && stepConfigList.size() > 0) {
-					for (StepConfig stepConfig : stepConfigList) {
-						String stepCode = stepConfig.getStepCode();
-						String stepName = stepConfig.getStepName();
-						Integer stepType = stepConfig.getStepType();
-						String dossierStatus = stepConfig.getDossierStatus();
-						String dossierSubStatus = stepConfig.getDossierSubStatus();
-						String menuGroup = stepConfig.getMenuGroup();
-						String menuStepName = stepConfig.getMenuStepName();
-						String buttonConfig = stepConfig.getButtonConfig();
-						if (Validator.isNotNull(stepCode)) {
-							// Check record exits DB
-							actions.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType, dossierStatus, dossierSubStatus,
-									menuGroup, menuStepName, buttonConfig);
-						}
+			List<StepConfig> stepConfigList = stepList.getStepConfig();
+			if (stepConfigList != null && stepConfigList.size() > 0) {
+				for (StepConfig stepConfig : stepConfigList) {
+					String stepCode = stepConfig.getStepCode();
+					String stepName = stepConfig.getStepName();
+					Integer stepType = stepConfig.getStepType();
+					String dossierStatus = stepConfig.getDossierStatus();
+					String dossierSubStatus = stepConfig.getDossierSubStatus();
+					String menuGroup = stepConfig.getMenuGroup();
+					String menuStepName = stepConfig.getMenuStepName();
+					String buttonConfig = stepConfig.getButtonConfig();
+					if (Validator.isNotNull(stepCode)) {
+						// Check record exits DB
+						actions.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType, dossierStatus, dossierSubStatus,
+								menuGroup, menuStepName, buttonConfig);
 					}
 				}
 			}
@@ -180,10 +175,8 @@ public class ProcessUpdateDBUtils {
 
 		try {
 			MenuConfigActions actions = new MenuConfigActionsImpl();
-			//Delete all table ActionConfig
-			boolean flagMenu = actions.deleteAllMenuConfig(groupId, userId, serviceContext);
-			//Update table ActionConfig
-			if (menuList != null && flagMenu) {
+			//Delete all table StepConfig
+			 if (menuList != null) {
 				List<MenuConfig> menuConfigList = menuList.getMenuConfig();
 				if (menuConfigList != null && menuConfigList.size() > 0) {
 					for (MenuConfig menuConfig : menuConfigList) {
@@ -210,7 +203,7 @@ public class ProcessUpdateDBUtils {
 			_log.error(e);
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 	//LamTV_Update DocumentType to DB
@@ -299,11 +292,10 @@ public class ProcessUpdateDBUtils {
 			ServiceContext serviceContext) {
 
 		try {
-			PaymentConfigActions actions = new PaymentConfigActionsImpl();
-			//Delete all table PaymentConfig
-			boolean flagPayment = actions.deleteAllPaymentConfig(groupId, userId, serviceContext);
 			//Update table PaymentConfig
-			if (paymentList != null && flagPayment) {
+			if (paymentList != null) {
+				PaymentConfigActions actions = new PaymentConfigActionsImpl();
+				//
 				List<PaymentConfig> paymentConfigList = paymentList.getPaymentConfig();
 				if (paymentConfigList != null && paymentConfigList.size() > 0) {
 					String govAgencyCode;
@@ -344,11 +336,11 @@ public class ProcessUpdateDBUtils {
 
 		try {
 			//Delete all table ServerConfig
-			List<org.opencps.communication.model.ServerConfig> configList = ServerConfigLocalServiceUtil
-					.getGroupId(groupId);
-			if (configList != null && configList.size() > 0) {
-				ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
-			}
+//			List<org.opencps.communication.model.ServerConfig> configList = ServerConfigLocalServiceUtil
+//					.getGroupId(groupId);
+//			if (configList != null && configList.size() > 0) {
+//				ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
+//			}
 			//Update table ServerConfig
 			if (serverList != null) {
 				List<ServerConfig> serverConfigList = serverList.getServerConfig();
@@ -366,7 +358,7 @@ public class ProcessUpdateDBUtils {
 						configs = serverConfig.getConfigs();
 						if (Validator.isNotNull(serverNo)) {
 							// Check record exits DB
-							ServerConfigLocalServiceUtil.updateServerConfig(groupId, 0, govAgencyCode, serverNo,
+							ServerConfigLocalServiceUtil.updateServerConfigDB(groupId, govAgencyCode, serverNo,
 									serverName, protocol, configs, null, serviceContext);
 						}
 					}
@@ -384,11 +376,12 @@ public class ProcessUpdateDBUtils {
 			long userId, ServiceContext serviceContext) {
 
 		try {
-			NotificationTemplateInterface actions = new NotificationTemplateActions();
 			//Delete all table NotificationTemplate
-			boolean flagTemp = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
+			//boolean flagTemp = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
 			//Update table NotificationTemplate
-			if (notiTempList != null && flagTemp) {
+			if (notiTempList != null) {
+				NotificationTemplateInterface actions = new NotificationTemplateActions();
+				//
 				List<NotificationTemplate> notiTemplateList = notiTempList.getNotificationTemplate();
 				if (notiTemplateList != null && notiTemplateList.size() > 0) {
 					String notificationType;
@@ -521,6 +514,39 @@ public class ProcessUpdateDBUtils {
 		}
 		return true;
 
+	}
+
+	//LamTV_Update DynamicReport to DB
+	public static boolean processUpdateDynamicReport(DynamicReportList reportList, String folderPath, long groupId,
+			long userId, ServiceContext serviceContext) {
+		try {
+			DynamicReportActions actions = new DynamicReportActionsImpl();
+			//Create table ActionConfig
+			List<DynamicReport> dynamicReportList = reportList.getDynamicReport();
+			if (dynamicReportList != null && dynamicReportList.size() > 0) {
+				for (DynamicReport report : dynamicReportList) {
+					String reportCode = report.getReportCode();
+					String reportName = report.getReportName();
+					Integer sharing = report.getSharing();
+					if (sharing == null) {
+						sharing = 1;
+					}
+					String filterConfig = report.getFilterConfig();
+					String tableConfig = report.getTableConfig();
+					String userConfig = report.getUserConfig();
+
+					if (Validator.isNotNull(reportCode)) {
+						// Check record exits DB
+						actions.updateDynamicReportDB(userId, groupId, reportCode, reportName, sharing, filterConfig,
+								tableConfig, userConfig);
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return true;
 	}
 
 	//LamTV_Update Dictcollection to DB

@@ -98,5 +98,59 @@
 			<finder-column name="month"/>
 			<finder-column name="year"/>
 		</finder>
+
+		<finder return-type="Collection" name="CID_GID_Y">
+			<finder-column name="companyId"/>
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
+	</entity>
+
+	<entity local-service="true" name="OpencpsVotingStatistic"
+		remote-service="false" table="opencps_voting_statistic" uuid="true">
+
+		<column name="votingStatisticId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="month" type="int" />
+		<column name="year" type="int" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="serviceCode" type="String" />
+		<column name="serviceName" type="String" />
+		<column name="votingCode" type="String" />
+		<column name="votingSubject" type="String" />
+		<column name="totalVoted" type="int" />
+		<column name="veryGoodCount" type="int" />
+		<column name="goodCount" type="int" />
+		<column name="badCount" type="int" />
+		<column name="percentVeryGood" type="int" />
+		<column name="percentGood" type="int" />
+		<column name="percentBad" type="int" />
+		<column name="totalCount" type="int" />
+		
+		<!-- Filter -->
+		<finder return-type="Collection" name="G_UID_Y">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>
+		
+		<finder return-type="OpencpsVotingStatistic" name="M_Y_DM_G">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="serviceCode"/>
+		</finder>
+		
 	</entity>
 </service-builder>

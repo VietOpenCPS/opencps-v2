@@ -108,7 +108,18 @@ import javax.xml.bind.annotation.XmlType;
 	"delegateDistrictCode",
 	"delegateWardCode",
 	"dossierActionId",
-	"submissionNote"
+	"submissionNote",
+	"lockState",
+	"counter",
+	"postalCityName",
+	"delegateCityName",
+	"delegateDistrictName",
+	"delegateWardName",
+	"processNo",
+	"durationCount",
+	"durationUnit",
+	"sampleCount",
+	"dossierName"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierPublishModel {
@@ -226,6 +237,28 @@ public class DossierPublishModel {
 	private Long dossierActionId;
 	@FormParam(value = "submissionNote")
 	private String submissionNote;
+	@FormParam(value = "lockState")
+	private String lockState;	
+	@FormParam(value = "counter")
+	private Integer counter;	
+	@FormParam(value = "postalCityName")
+	protected String postalCityName;
+	@FormParam(value = "delegateCityName")
+	protected String delegateCityName;
+	@FormParam(value = "delegateDistrictName")
+	protected String delegateDistrictName;
+	@FormParam(value = "delegateWardName")
+	protected String delegateWardName;
+	@FormParam(value = "processNo")
+	protected String processNo;
+	@FormParam(value = "durationCount")
+	protected Double durationCount;
+	@FormParam(value = "durationUnit")
+	protected Integer durationUnit;
+	@FormParam(value = "sampleCount")
+	protected Integer sampleCount;
+	@FormParam(value = "dossierName")
+	protected String dossierName;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -1114,4 +1147,92 @@ public class DossierPublishModel {
 	public void setSubmissionNote(String value) {
 		this.submissionNote = value;
 	} 	
+	
+	public String getLockState() {
+		return lockState;
+	}
+
+	public void setLockState(String value) {
+		this.lockState = value;
+	} 
+	
+	public Integer getCounter() {
+		return counter;
+	}
+
+	public void setCounter(Integer value) {
+		this.counter = value;
+	} 
+	
+	public String getPostalCityName() {
+		return postalCityName;
+	}
+
+	public void setPostalCityName(String value) {
+		this.postalCityName = value;
+	} 
+	
+	public String getDelegateCityName() {
+		return delegateCityName;
+	}
+
+	public void setDelegateCityName(String value) {
+		this.delegateCityName = value;
+	} 
+	
+	public String getDelegateDistrictName() {
+		return delegateDistrictName;
+	}
+
+	public void setDelegateDistrictName(String value) {
+		this.delegateDistrictName = value;
+	} 
+	
+	public String getDelegateWardName() {
+		return delegateWardName;
+	}
+
+	public void setDelegateWardName(String value) {
+		this.delegateWardName = value;
+	} 
+	
+	public String getProcessNo() {
+		return processNo;
+	}
+
+	public void setProcessNo(String value) {
+		this.processNo = value;
+	}
+	
+	public Double getDurationCount() {
+		return durationCount;
+	}
+
+	public void setDurationCount(Double value) {
+		this.durationCount = value;
+	}
+	
+	public Integer getDurationUnit() {
+		return durationUnit;
+	}
+
+	public void setDurationUnit(Integer value) {
+		this.durationUnit = value;
+	}
+	
+	public Integer getSampleCount() {
+		return sampleCount;
+	}
+
+	public void setSampleCount(Integer value) {
+		this.sampleCount = value;
+	}
+	
+	public String getDossierName() {
+		return dossierName;
+	}
+
+	public void setDossierName(String value) {
+		this.dossierName = value;
+	}
 }

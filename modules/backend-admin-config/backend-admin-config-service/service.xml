@@ -33,4 +33,44 @@
 		
 	</entity>
 	
+	<entity name="DynamicReport" uuid="false" local-service="true"
+		remote-service="false" table="opencps_dynamicreport">
+
+		<!-- PK fields -->
+		<column name="dynamicReportId" type="long" primary="true" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="sharing" type="int" />
+		<column name="reportName" type="String" />
+		<column name="reportCode" type="String" />
+		<column name="filterConfig" type="String" />
+		<column name="tableConfig" type="String" />
+		<column name="userConfig" type="String" />
+		
+		<order by="asc">
+			<order-column name="dynamicReportId" />
+		</order>
+		
+		<finder return-type="Collection" name="F_GroupId">
+			<finder-column name="groupId"></finder-column>
+		</finder>
+		
+		<finder return-type="DynamicReport" name="F_reportCode">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="reportCode"></finder-column>
+		</finder>
+		
+	</entity>
+	
 </service-builder>

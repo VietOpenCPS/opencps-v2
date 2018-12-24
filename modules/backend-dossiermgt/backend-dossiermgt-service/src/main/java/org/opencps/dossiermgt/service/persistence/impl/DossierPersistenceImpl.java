@@ -10247,6 +10247,1059 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	private static final String _FINDER_COLUMN_G_DN_DOSSIERNO_1 = "dossier.dossierNo IS NULL";
 	private static final String _FINDER_COLUMN_G_DN_DOSSIERNO_2 = "dossier.dossierNo = ?";
 	private static final String _FINDER_COLUMN_G_DN_DOSSIERNO_3 = "(dossier.dossierNo IS NULL OR dossier.dossierNo = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_AN = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_AN",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_AN = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_AN",
+			new String[] { Long.class.getName(), String.class.getName() },
+			DossierModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierModelImpl.APPLICANTIDNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_AN = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_AN",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByG_AN(long groupId, String applicantIdNo) {
+		return findByG_AN(groupId, applicantIdNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByG_AN(long groupId, String applicantIdNo,
+		int start, int end) {
+		return findByG_AN(groupId, applicantIdNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByG_AN(long groupId, String applicantIdNo,
+		int start, int end, OrderByComparator<Dossier> orderByComparator) {
+		return findByG_AN(groupId, applicantIdNo, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByG_AN(long groupId, String applicantIdNo,
+		int start, int end, OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_AN;
+			finderArgs = new Object[] { groupId, applicantIdNo };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_AN;
+			finderArgs = new Object[] {
+					groupId, applicantIdNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if ((groupId != dossier.getGroupId()) ||
+							!Objects.equals(applicantIdNo,
+								dossier.getApplicantIdNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_AN_GROUPID_2);
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByG_AN_First(long groupId, String applicantIdNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByG_AN_First(groupId, applicantIdNo,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", applicantIdNo=");
+		msg.append(applicantIdNo);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByG_AN_First(long groupId, String applicantIdNo,
+		OrderByComparator<Dossier> orderByComparator) {
+		List<Dossier> list = findByG_AN(groupId, applicantIdNo, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByG_AN_Last(long groupId, String applicantIdNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByG_AN_Last(groupId, applicantIdNo,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", applicantIdNo=");
+		msg.append(applicantIdNo);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByG_AN_Last(long groupId, String applicantIdNo,
+		OrderByComparator<Dossier> orderByComparator) {
+		int count = countByG_AN(groupId, applicantIdNo);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Dossier> list = findByG_AN(groupId, applicantIdNo, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param dossierId the primary key of the current dossier
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier
+	 * @throws NoSuchDossierException if a dossier with the primary key could not be found
+	 */
+	@Override
+	public Dossier[] findByG_AN_PrevAndNext(long dossierId, long groupId,
+		String applicantIdNo, OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = findByPrimaryKey(dossierId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Dossier[] array = new DossierImpl[3];
+
+			array[0] = getByG_AN_PrevAndNext(session, dossier, groupId,
+					applicantIdNo, orderByComparator, true);
+
+			array[1] = dossier;
+
+			array[2] = getByG_AN_PrevAndNext(session, dossier, groupId,
+					applicantIdNo, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Dossier getByG_AN_PrevAndNext(Session session, Dossier dossier,
+		long groupId, String applicantIdNo,
+		OrderByComparator<Dossier> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+		query.append(_FINDER_COLUMN_G_AN_GROUPID_2);
+
+		boolean bindApplicantIdNo = false;
+
+		if (applicantIdNo == null) {
+			query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_1);
+		}
+		else if (applicantIdNo.equals("")) {
+			query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_3);
+		}
+		else {
+			bindApplicantIdNo = true;
+
+			query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindApplicantIdNo) {
+			qPos.add(applicantIdNo);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossier);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Dossier> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the dossiers where groupId = &#63; and applicantIdNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 */
+	@Override
+	public void removeByG_AN(long groupId, String applicantIdNo) {
+		for (Dossier dossier : findByG_AN(groupId, applicantIdNo,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dossier);
+		}
+	}
+
+	/**
+	 * Returns the number of dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByG_AN(long groupId, String applicantIdNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_AN;
+
+		Object[] finderArgs = new Object[] { groupId, applicantIdNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_AN_GROUPID_2);
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_G_AN_APPLICANTIDNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_AN_GROUPID_2 = "dossier.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_AN_APPLICANTIDNO_1 = "dossier.applicantIdNo IS NULL";
+	private static final String _FINDER_COLUMN_G_AN_APPLICANTIDNO_2 = "dossier.applicantIdNo = ?";
+	private static final String _FINDER_COLUMN_G_AN_APPLICANTIDNO_3 = "(dossier.applicantIdNo IS NULL OR dossier.applicantIdNo = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByG_AN_SC_GAC_DTNO_ODID",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), Long.class.getName()
+			},
+			DossierModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierModelImpl.APPLICANTIDNO_COLUMN_BITMASK |
+			DossierModelImpl.SERVICECODE_COLUMN_BITMASK |
+			DossierModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
+			DossierModelImpl.DOSSIERTEMPLATENO_COLUMN_BITMASK |
+			DossierModelImpl.ORIGINDOSSIERID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_AN_SC_GAC_DTNO_ODID = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByG_AN_SC_GAC_DTNO_ODID",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), Long.class.getName()
+			});
+
+	/**
+	 * Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param serviceCode the service code
+	 * @param govAgencyCode the gov agency code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param originDossierId the origin dossier ID
+	 * @return the matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo,
+				serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
+
+		if (dossier == null) {
+			StringBundler msg = new StringBundler(14);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", applicantIdNo=");
+			msg.append(applicantIdNo);
+
+			msg.append(", serviceCode=");
+			msg.append(serviceCode);
+
+			msg.append(", govAgencyCode=");
+			msg.append(govAgencyCode);
+
+			msg.append(", dossierTemplateNo=");
+			msg.append(dossierTemplateNo);
+
+			msg.append(", originDossierId=");
+			msg.append(originDossierId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDossierException(msg.toString());
+		}
+
+		return dossier;
+	}
+
+	/**
+	 * Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param serviceCode the service code
+	 * @param govAgencyCode the gov agency code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param originDossierId the origin dossier ID
+	 * @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId) {
+		return fetchByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo,
+			serviceCode, govAgencyCode, dossierTemplateNo, originDossierId, true);
+	}
+
+	/**
+	 * Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param serviceCode the service code
+	 * @param govAgencyCode the gov agency code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param originDossierId the origin dossier ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, applicantIdNo, serviceCode, govAgencyCode,
+				dossierTemplateNo, originDossierId
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID,
+					finderArgs, this);
+		}
+
+		if (result instanceof Dossier) {
+			Dossier dossier = (Dossier)result;
+
+			if ((groupId != dossier.getGroupId()) ||
+					!Objects.equals(applicantIdNo, dossier.getApplicantIdNo()) ||
+					!Objects.equals(serviceCode, dossier.getServiceCode()) ||
+					!Objects.equals(govAgencyCode, dossier.getGovAgencyCode()) ||
+					!Objects.equals(dossierTemplateNo,
+						dossier.getDossierTemplateNo()) ||
+					(originDossierId != dossier.getOriginDossierId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(8);
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GROUPID_2);
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_2);
+			}
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_2);
+			}
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_2);
+			}
+
+			query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_ORIGINDOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				qPos.add(originDossierId);
+
+				List<Dossier> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DossierPersistenceImpl.fetchByG_AN_SC_GAC_DTNO_ODID(long, String, String, String, String, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Dossier dossier = list.get(0);
+
+					result = dossier;
+
+					cacheResult(dossier);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Dossier)result;
+		}
+	}
+
+	/**
+	 * Removes the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param serviceCode the service code
+	 * @param govAgencyCode the gov agency code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param originDossierId the origin dossier ID
+	 * @return the dossier that was removed
+	 */
+	@Override
+	public Dossier removeByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId)
+		throws NoSuchDossierException {
+		Dossier dossier = findByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo,
+				serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
+
+		return remove(dossier);
+	}
+
+	/**
+	 * Returns the number of dossiers where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdNo the applicant ID no
+	 * @param serviceCode the service code
+	 * @param govAgencyCode the gov agency code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param originDossierId the origin dossier ID
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByG_AN_SC_GAC_DTNO_ODID(long groupId, String applicantIdNo,
+		String serviceCode, String govAgencyCode, String dossierTemplateNo,
+		long originDossierId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_AN_SC_GAC_DTNO_ODID;
+
+		Object[] finderArgs = new Object[] {
+				groupId, applicantIdNo, serviceCode, govAgencyCode,
+				dossierTemplateNo, originDossierId
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(7);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GROUPID_2);
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_2);
+			}
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_2);
+			}
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_2);
+			}
+
+			query.append(_FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_ORIGINDOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				qPos.add(originDossierId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GROUPID_2 = "dossier.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_1 =
+		"dossier.applicantIdNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_2 =
+		"dossier.applicantIdNo = ? AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_APPLICANTIDNO_3 =
+		"(dossier.applicantIdNo IS NULL OR dossier.applicantIdNo = '') AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_1 =
+		"dossier.serviceCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_2 =
+		"dossier.serviceCode = ? AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_SERVICECODE_3 =
+		"(dossier.serviceCode IS NULL OR dossier.serviceCode = '') AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_1 =
+		"dossier.govAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_2 =
+		"dossier.govAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_GOVAGENCYCODE_3 =
+		"(dossier.govAgencyCode IS NULL OR dossier.govAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_1 =
+		"dossier.dossierTemplateNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_2 =
+		"dossier.dossierTemplateNo = ? AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_DOSSIERTEMPLATENO_3 =
+		"(dossier.dossierTemplateNo IS NULL OR dossier.dossierTemplateNo = '') AND ";
+	private static final String _FINDER_COLUMN_G_AN_SC_GAC_DTNO_ODID_ORIGINDOSSIERID_2 =
+		"dossier.originDossierId = ?";
 
 	public DossierPersistenceImpl() {
 		setModelClass(Dossier.class);
@@ -10298,6 +11351,13 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN,
 			new Object[] { dossier.getGroupId(), dossier.getDossierNo() },
 			dossier);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID,
+			new Object[] {
+				dossier.getGroupId(), dossier.getApplicantIdNo(),
+				dossier.getServiceCode(), dossier.getGovAgencyCode(),
+				dossier.getDossierTemplateNo(), dossier.getOriginDossierId()
+			}, dossier);
 
 		dossier.resetOriginalValues();
 	}
@@ -10407,6 +11467,20 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN, args,
 			dossierModelImpl, false);
+
+		args = new Object[] {
+				dossierModelImpl.getGroupId(),
+				dossierModelImpl.getApplicantIdNo(),
+				dossierModelImpl.getServiceCode(),
+				dossierModelImpl.getGovAgencyCode(),
+				dossierModelImpl.getDossierTemplateNo(),
+				dossierModelImpl.getOriginDossierId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_AN_SC_GAC_DTNO_ODID, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID, args,
+			dossierModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(DossierModelImpl dossierModelImpl,
@@ -10496,6 +11570,39 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DN, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DN, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dossierModelImpl.getGroupId(),
+					dossierModelImpl.getApplicantIdNo(),
+					dossierModelImpl.getServiceCode(),
+					dossierModelImpl.getGovAgencyCode(),
+					dossierModelImpl.getDossierTemplateNo(),
+					dossierModelImpl.getOriginDossierId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_AN_SC_GAC_DTNO_ODID,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID,
+				args);
+		}
+
+		if ((dossierModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dossierModelImpl.getOriginalGroupId(),
+					dossierModelImpl.getOriginalApplicantIdNo(),
+					dossierModelImpl.getOriginalServiceCode(),
+					dossierModelImpl.getOriginalGovAgencyCode(),
+					dossierModelImpl.getOriginalDossierTemplateNo(),
+					dossierModelImpl.getOriginalOriginDossierId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_AN_SC_GAC_DTNO_ODID,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID,
+				args);
 		}
 	}
 
@@ -10781,6 +11888,15 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_U_G_GAC_SC_DTNO_DAI_O,
 				args);
 
+			args = new Object[] {
+					dossierModelImpl.getGroupId(),
+					dossierModelImpl.getApplicantIdNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_AN, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_AN,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -11032,6 +12148,27 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_U_G_GAC_SC_DTNO_DAI_O,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_U_G_GAC_SC_DTNO_DAI_O,
+					args);
+			}
+
+			if ((dossierModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_AN.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dossierModelImpl.getOriginalGroupId(),
+						dossierModelImpl.getOriginalApplicantIdNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_AN, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_AN,
+					args);
+
+				args = new Object[] {
+						dossierModelImpl.getGroupId(),
+						dossierModelImpl.getApplicantIdNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_AN, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_AN,
 					args);
 			}
 		}

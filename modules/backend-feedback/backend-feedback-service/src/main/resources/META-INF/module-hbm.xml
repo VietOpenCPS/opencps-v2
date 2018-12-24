@@ -60,6 +60,7 @@
 		<property name="choices" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="templateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="commentable" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="votingCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="backend.feedback.model.impl.VotingResultImpl" table="opencps_votingresult">
 		<id name="votingResultId" type="long">

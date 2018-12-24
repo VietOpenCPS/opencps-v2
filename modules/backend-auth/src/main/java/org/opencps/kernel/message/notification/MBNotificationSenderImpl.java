@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
+import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 
@@ -33,6 +34,9 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 		payloadJSON.put("notificationText", messageEntry.getTextMessage());
 		payloadJSON.put("userUrl", messageEntry.getUserUrl());
 		payloadJSON.put("guestUrl", messageEntry.getGuestUrl());
+		payloadJSON.put("data", messageEntry.getData());
+		payloadJSON.put("notifyMessage", messageEntry.getNotifyMessage());
+		
 		if (messageEntry.getToUserIds() != null) {
 			for (Long toUserId : messageEntry.getToUserIds()) {
 				
@@ -45,11 +49,17 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 					
 					_log.info(serviceContext[0].getScopeGroupId());
 					
-					UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
-						toUserId, portletId, (new Date()).getTime(),
-						UserNotificationDeliveryConstants.TYPE_WEBSITE,
-						toUserId, payloadJSON.toString(), false,
-						serviceContext[0]);
+					UserNotificationEvent event =
+							UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
+								toUserId, portletId, (new Date()).getTime(),
+								UserNotificationDeliveryConstants.TYPE_WEBSITE,
+								toUserId, payloadJSON.toString(), false,
+								serviceContext[0]);
+
+					event.setDelivered(false);
+
+					UserNotificationEventLocalServiceUtil.updateUserNotificationEvent(
+						event);
 				}
 				catch (Exception e) {
 					_log.debug(e);

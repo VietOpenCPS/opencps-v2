@@ -94,7 +94,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			payload.setGroupId(site.getGroupId());
 			for (int month = 1; month <= LocalDate.now().getMonthValue(); month ++) {
-				engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());					
+				engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
 				
 				payload.setMonth(Integer.toString(month));
 				payload.setYear(Integer.toString(LocalDate.now().getYear()));
@@ -159,7 +159,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 							Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 	
 							engineFetch.fecthStatisticData(site.getGroupId(), statisticData, dossierData, month);
-							
 							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 							
 							statisticEngineUpdate.updateStatisticData(statisticData);														
@@ -218,6 +217,9 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 //			});
 			
 			/* Update summary */
+			//Delete record
+			engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+			//
 			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 			
 			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());

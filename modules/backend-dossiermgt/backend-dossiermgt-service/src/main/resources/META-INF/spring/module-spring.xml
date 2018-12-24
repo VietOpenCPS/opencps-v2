@@ -47,6 +47,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierTemplatePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierUserLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierUserLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierUserPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DynamicReportLocalServiceImpl" id="org.opencps.dossiermgt.service.DynamicReportLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DynamicReportPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DynamicReportPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.MenuConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.MenuConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.MenuRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.MenuRoleLocalService" />
@@ -67,6 +69,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessStepPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessStepPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ProcessStepRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessStepRoleLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessStepRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessStepRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.PublishQueueLocalServiceImpl" id="org.opencps.dossiermgt.service.PublishQueueLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.PublishQueuePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PublishQueuePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.RegistrationLocalServiceImpl" id="org.opencps.dossiermgt.service.RegistrationLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.RegistrationFormLocalServiceImpl" id="org.opencps.dossiermgt.service.RegistrationFormLocalService" />

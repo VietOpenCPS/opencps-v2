@@ -473,11 +473,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String issueDate = StringPool.BLANK;
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
-				String deliverableState;
-				if (eSign) {
+				String deliverableState = (dlv != null ? dlv.getDeliverableState() : StringPool.BLANK);
+				if (eSign && Validator.isNull(deliverableState)) {
 					deliverableState = "0";
 				} else {
-					deliverableState = "2";
+					deliverableState = "1";
 				}
 
 				if (Validator.isNotNull(formDataContent)) {
@@ -495,14 +495,15 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							dossier.getApplicantIdNo(), dossier.getApplicantName(), subject, issueDate, expireDate,
 							revalidate, deliverableState, serviceContext);
 					
-					if (dlv != null) {
-						dlv.setDossierId(model.getDossierId());
-						dlv.setFileEntryId(model.getFileEntryId());
-						dlv = DeliverableLocalServiceUtil.updateDeliverable(dlv);
-						DeliverableLocalServiceUtil.updateDeliverable(dlv);
-					}
-
 				}
+				
+				if (dlv != null) {
+					dlv.setDossierId(model.getDossierId());
+					dlv.setFileEntryId(model.getFileEntryId());
+					dlv = DeliverableLocalServiceUtil.updateDeliverable(dlv);
+					DeliverableLocalServiceUtil.updateDeliverable(dlv);
+				}
+
 				// update deliverable
 
 				try {

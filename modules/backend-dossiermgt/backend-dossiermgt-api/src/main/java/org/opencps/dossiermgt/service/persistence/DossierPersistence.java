@@ -2515,6 +2515,229 @@ public interface DossierPersistence extends BasePersistence<Dossier> {
 	public int countByG_DN(long groupId, String dossierNo);
 
 	/**
+	* Returns all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_AN(long groupId, String applicantIdNo);
+
+	/**
+	* Returns a range of all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_AN(long groupId,
+		String applicantIdNo, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_AN(long groupId,
+		String applicantIdNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_AN(long groupId,
+		String applicantIdNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_AN_First(long groupId, String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_AN_First(long groupId, String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_AN_Last(long groupId, String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_AN_Last(long groupId, String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public Dossier[] findByG_AN_PrevAndNext(long dossierId, long groupId,
+		String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Removes all the dossiers where groupId = &#63; and applicantIdNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	*/
+	public void removeByG_AN(long groupId, String applicantIdNo);
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and applicantIdNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @return the number of matching dossiers
+	*/
+	public int countByG_AN(long groupId, String applicantIdNo);
+
+	/**
+	* Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId);
+
+	/**
+	* Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @return the dossier that was removed
+	*/
+	public Dossier removeByG_AN_SC_GAC_DTNO_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @return the number of matching dossiers
+	*/
+	public int countByG_AN_SC_GAC_DTNO_ODID(long groupId, String applicantIdNo,
+		String serviceCode, String govAgencyCode, String dossierTemplateNo,
+		long originDossierId);
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

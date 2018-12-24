@@ -106,6 +106,22 @@ public class GetDossierData {
 		this.domainName = domainName;
 	}
 
+	public String getLockState() {
+		return lockState;
+	}
+
+	public void setLockState(String lockState) {
+		this.lockState = lockState;
+	}
+
+	public String getFinishDate() {
+		return finishDate;
+	}
+
+	public void setFinishDate(String finishDate) {
+		this.finishDate = finishDate;
+	}
+
 	private String dossierStatus;
 	private String dossierSubStatus;
 	private String receiveDate;
@@ -113,11 +129,13 @@ public class GetDossierData {
 	private String dueDate;
 	private String extendDate;
 	private String releaseDate;
+	private String finishDate;
 	private String serviceCode;
 	private String govAgencyCode;
 	private String govAgencyName;
 	private long groupId;
 	private String domainCode;
 	private String domainName;
-	
+	private String lockState;
+
 }

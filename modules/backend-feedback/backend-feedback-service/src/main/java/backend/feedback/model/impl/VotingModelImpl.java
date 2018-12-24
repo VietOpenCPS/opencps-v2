@@ -82,7 +82,8 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 			{ "subject", Types.VARCHAR },
 			{ "choices", Types.VARCHAR },
 			{ "templateNo", Types.VARCHAR },
-			{ "commentable", Types.BOOLEAN }
+			{ "commentable", Types.BOOLEAN },
+			{ "votingCode", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -101,9 +102,10 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 		TABLE_COLUMNS_MAP.put("choices", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("templateNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("commentable", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("votingCode", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_voting (uuid_ VARCHAR(75) null,votingId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,subject VARCHAR(75) null,choices VARCHAR(75) null,templateNo VARCHAR(75) null,commentable BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_voting (uuid_ VARCHAR(75) null,votingId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,subject VARCHAR(75) null,choices VARCHAR(75) null,templateNo VARCHAR(75) null,commentable BOOLEAN,votingCode VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_voting";
 	public static final String ORDER_BY_JPQL = " ORDER BY voting.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_voting.createDate ASC";
@@ -179,6 +181,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 		attributes.put("choices", getChoices());
 		attributes.put("templateNo", getTemplateNo());
 		attributes.put("commentable", isCommentable());
+		attributes.put("votingCode", getVotingCode());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -270,6 +273,12 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 
 		if (commentable != null) {
 			setCommentable(commentable);
+		}
+
+		String votingCode = (String)attributes.get("votingCode");
+
+		if (votingCode != null) {
+			setVotingCode(votingCode);
 		}
 	}
 
@@ -530,6 +539,21 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 	}
 
 	@Override
+	public String getVotingCode() {
+		if (_votingCode == null) {
+			return "";
+		}
+		else {
+			return _votingCode;
+		}
+	}
+
+	@Override
+	public void setVotingCode(String votingCode) {
+		_votingCode = votingCode;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Voting.class.getName()));
@@ -580,6 +604,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 		votingImpl.setChoices(getChoices());
 		votingImpl.setTemplateNo(getTemplateNo());
 		votingImpl.setCommentable(isCommentable());
+		votingImpl.setVotingCode(getVotingCode());
 
 		votingImpl.resetOriginalValues();
 
@@ -747,12 +772,20 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 
 		votingCacheModel.commentable = isCommentable();
 
+		votingCacheModel.votingCode = getVotingCode();
+
+		String votingCode = votingCacheModel.votingCode;
+
+		if ((votingCode != null) && (votingCode.length() == 0)) {
+			votingCacheModel.votingCode = null;
+		}
+
 		return votingCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -782,6 +815,8 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 		sb.append(getTemplateNo());
 		sb.append(", commentable=");
 		sb.append(isCommentable());
+		sb.append(", votingCode=");
+		sb.append(getVotingCode());
 		sb.append("}");
 
 		return sb.toString();
@@ -789,7 +824,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(46);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("<model><model-name>");
 		sb.append("backend.feedback.model.Voting");
@@ -851,6 +886,10 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 			"<column><column-name>commentable</column-name><column-value><![CDATA[");
 		sb.append(isCommentable());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>votingCode</column-name><column-value><![CDATA[");
+		sb.append(getVotingCode());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -883,6 +922,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 	private String _choices;
 	private String _templateNo;
 	private boolean _commentable;
+	private String _votingCode;
 	private long _columnBitmask;
 	private Voting _escapedModel;
 }

@@ -745,6 +745,10 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			object.setAdministrationIndex(adm.getTreeIndex());
 		}
 
+		if (Validator.isNotNull(objectData.getString("administrationName"))) {
+			object.setAdministrationName(objectData.getString("administrationName"));
+		}
+		
 		if (Validator.isNotNull(dom)) {
 			object.setDomainName(dom.getItemName());
 			object.setDomainIndex(dom.getTreeIndex());
