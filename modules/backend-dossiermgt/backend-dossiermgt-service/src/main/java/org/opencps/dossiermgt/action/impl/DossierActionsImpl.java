@@ -3940,8 +3940,16 @@ public class DossierActionsImpl implements DossierActions {
 				if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 						|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 					try {
+						String stepCode = dossierAction.getFromStepCode();
+						StringBuilder buildX = new StringBuilder(stepCode);
+						buildX.setCharAt(stepCode.length() - 1, 'x');
+						String stepCodeX = buildX.toString();
+						
 						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getFromStepCode());
-						if (stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED) {
+						StepConfig stepConfigX = StepConfigLocalServiceUtil.getByCode(groupId, stepCodeX);
+						
+						if ((stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)
+								|| (stepConfigX != null && stepConfigX.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)) {
 							List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getFromStepCode());
 							for (DossierActionUser dau : lstDaus) {
 								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
