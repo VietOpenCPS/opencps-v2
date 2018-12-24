@@ -6,16 +6,19 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
-import org.opencps.dossiermgt.lgsp.model.MDocumentTraces;
-import org.opencps.dossiermgt.lgsp.model.MSyncDocument;
+import org.opencps.dossiermgt.lgsp.model.MResult;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
+import org.opencps.dossiermgt.model.DossierStatistic;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.service.DossierStatisticLocalServiceUtil;
 
 public class LGSPRestClient {
 	private Log _log = LogFactoryUtil.getLog(LGSPRestClient.class);
@@ -43,6 +46,7 @@ public class LGSPRestClient {
 
 	private static final String DOSSIERS_BASE_PATH = "/Document";
 	private static final String TOKEN_BASE_PATH = "/token";
+	private static final String STATISTICS_BASE_PATH = "/Statistic";
 	
 	public static LGSPRestClient fromJSONObject(JSONObject configObj) {
 		if (configObj.has(SyncServerTerm.CONSUMER_KEY) 
@@ -89,7 +93,7 @@ public class LGSPRestClient {
 		
 		JSONObject resultObj = callRest.callPostAPI(HttpMethod.POST, "application/json",
 				baseUrl, TOKEN_BASE_PATH, properties, params);
-		_log.info("====lGSP token====" + resultObj.toJSONString());
+//		_log.info("====lGSP token====" + resultObj.toJSONString());
 		if (resultObj != null && resultObj.has("status")
 				&& resultObj.getInt("status") == 200) {
 			try {
@@ -102,41 +106,51 @@ public class LGSPRestClient {
 		return result;
 	}	
 	
-	public MSyncDocument publishDossier(String token, DossierPublishModel model) {
-		MSyncDocument result = null;
+	public MResult publishDossier(String token, DossierPublishModel model) {
+		MResult result = new MResult();
 		InvokeREST callRest = new InvokeREST();
 
 		JSONObject lgspObj = OpenCPSConverter.convertDossierToLGSPJSON(model);
 		JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",
 			consumerAdapter, DOSSIERS_BASE_PATH + "/SyncDocument", lgspObj.toJSONString());
-		if (resultObj != null && resultObj.has("status")
-				&& resultObj.getInt("status") == 200) {
-			try {
-				result = OpenCPSConverter.convertLGSPSyncDocument(JSONFactoryUtil.createJSONObject(resultObj.getString("message")));
-			} catch (JSONException e) {
-				_log.debug(e);
-			}
+		if (resultObj != null && resultObj.has("status")) {
+			result.setStatus(resultObj.getInt("status"));
+			result.setMessage(resultObj.getString("message"));
 		}
 		
 		return result;
 	}
 	
-	public MDocumentTraces postDocumentTrace(String token, long dossierId) {
-		MDocumentTraces result = null;
+	public MResult postDocumentTrace(String token, long dossierId) {
+		MResult result = new MResult();
 		InvokeREST callRest = new InvokeREST();
 
 		JSONObject lgspObj = OpenCPSConverter.convertToDocumentTraces(dossierId);
 		JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",
 			consumerAdapter, DOSSIERS_BASE_PATH + "/UpdateDocumentTraces", lgspObj.toJSONString());
-		if (resultObj != null && resultObj.has("status")
-				&& resultObj.getInt("status") == 200) {
-			try {
-				result = OpenCPSConverter.convertJSONToDocumentTraces(JSONFactoryUtil.createJSONObject(resultObj.getString("message")));
-			} catch (JSONException e) {
-				_log.debug(e);
-			}
+		if (resultObj != null && resultObj.has("status")) {
+			result.setStatus(resultObj.getInt("status"));
+			result.setMessage(resultObj.getString("message"));
 		}
 		
 		return result;		
+	}
+	
+	public MResult updateStatisticsMonth(String token, long groupId, int month, int year) {
+		MResult result = new MResult();
+		InvokeREST callRest = new InvokeREST();
+
+		DossierStatistic statistic = DossierStatisticLocalServiceUtil.fetchByG_M_Y(groupId, month, year);
+		if (statistic != null) {
+			JSONObject lgspObj = OpenCPSConverter.convertStatisticsToLGSPJSON(statistic);
+			JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",
+				consumerAdapter, STATISTICS_BASE_PATH + "/UpdateStatistic ", lgspObj.toJSONString());
+			if (resultObj != null && resultObj.has("status")) {
+				result.setStatus(resultObj.getInt("status"));
+				result.setMessage(resultObj.getString("message"));
+			}			
+		}
+		
+		return result;
 	}
 }

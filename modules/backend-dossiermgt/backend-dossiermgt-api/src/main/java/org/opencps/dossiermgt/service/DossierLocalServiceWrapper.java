@@ -278,6 +278,11 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier fetchOnePublicService() {
+		return _dossierLocalService.fetchOnePublicService();
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByDN_AN(
 		String dossierNo, String applicantIdNo) {
 		return _dossierLocalService.findByDN_AN(dossierNo, applicantIdNo);

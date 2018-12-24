@@ -106,6 +106,7 @@ create index IX_7FF14FD4 on opencps_dossierrequests (isNew);
 create index IX_F9F4B2A6 on opencps_dossierrequests (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_EA35AAA8 on opencps_dossierrequests (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_B951EA5 on opencps_dossierstatistic (groupId, month, year);
 create index IX_37EA9DA7 on opencps_dossierstatistic (groupId, userId, year);
 create index IX_97D829E2 on opencps_dossierstatistic (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_ABC5C0E4 on opencps_dossierstatistic (uuid_[$COLUMN_LENGTH:75$], groupId);
