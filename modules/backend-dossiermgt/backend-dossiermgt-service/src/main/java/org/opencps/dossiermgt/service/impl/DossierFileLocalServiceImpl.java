@@ -216,8 +216,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
 			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
 			
-			deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, serviceContext.getCompanyId(), deliverableType.getDeliverableTypeId());
-			object.setDeliverableCode(deliverableCode);
+			if (Validator.isNotNull(deliverableType)) {
+				deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, serviceContext.getCompanyId(), deliverableType.getDeliverableTypeId());
+				object.setDeliverableCode(deliverableCode);				
+			}
 		}
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {
