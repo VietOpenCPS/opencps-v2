@@ -55,10 +55,10 @@ public class OpencpsVotingStatisticLocalServiceUtil {
 	}
 
 	public static org.opencps.statistic.model.OpencpsVotingStatistic checkExsit(
-		long groupId, int month, int year, String govAgency, String service,
+		long groupId, int month, int year, String govAgency, String domain,
 		String votingCode) {
 		return getService()
-				   .checkExsit(groupId, month, year, govAgency, service,
+				   .checkExsit(groupId, month, year, govAgency, domain,
 			votingCode);
 	}
 
@@ -203,13 +203,13 @@ public class OpencpsVotingStatisticLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> fetchVotingStatistic(
-		long groupId, int month, int year, String votingCode, String service,
+		long groupId, int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .fetchVotingStatistic(groupId, month, year, votingCode,
-			service, govAgencyCode, start, end);
+			domain, govAgencyCode, start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -325,13 +325,13 @@ public class OpencpsVotingStatisticLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchVotingStatistic(
-		long groupId, int month, int year, String votingCode, String service,
+		long groupId, int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .searchVotingStatistic(groupId, month, year, votingCode,
-			service, govAgencyCode, start, end);
+			domain, govAgencyCode, start, end);
 	}
 
 	/**
@@ -349,13 +349,13 @@ public class OpencpsVotingStatisticLocalServiceUtil {
 		long votingStatisticId, long companyId, long groupId, long userId,
 		String userName, int month, int year, int totalVoted,
 		int percentVeryGood, int percentGood, int percentBad,
-		String govAgencyCode, String govAgencyName, String serviceCode,
-		String serviceName, String votingCode, int totalCount) {
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, String votingCode, int totalCount) {
 		return getService()
 				   .updateVotingStatistic(votingStatisticId, companyId,
 			groupId, userId, userName, month, year, totalVoted,
 			percentVeryGood, percentGood, percentBad, govAgencyCode,
-			govAgencyName, serviceCode, serviceName, votingCode, totalCount);
+			govAgencyName, domainCode, domainName, votingCode, totalCount);
 	}
 
 	public static OpencpsVotingStatisticLocalService getService() {

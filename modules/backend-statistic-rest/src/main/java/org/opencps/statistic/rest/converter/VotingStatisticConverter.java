@@ -30,15 +30,15 @@ public class VotingStatisticConverter {
 				votingData.setMonth(votingStatistic.getMonth());
 				votingData.setYear(votingStatistic.getYear());
 				votingData.setTotalVoted(votingStatistic.getTotalVoted());
-				votingData.setTotalCount(votingStatistic.getTotalCount());
+				//votingData.setTotalCount(votingStatistic.getTotalCount());
 				votingData.setPercentVeryGood(votingStatistic.getPercentVeryGood());
 				votingData.setPercentGood(votingStatistic.getPercentGood());
 				votingData.setPercentBad(votingStatistic.getPercentBad());
 				// Add common
 				votingData.setGovAgencyCode(votingStatistic.getGovAgencyCode());
 				votingData.setGovAgencyName(votingStatistic.getGovAgencyName());
-				votingData.setServiceCode(votingStatistic.getServiceCode());
-				votingData.setServiceName(votingStatistic.getServiceName());
+				votingData.setDomain(votingStatistic.getDomainCode());
+				votingData.setDomainName(votingStatistic.getDomainName());
 				votingData.setVotingCode(votingStatistic.getVotingCode());
 
 				votingStatisticList.add(votingData);

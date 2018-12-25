@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.base.OpencpsVotingStatisticLocalServiceBaseImpl;
 
@@ -46,14 +45,14 @@ public class OpencpsVotingStatisticLocalServiceImpl
 	 * Never reference this class directly. Always use {@link org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil} to access the opencps voting statistic local service.
 	 */
 
-	public OpencpsVotingStatistic checkExsit(long groupId, int month, int year, String govAgency, String service,
+	public OpencpsVotingStatistic checkExsit(long groupId, int month, int year, String govAgency, String domain,
 			String votingCode) {
-		return opencpsVotingStatisticFinder.checkContains(groupId, month, year, govAgency, service, votingCode);
+		return opencpsVotingStatisticFinder.checkContains(groupId, month, year, govAgency, domain, votingCode);
 	}
 
 	public OpencpsVotingStatistic updateVotingStatistic(long votingStatisticId, long companyId, long groupId,
 			long userId, String userName, int month, int year, int totalVoted, int percentVeryGood, int percentGood,
-			int percentBad, String govAgencyCode, String govAgencyName, String serviceCode, String serviceName,
+			int percentBad, String govAgencyCode, String govAgencyName, String domainCode, String domainName,
 			String votingCode, int totalCount) {
 
 		OpencpsVotingStatistic votingStatistic = null;
@@ -71,8 +70,8 @@ public class OpencpsVotingStatisticLocalServiceImpl
 			votingStatistic.setYear(year);
 			votingStatistic.setGovAgencyCode(govAgencyCode);
 			votingStatistic.setGovAgencyName(govAgencyName);
-			votingStatistic.setServiceCode(serviceCode);
-			votingStatistic.setServiceName(serviceName);
+			votingStatistic.setDomainCode(domainCode);
+			votingStatistic.setDomainName(domainName);
 			votingStatistic.setVotingCode(votingCode);
 			votingStatistic.setTotalVoted(totalVoted);
 			votingStatistic.setPercentVeryGood(percentVeryGood);
@@ -86,8 +85,8 @@ public class OpencpsVotingStatisticLocalServiceImpl
 			votingStatistic.setYear(year);
 			votingStatistic.setGovAgencyCode(govAgencyCode);
 			votingStatistic.setGovAgencyName(govAgencyName);
-			votingStatistic.setServiceCode(serviceCode);
-			votingStatistic.setServiceName(serviceName);
+			votingStatistic.setDomainCode(domainCode);
+			votingStatistic.setDomainName(domainName);
 			votingStatistic.setVotingCode(votingCode);
 			votingStatistic.setTotalVoted(totalVoted);
 			votingStatistic.setPercentVeryGood(percentVeryGood);
@@ -100,17 +99,17 @@ public class OpencpsVotingStatisticLocalServiceImpl
 	}
 
 	public List<OpencpsVotingStatistic> fetchVotingStatistic(long groupId, int month, int year, String votingCode,
-			String service, String govAgencyCode, int start, int end) throws PortalException, SystemException {
+			String domain, String govAgencyCode, int start, int end) throws PortalException, SystemException {
 
-		return opencpsVotingStatisticFinder.searchVotingStatistic(groupId, year, votingCode, service,
+		return opencpsVotingStatisticFinder.searchVotingStatistic(groupId, year, votingCode, domain,
 				govAgencyCode, start, end);
 	}
 
 	public List<OpencpsVotingStatistic> searchVotingStatistic(long groupId, int month, int year, String votingCode,
-			String service, String govAgencyCode, int start, int end) throws PortalException, SystemException {
+			String domain, String govAgencyCode, int start, int end) throws PortalException, SystemException {
 
 		return opencpsVotingStatisticFinder.searchByVotingServiceGovAgencyGroup(groupId, month, year, votingCode,
-				service, govAgencyCode, start, end);
+				domain, govAgencyCode, start, end);
 	}
 
 }

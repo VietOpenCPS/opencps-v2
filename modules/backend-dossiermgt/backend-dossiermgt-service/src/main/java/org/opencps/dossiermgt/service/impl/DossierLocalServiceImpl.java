@@ -3087,6 +3087,38 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
 				/** Add search all **/
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+			} else if (time.equals(DossierTerm.OVER_DUE)) {
+				/** Check condition dueDate != null **/
+				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				booleanQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+				/** Check condition dueDate < now **/
+				Date date = new Date();
+				long nowTime = date.getTime();
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+						String.valueOf(0), String.valueOf(nowTime), false, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (time.equals(DossierTerm.UN_DUE)){
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+				/** Check condition dueDate == null **/
+				MultiMatchQuery querydueDateNull = new MultiMatchQuery(String.valueOf(0));
+				querydueDateNull.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryOne.add(querydueDateNull, BooleanClauseOccur.MUST);
+				/** Check condition dueDate != null **/
+				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryTwo.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+				/** Check condition dueDate < now **/
+				Date date = new Date();
+				long nowTime = date.getTime();
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+						String.valueOf(nowTime), null, true, false);
+				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+				//
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+				//
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			}
 		}
 

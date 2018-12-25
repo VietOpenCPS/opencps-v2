@@ -75,7 +75,7 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 		OpencpsVotingStatistic opencpsVotingStatistic);
 
 	public OpencpsVotingStatistic checkExsit(long groupId, int month, int year,
-		String govAgency, String service, String votingCode);
+		String govAgency, String domain, String votingCode);
 
 	/**
 	* Creates a new opencps voting statistic with the primary key. Does not add the opencps voting statistic to the database.
@@ -191,7 +191,7 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsVotingStatistic> fetchVotingStatistic(long groupId,
-		int month, int year, String votingCode, String service,
+		int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
 		throws PortalException, SystemException;
 
@@ -291,7 +291,7 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsVotingStatistic> searchVotingStatistic(long groupId,
-		int month, int year, String votingCode, String service,
+		int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
 		throws PortalException, SystemException;
 
@@ -309,6 +309,6 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 		long votingStatisticId, long companyId, long groupId, long userId,
 		String userName, int month, int year, int totalVoted,
 		int percentVeryGood, int percentGood, int percentBad,
-		String govAgencyCode, String govAgencyName, String serviceCode,
-		String serviceName, String votingCode, int totalCount);
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, String votingCode, int totalCount);
 }

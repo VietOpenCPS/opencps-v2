@@ -63,7 +63,8 @@ import javax.xml.bind.annotation.XmlType;
     "answersCount",
     "choices",
     "answers",
-    "selected"
+    "selected",
+    "votingCode"
 })
 @XmlRootElement(name = "VotingModel")
 public class VotingModel {
@@ -82,6 +83,7 @@ public class VotingModel {
     protected List<String> choices;
     protected List<String> answers;
     protected Integer selected;
+    protected String votingCode;
 
     /**
      * Gets the value of the votingId property.
@@ -428,5 +430,13 @@ public class VotingModel {
     public void setSelected(Integer value) {
         this.selected = value;
     }
+
+	public String getVotingCode() {
+		return votingCode;
+	}
+
+	public void setVotingCode(String votingCode) {
+		this.votingCode = votingCode;
+	}
 
 }

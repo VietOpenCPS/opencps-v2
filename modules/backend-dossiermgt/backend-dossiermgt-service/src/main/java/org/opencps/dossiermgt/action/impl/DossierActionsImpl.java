@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.SubscriptionLocalService;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -58,7 +57,6 @@ import java.util.regex.Pattern;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
@@ -116,17 +114,14 @@ import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
-import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.model.impl.ProcessActionImpl;
-import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -3869,29 +3864,31 @@ public class DossierActionsImpl implements DossierActions {
 	}
 	
 	private void createNotificationQueue(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		User u = UserLocalServiceUtil.fetchUser(userId);
+        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        try {		
+        	payloadObj.put(
+					"Dossier", JSONFactoryUtil.createJSONObject(
+						JSONFactoryUtil.looseSerialize(dossier)));
+        	
+        	if (dossierAction != null) {
+        		payloadObj.put("actionCode", dossierAction.getActionCode());
+        		payloadObj.put("actionUser", dossierAction.getActionUser());
+        		payloadObj.put("actionName", dossierAction.getActionName());
+        		payloadObj.put("actionNote", dossierAction.getActionNote());
+        	}
+        }
+        catch (Exception e) {
+        	_log.debug(e);
+        }
+
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-			User u = UserLocalServiceUtil.fetchUser(userId);
-			
 			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(now);
 	        	  
-	        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
-	        try {		
-	        	payloadObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
-	        	if (dossierAction != null) {
-	        		payloadObj.put("actionCode", dossierAction.getActionCode());
-	        		payloadObj.put("actionUser", dossierAction.getActionUser());
-	        		payloadObj.put("actionName", dossierAction.getActionName());
-	        		payloadObj.put("actionNote", dossierAction.getActionNote());
-	        	}
-	        }
-	        catch (Exception e) {
-	        	_log.debug(e);
-	        }
-	        
 			if (notiTemplate != null) {
 				if ("minutely".equals(notiTemplate.getInterval())) {
 			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
@@ -3935,52 +3932,69 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				else if (actionConfig.getNotificationType().startsWith("USER")) {
 					
-				}
-				
-				if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
-						|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
-					try {
-						String stepCode = dossierAction.getFromStepCode();
-						StringBuilder buildX = new StringBuilder(stepCode);
-						buildX.setCharAt(stepCode.length() - 1, 'x');
-						String stepCodeX = buildX.toString();
-						
-						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getFromStepCode());
-						StepConfig stepConfigX = StepConfigLocalServiceUtil.getByCode(groupId, stepCodeX);
-						
-						if ((stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)
-								|| (stepConfigX != null && stepConfigX.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)) {
-							List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getFromStepCode());
-							for (DossierActionUser dau : lstDaus) {
-								if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
-									Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
-									String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
-									String fullName = employee != null ? employee.getFullName() : u.getFullName();
-									NotificationQueueLocalServiceUtil.addNotificationQueue(
-											userId, groupId, 
-											actionConfig.getNotificationType(), 
-											Dossier.class.getName(), 
-											String.valueOf(dossier.getDossierId()), 
-											payloadObj.toJSONString(), 
-											fullName, 
-											fullName, 
-											dau.getUserId(), 
-											u.getEmailAddress(), 
-											telNo, 
-											now, 
-											expired, 
-											context);																		
-								}
-							}
-						}
-					} catch (NoSuchUserException e) {
-						_log.debug(e);
-						//_log.error(e);
-//						e.printStackTrace();
-					}
-				}									
+				}				
 			}
-		}		
+		}	
+		
+		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+		Date now = new Date();
+        Calendar calEmpl = Calendar.getInstance();
+        calEmpl.setTime(now);
+        
+		if ("minutely".equals(emplTemplate.getInterval())) {
+			calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());					
+		}
+		else if ("hourly".equals(emplTemplate.getInterval())) {
+			calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());										
+		}
+		else {
+			calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());										
+		}
+		Date expired = calEmpl.getTime();
+
+		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+				|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+			try {
+				String stepCode = dossierAction.getStepCode();
+				StringBuilder buildX = new StringBuilder(stepCode);
+				if (stepCode.length() > 0) {
+					buildX.setCharAt(stepCode.length() - 1, 'x');					
+				}
+				String stepCodeX = buildX.toString();
+				
+				StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
+				StepConfig stepConfigX = StepConfigLocalServiceUtil.getByCode(groupId, stepCodeX);
+				if ((stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)
+						|| (stepConfigX != null && stepConfigX.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)) {
+					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
+					for (DossierActionUser dau : lstDaus) {
+						if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
+							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+							String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+							String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
+							NotificationQueueLocalServiceUtil.addNotificationQueue(
+									userId, groupId, 
+									"EMPL-01", 
+									Dossier.class.getName(), 
+									String.valueOf(dossier.getDossierId()), 
+									payloadObj.toJSONString(), 
+									u.getFullName(), 
+									fullName, 
+									dau.getUserId(), 
+									employee.getEmail(), 
+									telNo, 
+									now, 
+									expired, 
+									context);																		
+						}
+					}
+				}
+			} catch (NoSuchUserException e) {
+				_log.debug(e);
+				//_log.error(e);
+//				e.printStackTrace();
+			}
+		}			
 	}
 
 	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {

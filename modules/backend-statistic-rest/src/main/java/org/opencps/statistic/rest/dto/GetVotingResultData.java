@@ -10,8 +10,8 @@ public class GetVotingResultData {
 	private String className;
 	private String classPK;
 	private String votingCode;
-	private String serviceCode;
-	private String serviceName;
+	private String domain;
+	private String domainName;
 	private String govAgencyCode;
 	private String govAgencyName;
 
@@ -69,18 +69,6 @@ public class GetVotingResultData {
 	public void setVotingCode(String votingCode) {
 		this.votingCode = votingCode;
 	}
-	public String getServiceCode() {
-		return serviceCode;
-	}
-	public void setServiceCode(String serviceCode) {
-		this.serviceCode = serviceCode;
-	}
-	public String getServiceName() {
-		return serviceName;
-	}
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
 	public String getGovAgencyCode() {
 		return govAgencyCode;
 	}
@@ -92,6 +80,18 @@ public class GetVotingResultData {
 	}
 	public void setGovAgencyName(String govAgencyName) {
 		this.govAgencyName = govAgencyName;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	public String getDomainName() {
+		return domainName;
+	}
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
 	}
 
 }

@@ -224,6 +224,7 @@ public class VotingUtils {
 			ett.setTemplateNo(voting.getTemplateNo());
 			ett.setSubject(voting.getSubject());
 			ett.setCommentable(voting.getCommentable());
+			ett.setVotingCode(voting.getVotingCode());
 
 			List<String> listChoices = convertAnswers(voting.getChoices());
 
@@ -463,8 +464,8 @@ public class VotingUtils {
 			ett.setClassPK(doc.get(VotingTerm.CLASS_PK));
 			ett.setGovAgencyCode(doc.get("govAgencyCode"));
 			ett.setGovAgencyName(doc.get("govAgencyName"));
-			ett.setServiceCode(doc.get("serviceCode"));
-			ett.setServiceName(doc.get("serviceName"));
+			ett.setDomain(doc.get("domain"));
+			ett.setDomainName(doc.get("domainName"));
 
 
 			results.add(ett);

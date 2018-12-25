@@ -241,6 +241,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			year, domainCode, reporting);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYear(
+		long groupId, int month, int year) {
+		return getService().getDossierStatisticByMonthYear(groupId, month, year);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return getService().getExportActionableDynamicQuery(portletDataContext);

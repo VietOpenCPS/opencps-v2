@@ -58,8 +58,8 @@
 		<field name="year" type="int" />
 		<field name="govAgencyCode" type="String" />
 		<field name="govAgencyName" type="String" />
-		<field name="serviceCode" type="String" />
-		<field name="serviceName" type="String" />
+		<field name="domainCode" type="String" />
+		<field name="domainName" type="String" />
 		<field name="votingCode" type="String" />
 		<field name="votingSubject" type="String" />
 		<field name="totalVoted" type="int" />

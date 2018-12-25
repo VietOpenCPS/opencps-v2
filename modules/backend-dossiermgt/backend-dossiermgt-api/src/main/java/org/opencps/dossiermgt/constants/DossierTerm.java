@@ -189,6 +189,7 @@ public class DossierTerm {
 	public static final String STATISTIC = "statistic";
 	public static final String COMPARE_DELAY_DATE = "delayDate";
 	public static final String OVER_DUE = "overdue";
+	public static final String UN_DUE = "undue";
 	public static final String DELAY = "delay";
 	public static final String COMING = "coming";
 	public static final String DUE_DATE_COMING = "dueDateComing";
@@ -230,7 +231,7 @@ public class DossierTerm {
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";
 	//STATISTIC
-	public static final String BE_TIME = "betime";
+	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";
 	public static final String ON_TIME = "onetime";
 	public static final String TIME = "time";
