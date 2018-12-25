@@ -25,6 +25,7 @@ import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalService;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.communication.sms.utils.ViettelSMSUtils;
 import org.opencps.communication.utils.NotificationQueueBusinessFactoryUtil;
 import org.opencps.communication.utils.NotificationUtil;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
@@ -80,12 +81,15 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 						boolean flagSend = false;
 						if(messageEntry.isSendSMS()){
 							_log.info("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
-							String results = SendMTConverterUtils.sendSMS(messageEntry.getEmailBody(),
+							String results = SendMTConverterUtils.sendSMS(messageEntry.getTextMessage(),
 									messageEntry.getEmailSubject(), messageEntry.getToTelNo());
 							if (Validator.isNotNull(results)
 									&& results.equals(String.valueOf(HttpServletResponse.SC_ACCEPTED))) {
 								flagSend = true;
 							}
+							//Send viettel
+							ViettelSMSUtils.sendSMS(messageEntry.getTextMessage(), messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+							
 							_log.info("END SEND SMS"+flagSend);
 						} else {
 							flagSend = true;
