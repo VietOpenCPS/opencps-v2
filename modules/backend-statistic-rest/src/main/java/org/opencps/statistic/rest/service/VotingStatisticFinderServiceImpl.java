@@ -32,7 +32,7 @@ public class VotingStatisticFinderServiceImpl implements VotingStatisticFinderSe
 		
 		List<OpencpsVotingStatistic> votingList = OpencpsVotingStatisticLocalServiceUtil.searchVotingStatistic(
 				votingRequest.getGroupId(), votingRequest.getMonth(), votingRequest.getYear(),
-				votingRequest.getVotingCode(), votingRequest.getServiceCode(), votingRequest.getGovAgencyCode(),
+				votingRequest.getVotingCode(), votingRequest.getDomain(), votingRequest.getGovAgencyCode(),
 				votingRequest.getStart(), votingRequest.getEnd());
 
 		return VotingStatisticConverter.getVotingResultResponse().convert(votingList);
@@ -43,7 +43,7 @@ public class VotingStatisticFinderServiceImpl implements VotingStatisticFinderSe
 			throws PortalException {
 		List<OpencpsVotingStatistic> votingList = OpencpsVotingStatisticLocalServiceUtil.fetchVotingStatistic(
 				votingRequest.getGroupId(), votingRequest.getMonth(), votingRequest.getYear(),
-				votingRequest.getVotingCode(), votingRequest.getServiceCode(), votingRequest.getGovAgencyCode(),
+				votingRequest.getVotingCode(), votingRequest.getDomain(), votingRequest.getGovAgencyCode(),
 				votingRequest.getStart(), votingRequest.getEnd());
 
 		return VotingStatisticConverter.getVotingResultResponse().convert(votingList);

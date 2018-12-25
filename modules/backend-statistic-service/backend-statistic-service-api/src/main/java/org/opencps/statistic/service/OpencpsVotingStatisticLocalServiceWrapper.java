@@ -48,10 +48,10 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 
 	@Override
 	public org.opencps.statistic.model.OpencpsVotingStatistic checkExsit(
-		long groupId, int month, int year, String govAgency, String service,
+		long groupId, int month, int year, String govAgency, String domain,
 		String votingCode) {
 		return _opencpsVotingStatisticLocalService.checkExsit(groupId, month,
-			year, govAgency, service, votingCode);
+			year, govAgency, domain, votingCode);
 	}
 
 	/**
@@ -210,12 +210,12 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 
 	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> fetchVotingStatistic(
-		long groupId, int month, int year, String votingCode, String service,
+		long groupId, int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsVotingStatisticLocalService.fetchVotingStatistic(groupId,
-			month, year, votingCode, service, govAgencyCode, start, end);
+			month, year, votingCode, domain, govAgencyCode, start, end);
 	}
 
 	@Override
@@ -343,12 +343,12 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 
 	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchVotingStatistic(
-		long groupId, int month, int year, String votingCode, String service,
+		long groupId, int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsVotingStatisticLocalService.searchVotingStatistic(groupId,
-			month, year, votingCode, service, govAgencyCode, start, end);
+			month, year, votingCode, domain, govAgencyCode, start, end);
 	}
 
 	/**
@@ -368,12 +368,12 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 		long votingStatisticId, long companyId, long groupId, long userId,
 		String userName, int month, int year, int totalVoted,
 		int percentVeryGood, int percentGood, int percentBad,
-		String govAgencyCode, String govAgencyName, String serviceCode,
-		String serviceName, String votingCode, int totalCount) {
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, String votingCode, int totalCount) {
 		return _opencpsVotingStatisticLocalService.updateVotingStatistic(votingStatisticId,
 			companyId, groupId, userId, userName, month, year, totalVoted,
 			percentVeryGood, percentGood, percentBad, govAgencyCode,
-			govAgencyName, serviceCode, serviceName, votingCode, totalCount);
+			govAgencyName, domainCode, domainName, votingCode, totalCount);
 	}
 
 	@Override

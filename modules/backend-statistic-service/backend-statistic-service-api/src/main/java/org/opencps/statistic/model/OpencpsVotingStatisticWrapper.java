@@ -73,8 +73,8 @@ public class OpencpsVotingStatisticWrapper implements OpencpsVotingStatistic,
 		attributes.put("year", getYear());
 		attributes.put("govAgencyCode", getGovAgencyCode());
 		attributes.put("govAgencyName", getGovAgencyName());
-		attributes.put("serviceCode", getServiceCode());
-		attributes.put("serviceName", getServiceName());
+		attributes.put("domainCode", getDomainCode());
+		attributes.put("domainName", getDomainName());
 		attributes.put("votingCode", getVotingCode());
 		attributes.put("votingSubject", getVotingSubject());
 		attributes.put("totalVoted", getTotalVoted());
@@ -163,16 +163,16 @@ public class OpencpsVotingStatisticWrapper implements OpencpsVotingStatistic,
 			setGovAgencyName(govAgencyName);
 		}
 
-		String serviceCode = (String)attributes.get("serviceCode");
+		String domainCode = (String)attributes.get("domainCode");
 
-		if (serviceCode != null) {
-			setServiceCode(serviceCode);
+		if (domainCode != null) {
+			setDomainCode(domainCode);
 		}
 
-		String serviceName = (String)attributes.get("serviceName");
+		String domainName = (String)attributes.get("domainName");
 
-		if (serviceName != null) {
-			setServiceName(serviceName);
+		if (domainName != null) {
+			setDomainName(domainName);
 		}
 
 		String votingCode = (String)attributes.get("votingCode");
@@ -274,6 +274,26 @@ public class OpencpsVotingStatisticWrapper implements OpencpsVotingStatistic,
 	@Override
 	public Date getCreateDate() {
 		return _opencpsVotingStatistic.getCreateDate();
+	}
+
+	/**
+	* Returns the domain code of this opencps voting statistic.
+	*
+	* @return the domain code of this opencps voting statistic
+	*/
+	@Override
+	public String getDomainCode() {
+		return _opencpsVotingStatistic.getDomainCode();
+	}
+
+	/**
+	* Returns the domain name of this opencps voting statistic.
+	*
+	* @return the domain name of this opencps voting statistic
+	*/
+	@Override
+	public String getDomainName() {
+		return _opencpsVotingStatistic.getDomainName();
 	}
 
 	@Override
@@ -384,26 +404,6 @@ public class OpencpsVotingStatisticWrapper implements OpencpsVotingStatistic,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _opencpsVotingStatistic.getPrimaryKeyObj();
-	}
-
-	/**
-	* Returns the service code of this opencps voting statistic.
-	*
-	* @return the service code of this opencps voting statistic
-	*/
-	@Override
-	public String getServiceCode() {
-		return _opencpsVotingStatistic.getServiceCode();
-	}
-
-	/**
-	* Returns the service name of this opencps voting statistic.
-	*
-	* @return the service name of this opencps voting statistic
-	*/
-	@Override
-	public String getServiceName() {
-		return _opencpsVotingStatistic.getServiceName();
 	}
 
 	/**
@@ -576,6 +576,26 @@ public class OpencpsVotingStatisticWrapper implements OpencpsVotingStatistic,
 		_opencpsVotingStatistic.setCreateDate(createDate);
 	}
 
+	/**
+	* Sets the domain code of this opencps voting statistic.
+	*
+	* @param domainCode the domain code of this opencps voting statistic
+	*/
+	@Override
+	public void setDomainCode(String domainCode) {
+		_opencpsVotingStatistic.setDomainCode(domainCode);
+	}
+
+	/**
+	* Sets the domain name of this opencps voting statistic.
+	*
+	* @param domainName the domain name of this opencps voting statistic
+	*/
+	@Override
+	public void setDomainName(String domainName) {
+		_opencpsVotingStatistic.setDomainName(domainName);
+	}
+
 	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
@@ -700,26 +720,6 @@ public class OpencpsVotingStatisticWrapper implements OpencpsVotingStatistic,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_opencpsVotingStatistic.setPrimaryKeyObj(primaryKeyObj);
-	}
-
-	/**
-	* Sets the service code of this opencps voting statistic.
-	*
-	* @param serviceCode the service code of this opencps voting statistic
-	*/
-	@Override
-	public void setServiceCode(String serviceCode) {
-		_opencpsVotingStatistic.setServiceCode(serviceCode);
-	}
-
-	/**
-	* Sets the service name of this opencps voting statistic.
-	*
-	* @param serviceName the service name of this opencps voting statistic
-	*/
-	@Override
-	public void setServiceName(String serviceName) {
-		_opencpsVotingStatistic.setServiceName(serviceName);
 	}
 
 	/**

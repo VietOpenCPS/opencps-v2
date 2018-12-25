@@ -46,7 +46,8 @@ import javax.xml.bind.annotation.XmlType;
     "subject",
     "choices",
     "templateNo",
-    "commentable"
+    "commentable",
+    "votingCode"
 })
 @XmlRootElement(name = "VotingInputModel")
 public class VotingInputModel {
@@ -63,6 +64,8 @@ public class VotingInputModel {
     protected String templateNo;
 	@FormParam(value = "commentable")
     protected String commentable;
+	@FormParam(value = "votingCode")
+    protected String votingCode;
 
     /**
      * Gets the value of the className property.
@@ -207,5 +210,13 @@ public class VotingInputModel {
     public void setCommentable(String value) {
         this.commentable = value;
     }
+
+	public String getVotingCode() {
+		return votingCode;
+	}
+
+	public void setVotingCode(String votingCode) {
+		this.votingCode = votingCode;
+	}
 
 }

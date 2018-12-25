@@ -116,7 +116,7 @@ public class DossierSearchModel {
 	@QueryParam(value = "reporting")
 	protected boolean reporting;
 	@QueryParam(value = "reCalculate")
-	protected boolean reCalculate;
+	protected Integer reCalculate;
 
 	public String getKeyword() {
 		return keyword;
@@ -370,10 +370,10 @@ public class DossierSearchModel {
 	public void setReporting(boolean reporting) {
 		this.reporting = reporting;
 	}
-	public boolean isReCalculate() {
+	public Integer getReCalculate() {
 		return reCalculate;
 	}
-	public void setReCalculate(boolean reCalculate) {
+	public void setReCalculate(Integer reCalculate) {
 		this.reCalculate = reCalculate;
 	}
 

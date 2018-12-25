@@ -55,8 +55,8 @@ import javax.xml.bind.annotation.XmlType;
     "className",
     "classPK",
     "votingCode",
-    "serviceCode",
-    "serviceName",
+    "domain",
+    "domainName",
     "govAgencyCode",
     "govAgencyName"
 })
@@ -77,8 +77,8 @@ public class VotingStatisticsModel {
     protected String className;
     protected String classPK;
     protected String votingCode;
-    protected String serviceCode;
-    protected String serviceName;
+    protected String domain;
+    protected String domainName;
     protected String govAgencyCode;
     protected String govAgencyName;
 
@@ -160,18 +160,6 @@ public class VotingStatisticsModel {
 	public void setVotingCode(String votingCode) {
 		this.votingCode = votingCode;
 	}
-	public String getServiceCode() {
-		return serviceCode;
-	}
-	public void setServiceCode(String serviceCode) {
-		this.serviceCode = serviceCode;
-	}
-	public String getServiceName() {
-		return serviceName;
-	}
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
 	public String getGovAgencyCode() {
 		return govAgencyCode;
 	}
@@ -189,6 +177,18 @@ public class VotingStatisticsModel {
 	}
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	public String getDomainName() {
+		return domainName;
+	}
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
 	}
 
 }

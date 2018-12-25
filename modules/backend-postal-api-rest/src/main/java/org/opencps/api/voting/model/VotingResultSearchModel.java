@@ -52,7 +52,7 @@ import javax.xml.bind.annotation.XmlType;
  "year",
  "month",
  "fromReceiveDate",
- "toReceiveDate",
+ "toReceiveDate"
 })
 @XmlRootElement(name = "VotingResultSearchModel")
 public class VotingResultSearchModel {

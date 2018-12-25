@@ -50,7 +50,8 @@ import javax.xml.bind.annotation.XmlType;
     "end",
     "className",
     "classPK",
-    "email"
+    "email",
+    "votingCode"
 })
 @XmlRootElement(name = "VotingSearchModel")
 public class VotingSearchModel {
@@ -70,6 +71,8 @@ public class VotingSearchModel {
     protected long classPK;
     @XmlElement(required = true)
     protected String email;
+    @XmlElement(defaultValue = "")
+    protected String votingCode;
 
     /**
      * Gets the value of the keywords property.
@@ -230,5 +233,13 @@ public class VotingSearchModel {
     public void setEmail(String value) {
         this.email = value;
     }
+
+	public String getVotingCode() {
+		return votingCode;
+	}
+
+	public void setVotingCode(String votingCode) {
+		this.votingCode = votingCode;
+	}
 
 }
