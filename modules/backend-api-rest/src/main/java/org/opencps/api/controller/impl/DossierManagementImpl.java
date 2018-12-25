@@ -956,6 +956,9 @@ public class DossierManagementImpl implements DossierManagement {
 			if (config != null && Validator.isNotNull(viaPostal)) {
 				viaPostal = config.getPostService() ? (viaPostal == 0 ? 1 : viaPostal) : 0;
 			}
+			else if (config != null) {
+				viaPostal = config.getPostService() ? 1 : 0;
+			}
 			
 			if (option != null) {
 //				long serviceProcessId = option.getServiceProcessId();
@@ -1035,7 +1038,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalWardName(input.getPostalWardName());
 				
 				dossier.setPostalTelNo(input.getPostalTelNo());
-				dossier.setViaPostal(input.getViaPostal());
+				dossier.setViaPostal(viaPostal);
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
 				
 				updateDelegateApplicant(dossier, input);

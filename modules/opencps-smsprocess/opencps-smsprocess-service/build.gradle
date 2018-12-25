@@ -7,7 +7,7 @@ dependencies {
 	compile group: 'com.liferay', name: 'org.apache.axis', version: '1.4.LIFERAY-PATCHED-1'
 	// https://mvnrepository.com/artifact/javax.xml/jaxrpc-api
 	compile group: 'javax.xml', name: 'jaxrpc-api', version: '1.1'
-
+	compileOnly group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
 
 
 	compileOnly project(":modules:opencps-smsprocess:opencps-smsprocess-api")

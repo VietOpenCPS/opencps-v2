@@ -228,6 +228,9 @@ public interface DossierLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossierByUuidAndGroupId(String uuid, long groupId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier fetchOnePublicService();
+
 	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo);
 
 	public List<Dossier> findByVIAPOSTAL(int viaPostal);

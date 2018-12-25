@@ -613,7 +613,9 @@ public class DossierActionUtils {
 				model.setFieldName(jsonObject.getString(ProcessActionTerm.FIELD_NAME));
 				model.setFieldType(jsonObject.getString(ProcessActionTerm.FIELD_TYPE));
 				model.setValue(jsonObject.getString(ProcessActionTerm.VALUE));
-
+				if (jsonObject.has("required")) {
+					model.setRequired(jsonObject.getBoolean("required"));
+				}
 				outputs.add(model);
 			}
 		}

@@ -160,10 +160,11 @@ public class DossierStatisticModelImpl extends BaseModelImpl<DossierStatistic>
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long USERID_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
-	public static final long YEAR_COLUMN_BITMASK = 16L;
-	public static final long DOSSIERSTATISTICID_COLUMN_BITMASK = 32L;
+	public static final long MONTH_COLUMN_BITMASK = 4L;
+	public static final long USERID_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long YEAR_COLUMN_BITMASK = 32L;
+	public static final long DOSSIERSTATISTICID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierStatistic"));
 
@@ -615,7 +616,19 @@ public class DossierStatisticModelImpl extends BaseModelImpl<DossierStatistic>
 
 	@Override
 	public void setMonth(int month) {
+		_columnBitmask |= MONTH_COLUMN_BITMASK;
+
+		if (!_setOriginalMonth) {
+			_setOriginalMonth = true;
+
+			_originalMonth = _month;
+		}
+
 		_month = month;
+	}
+
+	public int getOriginalMonth() {
+		return _originalMonth;
 	}
 
 	@Override
@@ -1054,6 +1067,10 @@ public class DossierStatisticModelImpl extends BaseModelImpl<DossierStatistic>
 
 		dossierStatisticModelImpl._setModifiedDate = false;
 
+		dossierStatisticModelImpl._originalMonth = dossierStatisticModelImpl._month;
+
+		dossierStatisticModelImpl._setOriginalMonth = false;
+
 		dossierStatisticModelImpl._originalYear = dossierStatisticModelImpl._year;
 
 		dossierStatisticModelImpl._setOriginalYear = false;
@@ -1434,6 +1451,8 @@ public class DossierStatisticModelImpl extends BaseModelImpl<DossierStatistic>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private int _month;
+	private int _originalMonth;
+	private boolean _setOriginalMonth;
 	private int _year;
 	private int _originalYear;
 	private boolean _setOriginalYear;
