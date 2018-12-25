@@ -226,7 +226,7 @@ public class NotificationUtil {
 
 				boolean sendEmail = true;
 				boolean sendNotify = true;
-				boolean sendSMS = true;
+				boolean sendSMS = false;
 
 				if (queue.getToUserId() > 0) {
 //					Preferences preferences =
