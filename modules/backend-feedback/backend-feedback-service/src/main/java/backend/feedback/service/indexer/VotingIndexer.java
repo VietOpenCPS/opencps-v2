@@ -1,13 +1,6 @@
 package backend.feedback.service.indexer;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.usermgt.constants.CommonTerm;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -25,8 +18,15 @@ import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.LinkedHashMap;
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.usermgt.constants.CommonTerm;
 
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.model.Voting;
@@ -82,6 +82,7 @@ public class VotingIndexer extends BaseIndexer<Voting> {
 		document.addTextSortable(VotingTerm.CHOICES, voting.getChoices());
 		document.addTextSortable(VotingTerm.TEMPLATE_NO, voting.getTemplateNo());
 		document.addTextSortable(VotingTerm.COMMENTABLE, String.valueOf(voting.getCommentable()));
+		document.addTextSortable(VotingTerm.VOTING_CODE, voting.getVotingCode());
 		
 		document.setSortableTextFields(
 				new String[] { Field.CREATE_DATE});

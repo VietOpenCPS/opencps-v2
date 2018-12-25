@@ -3868,7 +3868,10 @@ public class DossierActionsImpl implements DossierActions {
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         try {		
-        	payloadObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
+        	payloadObj.put(
+					"Dossier", JSONFactoryUtil.createJSONObject(
+						JSONFactoryUtil.looseSerialize(dossier)));
+        	
         	if (dossierAction != null) {
         		payloadObj.put("actionCode", dossierAction.getActionCode());
         		payloadObj.put("actionUser", dossierAction.getActionUser());
@@ -3952,39 +3955,33 @@ public class DossierActionsImpl implements DossierActions {
 		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 				|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 			try {
-				String stepCode = dossierAction.getFromStepCode();
+				String stepCode = dossierAction.getStepCode();
 				StringBuilder buildX = new StringBuilder(stepCode);
 				if (stepCode.length() > 0) {
 					buildX.setCharAt(stepCode.length() - 1, 'x');					
 				}
 				String stepCodeX = buildX.toString();
-				_log.info("STEP TYPE: " + stepCode);
-				_log.info("STEP TYPE: " + stepCodeX);
 				
-				StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getFromStepCode());
+				StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
 				StepConfig stepConfigX = StepConfigLocalServiceUtil.getByCode(groupId, stepCodeX);
-				if (stepConfig != null)
-					_log.info("STEP TYPE: " + stepConfig.getStepType() + "," + stepConfig.getStepCode());
-				if (stepConfigX != null)
-					_log.info("STEP TYPE: " + stepConfigX.getStepType() + "," + stepConfigX.getStepCode());					
 				if ((stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)
 						|| (stepConfigX != null && stepConfigX.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)) {
-					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getFromStepCode());
+					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
 					for (DossierActionUser dau : lstDaus) {
 						if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
-							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
+							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
 							String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
-							String fullName = employee != null ? employee.getFullName() : u.getFullName();
+							String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									"EMPL-01", 
 									Dossier.class.getName(), 
 									String.valueOf(dossier.getDossierId()), 
 									payloadObj.toJSONString(), 
-									fullName, 
+									u.getFullName(), 
 									fullName, 
 									dau.getUserId(), 
-									u.getEmailAddress(), 
+									employee.getEmail(), 
 									telNo, 
 									now, 
 									expired, 

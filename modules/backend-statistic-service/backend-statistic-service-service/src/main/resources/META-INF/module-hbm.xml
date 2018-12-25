@@ -65,8 +65,8 @@
 		<property name="year" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="govAgencyName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="serviceCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="serviceName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="domainCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="domainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="votingCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="votingSubject" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="totalVoted" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />

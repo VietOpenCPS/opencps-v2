@@ -6,7 +6,7 @@ public class VotingResultStatisticData {
 	private int year = 0;
 	private long companyId;
 	private long groupId;
-	private int totalCount = 0;
+	//private int totalCount = 0;
 	private int totalVoted = 0;
 	private int veryGoodCount = 0;
 	private int goodCount = 0;
@@ -16,8 +16,8 @@ public class VotingResultStatisticData {
 	private int percentBad = 0;
 	private String govAgencyCode;
 	private String govAgencyName;
-	private String serviceCode;
-	private String serviceName;
+	private String domain;
+	private String domainName;
 	private String votingCode;
 
 	public int getMonth() {
@@ -44,12 +44,6 @@ public class VotingResultStatisticData {
 	public void setGroupId(long groupId) {
 		this.groupId = groupId;
 	}
-	public int getTotalCount() {
-		return totalCount;
-	}
-	public void setTotalCount(int totalCount) {
-		this.totalCount = totalCount;
-	}
 	public String getGovAgencyCode() {
 		return govAgencyCode;
 	}
@@ -61,18 +55,6 @@ public class VotingResultStatisticData {
 	}
 	public void setGovAgencyName(String govAgencyName) {
 		this.govAgencyName = govAgencyName;
-	}
-	public String getServiceCode() {
-		return serviceCode;
-	}
-	public void setServiceCode(String serviceCode) {
-		this.serviceCode = serviceCode;
-	}
-	public String getServiceName() {
-		return serviceName;
-	}
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
 	}
 	public String getVotingCode() {
 		return votingCode;
@@ -121,6 +103,18 @@ public class VotingResultStatisticData {
 	}
 	public void setBadCount(int badCount) {
 		this.badCount = badCount;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	public String getDomainName() {
+		return domainName;
+	}
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
 	}
 
 }

@@ -29,34 +29,6 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		return makeServiceCall(payload);
 	}
 
-/*	@Override
-	protected GetDossierResponse makeServiceCall(GetDossierRequest payload)
-			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
-		
-		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
-		
-		//buildUrlQueryParams(urlQueryParams, payload);
-		
-		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
-
-		//LOG.info(endPoint);
-
-		// get the params for EE
-		HashMap<String, String> urlPathSegments = new HashMap<>();
-
-		// build the url
-		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
-		
-		//LOG.info(url);
-
-		HttpHeaders httpHeaders = new HttpHeaders();
-
-		httpHeaders.add(DossierStatisticConstants.GROUP_ID, Long.toString(payload.getGroupId()));
-
-		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GetDossierResponse.class).getBody();
-
-	}*/
-	
 	protected GetVotingResultResponse makeServiceCall(GetVotingResultRequest payload)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
@@ -64,8 +36,8 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		System.out.println("payload.isCalculate(): "+payload.isCalculate());
 		if (payload.isCalculate()) {
 			if (payload.getMonth() != null) {
-				//urlQueryParams.add("month", payload.getMonth());
-				urlQueryParams.add("month", "10");
+				urlQueryParams.add("month", payload.getMonth());
+				//urlQueryParams.add("month", "10");
 			}
 			else {
 				urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));

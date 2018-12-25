@@ -197,6 +197,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		opencpsDossierStatisticPersistence.removeByCID_GID_Y(companyId, groupId, month, year);
 	}
 
+	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(long groupId, int month, int year) {
+		return opencpsDossierStatisticPersistence.findByG_M_Y(groupId, month, year);
+	}
+
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);
 
 }
