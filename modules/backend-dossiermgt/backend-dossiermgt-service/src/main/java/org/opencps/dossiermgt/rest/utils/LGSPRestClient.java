@@ -1,13 +1,12 @@
 package org.opencps.dossiermgt.rest.utils;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,10 +14,10 @@ import javax.ws.rs.HttpMethod;
 
 import org.opencps.dossiermgt.lgsp.model.MResult;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
-import org.opencps.dossiermgt.model.DossierStatistic;
+import org.opencps.dossiermgt.model.OpencpsDossierStatistic;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
-import org.opencps.dossiermgt.service.DossierStatisticLocalServiceUtil;
+import org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalServiceUtil;
 
 public class LGSPRestClient {
 	private Log _log = LogFactoryUtil.getLog(LGSPRestClient.class);
@@ -140,7 +139,7 @@ public class LGSPRestClient {
 		MResult result = new MResult();
 		InvokeREST callRest = new InvokeREST();
 
-		DossierStatistic statistic = DossierStatisticLocalServiceUtil.fetchByG_M_Y(groupId, month, year);
+		OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.fetchByG_M_Y_G_D(groupId, month, year, StringPool.BLANK, StringPool.BLANK);
 		if (statistic != null) {
 			JSONObject lgspObj = OpenCPSConverter.convertStatisticsToLGSPJSON(statistic);
 			JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",

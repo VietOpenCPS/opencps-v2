@@ -75,6 +75,7 @@ import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.DynamicReportPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
+import org.opencps.dossiermgt.service.persistence.OpencpsDossierStatisticPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessActionPersistence;
@@ -1347,6 +1348,44 @@ public abstract class ActionConfigLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the opencps dossier statistic local service.
+	 *
+	 * @return the opencps dossier statistic local service
+	 */
+	public org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService getOpencpsDossierStatisticLocalService() {
+		return opencpsDossierStatisticLocalService;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic local service.
+	 *
+	 * @param opencpsDossierStatisticLocalService the opencps dossier statistic local service
+	 */
+	public void setOpencpsDossierStatisticLocalService(
+		org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService opencpsDossierStatisticLocalService) {
+		this.opencpsDossierStatisticLocalService = opencpsDossierStatisticLocalService;
+	}
+
+	/**
+	 * Returns the opencps dossier statistic persistence.
+	 *
+	 * @return the opencps dossier statistic persistence
+	 */
+	public OpencpsDossierStatisticPersistence getOpencpsDossierStatisticPersistence() {
+		return opencpsDossierStatisticPersistence;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic persistence.
+	 *
+	 * @param opencpsDossierStatisticPersistence the opencps dossier statistic persistence
+	 */
+	public void setOpencpsDossierStatisticPersistence(
+		OpencpsDossierStatisticPersistence opencpsDossierStatisticPersistence) {
+		this.opencpsDossierStatisticPersistence = opencpsDossierStatisticPersistence;
+	}
+
+	/**
 	 * Returns the payment config local service.
 	 *
 	 * @return the payment config local service
@@ -2381,6 +2420,10 @@ public abstract class ActionConfigLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.MenuRoleLocalService menuRoleLocalService;
 	@BeanReference(type = MenuRolePersistence.class)
 	protected MenuRolePersistence menuRolePersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService.class)
+	protected org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService opencpsDossierStatisticLocalService;
+	@BeanReference(type = OpencpsDossierStatisticPersistence.class)
+	protected OpencpsDossierStatisticPersistence opencpsDossierStatisticPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.PaymentConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.PaymentConfigLocalService paymentConfigLocalService;
 	@BeanReference(type = PaymentConfigPersistence.class)

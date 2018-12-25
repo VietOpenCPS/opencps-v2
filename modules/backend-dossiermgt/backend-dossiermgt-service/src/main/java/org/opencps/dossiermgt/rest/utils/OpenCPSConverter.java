@@ -29,7 +29,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierStatistic;
+import org.opencps.dossiermgt.model.OpencpsDossierStatistic;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
@@ -1401,7 +1401,7 @@ public class OpenCPSConverter {
 		return obj;
 	}
 	
-	public static JSONObject convertStatisticsToLGSPJSON(DossierStatistic statistic) {
+	public static JSONObject convertStatisticsToLGSPJSON(OpencpsDossierStatistic statistic) {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		obj.put("Month", statistic.getMonth());
 		obj.put("Year", statistic.getYear());

@@ -245,6 +245,14 @@ create index IX_645000FB on opencps_serviceprocessrole (uuid_[$COLUMN_LENGTH:75$
 create index IX_6C3BEC69 on opencps_services_filetemplates (serviceInfoId);
 create index IX_71CB1E6F on opencps_services_filetemplates (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_767B71CC on opencps_statistic (companyId, groupId, month, year);
+create index IX_751D6585 on opencps_statistic (groupId, domainCode[$COLUMN_LENGTH:512$], month, year);
+create index IX_1124F771 on opencps_statistic (groupId, govAgencyCode[$COLUMN_LENGTH:512$], month, year, domainCode[$COLUMN_LENGTH:512$], reporting);
+create index IX_10D3CA4B on opencps_statistic (groupId, month, year, govAgencyCode[$COLUMN_LENGTH:512$], domainCode[$COLUMN_LENGTH:512$]);
+create index IX_EF7CF302 on opencps_statistic (groupId, userId, year);
+create index IX_80F6A7A7 on opencps_statistic (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_8F82EBE9 on opencps_statistic (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_5E562335 on opencps_stepconfig (groupId, dossierStatus[$COLUMN_LENGTH:75$], dossierSubStatus[$COLUMN_LENGTH:75$]);
 create index IX_9154D4C0 on opencps_stepconfig (groupId, stepCode[$COLUMN_LENGTH:75$]);
 create index IX_C7F6BBCB on opencps_stepconfig (uuid_[$COLUMN_LENGTH:75$], companyId);

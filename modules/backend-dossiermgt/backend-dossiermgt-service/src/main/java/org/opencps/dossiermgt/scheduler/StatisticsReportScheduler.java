@@ -54,6 +54,7 @@ public class StatisticsReportScheduler extends BaseSchedulerEntryMessageListener
 				Mtoken token = client.getToken();
 				if (Validator.isNotNull(token.getAccessToken())) {
 					MResult result = client.updateStatisticsMonth(token.getAccessToken(), dossier.getGroupId(), month, year);
+					_log.info("UPDATE STATISTICS LGSP: " + result.getMessage());
 				}
 			} catch (PortalException e) {
 				_log.debug(e);
@@ -66,7 +67,7 @@ public class StatisticsReportScheduler extends BaseSchedulerEntryMessageListener
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.DAY));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 1, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 
