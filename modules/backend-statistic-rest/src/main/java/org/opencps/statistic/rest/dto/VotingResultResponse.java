@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "VotingResultResponse")
 public class VotingResultResponse {
 	private int total;
-	
+	private String agency;
 	@XmlElement(name = "data")
 	private List<VotingResultStatisticData> data;
 
@@ -28,5 +28,11 @@ public class VotingResultResponse {
 	public void setData(List<VotingResultStatisticData> data) {
 		this.data = data;
 	}
-	
+	public String getAgency() {
+		return agency;
+	}
+	public void setAgency(String agency) {
+		this.agency = agency;
+	}
+
 }

@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
@@ -55,7 +56,7 @@ public class StatisticEngineUpdateAction {
 					payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
 					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
-					payload.getDomainName(), false, payload.getOnegateCount(), payload.getOutsideCount(),
+					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
 					payload.getInsideCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
@@ -75,14 +76,19 @@ public class StatisticEngineUpdateAction {
 		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByYear(companyId, groupId, month, year);
 	}
 
+	//Get list dossierStatistic by groupId, month, year
+	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(long groupId, int month, int year) {
+		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYear(groupId, month, year);
+	}
+
 	//Process Voting
 	public OpencpsVotingStatistic updateVotingStatistic(VotingResultStatisticData payload) {
 
 		if (Validator.isNull(payload.getGovAgencyCode())) {
 			payload.setGovAgencyCode((String) null);
 		}
-		if (Validator.isNull(payload.getServiceCode())) {
-			payload.setServiceCode((String) null);
+		if (Validator.isNull(payload.getDomain())) {
+			payload.setDomain((String) null);
 		}
 		if (Validator.isNull(payload.getVotingCode())) {
 			payload.setVotingCode((String) null);
@@ -93,7 +99,7 @@ public class StatisticEngineUpdateAction {
 		try {
 			OpencpsVotingStatistic votingStatistic = OpencpsVotingStatisticLocalServiceUtil.checkExsit(
 					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
-					payload.getServiceCode(), payload.getVotingCode());
+					payload.getDomain(), payload.getVotingCode());
 			//System.out.println("votingStatistic: "+votingStatistic);
 			if (Validator.isNotNull(votingStatistic)) {
 				votingStatisticId = votingStatistic.getVotingStatisticId();
@@ -106,10 +112,9 @@ public class StatisticEngineUpdateAction {
 		try {
 			return OpencpsVotingStatisticLocalServiceUtil.updateVotingStatistic(votingStatisticId,
 					payload.getCompanyId(), payload.getGroupId(), -1L, "VDM", payload.getMonth(), payload.getYear(),
-					payload.getTotalCount(), payload.getPercentVeryGood(), payload.getPercentGood(),
+					payload.getTotalVoted(), payload.getPercentVeryGood(), payload.getPercentGood(),
 					payload.getPercentBad(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
-					payload.getServiceCode(), payload.getServiceName(), payload.getVotingCode(),
-					payload.getTotalCount());
+					payload.getDomain(), payload.getDomainName(), payload.getVotingCode(), 0);
 		} catch (SystemException e) {
 			_log.error(e);
 			System.out.println(e);

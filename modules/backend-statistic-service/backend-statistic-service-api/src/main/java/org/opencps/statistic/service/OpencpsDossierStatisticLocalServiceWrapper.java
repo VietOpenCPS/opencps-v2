@@ -250,6 +250,13 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYear(
+		long groupId, int month, int year) {
+		return _opencpsDossierStatisticLocalService.getDossierStatisticByMonthYear(groupId,
+			month, year);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return _opencpsDossierStatisticLocalService.getExportActionableDynamicQuery(portletDataContext);

@@ -18,7 +18,7 @@ public class StatisticEngineFetch {
 	//private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
-			List<GetDossierData> lsDossierData, int month) {
+			List<GetDossierData> lsDossierData, int month, boolean reporting) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
@@ -35,7 +35,7 @@ public class StatisticEngineFetch {
 					dataType1 = statisticData.get(type1);
 				}
 	
-				engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, month);
+				engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, month, reporting);
 				dataType1 = processOnTimePercent(dataType1);
 	
 				statisticData.put(type1, dataType1);
@@ -54,7 +54,7 @@ public class StatisticEngineFetch {
 					dataType2 = statisticData.get(type2);
 				}
 	
-				engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, month);
+				engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, month, reporting);
 				dataType2 = processOnTimePercent(dataType2);
 	
 				statisticData.put(type2, dataType2);
@@ -74,7 +74,7 @@ public class StatisticEngineFetch {
 					dataType3 = statisticData.get(type3);
 				}
 	
-				engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, month);
+				engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, month, reporting);
 				dataType3 = processOnTimePercent(dataType3);
 				//System.out.println("dataType3: "+dataType3.getTotalCount());
 	
@@ -96,7 +96,7 @@ public class StatisticEngineFetch {
 					dataType4 = statisticData.get(type4);
 				}
 
-				engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, month);
+				engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, month, reporting);
 				dataType4 = processOnTimePercent(dataType4);
 
 				statisticData.put(type4, dataType4);
@@ -158,13 +158,13 @@ public class StatisticEngineFetch {
 			statisticData.put(type2, dataType2);
 
 			// each site all domain
-			String type3 = MSG_ALL + StringPool.AT + votingData.getServiceCode() + StringPool.AT
+			String type3 = MSG_ALL + StringPool.AT + votingData.getDomain() + StringPool.AT
 					+ votingData.getVotingCode() + StringPool.AT + groupId;
 
 
 			VotingResultStatisticData dataType3 = new VotingResultStatisticData();
-			dataType3.setServiceCode(votingData.getServiceCode());
-			dataType3.setServiceName(votingData.getServiceName());
+			dataType3.setDomain(votingData.getDomain());
+			dataType3.setDomainName(votingData.getDomainName());
 			dataType3.setVotingCode(votingData.getVotingCode());
 
 			if (statisticData.containsKey(type3)) {
@@ -196,15 +196,15 @@ public class StatisticEngineFetch {
 			statisticData.put(type4, dataType4);
 			
 			// each site each domain
-			String type5 = votingData.getGovAgencyCode() + StringPool.AT + votingData.getServiceCode() + StringPool.AT
+			String type5 = votingData.getGovAgencyCode() + StringPool.AT + votingData.getDomain() + StringPool.AT
 					+ votingData.getVotingCode() + StringPool.AT + groupId;
 			
 			VotingResultStatisticData dataType5 = new VotingResultStatisticData();
-			dataType4.setGovAgencyCode(votingData.getGovAgencyCode());
-			dataType4.setGovAgencyName(votingData.getGovAgencyName());
-			dataType3.setServiceCode(votingData.getServiceCode());
-			dataType3.setServiceName(votingData.getServiceName());
-			dataType4.setVotingCode(votingData.getVotingCode());
+			dataType5.setGovAgencyCode(votingData.getGovAgencyCode());
+			dataType5.setGovAgencyName(votingData.getGovAgencyName());
+			dataType5.setDomain(votingData.getDomain());
+			dataType5.setDomainName(votingData.getDomainName());
+			dataType5.setVotingCode(votingData.getVotingCode());
 
 			if (statisticData.containsKey(type5)) {
 				dataType5 = statisticData.get(type5);
@@ -214,6 +214,53 @@ public class StatisticEngineFetch {
 			//dataType4 = processOnTimePercent(dataType4);
 
 			statisticData.put(type5, dataType5);
+
+			// each site each domain
+			String type6 = MSG_ALL + StringPool.AT + votingData.getDomain() + StringPool.AT
+					+ MSG_ALL + StringPool.AT + groupId;
+			
+			VotingResultStatisticData dataType6 = new VotingResultStatisticData();
+			dataType6.setDomain(votingData.getDomain());
+			dataType6.setDomainName(votingData.getDomainName());
+
+			if (statisticData.containsKey(type6)) {
+				dataType6 = statisticData.get(type6);
+			}
+
+			engineFetchEntry.calculateVotingStatisticData(dataType6, votingData, month);
+			statisticData.put(type6, dataType6);
+
+			// each site each domain
+			String type7 = votingData.getGovAgencyCode() + StringPool.AT + MSG_ALL + StringPool.AT
+					+ MSG_ALL + StringPool.AT + groupId;
+			
+			VotingResultStatisticData dataType7 = new VotingResultStatisticData();
+			dataType7.setGovAgencyCode(votingData.getGovAgencyCode());
+			dataType7.setGovAgencyName(votingData.getGovAgencyName());
+
+			if (statisticData.containsKey(type7)) {
+				dataType7 = statisticData.get(type7);
+			}
+
+			engineFetchEntry.calculateVotingStatisticData(dataType7, votingData, month);
+			statisticData.put(type7, dataType7);
+
+			// each site each domain
+			String type8 = votingData.getGovAgencyCode() + StringPool.AT + votingData.getDomain() + StringPool.AT
+					+ MSG_ALL + StringPool.AT + groupId;
+			
+			VotingResultStatisticData dataType8 = new VotingResultStatisticData();
+			dataType8.setGovAgencyCode(votingData.getGovAgencyCode());
+			dataType8.setGovAgencyName(votingData.getGovAgencyName());
+			dataType8.setDomain(votingData.getDomain());
+			dataType8.setDomainName(votingData.getDomainName());
+
+			if (statisticData.containsKey(type8)) {
+				dataType8 = statisticData.get(type8);
+			}
+
+			engineFetchEntry.calculateVotingStatisticData(dataType8, votingData, month);
+			statisticData.put(type8, dataType8);
 		}
 		//
 		Map<String, VotingResultStatisticData> votingStatisitcData = new HashMap<String, VotingResultStatisticData>();
@@ -251,13 +298,13 @@ public class StatisticEngineFetch {
 		int secondPercentage = 0;
 		int thirdPercentage = 0;
 		//
-		int totalCount = dataType.getTotalCount();
+		int totalVoted = dataType.getTotalVoted();
 		
 		if (dataType.getVeryGoodCount() > 0) {
-			firstPercentage = dataType.getVeryGoodCount() * 100 / totalCount;
+			firstPercentage = dataType.getVeryGoodCount() * 100 / totalVoted;
 		}
 		if (dataType.getGoodCount() > 0) {
-			secondPercentage = dataType.getGoodCount() * 100 / totalCount;
+			secondPercentage = dataType.getGoodCount() * 100 / totalVoted;
 		}
 		if (dataType.getBadCount() > 0) {
 			thirdPercentage = 100 - (secondPercentage + firstPercentage);

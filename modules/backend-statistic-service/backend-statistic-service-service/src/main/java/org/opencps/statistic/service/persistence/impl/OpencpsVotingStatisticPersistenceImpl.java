@@ -2101,7 +2101,7 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 			OpencpsVotingStatisticModelImpl.MONTH_COLUMN_BITMASK |
 			OpencpsVotingStatisticModelImpl.YEAR_COLUMN_BITMASK |
 			OpencpsVotingStatisticModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
-			OpencpsVotingStatisticModelImpl.SERVICECODE_COLUMN_BITMASK);
+			OpencpsVotingStatisticModelImpl.DOMAINCODE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_M_Y_DM_G = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
 			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByM_Y_DM_G",
@@ -2112,22 +2112,22 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 			});
 
 	/**
-	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and serviceCode = &#63; or throws a {@link NoSuchOpencpsVotingStatisticException} if it could not be found.
+	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or throws a {@link NoSuchOpencpsVotingStatisticException} if it could not be found.
 	 *
 	 * @param groupId the group ID
 	 * @param month the month
 	 * @param year the year
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceCode the service code
+	 * @param domainCode the domain code
 	 * @return the matching opencps voting statistic
 	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
 	 */
 	@Override
 	public OpencpsVotingStatistic findByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String serviceCode)
+		int year, String govAgencyCode, String domainCode)
 		throws NoSuchOpencpsVotingStatisticException {
 		OpencpsVotingStatistic opencpsVotingStatistic = fetchByM_Y_DM_G(groupId,
-				month, year, govAgencyCode, serviceCode);
+				month, year, govAgencyCode, domainCode);
 
 		if (opencpsVotingStatistic == null) {
 			StringBundler msg = new StringBundler(12);
@@ -2146,8 +2146,8 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 			msg.append(", govAgencyCode=");
 			msg.append(govAgencyCode);
 
-			msg.append(", serviceCode=");
-			msg.append(serviceCode);
+			msg.append(", domainCode=");
+			msg.append(domainCode);
 
 			msg.append("}");
 
@@ -2162,39 +2162,39 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 	}
 
 	/**
-	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and serviceCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param groupId the group ID
 	 * @param month the month
 	 * @param year the year
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceCode the service code
+	 * @param domainCode the domain code
 	 * @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
 	 */
 	@Override
 	public OpencpsVotingStatistic fetchByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String serviceCode) {
-		return fetchByM_Y_DM_G(groupId, month, year, govAgencyCode,
-			serviceCode, true);
+		int year, String govAgencyCode, String domainCode) {
+		return fetchByM_Y_DM_G(groupId, month, year, govAgencyCode, domainCode,
+			true);
 	}
 
 	/**
-	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and serviceCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param groupId the group ID
 	 * @param month the month
 	 * @param year the year
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceCode the service code
+	 * @param domainCode the domain code
 	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
 	 */
 	@Override
 	public OpencpsVotingStatistic fetchByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String serviceCode,
+		int year, String govAgencyCode, String domainCode,
 		boolean retrieveFromCache) {
 		Object[] finderArgs = new Object[] {
-				groupId, month, year, govAgencyCode, serviceCode
+				groupId, month, year, govAgencyCode, domainCode
 			};
 
 		Object result = null;
@@ -2212,8 +2212,8 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 					(year != opencpsVotingStatistic.getYear()) ||
 					!Objects.equals(govAgencyCode,
 						opencpsVotingStatistic.getGovAgencyCode()) ||
-					!Objects.equals(serviceCode,
-						opencpsVotingStatistic.getServiceCode())) {
+					!Objects.equals(domainCode,
+						opencpsVotingStatistic.getDomainCode())) {
 				result = null;
 			}
 		}
@@ -2243,18 +2243,18 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 				query.append(_FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_2);
 			}
 
-			boolean bindServiceCode = false;
+			boolean bindDomainCode = false;
 
-			if (serviceCode == null) {
-				query.append(_FINDER_COLUMN_M_Y_DM_G_SERVICECODE_1);
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_1);
 			}
-			else if (serviceCode.equals("")) {
-				query.append(_FINDER_COLUMN_M_Y_DM_G_SERVICECODE_3);
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_3);
 			}
 			else {
-				bindServiceCode = true;
+				bindDomainCode = true;
 
-				query.append(_FINDER_COLUMN_M_Y_DM_G_SERVICECODE_2);
+				query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_2);
 			}
 
 			String sql = query.toString();
@@ -2278,8 +2278,8 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 					qPos.add(govAgencyCode);
 				}
 
-				if (bindServiceCode) {
-					qPos.add(serviceCode);
+				if (bindDomainCode) {
+					qPos.add(domainCode);
 				}
 
 				List<OpencpsVotingStatistic> list = q.list();
@@ -2327,42 +2327,42 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 	}
 
 	/**
-	 * Removes the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and serviceCode = &#63; from the database.
+	 * Removes the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param month the month
 	 * @param year the year
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceCode the service code
+	 * @param domainCode the domain code
 	 * @return the opencps voting statistic that was removed
 	 */
 	@Override
 	public OpencpsVotingStatistic removeByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String serviceCode)
+		int year, String govAgencyCode, String domainCode)
 		throws NoSuchOpencpsVotingStatisticException {
 		OpencpsVotingStatistic opencpsVotingStatistic = findByM_Y_DM_G(groupId,
-				month, year, govAgencyCode, serviceCode);
+				month, year, govAgencyCode, domainCode);
 
 		return remove(opencpsVotingStatistic);
 	}
 
 	/**
-	 * Returns the number of opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and serviceCode = &#63;.
+	 * Returns the number of opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param month the month
 	 * @param year the year
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceCode the service code
+	 * @param domainCode the domain code
 	 * @return the number of matching opencps voting statistics
 	 */
 	@Override
 	public int countByM_Y_DM_G(long groupId, int month, int year,
-		String govAgencyCode, String serviceCode) {
+		String govAgencyCode, String domainCode) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_M_Y_DM_G;
 
 		Object[] finderArgs = new Object[] {
-				groupId, month, year, govAgencyCode, serviceCode
+				groupId, month, year, govAgencyCode, domainCode
 			};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
@@ -2392,18 +2392,18 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 				query.append(_FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_2);
 			}
 
-			boolean bindServiceCode = false;
+			boolean bindDomainCode = false;
 
-			if (serviceCode == null) {
-				query.append(_FINDER_COLUMN_M_Y_DM_G_SERVICECODE_1);
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_1);
 			}
-			else if (serviceCode.equals("")) {
-				query.append(_FINDER_COLUMN_M_Y_DM_G_SERVICECODE_3);
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_3);
 			}
 			else {
-				bindServiceCode = true;
+				bindDomainCode = true;
 
-				query.append(_FINDER_COLUMN_M_Y_DM_G_SERVICECODE_2);
+				query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_2);
 			}
 
 			String sql = query.toString();
@@ -2427,8 +2427,8 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 					qPos.add(govAgencyCode);
 				}
 
-				if (bindServiceCode) {
-					qPos.add(serviceCode);
+				if (bindDomainCode) {
+					qPos.add(domainCode);
 				}
 
 				count = (Long)q.uniqueResult();
@@ -2454,9 +2454,9 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 	private static final String _FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_1 = "opencpsVotingStatistic.govAgencyCode IS NULL AND ";
 	private static final String _FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_2 = "opencpsVotingStatistic.govAgencyCode = ? AND ";
 	private static final String _FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_3 = "(opencpsVotingStatistic.govAgencyCode IS NULL OR opencpsVotingStatistic.govAgencyCode = '') AND ";
-	private static final String _FINDER_COLUMN_M_Y_DM_G_SERVICECODE_1 = "opencpsVotingStatistic.serviceCode IS NULL";
-	private static final String _FINDER_COLUMN_M_Y_DM_G_SERVICECODE_2 = "opencpsVotingStatistic.serviceCode = ?";
-	private static final String _FINDER_COLUMN_M_Y_DM_G_SERVICECODE_3 = "(opencpsVotingStatistic.serviceCode IS NULL OR opencpsVotingStatistic.serviceCode = '')";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_1 = "opencpsVotingStatistic.domainCode IS NULL";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_2 = "opencpsVotingStatistic.domainCode = ?";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_3 = "(opencpsVotingStatistic.domainCode IS NULL OR opencpsVotingStatistic.domainCode = '')";
 
 	public OpencpsVotingStatisticPersistenceImpl() {
 		setModelClass(OpencpsVotingStatistic.class);
@@ -2503,7 +2503,7 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 				opencpsVotingStatistic.getMonth(),
 				opencpsVotingStatistic.getYear(),
 				opencpsVotingStatistic.getGovAgencyCode(),
-				opencpsVotingStatistic.getServiceCode()
+				opencpsVotingStatistic.getDomainCode()
 			}, opencpsVotingStatistic);
 
 		opencpsVotingStatistic.resetOriginalValues();
@@ -2598,7 +2598,7 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 				opencpsVotingStatisticModelImpl.getMonth(),
 				opencpsVotingStatisticModelImpl.getYear(),
 				opencpsVotingStatisticModelImpl.getGovAgencyCode(),
-				opencpsVotingStatisticModelImpl.getServiceCode()
+				opencpsVotingStatisticModelImpl.getDomainCode()
 			};
 
 		finderCache.putResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args,
@@ -2637,7 +2637,7 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 					opencpsVotingStatisticModelImpl.getMonth(),
 					opencpsVotingStatisticModelImpl.getYear(),
 					opencpsVotingStatisticModelImpl.getGovAgencyCode(),
-					opencpsVotingStatisticModelImpl.getServiceCode()
+					opencpsVotingStatisticModelImpl.getDomainCode()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);
@@ -2651,7 +2651,7 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 					opencpsVotingStatisticModelImpl.getOriginalMonth(),
 					opencpsVotingStatisticModelImpl.getOriginalYear(),
 					opencpsVotingStatisticModelImpl.getOriginalGovAgencyCode(),
-					opencpsVotingStatisticModelImpl.getOriginalServiceCode()
+					opencpsVotingStatisticModelImpl.getOriginalDomainCode()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);

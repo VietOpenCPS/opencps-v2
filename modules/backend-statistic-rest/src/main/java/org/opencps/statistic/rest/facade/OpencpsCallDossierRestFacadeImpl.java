@@ -118,7 +118,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		urlQueryParams.add(DossierConstants.DOSSIER_STATUS, dossierRequest.getStatus());
 		urlQueryParams.add(DossierConstants.DOSSIER_SUB_STATUS, dossierRequest.getSubstatus());
 		urlQueryParams.add(DossierConstants.SERVICECODE, dossierRequest.getServiceCode());
-		urlQueryParams.add(DossierConstants.ONLINE, Boolean.toString(dossierRequest.isOnline()));
+		urlQueryParams.add(DossierConstants.ONLINE, dossierRequest.getOnlineStatistic());
 		urlQueryParams.add(DossierConstants.ORIGINALITY, dossierRequest.getOriginality());
 		urlQueryParams.add(DossierConstants.TEMPLATE, dossierRequest.getTemplate());
 		urlQueryParams.add(DossierConstants.STEP, dossierRequest.getStep());

@@ -1,14 +1,5 @@
 package backend.feedback.action.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.ws.rs.NotFoundException;
-
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -24,6 +15,17 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.ws.rs.NotFoundException;
+
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.feedback.action.VotingActions;
 import backend.feedback.exception.NoSuchVotingException;
@@ -55,14 +57,20 @@ public class VotingActionsImpl implements VotingActions {
 						String choices;
 						String templateNo;
 						Boolean commentable;
+						String votingCode;
 						for (Voting voting : votingList) {
 							subject = voting.getSubject();
 							choices = voting.getChoices();
 							templateNo = voting.getTemplateNo();
 							commentable = voting.getCommentable();
+							votingCode = voting.getVotingCode();
 							voting.setClassPK(classPK);
-							VotingLocalServiceUtil.addVoting(userId, groupId, className, classPK, subject, choices,
+							Voting votingAdd = VotingLocalServiceUtil.addVoting(userId, groupId, className, classPK, subject, choices,
 									templateNo, commentable, serviceContext);
+							if (votingAdd != null) {
+								votingAdd.setVotingCode(votingCode);
+								VotingLocalServiceUtil.updateVoting(votingAdd);
+							}
 						}
 					}
 				}
@@ -245,6 +253,23 @@ public class VotingActionsImpl implements VotingActions {
 								voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
 								serviceContext);
 
+					}
+				} else {
+					Applicant applicant = ApplicantLocalServiceUtil.fetchByEmail(email);
+					if (applicant != null) {
+						votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
+								voting.getVotingId());
+						if (Validator.isNotNull(votingResult)) {
+
+							votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
+									votingResult.getVotingResultId(), votingId, applicant.getApplicantName(),
+									applicant.getContactEmail(), comment, selected, serviceContext);
+						} else {
+							votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+									voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
+									selected, serviceContext);
+
+						}
 					}
 				}
 			}

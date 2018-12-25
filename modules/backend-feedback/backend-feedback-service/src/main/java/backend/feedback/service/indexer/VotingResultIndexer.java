@@ -26,7 +26,9 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.constants.CommonTerm;
 
 import backend.feedback.constants.VotingResultTerm;
@@ -106,10 +108,15 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 				//Process index dossier
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(voting.getClassPK()));
 				if (dossier != null) {
-					document.addTextSortable(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-					document.addTextSortable(DossierTerm.SERVICE_NAME, dossier.getServiceName());
 					document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 					document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+					//
+					ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(dossier.getGroupId(),
+							dossier.getServiceCode());
+					if (serviceInfo != null) {
+						document.addTextSortable(DossierTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
+						document.addTextSortable(DossierTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+					}
 				}
 			}
 		}

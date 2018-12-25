@@ -35,10 +35,16 @@ import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetDossierRequest;
 import org.opencps.statistic.rest.dto.GetDossierResponse;
+import org.opencps.statistic.rest.dto.GetVotingResultData;
+import org.opencps.statistic.rest.dto.GetVotingResultRequest;
+import org.opencps.statistic.rest.dto.GetVotingResultResponse;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
+import org.opencps.statistic.rest.dto.VotingResultRequest;
 import org.opencps.statistic.rest.dto.VotingResultResponse;
+import org.opencps.statistic.rest.dto.VotingResultStatisticData;
+import org.opencps.statistic.rest.dto.VotingSearchModel;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
@@ -46,8 +52,11 @@ import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
+import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
+import org.opencps.statistic.rest.service.VotingStatisticFinderService;
+import org.opencps.statistic.rest.service.VotingStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
@@ -98,7 +107,10 @@ public class OpencpsStatisticRestApplication extends Application {
 		String domain = query.getDomain();
 		String groupAgencyCode = query.getGroupAgencyCode();
 		boolean reporting = query.getReporting();
-		boolean reCalculate = query.isReCalculate();
+		Integer reCalculate = query.getReCalculate();
+		if (reCalculate == null) {
+			reCalculate = 0;
+		}
 
 		if (start == 0)
 			start = QueryUtil.ALL_POS;
@@ -113,8 +125,8 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		if (calculate) {
 			try {
-				if (reCalculate) {
-					processUpdateDB(groupId, month, year);
+				if (reCalculate == 1) {
+					processUpdateDB(groupId, month, year, true);
 				}
 
 				validInput(month, year, start, end);
@@ -223,7 +235,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					if (dossierDataList != null && dossierDataList.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, monthStatistic);
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, monthStatistic, false);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//
@@ -256,166 +268,136 @@ public class OpencpsStatisticRestApplication extends Application {
 		return null;
 	}
 
-//	@GET
-//	@Path("/votings")
-//	public VotingResultResponse searchVotingStatistic(@HeaderParam("groupId") long groupId,
-//			@BeanParam DossierSearchModel query) {
-//
-//		//LOG.info("GET DossierStatisticResponse");
-//		_log.info("START DossierStatisticResponse: "+query.getGovAgencyCode());
-//
-//		int start = query.getStart();
-//		int end = query.getEnd();
-//		int month = query.getMonth();
-//		int year = query.getYear();
-//		String govAgencyCode = query.getGovAgencyCode();
-//		String service = query.getService();
-//		String votingCode = query.getGroupAgencyCode();
-//		boolean reporting = query.getReporting();
-//		boolean reCalculate = query.isReCalculate();
-//
-//		if (start == 0)
-//			start = QueryUtil.ALL_POS;
-//
-//		if (end == 0)
-//			end = QueryUtil.ALL_POS;
-//		
-//		boolean calculate = false;
-//		if (month > 0 || year > 0) {
-//			calculate = true;
-//		}
-//
-//		if (calculate) {
-//			try {
+	@GET
+	@Path("/votings")
+	public VotingResultResponse searchVotingStatistic(@HeaderParam("groupId") long groupId,
+			@BeanParam VotingSearchModel query) {
+
+		//LOG.info("GET DossierStatisticResponse");
+		_log.info("START AgencyCode: "+query.getAgency());
+		_log.info("START VotingCode: "+query.getVotingCode());
+		VotingStatisticFinderService votingStatisticFinderService = new VotingStatisticFinderServiceImpl();
+
+		int start = query.getStart();
+		int end = query.getEnd();
+		int month = query.getMonth();
+		int year = query.getYear();
+		String govAgencyCode = query.getAgency();
+		String domain = query.getDomain();
+		String votingCode = query.getVotingCode();
+		//boolean reCalculate = query.isReCalculate();
+
+		if (start == 0)
+			start = QueryUtil.ALL_POS;
+
+		if (end == 0)
+			end = QueryUtil.ALL_POS;
+		
+		boolean calculate = false;
+		if (month > 0 || year > 0) {
+			calculate = true;
+		}
+
+		if (calculate) {
+			try {
 //				if (reCalculate) {
 //					processUpdateDB(groupId, month, year);
 //				}
-//
-//				validInput(month, year, start, end);
-//				//
-//				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
-//				dossierStatisticRequest.setDomain(domain);
-//				if ("all".equals(govAgencyCode)) {
-//					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
-//				} else {
-//					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
-//				}
-//				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
-//				dossierStatisticRequest.setReporting(reporting);
-//				dossierStatisticRequest.setGroupId(groupId);
-//				dossierStatisticRequest.setStart(start);
-//				dossierStatisticRequest.setEnd(end);
-//				dossierStatisticRequest.setMonth(month);
-//				dossierStatisticRequest.setYear(year);
-//				//
-//				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
-//						.finderDossierStatistic(dossierStatisticRequest);
-//				if (statisticResponse != null) {
-//					statisticResponse.setAgency(govAgencyCode);
-//				}
-//
-//				return statisticResponse;
-//			} catch (Exception e) {
-//				LOG.error("error", e);
-//				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
-//
-//				serviceExceptionDetails.setFaultCode("500");
-//				serviceExceptionDetails.setFaultMessage(e.getMessage());
-//
-//				throwException(new OpencpsServiceException(serviceExceptionDetails));
-//			}
-//			
-//		} else {
-//
-//			String status = query.getStatus();
-//			String substatus = query.getSubstatus();
-//			String service = query.getService();
-//			String template = query.getTemplate();
-//			String originality = query.getOriginality();
-//			String owner = query.getOwner();
-//			//String follow = query.getFollow();
-//			String step = query.getStep();
-//			String fromStatisticDate = query.getFromStatisticDate();
-//			String toStatisticDate = query.getToStatisticDate();
-//			String top = query.getTop();
-//			String dossierIdNo = query.getDossierNo();
-//			//String fromReceiveDate = query.getFromReceiveDate();
-//			//String toReceiveDate = query.getToReceiveDate();
-//			//String fromReleaseDate = query.getFromReleaseDate();
-//			//String toReleaseDate = query.getToReleaseDate();
-//			//String fromFinishDate = query.getFromFinishDate();
-//			//String toFinishDate = query.getToFinishDate();
-//			//_log.info("fromFinishDate: "+fromFinishDate);
-//			//_log.info("toFinishDate: "+toFinishDate);
-//
-//			//String fromReceiveNotDoneDate = query.getFromReceiveNotDoneDate();
-//			//String toReceiveNotDoneDate = query.getToReceiveNotDoneDate();
-//			boolean online = Boolean.valueOf(query.getOnline());
-//			//String applicantIdNo = query.getApplicantIdNo();
-//			//Integer originDossierId = query.getOriginDossierId();
-//			try {
-//				GetDossierRequest payload = new GetDossierRequest();
-//				if ("all".equals(govAgencyCode)) {
-//					payload.setGovAgencyCode(StringPool.BLANK);
-//				} else {
-//					payload.setGovAgencyCode(govAgencyCode);
-//				}
-//				payload.setGroupId(groupId);
-//				payload.setStart(start);
-//				payload.setEnd(end);
-//				payload.setFromStatisticDate(fromStatisticDate);
-//				payload.setToStatisticDate(toStatisticDate);
-//				payload.setCalculate(calculate);
-//				payload.setStatus(status);
-//				payload.setSubstatus(substatus);
-//				payload.setServiceCode(service);
-//				payload.setTemplate(template);
-//				payload.setOriginality(Integer.valueOf(originality));
-//				payload.setOwner(owner);
-//				payload.setStep(step);
-//				payload.setTop(top);
-//				payload.setDossierNo(dossierIdNo);
-//				payload.setOnline(online);
-//				
-//				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
-//				if (dossierResponse != null) {
-//					List<GetDossierData> dossierDataList = dossierResponse.getData();
-//					List<DossierStatisticData> statisticDataList = new ArrayList<>();
-//					if (dossierDataList != null && dossierDataList.size() > 0) {
-//						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
-//						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-//						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, month);
-//						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-//						//statisticEngineUpdate.updateStatisticData(statisticData);
-//						//
-//						statisticData.forEach((k, v) -> 
-//						statisticDataList.add(v));
-//					}
-//					//
-//					DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
-//					statisticResponse.setTotal(statisticDataList.size());
-//					statisticResponse.setDossierStatisticData(statisticDataList);
-//					if (statisticResponse != null) {
-//						statisticResponse.setAgency(govAgencyCode);
-//					}
-//
-//					return statisticResponse;
-//				}
-//
-//			} catch (Exception e) {
-//				
-//				LOG.error("error", e);
-//				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
-//
-//				serviceExceptionDetails.setFaultCode("500");
-//				serviceExceptionDetails.setFaultMessage(e.getMessage());
-//
-//				throwException(new OpencpsServiceException(serviceExceptionDetails));
-//			}
-//		}
-//
-//		return null;
-//	}
+
+				validInput(month, year, start, end);
+				//
+				VotingResultRequest votingRequest = new VotingResultRequest();
+				votingRequest.setVotingCode(votingCode);
+				votingRequest.setDomain(domain);
+				if ("all".equals(govAgencyCode)) {
+					votingRequest.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					votingRequest.setGovAgencyCode(govAgencyCode);
+				}
+				votingRequest.setGroupId(groupId);
+				votingRequest.setStart(start);
+				votingRequest.setEnd(end);
+				votingRequest.setMonth(month);
+				votingRequest.setYear(year);
+				//
+				VotingResultResponse statisticResponse = votingStatisticFinderService
+						.finderVotingStatistic(votingRequest);
+				if (statisticResponse != null) {
+					statisticResponse.setAgency(govAgencyCode);
+				}
+
+				return statisticResponse;
+			} catch (Exception e) {
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+			
+		} else {
+
+			String fromVotingDate = query.getFromStatisticDate();
+			String toVotingDate = query.getToStatisticDate();
+			//
+			OpencpsCallRestFacade<GetVotingResultRequest, GetVotingResultResponse> callVotingRestService = new OpencpsCallVotingRestFacadeImpl();
+
+			try {
+				GetVotingResultRequest payload = new GetVotingResultRequest();
+				if ("all".equals(govAgencyCode)) {
+					payload.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					payload.setGovAgencyCode(govAgencyCode);
+				}
+				payload.setGroupId(groupId);
+				payload.setStart(start);
+				payload.setEnd(end);
+				payload.setFromVotingDate(fromVotingDate);
+				payload.setToVotingDate(toVotingDate);
+				payload.setCalculate(calculate);
+
+				GetVotingResultResponse votingResponse = callVotingRestService.callRestService(payload);
+				if (votingResponse != null) {
+					List<GetVotingResultData> votingDataList = votingResponse.getData();
+					List<VotingResultStatisticData> statisticDataList = new ArrayList<>();
+					if (votingDataList != null && votingDataList.size() > 0) {
+						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+						//Map<String, VotingResultData> statisticData = new HashMap<String, VotingResultData>();
+						Map<String, VotingResultStatisticData> statisticData = engineFetch
+								.getStatisticVotingData(groupId, votingDataList, month);
+						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+						//statisticEngineUpdate.updateStatisticData(statisticData);
+						//
+						statisticData.forEach((k, v) -> 
+						statisticDataList.add(v));
+					}
+					//
+					VotingResultResponse statisticResponse = new VotingResultResponse();
+					statisticResponse.setTotal(statisticDataList.size());
+					statisticResponse.setData(statisticDataList);
+					if (statisticResponse != null) {
+						statisticResponse.setAgency(govAgencyCode);
+					}
+
+					return statisticResponse;
+				}
+
+			} catch (Exception e) {
+				
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		}
+
+		return null;
+	}
 
 
 	private void validInput(int month, int year, int start, int end) {
@@ -463,7 +445,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
-	private void processUpdateDB(long groupId, int month, int year) throws Exception {
+	private void processUpdateDB(long groupId, int month, int year, boolean reporting) throws Exception {
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
@@ -484,6 +466,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
+		payload.setCalculate(true);
 
 		GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 		if (dossierResponse != null) {
@@ -518,7 +501,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 				Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-				engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, month);
+				engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, month, reporting);
 
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 
@@ -541,6 +524,9 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 
 		/* Update summary */
+		//Delete record
+		engineUpdateAction.removeDossierStatisticByYear(companyId, groupId, 0, LocalDate.now().getYear());
+		//
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 
 		statisticSumYearService.caculateSumYear(companyId, groupId);

@@ -29,8 +29,8 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 
 	private static final String TOTAL = "total";
 
-	private static final String CONDITION_SERVICE = "(opencps_voting_statistic.serviceCode = ?) AND";
-	private static final String CONDITION_SERVICE_REPLACE = "(opencps_voting_statistic.serviceCode IS NULL) AND";
+	private static final String CONDITION_DOMAIN = "(opencps_voting_statistic.domainCode = ?) AND";
+	private static final String CONDITION_DOMAIN_REPLACE = "(opencps_voting_statistic.domainCode IS NULL) AND";
 	private static final String CONDITION_GOV_AGENCY = "(opencps_voting_statistic.govAgencyCode = ?) AND";
 	private static final String CONDITION_GOV_AGENCY_REPLACE = "(opencps_voting_statistic.govAgencyCode IS NULL) AND";
 	private static final String CONDITION_VOTING_CODE = "(opencps_voting_statistic.votingCode = ?) AND";
@@ -44,7 +44,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 	
 	@SuppressWarnings("unchecked")
 	public OpencpsVotingStatistic checkContains(long groupId, int month, int year,
-			String govAgency, String service, String votingCode) {
+			String govAgency, String domain, String votingCode) {
 		Session session = null;
 
 		try {
@@ -57,8 +57,8 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 				sql = StringUtil.replace(sql, CONDITION_VOTING_CODE, CONDITION_VOTING_CODE_REPLACE);
 			}
 			
-			if (Validator.isNull(service)) {
-				sql = StringUtil.replace(sql, CONDITION_SERVICE, CONDITION_SERVICE_REPLACE);
+			if (Validator.isNull(domain)) {
+				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
 			if (Validator.isNull(govAgency)) {
@@ -89,8 +89,8 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 			}
 
 			/* add service parameter */
-			if (Validator.isNotNull(service)) {
-				qPos.add(service);
+			if (Validator.isNotNull(domain)) {
+				qPos.add(domain);
 			}
 
 			/* add govAgency parameter */
@@ -124,7 +124,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 	
 	@SuppressWarnings("unchecked")
 	public List<OpencpsVotingStatistic> searchVotingStatistic(long groupId, int year,
-			String votingCode, String service, String govAgency, int start, int end) {
+			String votingCode, String domain, String govAgency, int start, int end) {
 		Session session = null;
 		
 		try {
@@ -138,8 +138,8 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 				sql = StringUtil.replace(sql, CONDITION_VOTING_CODE, CONDITION_VOTING_CODE_REPLACE);
 			}
 			
-			if (service.contains(TOTAL)){
-				sql = StringUtil.replace(sql, CONDITION_SERVICE,CONDITION_SERVICE_REPLACE);
+			if (domain.contains(TOTAL)){
+				sql = StringUtil.replace(sql, CONDITION_DOMAIN,CONDITION_DOMAIN_REPLACE);
 			}
 			
 			if (govAgency.contains(TOTAL)){
@@ -169,8 +169,8 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 			}
 
 			/* add service parameter */
-			if (!service.contentEquals(TOTAL)) {
-				qPos.add(service);
+			if (!domain.contentEquals(TOTAL)) {
+				qPos.add(domain);
 			}
 
 			/* add govAgency parameter */
@@ -200,7 +200,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 
 	@SuppressWarnings("unchecked")
 	public List<OpencpsVotingStatistic> searchByVotingServiceGovAgencyGroup(long groupId, int month, int year,
-			String votingCode, String service, String govAgency, int start, int end) {
+			String votingCode, String domain, String govAgency, int start, int end) {
 		Session session = null;
 
 		try {
@@ -225,10 +225,10 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 				sql = StringUtil.replace(sql, CONDITION_VOTING_CODE, CONDITION_VOTING_CODE_REPLACE);
 			}
 
-			if (Validator.isNull(service)) {
-				sql = StringUtil.replace(sql, CONDITION_SERVICE, StringPool.BLANK);
-			} else if (service.contentEquals(TOTAL)){
-				sql = StringUtil.replace(sql, CONDITION_SERVICE, CONDITION_SERVICE_REPLACE);
+			if (Validator.isNull(domain)) {
+				sql = StringUtil.replace(sql, CONDITION_DOMAIN, StringPool.BLANK);
+			} else if (domain.contentEquals(TOTAL)){
+				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 
 			if (Validator.isNull(govAgency)) {
@@ -261,8 +261,8 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 			}
 
 			/* add domain parameter */
-			if (Validator.isNotNull(service) && !service.contentEquals(TOTAL)) {
-				qPos.add(service);
+			if (Validator.isNotNull(domain) && !domain.contentEquals(TOTAL)) {
+				qPos.add(domain);
 			}
 
 			/* add govAgency parameter */

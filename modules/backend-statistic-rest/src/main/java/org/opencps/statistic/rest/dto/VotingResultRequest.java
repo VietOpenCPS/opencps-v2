@@ -8,7 +8,7 @@ public class VotingResultRequest extends CommonRequest{
 	private String fromVotingDate;
 	private String toVotingDate;
 	private String votingCode;
-	private String serviceCode;
+	private String domain;
 	private String govAgencyCode;
 
 	public int getMonth() {
@@ -47,17 +47,17 @@ public class VotingResultRequest extends CommonRequest{
 	public void setVotingCode(String votingCode) {
 		this.votingCode = votingCode;
 	}
-	public String getServiceCode() {
-		return serviceCode;
-	}
-	public void setServiceCode(String serviceCode) {
-		this.serviceCode = serviceCode;
-	}
 	public String getGovAgencyCode() {
 		return govAgencyCode;
 	}
 	public void setGovAgencyCode(String govAgencyCode) {
 		this.govAgencyCode = govAgencyCode;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 }
