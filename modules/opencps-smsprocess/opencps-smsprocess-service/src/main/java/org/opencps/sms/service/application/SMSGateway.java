@@ -76,7 +76,12 @@ public class SMSGateway {
             String applicationName = "";
             
             String smsReply = buildContent(receiveMORequestType.getMsgbody(), applicationName);
-            
+            //Send viettel
+    		CcApi_ServiceLocator locator = new CcApi_ServiceLocator();
+    		CcApi_PortType portType = locator.getCcApiPort();
+    		
+    		portType.wsCpMt("viettelmcdt", "789456a@#123", 
+    				"VIETTELMCDT", "1", receiveMORequestType.getSrc(), receiveMORequestType.getSrc(), "ViettelMCDT", "bulksms", smsReply, "F");            
             MOData moData = new MOData(processPerfixNumber(receiveMORequestType.getSrc()), smsReply);
 
             Date replyDate = new Date();
@@ -93,13 +98,6 @@ public class SMSGateway {
             SMSLogAction.updateSMSGatewayLogSuccess(smsGatewayLog.getSmsId());
             
             receiveMOResponseType.setReceiveMOResult(200);
-
-            //Send viettel
-    		CcApi_ServiceLocator locator = new CcApi_ServiceLocator();
-    		CcApi_PortType portType = locator.getCcApiPort();
-    		
-    		portType.wsCpMt("viettelmcdt", "789456a@#123", 
-    				"VIETTELMCDT", "1", receiveMORequestType.getSrc(), receiveMORequestType.getSrc(), "ViettelMCDT", "bulksms", smsReply, "F");            
        }
          catch (AxisFault e) {
              SMSLogAction.updateSMSGatewayLogFail(smsGatewayLog.getSmsId());
