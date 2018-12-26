@@ -595,23 +595,23 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.DOSSIER_ID + "CTN", dossierIDCTN);
 
 			// Get info cert Number
-			List<String> certNoIndexer = certNoIndexer(dossierId, object.getGroupId());
-			if (certNoIndexer != null && certNoIndexer.size() > 0) {
-				String certNo = certNoIndexer.get(0);
-				String certDateStr = certNoIndexer.get(1);
-				String certDateTimeStamp = certDateStr + " 00:00:00";
-				Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp,
-						APIDateTimeUtils._NORMAL_PARTTERN);
+//			List<String> certNoIndexer = certNoIndexer(dossierId, object.getGroupId());
+//			if (certNoIndexer != null && certNoIndexer.size() > 0) {
+//				String certNo = certNoIndexer.get(0);
+//				String certDateStr = certNoIndexer.get(1);
+//				String certDateTimeStamp = certDateStr + " 00:00:00";
+//				Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp,
+//						APIDateTimeUtils._NORMAL_PARTTERN);
 //				_log.info("certNo: " + certNo);
 //				_log.info("certDate: " + certDate);
-				if (Validator.isNotNull(certDate)) {
-					document.addTextSortable("so_chung_chi", certNo);
-					document.addDateSortable("ngay_ky_cc", certDate);
-					// Search follow so_chung_chi
-					String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
-					document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
-				}
-			}
+//				if (Validator.isNotNull(certDate)) {
+//					document.addTextSortable("so_chung_chi", certNo);
+//					document.addDateSortable("ngay_ky_cc", certDate);
+//					// Search follow so_chung_chi
+//					String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
+//					document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
+//				}
+//			}
 
 			document.addTextSortable(DossierTerm.ENDORSEMENT_DATE, APIDateTimeUtils
 					.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
