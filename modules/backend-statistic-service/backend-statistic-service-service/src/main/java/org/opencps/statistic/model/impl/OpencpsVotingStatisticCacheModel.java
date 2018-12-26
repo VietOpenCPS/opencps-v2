@@ -91,10 +91,10 @@ public class OpencpsVotingStatisticCacheModel implements CacheModel<OpencpsVotin
 		sb.append(govAgencyCode);
 		sb.append(", govAgencyName=");
 		sb.append(govAgencyName);
-		sb.append(", serviceCode=");
-		sb.append(serviceCode);
-		sb.append(", serviceName=");
-		sb.append(serviceName);
+		sb.append(", domainCode=");
+		sb.append(domainCode);
+		sb.append(", domainName=");
+		sb.append(domainName);
 		sb.append(", votingCode=");
 		sb.append(votingCode);
 		sb.append(", votingSubject=");
@@ -174,18 +174,18 @@ public class OpencpsVotingStatisticCacheModel implements CacheModel<OpencpsVotin
 			opencpsVotingStatisticImpl.setGovAgencyName(govAgencyName);
 		}
 
-		if (serviceCode == null) {
-			opencpsVotingStatisticImpl.setServiceCode("");
+		if (domainCode == null) {
+			opencpsVotingStatisticImpl.setDomainCode("");
 		}
 		else {
-			opencpsVotingStatisticImpl.setServiceCode(serviceCode);
+			opencpsVotingStatisticImpl.setDomainCode(domainCode);
 		}
 
-		if (serviceName == null) {
-			opencpsVotingStatisticImpl.setServiceName("");
+		if (domainName == null) {
+			opencpsVotingStatisticImpl.setDomainName("");
 		}
 		else {
-			opencpsVotingStatisticImpl.setServiceName(serviceName);
+			opencpsVotingStatisticImpl.setDomainName(domainName);
 		}
 
 		if (votingCode == null) {
@@ -236,8 +236,8 @@ public class OpencpsVotingStatisticCacheModel implements CacheModel<OpencpsVotin
 		year = objectInput.readInt();
 		govAgencyCode = objectInput.readUTF();
 		govAgencyName = objectInput.readUTF();
-		serviceCode = objectInput.readUTF();
-		serviceName = objectInput.readUTF();
+		domainCode = objectInput.readUTF();
+		domainName = objectInput.readUTF();
 		votingCode = objectInput.readUTF();
 		votingSubject = objectInput.readUTF();
 
@@ -304,18 +304,18 @@ public class OpencpsVotingStatisticCacheModel implements CacheModel<OpencpsVotin
 			objectOutput.writeUTF(govAgencyName);
 		}
 
-		if (serviceCode == null) {
+		if (domainCode == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(serviceCode);
+			objectOutput.writeUTF(domainCode);
 		}
 
-		if (serviceName == null) {
+		if (domainName == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(serviceName);
+			objectOutput.writeUTF(domainName);
 		}
 
 		if (votingCode == null) {
@@ -361,8 +361,8 @@ public class OpencpsVotingStatisticCacheModel implements CacheModel<OpencpsVotin
 	public int year;
 	public String govAgencyCode;
 	public String govAgencyName;
-	public String serviceCode;
-	public String serviceName;
+	public String domainCode;
+	public String domainName;
 	public String votingCode;
 	public String votingSubject;
 	public int totalVoted;

@@ -226,7 +226,7 @@ public class NotificationUtil {
 
 				boolean sendEmail = true;
 				boolean sendNotify = true;
-				boolean sendSMS = true;
+				boolean sendSMS = false;
 
 				if (queue.getToUserId() > 0) {
 //					Preferences preferences =
@@ -268,7 +268,7 @@ public class NotificationUtil {
 
 				messageEntry.setSendEmail(sendEmail);
 				messageEntry.setSendNotify(sendNotify);
-				messageEntry.setSendSMS(false);
+				messageEntry.setSendSMS(sendSMS);
 
 //				_log.info("create mail message: " + messageEntry);
 

@@ -43,6 +43,9 @@ import org.osgi.service.component.annotations.Component;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
+import ws.bulkSms.impl.CcApi_PortType;
+import ws.bulkSms.impl.CcApi_ServiceLocator;
+import ws.bulkSms.impl.Result;
 
 @Component(immediate = true, property = "jaxws=true", service = SMSGateway.class)
 @WebService(name = "MonoWebServicePortType", serviceName = "MonoWebService")
@@ -73,7 +76,6 @@ public class SMSGateway {
             String applicationName = "";
             
             String smsReply = buildContent(receiveMORequestType.getMsgbody(), applicationName);
-            
             MOData moData = new MOData(processPerfixNumber(receiveMORequestType.getSrc()), smsReply);
 
             Date replyDate = new Date();
@@ -86,11 +88,17 @@ public class SMSGateway {
             int statusCode = sendMt(moData);
             
             _log.info("statusCode**" + statusCode);
+            System.out.println("statusCode**" + statusCode);
+            //Send viettel
+    		CcApi_ServiceLocator locator = new CcApi_ServiceLocator();
+    		CcApi_PortType portType = locator.getCcApiPort();
+    		
+    		portType.wsCpMt("viettelmcdt", "789456a@#123", 
+    				"VIETTELMCDT", "1", receiveMORequestType.getSrc(), receiveMORequestType.getSrc(), "ViettelMCDT", "bulksms", smsReply, "F");            
             
             SMSLogAction.updateSMSGatewayLogSuccess(smsGatewayLog.getSmsId());
             
             receiveMOResponseType.setReceiveMOResult(200);
-
        }
          catch (AxisFault e) {
              SMSLogAction.updateSMSGatewayLogFail(smsGatewayLog.getSmsId());

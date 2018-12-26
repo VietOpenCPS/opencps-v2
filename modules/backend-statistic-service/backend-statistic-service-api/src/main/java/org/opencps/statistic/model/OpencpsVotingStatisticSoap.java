@@ -46,8 +46,8 @@ public class OpencpsVotingStatisticSoap implements Serializable {
 		soapModel.setYear(model.getYear());
 		soapModel.setGovAgencyCode(model.getGovAgencyCode());
 		soapModel.setGovAgencyName(model.getGovAgencyName());
-		soapModel.setServiceCode(model.getServiceCode());
-		soapModel.setServiceName(model.getServiceName());
+		soapModel.setDomainCode(model.getDomainCode());
+		soapModel.setDomainName(model.getDomainName());
 		soapModel.setVotingCode(model.getVotingCode());
 		soapModel.setVotingSubject(model.getVotingSubject());
 		soapModel.setTotalVoted(model.getTotalVoted());
@@ -209,20 +209,20 @@ public class OpencpsVotingStatisticSoap implements Serializable {
 		_govAgencyName = govAgencyName;
 	}
 
-	public String getServiceCode() {
-		return _serviceCode;
+	public String getDomainCode() {
+		return _domainCode;
 	}
 
-	public void setServiceCode(String serviceCode) {
-		_serviceCode = serviceCode;
+	public void setDomainCode(String domainCode) {
+		_domainCode = domainCode;
 	}
 
-	public String getServiceName() {
-		return _serviceName;
+	public String getDomainName() {
+		return _domainName;
 	}
 
-	public void setServiceName(String serviceName) {
-		_serviceName = serviceName;
+	public void setDomainName(String domainName) {
+		_domainName = domainName;
 	}
 
 	public String getVotingCode() {
@@ -317,8 +317,8 @@ public class OpencpsVotingStatisticSoap implements Serializable {
 	private int _year;
 	private String _govAgencyCode;
 	private String _govAgencyName;
-	private String _serviceCode;
-	private String _serviceName;
+	private String _domainCode;
+	private String _domainName;
 	private String _votingCode;
 	private String _votingSubject;
 	private int _totalVoted;

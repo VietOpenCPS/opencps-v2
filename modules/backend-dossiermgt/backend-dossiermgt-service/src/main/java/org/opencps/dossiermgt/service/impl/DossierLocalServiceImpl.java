@@ -3087,6 +3087,38 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
 				/** Add search all **/
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+			} else if (time.equals(DossierTerm.OVER_DUE)) {
+				/** Check condition dueDate != null **/
+				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				booleanQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+				/** Check condition dueDate < now **/
+				Date date = new Date();
+				long nowTime = date.getTime();
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+						String.valueOf(0), String.valueOf(nowTime), false, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (time.equals(DossierTerm.UN_DUE)){
+				BooleanQuery subQueryOne = new BooleanQueryImpl();
+				BooleanQuery subQueryTwo = new BooleanQueryImpl();
+				/** Check condition dueDate == null **/
+				MultiMatchQuery querydueDateNull = new MultiMatchQuery(String.valueOf(0));
+				querydueDateNull.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryOne.add(querydueDateNull, BooleanClauseOccur.MUST);
+				/** Check condition dueDate != null **/
+				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+				subQueryTwo.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+				/** Check condition dueDate < now **/
+				Date date = new Date();
+				long nowTime = date.getTime();
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+						String.valueOf(nowTime), null, true, false);
+				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+				//
+				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+				//
+				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			}
 		}
 
@@ -3194,7 +3226,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
-			String contactTelNo, String contactEmail, String dossierTemplateNo, int viaPostal, String postalAddress,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
@@ -3242,28 +3274,29 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(sampleCount))
 			dossier.setSampleCount(sampleCount);
 
-		dossier.setViaPostal(viaPostal);
-		if (viaPostal == 1) {
-			dossier.setPostalAddress(StringPool.BLANK);
-			dossier.setPostalCityCode(StringPool.BLANK);
-			dossier.setPostalTelNo(StringPool.BLANK);
-
-		} else if (viaPostal == 2) {
-			if (Validator.isNotNull(postalAddress))
-				dossier.setPostalAddress(postalAddress);
-			if (Validator.isNotNull(postalCityCode))
-				dossier.setPostalCityCode(postalCityCode);
-			if (Validator.isNotNull(postalTelNo))
-				dossier.setPostalTelNo(postalTelNo);
-			if (Validator.isNotNull(postalCityName))
-				dossier.setPostalCityName(postalCityName);
-
-		} else {
-			dossier.setPostalAddress(StringPool.BLANK);
-			dossier.setPostalCityCode(StringPool.BLANK);
-			dossier.setPostalTelNo(StringPool.BLANK);
+		if (Validator.isNotNull(viaPostal)) {
+			dossier.setViaPostal(viaPostal);
+			if (viaPostal == 1) {
+				dossier.setPostalAddress(StringPool.BLANK);
+				dossier.setPostalCityCode(StringPool.BLANK);
+				dossier.setPostalTelNo(StringPool.BLANK);
+	
+			} else if (viaPostal == 2) {
+				if (Validator.isNotNull(postalAddress))
+					dossier.setPostalAddress(postalAddress);
+				if (Validator.isNotNull(postalCityCode))
+					dossier.setPostalCityCode(postalCityCode);
+				if (Validator.isNotNull(postalTelNo))
+					dossier.setPostalTelNo(postalTelNo);
+				if (Validator.isNotNull(postalCityName))
+					dossier.setPostalCityName(postalCityName);
+	
+			} else {
+				dossier.setPostalAddress(StringPool.BLANK);
+				dossier.setPostalCityCode(StringPool.BLANK);
+				dossier.setPostalTelNo(StringPool.BLANK);
+			}
 		}
-
 		if (isSameAsApplicant) {
 			dossier.setDelegateName(applicantName);
 			dossier.setDelegateIdNo(applicantIdNo);
@@ -4012,6 +4045,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	public Dossier getByG_AN_SC_GAC_DTNO_ODID(long groupId, String applicantIdNo, String serviceCode, String govAgencyCode, String dossierTemplateNo, long originDossierId) {
 		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
+	}
+	
+	public Dossier fetchOnePublicService() {
+		return dossierPersistence.fetchByO_First(0, null);
 	}
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 

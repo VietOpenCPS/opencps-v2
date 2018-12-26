@@ -15,7 +15,7 @@ public class ViettelSMSUtils {
 		CcApi_PortType portType = locator.getCcApiPort();
 		
 		Result result = portType.wsCpMt("viettelmcdt", "789456a@#123", 
-				"VIETTELMCDT", "1", "84976969454", toTelNo, "ViettelMCDT", "bulksms", body, "F");
+				"VIETTELMCDT", "1", toTelNo, toTelNo, "ViettelMCDT", "bulksms", body, "F");
 		
 		return result;
 	}

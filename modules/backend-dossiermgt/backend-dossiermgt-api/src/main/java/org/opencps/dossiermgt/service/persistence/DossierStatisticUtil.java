@@ -696,6 +696,202 @@ public class DossierStatisticUtil {
 	}
 
 	/**
+	* Returns all the dossier statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @return the matching dossier statistics
+	*/
+	public static List<DossierStatistic> findByG_M_Y_GC_DC(long groupId,
+		int month, int year) {
+		return getPersistence().findByG_M_Y_GC_DC(groupId, month, year);
+	}
+
+	/**
+	* Returns a range of all the dossier statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param start the lower bound of the range of dossier statistics
+	* @param end the upper bound of the range of dossier statistics (not inclusive)
+	* @return the range of matching dossier statistics
+	*/
+	public static List<DossierStatistic> findByG_M_Y_GC_DC(long groupId,
+		int month, int year, int start, int end) {
+		return getPersistence()
+				   .findByG_M_Y_GC_DC(groupId, month, year, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param start the lower bound of the range of dossier statistics
+	* @param end the upper bound of the range of dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier statistics
+	*/
+	public static List<DossierStatistic> findByG_M_Y_GC_DC(long groupId,
+		int month, int year, int start, int end,
+		OrderByComparator<DossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByG_M_Y_GC_DC(groupId, month, year, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param start the lower bound of the range of dossier statistics
+	* @param end the upper bound of the range of dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier statistics
+	*/
+	public static List<DossierStatistic> findByG_M_Y_GC_DC(long groupId,
+		int month, int year, int start, int end,
+		OrderByComparator<DossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_M_Y_GC_DC(groupId, month, year, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier statistic
+	* @throws NoSuchDossierStatisticException if a matching dossier statistic could not be found
+	*/
+	public static DossierStatistic findByG_M_Y_GC_DC_First(long groupId,
+		int month, int year,
+		OrderByComparator<DossierStatistic> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierStatisticException {
+		return getPersistence()
+				   .findByG_M_Y_GC_DC_First(groupId, month, year,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier statistic, or <code>null</code> if a matching dossier statistic could not be found
+	*/
+	public static DossierStatistic fetchByG_M_Y_GC_DC_First(long groupId,
+		int month, int year,
+		OrderByComparator<DossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_M_Y_GC_DC_First(groupId, month, year,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier statistic
+	* @throws NoSuchDossierStatisticException if a matching dossier statistic could not be found
+	*/
+	public static DossierStatistic findByG_M_Y_GC_DC_Last(long groupId,
+		int month, int year,
+		OrderByComparator<DossierStatistic> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierStatisticException {
+		return getPersistence()
+				   .findByG_M_Y_GC_DC_Last(groupId, month, year,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier statistic, or <code>null</code> if a matching dossier statistic could not be found
+	*/
+	public static DossierStatistic fetchByG_M_Y_GC_DC_Last(long groupId,
+		int month, int year,
+		OrderByComparator<DossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_M_Y_GC_DC_Last(groupId, month, year,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the dossier statistics before and after the current dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current dossier statistic
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier statistic
+	* @throws NoSuchDossierStatisticException if a dossier statistic with the primary key could not be found
+	*/
+	public static DossierStatistic[] findByG_M_Y_GC_DC_PrevAndNext(
+		long dossierStatisticId, long groupId, int month, int year,
+		OrderByComparator<DossierStatistic> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierStatisticException {
+		return getPersistence()
+				   .findByG_M_Y_GC_DC_PrevAndNext(dossierStatisticId, groupId,
+			month, year, orderByComparator);
+	}
+
+	/**
+	* Removes all the dossier statistics where groupId = &#63; and month = &#63; and year = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	*/
+	public static void removeByG_M_Y_GC_DC(long groupId, int month, int year) {
+		getPersistence().removeByG_M_Y_GC_DC(groupId, month, year);
+	}
+
+	/**
+	* Returns the number of dossier statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @return the number of matching dossier statistics
+	*/
+	public static int countByG_M_Y_GC_DC(long groupId, int month, int year) {
+		return getPersistence().countByG_M_Y_GC_DC(groupId, month, year);
+	}
+
+	/**
 	* Caches the dossier statistic in the entity cache if it is enabled.
 	*
 	* @param dossierStatistic the dossier statistic

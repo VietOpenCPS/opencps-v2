@@ -25,25 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.opencps.statistic.rest.dto.GetDossierRequest;
-import org.opencps.statistic.rest.dto.GetDossierResponse;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
 import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
-import org.opencps.statistic.rest.dto.VotingResultRequest;
-import org.opencps.statistic.rest.dto.VotingResultResponse;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
-import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -57,15 +53,13 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 
 	public static final int GROUP_TYPE_SITE = 1;
 	
-	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
-	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
-
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
 		System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		
 		OpencpsCallRestFacade<GetVotingResultRequest, GetVotingResultResponse> callVotingResultService = new OpencpsCallVotingRestFacadeImpl();
+		OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
@@ -83,13 +77,14 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 		}
 
 		if (sites != null && sites.size() > 0) {
-		//for (Group site : sites) {
-		long groupId = 52737;
+			//for (Group site : sites) {
+			long groupId = 52737;
 
 			/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - START */
-			//ServiceDomainRequest sdPayload = new ServiceDomainRequest();
+			ServiceDomainRequest sdPayload = new ServiceDomainRequest();
 			//sdPayload.setGroupId(site.getGroupId());
-			//ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+			sdPayload.setGroupId(groupId);
+			ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
 			/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - END */
 
 			// Get dossier by groupId - START
@@ -190,7 +185,7 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 			
 //			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());
-			statisticSumYearService.caculateSumYear(20099, 52737);
+			statisticSumYearService.votingCalculateSumYear(20099, 52737);
 
 		//}
 		}
@@ -201,7 +196,7 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

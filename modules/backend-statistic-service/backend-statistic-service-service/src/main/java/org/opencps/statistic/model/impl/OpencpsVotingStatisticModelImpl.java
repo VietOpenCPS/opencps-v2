@@ -80,8 +80,8 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 			{ "year", Types.INTEGER },
 			{ "govAgencyCode", Types.VARCHAR },
 			{ "govAgencyName", Types.VARCHAR },
-			{ "serviceCode", Types.VARCHAR },
-			{ "serviceName", Types.VARCHAR },
+			{ "domainCode", Types.VARCHAR },
+			{ "domainName", Types.VARCHAR },
 			{ "votingCode", Types.VARCHAR },
 			{ "votingSubject", Types.VARCHAR },
 			{ "totalVoted", Types.INTEGER },
@@ -108,8 +108,8 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		TABLE_COLUMNS_MAP.put("year", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("govAgencyCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("govAgencyName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("serviceCode", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("serviceName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("domainCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("domainName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("votingCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("votingSubject", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("totalVoted", Types.INTEGER);
@@ -122,7 +122,7 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		TABLE_COLUMNS_MAP.put("totalCount", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_voting_statistic (uuid_ VARCHAR(75) null,votingStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,votingCode VARCHAR(75) null,votingSubject VARCHAR(75) null,totalVoted INTEGER,veryGoodCount INTEGER,goodCount INTEGER,badCount INTEGER,percentVeryGood INTEGER,percentGood INTEGER,percentBad INTEGER,totalCount INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_voting_statistic (uuid_ VARCHAR(75) null,votingStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,votingCode VARCHAR(75) null,votingSubject VARCHAR(75) null,totalVoted INTEGER,veryGoodCount INTEGER,goodCount INTEGER,badCount INTEGER,percentVeryGood INTEGER,percentGood INTEGER,percentBad INTEGER,totalCount INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_voting_statistic";
 	public static final String ORDER_BY_JPQL = " ORDER BY opencpsVotingStatistic.votingStatisticId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_voting_statistic.votingStatisticId ASC";
@@ -139,10 +139,10 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 				"value.object.column.bitmask.enabled.org.opencps.statistic.model.OpencpsVotingStatistic"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 2L;
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long MONTH_COLUMN_BITMASK = 8L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 16L;
+	public static final long DOMAINCODE_COLUMN_BITMASK = 2L;
+	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long MONTH_COLUMN_BITMASK = 16L;
 	public static final long USERID_COLUMN_BITMASK = 32L;
 	public static final long UUID_COLUMN_BITMASK = 64L;
 	public static final long YEAR_COLUMN_BITMASK = 128L;
@@ -199,8 +199,8 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		attributes.put("year", getYear());
 		attributes.put("govAgencyCode", getGovAgencyCode());
 		attributes.put("govAgencyName", getGovAgencyName());
-		attributes.put("serviceCode", getServiceCode());
-		attributes.put("serviceName", getServiceName());
+		attributes.put("domainCode", getDomainCode());
+		attributes.put("domainName", getDomainName());
 		attributes.put("votingCode", getVotingCode());
 		attributes.put("votingSubject", getVotingSubject());
 		attributes.put("totalVoted", getTotalVoted());
@@ -292,16 +292,16 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 			setGovAgencyName(govAgencyName);
 		}
 
-		String serviceCode = (String)attributes.get("serviceCode");
+		String domainCode = (String)attributes.get("domainCode");
 
-		if (serviceCode != null) {
-			setServiceCode(serviceCode);
+		if (domainCode != null) {
+			setDomainCode(domainCode);
 		}
 
-		String serviceName = (String)attributes.get("serviceName");
+		String domainName = (String)attributes.get("domainName");
 
-		if (serviceName != null) {
-			setServiceName(serviceName);
+		if (domainName != null) {
+			setDomainName(domainName);
 		}
 
 		String votingCode = (String)attributes.get("votingCode");
@@ -606,43 +606,43 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 	}
 
 	@Override
-	public String getServiceCode() {
-		if (_serviceCode == null) {
+	public String getDomainCode() {
+		if (_domainCode == null) {
 			return "";
 		}
 		else {
-			return _serviceCode;
+			return _domainCode;
 		}
 	}
 
 	@Override
-	public void setServiceCode(String serviceCode) {
-		_columnBitmask |= SERVICECODE_COLUMN_BITMASK;
+	public void setDomainCode(String domainCode) {
+		_columnBitmask |= DOMAINCODE_COLUMN_BITMASK;
 
-		if (_originalServiceCode == null) {
-			_originalServiceCode = _serviceCode;
+		if (_originalDomainCode == null) {
+			_originalDomainCode = _domainCode;
 		}
 
-		_serviceCode = serviceCode;
+		_domainCode = domainCode;
 	}
 
-	public String getOriginalServiceCode() {
-		return GetterUtil.getString(_originalServiceCode);
+	public String getOriginalDomainCode() {
+		return GetterUtil.getString(_originalDomainCode);
 	}
 
 	@Override
-	public String getServiceName() {
-		if (_serviceName == null) {
+	public String getDomainName() {
+		if (_domainName == null) {
 			return "";
 		}
 		else {
-			return _serviceName;
+			return _domainName;
 		}
 	}
 
 	@Override
-	public void setServiceName(String serviceName) {
-		_serviceName = serviceName;
+	public void setDomainName(String domainName) {
+		_domainName = domainName;
 	}
 
 	@Override
@@ -804,8 +804,8 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		opencpsVotingStatisticImpl.setYear(getYear());
 		opencpsVotingStatisticImpl.setGovAgencyCode(getGovAgencyCode());
 		opencpsVotingStatisticImpl.setGovAgencyName(getGovAgencyName());
-		opencpsVotingStatisticImpl.setServiceCode(getServiceCode());
-		opencpsVotingStatisticImpl.setServiceName(getServiceName());
+		opencpsVotingStatisticImpl.setDomainCode(getDomainCode());
+		opencpsVotingStatisticImpl.setDomainName(getDomainName());
 		opencpsVotingStatisticImpl.setVotingCode(getVotingCode());
 		opencpsVotingStatisticImpl.setVotingSubject(getVotingSubject());
 		opencpsVotingStatisticImpl.setTotalVoted(getTotalVoted());
@@ -904,7 +904,7 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 
 		opencpsVotingStatisticModelImpl._originalGovAgencyCode = opencpsVotingStatisticModelImpl._govAgencyCode;
 
-		opencpsVotingStatisticModelImpl._originalServiceCode = opencpsVotingStatisticModelImpl._serviceCode;
+		opencpsVotingStatisticModelImpl._originalDomainCode = opencpsVotingStatisticModelImpl._domainCode;
 
 		opencpsVotingStatisticModelImpl._columnBitmask = 0;
 	}
@@ -975,20 +975,20 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 			opencpsVotingStatisticCacheModel.govAgencyName = null;
 		}
 
-		opencpsVotingStatisticCacheModel.serviceCode = getServiceCode();
+		opencpsVotingStatisticCacheModel.domainCode = getDomainCode();
 
-		String serviceCode = opencpsVotingStatisticCacheModel.serviceCode;
+		String domainCode = opencpsVotingStatisticCacheModel.domainCode;
 
-		if ((serviceCode != null) && (serviceCode.length() == 0)) {
-			opencpsVotingStatisticCacheModel.serviceCode = null;
+		if ((domainCode != null) && (domainCode.length() == 0)) {
+			opencpsVotingStatisticCacheModel.domainCode = null;
 		}
 
-		opencpsVotingStatisticCacheModel.serviceName = getServiceName();
+		opencpsVotingStatisticCacheModel.domainName = getDomainName();
 
-		String serviceName = opencpsVotingStatisticCacheModel.serviceName;
+		String domainName = opencpsVotingStatisticCacheModel.domainName;
 
-		if ((serviceName != null) && (serviceName.length() == 0)) {
-			opencpsVotingStatisticCacheModel.serviceName = null;
+		if ((domainName != null) && (domainName.length() == 0)) {
+			opencpsVotingStatisticCacheModel.domainName = null;
 		}
 
 		opencpsVotingStatisticCacheModel.votingCode = getVotingCode();
@@ -1054,10 +1054,10 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		sb.append(getGovAgencyCode());
 		sb.append(", govAgencyName=");
 		sb.append(getGovAgencyName());
-		sb.append(", serviceCode=");
-		sb.append(getServiceCode());
-		sb.append(", serviceName=");
-		sb.append(getServiceName());
+		sb.append(", domainCode=");
+		sb.append(getDomainCode());
+		sb.append(", domainName=");
+		sb.append(getDomainName());
 		sb.append(", votingCode=");
 		sb.append(getVotingCode());
 		sb.append(", votingSubject=");
@@ -1140,12 +1140,12 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		sb.append(getGovAgencyName());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>serviceCode</column-name><column-value><![CDATA[");
-		sb.append(getServiceCode());
+			"<column><column-name>domainCode</column-name><column-value><![CDATA[");
+		sb.append(getDomainCode());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>serviceName</column-name><column-value><![CDATA[");
-		sb.append(getServiceName());
+			"<column><column-name>domainName</column-name><column-value><![CDATA[");
+		sb.append(getDomainName());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>votingCode</column-name><column-value><![CDATA[");
@@ -1222,9 +1222,9 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 	private String _govAgencyCode;
 	private String _originalGovAgencyCode;
 	private String _govAgencyName;
-	private String _serviceCode;
-	private String _originalServiceCode;
-	private String _serviceName;
+	private String _domainCode;
+	private String _originalDomainCode;
+	private String _domainName;
 	private String _votingCode;
 	private String _votingSubject;
 	private int _totalVoted;

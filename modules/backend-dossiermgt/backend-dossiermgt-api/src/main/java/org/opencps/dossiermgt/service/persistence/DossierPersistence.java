@@ -2738,6 +2738,134 @@ public interface DossierPersistence extends BasePersistence<Dossier> {
 		long originDossierId);
 
 	/**
+	* Returns all the dossiers where originality = &#63;.
+	*
+	* @param originality the originality
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByO(int originality);
+
+	/**
+	* Returns a range of all the dossiers where originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByO(int originality, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByO(int originality, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByO(int originality, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByO_First(int originality,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the first dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByO_First(int originality,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the last dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByO_Last(int originality,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the last dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByO_Last(int originality,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where originality = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public Dossier[] findByO_PrevAndNext(long dossierId, int originality,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Removes all the dossiers where originality = &#63; from the database.
+	*
+	* @param originality the originality
+	*/
+	public void removeByO(int originality);
+
+	/**
+	* Returns the number of dossiers where originality = &#63;.
+	*
+	* @param originality the originality
+	* @return the number of matching dossiers
+	*/
+	public int countByO(int originality);
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

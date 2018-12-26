@@ -353,7 +353,7 @@ public class StatisticSumYearCalcular {
 		overdueCount = latest.getOverdueCount();
 		interoperatingCount = latest.getInteroperatingCount();
 		waitingCount = latest.getWaitingCount();
-		processCount = releaseCount + processingCount + waitingCount;
+		processCount = releaseCount + processingCount + waitingCount + cancelledCount;
 		totalCount = processCount + deniedCount + cancelledCount;
 		remainingCount = processCount - receivedCount;
 		doneCount = releaseCount - (releasingCount + unresolvedCount);

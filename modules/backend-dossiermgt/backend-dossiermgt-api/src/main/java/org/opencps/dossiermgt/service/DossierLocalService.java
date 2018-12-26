@@ -234,6 +234,9 @@ public interface DossierLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossierByUuidAndGroupId(String uuid, long groupId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier fetchOnePublicService();
+
 	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo);
 
 	public List<Dossier> findByVIAPOSTAL(int viaPostal);
@@ -390,7 +393,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String cityName, String districtCode, String districtName,
 		String wardCode, String wardName, String contactName,
 		String contactTelNo, String contactEmail, String dossierTemplateNo,
-		int viaPostal, String postalAddress, String postalCityCode,
+		Integer viaPostal, String postalAddress, String postalCityCode,
 		String postalCityName, String postalTelNo, String applicantNote,
 		boolean isSameAsApplicant, String delegateName, String delegateIdNo,
 		String delegateTelNo, String delegateEmail, String delegateAddress,

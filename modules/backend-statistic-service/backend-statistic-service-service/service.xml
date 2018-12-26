@@ -124,8 +124,8 @@
 		<column name="year" type="int" />
 		<column name="govAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
-		<column name="serviceCode" type="String" />
-		<column name="serviceName" type="String" />
+		<column name="domainCode" type="String" />
+		<column name="domainName" type="String" />
 		<column name="votingCode" type="String" />
 		<column name="votingSubject" type="String" />
 		<column name="totalVoted" type="int" />
@@ -149,7 +149,7 @@
 			<finder-column name="month"/>
 			<finder-column name="year"/>
 			<finder-column name="govAgencyCode"/>
-			<finder-column name="serviceCode"/>
+			<finder-column name="domainCode"/>
 		</finder>
 		
 	</entity>

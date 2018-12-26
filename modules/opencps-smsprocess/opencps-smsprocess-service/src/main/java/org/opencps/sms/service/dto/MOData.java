@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.opencps.sms.service.util.Constants;
+import org.opencps.sms.service.util.DossierServiceProps;
 import org.opencps.sms.service.util.ServiceProps;
 
 
@@ -235,7 +236,7 @@ public class MOData {
         this.mtseq = "111";
         this.moid = "123";
         this.moseq = "12345";
-        this.src = ServiceProps.get(Constants.OPENCPS_BACKEND_MO_NUMBER);
+        this.src = DossierServiceProps.get(Constants.OPENCPS_BACKEND_MO_NUMBER);
         this.dest = dest;
         this.cmdcode = "GAP";
         this.msgbody = msgbody;
@@ -247,8 +248,9 @@ public class MOData {
         this.serviceid = "Service01";
         this.reqtime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         this.procresult = "0";
-        this.userName = ServiceProps.get(Constants.OPENCPS_BACKEND_SMSGATEWAY_USER);
-        this.password = ServiceProps.get(Constants.OPENCPS_BACKEND_SMSGATEWAY_PASSWORD);
+        this.userName = DossierServiceProps.get(Constants.OPENCPS_BACKEND_SMSGATEWAY_USER);
+        this.password = DossierServiceProps.get(Constants.OPENCPS_BACKEND_SMSGATEWAY_PASSWORD);
+        System.out.println("MO **" + this.src + "," + this.userName + "," + this.password);
     }
 
 

@@ -3420,6 +3420,160 @@ public class DossierUtil {
 	}
 
 	/**
+	* Returns all the dossiers where originality = &#63;.
+	*
+	* @param originality the originality
+	* @return the matching dossiers
+	*/
+	public static List<Dossier> findByO(int originality) {
+		return getPersistence().findByO(originality);
+	}
+
+	/**
+	* Returns a range of all the dossiers where originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public static List<Dossier> findByO(int originality, int start, int end) {
+		return getPersistence().findByO(originality, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByO(int originality, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .findByO(originality, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByO(int originality, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByO(originality, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByO_First(int originality,
+		OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().findByO_First(originality, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByO_First(int originality,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence().fetchByO_First(originality, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByO_Last(int originality,
+		OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().findByO_Last(originality, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where originality = &#63;.
+	*
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByO_Last(int originality,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence().fetchByO_Last(originality, orderByComparator);
+	}
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where originality = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public static Dossier[] findByO_PrevAndNext(long dossierId,
+		int originality, OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByO_PrevAndNext(dossierId, originality,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the dossiers where originality = &#63; from the database.
+	*
+	* @param originality the originality
+	*/
+	public static void removeByO(int originality) {
+		getPersistence().removeByO(originality);
+	}
+
+	/**
+	* Returns the number of dossiers where originality = &#63;.
+	*
+	* @param originality the originality
+	* @return the number of matching dossiers
+	*/
+	public static int countByO(int originality) {
+		return getPersistence().countByO(originality);
+	}
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

@@ -269,34 +269,34 @@ public interface OpencpsVotingStatisticModel extends BaseModel<OpencpsVotingStat
 	public void setGovAgencyName(String govAgencyName);
 
 	/**
-	 * Returns the service code of this opencps voting statistic.
+	 * Returns the domain code of this opencps voting statistic.
 	 *
-	 * @return the service code of this opencps voting statistic
+	 * @return the domain code of this opencps voting statistic
 	 */
 	@AutoEscape
-	public String getServiceCode();
+	public String getDomainCode();
 
 	/**
-	 * Sets the service code of this opencps voting statistic.
+	 * Sets the domain code of this opencps voting statistic.
 	 *
-	 * @param serviceCode the service code of this opencps voting statistic
+	 * @param domainCode the domain code of this opencps voting statistic
 	 */
-	public void setServiceCode(String serviceCode);
+	public void setDomainCode(String domainCode);
 
 	/**
-	 * Returns the service name of this opencps voting statistic.
+	 * Returns the domain name of this opencps voting statistic.
 	 *
-	 * @return the service name of this opencps voting statistic
+	 * @return the domain name of this opencps voting statistic
 	 */
 	@AutoEscape
-	public String getServiceName();
+	public String getDomainName();
 
 	/**
-	 * Sets the service name of this opencps voting statistic.
+	 * Sets the domain name of this opencps voting statistic.
 	 *
-	 * @param serviceName the service name of this opencps voting statistic
+	 * @param domainName the domain name of this opencps voting statistic
 	 */
-	public void setServiceName(String serviceName);
+	public void setDomainName(String domainName);
 
 	/**
 	 * Returns the voting code of this opencps voting statistic.

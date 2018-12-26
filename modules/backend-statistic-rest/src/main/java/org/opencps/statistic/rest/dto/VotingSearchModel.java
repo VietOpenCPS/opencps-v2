@@ -7,8 +7,6 @@
 
 package org.opencps.statistic.rest.dto;
 
-import com.liferay.petra.string.StringPool;
-
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 	"year",
 	"month",
 	"agency",
-	"service",
+	"domain",
 	"votingCode",
 	"fromStatisticDate",
 	"toStatisticDate"
@@ -52,8 +50,8 @@ public class VotingSearchModel {
 	protected int month;
 	@QueryParam(value = "agency")
 	protected String agency;
-	@QueryParam(value = "service")
-	protected String service;
+	@QueryParam(value = "domain")
+	protected String domain;
 	@QueryParam(value = "votingCode")
 	protected String votingCode;
 	@QueryParam(value = "fromStatisticDate")
@@ -108,12 +106,6 @@ public class VotingSearchModel {
 	public void setAgency(String agency) {
 		this.agency = agency;
 	}
-	public String getService() {
-		return service;
-	}
-	public void setService(String service) {
-		this.service = service;
-	}
 	public String getVotingCode() {
 		return votingCode;
 	}
@@ -131,6 +123,12 @@ public class VotingSearchModel {
 	}
 	public void setToStatisticDate(String toStatisticDate) {
 		this.toStatisticDate = toStatisticDate;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 }

@@ -169,15 +169,20 @@ public class DossierUtils {
 							if (subTimeStamp > 0) {
 	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
 	//									dueDateTimeStamp, groupId, true);
-								model.setDossierOverdue("Quá hạn " + strOverDue);
+								//model.setDossierOverdue("Quá hạn " + strOverDue);
+								model.setDossierOverdue("Quá hạn");
+							} else if (subTimeStamp == 0) {
+								model.setDossierOverdue("Đúng hạn ");
 							} else {
-								model.setDossierOverdue("Còn " + strOverDue);
+								model.setDossierOverdue("Sớm hạn ");
 							}
 						} else {
-							model.setDossierOverdue(StringPool.BLANK);
+							//model.setDossierOverdue(StringPool.BLANK);
+							model.setDossierOverdue("Đúng hạn ");
 						}
 					} else {
-						model.setDossierOverdue(StringPool.BLANK);
+						//model.setDossierOverdue(StringPool.BLANK);
+						model.setDossierOverdue("Đúng hạn ");
 					}
 				} else {
 					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
@@ -204,45 +209,49 @@ public class DossierUtils {
 //				double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0.0;
 //				if (Double.compare(durationCount, 0.0) != 0) {
 //				_log.info("dossierActionId: "+dossierActionId);
-				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-				if (dAction != null) {
-					int state = dAction.getState();
-//					if (model.getDossierId() == 9102) {
-//						_log.info("ACTION OVERDUE: " + dAction.getActionOverdue());
-//					}
-					if (state > 0) {
-						int actionOverDue = dAction.getActionOverdue();
-						if (actionOverDue > 0) {
-							model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
-						} else {
-							model.setStepOverdue(StringPool.BLANK);
-						}
-					} else {
-						Date dueDate = dAction.getDueDate();
-//						_log.info("dueDate: "+dueDate);
-						if (dueDate != null) {
-							long dueDateActionTimeStamp = dueDate.getTime();
-							long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
-//							_log.info("START STEP OVERDUE");
-							String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
-									dueDateActionTimeStamp, groupId, true);
-							if (Validator.isNotNull(stepOverDue)) {
-								if (subTimeStamp > 0) {
-//									String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
-//											dueDateTimeStamp, groupId, true);
-									model.setStepOverdue("Quá hạn " + stepOverDue);
-								} else {
-									model.setStepOverdue("Còn " + stepOverDue);
-								}
+				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
+					model.setStepOverdue(StringPool.BLANK);
+				} else {
+					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					if (dAction != null) {
+						int state = dAction.getState();
+//						if (model.getDossierId() == 9102) {
+//							_log.info("ACTION OVERDUE: " + dAction.getActionOverdue());
+//						}
+						if (state > 0) {
+							int actionOverDue = dAction.getActionOverdue();
+							if (actionOverDue > 0) {
+								model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
 							} else {
 								model.setStepOverdue(StringPool.BLANK);
 							}
 						} else {
-							model.setStepOverdue(StringPool.BLANK);
+							Date dueDate = dAction.getDueDate();
+//							_log.info("dueDate: "+dueDate);
+							if (dueDate != null) {
+								long dueDateActionTimeStamp = dueDate.getTime();
+								long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
+//								_log.info("START STEP OVERDUE");
+								String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+										dueDateActionTimeStamp, groupId, true);
+								if (Validator.isNotNull(stepOverDue)) {
+									if (subTimeStamp > 0) {
+//										String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
+//												dueDateTimeStamp, groupId, true);
+										model.setStepOverdue("Quá hạn " + stepOverDue);
+									} else {
+										model.setStepOverdue("Còn " + stepOverDue);
+									}
+								} else {
+									model.setStepOverdue(StringPool.BLANK);
+								}
+							} else {
+								model.setStepOverdue(StringPool.BLANK);
+							}
 						}
+					} else {
+						model.setStepOverdue(StringPool.BLANK);
 					}
-				} else {
-					model.setStepOverdue(StringPool.BLANK);
 				}
 			} else {
 				model.setDossierOverdue("Tạm dừng xử lý");
@@ -1019,7 +1028,7 @@ public class DossierUtils {
 					else {
 						flagCheck = true;
 					}
-					
+					_log.info("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {

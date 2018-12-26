@@ -39,6 +39,7 @@ import backend.feedback.action.impl.VotingActionsImpl;
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
+import backend.feedback.service.VotingLocalServiceUtil;
 import backend.postal.api.rest.controller.VotingManagement;
 
 public class VotingManagementImpl implements VotingManagement {
@@ -111,10 +112,15 @@ public class VotingManagementImpl implements VotingManagement {
 			String choices = HtmlUtil.escape(input.getChoices());
 			String templateNo = HtmlUtil.escape(input.getTemplateNo());
 			String commentable = HtmlUtil.escape(String.valueOf(input.getCommentable()));
+			String votingCode = input.getVotingCode();
 			
 			Voting voting = actions.addVote(user.getUserId(), company.getCompanyId(), groupId, className,
 					classPK, subject, templateNo, choices,
 					Boolean.valueOf(commentable), serviceContext);
+			if (voting != null) {
+				voting.setVotingCode(votingCode);
+				VotingLocalServiceUtil.updateVoting(voting);
+			}
 
 			result = VotingUtils.mapperVotingModel(voting, user.getUserId());
 
@@ -142,10 +148,15 @@ public class VotingManagementImpl implements VotingManagement {
 			String choices = HtmlUtil.escape(input.getChoices());
 			String templateNo = HtmlUtil.escape(input.getTemplateNo());
 			String commentable = HtmlUtil.escape(String.valueOf(input.getCommentable()));
+			String votingCode = input.getVotingCode();
 
 			Voting voting = actions.updateVoting(user.getUserId(), company.getCompanyId(), groupId, votingId,
 					className, classPK, subject, templateNo,
 					choices, Boolean.valueOf(commentable), serviceContext);
+			if (voting != null) {
+				voting.setVotingCode(votingCode);
+				VotingLocalServiceUtil.updateVoting(voting);
+			}
 
 			result = VotingUtils.mapperVotingModel(voting, user.getUserId());
 
