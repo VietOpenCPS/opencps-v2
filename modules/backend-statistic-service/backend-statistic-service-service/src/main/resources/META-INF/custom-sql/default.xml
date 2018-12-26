@@ -61,7 +61,7 @@
 				(opencps_voting_statistic.month = ?) AND
 				(opencps_voting_statistic.year = ?) AND
 				(opencps_voting_statistic.votingCode = ?) AND
-				(opencps_voting_statistic.serviceCode = ?) AND
+				(opencps_voting_statistic.domainCode = ?) AND
 				(opencps_voting_statistic.govAgencyCode = ?) AND 
 				(opencps_voting_statistic.groupId = ?)
 			ORDER BY month DESC

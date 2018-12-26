@@ -98,17 +98,16 @@ public class StatisticEngineFetchEntry {
 					if (dossierData.getDossierStatus().contentEquals("unresolved")) {
 						// từ chối giải quyết => không tính hạn xử lý
 						statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
-					} 
-					
-					// hồ sơ có kết quả tính hạn xử lý
-					//if (finishDate not null ) {
-					if (finishDate != null) {
-						// số đã trả kết quả
-						statisticData.setDoneCount(statisticData.getDoneCount() + 1);
-					} else {
-						statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
+					} else { 
+						if (finishDate != null) {
+							// số đã trả kết quả
+							statisticData.setDoneCount(statisticData.getDoneCount() + 1);
+						} else {
+							statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
+						}
 					}
 
+					// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
 					int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
 					// Check condition filter betimes
 					if (dueDate != null) {
