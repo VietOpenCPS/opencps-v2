@@ -44,7 +44,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-//@Component(immediate = true, service = VotingStatisticScheduler.class)
+@Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener {
 
 	private final static Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
@@ -182,10 +182,10 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 				System.out.println("END getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
 			/* Update summary */
-			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
+			//StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 			
 //			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());
-			statisticSumYearService.votingCalculateSumYear(20099, 52737);
+			//statisticSumYearService.votingCalculateSumYear(20099, 52737);
 
 		//}
 		}

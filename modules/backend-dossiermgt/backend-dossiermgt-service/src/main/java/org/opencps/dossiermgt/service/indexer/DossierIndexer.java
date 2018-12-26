@@ -212,13 +212,32 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			if (dueDateTime > 0) {
 				if (releaseTime > 0) {
 					long valueCompareRelease = releaseTime - dueDateTime;
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, valueCompareRelease);
+					if (valueCompareRelease > 0) {
+						// OverTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
+					} else if (valueCompareRelease == 0) {
+						// OnTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
+					} else {
+						// BeTimes
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
+					}
 				} else {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
 				}
 				if (finishTime > 0) {
 					long valueCompareFinish = finishTime - dueDateTime;
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
+					if (valueCompareFinish > 0) {
+						// OverTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 1);
+					} else if (valueCompareFinish == 0) {
+						// OnTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 2);
+					} else {
+						// BeTimes
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 3);
+					}
+					//document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
 				} else {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 0);
 				}
@@ -595,23 +614,23 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.DOSSIER_ID + "CTN", dossierIDCTN);
 
 			// Get info cert Number
-			List<String> certNoIndexer = certNoIndexer(dossierId, object.getGroupId());
-			if (certNoIndexer != null && certNoIndexer.size() > 0) {
-				String certNo = certNoIndexer.get(0);
-				String certDateStr = certNoIndexer.get(1);
-				String certDateTimeStamp = certDateStr + " 00:00:00";
-				Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp,
-						APIDateTimeUtils._NORMAL_PARTTERN);
-//				_log.info("certNo: " + certNo);
-//				_log.info("certDate: " + certDate);
-				if (Validator.isNotNull(certDate)) {
-					document.addTextSortable("so_chung_chi", certNo);
-					document.addDateSortable("ngay_ky_cc", certDate);
-					// Search follow so_chung_chi
-					String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
-					document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
-				}
-			}
+//			List<String> certNoIndexer = certNoIndexer(dossierId, object.getGroupId());
+//			if (certNoIndexer != null && certNoIndexer.size() > 0) {
+//				String certNo = certNoIndexer.get(0);
+//				String certDateStr = certNoIndexer.get(1);
+//				String certDateTimeStamp = certDateStr + " 00:00:00";
+//				Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp,
+//						APIDateTimeUtils._NORMAL_PARTTERN);
+////				_log.info("certNo: " + certNo);
+////				_log.info("certDate: " + certDate);
+//				if (Validator.isNotNull(certDate)) {
+//					document.addTextSortable("so_chung_chi", certNo);
+//					document.addDateSortable("ngay_ky_cc", certDate);
+//					// Search follow so_chung_chi
+//					String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
+//					document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
+//				}
+//			}
 
 			document.addTextSortable(DossierTerm.ENDORSEMENT_DATE, APIDateTimeUtils
 					.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
