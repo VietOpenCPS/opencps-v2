@@ -212,13 +212,32 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			if (dueDateTime > 0) {
 				if (releaseTime > 0) {
 					long valueCompareRelease = releaseTime - dueDateTime;
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, valueCompareRelease);
+					if (valueCompareRelease > 0) {
+						// OverTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
+					} else if (valueCompareRelease == 0) {
+						// OnTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
+					} else {
+						// BeTimes
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
+					}
 				} else {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
 				}
 				if (finishTime > 0) {
 					long valueCompareFinish = finishTime - dueDateTime;
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
+					if (valueCompareFinish > 0) {
+						// OverTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 1);
+					} else if (valueCompareFinish == 0) {
+						// OnTime
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 2);
+					} else {
+						// BeTimes
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 3);
+					}
+					//document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
 				} else {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 0);
 				}

@@ -104,9 +104,15 @@ public class DossierDocumentUtils {
 									if (Validator.isNotNull(hoursAfterNoon)) {
 										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
 										if (splitAfter != null) {
-											dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
-											dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
-											dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											if (Integer.valueOf(splitAfter[0]) < 12) {
+												dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											} else {
+												//dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											}
 										}
 									}
 								}
