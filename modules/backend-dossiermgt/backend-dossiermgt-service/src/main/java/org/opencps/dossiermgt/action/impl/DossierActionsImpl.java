@@ -3248,7 +3248,7 @@ public class DossierActionsImpl implements DossierActions {
 						jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
 				
 				//Update dossier processing date
-				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, context);
+				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, context);
 			}
 
 				// update reference dossier
@@ -3941,60 +3941,62 @@ public class DossierActionsImpl implements DossierActions {
         Calendar calEmpl = Calendar.getInstance();
         calEmpl.setTime(now);
         
-		if ("minutely".equals(emplTemplate.getInterval())) {
-			calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());					
-		}
-		else if ("hourly".equals(emplTemplate.getInterval())) {
-			calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());										
-		}
-		else {
-			calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());										
-		}
-		Date expired = calEmpl.getTime();
-
-		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
-				|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
-			try {
-				String stepCode = dossierAction.getStepCode();
-				StringBuilder buildX = new StringBuilder(stepCode);
-				if (stepCode.length() > 0) {
-					buildX.setCharAt(stepCode.length() - 1, 'x');					
-				}
-				String stepCodeX = buildX.toString();
-				
-				StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
-				StepConfig stepConfigX = StepConfigLocalServiceUtil.getByCode(groupId, stepCodeX);
-				if ((stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)
-						|| (stepConfigX != null && stepConfigX.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)) {
-					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
-					for (DossierActionUser dau : lstDaus) {
-						if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
-							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
-							String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
-							String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
-							NotificationQueueLocalServiceUtil.addNotificationQueue(
-									userId, groupId, 
-									"EMPL-01", 
-									Dossier.class.getName(), 
-									String.valueOf(dossier.getDossierId()), 
-									payloadObj.toJSONString(), 
-									u.getFullName(), 
-									fullName, 
-									dau.getUserId(), 
-									employee.getEmail(), 
-									telNo, 
-									now, 
-									expired, 
-									context);																		
+        if (emplTemplate != null) {
+			if ("minutely".equals(emplTemplate.getInterval())) {
+				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());					
+			}
+			else if ("hourly".equals(emplTemplate.getInterval())) {
+				calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());										
+			}
+			else {
+				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());										
+			}
+			Date expired = calEmpl.getTime();
+	
+			if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+					|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+				try {
+					String stepCode = dossierAction.getStepCode();
+					StringBuilder buildX = new StringBuilder(stepCode);
+					if (stepCode.length() > 0) {
+						buildX.setCharAt(stepCode.length() - 1, 'x');					
+					}
+					String stepCodeX = buildX.toString();
+					
+					StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
+					StepConfig stepConfigX = StepConfigLocalServiceUtil.getByCode(groupId, stepCodeX);
+					if ((stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)
+							|| (stepConfigX != null && stepConfigX.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)) {
+						List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
+						for (DossierActionUser dau : lstDaus) {
+							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
+								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+								String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+								String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
+								NotificationQueueLocalServiceUtil.addNotificationQueue(
+										userId, groupId, 
+										"EMPL-01", 
+										Dossier.class.getName(), 
+										String.valueOf(dossier.getDossierId()), 
+										payloadObj.toJSONString(), 
+										u.getFullName(), 
+										fullName, 
+										dau.getUserId(), 
+										employee.getEmail(), 
+										telNo, 
+										now, 
+										expired, 
+										context);																		
+							}
 						}
 					}
+				} catch (NoSuchUserException e) {
+					_log.debug(e);
+					//_log.error(e);
+	//				e.printStackTrace();
 				}
-			} catch (NoSuchUserException e) {
-				_log.debug(e);
-				//_log.error(e);
-//				e.printStackTrace();
-			}
-		}			
+			}	
+        }
 	}
 
 	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
@@ -4034,7 +4036,9 @@ public class DossierActionsImpl implements DossierActions {
 		}		
 	}
 	
-	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, ServiceContext context) {
+	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, 
+			ActionConfig actionConfig,
+			ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
 		String serviceCode = dossier.getServiceCode();
@@ -4138,11 +4142,16 @@ public class DossierActionsImpl implements DossierActions {
 //				e.printStackTrace();
 //			}
 		}
+//		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
+//				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
+//				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+//				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
+//				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
-				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
-				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+				|| (actionConfig != null && actionConfig.getDateOption() == 4)
+				) {
 			if (Validator.isNull(dossier.getReleaseDate())) {
 //				try {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
@@ -4164,10 +4173,13 @@ public class DossierActionsImpl implements DossierActions {
 			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
 		}
 		
+//		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
+//				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+//				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
+//				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
-				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
-				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
-				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)
+				|| (actionConfig != null && actionConfig.getDateOption() == 5)) {
 			if (Validator.isNull(dossier.getFinishDate())) {
 //				try {
 //					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
@@ -4181,7 +4193,18 @@ public class DossierActionsImpl implements DossierActions {
 //				}				
 			}
 		}
-		
+		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_INTEROPERATING.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_WAITING.equals(curStatus)) {
+			if (Validator.isNotNull(dossier.getFinishDate())) {
+				dossier.setFinishDate(null);
+				bResult.put(DossierTerm.FINISH_DATE, true);
+			}
+			if (Validator.isNotNull(dossier.getReleaseDate())) {
+				dossier.setReleaseDate(null);
+				bResult.put(DossierTerm.RELEASE_DATE, true);				
+			}
+		}
 		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus)) {
 			bResult.put(DossierTerm.DOSSIER_NO, true);
 			bResult.put(DossierTerm.RECEIVE_DATE, true);
