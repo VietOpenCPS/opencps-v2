@@ -55,6 +55,8 @@ public class StatisticsReportScheduler extends BaseSchedulerEntryMessageListener
 				if (Validator.isNotNull(token.getAccessToken())) {
 					MResult result = client.updateStatisticsMonth(token.getAccessToken(), dossier.getGroupId(), month, year);
 					_log.info("UPDATE STATISTICS LGSP: " + result.getMessage());
+					MResult resultVoting = client.updateVotingStatisticsMonth(token.getAccessToken(), dossier.getGroupId(), month, year);
+					_log.info("UPDATE STATISTICS LGSP: " + resultVoting.getMessage());
 				}
 			} catch (PortalException e) {
 				_log.debug(e);
