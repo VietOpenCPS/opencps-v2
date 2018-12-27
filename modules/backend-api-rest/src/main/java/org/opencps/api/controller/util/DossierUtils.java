@@ -181,8 +181,8 @@ public class DossierUtils {
 							model.setDossierOverdue("Đúng hạn ");
 						}
 					} else {
-						//model.setDossierOverdue(StringPool.BLANK);
-						model.setDossierOverdue("Đúng hạn ");
+						model.setDossierOverdue(StringPool.BLANK);
+						//model.setDossierOverdue("Đúng hạn ");
 					}
 				} else {
 					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
@@ -194,7 +194,7 @@ public class DossierUtils {
 							if (subTimeStamp > 0) {
 	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
 	//									dueDateTimeStamp, groupId, true);
-								model.setDossierOverdue("Quá hạn " + strOverDue);
+								model.setDossierOverdue("Quá " + strOverDue);
 							} else {
 								model.setDossierOverdue("Còn " + strOverDue);
 							}
@@ -221,7 +221,7 @@ public class DossierUtils {
 						if (state > 0) {
 							int actionOverDue = dAction.getActionOverdue();
 							if (actionOverDue > 0) {
-								model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
+								model.setStepOverdue("Quá "+actionOverDue + " ngày");
 							} else {
 								model.setStepOverdue(StringPool.BLANK);
 							}
@@ -238,7 +238,7 @@ public class DossierUtils {
 									if (subTimeStamp > 0) {
 //										String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
 //												dueDateTimeStamp, groupId, true);
-										model.setStepOverdue("Quá hạn " + stepOverDue);
+										model.setStepOverdue("Quá " + stepOverDue);
 									} else {
 										model.setStepOverdue("Còn " + stepOverDue);
 									}

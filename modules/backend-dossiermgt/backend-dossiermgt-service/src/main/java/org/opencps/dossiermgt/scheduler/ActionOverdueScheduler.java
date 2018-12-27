@@ -31,6 +31,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -55,7 +56,13 @@ public class ActionOverdueScheduler extends BaseSchedulerEntryMessageListener {
 	        	  
 	        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
 	        try {		
-	        	payloadObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(action));
+	        	Dossier dossier = DossierLocalServiceUtil.fetchDossier(action.getDossierId());
+	        	if (dossier != null) {
+		        	payloadObj.put(
+							"Dossier", JSONFactoryUtil.createJSONObject(
+								JSONFactoryUtil.looseSerialize(dossier)));
+	        	}
+	        	payloadObj.put("DossierAction", JSONFactoryUtil.looseSerialize(action));
 	        }
 	        catch (Exception e) {
 	        	_log.debug(e);
