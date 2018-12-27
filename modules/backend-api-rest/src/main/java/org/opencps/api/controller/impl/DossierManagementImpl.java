@@ -1000,6 +1000,11 @@ public class DossierManagementImpl implements DossierManagement {
 					password = PwdGenerator.getPinNumber();
 				}
 			}
+			String postalCityName = StringPool.BLANK;
+			
+			if (Validator.isNotNull(input.getPostalCityCode())) {
+				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+			}
 
 //			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
 //					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
@@ -1028,7 +1033,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateAddress(input.getDelegateAddress());
 				dossier.setPostalAddress(input.getPostalAddress());
 				dossier.setPostalCityCode(input.getPostalCityCode());
-				dossier.setPostalCityName(input.getPostalCityName());
+				dossier.setPostalCityName(postalCityName);
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setPostalServiceCode(input.getPostalServiceCode());
 				dossier.setPostalServiceName(input.getPostalServiceName());
@@ -1067,7 +1072,7 @@ public class DossierManagementImpl implements DossierManagement {
 						input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
 						cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
 						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
-						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(), input.getPostalCityCode(), StringPool.BLANK,
+						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(), input.getPostalCityCode(), postalCityName,
 						input.getPostalTelNo(), online, process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), serviceContext);
 				dossier.setDelegateName(input.getDelegateName());
@@ -1078,7 +1083,7 @@ public class DossierManagementImpl implements DossierManagement {
 				} else {
 					dossier.setDossierName(serviceName);
 				}
-				dossier.setPostalCityName(input.getPostalCityName());
+				dossier.setPostalCityName(postalCityName);
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setPostalServiceCode(input.getPostalServiceCode());
 				dossier.setPostalServiceName(input.getPostalServiceName());
@@ -1369,7 +1374,7 @@ public class DossierManagementImpl implements DossierManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			if (Validator.isNotNull(input.getPostalCityCode())) {
-				postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
+				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
 			}
 //			boolean online = true;
 //
@@ -1933,6 +1938,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";
+	
 //	public static final int LENGHT_DOSSIER_PASSWORD = 4;
 //	public static final String DEFAULT_PATTERN_PASSWORD = "0123";
 

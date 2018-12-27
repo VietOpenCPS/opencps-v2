@@ -693,6 +693,9 @@ public class DossierUtils {
 
 		DossierDetailModel model = new DossierDetailModel();
 		
+		if (Validator.isNull(input)) {
+			return model;
+		}
 		try {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
