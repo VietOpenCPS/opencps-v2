@@ -67,7 +67,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 			
 			//sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
 
-			LOG.info(sql);
+			//LOG.info(sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 
@@ -148,7 +148,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 			
 			//sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
 
-			LOG.info(sql);
+			//LOG.info(sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 

@@ -10,6 +10,7 @@ public class GetVotingResultRequest extends CommonRequest{
 	private String votingCode;
 	private String serivceCode;
 	private String govAgencyCode;
+	private String className;
 
 	public String getMonth() {
 		return month;
@@ -58,6 +59,12 @@ public class GetVotingResultRequest extends CommonRequest{
 	}
 	public void setGovAgencyCode(String govAgencyCode) {
 		this.govAgencyCode = govAgencyCode;
+	}
+	public String getClassName() {
+		return className;
+	}
+	public void setClassName(String className) {
+		this.className = className;
 	}
 
 }

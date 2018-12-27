@@ -117,7 +117,7 @@ public class StatisticEngineFetch {
 		String MSG_ALL_SITE_ALL_DOMAIN = MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + groupId;
 
 		for (GetVotingResultData votingData : votingDataList) {
-			System.out.println("DossierDataJSON: "+JSONFactoryUtil.looseSerialize(votingData));
+			//System.out.println("DossierDataJSON: "+JSONFactoryUtil.looseSerialize(votingData));
 			StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 
 			/** Calculator all site, all domain - START */
@@ -134,7 +134,12 @@ public class StatisticEngineFetch {
 
 			//System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
 			engineFetchEntry.calculateVotingStatisticData(dataType1, votingData, month);
-			//dataType1 = processOnTimePercent(dataType1);
+			dataType1.setGovAgencyCode(StringPool.BLANK);
+			dataType1.setGovAgencyName(StringPool.BLANK);
+			dataType1.setDomain(StringPool.BLANK);
+			dataType1.setDomainName(StringPool.BLANK);
+			dataType1.setVotingCode(StringPool.BLANK);
+			dataType1.setVotingSubject(StringPool.BLANK);
 
 			statisticData.put(MSG_ALL_SITE_ALL_DOMAIN, dataType1);
 			
@@ -147,6 +152,11 @@ public class StatisticEngineFetch {
 			VotingResultStatisticData dataType2 = new VotingResultStatisticData();
 
 			dataType2.setVotingCode(votingData.getVotingCode());
+			dataType2.setVotingSubject(votingData.getVotingSubject());
+			dataType2.setGovAgencyCode(StringPool.BLANK);
+			dataType2.setGovAgencyName(StringPool.BLANK);
+			dataType2.setDomain(StringPool.BLANK);
+			dataType2.setDomainName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type2)) {
 				dataType2 = statisticData.get(type2);
@@ -166,6 +176,9 @@ public class StatisticEngineFetch {
 			dataType3.setDomain(votingData.getDomain());
 			dataType3.setDomainName(votingData.getDomainName());
 			dataType3.setVotingCode(votingData.getVotingCode());
+			dataType3.setVotingSubject(votingData.getVotingSubject());
+			dataType3.setGovAgencyCode(StringPool.BLANK);
+			dataType3.setGovAgencyName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type3)) {
 				dataType3 = statisticData.get(type3);
@@ -185,6 +198,9 @@ public class StatisticEngineFetch {
 			dataType4.setGovAgencyCode(votingData.getGovAgencyCode());
 			dataType4.setGovAgencyName(votingData.getGovAgencyName());
 			dataType4.setVotingCode(votingData.getVotingCode());
+			dataType4.setVotingSubject(votingData.getVotingSubject());
+			dataType4.setDomain(StringPool.BLANK);
+			dataType4.setDomainName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type4)) {
 				dataType4 = statisticData.get(type4);
@@ -205,6 +221,7 @@ public class StatisticEngineFetch {
 			dataType5.setDomain(votingData.getDomain());
 			dataType5.setDomainName(votingData.getDomainName());
 			dataType5.setVotingCode(votingData.getVotingCode());
+			dataType5.setVotingSubject(votingData.getVotingSubject());
 
 			if (statisticData.containsKey(type5)) {
 				dataType5 = statisticData.get(type5);
@@ -222,6 +239,10 @@ public class StatisticEngineFetch {
 			VotingResultStatisticData dataType6 = new VotingResultStatisticData();
 			dataType6.setDomain(votingData.getDomain());
 			dataType6.setDomainName(votingData.getDomainName());
+			dataType6.setVotingCode(StringPool.BLANK);
+			dataType6.setVotingSubject(StringPool.BLANK);
+			dataType6.setGovAgencyCode(StringPool.BLANK);
+			dataType6.setGovAgencyName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type6)) {
 				dataType6 = statisticData.get(type6);
@@ -237,6 +258,10 @@ public class StatisticEngineFetch {
 			VotingResultStatisticData dataType7 = new VotingResultStatisticData();
 			dataType7.setGovAgencyCode(votingData.getGovAgencyCode());
 			dataType7.setGovAgencyName(votingData.getGovAgencyName());
+			dataType7.setVotingCode(StringPool.BLANK);
+			dataType7.setVotingSubject(StringPool.BLANK);
+			dataType7.setDomain(StringPool.BLANK);
+			dataType7.setDomainName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type7)) {
 				dataType7 = statisticData.get(type7);
@@ -254,6 +279,8 @@ public class StatisticEngineFetch {
 			dataType8.setGovAgencyName(votingData.getGovAgencyName());
 			dataType8.setDomain(votingData.getDomain());
 			dataType8.setDomainName(votingData.getDomainName());
+			dataType8.setVotingCode(StringPool.BLANK);
+			dataType8.setVotingSubject(StringPool.BLANK);
 
 			if (statisticData.containsKey(type8)) {
 				dataType8 = statisticData.get(type8);
@@ -267,6 +294,7 @@ public class StatisticEngineFetch {
 		if (statisticData != null && statisticData.size() > 0) {
 			for (Map.Entry<String, VotingResultStatisticData> entry : statisticData.entrySet()) {
 				VotingResultStatisticData dataType = entry.getValue();
+				//System.out.println("dataType"+ JSONFactoryUtil.looseSerialize(dataType));
 				if (dataType != null) {
 					dataType = processVotingPercent(dataType);
 				}
@@ -311,7 +339,7 @@ public class StatisticEngineFetch {
 		}
 		dataType.setPercentVeryGood(firstPercentage);
 		dataType.setPercentGood(secondPercentage);
-		dataType.setBadCount(thirdPercentage);
+		dataType.setPercentBad(thirdPercentage);
 
 		return dataType;
 	}

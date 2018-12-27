@@ -52,7 +52,8 @@ import javax.xml.bind.annotation.XmlType;
  "year",
  "month",
  "fromReceiveDate",
- "toReceiveDate"
+ "toReceiveDate",
+ "className"
 })
 @XmlRootElement(name = "VotingResultSearchModel")
 public class VotingResultSearchModel {
@@ -75,6 +76,8 @@ public class VotingResultSearchModel {
 	protected String fromReceiveDate;
 	@QueryParam(value = "toReceiveDate")
 	protected String toReceiveDate;
+	@QueryParam(value = "className")
+	protected String className;
 
 	/**
   * Gets the value of the keyword property.
@@ -291,5 +294,13 @@ public class VotingResultSearchModel {
  public void setToReceiveDate(String value) {
      this.toReceiveDate = value;
  }
+
+public String getClassName() {
+	return className;
+}
+
+public void setClassName(String className) {
+	this.className = className;
+}
 
 }

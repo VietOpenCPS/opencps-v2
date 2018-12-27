@@ -14,6 +14,7 @@ public class GetVotingResultData {
 	private String domainName;
 	private String govAgencyCode;
 	private String govAgencyName;
+	private String votingSubject;
 
 	public int getSelected() {
 		return selected;
@@ -92,6 +93,12 @@ public class GetVotingResultData {
 	}
 	public void setDomainName(String domainName) {
 		this.domainName = domainName;
+	}
+	public String getVotingSubject() {
+		return votingSubject;
+	}
+	public void setVotingSubject(String votingSubject) {
+		this.votingSubject = votingSubject;
 	}
 
 }

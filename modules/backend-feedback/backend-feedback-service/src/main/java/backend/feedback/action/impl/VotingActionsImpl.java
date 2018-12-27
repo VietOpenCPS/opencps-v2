@@ -64,7 +64,7 @@ public class VotingActionsImpl implements VotingActions {
 							templateNo = voting.getTemplateNo();
 							commentable = voting.getCommentable();
 							votingCode = voting.getVotingCode();
-							voting.setClassPK(classPK);
+							//voting.setClassPK(classPK);
 							Voting votingAdd = VotingLocalServiceUtil.addVoting(userId, groupId, className, classPK, subject, choices,
 									templateNo, commentable, serviceContext);
 							if (votingAdd != null) {
@@ -260,7 +260,6 @@ public class VotingActionsImpl implements VotingActions {
 						votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
 								voting.getVotingId());
 						if (Validator.isNotNull(votingResult)) {
-
 							votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
 									votingResult.getVotingResultId(), votingId, applicant.getApplicantName(),
 									applicant.getContactEmail(), comment, selected, serviceContext);

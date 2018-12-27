@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.engine.service;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.Instant;
@@ -182,6 +183,8 @@ public class StatisticEngineFetchEntry {
 		//		? StatisticUtils.convertStringToDate(votingData.getModifiedDate()): null;
 		//
 		statisticData.setTotalVoted(statisticData.getTotalVoted() + 1);
+		//System.out.println("votingData.getSelected()"+ votingData.getSelected());
+		//System.out.println("votingData.getGroupId()"+ votingData.getGroupId());
 
 		if (votingData.getSelected() == 0) {
 			statisticData.setVeryGoodCount(statisticData.getVeryGoodCount() + 1);
@@ -191,5 +194,6 @@ public class StatisticEngineFetchEntry {
 			statisticData.setBadCount(statisticData.getBadCount() + 1);
 		}
 
+		//System.out.println("statisticData"+ JSONFactoryUtil.looseSerialize(statisticData));
 	}
 }

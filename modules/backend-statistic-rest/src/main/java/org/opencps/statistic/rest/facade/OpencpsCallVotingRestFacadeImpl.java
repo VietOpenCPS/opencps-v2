@@ -60,7 +60,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 			}
 		}
 
-		//urlQueryParams.add("top", "statistic");
+		urlQueryParams.add("className", "dossier");
 
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
 		System.out.println("endPoint: "+endPoint);
