@@ -1441,16 +1441,18 @@ public class OpenCPSConverter {
 		List<OpencpsVotingStatistic> lstVotings = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D(statistic.getGroupId(), statistic.getMonth(), statistic.getYear(), StringPool.BLANK, StringPool.BLANK);
 		JSONArray questions = JSONFactoryUtil.createJSONArray();
 		for (OpencpsVotingStatistic vt : lstVotings) {
-			JSONObject question = JSONFactoryUtil.createJSONObject();
-			question.put("DocTypeCode", StringPool.BLANK);
-			question.put("Content", vt.getVotingSubject());
-			question.put("PercentVeryGood", Double.valueOf(vt.getPercentVeryGood()));
-			question.put("PercentGood", Double.valueOf(vt.getPercentGood()));
-			question.put("PercentBad", Double.valueOf(vt.getPercentBad()));
-			
-			questions.put(vt);
+			if (Validator.isNotNull(vt.getVotingCode())) {
+				JSONObject question = JSONFactoryUtil.createJSONObject();
+				question.put("DocTypeCode", StringPool.BLANK);
+				question.put("Content", vt.getVotingSubject());
+				question.put("PercentVeryGood", Double.valueOf(vt.getPercentVeryGood()));
+				question.put("PercentGood", Double.valueOf(vt.getPercentGood()));
+				question.put("PercentBad", Double.valueOf(vt.getPercentBad()));
+				
+				questions.put(question);				
+			}
 		}
-//		obj.put("Questions", questions.toJSONString());
+		obj.put("Questions", questions.toJSONString());
 		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
 		obj.put("OrganizationInchargeName", StringPool.BLANK);
 		
