@@ -1435,22 +1435,22 @@ public class OpenCPSConverter {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		obj.put("DateCreated", convertToUTCDate(new Date()));
 		obj.put("TotalVoted", statistic.getTotalVoted());
-		obj.put("PercentVeryGood", statistic.getPercentVeryGood());
-		obj.put("PercentGood", statistic.getPercentGood());
-		obj.put("PercentBad", statistic.getPercentBad());
+		obj.put("PercentVeryGood", Double.valueOf(statistic.getPercentVeryGood()));
+		obj.put("PercentGood", Double.valueOf(statistic.getPercentGood()));
+		obj.put("PercentBad", Double.valueOf(statistic.getPercentBad()));
 		List<OpencpsVotingStatistic> lstVotings = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D(statistic.getGroupId(), statistic.getMonth(), statistic.getYear(), StringPool.BLANK, StringPool.BLANK);
 		JSONArray questions = JSONFactoryUtil.createJSONArray();
 		for (OpencpsVotingStatistic vt : lstVotings) {
 			JSONObject question = JSONFactoryUtil.createJSONObject();
 			question.put("DocTypeCode", StringPool.BLANK);
 			question.put("Content", vt.getVotingSubject());
-			question.put("PercentVeryGood", vt.getPercentVeryGood());
-			question.put("PercentGood", vt.getPercentGood());
-			question.put("PercentBad", vt.getPercentBad());
+			question.put("PercentVeryGood", Double.valueOf(vt.getPercentVeryGood()));
+			question.put("PercentGood", Double.valueOf(vt.getPercentGood()));
+			question.put("PercentBad", Double.valueOf(vt.getPercentBad()));
 			
 			questions.put(vt);
 		}
-		obj.put("Questions", questions);
+//		obj.put("Questions", questions.toJSONString());
 		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
 		obj.put("OrganizationInchargeName", StringPool.BLANK);
 		

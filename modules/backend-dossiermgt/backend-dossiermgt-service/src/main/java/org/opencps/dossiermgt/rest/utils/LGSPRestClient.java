@@ -163,6 +163,7 @@ public class LGSPRestClient {
 		OpencpsVotingStatistic statistic = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D_VC(groupId, month, year, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);
 		if (statistic != null) {
 			JSONObject lgspObj = OpenCPSConverter.convertVotingStatisticsToLGSPJSON(statistic);
+			_log.info("LGSP Voting: " + lgspObj.toJSONString());
 			JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",
 				consumerAdapter, VOTING_STATISTICS_BASE_PATH + "/UpdateVote", lgspObj.toJSONString());
 			if (resultObj != null && resultObj.has("status")) {
