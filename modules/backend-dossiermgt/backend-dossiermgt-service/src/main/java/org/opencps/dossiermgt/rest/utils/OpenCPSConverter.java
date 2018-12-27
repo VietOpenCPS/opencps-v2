@@ -1448,9 +1448,9 @@ public class OpenCPSConverter {
 			question.put("PercentGood", Double.valueOf(vt.getPercentGood()));
 			question.put("PercentBad", Double.valueOf(vt.getPercentBad()));
 			
-			questions.put(vt);
+			questions.put(question);
 		}
-//		obj.put("Questions", questions.toJSONString());
+		obj.put("Questions", questions.toJSONString());
 		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
 		obj.put("OrganizationInchargeName", StringPool.BLANK);
 		
