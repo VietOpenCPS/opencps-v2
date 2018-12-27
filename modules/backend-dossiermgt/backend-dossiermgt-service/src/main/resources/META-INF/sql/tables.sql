@@ -963,3 +963,30 @@ create table opencps_userinfolog (
 	createDate DATE null,
 	payload VARCHAR(75) null
 );
+
+create table opencps_voting_statistic (
+	uuid_ VARCHAR(75) null,
+	votingStatisticId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(255) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	month INTEGER,
+	year INTEGER,
+	govAgencyCode VARCHAR(255) null,
+	govAgencyName STRING null,
+	domainCode VARCHAR(255) null,
+	domainName STRING null,
+	votingCode VARCHAR(255) null,
+	votingSubject STRING null,
+	totalVoted INTEGER,
+	veryGoodCount INTEGER,
+	goodCount INTEGER,
+	badCount INTEGER,
+	percentVeryGood INTEGER,
+	percentGood INTEGER,
+	percentBad INTEGER,
+	totalCount INTEGER
+);
