@@ -1013,8 +1013,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = null;
 			
-			if (originality == DossierTerm.ORIGINALITY_DVCTT
-					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
+			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				online = true;
 			}
 			boolean flagOldDossier = false;
