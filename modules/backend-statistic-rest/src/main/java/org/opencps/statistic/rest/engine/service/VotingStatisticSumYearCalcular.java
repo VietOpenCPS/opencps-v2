@@ -327,7 +327,7 @@ public class VotingStatisticSumYearCalcular {
 		/** case votingCode != null && domain != null && agency != null **/
 		if (isVoting && isDomain && isAgency) {
 			/* statistic by all */
-			System.out.println("STRART");
+			//System.out.println("STRART");
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 			agencyRequest.setGroupId(groupId);
 			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
@@ -336,21 +336,21 @@ public class VotingStatisticSumYearCalcular {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
 				List<DomainResponse> domainList = getDomain(groupId);
 				List<VotingResponse> votingList = getVotingCode(groupId);
-				System.out.println("groupId: "+groupId);
+				//System.out.println("groupId: "+groupId);
 				if (agencyList != null && agencyList.size() > 0) {
-					System.out.println("agencyList: "+ agencyList.size());
+					//System.out.println("agencyList: "+ agencyList.size());
 					for (GovAgencyData agency : agencyList) {
 						votingResultRequest.setGovAgencyCode(agency.getItemCode());
-						System.out.println("agency.getItemCode(): "+ agency.getItemCode());
+						//System.out.println("agency.getItemCode(): "+ agency.getItemCode());
 						if (domainList != null) {
 							for (DomainResponse domain : domainList) {
 								votingResultRequest.setDomain(domain.getItemCode());
-								System.out.println("domain.getItemCode(): "+ domain.getItemCode());
-								System.out.println("votingList.size(): "+ votingList.size());
+								//System.out.println("domain.getItemCode(): "+ domain.getItemCode());
+								//System.out.println("votingList.size(): "+ votingList.size());
 								if (votingList != null && votingList.size() > 0) {
 									for (VotingResponse voting : votingList) {
 										votingResultRequest.setVotingCode(voting.getItemCode());
-										System.out.println("voting.getItemCode(): "+ voting.getItemCode());
+										//System.out.println("voting.getItemCode(): "+ voting.getItemCode());
 										try {
 											VotingResultResponse votingResultResponse = votingStatisticFinderService
 													.finderVotingStatisticList(votingResultRequest);
