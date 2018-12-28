@@ -289,6 +289,15 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public void removeVotingStatisticByD_M_Y(long groupId, String domainCode,
+		int month, int year);
+
+	public void removeVotingStatisticByMonthYear(long groupId, int month,
+		int year);
+
+	public void removeVotingStatisticByYear(long companyId, long groupId,
+		int month, int year);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsVotingStatistic> searchVotingStatistic(long groupId,
 		int month, int year, String votingCode, String domain,
@@ -307,8 +316,8 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 
 	public OpencpsVotingStatistic updateVotingStatistic(
 		long votingStatisticId, long companyId, long groupId, long userId,
-		String userName, int month, int year, int totalVoted,
-		int percentVeryGood, int percentGood, int percentBad,
+		String userName, int month, int year, String votingSubject,
+		int totalVoted, int percentVeryGood, int percentGood, int percentBad,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, String votingCode, int totalCount);
 }

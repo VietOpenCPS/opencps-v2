@@ -20,7 +20,9 @@ import com.liferay.portal.kernel.exception.SystemException;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
+import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.opencps.statistic.service.base.OpencpsVotingStatisticLocalServiceBaseImpl;
 
 /**
@@ -51,9 +53,9 @@ public class OpencpsVotingStatisticLocalServiceImpl
 	}
 
 	public OpencpsVotingStatistic updateVotingStatistic(long votingStatisticId, long companyId, long groupId,
-			long userId, String userName, int month, int year, int totalVoted, int percentVeryGood, int percentGood,
-			int percentBad, String govAgencyCode, String govAgencyName, String domainCode, String domainName,
-			String votingCode, int totalCount) {
+			long userId, String userName, int month, int year, String votingSubject, int totalVoted,
+			int percentVeryGood, int percentGood, int percentBad, String govAgencyCode, String govAgencyName,
+			String domainCode, String domainName, String votingCode, int totalCount) {
 
 		OpencpsVotingStatistic votingStatistic = null;
 		Date now = new Date();
@@ -68,6 +70,7 @@ public class OpencpsVotingStatisticLocalServiceImpl
 			votingStatistic.setUserName(userName);
 			votingStatistic.setMonth(month);
 			votingStatistic.setYear(year);
+			votingStatistic.setVotingSubject(votingSubject);
 			votingStatistic.setGovAgencyCode(govAgencyCode);
 			votingStatistic.setGovAgencyName(govAgencyName);
 			votingStatistic.setDomainCode(domainCode);
@@ -83,6 +86,7 @@ public class OpencpsVotingStatisticLocalServiceImpl
 			votingStatistic.setModifiedDate(now);
 			votingStatistic.setMonth(month);
 			votingStatistic.setYear(year);
+			votingStatistic.setVotingSubject(votingSubject);
 			votingStatistic.setGovAgencyCode(govAgencyCode);
 			votingStatistic.setGovAgencyName(govAgencyName);
 			votingStatistic.setDomainCode(domainCode);
@@ -95,7 +99,7 @@ public class OpencpsVotingStatisticLocalServiceImpl
 			votingStatistic.setTotalCount(totalCount);
 		}
 
-		return opencpsVotingStatisticLocalService.updateOpencpsVotingStatistic(votingStatistic);
+		return opencpsVotingStatisticPersistence.update(votingStatistic);
 	}
 
 	public List<OpencpsVotingStatistic> fetchVotingStatistic(long groupId, int month, int year, String votingCode,
@@ -110,6 +114,18 @@ public class OpencpsVotingStatisticLocalServiceImpl
 
 		return opencpsVotingStatisticFinder.searchByVotingServiceGovAgencyGroup(groupId, month, year, votingCode,
 				domain, govAgencyCode, start, end);
+	}
+
+	public void removeVotingStatisticByD_M_Y(long groupId, String domainCode, int month, int year) {
+		opencpsVotingStatisticPersistence.removeByG_D_M_Y(groupId, domainCode, month, year);
+	}
+
+	public void removeVotingStatisticByMonthYear(long groupId, int month, int year) {
+		opencpsVotingStatisticPersistence.removeByG_M_Y(groupId, month, year);
+	}
+
+	public void removeVotingStatisticByYear(long companyId, long groupId, int month, int year) {
+		opencpsVotingStatisticPersistence.removeByCID_GID_Y(companyId, groupId, month, year);
 	}
 
 }

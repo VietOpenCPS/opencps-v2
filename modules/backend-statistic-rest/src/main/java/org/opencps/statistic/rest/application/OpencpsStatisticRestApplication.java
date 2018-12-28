@@ -357,6 +357,17 @@ public class OpencpsStatisticRestApplication extends Application {
 				payload.setFromVotingDate(fromVotingDate);
 				payload.setToVotingDate(toVotingDate);
 				payload.setCalculate(calculate);
+				//
+				int monthStatistic = 0;
+				//Get month statistic
+				if (Validator.isNotNull(fromVotingDate)) {
+					String[] splitD = fromVotingDate.split("/");
+					if (splitD.length == 3 ||
+							splitD[1].length() <= 2 ||
+							splitD[0].length() <= 2) {
+						monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
+					}
+				}
 
 				GetVotingResultResponse votingResponse = callVotingRestService.callRestService(payload);
 				if (votingResponse != null) {
@@ -366,7 +377,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						//Map<String, VotingResultData> statisticData = new HashMap<String, VotingResultData>();
 						Map<String, VotingResultStatisticData> statisticData = engineFetch
-								.getStatisticVotingData(groupId, votingDataList, month);
+								.getStatisticVotingData(groupId, votingDataList, monthStatistic);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//

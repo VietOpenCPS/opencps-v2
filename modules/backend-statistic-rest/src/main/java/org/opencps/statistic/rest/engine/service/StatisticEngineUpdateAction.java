@@ -112,13 +112,27 @@ public class StatisticEngineUpdateAction {
 		try {
 			return OpencpsVotingStatisticLocalServiceUtil.updateVotingStatistic(votingStatisticId,
 					payload.getCompanyId(), payload.getGroupId(), -1L, "VDM", payload.getMonth(), payload.getYear(),
-					payload.getTotalVoted(), payload.getPercentVeryGood(), payload.getPercentGood(),
-					payload.getPercentBad(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
-					payload.getDomain(), payload.getDomainName(), payload.getVotingCode(), 0);
+					payload.getVotingSubject(), payload.getTotalVoted(), payload.getPercentVeryGood(),
+					payload.getPercentGood(), payload.getPercentBad(), payload.getGovAgencyCode(),
+					payload.getGovAgencyName(), payload.getDomain(), payload.getDomainName(), payload.getVotingCode(),
+					0);
 		} catch (SystemException e) {
 			_log.error(e);
 			System.out.println(e);
 			return null;
 		}
 	}
+
+	public void removeVotingStatisticByD_M_Y(long groupId, String domainCode, int month, int year) {
+		OpencpsVotingStatisticLocalServiceUtil.removeVotingStatisticByD_M_Y(groupId, domainCode, month, year);
+	}
+
+	public void removeVotingStatisticByMonthYear(long groupId, int month, int year) {
+		OpencpsVotingStatisticLocalServiceUtil.removeVotingStatisticByMonthYear(groupId, month, year);
+	}
+
+	public void removeVotingStatisticByYear(long companyId, long groupId, int month, int year) {
+		OpencpsVotingStatisticLocalServiceUtil.removeVotingStatisticByYear(companyId, groupId, month, year);
+	}
+
 }

@@ -342,6 +342,27 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public void removeVotingStatisticByD_M_Y(long groupId, String domainCode,
+		int month, int year) {
+		_opencpsVotingStatisticLocalService.removeVotingStatisticByD_M_Y(groupId,
+			domainCode, month, year);
+	}
+
+	@Override
+	public void removeVotingStatisticByMonthYear(long groupId, int month,
+		int year) {
+		_opencpsVotingStatisticLocalService.removeVotingStatisticByMonthYear(groupId,
+			month, year);
+	}
+
+	@Override
+	public void removeVotingStatisticByYear(long companyId, long groupId,
+		int month, int year) {
+		_opencpsVotingStatisticLocalService.removeVotingStatisticByYear(companyId,
+			groupId, month, year);
+	}
+
+	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchVotingStatistic(
 		long groupId, int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
@@ -366,14 +387,15 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 	@Override
 	public org.opencps.statistic.model.OpencpsVotingStatistic updateVotingStatistic(
 		long votingStatisticId, long companyId, long groupId, long userId,
-		String userName, int month, int year, int totalVoted,
-		int percentVeryGood, int percentGood, int percentBad,
+		String userName, int month, int year, String votingSubject,
+		int totalVoted, int percentVeryGood, int percentGood, int percentBad,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, String votingCode, int totalCount) {
 		return _opencpsVotingStatisticLocalService.updateVotingStatistic(votingStatisticId,
-			companyId, groupId, userId, userName, month, year, totalVoted,
-			percentVeryGood, percentGood, percentBad, govAgencyCode,
-			govAgencyName, domainCode, domainName, votingCode, totalCount);
+			companyId, groupId, userId, userName, month, year, votingSubject,
+			totalVoted, percentVeryGood, percentGood, percentBad,
+			govAgencyCode, govAgencyName, domainCode, domainName, votingCode,
+			totalCount);
 	}
 
 	@Override

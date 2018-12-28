@@ -44,6 +44,7 @@ import java.util.LinkedHashMap;
 import javax.ws.rs.NotFoundException;
 
 import backend.feedback.constants.VotingResultTerm;
+import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingResultException;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.base.VotingResultLocalServiceBaseImpl;
@@ -194,6 +195,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		String votingId = (String) params.get(VotingResultTerm.VOTING_ID);
 		int month = GetterUtil.getInteger(params.get(VotingResultTerm.MONTH_VOTING));
 		int year = GetterUtil.getInteger(params.get(VotingResultTerm.YEAR_VOTING));
+		String className =  (String) params.get(VotingTerm.CLASS_NAME);
 
 		BooleanQuery booleanQuery = null;
 
@@ -234,7 +236,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		if (Validator.isNotNull(votingId)) {
 			MultiMatchQuery query = new MultiMatchQuery(votingId);
-
+			
 			query.addFields(VotingResultTerm.VOTING_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
@@ -252,6 +254,13 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
 
 			query.addFields(VotingResultTerm.YEAR_VOTING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(className)) {
+			MultiMatchQuery query = new MultiMatchQuery(className);
+			query.addFields(VotingTerm.CLASS_NAME);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

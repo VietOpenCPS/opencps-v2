@@ -2457,6 +2457,1899 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_1 = "opencpsVotingStatistic.domainCode IS NULL";
 	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_2 = "opencpsVotingStatistic.domainCode = ?";
 	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_3 = "(opencpsVotingStatistic.domainCode IS NULL OR opencpsVotingStatistic.domainCode = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_D_M_Y = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_D_M_Y",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_D_M_Y =
+		new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_D_M_Y",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Integer.class.getName()
+			},
+			OpencpsVotingStatisticModelImpl.GROUPID_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.DOMAINCODE_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.MONTH_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.YEAR_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_D_M_Y = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_D_M_Y",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Integer.class.getName()
+			});
+
+	/**
+	 * Returns all the opencps voting statistics where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @return the matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_D_M_Y(long groupId,
+		String domainCode, int month, int year) {
+		return findByG_D_M_Y(groupId, domainCode, month, year,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps voting statistics where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @return the range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_D_M_Y(long groupId,
+		String domainCode, int month, int year, int start, int end) {
+		return findByG_D_M_Y(groupId, domainCode, month, year, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_D_M_Y(long groupId,
+		String domainCode, int month, int year, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		return findByG_D_M_Y(groupId, domainCode, month, year, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_D_M_Y(long groupId,
+		String domainCode, int month, int year, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_D_M_Y;
+			finderArgs = new Object[] { groupId, domainCode, month, year };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_D_M_Y;
+			finderArgs = new Object[] {
+					groupId, domainCode, month, year,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpencpsVotingStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsVotingStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsVotingStatistic opencpsVotingStatistic : list) {
+					if ((groupId != opencpsVotingStatistic.getGroupId()) ||
+							!Objects.equals(domainCode,
+								opencpsVotingStatistic.getDomainCode()) ||
+							(month != opencpsVotingStatistic.getMonth()) ||
+							(year != opencpsVotingStatistic.getYear())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(6 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(6);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_D_M_Y_GROUPID_2);
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_G_D_M_Y_MONTH_2);
+
+			query.append(_FINDER_COLUMN_G_D_M_Y_YEAR_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (!pagination) {
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps voting statistic in the ordered set where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByG_D_M_Y_First(long groupId,
+		String domainCode, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByG_D_M_Y_First(groupId,
+				domainCode, month, year, orderByComparator);
+
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps voting statistic in the ordered set where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByG_D_M_Y_First(long groupId,
+		String domainCode, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		List<OpencpsVotingStatistic> list = findByG_D_M_Y(groupId, domainCode,
+				month, year, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByG_D_M_Y_Last(long groupId,
+		String domainCode, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByG_D_M_Y_Last(groupId,
+				domainCode, month, year, orderByComparator);
+
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByG_D_M_Y_Last(long groupId,
+		String domainCode, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		int count = countByG_D_M_Y(groupId, domainCode, month, year);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsVotingStatistic> list = findByG_D_M_Y(groupId, domainCode,
+				month, year, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps voting statistics before and after the current opencps voting statistic in the ordered set where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param votingStatisticId the primary key of the current opencps voting statistic
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a opencps voting statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic[] findByG_D_M_Y_PrevAndNext(
+		long votingStatisticId, long groupId, String domainCode, int month,
+		int year, OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = findByPrimaryKey(votingStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsVotingStatistic[] array = new OpencpsVotingStatisticImpl[3];
+
+			array[0] = getByG_D_M_Y_PrevAndNext(session,
+					opencpsVotingStatistic, groupId, domainCode, month, year,
+					orderByComparator, true);
+
+			array[1] = opencpsVotingStatistic;
+
+			array[2] = getByG_D_M_Y_PrevAndNext(session,
+					opencpsVotingStatistic, groupId, domainCode, month, year,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsVotingStatistic getByG_D_M_Y_PrevAndNext(Session session,
+		OpencpsVotingStatistic opencpsVotingStatistic, long groupId,
+		String domainCode, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(6);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_G_D_M_Y_GROUPID_2);
+
+		boolean bindDomainCode = false;
+
+		if (domainCode == null) {
+			query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_1);
+		}
+		else if (domainCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_3);
+		}
+		else {
+			bindDomainCode = true;
+
+			query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_2);
+		}
+
+		query.append(_FINDER_COLUMN_G_D_M_Y_MONTH_2);
+
+		query.append(_FINDER_COLUMN_G_D_M_Y_YEAR_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindDomainCode) {
+			qPos.add(domainCode);
+		}
+
+		qPos.add(month);
+
+		qPos.add(year);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsVotingStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsVotingStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps voting statistics where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 */
+	@Override
+	public void removeByG_D_M_Y(long groupId, String domainCode, int month,
+		int year) {
+		for (OpencpsVotingStatistic opencpsVotingStatistic : findByG_D_M_Y(
+				groupId, domainCode, month, year, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(opencpsVotingStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps voting statistics where groupId = &#63; and domainCode = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param domainCode the domain code
+	 * @param month the month
+	 * @param year the year
+	 * @return the number of matching opencps voting statistics
+	 */
+	@Override
+	public int countByG_D_M_Y(long groupId, String domainCode, int month,
+		int year) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_D_M_Y;
+
+		Object[] finderArgs = new Object[] { groupId, domainCode, month, year };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_D_M_Y_GROUPID_2);
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_G_D_M_Y_DOMAINCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_G_D_M_Y_MONTH_2);
+
+			query.append(_FINDER_COLUMN_G_D_M_Y_YEAR_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_D_M_Y_GROUPID_2 = "opencpsVotingStatistic.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_D_M_Y_DOMAINCODE_1 = "opencpsVotingStatistic.domainCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_D_M_Y_DOMAINCODE_2 = "opencpsVotingStatistic.domainCode = ? AND ";
+	private static final String _FINDER_COLUMN_G_D_M_Y_DOMAINCODE_3 = "(opencpsVotingStatistic.domainCode IS NULL OR opencpsVotingStatistic.domainCode = '') AND ";
+	private static final String _FINDER_COLUMN_G_D_M_Y_MONTH_2 = "opencpsVotingStatistic.month = ? AND ";
+	private static final String _FINDER_COLUMN_G_D_M_Y_YEAR_2 = "opencpsVotingStatistic.year = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_M_Y = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_M_Y",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_M_Y",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName()
+			},
+			OpencpsVotingStatisticModelImpl.GROUPID_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.MONTH_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.YEAR_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_M_Y = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_M_Y",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName()
+			});
+
+	/**
+	 * Returns all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @return the matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_M_Y(long groupId, int month,
+		int year) {
+		return findByG_M_Y(groupId, month, year, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @return the range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_M_Y(long groupId, int month,
+		int year, int start, int end) {
+		return findByG_M_Y(groupId, month, year, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_M_Y(long groupId, int month,
+		int year, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		return findByG_M_Y(groupId, month, year, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByG_M_Y(long groupId, int month,
+		int year, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y;
+			finderArgs = new Object[] { groupId, month, year };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_M_Y;
+			finderArgs = new Object[] {
+					groupId, month, year,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpencpsVotingStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsVotingStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsVotingStatistic opencpsVotingStatistic : list) {
+					if ((groupId != opencpsVotingStatistic.getGroupId()) ||
+							(month != opencpsVotingStatistic.getMonth()) ||
+							(year != opencpsVotingStatistic.getYear())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_M_Y_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_M_Y_MONTH_2);
+
+			query.append(_FINDER_COLUMN_G_M_Y_YEAR_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (!pagination) {
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByG_M_Y_First(long groupId, int month,
+		int year, OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByG_M_Y_First(groupId,
+				month, year, orderByComparator);
+
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByG_M_Y_First(long groupId, int month,
+		int year, OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		List<OpencpsVotingStatistic> list = findByG_M_Y(groupId, month, year,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByG_M_Y_Last(long groupId, int month,
+		int year, OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByG_M_Y_Last(groupId,
+				month, year, orderByComparator);
+
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByG_M_Y_Last(long groupId, int month,
+		int year, OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		int count = countByG_M_Y(groupId, month, year);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsVotingStatistic> list = findByG_M_Y(groupId, month, year,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps voting statistics before and after the current opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param votingStatisticId the primary key of the current opencps voting statistic
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a opencps voting statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic[] findByG_M_Y_PrevAndNext(
+		long votingStatisticId, long groupId, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = findByPrimaryKey(votingStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsVotingStatistic[] array = new OpencpsVotingStatisticImpl[3];
+
+			array[0] = getByG_M_Y_PrevAndNext(session, opencpsVotingStatistic,
+					groupId, month, year, orderByComparator, true);
+
+			array[1] = opencpsVotingStatistic;
+
+			array[2] = getByG_M_Y_PrevAndNext(session, opencpsVotingStatistic,
+					groupId, month, year, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsVotingStatistic getByG_M_Y_PrevAndNext(Session session,
+		OpencpsVotingStatistic opencpsVotingStatistic, long groupId, int month,
+		int year, OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_G_M_Y_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_M_Y_MONTH_2);
+
+		query.append(_FINDER_COLUMN_G_M_Y_YEAR_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(month);
+
+		qPos.add(year);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsVotingStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsVotingStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 */
+	@Override
+	public void removeByG_M_Y(long groupId, int month, int year) {
+		for (OpencpsVotingStatistic opencpsVotingStatistic : findByG_M_Y(
+				groupId, month, year, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(opencpsVotingStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @return the number of matching opencps voting statistics
+	 */
+	@Override
+	public int countByG_M_Y(long groupId, int month, int year) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_M_Y;
+
+		Object[] finderArgs = new Object[] { groupId, month, year };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_M_Y_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_M_Y_MONTH_2);
+
+			query.append(_FINDER_COLUMN_G_M_Y_YEAR_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_M_Y_GROUPID_2 = "opencpsVotingStatistic.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_M_Y_MONTH_2 = "opencpsVotingStatistic.month = ? AND ";
+	private static final String _FINDER_COLUMN_G_M_Y_YEAR_2 = "opencpsVotingStatistic.year = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_CID_GID_Y =
+		new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCID_GID_Y",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CID_GID_Y =
+		new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByCID_GID_Y",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName()
+			},
+			OpencpsVotingStatisticModelImpl.COMPANYID_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.GROUPID_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.MONTH_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.YEAR_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_CID_GID_Y = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByCID_GID_Y",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName()
+			});
+
+	/**
+	 * Returns all the opencps voting statistics where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @return the matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByCID_GID_Y(long companyId,
+		long groupId, int month, int year) {
+		return findByCID_GID_Y(companyId, groupId, month, year,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps voting statistics where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @return the range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByCID_GID_Y(long companyId,
+		long groupId, int month, int year, int start, int end) {
+		return findByCID_GID_Y(companyId, groupId, month, year, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByCID_GID_Y(long companyId,
+		long groupId, int month, int year, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		return findByCID_GID_Y(companyId, groupId, month, year, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByCID_GID_Y(long companyId,
+		long groupId, int month, int year, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CID_GID_Y;
+			finderArgs = new Object[] { companyId, groupId, month, year };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_CID_GID_Y;
+			finderArgs = new Object[] {
+					companyId, groupId, month, year,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpencpsVotingStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsVotingStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsVotingStatistic opencpsVotingStatistic : list) {
+					if ((companyId != opencpsVotingStatistic.getCompanyId()) ||
+							(groupId != opencpsVotingStatistic.getGroupId()) ||
+							(month != opencpsVotingStatistic.getMonth()) ||
+							(year != opencpsVotingStatistic.getYear())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(6 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(6);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_COMPANYID_2);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_MONTH_2);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_YEAR_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(companyId);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (!pagination) {
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps voting statistic in the ordered set where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByCID_GID_Y_First(long companyId,
+		long groupId, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByCID_GID_Y_First(companyId,
+				groupId, month, year, orderByComparator);
+
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("companyId=");
+		msg.append(companyId);
+
+		msg.append(", groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps voting statistic in the ordered set where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByCID_GID_Y_First(long companyId,
+		long groupId, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		List<OpencpsVotingStatistic> list = findByCID_GID_Y(companyId, groupId,
+				month, year, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByCID_GID_Y_Last(long companyId,
+		long groupId, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByCID_GID_Y_Last(companyId,
+				groupId, month, year, orderByComparator);
+
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("companyId=");
+		msg.append(companyId);
+
+		msg.append(", groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByCID_GID_Y_Last(long companyId,
+		long groupId, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		int count = countByCID_GID_Y(companyId, groupId, month, year);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsVotingStatistic> list = findByCID_GID_Y(companyId, groupId,
+				month, year, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps voting statistics before and after the current opencps voting statistic in the ordered set where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param votingStatisticId the primary key of the current opencps voting statistic
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a opencps voting statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic[] findByCID_GID_Y_PrevAndNext(
+		long votingStatisticId, long companyId, long groupId, int month,
+		int year, OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = findByPrimaryKey(votingStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsVotingStatistic[] array = new OpencpsVotingStatisticImpl[3];
+
+			array[0] = getByCID_GID_Y_PrevAndNext(session,
+					opencpsVotingStatistic, companyId, groupId, month, year,
+					orderByComparator, true);
+
+			array[1] = opencpsVotingStatistic;
+
+			array[2] = getByCID_GID_Y_PrevAndNext(session,
+					opencpsVotingStatistic, companyId, groupId, month, year,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsVotingStatistic getByCID_GID_Y_PrevAndNext(
+		Session session, OpencpsVotingStatistic opencpsVotingStatistic,
+		long companyId, long groupId, int month, int year,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(6);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_CID_GID_Y_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_CID_GID_Y_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_CID_GID_Y_MONTH_2);
+
+		query.append(_FINDER_COLUMN_CID_GID_Y_YEAR_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(companyId);
+
+		qPos.add(groupId);
+
+		qPos.add(month);
+
+		qPos.add(year);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsVotingStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsVotingStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps voting statistics where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 */
+	@Override
+	public void removeByCID_GID_Y(long companyId, long groupId, int month,
+		int year) {
+		for (OpencpsVotingStatistic opencpsVotingStatistic : findByCID_GID_Y(
+				companyId, groupId, month, year, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(opencpsVotingStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps voting statistics where companyId = &#63; and groupId = &#63; and month = &#63; and year = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @return the number of matching opencps voting statistics
+	 */
+	@Override
+	public int countByCID_GID_Y(long companyId, long groupId, int month,
+		int year) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_CID_GID_Y;
+
+		Object[] finderArgs = new Object[] { companyId, groupId, month, year };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_COMPANYID_2);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_MONTH_2);
+
+			query.append(_FINDER_COLUMN_CID_GID_Y_YEAR_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(companyId);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_CID_GID_Y_COMPANYID_2 = "opencpsVotingStatistic.companyId = ? AND ";
+	private static final String _FINDER_COLUMN_CID_GID_Y_GROUPID_2 = "opencpsVotingStatistic.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_CID_GID_Y_MONTH_2 = "opencpsVotingStatistic.month = ? AND ";
+	private static final String _FINDER_COLUMN_CID_GID_Y_YEAR_2 = "opencpsVotingStatistic.year = ?";
 
 	public OpencpsVotingStatisticPersistenceImpl() {
 		setModelClass(OpencpsVotingStatistic.class);
@@ -2873,6 +4766,38 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_UID_Y,
 				args);
 
+			args = new Object[] {
+					opencpsVotingStatisticModelImpl.getGroupId(),
+					opencpsVotingStatisticModelImpl.getDomainCode(),
+					opencpsVotingStatisticModelImpl.getMonth(),
+					opencpsVotingStatisticModelImpl.getYear()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_D_M_Y, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_D_M_Y,
+				args);
+
+			args = new Object[] {
+					opencpsVotingStatisticModelImpl.getGroupId(),
+					opencpsVotingStatisticModelImpl.getMonth(),
+					opencpsVotingStatisticModelImpl.getYear()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_M_Y, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y,
+				args);
+
+			args = new Object[] {
+					opencpsVotingStatisticModelImpl.getCompanyId(),
+					opencpsVotingStatisticModelImpl.getGroupId(),
+					opencpsVotingStatisticModelImpl.getMonth(),
+					opencpsVotingStatisticModelImpl.getYear()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_CID_GID_Y, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CID_GID_Y,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -2937,6 +4862,79 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_UID_Y, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_UID_Y,
+					args);
+			}
+
+			if ((opencpsVotingStatisticModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_D_M_Y.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						opencpsVotingStatisticModelImpl.getOriginalGroupId(),
+						opencpsVotingStatisticModelImpl.getOriginalDomainCode(),
+						opencpsVotingStatisticModelImpl.getOriginalMonth(),
+						opencpsVotingStatisticModelImpl.getOriginalYear()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_D_M_Y, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_D_M_Y,
+					args);
+
+				args = new Object[] {
+						opencpsVotingStatisticModelImpl.getGroupId(),
+						opencpsVotingStatisticModelImpl.getDomainCode(),
+						opencpsVotingStatisticModelImpl.getMonth(),
+						opencpsVotingStatisticModelImpl.getYear()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_D_M_Y, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_D_M_Y,
+					args);
+			}
+
+			if ((opencpsVotingStatisticModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						opencpsVotingStatisticModelImpl.getOriginalGroupId(),
+						opencpsVotingStatisticModelImpl.getOriginalMonth(),
+						opencpsVotingStatisticModelImpl.getOriginalYear()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_M_Y, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y,
+					args);
+
+				args = new Object[] {
+						opencpsVotingStatisticModelImpl.getGroupId(),
+						opencpsVotingStatisticModelImpl.getMonth(),
+						opencpsVotingStatisticModelImpl.getYear()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_M_Y, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y,
+					args);
+			}
+
+			if ((opencpsVotingStatisticModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CID_GID_Y.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						opencpsVotingStatisticModelImpl.getOriginalCompanyId(),
+						opencpsVotingStatisticModelImpl.getOriginalGroupId(),
+						opencpsVotingStatisticModelImpl.getOriginalMonth(),
+						opencpsVotingStatisticModelImpl.getOriginalYear()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_CID_GID_Y, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CID_GID_Y,
+					args);
+
+				args = new Object[] {
+						opencpsVotingStatisticModelImpl.getCompanyId(),
+						opencpsVotingStatisticModelImpl.getGroupId(),
+						opencpsVotingStatisticModelImpl.getMonth(),
+						opencpsVotingStatisticModelImpl.getYear()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_CID_GID_Y, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_CID_GID_Y,
 					args);
 			}
 		}
