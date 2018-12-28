@@ -77,7 +77,7 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 
 		if (sites != null && sites.size() > 0) {
 			for (Group site : sites) {
-				if (site.getGroupId() == 35818) {
+				//if (site.getGroupId() == 35818) {
 
 				/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - START */
 				ServiceDomainRequest sdPayload = new ServiceDomainRequest();
@@ -166,7 +166,7 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 
 				statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId());
 			}
-		}
+		//}
 		}
 	}
 
