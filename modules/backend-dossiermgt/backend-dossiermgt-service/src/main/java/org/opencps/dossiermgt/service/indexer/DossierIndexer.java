@@ -189,6 +189,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.CANCELLING_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getCancellingDate()) ? object.getCancellingDate().getTime() : 0);
 			// }
+			
+			document.addNumberSortable(DossierTerm.FINISH_DATE_TIMESTAMP,
+					Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0);
 
 			// if (Validator.isNotNull(object.getCorrecttingDate())) {
 			document.addNumberSortable(DossierTerm.CORRECTING_DATE_TIMESTAMP,
