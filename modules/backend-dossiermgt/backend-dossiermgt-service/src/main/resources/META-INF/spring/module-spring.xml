@@ -55,6 +55,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuRolePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.OpencpsDossierStatisticLocalServiceImpl" id="org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.OpencpsDossierStatisticPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.OpencpsDossierStatisticPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.OpencpsVotingStatisticLocalServiceImpl" id="org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.OpencpsVotingStatisticPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.OpencpsVotingStatisticPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.PaymentConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.PaymentFileLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentFileLocalService" />

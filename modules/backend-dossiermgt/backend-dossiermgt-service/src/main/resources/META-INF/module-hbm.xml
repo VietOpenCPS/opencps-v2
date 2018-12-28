@@ -25,6 +25,7 @@
 	<import class="org.opencps.dossiermgt.model.MenuConfig" />
 	<import class="org.opencps.dossiermgt.model.MenuRole" />
 	<import class="org.opencps.dossiermgt.model.OpencpsDossierStatistic" />
+	<import class="org.opencps.dossiermgt.model.OpencpsVotingStatistic" />
 	<import class="org.opencps.dossiermgt.model.PaymentConfig" />
 	<import class="org.opencps.dossiermgt.model.PaymentFile" />
 	<import class="org.opencps.dossiermgt.model.ProcessAction" />
@@ -627,6 +628,34 @@
 		<property name="waitingCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="outsideCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="insideCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.OpencpsVotingStatisticImpl" table="opencps_voting_statistic">
+		<id name="votingStatisticId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="month" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="year" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="domainCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="domainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="votingCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="votingSubject" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="totalVoted" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="veryGoodCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="goodCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="badCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="percentVeryGood" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="percentGood" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="percentBad" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="totalCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.PaymentConfigImpl" table="opencps_paymentconfig">
 		<id name="paymentConfigId" type="long">
