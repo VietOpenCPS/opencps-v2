@@ -193,8 +193,8 @@ public class DossierUtils {
 //								model.setDossierOverdue("Sớm hạn ");
 //							}
 //						}
-					System.out.println("finishDateTimeStamp: "+finishDateTimeStamp);
-					System.out.println("dueDateTimeStamp: "+dueDateTimeStamp);
+					//System.out.println("finishDateTimeStamp: "+finishDateTimeStamp);
+					//System.out.println("dueDateTimeStamp: "+dueDateTimeStamp);
 					if (processBeTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
 							extendDateTimeStamp)) {
 						model.setDossierOverdue("Sớm hạn");

@@ -3070,7 +3070,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				//subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
 				MultiMatchQuery termRangeRelease = new MultiMatchQuery(String.valueOf(3));
 				termRangeRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
-				subQueryThree.add(termRangeRelease, BooleanClauseOccur.MUST);
+				subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
 				/** Check condition finishDate < dueDate **/
 				//TermRangeQueryImpl termRangeFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
 				//		null, String.valueOf(0), true, false);
