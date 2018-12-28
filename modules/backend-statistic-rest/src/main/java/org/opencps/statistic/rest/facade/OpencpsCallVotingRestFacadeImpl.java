@@ -33,7 +33,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
-		System.out.println("payload.isCalculate(): "+payload.isCalculate());
+		//System.out.println("payload.isCalculate(): "+payload.isCalculate());
 		if (payload.isCalculate()) {
 			if (payload.getMonth() != null) {
 				urlQueryParams.add("month", payload.getMonth());
@@ -63,10 +63,10 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		urlQueryParams.add("className", "dossier");
 
 		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
-		System.out.println("endPoint: "+endPoint);
+		//System.out.println("endPoint: "+endPoint);
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
-		System.out.println("url: "+url);
+		//System.out.println("url: "+url);
 		// LOG.info(url);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
