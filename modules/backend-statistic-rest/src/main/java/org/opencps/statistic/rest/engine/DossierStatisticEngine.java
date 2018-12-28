@@ -2,6 +2,7 @@ package org.opencps.statistic.rest.engine;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
+import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
@@ -317,7 +319,9 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, month, false);
+					Date firstDay = StatisticUtils.getFirstDay(month, year);
+					Date lastDay = StatisticUtils.getLastDay(month, year);
+					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false);
 					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 					
 					statisticEngineUpdate.updateStatisticData(statisticData);														

@@ -2455,6 +2455,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				} else if (top.toLowerCase().equals(DossierTerm.OVER_DUE)) {
 					BooleanQuery subQueryOne = new BooleanQueryImpl();
 					BooleanQuery subQueryTwo = new BooleanQueryImpl();
+					BooleanQuery subQueryThree = new BooleanQueryImpl();
 
 					/** Check condition dueDate != null **/
 					MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
@@ -2474,10 +2475,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
 
 					/** Check condition (releaseDate > dueDate || nowDate >= dueDate) **/
-					subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+					subQueryThree.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+					subQueryThree.add(subQueryOne, BooleanClauseOccur.SHOULD);
 					
 					/** Check condition dueDate!=null && (releaseDate>=dueDate || now>=dueDate) **/
-					subQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+					subQuery.add(subQueryThree, BooleanClauseOccur.MUST);
 				// Dossier is coming
 				} else if (top.toLowerCase().equals(DossierTerm.COMING)) {
 					/** Check condition dueDate != null **/
@@ -3054,6 +3056,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				BooleanQuery subQueryOne = new BooleanQueryImpl();
 				BooleanQuery subQueryTwo = new BooleanQueryImpl();
 				BooleanQuery subQueryThree = new BooleanQueryImpl();
+				BooleanQuery subQueryFour = new BooleanQueryImpl();
 
 				/** Check condition dueDate != null **/
 				MultiMatchQuery queryDueDate = new MultiMatchQuery(String.valueOf(0));
@@ -3078,9 +3081,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				termRangeFinish.addField(DossierTerm.VALUE_COMPARE_FINISH);
 				subQueryThree.add(termRangeFinish, BooleanClauseOccur.MUST);
 				/** Check condition (extendDate != null && releaseDate < dueDate) || (finishDate < dueDate) **/
-				subQueryTwo.add(subQueryThree, BooleanClauseOccur.SHOULD);
+				subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);
+				subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);
 				/** Check condition dueDate != null &&  subQueryTwo **/
-				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
+				subQueryOne.add(subQueryFour, BooleanClauseOccur.MUST);
 				/** Add search all **/
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else if (time.equals(DossierTerm.OVER_TIME)) { // Check list dossier is overtime
@@ -3112,6 +3116,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				BooleanQuery subQueryThree = new BooleanQueryImpl();
 				BooleanQuery subQueryFour = new BooleanQueryImpl();
 				BooleanQuery subQueryFive = new BooleanQueryImpl();
+				BooleanQuery subQuerySix = new BooleanQueryImpl();
+				BooleanQuery subQuerySeven = new BooleanQueryImpl();
 
 				/** Check condition releaseDate!=null && (dueDate==null || (releaseDate<dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))) - START **/
 				/** Check condition releaseDate != null **/
@@ -3156,15 +3162,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						String.valueOf(1), String.valueOf(2), true, true);
 				subQueryFive.add(queryCompareFinish, BooleanClauseOccur.MUST);
 				/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - END **/
-				subQueryFour.add(subQueryFive, BooleanClauseOccur.SHOULD);
+				subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
+				subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
 
 				/** Check condition (releaseDate < dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))- END **/
-				subQueryThree.add(subQueryFour, BooleanClauseOccur.MUST);
+				subQueryThree.add(subQuerySix, BooleanClauseOccur.MUST);
 
 				/** Check condition (dueDate==null || (releaseDate<dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate)) - END **/
-				subQueryTwo.add(subQueryThree, BooleanClauseOccur.SHOULD);
+				subQuerySeven.add(subQueryThree, BooleanClauseOccur.SHOULD);
+				subQuerySeven.add(subQueryTwo, BooleanClauseOccur.SHOULD);
 				/** Check condition releaseDate!=null && (dueDate==null || (releaseDate<dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))) - END **/
-				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
+				subQueryOne.add(subQuerySeven, BooleanClauseOccur.MUST);
 				/** Add search all **/
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else if (time.equals(DossierTerm.OVER_DUE)) {// List dossier is processing overdue
@@ -3184,10 +3192,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
 						String.valueOf(0), String.valueOf(nowTime), false, false);
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+
 			} else if (time.equals(DossierTerm.UN_DUE)){// List dossier is processing undue
 				BooleanQuery subQueryOne = new BooleanQueryImpl();
 				BooleanQuery subQueryTwo = new BooleanQueryImpl();
 				BooleanQuery subQueryThree = new BooleanQueryImpl();
+				BooleanQuery subQueryFour = new BooleanQueryImpl();
 
 				/** Check condition releaseDate == null **/
 				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
@@ -3213,10 +3223,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				/** Check condition (dueDate != null && now < dueDate) - END **/
 
 				/** Check condition (dueDate==null || (dueDate!=null && now<dueDate)) **/
-				subQueryTwo.add(subQueryThree, BooleanClauseOccur.SHOULD);
+				subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);
+				subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);
 
 				/** Check condition releaseDate==null && (dueDate==null || (dueDate!=null && now<dueDate)) **/
-				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
+				subQueryOne.add(subQueryFour, BooleanClauseOccur.MUST);
 				//
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			} else if (time.equals(DossierTerm.COMING)){// List dossier is processing comming
