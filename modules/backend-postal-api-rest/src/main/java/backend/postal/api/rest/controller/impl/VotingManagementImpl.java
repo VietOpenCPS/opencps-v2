@@ -278,10 +278,10 @@ public class VotingManagementImpl implements VotingManagement {
 			params.put("month", String.valueOf(search.getMonth()));
 			params.put("year", String.valueOf(search.getYear()));
 			params.put(VotingTerm.CLASS_NAME, search.getClassName());
-			System.out.println("groupId: "+groupId);
-			System.out.println("month: "+search.getMonth());
-			System.out.println("year: "+search.getYear());
-			System.out.println("VotingTerm.CLASS_NAME: "+ search.getClassName());
+			//System.out.println("groupId: "+groupId);
+			//System.out.println("month: "+search.getMonth());
+			//System.out.println("year: "+search.getYear());
+			//System.out.println("VotingTerm.CLASS_NAME: "+ search.getClassName());
 			
 			//params.put("votingId", String.valueOf(votingId));
 
