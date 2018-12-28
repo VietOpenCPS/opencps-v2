@@ -233,7 +233,7 @@ public class DossierTerm {
 	//STATISTIC
 	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";
-	public static final String ON_TIME = "onetime";
+	public static final String ON_TIME = "ontime";
 	public static final String TIME = "time";
 	public static final String PAUSE_STATE = "PAUSE";
 	public static final String OVERTIME_STATE = "OVERTIME";

@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
+import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
@@ -126,7 +128,9 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (calculate) {
 			try {
 				if (reCalculate == 1) {
-					processUpdateDB(groupId, month, year, true);
+					Date firstDay = StatisticUtils.getFirstDay(month, year);
+					Date lastDay = StatisticUtils.getLastDay(month, year);
+					processUpdateDB(groupId, firstDay, lastDay, month, year, true);
 				}
 
 				validInput(month, year, start, end);
@@ -177,15 +181,23 @@ public class OpencpsStatisticRestApplication extends Application {
 			String toStatisticDate = query.getToStatisticDate();
 			//String top = query.getTop();
 			String dossierIdNo = query.getDossierNo();
-			int monthStatistic = 0;
-			//Get month statistic
+//			int monthStatistic = 0;
+//			//Get month statistic
+//			if (Validator.isNotNull(fromStatisticDate)) {
+//				String[] splitD = fromStatisticDate.split("/");
+//				if (splitD.length == 3 ||
+//						splitD[1].length() <= 2 ||
+//						splitD[0].length() <= 2) {
+//					monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
+//				}
+//			}
+			Date fromDate = null;
+			Date toDate = null;
 			if (Validator.isNotNull(fromStatisticDate)) {
-				String[] splitD = fromStatisticDate.split("/");
-				if (splitD.length == 3 ||
-						splitD[1].length() <= 2 ||
-						splitD[0].length() <= 2) {
-					monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
-				}
+				fromDate = StatisticUtils.convertStringToDate(fromStatisticDate, StatisticUtils.DATE_FORMAT);
+			}
+			if (Validator.isNotNull(toStatisticDate)) {
+				toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
 			}
 			//System.out.println("fromStatisticDate: "+fromStatisticDate);
 			//System.out.println("toStatisticDate: "+toStatisticDate);
@@ -229,13 +241,14 @@ public class OpencpsStatisticRestApplication extends Application {
 				
 				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 
-				if (dossierResponse != null) {
+				if (dossierResponse != null && fromDate != null && toDate != null) {
 					List<GetDossierData> dossierDataList = dossierResponse.getData();
 					List<DossierStatisticData> statisticDataList = new ArrayList<>();
 					if (dossierDataList != null && dossierDataList.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, monthStatistic, false);
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, fromDate, toDate,
+								false);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//
@@ -456,7 +469,8 @@ public class OpencpsStatisticRestApplication extends Application {
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
-	private void processUpdateDB(long groupId, int month, int year, boolean reporting) throws Exception {
+	private void processUpdateDB(long groupId, Date firstDay, Date lastDay, int month, int year, boolean reporting)
+			throws Exception {
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
@@ -512,7 +526,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 				Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-				engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, month, reporting);
+				engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, firstDay, lastDay, reporting);
 
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 

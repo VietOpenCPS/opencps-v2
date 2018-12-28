@@ -19,10 +19,14 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
 
-	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData, int month, boolean reporting) {
+	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData, Date fromStatisticDate,
+			Date toStatisticDate, boolean reporting) {
 //		int month = LocalDate.now().getMonthValue();
 		int year = LocalDate.now().getYear();
-		statisticData.setMonth(month);
+		Calendar dateStatistic = Calendar.getInstance();
+		dateStatistic.setTime(fromStatisticDate);
+		
+		statisticData.setMonth(dateStatistic.get(Calendar.MONTH) + 1);
 		statisticData.setYear(year);
 		statisticData.setGroupId(dossierData.getGroupId());
 		statisticData.setReporting(reporting);
@@ -49,7 +53,8 @@ public class StatisticEngineFetchEntry {
 			// tiep nhan xu ly
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
-			if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
+			//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
 				// trong ky
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
@@ -62,39 +67,43 @@ public class StatisticEngineFetchEntry {
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
-			if (dossierData.getDossierStatus().contentEquals("cancelled")) {
-				// ruts ho so
-				statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
-			} else {
-				if (releaseDate == null || releaseDate.after(getLastDay(month, year))) {
-					// hồ sơ đang xử lý 
-					if (dossierData.getDossierStatus().contentEquals("waiting")) {
-						// tạm dừng chờ bổ sung
-						statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
-					} else {
-						// đang xử lý
-						statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
-						if (!"processing".equals(dossierData.getDossierStatus())) {
-							// xử lý nội bộ
-							statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
-						} else {
-							// xử lý ngoài cơ quan
-							statisticData.setInsideCount(statisticData.getInsideCount() + 1);
-						}
-						if (dueDate != null && !dueDate.after(getLastDay(month, year))) {
-							// đang quá hạn
-							statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
-							if (!"processing".equals(dossierData.getDossierStatus())) {
-								// đang quá hạn và xử lý bên ngoài 
-								statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
-							}
-						} else {
-							// đang xử lý còn hạn
-							statisticData.setUndueCount(statisticData.getUndueCount() + 1);
-						}
-					}
+			
+
+			if (releaseDate == null || releaseDate.after(toStatisticDate)) {
+				// hồ sơ đang xử lý 
+				if (dossierData.getDossierStatus().contentEquals("waiting") || 
+						dossierData.getDossierStatus().contentEquals("receiving")) {
+					// dang tạm dừng chờ bổ sung
+					statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
 				} else {
-					// hồ sơ đã hoàn thành trong tháng
+					// đang xử lý
+					statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
+					if (!"processing".equals(dossierData.getDossierStatus())) {
+						// xử lý nội bộ
+						statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
+					} else {
+						// xử lý ngoài cơ quan
+						statisticData.setInsideCount(statisticData.getInsideCount() + 1);
+					}
+					if (dueDate != null && !dueDate.after(toStatisticDate)) {
+						// đang quá hạn
+						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
+						if (!"processing".equals(dossierData.getDossierStatus())) {
+							// đang quá hạn và xử lý bên ngoài 
+							statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
+						}
+					} else {
+						// đang xử lý còn hạn
+						statisticData.setUndueCount(statisticData.getUndueCount() + 1);
+					}
+				}
+			} else {
+				// ho so da ket thuc trong thang	
+				if (dossierData.getDossierStatus().contentEquals("cancelled")) {
+					// ho so da bi rut trong thang
+					statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
+				} else {
+					// hồ sơ đã hoàn thành trong tháng			
 					statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);
 					if (dossierData.getDossierStatus().contentEquals("unresolved")) {
 						// từ chối giải quyết => không tính hạn xử lý
@@ -136,30 +145,6 @@ public class StatisticEngineFetchEntry {
 				}
 			}
 		}
-	}
-
-	private static Date getFirstDay(int month, int year) {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, month - 1);
-		cal.set(Calendar.YEAR, year);
-		//Set calendar first of month
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
-		cal.set(Calendar.HOUR_OF_DAY, cal.getActualMinimum(Calendar.HOUR_OF_DAY));
-		cal.set(Calendar.MINUTE, cal.getActualMinimum(Calendar.MINUTE));
-		cal.set(Calendar.SECOND, cal.getActualMinimum(Calendar.SECOND));
-		return cal.getTime();
-	}
-
-	private static Date getLastDay(int month, int year) {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, month - 1);
-		cal.set(Calendar.YEAR, year);
-		//Set calendar first of month
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		cal.set(Calendar.HOUR_OF_DAY, cal.getActualMaximum(Calendar.HOUR_OF_DAY));
-		cal.set(Calendar.MINUTE, cal.getActualMaximum(Calendar.MINUTE));
-		cal.set(Calendar.SECOND, cal.getActualMaximum(Calendar.SECOND));
-		return cal.getTime();
 	}
 
 //	private static Date getLastDay() {

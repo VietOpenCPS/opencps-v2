@@ -1,9 +1,9 @@
 package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class StatisticEngineFetch {
 	//private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
-			List<GetDossierData> lsDossierData, int month, boolean reporting) {
+			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
@@ -35,7 +35,8 @@ public class StatisticEngineFetch {
 					dataType1 = statisticData.get(type1);
 				}
 	
-				engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, month, reporting);
+				engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
 				dataType1 = processOnTimePercent(dataType1);
 	
 				statisticData.put(type1, dataType1);
@@ -54,7 +55,8 @@ public class StatisticEngineFetch {
 					dataType2 = statisticData.get(type2);
 				}
 	
-				engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, month, reporting);
+				engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
 				dataType2 = processOnTimePercent(dataType2);
 	
 				statisticData.put(type2, dataType2);
@@ -74,7 +76,8 @@ public class StatisticEngineFetch {
 					dataType3 = statisticData.get(type3);
 				}
 	
-				engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, month, reporting);
+				engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
 				dataType3 = processOnTimePercent(dataType3);
 				//System.out.println("dataType3: "+dataType3.getTotalCount());
 	
@@ -96,7 +99,8 @@ public class StatisticEngineFetch {
 					dataType4 = statisticData.get(type4);
 				}
 
-				engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, month, reporting);
+				engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
 				dataType4 = processOnTimePercent(dataType4);
 
 				statisticData.put(type4, dataType4);
