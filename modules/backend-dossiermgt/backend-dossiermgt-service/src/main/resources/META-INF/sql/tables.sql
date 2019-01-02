@@ -643,7 +643,8 @@ create table opencps_processoption (
 	serviceProcessId LONG,
 	instructionNote TEXT null,
 	submissionNote TEXT null,
-	sampleCount LONG
+	sampleCount LONG,
+	registerBookCode VARCHAR(75) null
 );
 
 create table opencps_processsequence (

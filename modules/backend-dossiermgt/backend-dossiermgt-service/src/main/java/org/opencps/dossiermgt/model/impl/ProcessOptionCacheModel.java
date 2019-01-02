@@ -65,7 +65,7 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -101,6 +101,8 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 		sb.append(submissionNote);
 		sb.append(", sampleCount=");
 		sb.append(sampleCount);
+		sb.append(", registerBookCode=");
+		sb.append(registerBookCode);
 		sb.append("}");
 
 		return sb.toString();
@@ -179,6 +181,13 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 
 		processOptionImpl.setSampleCount(sampleCount);
 
+		if (registerBookCode == null) {
+			processOptionImpl.setRegisterBookCode("");
+		}
+		else {
+			processOptionImpl.setRegisterBookCode(registerBookCode);
+		}
+
 		processOptionImpl.resetOriginalValues();
 
 		return processOptionImpl;
@@ -212,6 +221,7 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 		submissionNote = objectInput.readUTF();
 
 		sampleCount = objectInput.readLong();
+		registerBookCode = objectInput.readUTF();
 	}
 
 	@Override
@@ -279,6 +289,13 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 		}
 
 		objectOutput.writeLong(sampleCount);
+
+		if (registerBookCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(registerBookCode);
+		}
 	}
 
 	public String uuid;
@@ -298,4 +315,5 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 	public String instructionNote;
 	public String submissionNote;
 	public long sampleCount;
+	public String registerBookCode;
 }
