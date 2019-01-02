@@ -88,13 +88,14 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 				// Get dossier by groupId - START
 				GetVotingResultRequest payload = new GetVotingResultRequest();
 				payload.setGroupId(site.getGroupId());
-				for (int month = 1; month <= LocalDate.now().getMonthValue(); month++) {
+				int monthCurrent = LocalDate.now().getMonthValue();
+				int yearCurrent = LocalDate.now().getYear();
+				for (int month = 1; month <= monthCurrent; month++) {
 					// Delete dossier statistic by month/year
-					engineUpdateAction.removeVotingStatisticByMonthYear(site.getGroupId(), month,
-							LocalDate.now().getYear());
+					engineUpdateAction.removeVotingStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
 
-					payload.setMonth(Integer.toString(LocalDate.now().getMonthValue()));
-					payload.setYear(Integer.toString(LocalDate.now().getYear()));
+					payload.setMonth(Integer.toString(month));
+					payload.setYear(Integer.toString(yearCurrent));
 					payload.setClassName("dossier");
 					// Check calculate = true => month
 					payload.setCalculate(true);

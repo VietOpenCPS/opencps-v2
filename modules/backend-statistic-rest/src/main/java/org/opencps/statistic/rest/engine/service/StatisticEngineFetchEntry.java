@@ -85,7 +85,9 @@ public class StatisticEngineFetchEntry {
 						// xử lý ngoài cơ quan
 						statisticData.setInsideCount(statisticData.getInsideCount() + 1);
 					}
-					if (dueDate != null && !dueDate.after(toStatisticDate)) {
+
+					Date now = new Date();
+					if (dueDate != null && !dueDate.after(now.before(toStatisticDate) ? now : toStatisticDate)) {
 						// đang quá hạn
 						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
 						if (!"processing".equals(dossierData.getDossierStatus())) {

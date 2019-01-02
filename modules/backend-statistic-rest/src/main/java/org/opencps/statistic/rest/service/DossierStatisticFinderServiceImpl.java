@@ -6,7 +6,6 @@ import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.converter.DossierStatisticConverter;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
 				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
 						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
-						dossierStatisticRequest.getGovAgencyCode(), "", dossierStatisticRequest.isReporting(),
+						dossierStatisticRequest.getGovAgencyCode(), "",
 						dossierStatisticRequest.getStart(), dossierStatisticRequest.getEnd());
 
 		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
@@ -39,12 +38,11 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 	@Override
 	public DossierStatisticResponse finderDossierStatistics(DossierStatisticRequest dossierStatisticRequest)
 			throws PortalException {
-		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
-				.fetchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
-						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
-						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getGroupAgencyCode(),
-						dossierStatisticRequest.isReporting(), dossierStatisticRequest.getStart(),
-						dossierStatisticRequest.getEnd());
+		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(
+				dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
+				dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
+				dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getGroupAgencyCode(),
+				dossierStatisticRequest.getStart(), dossierStatisticRequest.getEnd());
 
 		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
 	}
