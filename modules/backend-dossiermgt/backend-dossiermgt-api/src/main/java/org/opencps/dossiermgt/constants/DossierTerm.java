@@ -242,4 +242,5 @@ public class DossierTerm {
 	public static final String VALUE_COMPARE_FINISH = "compareFinish";
 
 	public static final String PROCESS_NO = "processNo";
+	public static final String REGISTER = "register";
 }

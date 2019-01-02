@@ -704,6 +704,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				String originDossierNoSearch = SpecialCharacterUtils.splitSpecial(object.getOriginDossierNo());
 				document.addTextSortable(DossierTerm.ORIGIN_DOSSIER_NO_SEARCH, originDossierNoSearch);
 			}
+			document.addTextSortable(DossierTerm.REGISTER, object.getRegisterBookCode());
 			
 			//Add payment status
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(object.getGroupId(), dossierId);
