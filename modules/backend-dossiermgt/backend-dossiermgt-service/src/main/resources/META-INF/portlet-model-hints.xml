@@ -168,7 +168,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="referenceUid" type="String" />
 		<field name="counter" type="int" />
-		<field name="registerBookCode" type="String" />
+		<field name="registerBookCode" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 		<field name="registerBookName" type="String" />
 		<field name="dossierRegister" type="String" />
 		<field name="processNo" type="String" />
@@ -1009,6 +1011,9 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="sampleCount" type="long" />
+		<field name="registerBookCode" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessPlugin">
 		<field name="uuid" type="String" />

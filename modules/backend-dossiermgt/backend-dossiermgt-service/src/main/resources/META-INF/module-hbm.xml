@@ -772,6 +772,7 @@
 		<property name="instructionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="submissionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="sampleCount" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="registerBookCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ProcessPluginImpl" table="opencps_process_plugin">
 		<id name="processPluginId" type="long">

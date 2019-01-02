@@ -1017,6 +1017,10 @@ public class DossierManagementImpl implements DossierManagement {
 				online = true;
 			}
 			boolean flagOldDossier = false;
+			String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
+			String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			Long sampleCount = (option != null ? option.getSampleCount() : 1l);
+			
 			if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
 				dossier = oldDossiers.get(0);
@@ -1044,6 +1048,10 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setViaPostal(viaPostal);
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
+				
+				dossier.setRegisterBookCode(registerBookCode);
+				dossier.setRegisterBookName(registerBookName);
+				dossier.setSampleCount(sampleCount);
 				
 				updateDelegateApplicant(dossier, input);
 				
@@ -1092,6 +1100,10 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalWardName(input.getPostalWardName());
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
 
+				dossier.setRegisterBookCode(registerBookCode);
+				dossier.setRegisterBookName(registerBookName);
+				dossier.setSampleCount(sampleCount);
+				
 				updateDelegateApplicant(dossier, input);
 				
 				if (process != null) {
@@ -1938,6 +1950,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";
+	public static final String REGISTER_BOOK = "REGISTER_BOOK";
 	
 //	public static final int LENGHT_DOSSIER_PASSWORD = 4;
 //	public static final String DEFAULT_PATTERN_PASSWORD = "0123";

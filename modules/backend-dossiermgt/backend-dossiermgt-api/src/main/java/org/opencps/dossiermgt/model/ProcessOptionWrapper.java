@@ -77,6 +77,7 @@ public class ProcessOptionWrapper implements ProcessOption,
 		attributes.put("instructionNote", getInstructionNote());
 		attributes.put("submissionNote", getSubmissionNote());
 		attributes.put("sampleCount", getSampleCount());
+		attributes.put("registerBookCode", getRegisterBookCode());
 
 		return attributes;
 	}
@@ -183,6 +184,12 @@ public class ProcessOptionWrapper implements ProcessOption,
 
 		if (sampleCount != null) {
 			setSampleCount(sampleCount);
+		}
+
+		String registerBookCode = (String)attributes.get("registerBookCode");
+
+		if (registerBookCode != null) {
+			setRegisterBookCode(registerBookCode);
 		}
 	}
 
@@ -314,6 +321,16 @@ public class ProcessOptionWrapper implements ProcessOption,
 	@Override
 	public long getProcessOptionId() {
 		return _processOption.getProcessOptionId();
+	}
+
+	/**
+	* Returns the register book code of this process option.
+	*
+	* @return the register book code of this process option
+	*/
+	@Override
+	public String getRegisterBookCode() {
+		return _processOption.getRegisterBookCode();
 	}
 
 	/**
@@ -560,6 +577,16 @@ public class ProcessOptionWrapper implements ProcessOption,
 	@Override
 	public void setProcessOptionId(long processOptionId) {
 		_processOption.setProcessOptionId(processOptionId);
+	}
+
+	/**
+	* Sets the register book code of this process option.
+	*
+	* @param registerBookCode the register book code of this process option
+	*/
+	@Override
+	public void setRegisterBookCode(String registerBookCode) {
+		_processOption.setRegisterBookCode(registerBookCode);
 	}
 
 	/**
