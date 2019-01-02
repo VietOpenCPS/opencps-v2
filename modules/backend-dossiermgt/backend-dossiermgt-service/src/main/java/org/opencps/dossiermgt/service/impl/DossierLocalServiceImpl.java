@@ -1902,7 +1902,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID))
 				: null;
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
-
+		String register = GetterUtil.getString(params, DossierTerm.REGISTER);
+		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -1932,7 +1933,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, booleanCommon);
+				originDossierId, time, register, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2006,7 +2007,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID))
 				: null);
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
-
+		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
+		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -2033,7 +2035,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, booleanCommon);
+				originDossierId, time, register, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2138,7 +2140,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
-			String toStatisticDate, Integer originDossierId, String time, BooleanQuery booleanQuery)
+			String toStatisticDate, Integer originDossierId, String time, String register, BooleanQuery booleanQuery)
 			throws ParseException {
 
 
@@ -3274,6 +3276,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNotNull(register)) {
+			MultiMatchQuery query = new MultiMatchQuery(register);
+
+			query.addFields(DossierTerm.REGISTER);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}		
 		return booleanQuery;
 	}
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
