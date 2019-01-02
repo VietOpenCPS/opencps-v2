@@ -199,7 +199,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			}
 			if (Validator.isNotNull(toStatisticDate)) {
 				Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
-				toCalDate = StatisticUtils.getStartDay(toDate);
+				toCalDate = StatisticUtils.getEndDay(toDate);
 			}
 			//System.out.println("fromStatisticDate: "+fromStatisticDate);
 			//System.out.println("toStatisticDate: "+toStatisticDate);
