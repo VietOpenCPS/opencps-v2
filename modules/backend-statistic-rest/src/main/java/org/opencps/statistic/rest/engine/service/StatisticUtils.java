@@ -66,4 +66,25 @@ public class StatisticUtils {
 		cal.set(Calendar.SECOND, cal.getActualMaximum(Calendar.SECOND));
 		return cal.getTime();
 	}
+
+	public static Date getStartDay(Date statisticDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(statisticDate);
+		//Set calendar first of month
+		cal.set(Calendar.HOUR_OF_DAY, cal.getActualMinimum(Calendar.HOUR_OF_DAY));
+		cal.set(Calendar.MINUTE, cal.getActualMinimum(Calendar.MINUTE));
+		cal.set(Calendar.SECOND, cal.getActualMinimum(Calendar.SECOND));
+		return cal.getTime();
+	}
+
+	public static Date getEndDay(Date statisticDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(statisticDate);
+		//Set calendar first of month
+		cal.set(Calendar.HOUR_OF_DAY, cal.getActualMaximum(Calendar.HOUR_OF_DAY));
+		cal.set(Calendar.MINUTE, cal.getActualMaximum(Calendar.MINUTE));
+		cal.set(Calendar.SECOND, cal.getActualMaximum(Calendar.SECOND));
+		return cal.getTime();
+	}
+
 }

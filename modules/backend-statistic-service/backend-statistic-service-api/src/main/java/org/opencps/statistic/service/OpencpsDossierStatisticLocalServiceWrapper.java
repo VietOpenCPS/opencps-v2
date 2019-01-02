@@ -48,10 +48,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 
 	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatistic checkExsit(
-		long groupId, int month, int year, String govAgency, String domain,
-		boolean reporting) {
+		long groupId, int month, int year, String govAgency, String domain) {
 		return _opencpsDossierStatisticLocalService.checkExsit(groupId, month,
-			year, govAgency, domain, reporting);
+			year, govAgency, domain);
 	}
 
 	@Override
@@ -199,12 +198,11 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> fetchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
-		String groupAgenvyCode, boolean reporting, int start, int end)
+		String groupAgenvyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsDossierStatisticLocalService.fetchDossierStatistic(groupId,
-			month, year, domain, govAgencyCode, groupAgenvyCode, reporting,
-			start, end);
+			month, year, domain, govAgencyCode, groupAgenvyCode, start, end);
 	}
 
 	@Override
@@ -254,6 +252,13 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		long groupId, int month, int year) {
 		return _opencpsDossierStatisticLocalService.getDossierStatisticByMonthYear(groupId,
 			month, year);
+	}
+
+	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(
+		long groupId, int month, int year, boolean reporting) {
+		return _opencpsDossierStatisticLocalService.getDossierStatisticByMonthYearAndReport(groupId,
+			month, year, reporting);
 	}
 
 	@Override
@@ -401,12 +406,11 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
-		String groupAgenvyCode, boolean reporting, int start, int end)
+		String groupAgenvyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsDossierStatisticLocalService.searchDossierStatistic(groupId,
-			month, year, domain, govAgencyCode, groupAgenvyCode, reporting,
-			start, end);
+			month, year, domain, govAgencyCode, groupAgenvyCode, start, end);
 	}
 
 	/**

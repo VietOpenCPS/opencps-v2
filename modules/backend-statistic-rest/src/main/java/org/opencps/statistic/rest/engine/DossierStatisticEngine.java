@@ -95,28 +95,27 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			payload.setGroupId(site.getGroupId());
 			int monthCurrent = LocalDate.now().getMonthValue();
+			int yearCurrent = LocalDate.now().getYear();
 			for (int month = 1; month <= monthCurrent; month ++) {
-				boolean flagStatistic = false;
+				boolean flagStatistic = true;
 				if (month < monthCurrent) {
 					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-							.getDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
+							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
 					if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
-						for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
-							boolean reporting = dossierStatistic.getReporting();
-							if (!reporting) {
-								flagStatistic = true;
-								break;
-							}
-						}
-					} else {
-						flagStatistic = true;
+						//for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
+							//boolean reporting = dossierStatistic.getReporting();
+							//if (!reporting) {
+						flagStatistic = false;
+								//break;
+							//}
+						//}
 					}
 					if (flagStatistic) {
-						processUpdateStatistic(site.getGroupId(), month, LocalDate.now().getYear() , payload,
+						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 								engineUpdateAction, serviceDomainResponse);
 					}
 				} else {
-					processUpdateStatistic(site.getGroupId(), month, LocalDate.now().getYear(), payload,
+					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 							engineUpdateAction, serviceDomainResponse);
 				}
 			}

@@ -23,14 +23,13 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public interface OpencpsDossierStatisticFinder {
 	public org.opencps.statistic.model.OpencpsDossierStatistic checkContains(
-		long groupId, int month, int year, String domain, String govAgency,
-		boolean reporting);
+		long groupId, int month, int year, String domain, String govAgency);
 
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int year, String domain, String govAgency,
-		String groupAgencyCode, boolean reporting, int start, int end);
+		String groupAgencyCode, int start, int end);
 
-	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchByDomainGovAgencyGroupAndReporting(
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchByDomainGovAgencyGroup(
 		long groupId, int month, int year, String domain, String govAgency,
-		String groupAgencyCode, boolean reporting, int start, int end);
+		String groupAgencyCode, int start, int end);
 }

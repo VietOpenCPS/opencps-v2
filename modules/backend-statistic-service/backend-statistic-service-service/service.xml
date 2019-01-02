@@ -105,6 +105,12 @@
 			<finder-column name="month"/>
 			<finder-column name="year"/>
 		</finder>
+		<finder return-type="Collection" name="GID_M_Y_RP">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="reporting"/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"

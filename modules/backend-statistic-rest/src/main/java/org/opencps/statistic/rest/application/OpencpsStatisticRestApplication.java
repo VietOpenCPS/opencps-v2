@@ -108,7 +108,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		String govAgencyCode = query.getAgency();
 		String domain = query.getDomain();
 		String groupAgencyCode = query.getGroupAgencyCode();
-		boolean reporting = query.getReporting();
+		//boolean reporting = query.getReporting();
 		Integer reCalculate = query.getReCalculate();
 		if (reCalculate == null) {
 			reCalculate = 0;
@@ -143,7 +143,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
 				}
 				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
-				dossierStatisticRequest.setReporting(reporting);
+				//dossierStatisticRequest.setReporting(reporting);
 				dossierStatisticRequest.setGroupId(groupId);
 				dossierStatisticRequest.setStart(start);
 				dossierStatisticRequest.setEnd(end);
@@ -191,13 +191,15 @@ public class OpencpsStatisticRestApplication extends Application {
 //					monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
 //				}
 //			}
-			Date fromDate = null;
-			Date toDate = null;
+			Date fromCalDate = null;
+			Date toCalDate = null;
 			if (Validator.isNotNull(fromStatisticDate)) {
-				fromDate = StatisticUtils.convertStringToDate(fromStatisticDate, StatisticUtils.DATE_FORMAT);
+				Date fromDate = StatisticUtils.convertStringToDate(fromStatisticDate, StatisticUtils.DATE_FORMAT);
+				fromCalDate = StatisticUtils.getStartDay(fromDate);
 			}
 			if (Validator.isNotNull(toStatisticDate)) {
-				toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
+				Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
+				toCalDate = StatisticUtils.getStartDay(toDate);
 			}
 			//System.out.println("fromStatisticDate: "+fromStatisticDate);
 			//System.out.println("toStatisticDate: "+toStatisticDate);
@@ -241,13 +243,13 @@ public class OpencpsStatisticRestApplication extends Application {
 				
 				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 
-				if (dossierResponse != null && fromDate != null && toDate != null) {
+				if (dossierResponse != null && fromCalDate != null && toCalDate != null) {
 					List<GetDossierData> dossierDataList = dossierResponse.getData();
 					List<DossierStatisticData> statisticDataList = new ArrayList<>();
 					if (dossierDataList != null && dossierDataList.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, fromDate, toDate,
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
 								false);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
@@ -267,7 +269,6 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 
 			} catch (Exception e) {
-				System.out.println(e);
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 

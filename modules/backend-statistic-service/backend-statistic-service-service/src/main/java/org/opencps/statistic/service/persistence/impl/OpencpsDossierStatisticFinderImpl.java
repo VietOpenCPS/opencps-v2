@@ -41,8 +41,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 	public static final int ALL_MONTH = -1;
 	
 	@SuppressWarnings("unchecked")
-	public OpencpsDossierStatistic checkContains(long groupId, int month, int year,
-			String domain, String govAgency, boolean reporting) {
+	public OpencpsDossierStatistic checkContains(long groupId, int month, int year, String domain, String govAgency) {
 		Session session = null;
 
 		try {
@@ -88,7 +87,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 
 			/* add reporting */
-			qPos.add(reporting);
+			//qPos.add(reporting);
 
 			/* add groupId */
 			qPos.add(groupId);
@@ -116,7 +115,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 	
 	@SuppressWarnings("unchecked")
 	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, int year,
-			String domain, String govAgency, String groupAgencyCode, boolean reporting, int start, int end) {
+			String domain, String govAgency, String groupAgencyCode, int start, int end) {
 		Session session = null;
 		
 		try {
@@ -162,7 +161,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 
 			/* add reporting */
-			qPos.add(reporting);
+			//qPos.add(reporting);
 
 			/* add groupId */
 			qPos.add(groupId);
@@ -185,8 +184,8 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<OpencpsDossierStatistic> searchByDomainGovAgencyGroupAndReporting(long groupId, int month, int year,
-			String domain, String govAgency, String groupAgencyCode, boolean reporting, int start, int end) {
+	public List<OpencpsDossierStatistic> searchByDomainGovAgencyGroup(long groupId, int month, int year, String domain,
+			String govAgency, String groupAgencyCode, int start, int end) {
 		Session session = null;
 
 		try {
@@ -256,7 +255,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 
 			/* add reporting */
-			qPos.add(reporting);
+			//qPos.add(reporting);
 
 			/* add groupId */
 			qPos.add(groupId);

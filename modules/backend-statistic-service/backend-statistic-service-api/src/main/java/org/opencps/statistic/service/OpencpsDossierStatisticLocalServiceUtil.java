@@ -55,11 +55,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic checkExsit(
-		long groupId, int month, int year, String govAgency, String domain,
-		boolean reporting) {
-		return getService()
-				   .checkExsit(groupId, month, year, govAgency, domain,
-			reporting);
+		long groupId, int month, int year, String govAgency, String domain) {
+		return getService().checkExsit(groupId, month, year, govAgency, domain);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic checkNotDuplicate(
@@ -195,12 +192,12 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> fetchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
-		String groupAgenvyCode, boolean reporting, int start, int end)
+		String groupAgenvyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .fetchDossierStatistic(groupId, month, year, domain,
-			govAgencyCode, groupAgenvyCode, reporting, start, end);
+			govAgencyCode, groupAgenvyCode, start, end);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic fetchOpencpsDossierStatistic(
@@ -244,6 +241,13 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYear(
 		long groupId, int month, int year) {
 		return getService().getDossierStatisticByMonthYear(groupId, month, year);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(
+		long groupId, int month, int year, boolean reporting) {
+		return getService()
+				   .getDossierStatisticByMonthYearAndReport(groupId, month,
+			year, reporting);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -377,12 +381,12 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
-		String groupAgenvyCode, boolean reporting, int start, int end)
+		String groupAgenvyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .searchDossierStatistic(groupId, month, year, domain,
-			govAgencyCode, groupAgenvyCode, reporting, start, end);
+			govAgencyCode, groupAgenvyCode, start, end);
 	}
 
 	/**

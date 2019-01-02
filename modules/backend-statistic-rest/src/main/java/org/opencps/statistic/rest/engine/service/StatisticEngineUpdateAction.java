@@ -35,7 +35,7 @@ public class StatisticEngineUpdateAction {
 		try {
 			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsit(
 					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
-					payload.getDomainCode(), false);
+					payload.getDomainCode());
 			if (Validator.isNotNull(dossierStatistic)) {
 				dossierStatisticId = dossierStatistic.getDossierStatisticId();
 			}
@@ -79,6 +79,11 @@ public class StatisticEngineUpdateAction {
 	//Get list dossierStatistic by groupId, month, year
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(long groupId, int month, int year) {
 		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYear(groupId, month, year);
+	}
+
+	//Get list dossierStatistic by groupId, month, year and reporting
+	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(long groupId, int month, int year, boolean reporting) {
+		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYearAndReport(groupId, month, year, reporting);
 	}
 
 	//Process Voting
