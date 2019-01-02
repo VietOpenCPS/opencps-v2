@@ -310,7 +310,7 @@ public class StatisticEngineFetch {
 	}
 
 	private DossierStatisticData processOnTimePercent(DossierStatisticData dataType) {
-		int ontimePercent = 0;
+		int ontimePercent = 100;
 		int releaseCount = dataType.getReleaseCount();
 		//_log.info("releaseCount: "+releaseCount);
 		
