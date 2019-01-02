@@ -550,11 +550,11 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		/* Update summary */
 		//Delete record
-		engineUpdateAction.removeDossierStatisticByYear(companyId, groupId, 0, LocalDate.now().getYear());
+		engineUpdateAction.removeDossierStatisticByYear(companyId, groupId, 0, year);
 		//
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 
-		statisticSumYearService.caculateSumYear(companyId, groupId);
+		statisticSumYearService.caculateSumYear(companyId, groupId, year);
 
 	}
 
