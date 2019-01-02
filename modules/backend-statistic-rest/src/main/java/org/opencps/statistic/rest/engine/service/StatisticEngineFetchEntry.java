@@ -19,15 +19,15 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
 
-	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData, Date fromStatisticDate,
-			Date toStatisticDate, boolean reporting) {
+	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
+			Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
 //		int month = LocalDate.now().getMonthValue();
-		int year = LocalDate.now().getYear();
+		//int year = LocalDate.now().getYear();
 		Calendar dateStatistic = Calendar.getInstance();
 		dateStatistic.setTime(fromStatisticDate);
 		
 		statisticData.setMonth(dateStatistic.get(Calendar.MONTH) + 1);
-		statisticData.setYear(year);
+		statisticData.setYear(dateStatistic.get(Calendar.YEAR));
 		statisticData.setGroupId(dossierData.getGroupId());
 		statisticData.setReporting(reporting);
 		Date dueDate = Validator.isNull(dossierData.getDueDate())

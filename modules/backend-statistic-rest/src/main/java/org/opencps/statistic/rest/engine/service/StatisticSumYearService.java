@@ -9,10 +9,10 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 
 public class StatisticSumYearService {
 
-	public void caculateSumYear(long companyId, long groupId)
+	public void caculateSumYear(long companyId, long groupId, int year)
 			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
-		int year = LocalDate.now().getYear();
+		//int year = LocalDate.now().getYear();
 		
 		StatisticSumYearCalcular calcular1 = new StatisticSumYearCalcular();
 		StatisticSumYearCalcular calcular2 = new StatisticSumYearCalcular();
