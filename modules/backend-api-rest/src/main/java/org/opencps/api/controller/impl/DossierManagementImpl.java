@@ -818,7 +818,8 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
-
+			params.put(DossierTerm.REGISTER, query.getRegister());
+			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,

@@ -1903,7 +1903,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				: null;
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
 		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
-		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -2423,11 +2422,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						booleanQuery.add(query, BooleanClauseOccur.MUST);
 //					}
 				}
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
-				query.addField(DossierTerm.RECEIVE_DATE_TIMESTAMP);
-				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-			}
+			} 
+			//Temporatory comment for dossier has not received
+//			else {
+//				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+//				query.addField(DossierTerm.RECEIVE_DATE_TIMESTAMP);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+//			}
 		}
 
 		if (Validator.isNotNull(top)) {
