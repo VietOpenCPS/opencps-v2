@@ -1902,7 +1902,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID))
 				: null;
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
-		String register = GetterUtil.getString(params, DossierTerm.REGISTER);
+		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
