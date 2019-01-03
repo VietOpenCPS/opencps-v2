@@ -262,6 +262,13 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByYear(
+		long companyId, long groupId, int month, int year) {
+		return _opencpsDossierStatisticLocalService.getDossierStatisticByYear(companyId,
+			groupId, month, year);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return _opencpsDossierStatisticLocalService.getExportActionableDynamicQuery(portletDataContext);
@@ -377,6 +384,15 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _opencpsDossierStatisticLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public org.opencps.statistic.model.OpencpsDossierStatistic removeByG_M_Y_G_D(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return _opencpsDossierStatisticLocalService.removeByG_M_Y_G_D(groupId,
+			month, year, govAgencyCode, domainCode);
 	}
 
 	@Override

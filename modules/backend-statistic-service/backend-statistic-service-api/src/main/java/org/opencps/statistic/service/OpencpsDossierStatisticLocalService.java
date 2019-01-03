@@ -221,6 +221,10 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		long groupId, int month, int year, boolean reporting);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getDossierStatisticByYear(
+		long companyId, long groupId, int month, int year);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -310,6 +314,10 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month,
+		int year, String govAgencyCode, String domainCode)
+		throws NoSuchOpencpsDossierStatisticException;
 
 	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode,
 		int month, int year) throws NoSuchOpencpsDossierStatisticException;

@@ -142,7 +142,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 		}
 
-		int ontimePercent = 0;
+		int ontimePercent = 100;
 		if (releaseCount > 0) {
 			ontimePercent = (betimesCount + ontimeCount) * 100 / releaseCount;
 		}
@@ -202,6 +202,15 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(long groupId, int month, int year, boolean reporting) {
 		return opencpsDossierStatisticPersistence.findByGID_M_Y_RP(groupId, month, year, reporting);
+	}
+
+	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode,
+			String domainCode) throws NoSuchOpencpsDossierStatisticException {
+		return opencpsDossierStatisticPersistence.removeByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
+	}
+
+	public List<OpencpsDossierStatistic> getDossierStatisticByYear(long companyId, long groupId, int month, int year) {
+		return opencpsDossierStatisticPersistence.findByCID_GID_Y(companyId, groupId, month, year);
 	}
 
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);

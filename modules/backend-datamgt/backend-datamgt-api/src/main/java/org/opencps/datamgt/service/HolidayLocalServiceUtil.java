@@ -387,6 +387,14 @@ public class HolidayLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static org.opencps.datamgt.model.Holiday updateHolidayDB(
+		long userId, long groupId, java.util.Date holidayDate,
+		String description)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return getService()
+				   .updateHolidayDB(userId, groupId, holidayDate, description);
+	}
+
 	public static HolidayLocalService getService() {
 		return _serviceTracker.getService();
 	}

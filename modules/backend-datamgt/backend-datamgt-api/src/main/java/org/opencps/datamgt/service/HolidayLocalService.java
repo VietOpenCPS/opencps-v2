@@ -336,4 +336,8 @@ public interface HolidayLocalService extends BaseLocalService,
 		String description, ServiceContext serviceContext)
 		throws UnauthenticationException, UnauthorizationException,
 			NotFoundException, NoSuchUserException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Holiday updateHolidayDB(long userId, long groupId, Date holidayDate,
+		String description) throws NoSuchUserException;
 }
