@@ -86,6 +86,17 @@ public class StatisticEngineUpdateAction {
 		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYearAndReport(groupId, month, year, reporting);
 	}
 
+	//Remove record by domain and govAgencyCode
+	public void removeDossierStatisticByG_M_Y_G_D(long groupId, int month, int year, String agency, String domainCode)
+			throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeByG_M_Y_G_D(groupId, month, year, agency, domainCode);
+	}
+
+	//Get list statistic by year
+	public List<OpencpsDossierStatistic> getDossierStatisticByYear(long companyId, long groupId, int month, int year) {
+		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByYear(companyId, groupId, month, year);
+	}
+
 	//Process Voting
 	public OpencpsVotingStatistic updateVotingStatistic(VotingResultStatisticData payload) {
 

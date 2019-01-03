@@ -29,6 +29,7 @@ import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DossierTemplate;
 import org.opencps.api.v21.model.DynamicReportList;
+import org.opencps.api.v21.model.HolidayList;
 import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.NotificationTemplateList;
 import org.opencps.api.v21.model.ObjectFactory;
@@ -271,6 +272,16 @@ public class ReadXMLFileUtils {
 					strError = ConstantUtils.XML_DYNAMIC_REPORT;
 				}
 				break;
+			case ConstantUtils.XML_HOLIDAY:
+				HolidayList holidayList = convertXMLToHoliday(xmlString);
+				flag = ProcessUpdateDBUtils.processUpdateHoliday(holidayList, folderPath, groupId, userId, serviceContext);
+				if (flag) {
+					sbParentFile.append(fileName);
+					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
+				} else {
+					strError = ConstantUtils.XML_HOLIDAY;
+				}
+				break;
 			default:
 				break;
 			}
@@ -509,6 +520,18 @@ public class ReadXMLFileUtils {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			StringReader reader = new StringReader(xmlString);
 			DynamicReportList objectElement = (DynamicReportList) jaxbUnmarshaller.unmarshal(reader);
+
+			return objectElement;
+	}
+
+	// LamTV_ Process convert xml to Object DynamicReport
+	private static HolidayList convertXMLToHoliday(String xmlString) throws JAXBException {
+
+			JAXBContext jaxbContext = null;
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			HolidayList objectElement = (HolidayList) jaxbUnmarshaller.unmarshal(reader);
 
 			return objectElement;
 	}

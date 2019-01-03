@@ -27,29 +27,22 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="fileTemplate" maxOccurs="unbounded">
+ *         &lt;element name="Holiday" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="filename">
+ *                   &lt;element name="holidayDate">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="fileTemplateNo">
+ *                   &lt;element name="description">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
- *                       &lt;/restriction>
- *                     &lt;/simpleType>
- *                   &lt;/element>
- *                   &lt;element name="templateName">
- *                     &lt;simpleType>
- *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                         &lt;maxLength value="255"/>
+ *                         &lt;maxLength value="10000"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
@@ -68,41 +61,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "fileTemplate"
+    "holiday"
 })
-@XmlRootElement(name = "fileTemplates")
-public class FileTemplates {
+@XmlRootElement(name = "HolidayList")
+public class HolidayList {
 
-    @XmlElement(required = true)
-    protected List<FileTemplates.FileTemplate> fileTemplate;
+    @XmlElement(name = "Holiday", required = true)
+    protected List<HolidayList.Holiday> holiday;
 
     /**
-     * Gets the value of the fileTemplate property.
+     * Gets the value of the holiday property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the fileTemplate property.
+     * This is why there is not a <CODE>set</CODE> method for the holiday property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFileTemplate().add(newItem);
+     *    getHoliday().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FileTemplates.FileTemplate }
+     * {@link HolidayList.Holiday }
      * 
      * 
      */
-    public List<FileTemplates.FileTemplate> getFileTemplate() {
-        if (fileTemplate == null) {
-            fileTemplate = new ArrayList<FileTemplates.FileTemplate>();
+    public List<HolidayList.Holiday> getHoliday() {
+        if (holiday == null) {
+            holiday = new ArrayList<HolidayList.Holiday>();
         }
-        return this.fileTemplate;
+        return this.holiday;
     }
 
 
@@ -116,24 +109,17 @@ public class FileTemplates {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="filename">
+     *         &lt;element name="holidayDate">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="fileTemplateNo">
+     *         &lt;element name="description">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
-     *             &lt;/restriction>
-     *           &lt;/simpleType>
-     *         &lt;/element>
-     *         &lt;element name="templateName">
-     *           &lt;simpleType>
-     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *               &lt;maxLength value="255"/>
+     *               &lt;maxLength value="10000"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
@@ -147,89 +133,62 @@ public class FileTemplates {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "filename",
-        "fileTemplateNo",
-        "templateName"
+        "holidayDate",
+        "description"
     })
-    public static class FileTemplate {
+    public static class Holiday {
 
         @XmlElement(required = true)
-        protected String filename;
+        protected String holidayDate;
         @XmlElement(required = true)
-        protected String fileTemplateNo;
-        @XmlElement(required = true)
-        protected String templateName;
+        protected String description;
 
         /**
-         * Gets the value of the filename property.
+         * Gets the value of the holidayDate property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getFilename() {
-            return filename;
+        public String getHolidayDate() {
+            return holidayDate;
         }
 
         /**
-         * Sets the value of the filename property.
+         * Sets the value of the holidayDate property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setFilename(String value) {
-            this.filename = value;
+        public void setHolidayDate(String value) {
+            this.holidayDate = value;
         }
 
         /**
-         * Gets the value of the fileTemplateNo property.
+         * Gets the value of the description property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getFileTemplateNo() {
-            return fileTemplateNo;
+        public String getDescription() {
+            return description;
         }
 
         /**
-         * Sets the value of the fileTemplateNo property.
+         * Sets the value of the description property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setFileTemplateNo(String value) {
-            this.fileTemplateNo = value;
-        }
-
-        /**
-         * Gets the value of the templateName property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-        public String getTemplateName() {
-            return templateName;
-        }
-
-        /**
-         * Sets the value of the templateName property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
-         */
-        public void setTemplateName(String value) {
-            this.templateName = value;
+        public void setDescription(String value) {
+            this.description = value;
         }
 
     }

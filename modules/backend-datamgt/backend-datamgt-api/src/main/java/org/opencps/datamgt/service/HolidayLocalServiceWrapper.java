@@ -407,6 +407,14 @@ public class HolidayLocalServiceWrapper implements HolidayLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.Holiday updateHolidayDB(long userId,
+		long groupId, java.util.Date holidayDate, String description)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return _holidayLocalService.updateHolidayDB(userId, groupId,
+			holidayDate, description);
+	}
+
+	@Override
 	public HolidayLocalService getWrappedService() {
 		return _holidayLocalService;
 	}
