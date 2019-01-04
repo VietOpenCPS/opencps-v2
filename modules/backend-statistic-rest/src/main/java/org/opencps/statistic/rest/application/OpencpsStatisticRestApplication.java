@@ -108,6 +108,8 @@ public class OpencpsStatisticRestApplication extends Application {
 		String govAgencyCode = query.getAgency();
 		String domain = query.getDomain();
 		String groupAgencyCode = query.getGroupAgencyCode();
+		String fromStatisticDate = query.getFromStatisticDate();
+		String toStatisticDate = query.getToStatisticDate();
 		//boolean reporting = query.getReporting();
 		Integer reCalculate = query.getReCalculate();
 		if (reCalculate == null) {
@@ -120,55 +122,12 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (end == 0)
 			end = QueryUtil.ALL_POS;
 		
-		boolean calculate = false;
-		if (month > 0 || year > 0) {
-			calculate = true;
+		boolean calculate = true;
+		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
+			calculate = false;
 		}
 
-		if (calculate) {
-			try {
-				if (reCalculate == 1) {
-					Date firstDay = StatisticUtils.getFirstDay(month, year);
-					Date lastDay = StatisticUtils.getLastDay(month, year);
-					processUpdateDB(groupId, firstDay, lastDay, month, year, true);
-				}
-
-				validInput(month, year, start, end);
-				//
-				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
-				dossierStatisticRequest.setDomain(domain);
-				if ("all".equals(govAgencyCode)) {
-					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
-				} else {
-					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
-				}
-				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
-				//dossierStatisticRequest.setReporting(reporting);
-				dossierStatisticRequest.setGroupId(groupId);
-				dossierStatisticRequest.setStart(start);
-				dossierStatisticRequest.setEnd(end);
-				dossierStatisticRequest.setMonth(month);
-				dossierStatisticRequest.setYear(year);
-				//
-				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
-						.finderDossierStatistic(dossierStatisticRequest);
-				if (statisticResponse != null) {
-					statisticResponse.setAgency(govAgencyCode);
-				}
-
-				return statisticResponse;
-			} catch (Exception e) {
-				LOG.error("error", e);
-				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
-
-				serviceExceptionDetails.setFaultCode("500");
-				serviceExceptionDetails.setFaultMessage(e.getMessage());
-
-				throwException(new OpencpsServiceException(serviceExceptionDetails));
-			}
-			
-		} else {
-
+		if (!calculate) {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String service = query.getService();
@@ -177,8 +136,6 @@ public class OpencpsStatisticRestApplication extends Application {
 			String owner = query.getOwner();
 			//String follow = query.getFollow();
 			String step = query.getStep();
-			String fromStatisticDate = query.getFromStatisticDate();
-			String toStatisticDate = query.getToStatisticDate();
 			//String top = query.getTop();
 			String dossierIdNo = query.getDossierNo();
 //			int monthStatistic = 0;
@@ -268,6 +225,47 @@ public class OpencpsStatisticRestApplication extends Application {
 					return statisticResponse;
 				}
 
+			} catch (Exception e) {
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		} else {
+			try {
+				if (reCalculate == 1) {
+					Date firstDay = StatisticUtils.getFirstDay(month, year);
+					Date lastDay = StatisticUtils.getLastDay(month, year);
+					processUpdateDB(groupId, firstDay, lastDay, month, year, true);
+				}
+
+				validInput(month, year, start, end);
+				//
+				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
+				dossierStatisticRequest.setDomain(domain);
+				if ("all".equals(govAgencyCode)) {
+					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+				}
+				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
+				//dossierStatisticRequest.setReporting(reporting);
+				dossierStatisticRequest.setGroupId(groupId);
+				dossierStatisticRequest.setStart(start);
+				dossierStatisticRequest.setEnd(end);
+				dossierStatisticRequest.setMonth(month);
+				dossierStatisticRequest.setYear(year);
+				//
+				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
+						.finderDossierStatistic(dossierStatisticRequest);
+				if (statisticResponse != null) {
+					statisticResponse.setAgency(govAgencyCode);
+				}
+
+				return statisticResponse;
 			} catch (Exception e) {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
@@ -428,7 +426,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private void validInput(int month, int year, int start, int end) {
 		OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-		LocalDate localDate = LocalDate.now();
+		//LocalDate localDate = LocalDate.now();
 
 		if (end < start) {
 			serviceExceptionDetails.setFaultCode("400");
@@ -436,12 +434,12 @@ public class OpencpsStatisticRestApplication extends Application {
 			throwException(new OpencpsServiceException(serviceExceptionDetails));
 		}
 
-		if (year < DossierStatisticConstants.START_YEARS || year > localDate.getYear()) {
-			serviceExceptionDetails.setFaultCode("400");
-			serviceExceptionDetails.setFaultMessage("Invalid year");
-			throwException(new OpencpsServiceException(serviceExceptionDetails));
-
-		}
+//		if (year < DossierStatisticConstants.START_YEARS || year > localDate.getYear()) {
+//			serviceExceptionDetails.setFaultCode("400");
+//			serviceExceptionDetails.setFaultMessage("Invalid year");
+//			throwException(new OpencpsServiceException(serviceExceptionDetails));
+//
+//		}
 
 		if (month != -1) {
 			if (month < 0 || month > 12) {
