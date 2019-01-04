@@ -41,12 +41,19 @@ public class HolidayUtils {
 
 		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
 
-		Date dueDate = getEndDate(groupId, startDate, hoursCount, holidayList);
+		Date dueDateCal = getEndDate(groupId, startDate, hoursCount, holidayList);
 //		_log.info("dueDate: "+dueDate);
-//		Calendar cal = Calendar.getInstance();
-//		cal.setTime(startDate);
-//		int day = cal.get(Calendar.DAY_OF_WEEK);
-		return dueDate;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dueDateCal);
+		// minute / 15 == 0
+		int minute = cal.get(Calendar.MINUTE) < 15 ? 15
+				: cal.get(Calendar.MINUTE) < 30 ? 30 : cal.get(Calendar.MINUTE) < 45 ? 45 : 0;
+		if (minute == 0) {
+			cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + 1);
+		}
+		cal.set(Calendar.MINUTE, minute);
+
+		return cal.getTime();
 	}
 
 	private static long processHoursCount(double durationCount, int durationUnit) {

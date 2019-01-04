@@ -237,7 +237,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 
 			/* add year parameter */
-			qPos.add(year);
+			if (year != 0) {
+				qPos.add(year);
+			}
 
 			/* add domain parameter */
 			if (Validator.isNotNull(domain) && !domain.contentEquals(TOTAL)) {
