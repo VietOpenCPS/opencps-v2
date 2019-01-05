@@ -4192,6 +4192,16 @@ public class DossierActionsImpl implements DossierActions {
 //					e.printStackTrace();
 //				}				
 			}
+			if (Validator.isNull(dossier.getReleaseDate())) {
+//				try {
+//					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+					dossier.setReleaseDate(now);
+					bResult.put(DossierTerm.RELEASE_DATE, true);
+//				} catch (PortalException e) {
+//					_log.error(e);
+//					e.printStackTrace();
+//				}				
+			}			
 		}
 		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_INTEROPERATING.equals(curStatus)
