@@ -82,7 +82,9 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 	private boolean processPublish(PublishQueue pq) {
 		long dossierId = pq.getDossierId();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		
+		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
+			return true;
+		}
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
 		

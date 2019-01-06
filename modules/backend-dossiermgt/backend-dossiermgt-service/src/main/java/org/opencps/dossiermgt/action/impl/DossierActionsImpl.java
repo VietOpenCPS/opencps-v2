@@ -3665,6 +3665,9 @@ public class DossierActionsImpl implements DossierActions {
 	}
 	
 	private void publishEvent(Dossier dossier, ServiceContext context) {
+		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
+			return;
+		}
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
