@@ -165,6 +165,8 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
 		obj.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
 		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+		obj.put(DossierTerm.ORIGIN_DOSSIER_ID, dossier.getOriginDossierId());
+		obj.put(DossierTerm.ORIGIN_DOSSIER_NO, dossier.getOriginDossierNo());
 		
 		return obj;
 	}
