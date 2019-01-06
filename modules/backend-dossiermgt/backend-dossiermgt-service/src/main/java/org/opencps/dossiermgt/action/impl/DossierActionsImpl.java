@@ -4182,6 +4182,8 @@ public class DossierActionsImpl implements DossierActions {
 //				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)				
 				|| (actionConfig != null && actionConfig.getDateOption() == 5)) {
 			if (Validator.isNull(dossier.getFinishDate())) {
 //				try {
