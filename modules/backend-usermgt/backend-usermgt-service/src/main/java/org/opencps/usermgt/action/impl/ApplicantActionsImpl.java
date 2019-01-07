@@ -1,5 +1,6 @@
 package org.opencps.usermgt.action.impl;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.opencps.usermgt.action.ApplicantActions;
@@ -147,6 +148,14 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	Log _log = LogFactoryUtil.getLog(ApplicantActionsImpl.class);
 
-	
+	@Override
+	public void updateApplicantDB(long userId, long groupId, String applicantIdNo, String appliantName,
+			String applicantIdType, Date applicantIdDate, String contactEmail, String contactTelNo,
+			ServiceContext serviceContext) throws PortalException {
+
+		ApplicantLocalServiceUtil.updateApplicationDB(groupId, userId, 0l, applicantIdNo, appliantName, applicantIdType,
+				applicantIdDate, contactEmail, contactTelNo, serviceContext);
+
+	}
 
 }

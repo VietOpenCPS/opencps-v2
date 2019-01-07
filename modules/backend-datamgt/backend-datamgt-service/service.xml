@@ -288,6 +288,7 @@
 
 		<column name="holidayDate" type="Date" />
 		<column name="description" type="String" />
+		<column name="holidayType" type="int" />
 
 		<!-- Order -->
 		<order by="asc">

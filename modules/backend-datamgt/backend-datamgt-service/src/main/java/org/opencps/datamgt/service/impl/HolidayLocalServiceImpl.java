@@ -407,7 +407,8 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Holiday updateHolidayDB(long userId, long groupId, Date holidayDate, String description) throws NoSuchUserException {
+	public Holiday updateHolidayDB(long userId, long groupId, Date holidayDate, String description, int holidayType)
+			throws NoSuchUserException {
 
 		Date now = new Date();
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -429,12 +430,16 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 			// Other fields
 			holiday.setHolidayDate(holidayDate);
 			holiday.setDescription(description);
+			holiday.setHolidayType(holidayType);
 		} else {
 			holiday.setModifiedDate(now);
 			if (Validator.isNotNull(holidayDate))
 				holiday.setHolidayDate(holidayDate);
 			if (Validator.isNotNull(description))
 				holiday.setDescription(description);
+			if (Validator.isNotNull(holidayType)) {
+				holiday.setHolidayType(holidayType);
+			}
 		}
 
 		return holidayPersistence.update(holiday);

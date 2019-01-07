@@ -118,7 +118,8 @@ create table opencps_holiday (
 	createDate DATE null,
 	modifiedDate DATE null,
 	holidayDate DATE null,
-	description TEXT null
+	description TEXT null,
+	holidayType INTEGER
 );
 
 create table opencps_voting (

@@ -339,5 +339,5 @@ public interface HolidayLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Holiday updateHolidayDB(long userId, long groupId, Date holidayDate,
-		String description) throws NoSuchUserException;
+		String description, int holidayType) throws NoSuchUserException;
 }

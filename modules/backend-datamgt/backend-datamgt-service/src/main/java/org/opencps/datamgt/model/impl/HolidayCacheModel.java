@@ -64,7 +64,7 @@ public class HolidayCacheModel implements CacheModel<Holiday>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -86,6 +86,8 @@ public class HolidayCacheModel implements CacheModel<Holiday>, Externalizable {
 		sb.append(holidayDate);
 		sb.append(", description=");
 		sb.append(description);
+		sb.append(", holidayType=");
+		sb.append(holidayType);
 		sb.append("}");
 
 		return sb.toString();
@@ -142,6 +144,8 @@ public class HolidayCacheModel implements CacheModel<Holiday>, Externalizable {
 			holidayImpl.setDescription(description);
 		}
 
+		holidayImpl.setHolidayType(holidayType);
+
 		holidayImpl.resetOriginalValues();
 
 		return holidayImpl;
@@ -163,6 +167,8 @@ public class HolidayCacheModel implements CacheModel<Holiday>, Externalizable {
 		modifiedDate = objectInput.readLong();
 		holidayDate = objectInput.readLong();
 		description = objectInput.readUTF();
+
+		holidayType = objectInput.readInt();
 	}
 
 	@Override
@@ -200,6 +206,8 @@ public class HolidayCacheModel implements CacheModel<Holiday>, Externalizable {
 		else {
 			objectOutput.writeUTF(description);
 		}
+
+		objectOutput.writeInt(holidayType);
 	}
 
 	public String uuid;
@@ -212,4 +220,5 @@ public class HolidayCacheModel implements CacheModel<Holiday>, Externalizable {
 	public long modifiedDate;
 	public long holidayDate;
 	public String description;
+	public int holidayType;
 }

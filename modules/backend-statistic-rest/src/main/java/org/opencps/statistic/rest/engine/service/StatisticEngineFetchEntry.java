@@ -1,20 +1,16 @@
 package org.opencps.statistic.rest.engine.service;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
+import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
+import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
@@ -173,14 +169,37 @@ public class StatisticEngineFetchEntry {
 		//System.out.println("votingData.getSelected()"+ votingData.getSelected());
 		//System.out.println("votingData.getGroupId()"+ votingData.getGroupId());
 
-		if (votingData.getSelected() == 0) {
+		if (votingData.getSelected() == 1) {
 			statisticData.setVeryGoodCount(statisticData.getVeryGoodCount() + 1);
-		} else if (votingData.getSelected() == 1) {
+		} else if (votingData.getSelected() == 2) {
 			statisticData.setGoodCount(statisticData.getGoodCount() + 1);
-		} else {
+		} else if (votingData.getSelected() == 3){
 			statisticData.setBadCount(statisticData.getBadCount() + 1);
 		}
 
 		//System.out.println("statisticData"+ JSONFactoryUtil.looseSerialize(statisticData));
+	}
+
+	public void calculatePersonStatisticData(PersonStatisticData statisticData, GetPersonData personData,
+			Date fromStatisticDate, Date toStatisticDate) {
+
+		Calendar dateStatistic = Calendar.getInstance();
+		dateStatistic.setTime(fromStatisticDate);
+
+		statisticData.setMonth(dateStatistic.get(Calendar.MONTH) + 1);
+		statisticData.setYear(dateStatistic.get(Calendar.YEAR));
+		statisticData.setGroupId(personData.getGroupId());
+		// Get info date check statistic
+		statisticData.setTotalVoted(statisticData.getTotalVoted() + 1);
+		//System.out.println("votingData.getSelected()"+ votingData.getSelected());
+		//System.out.println("votingData.getGroupId()"+ votingData.getGroupId());
+
+		if (personData.getSelected() == 0) {
+			statisticData.setVeryGoodCount(statisticData.getVeryGoodCount() + 1);
+		} else if (personData.getSelected() == 1) {
+			statisticData.setGoodCount(statisticData.getGoodCount() + 1);
+		} else {
+			statisticData.setBadCount(statisticData.getBadCount() + 1);
+		}
 	}
 }

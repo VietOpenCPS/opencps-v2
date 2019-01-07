@@ -43,6 +43,7 @@ public class HolidaySoap implements Serializable {
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setHolidayDate(model.getHolidayDate());
 		soapModel.setDescription(model.getDescription());
+		soapModel.setHolidayType(model.getHolidayType());
 
 		return soapModel;
 	}
@@ -175,6 +176,14 @@ public class HolidaySoap implements Serializable {
 		_description = description;
 	}
 
+	public int getHolidayType() {
+		return _holidayType;
+	}
+
+	public void setHolidayType(int holidayType) {
+		_holidayType = holidayType;
+	}
+
 	private String _uuid;
 	private long _holidayId;
 	private long _companyId;
@@ -185,4 +194,5 @@ public class HolidaySoap implements Serializable {
 	private Date _modifiedDate;
 	private Date _holidayDate;
 	private String _description;
+	private int _holidayType;
 }
