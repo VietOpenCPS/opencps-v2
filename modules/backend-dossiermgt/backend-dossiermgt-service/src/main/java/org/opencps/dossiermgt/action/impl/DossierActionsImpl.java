@@ -3665,6 +3665,9 @@ public class DossierActionsImpl implements DossierActions {
 	}
 	
 	private void publishEvent(Dossier dossier, ServiceContext context) {
+		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
+			return;
+		}
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
@@ -4179,6 +4182,8 @@ public class DossierActionsImpl implements DossierActions {
 //				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)				
 				|| (actionConfig != null && actionConfig.getDateOption() == 5)) {
 			if (Validator.isNull(dossier.getFinishDate())) {
 //				try {
@@ -4192,6 +4197,16 @@ public class DossierActionsImpl implements DossierActions {
 //					e.printStackTrace();
 //				}				
 			}
+			if (Validator.isNull(dossier.getReleaseDate())) {
+//				try {
+//					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+					dossier.setReleaseDate(now);
+					bResult.put(DossierTerm.RELEASE_DATE, true);
+//				} catch (PortalException e) {
+//					_log.error(e);
+//					e.printStackTrace();
+//				}				
+			}			
 		}
 		if (DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_INTEROPERATING.equals(curStatus)

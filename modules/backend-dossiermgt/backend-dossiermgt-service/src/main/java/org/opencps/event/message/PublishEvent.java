@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
+import com.liferay.portal.kernel.util.Validator;
 
 public class PublishEvent implements MessageListener {
 	@Override
@@ -32,6 +33,14 @@ public class PublishEvent implements MessageListener {
 		_log.info("Publish dossier event");
 		JSONObject dossierObj = (JSONObject) message.get("dossier");
 		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
+		if (dossierObj.has(DossierTerm.ORIGIN_DOSSIER_ID)
+				&& dossierObj.getLong(DossierTerm.ORIGIN_DOSSIER_ID) != 0) {
+			return;
+		}
+		if (dossierObj.has(DossierTerm.ORIGIN_DOSSIER_NO)
+				&& Validator.isNotNull(dossierObj.getString(DossierTerm.ORIGIN_DOSSIER_NO))) {
+			return;
+		}
 		List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.PUBLISH_PROTOCOL);
 		for (ServerConfig sc : lstServers) {
 			try {
