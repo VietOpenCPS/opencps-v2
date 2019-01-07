@@ -291,6 +291,10 @@ public interface HolidayLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Holiday> getHolidayByGroupId(long groupId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Holiday> getHolidayByGroupIdAndType(long groupId,
+		int holidayType);
+
 	/**
 	* Returns the holiday matching the UUID and group.
 	*

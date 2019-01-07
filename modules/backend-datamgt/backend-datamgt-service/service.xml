@@ -302,6 +302,10 @@
 		<finder return-type="Collection" name="F_GID">
 			<finder-column name="groupId" />
 		</finder>
+		<finder return-type="Collection" name="F_GID_TYPE">
+			<finder-column name="groupId" />
+			<finder-column name="holidayType" />
+		</finder>
 	</entity>
 	
 	<entity name="Comment" uuid="true" local-service="true"
