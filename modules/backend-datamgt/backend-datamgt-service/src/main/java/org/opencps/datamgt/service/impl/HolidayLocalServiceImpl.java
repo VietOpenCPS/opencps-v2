@@ -358,6 +358,10 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		return holidayPersistence.findByF_GID(groupId);
 	}
 
+	public List<Holiday> getHolidayByGroupIdAndType(long groupId, int holidayType) {
+		return holidayPersistence.findByF_GID_TYPE(groupId, holidayType);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public Holiday adminProcessDelete(Long id) {

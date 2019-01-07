@@ -321,6 +321,11 @@ public class HolidayLocalServiceUtil {
 		return getService().getHolidayByGroupId(groupId);
 	}
 
+	public static java.util.List<org.opencps.datamgt.model.Holiday> getHolidayByGroupIdAndType(
+		long groupId, int holidayType) {
+		return getService().getHolidayByGroupIdAndType(groupId, holidayType);
+	}
+
 	/**
 	* Returns the holiday matching the UUID and group.
 	*
