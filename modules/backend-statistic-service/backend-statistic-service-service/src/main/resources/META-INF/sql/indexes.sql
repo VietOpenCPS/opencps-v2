@@ -1,3 +1,10 @@
+create index IX_37419090 on opencps_person_statistic (companyId, groupId, month, year);
+create index IX_7E97F4A9 on opencps_person_statistic (groupId, employeeId, month, year);
+create index IX_37F862A7 on opencps_person_statistic (groupId, month, year, govAgencyCode[$COLUMN_LENGTH:75$], employeeId);
+create index IX_8951F6C6 on opencps_person_statistic (groupId, userId, year);
+create index IX_A9B75963 on opencps_person_statistic (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_AEFCDCA5 on opencps_person_statistic (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_767B71CC on opencps_statistic (companyId, groupId, month, year);
 create index IX_751D6585 on opencps_statistic (groupId, domainCode[$COLUMN_LENGTH:75$], month, year);
 create index IX_1124F771 on opencps_statistic (groupId, govAgencyCode[$COLUMN_LENGTH:75$], month, year, domainCode[$COLUMN_LENGTH:75$], reporting);

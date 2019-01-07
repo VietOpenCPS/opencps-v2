@@ -141,6 +141,7 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="holidayDate" type="org.hibernate.type.TimestampType" />
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="holidayType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.datamgt.model.impl.VotingImpl" table="opencps_voting">
 		<id name="votingId" type="long">

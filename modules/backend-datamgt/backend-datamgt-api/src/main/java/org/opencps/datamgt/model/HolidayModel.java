@@ -239,6 +239,20 @@ public interface HolidayModel extends BaseModel<Holiday>, GroupedModel,
 	 */
 	public void setDescription(String description);
 
+	/**
+	 * Returns the holiday type of this holiday.
+	 *
+	 * @return the holiday type of this holiday
+	 */
+	public int getHolidayType();
+
+	/**
+	 * Sets the holiday type of this holiday.
+	 *
+	 * @param holidayType the holiday type of this holiday
+	 */
+	public void setHolidayType(int holidayType);
+
 	@Override
 	public boolean isNew();
 

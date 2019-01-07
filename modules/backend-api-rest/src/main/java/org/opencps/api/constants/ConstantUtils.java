@@ -30,6 +30,7 @@ public class ConstantUtils {
 	public static final String XML_USERS = "Users.xml";
 	public static final String XML_DYNAMIC_REPORT = "DynamicReport.xml";
 	public static final String XML_HOLIDAY = "Holiday.xml";
+	public static final String XML_APPLICANT = "Applicant.xml";
 	// Element XML of ActionConfig
 	public static final String ACTIONCONFIG_LIST = "ActionConfigList";
 	public static final String ACTIONCONFIG = "ActionConfig";

@@ -6,9 +6,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -36,9 +36,13 @@ import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetDossierRequest;
 import org.opencps.statistic.rest.dto.GetDossierResponse;
+import org.opencps.statistic.rest.dto.GetPersonData;
+import org.opencps.statistic.rest.dto.GetPersonRequest;
+import org.opencps.statistic.rest.dto.GetPersonResponse;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
 import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
+import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
@@ -52,6 +56,7 @@ import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
+import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
@@ -59,7 +64,6 @@ import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.service.VotingStatisticFinderService;
 import org.opencps.statistic.rest.service.VotingStatisticFinderServiceImpl;
-import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
@@ -409,6 +413,175 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			} catch (Exception e) {
 				
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		}
+
+		return null;
+	}
+
+	@GET
+	@Path("/persons")
+	public VotingResultResponse searchPersonStatistic(@HeaderParam("groupId") long groupId,
+			@BeanParam VotingSearchModel query) {
+
+		//LOG.info("GET DossierStatisticResponse");
+		_log.info("START AgencyCode: "+query.getAgency());
+		_log.info("START VotingCode: "+query.getVotingCode());
+		_log.info("START EmployeeId: "+query.getEmployeeId());
+
+		VotingStatisticFinderService votingStatisticFinderService = new VotingStatisticFinderServiceImpl();
+
+		int start = query.getStart();
+		int end = query.getEnd();
+		int month = query.getMonth();
+		int year = query.getYear();
+		String govAgencyCode = query.getAgency();
+		long employeeId = GetterUtil.getLong(query.getEmployeeId());
+		String votingCode = query.getVotingCode();
+		String fromStatisticDate = query.getFromStatisticDate();
+		String toStatisticDate = query.getToStatisticDate();
+		//boolean reCalculate = query.isReCalculate();
+
+		if (start == 0)
+			start = QueryUtil.ALL_POS;
+
+		if (end == 0)
+			end = QueryUtil.ALL_POS;
+		
+		boolean calculate = true;
+		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
+			calculate = false;
+		}
+
+		if (!calculate) {
+
+			Date fromCalDate = null;
+			Date toCalDate = null;
+			if (Validator.isNotNull(fromStatisticDate)) {
+				Date fromDate = StatisticUtils.convertStringToDate(fromStatisticDate, StatisticUtils.DATE_FORMAT);
+				fromCalDate = StatisticUtils.getStartDay(fromDate);
+			}
+			if (Validator.isNotNull(toStatisticDate)) {
+				Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
+				toCalDate = StatisticUtils.getEndDay(toDate);
+			}
+			//
+			OpencpsCallRestFacade<GetPersonRequest, GetPersonResponse> callPersonRestService = new OpencpsCallPersonRestFacadeImpl();
+
+			try {
+				GetPersonRequest payload = new GetPersonRequest();
+				if ("all".equals(govAgencyCode)) {
+					payload.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					payload.setGovAgencyCode(govAgencyCode);
+				}
+				payload.setGroupId(groupId);
+				payload.setStart(start);
+				payload.setEnd(end);
+				payload.setFromStatisticDate(fromStatisticDate);
+				payload.setToStatisticDate(toStatisticDate);
+				payload.setCalculate(calculate);
+				//
+				GetPersonResponse personResponse = callPersonRestService.callRestService(payload);
+
+				if (personResponse != null && fromCalDate != null && toCalDate != null) {
+					List<GetPersonData> personDataList = personResponse.getData();
+					List<PersonStatisticData> statisticDataList = new ArrayList<>();
+					if (personDataList != null && personDataList.size() > 0) {
+						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+						Map<String, PersonStatisticData> statisticData = new HashMap<String, PersonStatisticData>();
+//						engineFetch.fecthStatisticData(groupId, statisticData, personDataList, fromCalDate, toCalDate,
+//								false);
+						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+						//statisticEngineUpdate.updateStatisticData(statisticData);
+						//
+						statisticData.forEach((k, v) -> 
+						statisticDataList.add(v));
+					}
+					//
+					DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+					statisticResponse.setTotal(statisticDataList.size());
+					//statisticResponse.setDossierStatisticData(statisticDataList);
+					if (statisticResponse != null) {
+						statisticResponse.setAgency(govAgencyCode);
+					}
+
+					//return statisticResponse;
+				}
+				
+
+//				if (votingResponse != null) {
+//					List<GetVotingResultData> votingDataList = votingResponse.getData();
+//					List<PersonStatisticData> statisticDataList = new ArrayList<>();
+//					if (votingDataList != null && votingDataList.size() > 0) {
+//						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+//						//Map<String, VotingResultData> statisticData = new HashMap<String, VotingResultData>();
+//						Map<String, VotingResultStatisticData> statisticData = engineFetch
+//								.getStatisticVotingData(groupId, votingDataList, monthStatistic);
+//						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+//						//statisticEngineUpdate.updateStatisticData(statisticData);
+//						//
+//						statisticData.forEach((k, v) -> 
+//						statisticDataList.add(v));
+//					}
+//					//
+//					VotingResultResponse statisticResponse = new VotingResultResponse();
+//					statisticResponse.setTotal(statisticDataList.size());
+//					statisticResponse.setData(statisticDataList);
+//					if (statisticResponse != null) {
+//						statisticResponse.setAgency(govAgencyCode);
+//					}
+//
+//					return statisticResponse;
+//				}
+
+			} catch (Exception e) {
+				
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		} else {
+			try {
+//				if (reCalculate) {
+//					processUpdateDB(groupId, month, year);
+//				}
+
+				validInput(month, year, start, end);
+				//
+				VotingResultRequest votingRequest = new VotingResultRequest();
+				votingRequest.setVotingCode(votingCode);
+				//votingRequest.setDomain(domain);
+				if ("all".equals(govAgencyCode)) {
+					votingRequest.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					votingRequest.setGovAgencyCode(govAgencyCode);
+				}
+				votingRequest.setGroupId(groupId);
+				votingRequest.setStart(start);
+				votingRequest.setEnd(end);
+				votingRequest.setMonth(month);
+				votingRequest.setYear(year);
+				//
+				VotingResultResponse statisticResponse = votingStatisticFinderService
+						.finderVotingStatistic(votingRequest);
+				if (statisticResponse != null) {
+					statisticResponse.setAgency(govAgencyCode);
+				}
+
+				return statisticResponse;
+			} catch (Exception e) {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 

@@ -465,6 +465,19 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Applicant updateApplicationDB(
+		long groupId, long userId, long applicantId, String applicantIdNo,
+		String applicantName, String applicantIdType,
+		java.util.Date applicantIdDate, String contactEmail,
+		String contactTelNo,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _applicantLocalService.updateApplicationDB(groupId, userId,
+			applicantId, applicantIdNo, applicantName, applicantIdType,
+			applicantIdDate, contactEmail, contactTelNo, context);
+	}
+
+	@Override
 	public ApplicantLocalService getWrappedService() {
 		return _applicantLocalService;
 	}

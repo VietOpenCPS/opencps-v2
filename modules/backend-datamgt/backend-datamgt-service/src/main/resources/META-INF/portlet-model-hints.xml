@@ -180,6 +180,7 @@
 		<field name="description" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="holidayType" type="int" />
 	</model>
 	<model name="org.opencps.datamgt.model.Voting">
 		<field name="uuid" type="String" />

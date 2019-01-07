@@ -1,11 +1,9 @@
 package org.opencps.statistic.rest.engine.service;
 
-import java.util.List;
 import java.util.Map;
 
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
-import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineUpdate {
@@ -77,6 +75,19 @@ public class StatisticEngineUpdate {
 			VotingResultStatisticData payload = me.getValue();
 
 			engineUpdateAction.updateVotingStatistic(payload);
+
+		}
+	}
+
+	public void updatePersonStatisticData(Map<String, PersonStatisticData> statisticData) {
+
+		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+
+		for (Map.Entry<String, PersonStatisticData> me : statisticData.entrySet()) {
+
+			PersonStatisticData payload = (PersonStatisticData) me.getValue();
+
+			//engineUpdateAction.updateStatistic(payload);
 
 		}
 

@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener {
 
-	private final static Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
+	private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
 

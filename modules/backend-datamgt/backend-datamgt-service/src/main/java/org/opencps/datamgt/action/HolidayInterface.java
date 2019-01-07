@@ -32,5 +32,6 @@ public interface HolidayInterface {
 			ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException;
 
-	public void updateHolidayDB(long userId, long groupId, Date time, String description) throws NoSuchUserException;
+	public void updateHolidayDB(long userId, long groupId, Date time, String description, int holidayType)
+			throws NoSuchUserException;
 }

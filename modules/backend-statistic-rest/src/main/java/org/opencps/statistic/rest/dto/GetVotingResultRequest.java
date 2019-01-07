@@ -8,7 +8,7 @@ public class GetVotingResultRequest extends CommonRequest{
 	private String fromVotingDate;
 	private String toVotingDate;
 	private String votingCode;
-	private String serivceCode;
+	private String domain;
 	private String govAgencyCode;
 	private String className;
 
@@ -48,12 +48,6 @@ public class GetVotingResultRequest extends CommonRequest{
 	public void setVotingCode(String votingCode) {
 		this.votingCode = votingCode;
 	}
-	public String getSerivceCode() {
-		return serivceCode;
-	}
-	public void setSerivceCode(String serivceCode) {
-		this.serivceCode = serivceCode;
-	}
 	public String getGovAgencyCode() {
 		return govAgencyCode;
 	}
@@ -65,6 +59,12 @@ public class GetVotingResultRequest extends CommonRequest{
 	}
 	public void setClassName(String className) {
 		this.className = className;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 }
