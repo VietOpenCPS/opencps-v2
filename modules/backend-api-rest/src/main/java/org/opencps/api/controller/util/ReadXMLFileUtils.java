@@ -17,15 +17,15 @@ import java.io.StringReader;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.ApplicantList;
-import org.opencps.api.v21.model.ApplicantList.Applicant;
+import org.opencps.api.v21.model.CitizenList;
 import org.opencps.api.v21.model.DeliverableTypeList;
 import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
@@ -41,7 +41,6 @@ import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.api.v21.model.UserManagement;
-import org.xml.sax.SAXException;
 
 public class ReadXMLFileUtils {
 
@@ -604,10 +603,26 @@ public class ReadXMLFileUtils {
 		return objectElement;
 
 	}
-	/** Process convert xml to Object - END 
-	 * @throws SAXException 
-	 * @throws IOException 
-	 * @throws ParserConfigurationException */
+	/** Process convert xml to Object - END  */
+
+	/** Process Convert Object to xml - START **/
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static File convertCitizenToXML(CitizenList citizenList) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(CitizenList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File("citizen.xml");
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(citizenList, file);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return file;
+	}
+	/** Process Convert Object to xml - END **/
 
 	//Process validate xml
 	public static String validateXML(File xmlFile, boolean flagList) {

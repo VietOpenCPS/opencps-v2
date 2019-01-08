@@ -3112,6 +3112,598 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 	}
 
 	private static final String _FINDER_COLUMN_F_MAPPING_ID_MAPPINGUSERID_2 = "applicant.mappingUserId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_TYPE =
+		new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_GID_TYPE",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_TYPE =
+		new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_GID_TYPE",
+			new String[] { Long.class.getName(), String.class.getName() },
+			ApplicantModelImpl.GROUPID_COLUMN_BITMASK |
+			ApplicantModelImpl.APPLICANTIDTYPE_COLUMN_BITMASK |
+			ApplicantModelImpl.APPLICANTNAME_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_TYPE = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_TYPE",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @return the matching applicants
+	 */
+	@Override
+	public List<Applicant> findByF_GID_TYPE(long groupId, String applicantIdType) {
+		return findByF_GID_TYPE(groupId, applicantIdType, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param start the lower bound of the range of applicants
+	 * @param end the upper bound of the range of applicants (not inclusive)
+	 * @return the range of matching applicants
+	 */
+	@Override
+	public List<Applicant> findByF_GID_TYPE(long groupId,
+		String applicantIdType, int start, int end) {
+		return findByF_GID_TYPE(groupId, applicantIdType, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param start the lower bound of the range of applicants
+	 * @param end the upper bound of the range of applicants (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching applicants
+	 */
+	@Override
+	public List<Applicant> findByF_GID_TYPE(long groupId,
+		String applicantIdType, int start, int end,
+		OrderByComparator<Applicant> orderByComparator) {
+		return findByF_GID_TYPE(groupId, applicantIdType, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param start the lower bound of the range of applicants
+	 * @param end the upper bound of the range of applicants (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching applicants
+	 */
+	@Override
+	public List<Applicant> findByF_GID_TYPE(long groupId,
+		String applicantIdType, int start, int end,
+		OrderByComparator<Applicant> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_TYPE;
+			finderArgs = new Object[] { groupId, applicantIdType };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_TYPE;
+			finderArgs = new Object[] {
+					groupId, applicantIdType,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Applicant> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Applicant>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Applicant applicant : list) {
+					if ((groupId != applicant.getGroupId()) ||
+							!Objects.equals(applicantIdType,
+								applicant.getApplicantIdType())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_TYPE_GROUPID_2);
+
+			boolean bindApplicantIdType = false;
+
+			if (applicantIdType == null) {
+				query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_1);
+			}
+			else if (applicantIdType.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_3);
+			}
+			else {
+				bindApplicantIdType = true;
+
+				query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ApplicantModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApplicantIdType) {
+					qPos.add(applicantIdType);
+				}
+
+				if (!pagination) {
+					list = (List<Applicant>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Applicant>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching applicant
+	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant findByF_GID_TYPE_First(long groupId,
+		String applicantIdType, OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException {
+		Applicant applicant = fetchByF_GID_TYPE_First(groupId, applicantIdType,
+				orderByComparator);
+
+		if (applicant != null) {
+			return applicant;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", applicantIdType=");
+		msg.append(applicantIdType);
+
+		msg.append("}");
+
+		throw new NoSuchApplicantException(msg.toString());
+	}
+
+	/**
+	 * Returns the first applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_TYPE_First(long groupId,
+		String applicantIdType, OrderByComparator<Applicant> orderByComparator) {
+		List<Applicant> list = findByF_GID_TYPE(groupId, applicantIdType, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching applicant
+	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant findByF_GID_TYPE_Last(long groupId,
+		String applicantIdType, OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException {
+		Applicant applicant = fetchByF_GID_TYPE_Last(groupId, applicantIdType,
+				orderByComparator);
+
+		if (applicant != null) {
+			return applicant;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", applicantIdType=");
+		msg.append(applicantIdType);
+
+		msg.append("}");
+
+		throw new NoSuchApplicantException(msg.toString());
+	}
+
+	/**
+	 * Returns the last applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_TYPE_Last(long groupId,
+		String applicantIdType, OrderByComparator<Applicant> orderByComparator) {
+		int count = countByF_GID_TYPE(groupId, applicantIdType);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Applicant> list = findByF_GID_TYPE(groupId, applicantIdType,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the applicants before and after the current applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * @param applicantId the primary key of the current applicant
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next applicant
+	 * @throws NoSuchApplicantException if a applicant with the primary key could not be found
+	 */
+	@Override
+	public Applicant[] findByF_GID_TYPE_PrevAndNext(long applicantId,
+		long groupId, String applicantIdType,
+		OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException {
+		Applicant applicant = findByPrimaryKey(applicantId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Applicant[] array = new ApplicantImpl[3];
+
+			array[0] = getByF_GID_TYPE_PrevAndNext(session, applicant, groupId,
+					applicantIdType, orderByComparator, true);
+
+			array[1] = applicant;
+
+			array[2] = getByF_GID_TYPE_PrevAndNext(session, applicant, groupId,
+					applicantIdType, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Applicant getByF_GID_TYPE_PrevAndNext(Session session,
+		Applicant applicant, long groupId, String applicantIdType,
+		OrderByComparator<Applicant> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_APPLICANT_WHERE);
+
+		query.append(_FINDER_COLUMN_F_GID_TYPE_GROUPID_2);
+
+		boolean bindApplicantIdType = false;
+
+		if (applicantIdType == null) {
+			query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_1);
+		}
+		else if (applicantIdType.equals("")) {
+			query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_3);
+		}
+		else {
+			bindApplicantIdType = true;
+
+			query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ApplicantModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindApplicantIdType) {
+			qPos.add(applicantIdType);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(applicant);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Applicant> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the applicants where groupId = &#63; and applicantIdType = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 */
+	@Override
+	public void removeByF_GID_TYPE(long groupId, String applicantIdType) {
+		for (Applicant applicant : findByF_GID_TYPE(groupId, applicantIdType,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(applicant);
+		}
+	}
+
+	/**
+	 * Returns the number of applicants where groupId = &#63; and applicantIdType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param applicantIdType the applicant ID type
+	 * @return the number of matching applicants
+	 */
+	@Override
+	public int countByF_GID_TYPE(long groupId, String applicantIdType) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_TYPE;
+
+		Object[] finderArgs = new Object[] { groupId, applicantIdType };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_TYPE_GROUPID_2);
+
+			boolean bindApplicantIdType = false;
+
+			if (applicantIdType == null) {
+				query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_1);
+			}
+			else if (applicantIdType.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_3);
+			}
+			else {
+				bindApplicantIdType = true;
+
+				query.append(_FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApplicantIdType) {
+					qPos.add(applicantIdType);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_TYPE_GROUPID_2 = "applicant.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_1 = "applicant.applicantIdType IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_2 = "applicant.applicantIdType = ?";
+	private static final String _FINDER_COLUMN_F_GID_TYPE_APPLICANTIDTYPE_3 = "(applicant.applicantIdType IS NULL OR applicant.applicantIdType = '')";
 
 	public ApplicantPersistenceImpl() {
 		setModelClass(Applicant.class);
@@ -3663,6 +4255,15 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 				args);
 
+			args = new Object[] {
+					applicantModelImpl.getGroupId(),
+					applicantModelImpl.getApplicantIdType()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_TYPE, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_TYPE,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -3704,6 +4305,27 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((applicantModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_TYPE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						applicantModelImpl.getOriginalGroupId(),
+						applicantModelImpl.getOriginalApplicantIdType()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_TYPE, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_TYPE,
+					args);
+
+				args = new Object[] {
+						applicantModelImpl.getGroupId(),
+						applicantModelImpl.getApplicantIdType()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_TYPE, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_TYPE,
 					args);
 			}
 		}

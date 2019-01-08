@@ -556,6 +556,11 @@
 		<finder return-type="Applicant" name="F_MAPPING_ID" unique="true">
 			<finder-column name="mappingUserId"/>
 		</finder>
+
+		<finder return-type="Collection" name="F_GID_TYPE">
+			<finder-column name="groupId" />
+			<finder-column name="applicantIdType" />
+		</finder>
 		
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />

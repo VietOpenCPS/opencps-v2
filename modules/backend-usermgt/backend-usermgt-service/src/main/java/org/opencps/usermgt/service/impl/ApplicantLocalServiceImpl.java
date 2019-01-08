@@ -115,6 +115,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicantPersistence.fetchByF_APLC_ID(appId);
 	}
 
+	public List<Applicant> getApplicantByType(long groupId, String applicantIdType) {
+		return applicantPersistence.findByF_GID_TYPE(groupId, applicantIdType);
+	}
+
 	/**
 	 * @param context
 	 * @param appicantId

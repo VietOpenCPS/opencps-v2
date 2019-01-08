@@ -256,6 +256,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().getApplicant(applicantId);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Applicant> getApplicantByType(
+		long groupId, String applicantIdType) {
+		return getService().getApplicantByType(groupId, applicantIdType);
+	}
+
 	/**
 	* Returns the applicant matching the UUID and group.
 	*
