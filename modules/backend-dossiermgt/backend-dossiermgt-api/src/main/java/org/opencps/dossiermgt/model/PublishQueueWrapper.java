@@ -68,6 +68,10 @@ public class PublishQueueWrapper implements PublishQueue,
 		attributes.put("serverNo", getServerNo());
 		attributes.put("status", getStatus());
 		attributes.put("retry", getRetry());
+		attributes.put("publishType", getPublishType());
+		attributes.put("publishData", getPublishData());
+		attributes.put("messageText", getMessageText());
+		attributes.put("acknowlegement", getAcknowlegement());
 
 		return attributes;
 	}
@@ -133,6 +137,30 @@ public class PublishQueueWrapper implements PublishQueue,
 		if (retry != null) {
 			setRetry(retry);
 		}
+
+		Integer publishType = (Integer)attributes.get("publishType");
+
+		if (publishType != null) {
+			setPublishType(publishType);
+		}
+
+		String publishData = (String)attributes.get("publishData");
+
+		if (publishData != null) {
+			setPublishData(publishData);
+		}
+
+		String messageText = (String)attributes.get("messageText");
+
+		if (messageText != null) {
+			setMessageText(messageText);
+		}
+
+		String acknowlegement = (String)attributes.get("acknowlegement");
+
+		if (acknowlegement != null) {
+			setAcknowlegement(acknowlegement);
+		}
 	}
 
 	@Override
@@ -143,6 +171,16 @@ public class PublishQueueWrapper implements PublishQueue,
 	@Override
 	public int compareTo(PublishQueue publishQueue) {
 		return _publishQueue.compareTo(publishQueue);
+	}
+
+	/**
+	* Returns the acknowlegement of this publish queue.
+	*
+	* @return the acknowlegement of this publish queue
+	*/
+	@Override
+	public String getAcknowlegement() {
+		return _publishQueue.getAcknowlegement();
 	}
 
 	/**
@@ -181,6 +219,16 @@ public class PublishQueueWrapper implements PublishQueue,
 	}
 
 	/**
+	* Returns the message text of this publish queue.
+	*
+	* @return the message text of this publish queue
+	*/
+	@Override
+	public String getMessageText() {
+		return _publishQueue.getMessageText();
+	}
+
+	/**
 	* Returns the modified date of this publish queue.
 	*
 	* @return the modified date of this publish queue
@@ -206,6 +254,16 @@ public class PublishQueueWrapper implements PublishQueue,
 	}
 
 	/**
+	* Returns the publish data of this publish queue.
+	*
+	* @return the publish data of this publish queue
+	*/
+	@Override
+	public String getPublishData() {
+		return _publishQueue.getPublishData();
+	}
+
+	/**
 	* Returns the publish queue ID of this publish queue.
 	*
 	* @return the publish queue ID of this publish queue
@@ -213,6 +271,16 @@ public class PublishQueueWrapper implements PublishQueue,
 	@Override
 	public long getPublishQueueId() {
 		return _publishQueue.getPublishQueueId();
+	}
+
+	/**
+	* Returns the publish type of this publish queue.
+	*
+	* @return the publish type of this publish queue
+	*/
+	@Override
+	public int getPublishType() {
+		return _publishQueue.getPublishType();
 	}
 
 	/**
@@ -300,6 +368,16 @@ public class PublishQueueWrapper implements PublishQueue,
 		_publishQueue.persist();
 	}
 
+	/**
+	* Sets the acknowlegement of this publish queue.
+	*
+	* @param acknowlegement the acknowlegement of this publish queue
+	*/
+	@Override
+	public void setAcknowlegement(String acknowlegement) {
+		_publishQueue.setAcknowlegement(acknowlegement);
+	}
+
 	@Override
 	public void setCachedModel(boolean cachedModel) {
 		_publishQueue.setCachedModel(cachedModel);
@@ -352,6 +430,16 @@ public class PublishQueueWrapper implements PublishQueue,
 	}
 
 	/**
+	* Sets the message text of this publish queue.
+	*
+	* @param messageText the message text of this publish queue
+	*/
+	@Override
+	public void setMessageText(String messageText) {
+		_publishQueue.setMessageText(messageText);
+	}
+
+	/**
 	* Sets the modified date of this publish queue.
 	*
 	* @param modifiedDate the modified date of this publish queue
@@ -382,6 +470,16 @@ public class PublishQueueWrapper implements PublishQueue,
 	}
 
 	/**
+	* Sets the publish data of this publish queue.
+	*
+	* @param publishData the publish data of this publish queue
+	*/
+	@Override
+	public void setPublishData(String publishData) {
+		_publishQueue.setPublishData(publishData);
+	}
+
+	/**
 	* Sets the publish queue ID of this publish queue.
 	*
 	* @param publishQueueId the publish queue ID of this publish queue
@@ -389,6 +487,16 @@ public class PublishQueueWrapper implements PublishQueue,
 	@Override
 	public void setPublishQueueId(long publishQueueId) {
 		_publishQueue.setPublishQueueId(publishQueueId);
+	}
+
+	/**
+	* Sets the publish type of this publish queue.
+	*
+	* @param publishType the publish type of this publish queue
+	*/
+	@Override
+	public void setPublishType(int publishType) {
+		_publishQueue.setPublishType(publishType);
 	}
 
 	/**

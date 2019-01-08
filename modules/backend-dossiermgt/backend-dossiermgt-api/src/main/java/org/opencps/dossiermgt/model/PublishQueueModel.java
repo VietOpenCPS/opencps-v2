@@ -218,6 +218,65 @@ public interface PublishQueueModel extends BaseModel<PublishQueue> {
 	 */
 	public void setRetry(int retry);
 
+	/**
+	 * Returns the publish type of this publish queue.
+	 *
+	 * @return the publish type of this publish queue
+	 */
+	public int getPublishType();
+
+	/**
+	 * Sets the publish type of this publish queue.
+	 *
+	 * @param publishType the publish type of this publish queue
+	 */
+	public void setPublishType(int publishType);
+
+	/**
+	 * Returns the publish data of this publish queue.
+	 *
+	 * @return the publish data of this publish queue
+	 */
+	@AutoEscape
+	public String getPublishData();
+
+	/**
+	 * Sets the publish data of this publish queue.
+	 *
+	 * @param publishData the publish data of this publish queue
+	 */
+	public void setPublishData(String publishData);
+
+	/**
+	 * Returns the message text of this publish queue.
+	 *
+	 * @return the message text of this publish queue
+	 */
+	@AutoEscape
+	public String getMessageText();
+
+	/**
+	 * Sets the message text of this publish queue.
+	 *
+	 * @param messageText the message text of this publish queue
+	 */
+	public void setMessageText(String messageText);
+
+	/**
+	 * Returns the acknowlegement of this publish queue.
+	 *
+	 * @return the acknowlegement of this publish queue
+	 */
+	@AutoEscape
+	public String getAcknowlegement();
+
+	/**
+	 * Sets the acknowlegement of this publish queue.
+	 *
+	 * @param acknowlegement the acknowlegement of this publish queue
+	 */
+	public void setAcknowlegement(String acknowlegement);
+
 	@Override
 	public boolean isNew();
 

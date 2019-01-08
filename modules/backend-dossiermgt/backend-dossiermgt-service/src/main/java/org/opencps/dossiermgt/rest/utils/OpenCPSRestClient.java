@@ -39,7 +39,16 @@ public class OpenCPSRestClient {
 	private String username;
 	private String password;
 	private long groupId;
+	private boolean writeLog;
 	
+	public boolean isWriteLog() {
+		return writeLog;
+	}
+
+	public void setWriteLog(boolean writeLog) {
+		this.writeLog = writeLog;
+	}
+
 	public long getGroupId() {
 		return groupId;
 	}
@@ -73,11 +82,16 @@ public class OpenCPSRestClient {
 				&& configObj.has(SyncServerTerm.SERVER_SECRET)
 				&& configObj.has(SyncServerTerm.SERVER_URL)
 				&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-			return new OpenCPSRestClient(
+			OpenCPSRestClient client = new OpenCPSRestClient(
 					configObj.getString(SyncServerTerm.SERVER_USERNAME), 
 					configObj.getString(SyncServerTerm.SERVER_SECRET), 
 					configObj.getString(SyncServerTerm.SERVER_URL),
 					configObj.getLong(SyncServerTerm.SERVER_GROUP_ID));
+			if (configObj.has(SyncServerTerm.WRITE_LOG)) {
+				client.setWriteLog(configObj.getBoolean(SyncServerTerm.WRITE_LOG));
+			}
+			
+			return client;
 		}
 		else {
 			return null;

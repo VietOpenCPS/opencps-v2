@@ -75,7 +75,11 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 			{ "dossierId", Types.BIGINT },
 			{ "serverNo", Types.VARCHAR },
 			{ "status", Types.INTEGER },
-			{ "retry", Types.INTEGER }
+			{ "retry", Types.INTEGER },
+			{ "publishType", Types.INTEGER },
+			{ "publishData", Types.VARCHAR },
+			{ "messageText", Types.VARCHAR },
+			{ "acknowlegement", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -90,9 +94,13 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 		TABLE_COLUMNS_MAP.put("serverNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("retry", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("publishType", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("publishData", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("messageText", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("acknowlegement", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_publish_queue (uuid_ VARCHAR(75) null,publishQueueId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,serverNo VARCHAR(255) null,status INTEGER,retry INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_publish_queue (uuid_ VARCHAR(75) null,publishQueueId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,serverNo VARCHAR(255) null,status INTEGER,retry INTEGER,publishType INTEGER,publishData VARCHAR(75) null,messageText VARCHAR(75) null,acknowlegement VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_publish_queue";
 	public static final String ORDER_BY_JPQL = " ORDER BY publishQueue.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_publish_queue.modifiedDate ASC";
@@ -164,6 +172,10 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 		attributes.put("serverNo", getServerNo());
 		attributes.put("status", getStatus());
 		attributes.put("retry", getRetry());
+		attributes.put("publishType", getPublishType());
+		attributes.put("publishData", getPublishData());
+		attributes.put("messageText", getMessageText());
+		attributes.put("acknowlegement", getAcknowlegement());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -231,6 +243,30 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 
 		if (retry != null) {
 			setRetry(retry);
+		}
+
+		Integer publishType = (Integer)attributes.get("publishType");
+
+		if (publishType != null) {
+			setPublishType(publishType);
+		}
+
+		String publishData = (String)attributes.get("publishData");
+
+		if (publishData != null) {
+			setPublishData(publishData);
+		}
+
+		String messageText = (String)attributes.get("messageText");
+
+		if (messageText != null) {
+			setMessageText(messageText);
+		}
+
+		String acknowlegement = (String)attributes.get("acknowlegement");
+
+		if (acknowlegement != null) {
+			setAcknowlegement(acknowlegement);
 		}
 	}
 
@@ -422,6 +458,61 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 		_retry = retry;
 	}
 
+	@Override
+	public int getPublishType() {
+		return _publishType;
+	}
+
+	@Override
+	public void setPublishType(int publishType) {
+		_publishType = publishType;
+	}
+
+	@Override
+	public String getPublishData() {
+		if (_publishData == null) {
+			return "";
+		}
+		else {
+			return _publishData;
+		}
+	}
+
+	@Override
+	public void setPublishData(String publishData) {
+		_publishData = publishData;
+	}
+
+	@Override
+	public String getMessageText() {
+		if (_messageText == null) {
+			return "";
+		}
+		else {
+			return _messageText;
+		}
+	}
+
+	@Override
+	public void setMessageText(String messageText) {
+		_messageText = messageText;
+	}
+
+	@Override
+	public String getAcknowlegement() {
+		if (_acknowlegement == null) {
+			return "";
+		}
+		else {
+			return _acknowlegement;
+		}
+	}
+
+	@Override
+	public void setAcknowlegement(String acknowlegement) {
+		_acknowlegement = acknowlegement;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -463,6 +554,10 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 		publishQueueImpl.setServerNo(getServerNo());
 		publishQueueImpl.setStatus(getStatus());
 		publishQueueImpl.setRetry(getRetry());
+		publishQueueImpl.setPublishType(getPublishType());
+		publishQueueImpl.setPublishData(getPublishData());
+		publishQueueImpl.setMessageText(getMessageText());
+		publishQueueImpl.setAcknowlegement(getAcknowlegement());
 
 		publishQueueImpl.resetOriginalValues();
 
@@ -595,12 +690,38 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 
 		publishQueueCacheModel.retry = getRetry();
 
+		publishQueueCacheModel.publishType = getPublishType();
+
+		publishQueueCacheModel.publishData = getPublishData();
+
+		String publishData = publishQueueCacheModel.publishData;
+
+		if ((publishData != null) && (publishData.length() == 0)) {
+			publishQueueCacheModel.publishData = null;
+		}
+
+		publishQueueCacheModel.messageText = getMessageText();
+
+		String messageText = publishQueueCacheModel.messageText;
+
+		if ((messageText != null) && (messageText.length() == 0)) {
+			publishQueueCacheModel.messageText = null;
+		}
+
+		publishQueueCacheModel.acknowlegement = getAcknowlegement();
+
+		String acknowlegement = publishQueueCacheModel.acknowlegement;
+
+		if ((acknowlegement != null) && (acknowlegement.length() == 0)) {
+			publishQueueCacheModel.acknowlegement = null;
+		}
+
 		return publishQueueCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -622,6 +743,14 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 		sb.append(getStatus());
 		sb.append(", retry=");
 		sb.append(getRetry());
+		sb.append(", publishType=");
+		sb.append(getPublishType());
+		sb.append(", publishData=");
+		sb.append(getPublishData());
+		sb.append(", messageText=");
+		sb.append(getMessageText());
+		sb.append(", acknowlegement=");
+		sb.append(getAcknowlegement());
 		sb.append("}");
 
 		return sb.toString();
@@ -629,7 +758,7 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(34);
+		StringBundler sb = new StringBundler(46);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.PublishQueue");
@@ -675,6 +804,22 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 			"<column><column-name>retry</column-name><column-value><![CDATA[");
 		sb.append(getRetry());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>publishType</column-name><column-value><![CDATA[");
+		sb.append(getPublishType());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>publishData</column-name><column-value><![CDATA[");
+		sb.append(getPublishData());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>messageText</column-name><column-value><![CDATA[");
+		sb.append(getMessageText());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>acknowlegement</column-name><column-value><![CDATA[");
+		sb.append(getAcknowlegement());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -704,6 +849,10 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 	private int _originalStatus;
 	private boolean _setOriginalStatus;
 	private int _retry;
+	private int _publishType;
+	private String _publishData;
+	private String _messageText;
+	private String _acknowlegement;
 	private long _columnBitmask;
 	private PublishQueue _escapedModel;
 }

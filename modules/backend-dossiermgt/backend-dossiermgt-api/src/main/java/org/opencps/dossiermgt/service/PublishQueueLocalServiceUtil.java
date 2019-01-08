@@ -202,6 +202,18 @@ public class PublishQueueLocalServiceUtil {
 		return getService().getByG_DID_SN(groupId, dossierId, serverNo);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByG_DID_SN_NST(
+		long groupId, long dossierId, String serverNo, int status) {
+		return getService()
+				   .getByG_DID_SN_NST(groupId, dossierId, serverNo, status);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByG_DID_SN_ST(
+		long groupId, long dossierId, String serverNo, int[] status) {
+		return getService()
+				   .getByG_DID_SN_ST(groupId, dossierId, serverNo, status);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatus(
 		int status, int start, int end) {
 		return getService().getByStatus(status, start, end);

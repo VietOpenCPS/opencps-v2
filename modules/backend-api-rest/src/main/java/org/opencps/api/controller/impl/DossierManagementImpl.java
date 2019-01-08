@@ -3424,7 +3424,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateWardName(input.getDelegateWardName());
 				dossier.setDurationCount(input.getDurationCount());
 				dossier.setDurationUnit(input.getDurationUnit());
-				dossier.setSampleCount(input.getSampleCount());
+//				dossier.setSampleCount(input.getSampleCount() != null ? input.getSampleCount() : 0l);
 				dossier.setDossierName(input.getDossierName());
 				dossier.setProcessNo(input.getProcessNo());
 				
