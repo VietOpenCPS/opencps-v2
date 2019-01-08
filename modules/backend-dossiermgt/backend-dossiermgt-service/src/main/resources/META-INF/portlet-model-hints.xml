@@ -1139,9 +1139,15 @@
 		<field name="status" type="int" />
 		<field name="retry" type="int" />
 		<field name="publishType" type="int" />
-		<field name="publishData" type="String" />
-		<field name="messageText" type="String" />
-		<field name="acknowlegement" type="String" />
+		<field name="publishData" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="messageText" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="acknowlegement" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.Registration">
 		<field name="uuid" type="String" />
