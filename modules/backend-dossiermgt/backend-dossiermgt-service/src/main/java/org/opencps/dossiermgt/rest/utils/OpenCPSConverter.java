@@ -1451,7 +1451,7 @@ public class OpenCPSConverter {
 				questions.put(question);				
 			}
 		}
-		obj.put("Questions", questions.toJSONString());
+		obj.put("Questions", questions);
 		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
 		obj.put("OrganizationInchargeName", StringPool.BLANK);
 		
