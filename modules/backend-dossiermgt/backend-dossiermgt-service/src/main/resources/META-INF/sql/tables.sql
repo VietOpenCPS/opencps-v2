@@ -713,9 +713,9 @@ create table opencps_publish_queue (
 	status INTEGER,
 	retry INTEGER,
 	publishType INTEGER,
-	publishData VARCHAR(75) null,
-	messageText VARCHAR(75) null,
-	acknowlegement VARCHAR(75) null
+	publishData TEXT null,
+	messageText TEXT null,
+	acknowlegement TEXT null
 );
 
 create table opencps_registration (

@@ -122,6 +122,16 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 					if (Validator.isNotNull(token.getAccessToken())) {
 						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier);
 						MResult result = client.publishDossier(token.getAccessToken(), OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
+						if (client.isWriteLog()) {
+							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
+							messageObj.put("token", token.getAccessToken());
+							messageObj.put("MSyncDocument", JSONFactoryUtil.looseSerialize(OpenCPSConverter.convertDossierToLGSPJSON(OpenCPSConverter.convertDossierPublish(dossierObj))));
+							String messageText = messageObj.toJSONString();
+							String acknowlegement = JSONFactoryUtil.looseSerialize(result);
+							pq.setMessageText(messageText);
+							pq.setAcknowlegement(acknowlegement);
+							PublishQueueLocalServiceUtil.updatePublishQueue(pq);							
+						}
 						if (result.getStatus() != 200) {
 							return false;
 						}

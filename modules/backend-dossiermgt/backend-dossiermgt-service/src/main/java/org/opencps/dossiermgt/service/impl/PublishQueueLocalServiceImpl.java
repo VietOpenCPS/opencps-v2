@@ -125,8 +125,6 @@ public class PublishQueueLocalServiceImpl
 
 		Date now = new Date();
 
-		User userAction = userLocalService.getUser(context.getUserId());
-
 		PublishQueue object = null;
 
 		if (publishQueueId == 0) {
@@ -139,7 +137,7 @@ public class PublishQueueLocalServiceImpl
 			object.setGroupId(groupId);
 			object.setCreateDate(now);
 			object.setModifiedDate(now);
-			object.setUserId(userAction.getUserId());
+			object.setUserId(0l);
 
 			// Add other fields
 
@@ -156,7 +154,7 @@ public class PublishQueueLocalServiceImpl
 
 			// Add audit fields
 			object.setModifiedDate(now);
-			object.setUserId(userAction.getUserId());
+			object.setUserId(0l);
 
 			// Add other fields
 			object.setPublishType(publishType);
