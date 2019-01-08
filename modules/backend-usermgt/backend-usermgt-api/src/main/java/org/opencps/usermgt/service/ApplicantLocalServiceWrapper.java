@@ -265,6 +265,13 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 		return _applicantLocalService.getApplicant(applicantId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.usermgt.model.Applicant> getApplicantByType(
+		long groupId, String applicantIdType) {
+		return _applicantLocalService.getApplicantByType(groupId,
+			applicantIdType);
+	}
+
 	/**
 	* Returns the applicant matching the UUID and group.
 	*

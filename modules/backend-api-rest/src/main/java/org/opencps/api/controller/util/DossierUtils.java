@@ -149,6 +149,7 @@ public class DossierUtils {
 //			}
 			//Process OverDue
 			String lockState = doc.get(DossierTerm.LOCK_STATE);
+			String dossierStatus = doc.get(DossierTerm.DOSSIER_STATUS);
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
@@ -161,7 +162,7 @@ public class DossierUtils {
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			//Check lockState
-			if (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState)) {
+			if (!checkWaiting(lockState,dossierStatus)) {
 				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
 //					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 //						long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
@@ -1179,5 +1180,15 @@ public class DossierUtils {
 
 	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
 		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
+	}
+
+	private static boolean checkWaiting(String dossierStatus, String lockState) {
+		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)
+				|| (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState))
+				|| DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
+		//
+		//return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus) ?
+		//		true: (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState) ?
+		//		true: DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus) ? true : false));
 	}
 }

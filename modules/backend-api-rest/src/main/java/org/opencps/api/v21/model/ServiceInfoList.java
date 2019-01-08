@@ -27,49 +27,68 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="MenuConfig" maxOccurs="unbounded">
+ *         &lt;element name="ServiceInfo" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="menuGroup">
+ *                   &lt;element name="ProceduresCode">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="menuName">
+ *                   &lt;element name="ProceduresName">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="order" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *                   &lt;element name="menuType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *                   &lt;element name="queryParams">
+ *                   &lt;element name="Status">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="tableConfig">
+ *                   &lt;element name="FieldCode">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="buttonConfig">
+ *                   &lt;element name="BranchCode">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
- *                   &lt;element name="roles">
+ *                   &lt;element name="Dossier">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="255"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="Fee">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="255"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="ProcessingDuration">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="255"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="OutCome">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
@@ -91,41 +110,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "menuConfig"
+    "serviceInfo"
 })
-@XmlRootElement(name = "MenuConfigList")
-public class MenuConfigList {
+@XmlRootElement(name = "ServiceInfoList")
+public class ServiceInfoList {
 
-    @XmlElement(name = "MenuConfig", required = true)
-    protected List<MenuConfigList.MenuConfig> menuConfig;
+    @XmlElement(name = "ServiceInfo", required = true)
+    protected List<ServiceInfoList.ServiceInfo> serviceInfo;
 
     /**
-     * Gets the value of the menuConfig property.
+     * Gets the value of the serviceInfo property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the menuConfig property.
+     * This is why there is not a <CODE>set</CODE> method for the serviceInfo property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getMenuConfig().add(newItem);
+     *    getServiceInfo().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link MenuConfigList.MenuConfig }
+     * {@link ServiceInfoList.ServiceInfo }
      * 
      * 
      */
-    public List<MenuConfigList.MenuConfig> getMenuConfig() {
-        if (menuConfig == null) {
-            menuConfig = new ArrayList<MenuConfigList.MenuConfig>();
+    public List<ServiceInfoList.ServiceInfo> getServiceInfo() {
+        if (serviceInfo == null) {
+            serviceInfo = new ArrayList<ServiceInfoList.ServiceInfo>();
         }
-        return this.menuConfig;
+        return this.serviceInfo;
     }
 
 
@@ -139,44 +158,63 @@ public class MenuConfigList {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="menuGroup">
+     *         &lt;element name="ProceduresCode">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="menuName">
+     *         &lt;element name="ProceduresName">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="order" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
-     *         &lt;element name="menuType" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
-     *         &lt;element name="queryParams">
+     *         &lt;element name="Status">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="tableConfig">
+     *         &lt;element name="FieldCode">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="buttonConfig">
+     *         &lt;element name="BranchCode">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
-     *         &lt;element name="roles">
+     *         &lt;element name="Dossier">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="255"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="Fee">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="255"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="ProcessingDuration">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="255"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="OutCome">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
@@ -193,222 +231,251 @@ public class MenuConfigList {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "menuGroup",
-        "menuName",
-        "order",
-        "menuType",
-        "queryParams",
-        "tableConfig",
-        "buttonConfig",
-        "roles"
+        "proceduresCode",
+        "proceduresName",
+        "status",
+        "fieldCode",
+        "branchCode",
+        "dossier",
+        "fee",
+        "processingDuration",
+        "outCome"
     })
-    public static class MenuConfig {
+    public static class ServiceInfo {
 
-        @XmlElement(required = true)
-        protected String menuGroup;
-        @XmlElement(required = true)
-        protected String menuName;
-        protected Integer order;
-        protected Integer menuType;
-        @XmlElement(required = true)
-        protected String queryParams;
-        @XmlElement(required = true)
-        protected String tableConfig;
-        @XmlElement(required = true)
-        protected String buttonConfig;
-        @XmlElement(required = true)
-        protected String roles;
+        @XmlElement(name = "ProceduresCode", required = true)
+        protected String proceduresCode;
+        @XmlElement(name = "ProceduresName", required = true)
+        protected String proceduresName;
+        @XmlElement(name = "Status", required = true)
+        protected String status;
+        @XmlElement(name = "FieldCode", required = true)
+        protected String fieldCode;
+        @XmlElement(name = "BranchCode", required = true)
+        protected String branchCode;
+        @XmlElement(name = "Dossier", required = true)
+        protected String dossier;
+        @XmlElement(name = "Fee", required = true)
+        protected String fee;
+        @XmlElement(name = "ProcessingDuration", required = true)
+        protected String processingDuration;
+        @XmlElement(name = "OutCome", required = true)
+        protected String outCome;
 
         /**
-         * Gets the value of the menuGroup property.
+         * Gets the value of the proceduresCode property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getMenuGroup() {
-            return menuGroup;
+        public String getProceduresCode() {
+            return proceduresCode;
         }
 
         /**
-         * Sets the value of the menuGroup property.
+         * Sets the value of the proceduresCode property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setMenuGroup(String value) {
-            this.menuGroup = value;
+        public void setProceduresCode(String value) {
+            this.proceduresCode = value;
         }
 
         /**
-         * Gets the value of the menuName property.
+         * Gets the value of the proceduresName property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getMenuName() {
-            return menuName;
+        public String getProceduresName() {
+            return proceduresName;
         }
 
         /**
-         * Sets the value of the menuName property.
+         * Sets the value of the proceduresName property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setMenuName(String value) {
-            this.menuName = value;
+        public void setProceduresName(String value) {
+            this.proceduresName = value;
         }
 
         /**
-         * Gets the value of the order property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link Integer }
-         *     
-         */
-        public Integer getOrder() {
-            return order;
-        }
-
-        /**
-         * Sets the value of the order property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link Integer }
-         *     
-         */
-        public void setOrder(Integer value) {
-            this.order = value;
-        }
-
-        /**
-         * Gets the value of the menuType property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link Integer }
-         *     
-         */
-        public Integer getMenuType() {
-            return menuType;
-        }
-
-        /**
-         * Sets the value of the menuType property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link Integer }
-         *     
-         */
-        public void setMenuType(Integer value) {
-            this.menuType = value;
-        }
-
-        /**
-         * Gets the value of the queryParams property.
+         * Gets the value of the status property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getQueryParams() {
-            return queryParams;
+        public String getStatus() {
+            return status;
         }
 
         /**
-         * Sets the value of the queryParams property.
+         * Sets the value of the status property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setQueryParams(String value) {
-            this.queryParams = value;
+        public void setStatus(String value) {
+            this.status = value;
         }
 
         /**
-         * Gets the value of the tableConfig property.
+         * Gets the value of the fieldCode property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getTableConfig() {
-            return tableConfig;
+        public String getFieldCode() {
+            return fieldCode;
         }
 
         /**
-         * Sets the value of the tableConfig property.
+         * Sets the value of the fieldCode property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setTableConfig(String value) {
-            this.tableConfig = value;
+        public void setFieldCode(String value) {
+            this.fieldCode = value;
         }
 
         /**
-         * Gets the value of the buttonConfig property.
+         * Gets the value of the branchCode property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getButtonConfig() {
-            return buttonConfig;
+        public String getBranchCode() {
+            return branchCode;
         }
 
         /**
-         * Sets the value of the buttonConfig property.
+         * Sets the value of the branchCode property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setButtonConfig(String value) {
-            this.buttonConfig = value;
+        public void setBranchCode(String value) {
+            this.branchCode = value;
         }
 
         /**
-         * Gets the value of the roles property.
+         * Gets the value of the dossier property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getRoles() {
-            return roles;
+        public String getDossier() {
+            return dossier;
         }
 
         /**
-         * Sets the value of the roles property.
+         * Sets the value of the dossier property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setRoles(String value) {
-            this.roles = value;
+        public void setDossier(String value) {
+            this.dossier = value;
+        }
+
+        /**
+         * Gets the value of the fee property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getFee() {
+            return fee;
+        }
+
+        /**
+         * Sets the value of the fee property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setFee(String value) {
+            this.fee = value;
+        }
+
+        /**
+         * Gets the value of the processingDuration property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getProcessingDuration() {
+            return processingDuration;
+        }
+
+        /**
+         * Sets the value of the processingDuration property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setProcessingDuration(String value) {
+            this.processingDuration = value;
+        }
+
+        /**
+         * Gets the value of the outCome property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getOutCome() {
+            return outCome;
+        }
+
+        /**
+         * Sets the value of the outCome property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setOutCome(String value) {
+            this.outCome = value;
         }
 
     }

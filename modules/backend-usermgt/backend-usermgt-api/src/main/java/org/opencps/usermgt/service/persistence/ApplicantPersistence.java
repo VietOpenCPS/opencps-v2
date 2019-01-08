@@ -695,6 +695,154 @@ public interface ApplicantPersistence extends BasePersistence<Applicant> {
 	public int countByF_MAPPING_ID(long mappingUserId);
 
 	/**
+	* Returns all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @return the matching applicants
+	*/
+	public java.util.List<Applicant> findByF_GID_TYPE(long groupId,
+		String applicantIdType);
+
+	/**
+	* Returns a range of all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @return the range of matching applicants
+	*/
+	public java.util.List<Applicant> findByF_GID_TYPE(long groupId,
+		String applicantIdType, int start, int end);
+
+	/**
+	* Returns an ordered range of all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching applicants
+	*/
+	public java.util.List<Applicant> findByF_GID_TYPE(long groupId,
+		String applicantIdType, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the applicants where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching applicants
+	*/
+	public java.util.List<Applicant> findByF_GID_TYPE(long groupId,
+		String applicantIdType, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public Applicant findByF_GID_TYPE_First(long groupId,
+		String applicantIdType,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the first applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_TYPE_First(long groupId,
+		String applicantIdType,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator);
+
+	/**
+	* Returns the last applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public Applicant findByF_GID_TYPE_Last(long groupId,
+		String applicantIdType,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the last applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_TYPE_Last(long groupId,
+		String applicantIdType,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator);
+
+	/**
+	* Returns the applicants before and after the current applicant in the ordered set where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* @param applicantId the primary key of the current applicant
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next applicant
+	* @throws NoSuchApplicantException if a applicant with the primary key could not be found
+	*/
+	public Applicant[] findByF_GID_TYPE_PrevAndNext(long applicantId,
+		long groupId, String applicantIdType,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException;
+
+	/**
+	* Removes all the applicants where groupId = &#63; and applicantIdType = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	*/
+	public void removeByF_GID_TYPE(long groupId, String applicantIdType);
+
+	/**
+	* Returns the number of applicants where groupId = &#63; and applicantIdType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdType the applicant ID type
+	* @return the number of matching applicants
+	*/
+	public int countByF_GID_TYPE(long groupId, String applicantIdType);
+
+	/**
 	* Caches the applicant in the entity cache if it is enabled.
 	*
 	* @param applicant the applicant

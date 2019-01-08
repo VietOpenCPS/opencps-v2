@@ -230,6 +230,10 @@ public interface ApplicantLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Applicant getApplicant(long applicantId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Applicant> getApplicantByType(long groupId,
+		String applicantIdType);
+
 	/**
 	* Returns the applicant matching the UUID and group.
 	*
