@@ -863,6 +863,10 @@
 		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="status" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="retry" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="publishType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="publishData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="messageText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="acknowlegement" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.RegistrationImpl" table="opencps_registration">
 		<id name="registrationId" type="long">

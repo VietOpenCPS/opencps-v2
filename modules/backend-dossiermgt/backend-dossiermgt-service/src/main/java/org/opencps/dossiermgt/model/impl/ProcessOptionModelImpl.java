@@ -110,7 +110,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		TABLE_COLUMNS_MAP.put("registerBookCode", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(100) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processoption";
 	public static final String ORDER_BY_JPQL = " ORDER BY processOption.processOptionId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processoption.processOptionId ASC";

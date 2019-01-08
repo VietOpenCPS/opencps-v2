@@ -93,6 +93,13 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 				if (dossier != null && dossier.getOriginality() > 0) {
 					OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 					DossierDetailModel result = client.publishDossier(OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
+					if (client.isWriteLog()) {
+						String messageText = DossierMgtUtils.convertDossierToJSON(dossier).toJSONString();
+						String acknowlegement = JSONFactoryUtil.looseSerialize(result);
+						pq.setMessageText(messageText);
+						pq.setAcknowlegement(acknowlegement);
+						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
+					}
 					if (result.getDossierId() != null) {
 						return true;
 					}

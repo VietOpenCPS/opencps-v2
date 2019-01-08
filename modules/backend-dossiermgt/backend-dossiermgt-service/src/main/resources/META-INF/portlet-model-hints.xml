@@ -1138,6 +1138,10 @@
 		</field>
 		<field name="status" type="int" />
 		<field name="retry" type="int" />
+		<field name="publishType" type="int" />
+		<field name="publishData" type="String" />
+		<field name="messageText" type="String" />
+		<field name="acknowlegement" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.Registration">
 		<field name="uuid" type="String" />

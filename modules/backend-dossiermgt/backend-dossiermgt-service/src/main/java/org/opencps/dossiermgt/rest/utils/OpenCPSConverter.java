@@ -996,7 +996,6 @@ public class OpenCPSConverter {
 			model.setPassword(dossier.getPassword());
 		}
 		model.setOnline(String.valueOf(dossier.getOnline()));
-		
 		return model;
 	}
 	

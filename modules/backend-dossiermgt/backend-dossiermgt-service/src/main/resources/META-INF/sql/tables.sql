@@ -120,7 +120,7 @@ create table opencps_dossier (
 	modifiedDate DATE null,
 	referenceUid VARCHAR(75) null,
 	counter INTEGER,
-	registerBookCode VARCHAR(75) null,
+	registerBookCode VARCHAR(100) null,
 	registerBookName VARCHAR(75) null,
 	dossierRegister VARCHAR(75) null,
 	processNo VARCHAR(75) null,
@@ -644,7 +644,7 @@ create table opencps_processoption (
 	instructionNote TEXT null,
 	submissionNote TEXT null,
 	sampleCount LONG,
-	registerBookCode VARCHAR(75) null
+	registerBookCode VARCHAR(100) null
 );
 
 create table opencps_processsequence (
@@ -711,7 +711,11 @@ create table opencps_publish_queue (
 	dossierId LONG,
 	serverNo VARCHAR(255) null,
 	status INTEGER,
-	retry INTEGER
+	retry INTEGER,
+	publishType INTEGER,
+	publishData VARCHAR(75) null,
+	messageText VARCHAR(75) null,
+	acknowlegement VARCHAR(75) null
 );
 
 create table opencps_registration (

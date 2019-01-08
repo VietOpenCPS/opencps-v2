@@ -410,6 +410,438 @@ public interface PublishQueuePersistence extends BasePersistence<PublishQueue> {
 	public int countByG_DID_SN(long groupId, long dossierId, String serverNo);
 
 	/**
+	* Returns all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @return the matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_NST(long groupId,
+		long dossierId, String serverNo, int status);
+
+	/**
+	* Returns a range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_NST(long groupId,
+		long dossierId, String serverNo, int status, int start, int end);
+
+	/**
+	* Returns an ordered range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_NST(long groupId,
+		long dossierId, String serverNo, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_NST(long groupId,
+		long dossierId, String serverNo, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findByG_DID_SN_NST_First(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the first publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchByG_DID_SN_NST_First(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the last publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findByG_DID_SN_NST_Last(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the last publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchByG_DID_SN_NST_Last(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the publish queues before and after the current publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param publishQueueId the primary key of the current publish queue
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next publish queue
+	* @throws NoSuchPublishQueueException if a publish queue with the primary key could not be found
+	*/
+	public PublishQueue[] findByG_DID_SN_NST_PrevAndNext(long publishQueueId,
+		long groupId, long dossierId, String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Removes all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	*/
+	public void removeByG_DID_SN_NST(long groupId, long dossierId,
+		String serverNo, int status);
+
+	/**
+	* Returns the number of publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @return the number of matching publish queues
+	*/
+	public int countByG_DID_SN_NST(long groupId, long dossierId,
+		String serverNo, int status);
+
+	/**
+	* Returns all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @return the matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int status);
+
+	/**
+	* Returns a range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int status, int start, int end);
+
+	/**
+	* Returns an ordered range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findByG_DID_SN_ST_First(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the first publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchByG_DID_SN_ST_First(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the last publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findByG_DID_SN_ST_Last(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the last publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchByG_DID_SN_ST_Last(long groupId, long dossierId,
+		String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the publish queues before and after the current publish queue in the ordered set where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param publishQueueId the primary key of the current publish queue
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next publish queue
+	* @throws NoSuchPublishQueueException if a publish queue with the primary key could not be found
+	*/
+	public PublishQueue[] findByG_DID_SN_ST_PrevAndNext(long publishQueueId,
+		long groupId, long dossierId, String serverNo, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param statuses the statuses
+	* @return the matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int[] statuses);
+
+	/**
+	* Returns a range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param statuses the statuses
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int[] statuses, int start, int end);
+
+	/**
+	* Returns an ordered range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param statuses the statuses
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int[] statuses, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findByG_DID_SN_ST(long groupId,
+		long dossierId, String serverNo, int[] statuses, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	*/
+	public void removeByG_DID_SN_ST(long groupId, long dossierId,
+		String serverNo, int status);
+
+	/**
+	* Returns the number of publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param status the status
+	* @return the number of matching publish queues
+	*/
+	public int countByG_DID_SN_ST(long groupId, long dossierId,
+		String serverNo, int status);
+
+	/**
+	* Returns the number of publish queues where groupId = &#63; and dossierId = &#63; and serverNo = &#63; and status = any &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param statuses the statuses
+	* @return the number of matching publish queues
+	*/
+	public int countByG_DID_SN_ST(long groupId, long dossierId,
+		String serverNo, int[] statuses);
+
+	/**
 	* Caches the publish queue in the entity cache if it is enabled.
 	*
 	* @param publishQueue the publish queue

@@ -399,7 +399,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		
 		DossierInputModel model = OpenCPSConverter.convertDossierToInputModel(dossier);
 		model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
-		model.setOnline("true");
+//		model.setOnline("true");
 		DossierDetailModel result = client.postDossier(model);
 		if (result == null || Validator.isNull(result.getDossierId())) {
 			return false;

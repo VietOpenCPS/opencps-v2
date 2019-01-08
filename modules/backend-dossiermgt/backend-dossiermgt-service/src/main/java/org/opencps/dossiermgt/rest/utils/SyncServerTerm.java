@@ -9,4 +9,6 @@ public class SyncServerTerm {
 	public static final String CONSUMER_KEY = "consumer_key";
 	public static final String CONSUMER_SECRET = "consumer_secret";
 	public static final String CONSUMER_ADAPTER = "adapter";
+	
+	public static final String WRITE_LOG = "writeLog";
 }
