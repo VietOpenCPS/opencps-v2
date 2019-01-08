@@ -26,7 +26,16 @@ public class LGSPRestClient {
 	private String consumerKey;
 	private String consumerSecret;
 	private String consumerAdapter;
+	private boolean writeLog;
 	
+	public boolean isWriteLog() {
+		return writeLog;
+	}
+
+	public void setWriteLog(boolean writeLog) {
+		this.writeLog = writeLog;
+	}
+
 	public String getBaseUrl() {
 		return baseUrl;
 	}
@@ -56,11 +65,15 @@ public class LGSPRestClient {
 				&& configObj.has(SyncServerTerm.SERVER_URL)
 				&& configObj.has(SyncServerTerm.CONSUMER_ADAPTER)
 				) {
-			return new LGSPRestClient(
+			LGSPRestClient client = new LGSPRestClient(
 					configObj.getString(SyncServerTerm.CONSUMER_KEY), 
 					configObj.getString(SyncServerTerm.CONSUMER_SECRET),
 					configObj.getString(SyncServerTerm.SERVER_URL),
 					configObj.getString(SyncServerTerm.CONSUMER_ADAPTER));
+			if (configObj.has(SyncServerTerm.WRITE_LOG)) {
+				client.setWriteLog(configObj.getBoolean(SyncServerTerm.WRITE_LOG));
+			}
+			return client;
 		}
 		else {
 			return null;
@@ -142,7 +155,7 @@ public class LGSPRestClient {
 		MResult result = new MResult();
 		InvokeREST callRest = new InvokeREST();
 
-		OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.fetchByG_M_Y_G_D(groupId, month, year, StringPool.BLANK, StringPool.BLANK);
+		OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.fetchByG_M_Y_G_D(groupId, month, year, null, null);
 		if (statistic != null) {
 			JSONObject lgspObj = OpenCPSConverter.convertStatisticsToLGSPJSON(statistic);
 			JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",

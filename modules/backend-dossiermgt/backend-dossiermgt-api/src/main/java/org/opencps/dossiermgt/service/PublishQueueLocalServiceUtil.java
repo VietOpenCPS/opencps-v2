@@ -297,6 +297,18 @@ public class PublishQueueLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.PublishQueue updatePublishQueue(
+		long groupId, long publishQueueId, int publishType, long dossierId,
+		String serverNo, String publishData, int status, int retry,
+		String messageText, String acknowlegement,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updatePublishQueue(groupId, publishQueueId, publishType,
+			dossierId, serverNo, publishData, status, retry, messageText,
+			acknowlegement, context);
+	}
+
+	public static org.opencps.dossiermgt.model.PublishQueue updatePublishQueue(
 		long groupId, long publishQueueId, long dossierId, String serverNo,
 		int status, int retry,
 		com.liferay.portal.kernel.service.ServiceContext context)

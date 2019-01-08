@@ -264,6 +264,12 @@ public interface PublishQueueLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public PublishQueue updatePublishQueue(long groupId, long publishQueueId,
+		int publishType, long dossierId, String serverNo, String publishData,
+		int status, int retry, String messageText, String acknowlegement,
+		ServiceContext context) throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PublishQueue updatePublishQueue(long groupId, long publishQueueId,
 		long dossierId, String serverNo, int status, int retry,
 		ServiceContext context) throws PortalException;
 
