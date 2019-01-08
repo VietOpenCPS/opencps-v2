@@ -1701,10 +1701,13 @@ public class DossierManagementImpl implements DossierManagement {
 														_log.info("hoursCount: "+hoursCount);
 														//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
 														List<Holiday> holidayList = HolidayLocalServiceUtil
-																.getHolidayByGroupId(groupId);
+																.getHolidayByGroupIdAndType(groupId, 0);
+														List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
+																.getHolidayByGroupIdAndType(groupId, 1);
 
 														Date dueDateExtend = HolidayUtils.getEndDate(groupId,
-																dossier.getDueDate(), hoursCount, holidayList);
+																dossier.getDueDate(), hoursCount, holidayList,
+																extendWorkDayList);
 														_log.info("dueDateExtend: "+dueDateExtend);
 														if (dueDateExtend != null) {
 															dossier.setDueDate(dueDateExtend);

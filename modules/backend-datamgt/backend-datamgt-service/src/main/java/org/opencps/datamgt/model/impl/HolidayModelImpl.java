@@ -116,8 +116,9 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
 	public static final long HOLIDAYDATE_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
+	public static final long HOLIDAYTYPE_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.datamgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.datamgt.model.Holiday"));
 
@@ -433,7 +434,19 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 
 	@Override
 	public void setHolidayType(int holidayType) {
+		_columnBitmask |= HOLIDAYTYPE_COLUMN_BITMASK;
+
+		if (!_setOriginalHolidayType) {
+			_setOriginalHolidayType = true;
+
+			_originalHolidayType = _holidayType;
+		}
+
 		_holidayType = holidayType;
+	}
+
+	public int getOriginalHolidayType() {
+		return _originalHolidayType;
 	}
 
 	@Override
@@ -557,6 +570,10 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 		holidayModelImpl._setModifiedDate = false;
 
 		holidayModelImpl._originalHolidayDate = holidayModelImpl._holidayDate;
+
+		holidayModelImpl._originalHolidayType = holidayModelImpl._holidayType;
+
+		holidayModelImpl._setOriginalHolidayType = false;
 
 		holidayModelImpl._columnBitmask = 0;
 	}
@@ -740,6 +757,8 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 	private Date _originalHolidayDate;
 	private String _description;
 	private int _holidayType;
+	private int _originalHolidayType;
+	private boolean _setOriginalHolidayType;
 	private long _columnBitmask;
 	private Holiday _escapedModel;
 }

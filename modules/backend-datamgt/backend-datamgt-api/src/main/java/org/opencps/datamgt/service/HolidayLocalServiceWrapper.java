@@ -334,6 +334,13 @@ public class HolidayLocalServiceWrapper implements HolidayLocalService,
 		return _holidayLocalService.getHolidayByGroupId(groupId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.datamgt.model.Holiday> getHolidayByGroupIdAndType(
+		long groupId, int holidayType) {
+		return _holidayLocalService.getHolidayByGroupIdAndType(groupId,
+			holidayType);
+	}
+
 	/**
 	* Returns the holiday matching the UUID and group.
 	*

@@ -711,6 +711,184 @@ public class HolidayUtil {
 	}
 
 	/**
+	* Returns all the holidaies where groupId = &#63; and holidayType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @return the matching holidaies
+	*/
+	public static List<Holiday> findByF_GID_TYPE(long groupId, int holidayType) {
+		return getPersistence().findByF_GID_TYPE(groupId, holidayType);
+	}
+
+	/**
+	* Returns a range of all the holidaies where groupId = &#63; and holidayType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link HolidayModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param start the lower bound of the range of holidaies
+	* @param end the upper bound of the range of holidaies (not inclusive)
+	* @return the range of matching holidaies
+	*/
+	public static List<Holiday> findByF_GID_TYPE(long groupId, int holidayType,
+		int start, int end) {
+		return getPersistence()
+				   .findByF_GID_TYPE(groupId, holidayType, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the holidaies where groupId = &#63; and holidayType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link HolidayModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param start the lower bound of the range of holidaies
+	* @param end the upper bound of the range of holidaies (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching holidaies
+	*/
+	public static List<Holiday> findByF_GID_TYPE(long groupId, int holidayType,
+		int start, int end, OrderByComparator<Holiday> orderByComparator) {
+		return getPersistence()
+				   .findByF_GID_TYPE(groupId, holidayType, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the holidaies where groupId = &#63; and holidayType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link HolidayModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param start the lower bound of the range of holidaies
+	* @param end the upper bound of the range of holidaies (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching holidaies
+	*/
+	public static List<Holiday> findByF_GID_TYPE(long groupId, int holidayType,
+		int start, int end, OrderByComparator<Holiday> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_GID_TYPE(groupId, holidayType, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first holiday in the ordered set where groupId = &#63; and holidayType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching holiday
+	* @throws NoSuchHolidayException if a matching holiday could not be found
+	*/
+	public static Holiday findByF_GID_TYPE_First(long groupId, int holidayType,
+		OrderByComparator<Holiday> orderByComparator)
+		throws org.opencps.datamgt.exception.NoSuchHolidayException {
+		return getPersistence()
+				   .findByF_GID_TYPE_First(groupId, holidayType,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first holiday in the ordered set where groupId = &#63; and holidayType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching holiday, or <code>null</code> if a matching holiday could not be found
+	*/
+	public static Holiday fetchByF_GID_TYPE_First(long groupId,
+		int holidayType, OrderByComparator<Holiday> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_GID_TYPE_First(groupId, holidayType,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last holiday in the ordered set where groupId = &#63; and holidayType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching holiday
+	* @throws NoSuchHolidayException if a matching holiday could not be found
+	*/
+	public static Holiday findByF_GID_TYPE_Last(long groupId, int holidayType,
+		OrderByComparator<Holiday> orderByComparator)
+		throws org.opencps.datamgt.exception.NoSuchHolidayException {
+		return getPersistence()
+				   .findByF_GID_TYPE_Last(groupId, holidayType,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last holiday in the ordered set where groupId = &#63; and holidayType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching holiday, or <code>null</code> if a matching holiday could not be found
+	*/
+	public static Holiday fetchByF_GID_TYPE_Last(long groupId, int holidayType,
+		OrderByComparator<Holiday> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_GID_TYPE_Last(groupId, holidayType,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the holidaies before and after the current holiday in the ordered set where groupId = &#63; and holidayType = &#63;.
+	*
+	* @param holidayId the primary key of the current holiday
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next holiday
+	* @throws NoSuchHolidayException if a holiday with the primary key could not be found
+	*/
+	public static Holiday[] findByF_GID_TYPE_PrevAndNext(long holidayId,
+		long groupId, int holidayType,
+		OrderByComparator<Holiday> orderByComparator)
+		throws org.opencps.datamgt.exception.NoSuchHolidayException {
+		return getPersistence()
+				   .findByF_GID_TYPE_PrevAndNext(holidayId, groupId,
+			holidayType, orderByComparator);
+	}
+
+	/**
+	* Removes all the holidaies where groupId = &#63; and holidayType = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	*/
+	public static void removeByF_GID_TYPE(long groupId, int holidayType) {
+		getPersistence().removeByF_GID_TYPE(groupId, holidayType);
+	}
+
+	/**
+	* Returns the number of holidaies where groupId = &#63; and holidayType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @return the number of matching holidaies
+	*/
+	public static int countByF_GID_TYPE(long groupId, int holidayType) {
+		return getPersistence().countByF_GID_TYPE(groupId, holidayType);
+	}
+
+	/**
 	* Caches the holiday in the entity cache if it is enabled.
 	*
 	* @param holiday the holiday
