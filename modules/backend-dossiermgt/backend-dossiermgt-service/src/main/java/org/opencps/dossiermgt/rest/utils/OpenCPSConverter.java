@@ -1,16 +1,24 @@
 package org.opencps.dossiermgt.rest.utils;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1267,6 +1275,22 @@ public class OpenCPSConverter {
 			attachmentObj.put("AttachmentName", df.getDisplayName());
 			attachmentObj.put("IsDeleted", df.getRemoved());
 			attachmentObj.put("IsVerified", true);
+			if (df.getFileEntryId() > 0) {
+				FileEntry fileEntry;
+				try {
+					fileEntry = DLAppLocalServiceUtil.getFileEntry(df.getFileEntryId());
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+					byte[] bytes = Base64.getEncoder().encode(Files.readAllBytes(file.toPath()));
+					attachmentObj.put("Base64", new String(bytes));
+				} catch (PortalException e) {
+					_log.error(e);
+				} catch (IOException e) {
+					_log.error(e);
+				}
+
+			}
+			attachmentsArr.put(attachmentObj);
 		}
 		
 		result.put("Attachments", attachmentsArr);
@@ -1284,6 +1308,8 @@ public class OpenCPSConverter {
 				if (Validator.isNotNull(paymentFile.getPaymentAmount())) {
 					docFeeObj.put("Price", paymentFile.getPaymentAmount());				
 				}
+				
+				docFeesArr.put(docFeeObj);
 			}
 		}
 		catch (Exception e) {
