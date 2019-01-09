@@ -87,7 +87,10 @@ public class CommentManagementImpl implements CommentManagement {
 		InputStream inputStream = null;
 
 		DataHandler dataHandler = attachment.getDataHandler();
-
+		List<String> lstSecureFiles = new ArrayList<>();
+		lstSecureFiles.add("text/x-sh");
+		lstSecureFiles.add("application/macbinary");
+		lstSecureFiles.add("application/x-msdownload");
 		try {
 
 			long userId = serviceContext.getUserId();
@@ -95,7 +98,9 @@ public class CommentManagementImpl implements CommentManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			inputStream = dataHandler.getInputStream();
-
+			if (lstSecureFiles.contains(fileType)) {
+				return Response.status(405).entity(StringPool.BLANK).build();
+			}
 			Comment comment = CommentLocalServiceUtil.addComment(userId, groupId, className, classPK, fullname, email,
 					parent, StringPool.BLANK, fileSize, inputStream, fileName, fileType, 0, pings, opinion, serviceContext);
 
