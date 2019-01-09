@@ -775,6 +775,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TOP, top);
 			params.put(DossierTerm.YEAR, year);
 			params.put(DossierTerm.MONTH, month);
+			if (query.getDay() != 0) {
+				params.put(DossierTerm.DAY, query.getDay());
+			}
 			backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 			if (auth2.isAdmin(serviceContext, "admin")) {
 				
