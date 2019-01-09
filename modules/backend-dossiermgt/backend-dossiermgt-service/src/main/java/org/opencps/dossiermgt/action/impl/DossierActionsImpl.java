@@ -4111,8 +4111,8 @@ public class DossierActionsImpl implements DossierActions {
 //			}
 		}
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT &&
-				(DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)
-				|| DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus))
+				((DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
 				&& dossier.getReceiveDate() == null) {
 //			try {
 //				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
