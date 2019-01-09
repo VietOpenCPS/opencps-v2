@@ -261,7 +261,10 @@ public class RestfulController {
 
 			if (userId > 0 && userId != 20103) {
 
-				AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
+//				AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
+//						CompanyConstants.AUTH_TYPE_EA);
+				//Remember me false
+				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
 						CompanyConstants.AUTH_TYPE_EA);
 
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
