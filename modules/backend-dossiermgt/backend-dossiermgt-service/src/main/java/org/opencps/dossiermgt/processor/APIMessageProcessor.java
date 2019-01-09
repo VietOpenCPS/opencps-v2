@@ -420,6 +420,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		DossierInputModel model = OpenCPSConverter.convertDossierToInputModel(dossier);
 		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
 			model.setOriginality(DossierTerm.ORIGINALITY_HSLT);
+//			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
 		}
 		else {
 			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);

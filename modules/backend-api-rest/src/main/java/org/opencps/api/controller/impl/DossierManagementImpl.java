@@ -329,10 +329,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (month != 0) {
 				params.put(DossierTerm.MONTH, month);
 			}
-			_log.info("Day: " + query.getDay());
-			if (query.getDay() != 0) {
-				params.put(DossierTerm.DAY, query.getDay());
-			}
+			params.put(DossierTerm.DAY, query.getDay());
 			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
@@ -775,9 +772,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TOP, top);
 			params.put(DossierTerm.YEAR, year);
 			params.put(DossierTerm.MONTH, month);
-			if (query.getDay() != 0) {
-				params.put(DossierTerm.DAY, query.getDay());
-			}
+			params.put(DossierTerm.DAY, query.getDay());
 			backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 			if (auth2.isAdmin(serviceContext, "admin")) {
 				
@@ -4513,5 +4508,41 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}			
+	}
+
+	@Override
+	public Response reindexDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			Indexer<Dossier> indexer = IndexerRegistryUtil
+					.nullSafeGetIndexer(Dossier.class);
+			indexer.reindex(dossier);
+			
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
 	}
 }

@@ -2729,7 +2729,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		} else {
 //			_log.info("START originality: "+originality);
 			TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.ORIGINALLITY,
-					String.valueOf(DossierTerm.ORIGINALITY_PUBLISH), String.valueOf(DossierTerm.ORIGINALITY_MOTCUA), true,
+					String.valueOf(DossierTerm.ORIGINALITY_PUBLISH), String.valueOf(DossierTerm.ORIGINALITY_HSLT), true,
 					true);
 			booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 		}
