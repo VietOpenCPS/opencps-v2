@@ -957,7 +957,12 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "application/pdf");
+				if ("word".equals(reportType)) {
+					responseBuilder.header("Content-Type", "application/msword");
+				}
+				else {
+					responseBuilder.header("Content-Type", "application/pdf");					
+				}
 
 				return responseBuilder.build();
 
