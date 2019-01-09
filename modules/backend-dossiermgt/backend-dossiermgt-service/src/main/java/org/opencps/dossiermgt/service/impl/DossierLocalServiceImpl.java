@@ -1860,6 +1860,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
+		int day = GetterUtil.getInteger(params.get(DossierTerm.DAY));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 
@@ -1932,7 +1933,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, booleanCommon);
+				originDossierId, time, register, day, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -1966,6 +1967,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
+		int day = GetterUtil.getInteger(params.get(DossierTerm.DAY));
 
 		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 		String fromReceiveDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVEDATE));
@@ -2034,7 +2036,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, booleanCommon);
+				originDossierId, time, register, day, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2139,7 +2141,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
-			String toStatisticDate, Integer originDossierId, String time, String register, BooleanQuery booleanQuery)
+			String toStatisticDate, Integer originDossierId, String time, String register, int day, BooleanQuery booleanQuery)
 			throws ParseException {
 
 
@@ -3084,6 +3086,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}		
+		if (day > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(day));
+			query.addFields(DossierTerm.DAY_DOSSIER);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
+		}
 		return booleanQuery;
 	}
 

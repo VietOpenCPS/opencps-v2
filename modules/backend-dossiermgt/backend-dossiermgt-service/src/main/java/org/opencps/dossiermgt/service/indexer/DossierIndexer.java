@@ -284,14 +284,17 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			//Index month, year using search statistic
 			int yearDossier = 0;
 			int monthDossier = 0;
+			int dayDossier = 0;
 			if (Validator.isNotNull(object.getReceiveDate())) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(object.getReceiveDate());
 				yearDossier = cal.get(Calendar.YEAR);
 				monthDossier = cal.get(Calendar.MONTH) + 1;
+				dayDossier = cal.get(Calendar.DAY_OF_MONTH);
 			}
 			document.addNumberSortable(DossierTerm.YEAR_DOSSIER, yearDossier);
 			document.addNumberSortable(DossierTerm.MONTH_DOSSIER, monthDossier);
+			document.addNumberSortable(DossierTerm.DAY_DOSSIER, dayDossier);
 //			_log.info("yearDossier: "+yearDossier);
 //			_log.info("monthDossier: "+monthDossier);
 
