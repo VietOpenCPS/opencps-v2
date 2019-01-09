@@ -165,6 +165,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
 
 			// DLFolderUtil.setFilePermissions(fileEntry);
+			 DLFolderUtil.removeGuestPermissions(fileEntry);
 
 			comment.setFileEntryId(fileEntry.getFileEntryId());
 
