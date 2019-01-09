@@ -99,7 +99,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							: StringPool.BLANK;
 				}
 
-				String content = HtmlUtil.escape(model.getActionNote());
+				String content = Validator.isNotNull(model.getActionNote()) ? HtmlUtil.escape(model.getActionNote()) : StringPool.BLANK;
 
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 
