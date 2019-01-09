@@ -243,4 +243,5 @@ public class DossierTerm {
 
 	public static final String PROCESS_NO = "processNo";
 	public static final String REGISTER = "register";
+	public static final int ORIGINALITY_HSLT = 4;
 }
