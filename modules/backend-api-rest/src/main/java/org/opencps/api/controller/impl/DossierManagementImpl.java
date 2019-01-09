@@ -329,6 +329,10 @@ public class DossierManagementImpl implements DossierManagement {
 			if (month != 0) {
 				params.put(DossierTerm.MONTH, month);
 			}
+			_log.info("Day: " + query.getDay());
+			if (query.getDay() != 0) {
+				params.put(DossierTerm.DAY, query.getDay());
+			}
 			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);

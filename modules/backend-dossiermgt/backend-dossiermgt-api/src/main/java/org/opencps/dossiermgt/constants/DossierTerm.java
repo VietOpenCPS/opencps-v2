@@ -71,6 +71,7 @@ public class DossierTerm {
 	public static final String SERVER_NO = "serverNo";
 	public static final String YEAR_DOSSIER = "yearDossier";
 	public static final String MONTH_DOSSIER = "monthDossier";
+	public static final String DAY_DOSSIER = "dayDossier";
 	public static final String LAST_ACTION_DATE = "lastActionDate";
 	public static final String LAST_ACTION_CODE = "lastActionCode";
 	public static final String LAST_ACTION_NAME = "lastActionName";
@@ -90,6 +91,7 @@ public class DossierTerm {
 	public static final String TEMPLATE = "template";
 	public static final String YEAR = "year";
 	public static final String MONTH = "month";
+	public static final String DAY = "day";
 	public static final String OWNER = "owner";
 	public static final String FOLLOW = "follow";
 	public static final String STEP = "step";
