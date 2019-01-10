@@ -1244,6 +1244,7 @@ public class OpenCPSConverter {
 		}
 		else {
 			result.put("IsReturned", false);
+			result.put("ReturnedDate", convertToUTCDate(new Date(model.getDueDate())));
 		}
 		result.put("ReturnNote", StringPool.BLANK);
 		if (model.getViaPostal().equals("0")) {
@@ -1271,7 +1272,7 @@ public class OpenCPSConverter {
 		
 		for (DossierFile df : lstFiles) {
 			JSONObject attachmentObj = JSONFactoryUtil.createJSONObject();
-			attachmentObj.put("Attachmentld", df.getDossierFileId());
+			attachmentObj.put("AttachmentId", df.getDossierFileId());
 			attachmentObj.put("AttachmentName", df.getDisplayName());
 			attachmentObj.put("IsDeleted", df.getRemoved());
 			attachmentObj.put("IsVerified", true);
@@ -1315,6 +1316,8 @@ public class OpenCPSConverter {
 		catch (Exception e) {
 		}
 		result.put("DocFees", docFeesArr);
+		result.put("OrganInchargeIdLevel1", model.getGovAgencyCode());
+		result.put("OrganInchargeName", model.getGovAgencyName());
 		return result;
 	}
 	
@@ -1444,11 +1447,13 @@ public class OpenCPSConverter {
 		obj.put("TotalSolved", statistic.getDoneCount());
 		obj.put("SolvedInTime", statistic.getOntimeCount());
 		obj.put("SolvedInTimePercent", statistic.getOntimePercentage());
+		obj.put("SolvedLatePercent", 1.0 * statistic.getOvertimeCount() / statistic.getReleaseCount());
 		obj.put("SolvedLate", statistic.getOverdueCount());
-		obj.put("Pending", statistic.getProcessCount());
+		obj.put("TotalPending", statistic.getWaitingCount());
+		obj.put("Pending", statistic.getUndueCount());
 		obj.put("PendingLate", statistic.getOverdueCount());
-		obj.put("PendingLatePercent", 0.0);
-		obj.put("PendingPercent", 0.0);
+		obj.put("PendingLatePercent", 1.0 * statistic.getOverdueCount() / statistic.getProcessingCount());
+		obj.put("PendingPercent", 1.0 * statistic.getUndueCount() / statistic.getProcessingCount());
 		obj.put("Note", StringPool.BLANK);
 		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
 		obj.put("OrganizationInchargeName", StringPool.BLANK);
