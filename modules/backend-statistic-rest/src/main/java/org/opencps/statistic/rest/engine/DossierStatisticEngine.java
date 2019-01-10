@@ -244,16 +244,14 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			int lastYear = LocalDate.now().getYear() - 1;
 			boolean flagLastYear = true;
 			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-				if (site.getGroupId() == 75437 && lastMonth == 10) {
-					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
-					if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
-						flagLastYear = false;
-					}
-					if (flagLastYear) {
-						processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-								engineUpdateAction, serviceDomainResponse);
-					}
+				List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
+						.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
+				if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
+					flagLastYear = false;
+				}
+				if (flagLastYear) {
+					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+							engineUpdateAction, serviceDomainResponse);
 				}
 			}
 
