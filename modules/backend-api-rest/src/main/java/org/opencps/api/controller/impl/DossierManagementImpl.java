@@ -1072,6 +1072,8 @@ public class DossierManagementImpl implements DossierManagement {
 				if (serviceProcess != null ) {
 					durationCount = serviceProcess.getDurationCount();
 					durationUnit = serviceProcess.getDurationUnit();
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
 				}
 
 				Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
@@ -1080,6 +1082,11 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setOnline(online);
 				if (Validator.isNotNull(input.getDossierName()))
 					dossier.setDossierName(input.getDossierName());
+				if (serviceProcess != null) {
+					dossier.setProcessNo(serviceProcess.getProcessNo());
+				}
+				
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
@@ -1117,6 +1124,8 @@ public class DossierManagementImpl implements DossierManagement {
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());
 				}
+				
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 //			_log.info("Dossier created: " + dossier);
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
