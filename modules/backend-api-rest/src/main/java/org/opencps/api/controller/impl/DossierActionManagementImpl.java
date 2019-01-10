@@ -155,7 +155,8 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
 								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
-									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
+									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
+											dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
 											dueDateTimeStamp, groupId, true);
 									if (Validator.isNotNull(strOverDue)) {
 										if (subTimeStamp > 0) {
@@ -172,8 +173,9 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							} else {
 								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp,
-											dueDateTimeStamp, groupId, true);
+									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
+											dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp, dueDateTimeStamp,
+											groupId, true);
 									if (Validator.isNotNull(strOverDue)) {
 										if (subTimeStamp > 0) {
 											result.setStepOverdue("Quá hạn " + strOverDue);

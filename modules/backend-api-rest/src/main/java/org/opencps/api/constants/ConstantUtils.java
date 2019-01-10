@@ -49,6 +49,15 @@ public class ConstantUtils {
 	public static final String OVER_DUE = "overdue";
 	public static final String DELAY = "deplay";
 	public static final String COMMNG = "coming";
+
+	//Constant export
+	public static final String EXPORT_DICT_COLLECTION = "dictCollection";
+	public static final String EXPORT_SERVICE_INFO = "serviceInfo";
+	public static final String EXPORT_APPLICANT = "applicant";
+	public static final String EXPORT_CITIZEN = "citizen";
+	public static final String EXPORT_BUSINESS = "business";
+	public static final String EXPORT_ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	public static final String DEST_DIRECTORY_EXPORT = "exported";
 	//
 	public static final String HTML_NEW_LINE = "<br/>";
 	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";

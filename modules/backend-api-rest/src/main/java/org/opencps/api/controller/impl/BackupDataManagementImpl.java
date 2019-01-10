@@ -1,19 +1,18 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,17 +22,43 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.comparator.PathFileComparator;
 import org.opencps.api.backupdata.model.DataInputModel;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.BackupDataManagement;
-import org.opencps.api.controller.util.ImportZipFileUtils;
 import org.opencps.api.controller.util.ReadXMLFileUtils;
+import org.opencps.api.v21.model.BusinessList;
+import org.opencps.api.v21.model.BusinessList.Business;
 import org.opencps.api.v21.model.CitizenList;
 import org.opencps.api.v21.model.CitizenList.Citizen;
+import org.opencps.api.v21.model.Configs;
+import org.opencps.api.v21.model.FileTemplates;
+import org.opencps.api.v21.model.FileTemplates.FileTemplate;
+import org.opencps.api.v21.model.Items;
+import org.opencps.api.v21.model.Processes;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
+import org.opencps.dossiermgt.action.util.AccentUtils;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
@@ -50,7 +75,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		BackendAuth auth = new BackendAuthImpl();
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		//long userId = user.getUserId();
 		try {
 
@@ -63,10 +88,12 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 
 			String dataCode = input.getDataCode();
 			String dataType = input.getDataType();
+
 			if (Validator.isNotNull(dataCode)) {
-				if (dataCode.equals("applicant")) {
-					if ("citizen".equals(dataType)) {
-						List<Applicant> appList = ApplicantLocalServiceUtil.getApplicantByType(0l, dataCode);
+				/** Export citizen and business **/
+				if (dataCode.equals(ConstantUtils.EXPORT_APPLICANT)) {
+					if (ConstantUtils.EXPORT_CITIZEN.equals(dataType)) {
+						List<Applicant> appList = ApplicantLocalServiceUtil.getApplicantByType(0l, dataType);
 						if (appList != null && appList.size() > 0) {
 							CitizenList citizenList = new CitizenList();
 							for (Applicant applicant : appList) {
@@ -116,101 +143,290 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 
 							return responseBuilder.build();
 						}
+					} else if(ConstantUtils.EXPORT_BUSINESS.equals(dataType)){
+						List<Applicant> appList = ApplicantLocalServiceUtil.getApplicantByType(0l, dataType);
+						if (appList != null && appList.size() > 0) {
+							BusinessList businessList = new BusinessList();
+							for (Applicant applicant : appList) {
+								Business business = new Business();
+								
+								business.setMsdn(applicant.getApplicantIdNo());
+								business.setEnterpriseId((int) applicant.getApplicantId());
+								business.setEnterpriseCode(applicant.getApplicantIdNo());
+								business.setEnterpriseGdtCode(applicant.getApplicantIdNo());
+								business.setEnterpriseTypeId(0);
+								business.setName(applicant.getApplicantName());
+								business.setShortName(applicant.getApplicantName());
+								business.setNameF(AccentUtils.removeAccent(applicant.getApplicantName()));
+								business.setFoundingDate(APIDateTimeUtils.convertDateToString(
+										applicant.getApplicantIdDate(), APIDateTimeUtils._NSW_PATTERN));
+								business.setEnterpriseStatus(1);
+								business.setLegalName(StringPool.BLANK);
+								business.setSiteId(0);
+								business.setSubunitParentEntId(0);
+								business.setHOAddress(StringPool.BLANK);
+								business.setBusinessActivity(StringPool.BLANK);
+								business.setEmail(applicant.getContactEmail());
+								business.setWebsite(StringPool.BLANK);
+								business.setMobile(applicant.getContactTelNo());
+								business.setPhone(StringPool.BLANK);
+								business.setFax(StringPool.BLANK);
+								//
+								businessList.getBusiness().add(business);
+							}
+							//Method which uses JAXB to convert object to XML
+							File file = ReadXMLFileUtils.convertBusinessToXML(businessList);
+							//
+							ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+							responseBuilder.header("Content-Disposition",
+									"attachment; filename=\"" + file.getName() + "\"");
+							responseBuilder.header("Content-Type", "application/xml");
+
+							return responseBuilder.build();
+						}
 					}
-					
+				}
+
+				/** Export dictCollection **/
+				if (dataCode.equals(ConstantUtils.EXPORT_DICT_COLLECTION)) {
+					_log.info("START EXPORT DICT====");
+					org.opencps.api.v21.model.DictCollection dictCollection = new org.opencps.api.v21.model.DictCollection();
+					if (Validator.isNotNull(dataType)) {
+						DictCollection dict = null;
+						if (ConstantUtils.EXPORT_ADMINISTRATIVE_REGION.equals(dataType)) {
+							dict = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(dataType, 0l);
+						} else {
+							dict = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(dataType, groupId);
+						}
+						if (dict != null) {
+							List<DictItem> dictItemList = DictItemLocalServiceUtil
+									.findByF_dictCollectionId(dict.getDictCollectionId());
+							if (dictItemList != null && dictItemList.size() > 0) {
+								Items itemList = new Items();
+								for (DictItem dictItem : dictItemList) {
+									org.opencps.api.v21.model.Items.DictItem item = new org.opencps.api.v21.model.Items.DictItem();
+									//
+									item.setItemCode(dictItem.getItemCode());
+									item.setItemName(dictItem.getItemName());
+									item.setItemNameEN(dictItem.getItemNameEN());
+									item.setItemDescription(dictItem.getItemDescription());
+									DictItem itemParent = DictItemLocalServiceUtil.fetchDictItem(dictItem.getParentItemId());
+									if (itemParent != null) {
+										item.setParent(itemParent.getItemCode());
+									}
+									item.setLevel(dictItem.getLevel());
+									item.setSibling(dictItem.getSibling());
+									item.setMetadata(dictItem.getMetaData());
+									//
+									itemList.getDictItem().add(item);
+								}
+								//
+								dictCollection.setItems(itemList);
+								dictCollection.setCollectionCode(dataType);
+								dictCollection.setCollectionName(dict.getCollectionName());
+								dictCollection.setCollectionNameEN(dict.getCollectionNameEN());
+								dictCollection.setDescription(dict.getDescription());
+								dictCollection.setStatus(dict.getStatus());
+							}
+						}
+					}
+
+					_log.info("START EXPORT DICT====");
+					//Method which uses JAXB to convert object to XML
+					File file = ReadXMLFileUtils.convertDictCollectionToXML(dictCollection, dataType);
+					//
+					_log.info("file: "+file.getAbsolutePath());
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+					responseBuilder.header("Content-Disposition",
+							"attachment; filename=\"" + file.getName() + "\"");
+					responseBuilder.header("Content-Type", "application/xml");
+
+					return responseBuilder.build();
+				}
+
+				/** Export ServiceInfo **/
+				if (dataCode.equals(ConstantUtils.EXPORT_SERVICE_INFO)) {
+					_log.info("START EXPORT DICT====");
+					List<ServiceInfo> serviceList = ServiceInfoLocalServiceUtil.findByGroup(groupId);
+					if (serviceList != null && serviceList.size() > 0) {
+						String pathFolder = ConstantUtils.DEST_DIRECTORY_EXPORT + StringPool.FORWARD_SLASH + "services";
+						File fileOld = new File(pathFolder);
+						_log.info("fileOld: "+fileOld);
+						if (fileOld.exists()) {
+							boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
+							_log.info("LamTV_Delete DONE: "+flag);
+						}
+						//Create new folder
+						File newFolder = new File(pathFolder);
+						if (!newFolder.exists()) {
+							newFolder.mkdirs();
+						}
+						//
+						DossierFileActions action = new DossierFileActionsImpl();
+						
+						for (ServiceInfo serviceInfo : serviceList) {
+							org.opencps.api.v21.model.ServiceInfo serviceInfoExport = new org.opencps.api.v21.model.ServiceInfo();
+							//
+							serviceInfoExport.setServiceCode(serviceInfo.getServiceCode());
+							serviceInfoExport.setServiceName(serviceInfo.getServiceName());
+							serviceInfoExport.setProcessText(serviceInfo.getProcessText());
+							serviceInfoExport.setMethodText(serviceInfo.getMethodText());
+							serviceInfoExport.setDossierText(serviceInfo.getDossierText());
+							serviceInfoExport.setConditionText(serviceInfo.getConditionText());
+							serviceInfoExport.setDurationText(serviceInfo.getDurationText());
+							serviceInfoExport.setApplicantText(serviceInfo.getApplicantText());
+							serviceInfoExport.setResultText(serviceInfo.getResultText());
+							serviceInfoExport.setRegularText(serviceInfo.getRegularText());
+							serviceInfoExport.setFeeText(serviceInfo.getFeeText());
+							serviceInfoExport.setAdministrationCode(serviceInfo.getAdministrationCode());
+							serviceInfoExport.setAdministrationName(serviceInfo.getAdministrationName());
+							serviceInfoExport.setDomainCode(serviceInfo.getDomainCode());
+							serviceInfoExport.setDomainName(serviceInfo.getDomainName());
+							serviceInfoExport.setMaxLevel(serviceInfo.getMaxLevel());
+							// Process ServiceFileTemplate
+							long serviceInfoId = serviceInfo.getServiceInfoId();
+							if (serviceInfoId > 0) {
+								List<ServiceFileTemplate> fileServiceList = ServiceFileTemplateLocalServiceUtil
+										.getByServiceInfoId(serviceInfoId);
+								if (fileServiceList != null && fileServiceList.size() > 0) {
+									FileTemplates fileTempList = new FileTemplates();
+									for (ServiceFileTemplate serviceFileTemplate : fileServiceList) {
+										FileTemplate fileTemp = new FileTemplate();
+										//
+										fileTemp.setFileTemplateNo(serviceFileTemplate.getFileTemplateNo());
+										fileTemp.setTemplateName(serviceFileTemplate.getTemplateName());
+										//Get file name
+										long fileEntryId = serviceFileTemplate.getFileEntryId();
+										if (fileEntryId > 0) {
+											DLFileEntry fileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+											if (fileEntry != null) {
+												fileTemp.setFilename(fileEntry.getFileName());
+											}
+										}
+										//add FileTemplate in list
+										fileTempList.getFileTemplate().add(fileTemp);
+									}
+									// add FileTemplates to serviceInfo
+									serviceInfoExport.setFileTemplates(fileTempList);
+								} else {
+									FileTemplate fileTemp = new FileTemplate();
+									fileTemp.setFileTemplateNo(StringPool.BLANK);
+									fileTemp.setTemplateName(StringPool.BLANK);
+									fileTemp.setFilename(StringPool.BLANK);
+								}
+								//
+								List<ServiceConfig> serviceConfigList = ServiceConfigLocalServiceUtil
+										.getByServiceInfo(groupId, serviceInfoId);
+								if (serviceConfigList != null && serviceConfigList.size() > 0) {
+									Configs configList = new Configs();
+									for (ServiceConfig serviceConfig : serviceConfigList) {
+										org.opencps.api.v21.model.Configs.ServiceConfig config = new org.opencps.api.v21.model.Configs.ServiceConfig();
+										//
+										config.setGovAgencyCode(serviceConfig.getGovAgencyCode());
+										config.setGovAgencyName(serviceConfig.getGovAgencyName());
+										config.setServiceInstruction(serviceConfig.getServiceInstruction());
+										config.setServiceLevel(serviceConfig.getServiceLevel());
+										config.setServiceUrl(serviceConfig.getServiceUrl());
+										config.setForCitizen(serviceConfig.getForCitizen());
+										config.setForBusiness(serviceConfig.getForBusiness());
+										config.setPostalService(serviceConfig.getPostService());
+										config.setRegistration(serviceConfig.getRegistration());
+										//Get Process Option
+										long serviceConfigId = serviceConfig.getServiceConfigId();
+										if (serviceConfigId > 0) {
+											List<ProcessOption> processOptionList = ProcessOptionLocalServiceUtil
+													.getByServiceProcessId(serviceConfigId);
+											if (processOptionList != null && processOptionList.size() > 0) {
+												Processes processes = new Processes();
+												for (ProcessOption processOption : processOptionList) {
+													org.opencps.api.v21.model.Processes.ProcessOption option = new org.opencps.api.v21.model.Processes.ProcessOption();
+													//
+													option.setOptionName(processOption.getOptionName());
+													option.setSeqOrder(processOption.getOptionOrder());
+													option.setSampleCount((int) processOption.getSampleCount());
+													option.setAutoSelect(processOption.getAutoSelect());
+													option.setInstructionNote(processOption.getInstructionNote());
+													option.setSubmissionNote(processOption.getSubmissionNote());
+													//Get templateNo
+													DossierTemplate template = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
+													if (template != null) {
+														option.setTemplateNo(template.getTemplateNo());
+														option.setTemplateName(template.getTemplateName());
+													}
+													// Get ServiceProcess
+													ServiceProcess process = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+													if (process != null) {
+														option.setProcessNo(process.getProcessNo());
+														option.setProcessName(process.getProcessName());
+													}
+													option.setRegisterBookCode(processOption.getRegisterBookCode());
+													// Add option to list
+													processes.getProcessOption().add(option);
+												}
+												// Add list option to serviceConfig
+												config.setProcesses(processes);
+											}
+										}
+										//add serviceConfig in list
+										configList.getServiceConfig().add(config);
+									}
+									// add FileTemplates to serviceInfo
+									serviceInfoExport.setConfigs(configList);
+								}
+							}
+							// Create file in new folder
+							ReadXMLFileUtils.convertServiceInfoToXML(serviceInfoExport,
+									serviceInfo.getServiceCode(), newFolder.getAbsolutePath());
+							//_log.info("newFolder: "+newFolder.getAbsolutePath());
+//							_log.info("file: "+file.getPath());
+//							String pathFileName ="/opt/phutho/tomcat-9.0.6/"+ pathFolder + "/" + file.getName();
+//							_log.info("pathFileName: "+pathFileName);
+//							File dir = new File(pathFolder);
+//							if (!dir.exists()) {
+//								dir.mkdirs();
+//							}
+//							action.copyFile(file.getPath(), pathFileName);
+						}
+						// zip file exported.zip
+//						int endIndex = 0;
+//						int midleIndex = 0;
+//						if (Validator.isNotNull(newFolder.getAbsolutePath())) {
+//							endIndex += newFolder.getAbsolutePath().lastIndexOf(StringPool.FORWARD_SLASH);
+//							midleIndex += newFolder.getAbsolutePath().substring(0, endIndex).lastIndexOf(StringPool.FORWARD_SLASH);
+//						}
+//						String pathZip = StringPool.BLANK;
+//						String nameZip = StringPool.BLANK;
+//						if (endIndex > 0) {
+//							pathZip = 
+//									newFolder.getAbsolutePath().substring(0, endIndex);
+//						}
+//						if (midleIndex > 0) {
+//							nameZip =
+//									newFolder.getAbsolutePath().substring(midleIndex, endIndex);
+//						}
+						
+						//_log.info("pathZip: "+ pathZip);
+						action.zipDirectory(newFolder, pathFolder + ".zip");
+						File fi = new File(pathFolder + ".zip");
+						//Method which uses JAXB to convert object to XML
+						//File file = ReadXMLFileUtils.convertDictCollectionToXML(dictCollection, dataType);
+						//
+						//_log.info("file: "+file.getAbsolutePath());
+						ResponseBuilder responseBuilder = Response.ok((Object) fi);
+						responseBuilder.header("Content-Disposition",
+								"attachment; filename=\"" + fi.getName() + "\"");
+						responseBuilder.header("Content-Type", "application/zip");
+
+						return responseBuilder.build();
+					}
 				}
 			}
-
-			//String result = StringPool.BLANK;
-			//
-//			List<Group> groupList = GroupLocalServiceUtil.getActiveGroups(company.getCompanyId(), true);
-//			String strGroupId = StringPool.BLANK;
-//			if (groupList != null && groupList.size() > 0) {
-//				List<String> groupIdList = new ArrayList<>();
-//				for (Group group : groupList) {
-//					if (group.isSite()) {
-//						groupIdList.add(String.valueOf(group.getGroupId()));
-//					}
-//				}
-//				if (groupIdList != null && groupIdList.size() > 0) {
-//					strGroupId = String.join(StringPool.COMMA, groupIdList);
-//				}
-//			}
-//			//Check group
-//			if (!strGroupId.contains(String.valueOf(groupId))) {
-//				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("GroupId not exits!").build();
-//			}
-//			
-//			//Process FILE
-//			fileInputStream = dataHandle.getInputStream();
-//			String fileName = dataHandle.getName();
-//			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
-//			_log.info("extFile: "+extFile);
-//			if (Validator.isNotNull(extFile)) {
-//				if ("zip".equals(extFile.toLowerCase())) {
-//					String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
-////					//delete folder if exits
-//					File fileOld = new File(pathFolder);
-//					_log.info("fileOld: "+fileOld);
-//					if (fileOld.exists()) {
-//						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-//						_log.info("LamTV_Delete DONE: "+flag);
-//					}
-////					_log.info("LamTV_pathFolder: "+pathFolder);
-//					ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
-//					File fileList = new File(pathFolder);
-////					//Validate xml
-//					String strError = ReadXMLFileUtils.validateXML(fileList, true);
-//					_log.info("strError: "+strError);
-//					if (Validator.isNotNull(strError)) {
-//						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
-//					}
-//
-////					String errorCheck = ReadXMLFileUtils.getStrError();
-////					_log.info("errorCheck: "+errorCheck);
-////					if (Validator.isNotNull(errorCheck)) {
-////						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(errorCheck).build();
-////					}
-//					result = ReadXMLFileUtils.listFilesForParentFolder(fileList, groupId, userId, serviceContext);
-//					if (Validator.isNull(result)) {
-//						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("Folder is not structure").build();
-//					}
-//					_log.info("LamTV_IMPORT DONE_ZIP");
-//				} else if ("xml".equals(extFile.toLowerCase())) {
-//					String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
-////					//delete folder if exits
-//					File fileOld = new File(pathFile);
-//					_log.info("fileOld: "+fileOld.getAbsolutePath());
-//					if (fileOld.exists()) {
-//						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-//						_log.info("LamTV_Delete DONE: "+flag);
-//					}
-//					_log.info("LamTV_pathFolder: "+pathFile);
-//					File fileList = new File(pathFile);
-//					FileOutputStream out = new FileOutputStream(fileList);
-//					IOUtils.copy(fileInputStream, out);
-////					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
-//					_log.info("fileList: "+fileList);
-////					_log.info("LamTV_fileList: "+fileList.getPath());
-//					String subFileName = ImportZipFileUtils.getSubFileName(fileName);
-//					if (Validator.isNotNull(subFileName)) {
-//						String strError = ReadXMLFileUtils.validateXML(fileList, false);
-//						if (Validator.isNotNull(strError)) {
-//							return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
-//						}
-//						String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
-//						result = ReadXMLFileUtils.compareParentFile(ConstantUtils.DEST_DIRECTORY, fileName, xmlString, groupId, userId, serviceContext);
-//					}
-//					_log.info("LamTV_IMPORT DONE_FILE");
-//				}
-//			}
-//
-//			return Response.status(200).entity(result).build();
-//
 		} catch (Exception e) {
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
-		
+
 		return null;
 	}
 

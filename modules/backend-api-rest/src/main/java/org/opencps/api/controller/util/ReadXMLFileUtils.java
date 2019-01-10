@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.ApplicantList;
+import org.opencps.api.v21.model.BusinessList;
 import org.opencps.api.v21.model.CitizenList;
 import org.opencps.api.v21.model.DeliverableTypeList;
 import org.opencps.api.v21.model.DictCollection;
@@ -614,7 +615,7 @@ public class ReadXMLFileUtils {
 		//for pretty-print XML in JAXB
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		//Store XML to File
-		File file = new File("citizen.xml");
+		File file = new File("Citizen.xml");
 
 		// Writes XML file to file-system
 		jaxbMarshaller.marshal(citizenList, file);
@@ -622,6 +623,59 @@ public class ReadXMLFileUtils {
 
 		return file;
 	}
+
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static File convertBusinessToXML(BusinessList businessList) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(BusinessList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File("Business.xml");
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(businessList, file);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return file;
+	}
+
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static File convertDictCollectionToXML(DictCollection dictCollection, String collectionCode) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(DictCollection.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File(collectionCode + ConstantUtils.EXTENTION_XML);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(dictCollection, file);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+
+		return file;
+	}
+
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static void convertServiceInfoToXML(ServiceInfo serviceInfo, String serviceCode, String pathFolder)
+			throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(ServiceInfo.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File(pathFolder + StringPool.FORWARD_SLASH + serviceCode + ConstantUtils.EXTENTION_XML);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(serviceInfo, file);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+	}
+
 	/** Process Convert Object to xml - END **/
 
 	//Process validate xml
