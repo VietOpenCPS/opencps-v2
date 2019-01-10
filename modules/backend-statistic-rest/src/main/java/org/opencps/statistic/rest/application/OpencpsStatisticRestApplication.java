@@ -42,6 +42,8 @@ import org.opencps.statistic.rest.dto.GetPersonResponse;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
 import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
+import org.opencps.statistic.rest.dto.PersonRequest;
+import org.opencps.statistic.rest.dto.PersonResponse;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
@@ -560,27 +562,28 @@ public class OpencpsStatisticRestApplication extends Application {
 
 				validInput(month, year, start, end);
 				//
-				VotingResultRequest votingRequest = new VotingResultRequest();
-				votingRequest.setVotingCode(votingCode);
-				//votingRequest.setDomain(domain);
+				PersonRequest personRequest = new PersonRequest();
+				personRequest.setVotingCode(votingCode);
+				personRequest.setEmployeeId(employeeId);
 				if ("all".equals(govAgencyCode)) {
-					votingRequest.setGovAgencyCode(StringPool.BLANK);
+					personRequest.setGovAgencyCode(StringPool.BLANK);
 				} else {
-					votingRequest.setGovAgencyCode(govAgencyCode);
+					personRequest.setGovAgencyCode(govAgencyCode);
 				}
-				votingRequest.setGroupId(groupId);
-				votingRequest.setStart(start);
-				votingRequest.setEnd(end);
-				votingRequest.setMonth(month);
-				votingRequest.setYear(year);
+				personRequest.setGroupId(groupId);
+				personRequest.setStart(start);
+				personRequest.setEnd(end);
+				personRequest.setMonth(month);
+				personRequest.setYear(year);
 				//
-				VotingResultResponse statisticResponse = votingStatisticFinderService
-						.finderVotingStatistic(votingRequest);
-				if (statisticResponse != null) {
-					statisticResponse.setAgency(govAgencyCode);
-				}
-
-				return statisticResponse;
+//				PersonResponse statisticResponse = personStatisticFinderService
+//						.finderVotingStatistic(votingRequest);
+//				if (statisticResponse != null) {
+//					statisticResponse.setAgency(govAgencyCode);
+//				}
+//
+//				return statisticResponse;
+				return null;
 			} catch (Exception e) {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();

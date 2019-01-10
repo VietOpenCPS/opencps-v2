@@ -41,6 +41,5 @@ public interface BackupDataManagement {
 
 	public Response exportDataToXML(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@BeanParam DataInputModel input);
+			@Context ServiceContext serviceContext, @BeanParam DataInputModel input);
 }

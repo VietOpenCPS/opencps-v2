@@ -194,11 +194,11 @@ public class StatisticEngineFetchEntry {
 		//System.out.println("votingData.getSelected()"+ votingData.getSelected());
 		//System.out.println("votingData.getGroupId()"+ votingData.getGroupId());
 
-		if (personData.getSelected() == 0) {
+		if (personData.getSelected() == 1) {
 			statisticData.setVeryGoodCount(statisticData.getVeryGoodCount() + 1);
-		} else if (personData.getSelected() == 1) {
+		} else if (personData.getSelected() == 2) {
 			statisticData.setGoodCount(statisticData.getGoodCount() + 1);
-		} else {
+		} else if (personData.getSelected() == 3){
 			statisticData.setBadCount(statisticData.getBadCount() + 1);
 		}
 	}
