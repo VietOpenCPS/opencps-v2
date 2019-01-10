@@ -6057,12 +6057,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
-						HashMap<String, Object> moderator = new HashMap<>();
-						moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
-						user.setModelAttributes(moderator);
-						user.setModelAttributes(assigned);
+						if (!user.isLockout() && user.isActive()) {
+							HashMap<String, Object> moderator = new HashMap<>();
+							moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
+							user.setModelAttributes(moderator);
+							user.setModelAttributes(assigned);
+							lstUser.add(user);
+						}
 					}
-					lstUser.addAll(users);
 				}
 			}
 		} else {
@@ -6076,11 +6078,13 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							.getRoleUsers(serviceProcessRole.getRoleId());
 					if (users != null && users.size() > 0) {
 						for (User user : users) {
-							HashMap<String, Object> moderator = new HashMap<>();
-							moderator.put("moderator", serviceProcessRole.getModerator());
-							user.setModelAttributes(moderator);
+							if (!user.isLockout() && user.isActive()) {
+								HashMap<String, Object> moderator = new HashMap<>();
+								moderator.put("moderator", serviceProcessRole.getModerator());
+								user.setModelAttributes(moderator);
+								lstUser.add(user);
+							}
 						}
-						lstUser.addAll(users);
 					}
 				}
 			}
@@ -6099,14 +6103,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		for (ProcessStepRole role : processStepRoleList) {
 			List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
 			for (User u : lstUsers) {
-				HashMap<String, Object> assigned = new HashMap<>();
-				assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);	
-				HashMap<String, Object> moderator = new HashMap<>();
-				moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
-				u.setModelAttributes(moderator);
-				u.setModelAttributes(assigned);
-				
-				lstUser.add(u);
+				if (!u.isLockout() && u.isActive()) {
+					HashMap<String, Object> assigned = new HashMap<>();
+					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);	
+					HashMap<String, Object> moderator = new HashMap<>();
+					moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
+					u.setModelAttributes(moderator);
+					u.setModelAttributes(assigned);
+					
+					lstUser.add(u);
+				}
 			}
 		}
 		
@@ -6129,15 +6135,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					if (dau.getUserId() == u.getUserId()) {
 						User user = UserLocalServiceUtil.fetchUser(dau.getUserId());
 						
-						HashMap<String, Object> assigned = new HashMap<>();
-						assigned.put(ProcessStepRoleTerm.ASSIGNED, dau.getAssigned());
-						HashMap<String, Object> moderator = new HashMap<>();
-						moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator());
-						user.setModelAttributes(moderator);
-						user.setModelAttributes(assigned);
-								
-						lstUser.add(user);
-						
+						if (!user.isLockout() && user.isActive()) {
+							HashMap<String, Object> assigned = new HashMap<>();
+							assigned.put(ProcessStepRoleTerm.ASSIGNED, dau.getAssigned());
+							HashMap<String, Object> moderator = new HashMap<>();
+							moderator.put(ProcessStepRoleTerm.MODERATOR, dau.getModerator());
+							user.setModelAttributes(moderator);
+							user.setModelAttributes(assigned);
+									
+							lstUser.add(user);
+						}
 						break;
 					}
 				}

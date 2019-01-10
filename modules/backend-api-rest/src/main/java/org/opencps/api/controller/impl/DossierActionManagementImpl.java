@@ -241,7 +241,9 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH
 									&& dau.getModerator() == 1) {
 								User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-								lstUser.add(u);
+								if (!u.isLockout() && u.isActive()) {
+									lstUser.add(u);									
+								}
 							}
 						}
 					}
@@ -252,37 +254,39 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						boolean moderator = false;
 						int assigned = 0;
 						for (User u: lstUser) {
-							modelUser = new DossierActionNextActiontoUser();
-							Map<String, Object> attr = u.getModelAttributes();
-							long userId = GetterUtil.getLong(u.getUserId());
-							moderator = false;
-							assigned = 0;
-							if (attr != null) {
-								if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
-									moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
-								}
-								if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
-									assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
-								}
-							}
-
-							modelUser.setUserId(userId);
-							modelUser.setUserName(u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
-							modelUser.setModerator(moderator);
-							modelUser.setAssigned(assigned);
-							boolean flag = true;
-							if (outputUsers != null && !outputUsers.isEmpty()) {
-								for (DossierActionNextActiontoUser doUserAct : outputUsers) {
-									if (userId == doUserAct.getUserId()) {
-										flag = false;
-										break;
+							if (!u.isLockout() && u.isActive()) {
+								modelUser = new DossierActionNextActiontoUser();
+								Map<String, Object> attr = u.getModelAttributes();
+								long userId = GetterUtil.getLong(u.getUserId());
+								moderator = false;
+								assigned = 0;
+								if (attr != null) {
+									if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
+										moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
+									}
+									if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
+										assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
 									}
 								}
-								if (flag) {
+	
+								modelUser.setUserId(userId);
+								modelUser.setUserName(u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
+								modelUser.setModerator(moderator);
+								modelUser.setAssigned(assigned);
+								boolean flag = true;
+								if (outputUsers != null && !outputUsers.isEmpty()) {
+									for (DossierActionNextActiontoUser doUserAct : outputUsers) {
+										if (userId == doUserAct.getUserId()) {
+											flag = false;
+											break;
+										}
+									}
+									if (flag) {
+										outputUsers.add(modelUser);
+									}
+								} else {
 									outputUsers.add(modelUser);
 								}
-							} else {
-								outputUsers.add(modelUser);
 							}
 						}
 					}
