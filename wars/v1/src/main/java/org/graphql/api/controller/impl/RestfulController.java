@@ -275,18 +275,21 @@ public class RestfulController {
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
-				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, request.getRequestedSessionId(), 0, null, request.getRemoteAddr());
-				String userAgent = request.getHeader("User-Agent");
+				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
+				
+				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
+				String userAgent = request.getHeader("User-Agent") != null ? request.getHeader("User-Agent") : StringPool.BLANK;
 				ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
 				UserTrackerLocalServiceUtil.addUserTracker(
 						user.getCompanyId(), 
 						userId, 
 						new Date(), 
-						request.getRequestedSessionId(), 
+						sessionId, 
 						request.getRemoteAddr(), 
 						request.getRemoteHost(), 
 						userAgent, 
 						userTrackerPath);
+				System.out.println("End add user tracker");
 				if (Validator.isNotNull(employee)) {
 
 					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {

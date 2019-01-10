@@ -14,7 +14,7 @@ import java.util.Date;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class LiferayUserLoginListener extends BaseModelListener<User> {
 	@Override
 	public void onAfterUpdate(User model) throws ModelListenerException {
