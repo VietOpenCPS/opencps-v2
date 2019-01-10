@@ -242,24 +242,18 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 //			});
 			//TODO: Calculator again year ago
 			int lastYear = LocalDate.now().getYear() - 1;
-			boolean flagLastYear = false;
+			boolean flagLastYear = true;
 			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-				List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-						.getDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
-				if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
-					for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
-						boolean reporting = dossierStatistic.getReporting();
-						if (!reporting) {
-							flagLastYear = true;
-							break;
-						}
+				if (site.getGroupId() == 75437 && lastMonth == 10) {
+					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
+							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
+					if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
+						flagLastYear = false;
 					}
-				} else {
-					flagLastYear = true;
-				}
-				if (flagLastYear) {
-					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-							engineUpdateAction, serviceDomainResponse);
+					if (flagLastYear) {
+						processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+								engineUpdateAction, serviceDomainResponse);
+					}
 				}
 			}
 
@@ -391,7 +385,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 10, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

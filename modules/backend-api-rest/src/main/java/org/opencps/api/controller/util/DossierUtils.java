@@ -159,6 +159,7 @@ public class DossierUtils {
 //			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
 //			_log.info("releaseDateTimeStamp: "+releaseDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
+			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			//Check lockState
@@ -217,7 +218,7 @@ public class DossierUtils {
 					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 						long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 	//					_log.info("subTimeStamp: "+subTimeStamp);
-						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+						String strOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId, false);
 						if (Validator.isNotNull(strOverDue)) {
 							if (subTimeStamp > 0) {
@@ -261,7 +262,7 @@ public class DossierUtils {
 								long dueDateActionTimeStamp = dueDate.getTime();
 								long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
 //								_log.info("START STEP OVERDUE");
-								String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+								String stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 										dueDateActionTimeStamp, groupId, true);
 								if (Validator.isNotNull(stepOverDue)) {
 									if (subTimeStamp > 0) {
@@ -427,7 +428,7 @@ public class DossierUtils {
 		return ouputs;
 	}
 
-	public static String calculatorOverDue(int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
+	public static String calculatorOverDue(double durationCount, int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
 			long dueDateTimeStamp, long groupId, boolean flagStepDue) {
 
 		//Process count day off work
@@ -496,10 +497,14 @@ public class DossierUtils {
 				return StringPool.BLANK;
 			}
 			if (!flagCeil) {
-//				_log.info("flagCeil: "+flagCeil);
-//				_log.info("overDue: "+overDue);
-//				_log.info("strOverDue: "+strOverDue);
-				return overDue + strOverDue;
+				//_log.info("flagCeil: "+flagCeil);
+				//_log.info("overDue: "+overDue);
+				//_log.info("durationCount: "+durationCount);
+				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
+					return durationCount + strOverDue;
+				} else {
+					return overDue + strOverDue;
+				}
 			}
 		} else {
 			strOverDue = " giờ";
@@ -518,11 +523,15 @@ public class DossierUtils {
 
 //		_log.info("overDue: "+overDue);
 //		_log.info("strOverDue: "+strOverDue);
-		return (int)overDue + strOverDue;
+		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
+			return (int)durationCount + strOverDue;
+		} else {
+			return (int)overDue + strOverDue;
+		}
 	}
 
 	public static void main(String []args) {
-		if (Double.compare(0.5, 0.0) == 0) {
+		if (Double.compare(20.25, 20.0) > 0) {
 			System.out.println(true);
 		} else {
 			System.out.println(false);
