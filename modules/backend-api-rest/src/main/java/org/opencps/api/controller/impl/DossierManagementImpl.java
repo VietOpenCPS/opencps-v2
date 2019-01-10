@@ -1057,6 +1057,9 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setRegisterBookCode(registerBookCode);
 				dossier.setRegisterBookName(registerBookName);
 				dossier.setSampleCount(sampleCount);
+				dossier.setServiceCode(input.getServiceCode());
+				dossier.setGovAgencyCode(input.getGovAgencyCode());
+				dossier.setDossierTemplateNo(input.getDossierTemplateNo());
 				
 				updateDelegateApplicant(dossier, input);
 				

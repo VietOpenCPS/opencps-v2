@@ -240,6 +240,26 @@
 		<field name="email" type="String" />
 		<field name="readonly" type="boolean" />
 	</model>
+	<model name="org.opencps.usermgt.model.UserLogin">
+		<field name="uuid" type="String" />
+		<field name="userLoginId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="sessionId" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="hits" type="int" />
+		<field name="logout" type="Date" />
+		<field name="ipAddress" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+	</model>
 	<model name="org.opencps.usermgt.model.Visibility">
 		<field name="uuid" type="String" />
 		<field name="visibilityId" type="long" />

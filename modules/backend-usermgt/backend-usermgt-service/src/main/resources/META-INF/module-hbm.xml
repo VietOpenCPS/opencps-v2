@@ -12,6 +12,7 @@
 	<import class="org.opencps.usermgt.model.Preferences" />
 	<import class="org.opencps.usermgt.model.ResourceRole" />
 	<import class="org.opencps.usermgt.model.ResourceUser" />
+	<import class="org.opencps.usermgt.model.UserLogin" />
 	<import class="org.opencps.usermgt.model.Visibility" />
 	<import class="org.opencps.usermgt.model.WorkingUnit" />
 	<class name="org.opencps.usermgt.model.impl.ApplicantImpl" table="opencps_applicant">
@@ -206,6 +207,22 @@
 		<property name="fullname" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="readonly" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+	</class>
+	<class name="org.opencps.usermgt.model.impl.UserLoginImpl" table="opencps_userlogin">
+		<id name="userLoginId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="sessionId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="hits" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="logout" type="org.hibernate.type.TimestampType" />
+		<property name="ipAddress" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.VisibilityImpl" table="opencps_visibility">
 		<id name="visibilityId" type="long">
