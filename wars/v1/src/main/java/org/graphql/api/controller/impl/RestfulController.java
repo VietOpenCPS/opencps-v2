@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserTrackerPath;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManag
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserTrackerLocalServiceUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -37,6 +39,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -66,8 +70,10 @@ import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.model.UserLogin;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -266,11 +272,21 @@ public class RestfulController {
 				//Remember me false
 				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
 						CompanyConstants.AUTH_TYPE_EA);
-
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
-
+				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, request.getRequestedSessionId(), 0, null, request.getRemoteAddr());
+				String userAgent = request.getHeader("User-Agent");
+				ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
+				UserTrackerLocalServiceUtil.addUserTracker(
+						user.getCompanyId(), 
+						userId, 
+						new Date(), 
+						request.getRequestedSessionId(), 
+						request.getRemoteAddr(), 
+						request.getRemoteHost(), 
+						userAgent, 
+						userTrackerPath);
 				if (Validator.isNotNull(employee)) {
 
 					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
