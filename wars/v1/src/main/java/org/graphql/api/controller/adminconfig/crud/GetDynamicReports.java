@@ -35,13 +35,15 @@ public class GetDynamicReports implements DataFetcher<List<DynamicReport>> {
 		int start = dataFetchingEnvironment.getArgument(WebKeys.START);
 		int end = dataFetchingEnvironment.getArgument(WebKeys.END);
 
+		String reportType = dataFetchingEnvironment.getArgument("reportType");
+		
 		long groupId = 0;
 
 		if (Validator.isNotNull(request.getHeader(WebKeys.GROUPID))) {
 			groupId = Long.valueOf(request.getHeader(WebKeys.GROUPID));
 		}
 
-		List<DynamicReport> results = DynamicReportLocalServiceUtil.getByGroup(groupId, start, end);
+		List<DynamicReport> results = DynamicReportLocalServiceUtil.getByGroupType(groupId, reportType, start, end);
 
 		return results;
 

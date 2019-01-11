@@ -136,10 +136,12 @@
 </body>
 
 <script type="text/javascript">
-	    $.ajaxSetup({
-			headers: {"Token": Liferay.authToken},
-			global: true
-		});
+	$(document).ajaxSend(function(ev, xhr, settings) {
+	  console.log(ev);console.log(xhr);console.log(settings);
+	  if (!settings['url'].includes("https://www.cleverpdf.com")) {
+	  	xhr.setRequestHeader('Token', Liferay.authToken)
+	  }
+	});
 </script>
 
 </html>

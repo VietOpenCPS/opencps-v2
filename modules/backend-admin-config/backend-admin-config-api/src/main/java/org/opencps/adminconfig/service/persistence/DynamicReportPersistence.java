@@ -224,6 +224,154 @@ public interface DynamicReportPersistence extends BasePersistence<DynamicReport>
 	public int countByF_reportCode(long groupId, String reportCode);
 
 	/**
+	* Returns all the dynamic reports where groupId = &#63; and reportType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @return the matching dynamic reports
+	*/
+	public java.util.List<DynamicReport> findByF_reportType(long groupId,
+		String reportType);
+
+	/**
+	* Returns a range of all the dynamic reports where groupId = &#63; and reportType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DynamicReportModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param start the lower bound of the range of dynamic reports
+	* @param end the upper bound of the range of dynamic reports (not inclusive)
+	* @return the range of matching dynamic reports
+	*/
+	public java.util.List<DynamicReport> findByF_reportType(long groupId,
+		String reportType, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dynamic reports where groupId = &#63; and reportType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DynamicReportModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param start the lower bound of the range of dynamic reports
+	* @param end the upper bound of the range of dynamic reports (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dynamic reports
+	*/
+	public java.util.List<DynamicReport> findByF_reportType(long groupId,
+		String reportType, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DynamicReport> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dynamic reports where groupId = &#63; and reportType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DynamicReportModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param start the lower bound of the range of dynamic reports
+	* @param end the upper bound of the range of dynamic reports (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dynamic reports
+	*/
+	public java.util.List<DynamicReport> findByF_reportType(long groupId,
+		String reportType, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DynamicReport> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dynamic report in the ordered set where groupId = &#63; and reportType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dynamic report
+	* @throws NoSuchDynamicReportException if a matching dynamic report could not be found
+	*/
+	public DynamicReport findByF_reportType_First(long groupId,
+		String reportType,
+		com.liferay.portal.kernel.util.OrderByComparator<DynamicReport> orderByComparator)
+		throws NoSuchDynamicReportException;
+
+	/**
+	* Returns the first dynamic report in the ordered set where groupId = &#63; and reportType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dynamic report, or <code>null</code> if a matching dynamic report could not be found
+	*/
+	public DynamicReport fetchByF_reportType_First(long groupId,
+		String reportType,
+		com.liferay.portal.kernel.util.OrderByComparator<DynamicReport> orderByComparator);
+
+	/**
+	* Returns the last dynamic report in the ordered set where groupId = &#63; and reportType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dynamic report
+	* @throws NoSuchDynamicReportException if a matching dynamic report could not be found
+	*/
+	public DynamicReport findByF_reportType_Last(long groupId,
+		String reportType,
+		com.liferay.portal.kernel.util.OrderByComparator<DynamicReport> orderByComparator)
+		throws NoSuchDynamicReportException;
+
+	/**
+	* Returns the last dynamic report in the ordered set where groupId = &#63; and reportType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dynamic report, or <code>null</code> if a matching dynamic report could not be found
+	*/
+	public DynamicReport fetchByF_reportType_Last(long groupId,
+		String reportType,
+		com.liferay.portal.kernel.util.OrderByComparator<DynamicReport> orderByComparator);
+
+	/**
+	* Returns the dynamic reports before and after the current dynamic report in the ordered set where groupId = &#63; and reportType = &#63;.
+	*
+	* @param dynamicReportId the primary key of the current dynamic report
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dynamic report
+	* @throws NoSuchDynamicReportException if a dynamic report with the primary key could not be found
+	*/
+	public DynamicReport[] findByF_reportType_PrevAndNext(
+		long dynamicReportId, long groupId, String reportType,
+		com.liferay.portal.kernel.util.OrderByComparator<DynamicReport> orderByComparator)
+		throws NoSuchDynamicReportException;
+
+	/**
+	* Removes all the dynamic reports where groupId = &#63; and reportType = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	*/
+	public void removeByF_reportType(long groupId, String reportType);
+
+	/**
+	* Returns the number of dynamic reports where groupId = &#63; and reportType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param reportType the report type
+	* @return the number of matching dynamic reports
+	*/
+	public int countByF_reportType(long groupId, String reportType);
+
+	/**
 	* Caches the dynamic report in the entity cache if it is enabled.
 	*
 	* @param dynamicReport the dynamic report
