@@ -1321,6 +1321,7 @@ public class OpenCPSConverter {
 		result.put("DocFees", docFeesArr);
 		result.put("OrganInchargeIdLevel1", model.getGovAgencyCode());
 		result.put("OrganInchargeName", model.getGovAgencyName());
+		System.out.println("LGSP SYNC DOCUMENT");
 		return result;
 	}
 	

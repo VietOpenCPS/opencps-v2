@@ -108,6 +108,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
 		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 		return (GetDossierResponse) this
 				.executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GetDossierResponse.class).getBody();
 	}

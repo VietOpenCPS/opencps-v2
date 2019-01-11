@@ -49,7 +49,7 @@ public class OpencpsCallServiceDomainRestFacadeImpl extends OpencpsRestFacade<Se
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
 		httpHeaders.add(DossierStatisticConstants.GROUP_ID, Long.toString(payload.getGroupId()));
-
+		httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, ServiceDomainResponse.class).getBody();
 
 	}

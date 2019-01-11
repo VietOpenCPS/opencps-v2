@@ -110,7 +110,6 @@ public class RestAuthFilter implements Filter {
 			        String userpassEncoded = strBasic.substring(6);  
 			        String decodetoken = new String(Base64.decode(userpassEncoded),
 			                StringPool.UTF8);
-
 			        String account[] = decodetoken.split(":");
 			        
 			        String email = account[0];
