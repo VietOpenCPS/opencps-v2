@@ -73,6 +73,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
 		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 		return (GetVotingResultResponse) this
 				.executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GetVotingResultResponse.class).getBody();
 	}

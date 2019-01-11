@@ -4112,7 +4112,9 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT &&
 				((DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
-				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
+				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA)
+				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+				|| (actionConfig != null && actionConfig.getDateOption() == 2))
 				&& dossier.getReceiveDate() == null) {
 //			try {
 //				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
@@ -4234,6 +4236,10 @@ public class DossierActionsImpl implements DossierActions {
 			bResult.put(DossierTerm.PROCESS_DATE, true);
 			bResult.put(DossierTerm.RELEASE_DATE, true);
 			bResult.put(DossierTerm.FINISH_DATE, true);
+		}
+		if (DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG
+				&& Validator.isNotNull(dossier.getReceiveDate())) {
+			bResult.put(DossierTerm.RECEIVE_DATE, true);
 		}
 		
 		//Calculate step due date
