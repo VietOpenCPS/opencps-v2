@@ -154,20 +154,18 @@ public class StatisticEngineFetchEntry {
 //	}
 
 	//LamTV_ Process Statistic follow GS.Tuan Anh
-	public void calculateVotingStatisticData(VotingResultStatisticData statisticData, GetVotingResultData votingData, int month) {
-		int year = LocalDate.now().getYear();
-		statisticData.setMonth(month);
-		statisticData.setYear(year);
-		statisticData.setGroupId(votingData.getGroupId());
+	public void calculateVotingStatisticData(VotingResultStatisticData statisticData, GetVotingResultData votingData,
+			Date fromCalDate, Date toCalDate) {
+
 		// Get info date check statistic
-		//Date createDate = Validator.isNotNull(votingData.getCreateDate())
-		//		? StatisticUtils.convertStringToDate(votingData.getCreateDate()): null;
-		//Date modifiedDate = Validator.isNotNull(votingData.getModifiedDate())
-		//		? StatisticUtils.convertStringToDate(votingData.getModifiedDate()): null;
-		//
+		Calendar dateStatistic = Calendar.getInstance();
+		dateStatistic.setTime(fromCalDate);
+		
+		statisticData.setMonth(dateStatistic.get(Calendar.MONTH) + 1);
+		statisticData.setYear(dateStatistic.get(Calendar.YEAR));
+		statisticData.setGroupId(votingData.getGroupId());
+		
 		statisticData.setTotalVoted(statisticData.getTotalVoted() + 1);
-		//System.out.println("votingData.getSelected()"+ votingData.getSelected());
-		//System.out.println("votingData.getGroupId()"+ votingData.getGroupId());
 
 		if (votingData.getSelected() == 1) {
 			statisticData.setVeryGoodCount(statisticData.getVeryGoodCount() + 1);

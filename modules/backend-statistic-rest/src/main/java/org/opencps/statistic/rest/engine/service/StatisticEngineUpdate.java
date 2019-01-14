@@ -11,7 +11,7 @@ public class StatisticEngineUpdate {
 
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 
-		for (Map.Entry me : statisticData.entrySet()) {
+		for (Map.Entry<String, DossierStatisticData> me : statisticData.entrySet()) {
 
 			DossierStatisticData payload = (DossierStatisticData) me.getValue();
 
@@ -87,7 +87,7 @@ public class StatisticEngineUpdate {
 
 			PersonStatisticData payload = (PersonStatisticData) me.getValue();
 
-			//engineUpdateAction.updateStatistic(payload);
+			engineUpdateAction.updatePersonStatistic(payload);
 
 		}
 

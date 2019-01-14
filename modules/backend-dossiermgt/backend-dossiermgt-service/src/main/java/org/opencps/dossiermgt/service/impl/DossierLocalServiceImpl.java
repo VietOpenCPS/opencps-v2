@@ -3650,7 +3650,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (obj.has(DossierTerm.SUBMIT_DATE) && Validator.isNotNull(obj.get(DossierTerm.SUBMIT_DATE))
 				&& GetterUtil.getLong(obj.get(DossierTerm.SUBMIT_DATE)) > 0) {
-			if (dossier.getSubmitDate() == null || obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime()) {
+			if (dossier.getSubmitDate() == null || (dossier.getSubmitDate() != null && obj.getLong(DossierTerm.SUBMIT_DATE) != dossier.getSubmitDate().getTime())) {
 				dossier.setSubmitDate(new Date(obj.getLong(DossierTerm.SUBMIT_DATE)));	
 			}
 		}

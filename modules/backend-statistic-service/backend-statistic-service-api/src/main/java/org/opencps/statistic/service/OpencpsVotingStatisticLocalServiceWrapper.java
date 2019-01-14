@@ -388,14 +388,15 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 	public org.opencps.statistic.model.OpencpsVotingStatistic updateVotingStatistic(
 		long votingStatisticId, long companyId, long groupId, long userId,
 		String userName, int month, int year, String votingSubject,
-		int totalVoted, int percentVeryGood, int percentGood, int percentBad,
+		int totalVoted, int veryGoodCount, int goodCount, int badCount,
+		int percentVeryGood, int percentGood, int percentBad,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, String votingCode, int totalCount) {
 		return _opencpsVotingStatisticLocalService.updateVotingStatistic(votingStatisticId,
 			companyId, groupId, userId, userName, month, year, votingSubject,
-			totalVoted, percentVeryGood, percentGood, percentBad,
-			govAgencyCode, govAgencyName, domainCode, domainName, votingCode,
-			totalCount);
+			totalVoted, veryGoodCount, goodCount, badCount, percentVeryGood,
+			percentGood, percentBad, govAgencyCode, govAgencyName, domainCode,
+			domainName, votingCode, totalCount);
 	}
 
 	@Override

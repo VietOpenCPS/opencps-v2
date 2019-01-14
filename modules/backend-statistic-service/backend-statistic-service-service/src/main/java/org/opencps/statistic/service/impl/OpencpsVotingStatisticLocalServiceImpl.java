@@ -20,9 +20,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
-import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.opencps.statistic.service.base.OpencpsVotingStatisticLocalServiceBaseImpl;
 
 /**
@@ -53,9 +51,9 @@ public class OpencpsVotingStatisticLocalServiceImpl
 	}
 
 	public OpencpsVotingStatistic updateVotingStatistic(long votingStatisticId, long companyId, long groupId,
-			long userId, String userName, int month, int year, String votingSubject, int totalVoted,
-			int percentVeryGood, int percentGood, int percentBad, String govAgencyCode, String govAgencyName,
-			String domainCode, String domainName, String votingCode, int totalCount) {
+			long userId, String userName, int month, int year, String votingSubject, int totalVoted, int veryGoodCount,
+			int goodCount, int badCount, int percentVeryGood, int percentGood, int percentBad, String govAgencyCode,
+			String govAgencyName, String domainCode, String domainName, String votingCode, int totalCount) {
 
 		OpencpsVotingStatistic votingStatistic = null;
 		Date now = new Date();
@@ -77,6 +75,9 @@ public class OpencpsVotingStatisticLocalServiceImpl
 			votingStatistic.setDomainName(domainName);
 			votingStatistic.setVotingCode(votingCode);
 			votingStatistic.setTotalVoted(totalVoted);
+			votingStatistic.setVeryGoodCount(veryGoodCount);
+			votingStatistic.setGoodCount(goodCount);
+			votingStatistic.setBadCount(badCount);
 			votingStatistic.setPercentVeryGood(percentVeryGood);
 			votingStatistic.setPercentGood(percentGood);
 			votingStatistic.setPercentBad(percentBad);
@@ -93,6 +94,9 @@ public class OpencpsVotingStatisticLocalServiceImpl
 			votingStatistic.setDomainName(domainName);
 			votingStatistic.setVotingCode(votingCode);
 			votingStatistic.setTotalVoted(totalVoted);
+			votingStatistic.setVeryGoodCount(veryGoodCount);
+			votingStatistic.setGoodCount(goodCount);
+			votingStatistic.setBadCount(badCount);
 			votingStatistic.setPercentVeryGood(percentVeryGood);
 			votingStatistic.setPercentGood(percentGood);
 			votingStatistic.setPercentBad(percentBad);

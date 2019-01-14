@@ -23,11 +23,10 @@ public class PersonStatisticFinderServiceImpl implements PersonStatisticFinderSe
 		
 //		LOG.info("***DossierStatisticFinderServiceImpl");
 		
-//		List<OpencpsPersonStatistic> votingList = OpencpsPersonStatisticLocalServiceUtil.searchVotingStatistic(
-//				personRequest.getGroupId(), personRequest.getMonth(), personRequest.getYear(),
-//				personRequest.getVotingCode(), personRequest.getDomain(), personRequest.getGovAgencyCode(),
-//				personRequest.getStart(), personRequest.getEnd());
-		List<OpencpsPersonStatistic> votingList = new ArrayList<OpencpsPersonStatistic>();
+		List<OpencpsPersonStatistic> votingList = OpencpsPersonStatisticLocalServiceUtil.searchPersonStatistic(
+				personRequest.getGroupId(), personRequest.getMonth(), personRequest.getYear(),
+				personRequest.getVotingCode(), personRequest.getEmployeeId(), personRequest.getGovAgencyCode(),
+				personRequest.getStart(), personRequest.getEnd());
 
 		return PersonStatisticConverter.getPersonResponse().convert(votingList);
 	}
@@ -35,12 +34,11 @@ public class PersonStatisticFinderServiceImpl implements PersonStatisticFinderSe
 	@Override
 	public PersonResponse finderPersonStatisticList(PersonRequest personRequest)
 			throws PortalException {
-//		List<OpencpsPersonStatistic> votingList = OpencpsPersonStatisticLocalServiceUtil.fetchVotingStatistic(
-//				personRequest.getGroupId(), personRequest.getMonth(), personRequest.getYear(),
-//				personRequest.getVotingCode(), personRequest.getDomain(), personRequest.getGovAgencyCode(),
-//				personRequest.getStart(), personRequest.getEnd());
+		List<OpencpsPersonStatistic> votingList = OpencpsPersonStatisticLocalServiceUtil.fetchPersonStatistic(
+				personRequest.getGroupId(), personRequest.getMonth(), personRequest.getYear(),
+				personRequest.getVotingCode(), personRequest.getEmployeeId(), personRequest.getGovAgencyCode(),
+				personRequest.getStart(), personRequest.getEnd());
 		
-		List<OpencpsPersonStatistic> votingList = new ArrayList<OpencpsPersonStatistic>();
 
 		return PersonStatisticConverter.getPersonResponse().convert(votingList);
 	}
