@@ -10,6 +10,7 @@
 	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<base href="/">
+	<@liferay_util["include"] page=top_head_include />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
 	<link type="text/css" href="/o/vue-content/css/main_public.7aad116d33cf0f763e67beb48fed4e98.css" rel="stylesheet">
 	<link type="text/css" href="/o/vue-content//css/base-style.css?t=1" rel="stylesheet">
@@ -31,5 +32,15 @@
 		</@>
 	</#if>
 </body>
+
+<script type="text/javascript">
+	    $.ajaxSetup({
+			headers: {
+				"Token": Liferay.authToken,
+				"groupId": themeDisplay.getScopeGroupId()
+			},
+			global: true
+		});
+</script>
 
 </html>

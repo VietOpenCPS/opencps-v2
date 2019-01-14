@@ -29,5 +29,6 @@
 		<field name="filterConfig" type="String" />
 		<field name="tableConfig" type="String" />
 		<field name="userConfig" type="String" />
+		<field name="reportType" type="String" />
 	</model>
 </model-hints>

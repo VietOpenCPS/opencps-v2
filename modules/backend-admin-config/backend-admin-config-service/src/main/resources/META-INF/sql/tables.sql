@@ -26,5 +26,6 @@ create table opencps_dynamicreport (
 	reportCode VARCHAR(75) null,
 	filterConfig VARCHAR(75) null,
 	tableConfig VARCHAR(75) null,
-	userConfig VARCHAR(75) null
+	userConfig VARCHAR(75) null,
+	reportType VARCHAR(75) null
 );
