@@ -7,12 +7,15 @@ import org.opencps.statistic.rest.dto.GovAgencyResponse;
 import org.opencps.statistic.rest.dto.ServiceInfoResponse;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
@@ -46,7 +49,14 @@ public class OpencpsCallServiceInfoRestFacadeImpl extends OpencpsRestFacade<Comm
 		HttpHeaders httpHeaders = new HttpHeaders();
 
 		httpHeaders.add(DossierStatisticConstants.GROUP_ID, Long.toString(payload.getGroupId()));
-
+		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
+				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
+			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));
+		}
+		else {
+			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
+		}
+		
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, ServiceInfoResponse.class).getBody();
 	}
 
