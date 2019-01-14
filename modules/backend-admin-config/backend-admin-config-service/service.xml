@@ -57,9 +57,10 @@
 		<column name="filterConfig" type="String" />
 		<column name="tableConfig" type="String" />
 		<column name="userConfig" type="String" />
+		<column name="reportType" type="String" />
 		
 		<order by="asc">
-			<order-column name="dynamicReportId" />
+			<order-column name="reportCode" />
 		</order>
 		
 		<finder return-type="Collection" name="F_GroupId">
@@ -69,6 +70,11 @@
 		<finder return-type="DynamicReport" name="F_reportCode">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="reportCode"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_reportType">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="reportType"></finder-column>
 		</finder>
 		
 	</entity>

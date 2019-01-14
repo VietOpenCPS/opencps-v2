@@ -65,7 +65,7 @@ public class DynamicReportCacheModel implements CacheModel<DynamicReport>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{dynamicReportId=");
 		sb.append(dynamicReportId);
@@ -93,6 +93,8 @@ public class DynamicReportCacheModel implements CacheModel<DynamicReport>,
 		sb.append(tableConfig);
 		sb.append(", userConfig=");
 		sb.append(userConfig);
+		sb.append(", reportType=");
+		sb.append(reportType);
 		sb.append("}");
 
 		return sb.toString();
@@ -165,6 +167,13 @@ public class DynamicReportCacheModel implements CacheModel<DynamicReport>,
 			dynamicReportImpl.setUserConfig(userConfig);
 		}
 
+		if (reportType == null) {
+			dynamicReportImpl.setReportType("");
+		}
+		else {
+			dynamicReportImpl.setReportType(reportType);
+		}
+
 		dynamicReportImpl.resetOriginalValues();
 
 		return dynamicReportImpl;
@@ -189,6 +198,7 @@ public class DynamicReportCacheModel implements CacheModel<DynamicReport>,
 		filterConfig = objectInput.readUTF();
 		tableConfig = objectInput.readUTF();
 		userConfig = objectInput.readUTF();
+		reportType = objectInput.readUTF();
 	}
 
 	@Override
@@ -248,6 +258,13 @@ public class DynamicReportCacheModel implements CacheModel<DynamicReport>,
 		else {
 			objectOutput.writeUTF(userConfig);
 		}
+
+		if (reportType == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(reportType);
+		}
 	}
 
 	public long dynamicReportId;
@@ -263,4 +280,5 @@ public class DynamicReportCacheModel implements CacheModel<DynamicReport>,
 	public String filterConfig;
 	public String tableConfig;
 	public String userConfig;
+	public String reportType;
 }

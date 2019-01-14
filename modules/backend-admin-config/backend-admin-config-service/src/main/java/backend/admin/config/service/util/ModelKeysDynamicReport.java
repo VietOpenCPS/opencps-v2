@@ -15,5 +15,6 @@ public class ModelKeysDynamicReport {
 	public static final String FILTERCONFIG = "filterConfig";
 	public static final String TABLECONFIG = "tableConfig";
 	public static final String USERCONFIG = "userConfig";
+	public static final String REPORTTYPE = "reportType";
 	
 }

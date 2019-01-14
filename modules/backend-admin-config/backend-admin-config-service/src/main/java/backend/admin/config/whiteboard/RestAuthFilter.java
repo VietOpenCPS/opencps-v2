@@ -135,9 +135,9 @@ public class RestAuthFilter implements Filter {
 			throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		response.addHeader("Access-Control-Allow-Headers", "*");
-		response.addHeader("Access-Control-Allow-Methods", "*");
+		// response.addHeader("Access-Control-Allow-Origin", "*");
+		// response.addHeader("Access-Control-Allow-Headers", "*");
+		// response.addHeader("Access-Control-Allow-Methods", "*");
 		
 		filterChain.doFilter(servletRequest, response);
 	}
@@ -147,9 +147,9 @@ public class RestAuthFilter implements Filter {
 		servletResponse.setContentType("application/json; charset=utf-8");
 		
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		response.addHeader("Access-Control-Allow-Headers", "*");
-		response.addHeader("Access-Control-Allow-Methods", "*");
+		// response.addHeader("Access-Control-Allow-Origin", "*");
+		// response.addHeader("Access-Control-Allow-Headers", "*");
+		// response.addHeader("Access-Control-Allow-Methods", "*");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		response.setContentType("application/json; charset=utf-8");
 		

@@ -184,6 +184,10 @@ public interface DynamicReportLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DynamicReport> getByGroup(long groupId, int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DynamicReport> getByGroupType(long groupId, String reportType,
+		int start, int end);
+
 	/**
 	* Returns the dynamic report with the primary key.
 	*

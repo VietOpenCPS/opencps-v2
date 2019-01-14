@@ -7,11 +7,17 @@
 <head>
 	<title>${the_title} - ${company_name}</title>
 
-	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700&amp;subset=vietnamese" rel="stylesheet"> -->
-
+	<base href="/">
+	
+	<link href="${themeDisplay.getPathThemeRoot()}/images/favicon.ico" rel="Shortcut Icon">
+	
 	<@liferay_util["include"] page=top_head_include />
+	
+	<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link href="${themeDisplay.getPathThemeRoot()}/css/main.css?t=5466768114992912331" rel="stylesheet" type="text/css">
+	<link href="${themeDisplay.getPathThemeRoot()}/css/clay.css?t=5466768114992912313" rel="stylesheet" type="text/css">
 	
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet" />
@@ -78,21 +84,31 @@
 	    }
   	</style>
 </#if>
-
+	<style>
+	   #banner #react-root img {
+	       margin-right: 0 !important;
+	   }
+	    #banner #react-root span { 
+	    	font-size: 13px !important;
+	    }
+  	</style>
 <div class="mWrapper">
 	<header id="banner">		
-		<div class="container align-middle hide-title">
-			<a href="${site_default_url}" class="logo align-middle">
-				<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
-				<div class="text-logo">
-					HỆ THỐNG MỘT CỬA ĐIỆN TỬ LIÊN THÔNG
-					<span>${site_name}</span>
-				</div>
-			</a>
-			<@liferay_portlet["runtime"] portletName="npmreactlogin"/>
+		<div class="container align-middle">
+			<div class="logo">
+				<a href="${site_default_url}" class="align-middle">
+					<img src="${themeDisplay.getPathThemeRoot()}/images/logo.png">
+					<div class="text-logo">
+						HỆ THỐNG MỘT CỬA ĐIỆN TỬ LIÊN THÔNG
+						<span>${site_name}</span>
+					</div>
+				</a>
+			</div>
+			
+		<div id="react-root" style="float: right;"></div>
+
 		</div>
 	</header>
-		
 	<#if has_navigation && is_setup_complete>
 		<#include "${full_templates_path}/navigation.ftl" />
 	</#if>
@@ -140,10 +156,15 @@
 			</div>
 		</footer>
 </div>
-
-<@liferay_util["include"] page=body_bottom_include />
-
-<@liferay_util["include"] page=bottom_include />
+		
+<!-- inject:js -->
+	<script type="text/javascript" src="${themeDisplay.getPathThemeRoot()}/js/login.js?t=1231231"></script>
+	<#if permissionChecker.isOmniadmin()>
+		<@liferay_util["include"] page=body_bottom_include />
+		<@liferay_util["include"] page=bottom_include />
+	</#if>
+<!-- endinject -->
+		
 </body>
 
 <script type="text/javascript">

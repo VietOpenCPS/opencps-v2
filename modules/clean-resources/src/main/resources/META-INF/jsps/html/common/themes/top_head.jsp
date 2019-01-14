@@ -366,3 +366,10 @@ private String _escapeCssBlock(String css) {
 
 private static Log _log = LogFactoryUtil.getLog("portal_web.docroot.html.common.themes.top_head_jsp");
 %>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+		headers: {"Token": Liferay.authToken},
+		global: true
+	});
+</script>

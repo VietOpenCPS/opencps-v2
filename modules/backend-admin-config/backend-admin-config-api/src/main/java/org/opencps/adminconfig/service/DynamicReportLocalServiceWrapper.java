@@ -214,6 +214,13 @@ public class DynamicReportLocalServiceWrapper
 		return _dynamicReportLocalService.getByGroup(groupId, start, end);
 	}
 
+	@Override
+	public java.util.List<org.opencps.adminconfig.model.DynamicReport> getByGroupType(
+		long groupId, String reportType, int start, int end) {
+		return _dynamicReportLocalService.getByGroupType(groupId, reportType,
+			start, end);
+	}
+
 	/**
 	* Returns the dynamic report with the primary key.
 	*

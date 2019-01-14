@@ -52,6 +52,12 @@ public class DynamicReportLocalServiceImpl
 	 * Never reference this class directly. Always use {@link org.opencps.DynamicReport.service.DynamicReportLocalServiceUtil} to access the dynamic report local service.
 	 */
 	
+	public List<DynamicReport> getByGroupType(long groupId, String reportType, int start, int end) {
+
+		return dynamicReportPersistence.findByF_reportType(groupId, reportType, start, end);
+
+	}
+	
 	public List<DynamicReport> getByGroup(long groupId, int start, int end) {
 
 		return dynamicReportPersistence.findByF_GroupId(groupId, start, end);
@@ -121,6 +127,7 @@ public class DynamicReportLocalServiceImpl
 		object.setFilterConfig(objectData.getString(ModelKeysDynamicReport.FILTERCONFIG));
 		object.setTableConfig(objectData.getString(ModelKeysDynamicReport.TABLECONFIG));
 		object.setUserConfig(objectData.getString(ModelKeysDynamicReport.USERCONFIG));
+		object.setReportType(objectData.getString(ModelKeysDynamicReport.REPORTTYPE));
 		
 		dynamicReportPersistence.update(object);
 
