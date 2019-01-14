@@ -37,7 +37,6 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 		if (payload.isCalculate()) {
 			if (payload.getMonth() != null) {
 				urlQueryParams.add("month", payload.getMonth());
-				//urlQueryParams.add("month", "10");
 			}
 			else {
 				urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));

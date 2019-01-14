@@ -101,6 +101,7 @@ public class OpenCPSConverter {
 	    params.put(DossierTerm.DELEGATE_DISTRICTNAME, model.getDistrictName());
 	    params.put(DossierTerm.DELEGATE_WARDCODE, model.getWardCode());
 	    params.put(DossierTerm.DELEGATE_WARDNAME, model.getWardName());
+	    params.put(DossierTerm.SUBMIT_DATE, model.getSubmitDate());
 
 	    if (Validator.isNotNull(model.getPassword())) {
 		    params.put(DossierTerm.SECRET, model.getPassword());	    	
