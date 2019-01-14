@@ -135,9 +135,9 @@ public class RestAuthFilter implements Filter {
 			throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		// response.addHeader("Access-Control-Allow-Origin", "*");
-		// response.addHeader("Access-Control-Allow-Headers", "*");
-		// response.addHeader("Access-Control-Allow-Methods", "*");
+//		response.addHeader("Access-Control-Allow-Origin", "*");
+//		response.addHeader("Access-Control-Allow-Headers", "*");
+//		response.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
 		
 		filterChain.doFilter(servletRequest, response);
 	}
